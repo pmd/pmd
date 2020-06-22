@@ -79,10 +79,27 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
+        Detects unused assignments. This performs a reaching definition
+        analysis.
+
+        This DFA can be modified trivially to check for all
+        unused variables (just maintain a global set of variables that
+        must be used, adding them as you go, and on each AlgoState::use,
+        remove the var from this set). This would work even without variable
+        usage pre-resolution (which in 7.0 is not implemented yet and
+        maybe won't be).
+
+        Since we have the reaching definitions at each variable usage, we
+        could also use that to detect other kinds of bug, eg conditions
+        that are always true, or dereferences that will always NPE. In
+        the general case though, this is complicated and better left to
+        an off-the-shelf data flow analyser, eg google Z3.
+
         TODO
            * labels on arbitrary statements (currently only loops)
-           * test local class/anonymous class
-           * explicit ctor call (hard to impossible without type res, or proper graph algorithms)
+           * explicit ctor call (hard to impossible without type res,
+             or at least proper graph algorithms like toposort)
+                -> this is pretty invisible as it causes false negatives, not FPs
 
         DONE
            * conditionals
@@ -95,7 +112,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * anon class
            * test this.field in ctors
            * foreach var should be reassigned from one iter to another
-
+           * test local class/anonymous class
 
      */
 
@@ -128,6 +145,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     private void reportFinished(GlobalAlgoState result, RuleContext ruleCtx) {
         if (result.usedAssignments.size() < result.allAssignments.size()) {
             Set<AssignmentEntry> unused = result.allAssignments;
+            // note that this mutates allAssignments, so the global
+            // state is unusable after this
             unused.removeAll(result.usedAssignments);
 
             for (AssignmentEntry entry : unused) {
@@ -210,11 +229,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null);
-
-        // This analysis can be trivially used to check for unused variables,
-        // in the absence of global variable usage pre-resolution (which in
-        // 7.0 is not implemented yet and maybe won't be).
-        // See reverted commit somewhere in the PR
 
         // The class scope for the "this" reference, used to find fields
         // of this class
@@ -841,6 +855,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
+
+        // track which assignments kill which
+        // assignment -> killers(assignment)
         final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
 
         final TargetStack breakTargets = new TargetStack();
@@ -864,13 +881,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     private static class AlgoState {
 
+        // nodes are arranged in a tree, to look for enclosing finallies
+        // when abrupt completion occurs. Blocks that have non-local
+        // control-flow (lambda bodies, anonymous classes, etc) aren't
+        // linked to the outer parents.
         final AlgoState parent;
 
         final GlobalAlgoState global;
 
         // Map of var -> reaching(var)
+        // Implicit assignments, like parameter declarations, are not contained
+        // in this
         final Map<VariableNameDeclaration, Set<AssignmentEntry>> reachingDefs;
 
+        // If != null, then this node has a finally that all abrupt-completing
+        // statements must go through.
         AlgoState myFinally = null;
 
         private AlgoState(GlobalAlgoState global) {
@@ -891,11 +916,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         void assign(VariableNameDeclaration var, JavaNode rhs) {
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
-            // kills the previous value
-            Set<AssignmentEntry> killed = reachingDefs.put(var, Collections.singleton(entry));
+            Set<AssignmentEntry> killed = reachingDefs.put(var, newSet(entry));
             if (killed != null) {
+                // those assignments were overwritten ("killed")
                 for (AssignmentEntry k : killed) {
-                    // computeIfAbsent
+                    // java8: computeIfAbsent
                     Set<AssignmentEntry> killers = global.killRecord.get(k);
                     if (killers == null) {
                         killers = new HashSet<>(1);
@@ -905,6 +930,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
             }
             global.allAssignments.add(entry);
+        }
+
+        private Set<AssignmentEntry> newSet(AssignmentEntry member) {
+            HashSet<AssignmentEntry> set = new HashSet<>(1);
+            set.add(member);
+            return set;
         }
 
         void use(VariableNameDeclaration var) {
@@ -919,6 +950,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             reachingDefs.remove(var);
         }
 
+        // fork duplicates this context, to preserve the reaching defs
+        // of the current context while analysing a sub-block
+
         AlgoState fork() {
             return doFork(this, new HashMap<>(this.reachingDefs));
         }
@@ -927,10 +961,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return doFork(this, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
-
-        // nonLocal forks have no parent, so that in case of abrupt
-        // completion (return inside a lambda), enclosing finallies are
-        // not called. This is used for lambdas, constructors, etc.
 
         AlgoState forkEmptyNonLocal() {
             return doFork(null, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
@@ -1068,7 +1098,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public int hashCode() {
-            return Objects.hash(rhs);
+            return rhs.hashCode();
         }
     }
 }

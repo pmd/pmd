@@ -1929,4 +1929,54 @@ public class Foo {
     </test-code>
 
 
+    <test-code>
+        <description>Test local class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'shadowed' is never used (goes out of scope)</message>
+            <message>The field initializer for 'f' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int captured = 0;
+        int shadowed = 2;
+        class Local {
+            int f = captured;
+            Local(int shadowed) {
+                f = shadowed;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test anonymous class</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'shadowed' is never used (overwritten on line 5)</message>
+            <message>The value assigned to variable 'shadowed' is never used (goes out of scope)</message>
+            <message>The field initializer for 'f' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int captured = 0;
+        int shadowed = 2;
+        new Foo(shadowed = 4) {
+            int f = captured;
+            {
+                f = 2;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+
 </test-data>
