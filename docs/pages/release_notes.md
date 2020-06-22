@@ -94,7 +94,14 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
+
+*   Rule implementation classes are internal API and should not be used by clients directly.
+    The rules should only be referenced via their entry in the corresponding category ruleset
+    (e.g. `<rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" />`).
     
+    While we definitely won't move or rename the rule classes in PMD 6.x, we might consider changes
+    in PMD 7.0.0 and onwards.
+
 #### Deprecated APIs
 
 ##### Internal API
