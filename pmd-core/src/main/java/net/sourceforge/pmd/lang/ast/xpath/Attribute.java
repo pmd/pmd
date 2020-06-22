@@ -82,7 +82,7 @@ public class Attribute {
                      : null;
             if (result == null && List.class.isAssignableFrom(method.getReturnType())) {
                 // Lists are generally deprecated, see #2451
-                result = "";
+                result = DeprecatedAttribute.NO_REPLACEMENT;
             }
             return result;
         }
