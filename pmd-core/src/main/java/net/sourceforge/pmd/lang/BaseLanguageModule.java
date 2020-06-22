@@ -15,6 +15,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Created by christoferdutz on 21.09.14.
@@ -30,6 +31,12 @@ public abstract class BaseLanguageModule implements Language {
     protected Map<String, LanguageVersion> versions;
     protected LanguageVersion defaultVersion;
 
+    /**
+     * @deprecated Use the other constructor. It doesn't require a
+     *     rulechain visitor class, but forces you to mention at least
+     *     one file extension.
+     */
+    @Deprecated
     public BaseLanguageModule(String name, String shortName, String terseName, Class<?> ruleChainVisitorClass,
             String... extensions) {
         this.name = name;
@@ -37,6 +44,18 @@ public abstract class BaseLanguageModule implements Language {
         this.terseName = terseName;
         this.ruleChainVisitorClass = ruleChainVisitorClass;
         this.extensions = Arrays.asList(extensions);
+    }
+
+    public BaseLanguageModule(String name,
+                              String shortName,
+                              String terseName,
+                              String firstExtension,
+                              String... otherExtensions) {
+        this.name = name;
+        this.shortName = shortName;
+        this.terseName = terseName;
+        this.ruleChainVisitorClass = DefaultRulechainVisitor.class;
+        this.extensions = CollectionUtil.listOf(firstExtension, otherExtensions);
     }
 
     private void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
@@ -194,7 +213,16 @@ public abstract class BaseLanguageModule implements Language {
 
         @Override
         protected void indexNodes(List<Node> nodes, RuleContext ctx) {
+            for (Node node : nodes) {
+                indexNodeRec(node);
+            }
+        }
 
+        protected void indexNodeRec(Node top) {
+            indexNode(top);
+            for (Node child : top.children()) {
+                indexNodeRec(child);
+            }
         }
     }
 

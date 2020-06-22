@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleChainVisitor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -16,7 +15,7 @@ public class PLSQLLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "plsql";
 
     public PLSQLLanguageModule() {
-        super(NAME, null, TERSE_NAME, PLSQLRuleChainVisitor.class,
+        super(NAME, null, TERSE_NAME,
                 "sql",
                 "trg",  // Triggers
                 "prc", "fnc", // Standalone Procedures and Functions
