@@ -1310,4 +1310,92 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Field initializers 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = f1++;
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'f1' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = f1 = 1, f3 = f2;
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'f1' is never used (overwritten on lines 7 and 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = 0;
+
+    Foo(int f, int g) {
+        f1 = f;
+    }
+
+    Foo(int f, int g) {
+        f1 = f;
+        f2 = f + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,11</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'f1' is never used (overwritten on line 11)</message>
+            <message>The value assigned to variable 'f1' is never used (overwritten on lines 7 and 15)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f3 = 0;
+
+    Foo(int f, int g) {
+        f1 = f;
+    }
+
+    {
+        f1 = 1;
+    }
+
+    Foo(int f, int g) {
+        f1 = f;
+        f2 = f + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+
 </test-data>
