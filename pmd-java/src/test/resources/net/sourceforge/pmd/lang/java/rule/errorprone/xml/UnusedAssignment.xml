@@ -2124,23 +2124,48 @@ class Foo {
             <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
         </expected-messages>
         <code><![CDATA[
-class Foo {
+            class Foo {
 
-  void main(int[] bufline, int start, int bufsize) {
+              void main(int[] bufline, int start, int bufsize) {
 
-    int i = 0, j, k = 0;
+                int i = 0, j, k = 0;
 
-    if (  (i = 2) < (j = i)
-       && (j = k) == i       ) {
+                if (  (i = 2) < (j = i)
+                   && (j = k) == i       ) {
 
-        // reaching: i = 2, j = k  (not j = i)
-    } else {
-        // reaching: i = 2, j = k, j = i
-        log(j);
-    }
-  }
-}
+                    // reaching: i = 2, j = k  (not j = i)
+                } else {
+                    // reaching: i = 2, j = k, j = i
+                    log(j);
+                }
+              }
+            }
 
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+                static String replaceBackslash(String str) {
+                    int i = 0, len = str.length();
+                    char c;
+                    StringBuffer b = new StringBuffer();
+                    for (i = 0; i < len; i++)
+                        if ((c = str.charAt(i)) == '\\')
+                            b.append("\\\\");
+                        else
+                            b.append(c);
+
+                    return b.toString();
+                }
+            }
         ]]></code>
     </test-code>
 

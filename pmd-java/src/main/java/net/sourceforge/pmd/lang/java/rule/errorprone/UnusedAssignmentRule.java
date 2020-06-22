@@ -343,7 +343,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             AlgoState thenState = before.fork();
             AlgoState elseState = elseBranch != null ? before.fork() : before;
 
-            linkConditional(before, condition, thenState, elseState);
+            linkConditional(before, condition, thenState, elseState, true);
 
             thenState = acceptOpt(thenBranch, thenState);
             elseState = acceptOpt(elseBranch, elseState);
@@ -351,17 +351,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return elseState.absorb(thenState);
         }
 
-        private AlgoState linkConditional(AlgoState prev, JavaNode condition, AlgoState thenState, AlgoState elseState) {
+        private AlgoState linkConditional(AlgoState before, JavaNode condition, AlgoState thenState, AlgoState elseState, boolean isTopLevel) {
             if (condition instanceof ASTConditionalOrExpression) {
-                return visitShortcutOrExpr(condition, prev, thenState, elseState);
+                return visitShortcutOrExpr(condition, before, thenState, elseState);
             } else if (condition instanceof ASTConditionalAndExpression) {
                 // To mimic a shortcut AND expr, swap the thenState and the elseState
                 // See explanations in method
-                return visitShortcutOrExpr(condition, prev, elseState, thenState);
+                return visitShortcutOrExpr(condition, before, elseState, thenState);
             } else if (condition instanceof ASTExpression && condition.getNumChildren() == 1) {
-                return linkConditional(prev, condition.getChild(0), thenState, elseState);
+                return linkConditional(before, condition.getChild(0), thenState, elseState, isTopLevel);
             } else {
-                return acceptOpt(condition, prev);
+                AlgoState state = acceptOpt(condition, before);
+                if (isTopLevel) {
+                    thenState.absorb(state);
+                    elseState.absorb(state);
+                }
+                return state;
             }
             // TODO parenthesized expression
         }
@@ -391,7 +396,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             AlgoState cur = before;
             do {
                 JavaNode cond = iterator.next();
-                cur = linkConditional(cur, cond, thenState, elseState);
+                cur = linkConditional(cur, cond, thenState, elseState, false);
                 thenState.absorb(cur);
             } while (iterator.hasNext());
 
@@ -674,7 +679,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 JavaNode rhs = node.getChild(2);
                 result = acceptOpt(rhs, result);
 
-                VariableNameDeclaration lhsVar = getLhsVar(node.getChild(0), true);
+                VariableNameDeclaration lhsVar = getVarFromExpression(node.getChild(0), true);
                 if (lhsVar != null) {
                     // in that case lhs is a normal variable (array access not supported)
 
@@ -709,7 +714,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private AlgoState checkIncOrDecrement(JavaNode unary, AlgoState data) {
-            VariableNameDeclaration var = getLhsVar(unary.getChild(0), true);
+            VariableNameDeclaration var = getVarFromExpression(unary.getChild(0), true);
             if (var != null) {
                 data.use(var);
                 data.assign(var, unary);
@@ -721,19 +726,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTPrimaryExpression node, Object data) {
-            super.visit(node, data); // visit subexpressions
+            AlgoState state = (AlgoState) visit((JavaNode) node, data); // visit subexpressions
 
-            VariableNameDeclaration var = getLhsVar(node, false);
+            VariableNameDeclaration var = getVarFromExpression(node, false);
             if (var != null) {
-                ((AlgoState) data).use(var);
+                state.use(var);
             }
-            return data;
+            return state;
         }
 
         /**
          * Get the variable accessed from a primary.
          */
-        private VariableNameDeclaration getLhsVar(JavaNode primary, boolean inLhs) {
+        private VariableNameDeclaration getVarFromExpression(JavaNode primary, boolean inLhs) {
 
             if (primary instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
