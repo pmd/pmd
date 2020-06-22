@@ -1737,4 +1737,61 @@ class Foo {
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>SuppressWarnings test (local)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        @SuppressWarnings("unused")
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SuppressWarnings test (method)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused")
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>SuppressWarnings test (class)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("unused")
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
 </test-data>

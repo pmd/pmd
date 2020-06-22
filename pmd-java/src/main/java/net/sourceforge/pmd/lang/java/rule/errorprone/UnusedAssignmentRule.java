@@ -78,7 +78,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
         TODO
-           * labels on arbitrary statements
+           * labels on arbitrary statements (currently only loops)
            * test local class/anonymous class
            * explicit ctor call (hard to impossible without type res)
 
@@ -716,7 +716,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
 
-        public void visitTypeBody(JavaNode typeBody, AlgoState data) {
+        private void visitTypeBody(JavaNode typeBody, AlgoState data) {
             List<ASTAnyTypeBodyDeclaration> declarations = typeBody.findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
             processInitializers(declarations, data, (ClassScope) typeBody.getScope());
 
@@ -732,7 +732,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
 
-        public static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
+        private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
                                                AlgoState beforeLocal,
                                                ClassScope scope) {
 
@@ -785,6 +785,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
     }
 
+    /**
+     * The shared state for all {@link AlgoState} instances in the same
+     * toplevel class.
+     */
     private static class GlobalAlgoState {
 
         final Set<AssignmentEntry> allAssignments;
@@ -875,13 +879,16 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return doFork(this, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
+
+        // nonLocal forks have no parent, so that in case of abrupt
+        // completion (return inside a lambda), enclosing finallies are
+        // not called. This is used for lambdas, constructors, etc.
+
         AlgoState forkEmptyNonLocal() {
             return doFork(null, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
         AlgoState forkCapturingNonLocal() {
-            // has no parent, so that in case of abrupt completion (return inside a lambda),
-            // enclosing finallies are not called
             return doFork(null, new HashMap<>(this.reachingDefs));
         }
 
