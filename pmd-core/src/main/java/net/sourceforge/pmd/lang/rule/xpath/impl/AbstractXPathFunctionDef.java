@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.StructuredQName;
@@ -10,8 +10,8 @@ import net.sf.saxon.om.StructuredQName;
 
 /**
  * Base impl for an XPath function definition.
+ * This uses Saxon API.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public abstract class AbstractXPathFunctionDef extends ExtensionFunctionDefinition {

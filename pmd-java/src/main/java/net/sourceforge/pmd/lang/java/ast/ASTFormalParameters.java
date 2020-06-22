@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {

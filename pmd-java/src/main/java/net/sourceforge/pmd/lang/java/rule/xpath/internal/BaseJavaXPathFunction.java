@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
-import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 abstract class BaseJavaXPathFunction extends AbstractXPathFunctionDef {

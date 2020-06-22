@@ -52,7 +52,7 @@ public class TypeIsFunction extends BaseJavaXPathFunction {
     public ExtensionFunctionCall makeCallExpression() {
         return new ExtensionFunctionCall() {
             @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+            public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String fullTypeName = arguments[0].head().getStringValue();
 

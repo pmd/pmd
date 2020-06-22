@@ -19,12 +19,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
 import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;

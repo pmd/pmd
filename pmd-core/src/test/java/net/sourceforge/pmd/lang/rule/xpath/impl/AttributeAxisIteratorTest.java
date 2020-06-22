@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath;
+package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 
 import static org.junit.Assert.assertEquals;
@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 
 /**
@@ -37,7 +37,7 @@ public class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        Assert.assertEquals(6, atts.size());
+        assertEquals(6, atts.size());
         assertTrue(atts.containsKey("BeginColumn"));
         assertTrue(atts.containsKey("BeginLine"));
         assertTrue(atts.containsKey("FindBoundary"));
@@ -52,7 +52,7 @@ public class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        Assert.assertEquals(7, atts.size());
+        assertEquals(7, atts.size());
         assertTrue(atts.containsKey("Enum"));
         assertEquals(DummyNodeWithEnum.MyEnum.FOO, atts.get("Enum").getValue());
     }
@@ -63,7 +63,7 @@ public class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        Assert.assertEquals(7, atts.size());
+        assertEquals(7, atts.size());
         assertTrue(atts.containsKey("List"));
         assertEquals(Arrays.asList("A", "B"), atts.get("List").getValue());
         assertFalse(atts.containsKey("NodeList"));

@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
 
 /**

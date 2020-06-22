@@ -166,7 +166,7 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     }
 
     public static Comparator<Node> documentOrderComparator() {
-        return DocumentSorterX.INSTANCE;
+        return PmdDocumentSorter.INSTANCE;
     }
 
     /**

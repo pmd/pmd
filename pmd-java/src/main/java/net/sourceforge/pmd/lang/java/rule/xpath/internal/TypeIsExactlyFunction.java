@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -57,7 +53,7 @@ public class TypeIsExactlyFunction extends BaseJavaXPathFunction {
     public ExtensionFunctionCall makeCallExpression() {
         return new ExtensionFunctionCall() {
             @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+            public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String fullTypeName = arguments[0].head().getStringValue();
 

@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath;
+package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -16,11 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
-import net.sourceforge.pmd.lang.ast.xpath.NoAttribute.NoAttrScope;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
 
 
 /**
@@ -28,11 +29,7 @@ import net.sourceforge.pmd.lang.ast.xpath.NoAttribute.NoAttrScope;
  * attributes. This is the default way the attributes of a node
  * are made accessible to XPath rules, and defines an important
  * piece of PMD's XPath support.
- *
- * @deprecated Use {@link Node#getXPathAttributesIterator()}
  */
-@Deprecated
-@InternalApi
 public class AttributeAxisIterator implements Iterator<Attribute> {
 
     /** Caches the precomputed attribute accessors of a given class. */

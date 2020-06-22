@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.NodeInfo;
@@ -21,7 +21,6 @@ import net.sf.saxon.type.Type;
 
 
 /**
- * @author Clément Fournier
  * @since 7.0.0
  */
 class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {

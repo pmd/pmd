@@ -22,7 +22,7 @@ import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.type.Type;
 
 /**
- *
+ *  See {@link AstTreeInfo#getRootNode()}.
  */
 class AstDocumentNode extends BaseNodeInfo {
 

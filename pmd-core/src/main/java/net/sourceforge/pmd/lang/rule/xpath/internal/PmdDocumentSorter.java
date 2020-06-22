@@ -12,11 +12,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * Sorts nodes by document order.
  */
-final class DocumentSorterX implements Comparator<Node> {
+// renamed because it conflicts with a Saxon node
+final class PmdDocumentSorter implements Comparator<Node> {
 
-    public static final DocumentSorterX INSTANCE = new DocumentSorterX();
+    public static final PmdDocumentSorter INSTANCE = new PmdDocumentSorter();
 
-    private DocumentSorterX() {
+    private PmdDocumentSorter() {
 
     }
 

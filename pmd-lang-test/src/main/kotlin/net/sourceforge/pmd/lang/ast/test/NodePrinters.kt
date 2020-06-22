@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.xpath.Attribute
+import net.sourceforge.pmd.lang.rule.xpath.Attribute
 import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
 import org.apache.commons.lang3.StringEscapeUtils
 

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * @author Clément Fournier

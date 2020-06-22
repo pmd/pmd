@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 /**
  * Renders a tree to XML. The resulting document is as close as possible

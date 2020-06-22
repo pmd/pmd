@@ -13,10 +13,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -108,7 +107,7 @@ public class SaxonXPathRuleQuery {
         ensureInitialized();
 
         final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
-        documentNode.pushAttrCtx(attrCtx);
+        documentNode.setAttrCtx(attrCtx);
         try {
 
             // Map AST Node -> Saxon Node
@@ -139,7 +138,7 @@ public class SaxonXPathRuleQuery {
         } catch (final XPathException e) {
             throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
         } finally {
-            documentNode.popAttrCtx();
+            documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
         }
     }
 

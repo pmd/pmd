@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Locale;
@@ -79,7 +75,7 @@ public class MetricFunction extends BaseJavaXPathFunction {
             }
 
             @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+            public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String metricKey = arguments[0].head().getStringValue();
 

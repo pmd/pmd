@@ -12,13 +12,13 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.util.DataMap;
@@ -285,7 +285,8 @@ public interface Node {
 
 
     /**
-     * Returns an iterator enumerating all the attributes that are available from XPath for this node.
+     * Returns an iterator enumerating all the attributes that are available
+     * from XPath for this node.
      *
      * @return An attribute iterator for this node
      */

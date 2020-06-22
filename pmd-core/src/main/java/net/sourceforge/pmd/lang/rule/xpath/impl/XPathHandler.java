@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.util.Collections;
 import java.util.Set;

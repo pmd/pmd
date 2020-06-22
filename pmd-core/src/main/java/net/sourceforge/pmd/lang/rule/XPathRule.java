@@ -18,7 +18,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -29,6 +29,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Rule that tries to match an XPath expression against a DOM view of an AST.
  */
 public class XPathRule extends AbstractRule {
+
+    // TODO move to XPath subpackage
 
     /**
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
