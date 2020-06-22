@@ -894,7 +894,7 @@ class Test{
         <expected-linenumbers>6,9,13,14</expected-linenumbers>
         <expected-messages>
             <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
-            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The updated value of variable 'a' is never used (overwritten on line 4)</message>
             <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
             <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
         </expected-messages>
@@ -1799,7 +1799,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -1818,7 +1818,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -1839,7 +1839,26 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pre-increment behavior</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -1855,10 +1874,27 @@ public class Foo {
 
     <test-code>
         <description>Pre-increment behavior 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+        foo(++i);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Pre-increment behavior 2</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -1867,6 +1903,26 @@ public class Foo {
         ++i;
         ++i;
         foo(++i);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pre-increment behavior 2</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used (goes out of scope)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        --i;
+        --i;
+        foo(--i);
     }
 }
         ]]></code>

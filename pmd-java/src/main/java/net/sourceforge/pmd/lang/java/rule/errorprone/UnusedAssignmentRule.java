@@ -73,6 +73,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class UnusedAssignmentRule extends AbstractJavaRule {
 
@@ -80,7 +82,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         TODO
            * labels on arbitrary statements (currently only loops)
            * test local class/anonymous class
-           * explicit ctor call (hard to impossible without type res)
+           * explicit ctor call (hard to impossible without type res, or proper graph algorithms)
 
         DONE
            * conditionals
@@ -96,6 +98,16 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
      */
+
+    private static final PropertyDescriptor<Boolean> CHECK_PREFIX_INCREMENT =
+        PropertyFactory.booleanProperty("checkUnusedPrefixIncrement")
+                       .desc("Report expressions like ++i that may be replaced with (i + 1)")
+                       .defaultValue(false)
+                       .build();
+
+    public UnusedAssignmentRule() {
+        definePropertyDescriptor(CHECK_PREFIX_INCREMENT);
+    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -115,10 +127,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     private void reportFinished(GlobalAlgoState result, RuleContext ruleCtx) {
         if (result.usedAssignments.size() < result.allAssignments.size()) {
-            HashSet<AssignmentEntry> unused = new HashSet<>(result.allAssignments);
+            Set<AssignmentEntry> unused = result.allAssignments;
             unused.removeAll(result.usedAssignments);
 
             for (AssignmentEntry entry : unused) {
+                if (isIgnorablePrefixIncrement(entry.rhs)) {
+                    continue;
+                }
                 boolean isField = entry.var.getNode().getScope() instanceof ClassScope;
 
                 Set<AssignmentEntry> killers = result.killRecord.get(entry);
@@ -136,22 +151,35 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else {
                     reason = joinLines("overwritten on lines ", killers);
                 }
-                addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason));
+                addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, isField));
             }
         }
     }
 
-    private static String makeMessage(AssignmentEntry assignment, String reason) {
-        // The X is never used (reason)
-        //     ^
-        boolean isField = assignment.var.getNode().getScope() instanceof ClassScope;
+    private boolean isIgnorablePrefixIncrement(JavaNode assignment) {
+        if (assignment instanceof ASTPreIncrementExpression
+            || assignment instanceof ASTPreDecrementExpression) {
+            // the variable value is used if it was found somewhere else
+            // than in statement position
+            return !getProperty(CHECK_PREFIX_INCREMENT) && !(assignment.getParent() instanceof ASTStatementExpression);
+        }
+        return false;
+    }
+
+    private static String makeMessage(AssignmentEntry assignment, String reason, boolean isField) {
         String varName = assignment.var.getName();
         StringBuilder format = new StringBuilder("The ");
         if (assignment.rhs instanceof ASTVariableInitializer) {
             format.append(isField ? "field initializer for"
                                   : "initializer for variable");
         } else {
-            format.append("value assigned to ");
+            if (assignment.rhs instanceof ASTPreIncrementExpression
+                || assignment.rhs instanceof ASTPreDecrementExpression
+                || assignment.rhs instanceof ASTPostfixExpression) {
+                format.append("updated value of ");
+            } else {
+                format.append("value assigned to ");
+            }
             format.append(isField ? "field" : "variable");
         }
         format.append(" ''").append(varName).append("''");
