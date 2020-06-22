@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+
 /**
  * Created by christoferdutz on 21.09.14.
  */
@@ -177,4 +182,20 @@ public abstract class BaseLanguageModule implements Language {
     public int compareTo(Language o) {
         return getName().compareTo(o.getName());
     }
+
+
+
+    private static class DefaultRulechainVisitor extends AbstractRuleChainVisitor {
+
+        @Override
+        protected void visit(Rule rule, Node node, RuleContext ctx) {
+            rule.apply(Collections.singletonList(node), ctx);
+        }
+
+        @Override
+        protected void indexNodes(List<Node> nodes, RuleContext ctx) {
+
+        }
+    }
+
 }

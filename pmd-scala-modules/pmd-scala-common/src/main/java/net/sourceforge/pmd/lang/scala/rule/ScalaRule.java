@@ -178,8 +178,8 @@ public class ScalaRule extends AbstractRule implements ScalaParserVisitor<RuleCo
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         for (Node node : nodes) {
-            if (node instanceof ASTSource) {
-                visit((ASTSource) node, ctx);
+            if (node instanceof ScalaNode) {
+                ((ScalaNode<?>) node).accept(this, ctx);
             }
         }
     }

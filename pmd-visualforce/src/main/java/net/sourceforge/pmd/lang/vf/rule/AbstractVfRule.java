@@ -46,12 +46,8 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            if (element instanceof ASTCompilationUnit) {
-                ASTCompilationUnit node = (ASTCompilationUnit) element;
-                visit(node, ctx);
-            } else {
-                VfNode node = (VfNode) element;
-                visit(node, ctx);
+            if (element instanceof VfNode) {
+                ((VfNode) element).jjtAccept(this, ctx);
             }
         }
     }

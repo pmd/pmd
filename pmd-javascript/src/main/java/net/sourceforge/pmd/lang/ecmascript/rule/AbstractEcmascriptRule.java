@@ -96,8 +96,9 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            ASTAstRoot node = (ASTAstRoot) element;
-            visit(node, ctx);
+            if (element instanceof EcmascriptNode<?>) {
+                ((EcmascriptNode<?>) element).jjtAccept(this, ctx);
+            }
         }
     }
 

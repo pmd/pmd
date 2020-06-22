@@ -55,8 +55,9 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            JspNode node = (JspNode) element;
-            visit(node, ctx);
+            if (element instanceof JspNode) {
+                ((JspNode) element).jjtAccept(this, ctx);
+            }
         }
     }
 

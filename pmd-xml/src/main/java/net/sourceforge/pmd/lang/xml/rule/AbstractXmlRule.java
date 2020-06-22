@@ -65,8 +65,9 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            XmlNode node = (XmlNode) element;
-            visit(node, ctx);
+            if (element instanceof XmlNode) {
+                visit((XmlNode) element, ctx);
+            }
         }
     }
 
