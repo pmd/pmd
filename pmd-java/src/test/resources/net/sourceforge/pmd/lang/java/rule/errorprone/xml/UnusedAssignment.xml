@@ -327,7 +327,11 @@ class Test{
 
     <test-code>
         <description>Foreach</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
     public static void main(String[] args){

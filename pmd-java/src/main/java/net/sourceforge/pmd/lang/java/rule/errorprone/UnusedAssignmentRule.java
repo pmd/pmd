@@ -79,7 +79,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     /*
         TODO
            * labels on arbitrary statements
-           * foreach var should be reassigned from one iter to another
            * test local class/anonymous class
            * explicit ctor call (hard to impossible without type res)
 
@@ -93,6 +92,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * constructors + initializers
            * anon class
            * test this.field in ctors
+           * foreach var should be reassigned from one iter to another
 
 
      */
@@ -350,12 +350,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), true);
+            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), true, null);
         }
 
         @Override
         public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), false);
+            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), false, null);
         }
 
         @Override
@@ -364,12 +364,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (node.isForeach()) {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
-                return handleLoop(node, (AlgoState) data, init, null, null, body, true);
+                ASTVariableDeclaratorId foreachVar = (ASTVariableDeclaratorId) node.getChild(0).getChild(1).getChild(0);
+                return handleLoop(node, (AlgoState) data, init, null, null, body, true, foreachVar.getNameDeclaration());
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop(node, (AlgoState) data, init, cond, update, body, true);
+                return handleLoop(node, (AlgoState) data, init, cond, update, body, true, null);
             }
         }
 
@@ -380,7 +381,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                      JavaNode cond,
                                      JavaNode update,
                                      JavaNode body,
-                                     boolean checkFirstIter) {
+                                     boolean checkFirstIter,
+                                     VariableNameDeclaration foreachVar) {
             final GlobalAlgoState globalState = before.global;
 
             // perform a few "iterations", to make sure that assignments in
@@ -397,10 +399,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             pushTargets(loop, breakTarget, continueTarget);
 
-            AlgoState iter = acceptOpt(body, before.fork());
             // make the defs of the body reach the other parts of the loop,
             // including itself
-            iter = acceptOpt(update, iter);
+            AlgoState iter = acceptOpt(body, before.fork());
+
+            if (foreachVar != null && iter.hasVar(foreachVar)) {
+                // in foreach loops, the loop variable is reassigned on each update
+                iter.assign(foreachVar, (JavaNode) foreachVar.getNode());
+            } else {
+                iter = acceptOpt(update, iter);
+            }
+
             iter = acceptOpt(cond, iter);
             iter = acceptOpt(body, iter);
 
@@ -822,6 +831,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             this.parent = parent;
             this.global = global;
             this.reachingDefs = reachingDefs;
+        }
+
+        boolean hasVar(VariableNameDeclaration var) {
+            return reachingDefs.containsKey(var);
         }
 
         void assign(VariableNameDeclaration var, JavaNode rhs) {
