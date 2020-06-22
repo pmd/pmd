@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -78,6 +79,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
         BLOCK_PARENTS.add(ASTCatchStatement.class);
         BLOCK_PARENTS.add(ASTFinallyStatement.class);
+        BLOCK_PARENTS.add(ASTLambdaExpression.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
@@ -119,7 +121,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
             currentBlock = getFirstParentBlock(n);
 
-            if (InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+            if (InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
                 // append method call detected
                 ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
                 int numChildren = s.getNumChildren();
