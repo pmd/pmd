@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +29,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
@@ -93,13 +97,15 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         could also use that to detect other kinds of bug, eg conditions
         that are always true, or dereferences that will always NPE. In
         the general case though, this is complicated and better left to
-        an off-the-shelf data flow analyser, eg google Z3.
+        a DFA library, eg google Z3.
 
         TODO
            * labels on arbitrary statements (currently only loops)
            * explicit ctor call (hard to impossible without type res,
              or at least proper graph algorithms like toposort)
                 -> this is pretty invisible as it causes false negatives, not FPs
+           * shortcut conditionals have their own control-flow
+           * test ternary expr
 
         DONE
            * conditionals
@@ -212,7 +218,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         Collections.sort(sorted, new Comparator<AssignmentEntry>() {
             @Override
             public int compare(AssignmentEntry o1, AssignmentEntry o2) {
-                return Integer.compare(o1.rhs.getBeginLine(), o2.rhs.getBeginLine());
+                int lineRes = Integer.compare(o1.rhs.getBeginLine(), o2.rhs.getBeginLine());
+                return lineRes != 0 ? lineRes
+                                    : Integer.compare(o1.rhs.getBeginColumn(), o2.rhs.getBeginColumn());
             }
         });
 
@@ -321,14 +329,77 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTIfStatement node, Object data) {
-            AlgoState before = acceptOpt(node.getCondition(), (AlgoState) data);
+            AlgoState before = (AlgoState) data;
+            return makeConditional(before, node.getCondition(), node.getThenBranch(), node.getElseBranch());
+        }
 
-            AlgoState thenState = acceptOpt(node.getThenBranch(), before.fork());
-            AlgoState elseState = node.hasElse() ? acceptOpt(node.getElseBranch(), before)
-                                                 : before;
+        @Override
+        public Object visit(ASTConditionalExpression node, Object data) {
+            AlgoState before = (AlgoState) data;
+            return makeConditional(before, node.getCondition(), node.getChild(1), node.getChild(2));
+        }
+
+        AlgoState makeConditional(AlgoState before, JavaNode condition, JavaNode thenBranch, JavaNode elseBranch) {
+            AlgoState thenState = before.fork();
+            AlgoState elseState = elseBranch != null ? before.fork() : before;
+
+            linkConditional(before, condition, thenState, elseState);
+
+            thenState = acceptOpt(thenBranch, thenState);
+            elseState = acceptOpt(elseBranch, elseState);
 
             return elseState.absorb(thenState);
         }
+
+        private AlgoState linkConditional(AlgoState prev, JavaNode condition, AlgoState thenState, AlgoState elseState) {
+            if (condition instanceof ASTConditionalOrExpression) {
+                return visitShortcutOrExpr(condition, prev, thenState, elseState);
+            } else if (condition instanceof ASTConditionalAndExpression) {
+                // To mimic a shortcut AND expr, swap the thenState and the elseState
+                // See explanations in method
+                return visitShortcutOrExpr(condition, prev, elseState, thenState);
+            } else if (condition instanceof ASTExpression && condition.getNumChildren() == 1) {
+                return linkConditional(prev, condition.getChild(0), thenState, elseState);
+            } else {
+                return acceptOpt(condition, prev);
+            }
+            // TODO parenthesized expression
+        }
+
+        AlgoState visitShortcutOrExpr(JavaNode orExpr,
+                                      AlgoState before,
+                                      AlgoState thenState,
+                                      AlgoState elseState) {
+
+            //  <before>
+            //  if (<a> || <b> || ... || <n>) <then>
+            //  else <else>
+            //
+            // in <then>, we are sure that at least <a> was evaluated,
+            //  but really any prefix of <a> ... <n> is possible so they're all merged
+
+            // in <else>, we are sure that all of <a> ... <n> were evaluated (to false)
+
+            // If you replace || with &&, then the above holds if you swap <then> and <else>
+            // So this method handles the OR expr, the caller can swap the arguments to make an AND
+
+            // ---
+            // This method side effects on thenState and elseState
+
+            Iterator<? extends JavaNode> iterator = orExpr.children().iterator();
+
+            AlgoState cur = before;
+            do {
+                JavaNode cond = iterator.next();
+                cur = linkConditional(cur, cond, thenState, elseState);
+                thenState.absorb(cur);
+            } while (iterator.hasNext());
+
+            elseState.absorb(cur);
+
+            return cur;
+        }
+
 
         @Override
         public Object visit(ASTTryStatement node, Object data) {
@@ -795,8 +866,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
-                                               AlgoState beforeLocal,
-                                               ClassScope scope) {
+                                                AlgoState beforeLocal,
+                                                ClassScope scope) {
 
             ReachingDefsVisitor visitor = new ReachingDefsVisitor(scope);
 
@@ -916,7 +987,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         void assign(VariableNameDeclaration var, JavaNode rhs) {
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
-            Set<AssignmentEntry> killed = reachingDefs.put(var, newSet(entry));
+            Set<AssignmentEntry> killed = reachingDefs.put(var, Collections.singleton(entry));
             if (killed != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry k : killed) {
@@ -932,12 +1003,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             global.allAssignments.add(entry);
         }
 
-        private Set<AssignmentEntry> newSet(AssignmentEntry member) {
-            HashSet<AssignmentEntry> set = new HashSet<>(1);
-            set.add(member);
-            return set;
-        }
-
         void use(VariableNameDeclaration var) {
             Set<AssignmentEntry> reaching = reachingDefs.get(var);
             // may be null for implicit assignments, like method parameter
@@ -950,8 +1015,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             reachingDefs.remove(var);
         }
 
-        // fork duplicates this context, to preserve the reaching defs
+        // Forks duplicate this context, to preserve the reaching defs
         // of the current context while analysing a sub-block
+        // Forks must be merged later if control flow merges again, see ::absorb
 
         AlgoState fork() {
             return doFork(this, new HashMap<>(this.reachingDefs));
