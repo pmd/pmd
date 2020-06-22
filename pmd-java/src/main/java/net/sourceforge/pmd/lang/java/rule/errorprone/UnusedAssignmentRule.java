@@ -130,8 +130,16 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                        .defaultValue(false)
                        .build();
 
+    private static final PropertyDescriptor<Boolean> REPORT_UNUSED_VARS =
+        PropertyFactory.booleanProperty("reportUnusedVariables")
+                       .desc("Report variables that are only initialized, and never read at all. "
+                                 + "The rule UnusedVariable already cares for that, so you can disable it if needed")
+                       .defaultValue(false)
+                       .build();
+
     public UnusedAssignmentRule() {
         definePropertyDescriptor(CHECK_PREFIX_INCREMENT);
+        definePropertyDescriptor(REPORT_UNUSED_VARS);
     }
 
     @Override
@@ -169,6 +177,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     if (isField) {
                         // assignments to fields don't really go out of scope
                         continue;
+                    } else if (suppressUnusedVariableRuleOverlap(entry)) {
+                        // see REPORT_UNUSED_VARS property
+                        continue;
                     }
                     // This is a "DU" anomaly, the others are "DD"
                     reason = "goes out of scope";
@@ -181,6 +192,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, isField));
             }
         }
+    }
+
+    private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {
+        return !getProperty(REPORT_UNUSED_VARS) && entry.rhs instanceof ASTVariableInitializer;
     }
 
     private boolean isIgnorablePrefixIncrement(JavaNode assignment) {
