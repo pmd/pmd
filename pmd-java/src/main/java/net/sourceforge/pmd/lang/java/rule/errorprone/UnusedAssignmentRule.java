@@ -127,6 +127,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                         // assignments to fields don't really go out of scope
                         continue;
                     }
+                    // This is a "DU" anomaly, the others are "DD"
                     addViolation(ruleCtx, entry.rhs, new Object[] {entry.var.getImage(), "goes out of scope"});
                 } else if (killers.size() == 1) {
                     AssignmentEntry k = killers.iterator().next();
