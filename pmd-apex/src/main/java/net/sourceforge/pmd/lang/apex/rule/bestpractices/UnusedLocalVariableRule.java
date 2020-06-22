@@ -24,6 +24,10 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
         String variableName = node.getImage();
 
         ASTBlockStatement variableContext = node.getFirstParentOfType(ASTBlockStatement.class);
+        if (variableContext == null) {
+            // if there is no parent BlockStatement, e.g. in triggers
+            return data;
+        }
 
         List<ApexNode<?>> potentialUsages = new ArrayList<>();
 
