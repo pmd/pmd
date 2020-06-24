@@ -135,7 +135,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         PropertyFactory.booleanProperty("reportUnusedVariables")
                        .desc("Report variables that are only initialized, and never read at all. "
                                  + "The rule UnusedVariable already cares for that, so you can disable it if needed")
-                       .defaultValue(false)
+                       .defaultValue(true)
                        .build();
 
     public UnusedAssignmentRule() {
@@ -150,7 +150,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                 ASTAnyTypeDeclaration typeDecl = (ASTAnyTypeDeclaration) child.getChild(child.getNumChildren() - 1);
                 GlobalAlgoState result = new GlobalAlgoState();
-                typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new AlgoState(result));
+                typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
 
                 reportFinished(result, (RuleContext) data);
             }
@@ -286,7 +286,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // variables local to a loop iteration must be killed before the
             // next iteration
 
-            AlgoState state = (AlgoState) data;
+            SpanInfo state = (SpanInfo) data;
             Set<VariableNameDeclaration> localsToKill = new HashSet<>();
 
             for (JavaNode child : node.children()) {
@@ -310,21 +310,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTSwitchStatement node, Object data) {
-            return processSwitch(node, (AlgoState) data, node.getTestedExpression());
+            return processSwitch(node, (SpanInfo) data, node.getTestedExpression());
         }
 
         @Override
         public Object visit(ASTSwitchExpression node, Object data) {
-            return processSwitch(node, (AlgoState) data, node.getChild(0));
+            return processSwitch(node, (SpanInfo) data, node.getChild(0));
         }
 
-        private AlgoState processSwitch(JavaNode switchLike, AlgoState data, JavaNode testedExpr) {
+        private SpanInfo processSwitch(JavaNode switchLike, SpanInfo data, JavaNode testedExpr) {
             GlobalAlgoState global = data.global;
-            AlgoState before = acceptOpt(testedExpr, data);
+            SpanInfo before = acceptOpt(testedExpr, data);
 
             global.breakTargets.push(before.fork());
 
-            AlgoState current = before;
+            SpanInfo current = before;
             for (int i = 1; i < switchLike.getNumChildren(); i++) {
                 JavaNode child = switchLike.getChild(i);
                 if (child instanceof ASTSwitchLabel) {
@@ -347,19 +347,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTIfStatement node, Object data) {
-            AlgoState before = (AlgoState) data;
+            SpanInfo before = (SpanInfo) data;
             return makeConditional(before, node.getCondition(), node.getThenBranch(), node.getElseBranch());
         }
 
         @Override
         public Object visit(ASTConditionalExpression node, Object data) {
-            AlgoState before = (AlgoState) data;
+            SpanInfo before = (SpanInfo) data;
             return makeConditional(before, node.getCondition(), node.getChild(1), node.getChild(2));
         }
 
-        AlgoState makeConditional(AlgoState before, JavaNode condition, JavaNode thenBranch, JavaNode elseBranch) {
-            AlgoState thenState = before.fork();
-            AlgoState elseState = elseBranch != null ? before.fork() : before;
+        SpanInfo makeConditional(SpanInfo before, JavaNode condition, JavaNode thenBranch, JavaNode elseBranch) {
+            SpanInfo thenState = before.fork();
+            SpanInfo elseState = elseBranch != null ? before.fork() : before;
 
             linkConditional(before, condition, thenState, elseState, true);
 
@@ -384,14 +384,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
          *                                       else      <else>
          *                                     else        <else>
          *
-         * The new innermost `if` is recursively processed to translate
+         * The new conditions are recursively processed to translate
          * bigger conditions, like `a || b && c`
          *
          * This is how it works, but the <then> and <else> branch are
          * visited only once, because it's not done in this method, but
          * in makeConditional.
          */
-        private AlgoState linkConditional(AlgoState before, JavaNode condition, AlgoState thenState, AlgoState elseState, boolean isTopLevel) {
+        private SpanInfo linkConditional(SpanInfo before, JavaNode condition, SpanInfo thenState, SpanInfo elseState, boolean isTopLevel) {
             condition = ConfusingTernaryRule.unwrapParentheses(condition);
 
             if (condition instanceof ASTConditionalOrExpression) {
@@ -403,7 +403,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             } else if (condition instanceof ASTExpression && condition.getNumChildren() == 1) {
                 return linkConditional(before, condition.getChild(0), thenState, elseState, isTopLevel);
             } else {
-                AlgoState state = acceptOpt(condition, before);
+                SpanInfo state = acceptOpt(condition, before);
                 if (isTopLevel) {
                     thenState.absorb(state);
                     elseState.absorb(state);
@@ -412,10 +412,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        AlgoState visitShortcutOrExpr(JavaNode orExpr,
-                                      AlgoState before,
-                                      AlgoState thenState,
-                                      AlgoState elseState) {
+        SpanInfo visitShortcutOrExpr(JavaNode orExpr,
+                                     SpanInfo before,
+                                     SpanInfo thenState,
+                                     SpanInfo elseState) {
 
             //  if (<a> || <b> || ... || <n>) <then>
             //  else <else>
@@ -434,7 +434,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             Iterator<? extends JavaNode> iterator = orExpr.children().iterator();
 
-            AlgoState cur = before;
+            SpanInfo cur = before;
             do {
                 JavaNode cond = iterator.next();
                 cur = linkConditional(cur, cond, thenState, elseState, false);
@@ -449,7 +449,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTTryStatement node, Object data) {
-            final AlgoState before = (AlgoState) data;
+            final SpanInfo before = (SpanInfo) data;
             ASTFinallyStatement finallyClause = node.getFinallyClause();
 
             /*
@@ -478,22 +478,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             ASTResourceSpecification resources = node.getFirstChildOfType(ASTResourceSpecification.class);
 
-            AlgoState bodyState = acceptOpt(resources, before.fork());
+            SpanInfo bodyState = acceptOpt(resources, before.fork());
             bodyState = acceptOpt(node.getBody(), bodyState);
 
-            AlgoState exceptionalState = null;
+            SpanInfo exceptionalState = null;
             for (ASTCatchStatement catchClause : node.getCatchClauses()) {
-                AlgoState current = acceptOpt(catchClause, before.fork().absorb(bodyState));
+                SpanInfo current = acceptOpt(catchClause, before.fork().absorb(bodyState));
                 exceptionalState = current.absorb(exceptionalState);
             }
 
-            AlgoState finalState;
+            SpanInfo finalState;
             finalState = bodyState.absorb(exceptionalState);
             if (finallyClause != null) {
                 // this represents the finally clause when it was entered
                 // because of abrupt completion
                 // since we don't know when it terminated we must join it with before
-                AlgoState abruptFinally = before.myFinally.absorb(before);
+                SpanInfo abruptFinally = before.myFinally.absorb(before);
                 acceptOpt(finallyClause, abruptFinally);
                 before.myFinally = null;
 
@@ -518,7 +518,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // Since those definitions are [effectively] final, they actually can't be
             // killed, but they can be used in the lambda
 
-            AlgoState before = (AlgoState) data;
+            SpanInfo before = (SpanInfo) data;
 
             JavaNode lambdaBody = node.getChild(node.getNumChildren() - 1);
             // if it's an expression, then no assignments may occur in it,
@@ -529,12 +529,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), true, null);
+            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), true, null);
         }
 
         @Override
         public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), false, null);
+            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), false, null);
         }
 
         @Override
@@ -544,24 +544,24 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
                 ASTVariableDeclaratorId foreachVar = (ASTVariableDeclaratorId) node.getChild(0).getChild(1).getChild(0);
-                return handleLoop(node, (AlgoState) data, init, null, null, body, true, foreachVar.getNameDeclaration());
+                return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar.getNameDeclaration());
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop(node, (AlgoState) data, init, cond, update, body, true, null);
+                return handleLoop(node, (SpanInfo) data, init, cond, update, body, true, null);
             }
         }
 
 
-        private AlgoState handleLoop(JavaNode loop,
-                                     AlgoState before,
-                                     JavaNode init,
-                                     JavaNode cond,
-                                     JavaNode update,
-                                     JavaNode body,
-                                     boolean checkFirstIter,
-                                     VariableNameDeclaration foreachVar) {
+        private SpanInfo handleLoop(JavaNode loop,
+                                    SpanInfo before,
+                                    JavaNode init,
+                                    JavaNode cond,
+                                    JavaNode update,
+                                    JavaNode body,
+                                    boolean checkFirstIter,
+                                    VariableNameDeclaration foreachVar) {
             // TODO linkConditional
             final GlobalAlgoState globalState = before.global;
 
@@ -574,14 +574,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before = acceptOpt(cond, before);
             }
 
-            AlgoState breakTarget = before.forkEmpty();
-            AlgoState continueTarget = before.forkEmpty();
+            SpanInfo breakTarget = before.forkEmpty();
+            SpanInfo continueTarget = before.forkEmpty();
 
             pushTargets(loop, breakTarget, continueTarget);
 
             // make the defs of the body reach the other parts of the loop,
             // including itself
-            AlgoState iter = acceptOpt(body, before.fork());
+            SpanInfo iter = acceptOpt(body, before.fork());
 
             if (foreachVar != null && iter.hasVar(foreachVar)) {
                 // in foreach loops, the loop variable is reassigned on each update
@@ -596,14 +596,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             breakTarget = globalState.breakTargets.peek();
             continueTarget = globalState.continueTargets.peek();
-            if (!continueTarget.reachingDefs.isEmpty()) {
+            if (!continueTarget.symtable.isEmpty()) {
                 // make assignments before a continue reach the other parts of the loop
                 continueTarget = acceptOpt(cond, continueTarget);
                 continueTarget = acceptOpt(body, continueTarget);
                 continueTarget = acceptOpt(update, continueTarget);
             }
 
-            AlgoState result = popTargets(loop, breakTarget, continueTarget);
+            SpanInfo result = popTargets(loop, breakTarget, continueTarget);
             result = result.absorb(iter);
             if (checkFirstIter) {
                 // if the first iteration is checked,
@@ -615,7 +615,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return result;
         }
 
-        private void pushTargets(JavaNode loop, AlgoState breakTarget, AlgoState continueTarget) {
+        private void pushTargets(JavaNode loop, SpanInfo breakTarget, SpanInfo continueTarget) {
             GlobalAlgoState globalState = breakTarget.global;
             globalState.breakTargets.unnamedTargets.push(breakTarget);
             globalState.continueTargets.unnamedTargets.push(continueTarget);
@@ -629,12 +629,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        private AlgoState popTargets(JavaNode loop, AlgoState breakTarget, AlgoState continueTarget) {
+        private SpanInfo popTargets(JavaNode loop, SpanInfo breakTarget, SpanInfo continueTarget) {
             GlobalAlgoState globalState = breakTarget.global;
             globalState.breakTargets.unnamedTargets.pop();
             globalState.continueTargets.unnamedTargets.pop();
 
-            AlgoState total = breakTarget.absorb(continueTarget);
+            SpanInfo total = breakTarget.absorb(continueTarget);
 
             Node parent = loop.getNthParent(2);
             while (parent instanceof ASTLabeledStatement) {
@@ -646,19 +646,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return total;
         }
 
-        private AlgoState acceptOpt(JavaNode node, AlgoState before) {
-            return node == null ? before : (AlgoState) node.jjtAccept(this, before);
+        private SpanInfo acceptOpt(JavaNode node, SpanInfo before) {
+            return node == null ? before : (SpanInfo) node.jjtAccept(this, before);
         }
 
         @Override
         public Object visit(ASTContinueStatement node, Object data) {
-            AlgoState state = (AlgoState) data;
+            SpanInfo state = (SpanInfo) data;
             return state.global.continueTargets.doBreak(state, node.getImage());
         }
 
         @Override
         public Object visit(ASTBreakStatement node, Object data) {
-            AlgoState state = (AlgoState) data;
+            SpanInfo state = (SpanInfo) data;
             return state.global.breakTargets.doBreak(state, node.getImage());
         }
 
@@ -666,7 +666,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public Object visit(ASTYieldStatement node, Object data) {
             super.visit(node, data); // visit expression
 
-            AlgoState state = (AlgoState) data;
+            SpanInfo state = (SpanInfo) data;
             // treat as break, ie abrupt completion + link reaching defs to outer context
             return state.global.breakTargets.doBreak(state, null);
         }
@@ -677,13 +677,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTThrowStatement node, Object data) {
             super.visit(node, data);
-            return ((AlgoState) data).abruptCompletion(null);
+            return ((SpanInfo) data).abruptCompletion(null);
         }
 
         @Override
         public Object visit(ASTReturnStatement node, Object data) {
             super.visit(node, data);
-            return ((AlgoState) data).abruptCompletion(null);
+            return ((SpanInfo) data).abruptCompletion(null);
         }
 
         // following deals with assignment
@@ -695,7 +695,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             ASTVariableInitializer rhs = node.getInitializer();
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
-                ((AlgoState) data).assign(var, rhs);
+                ((SpanInfo) data).assign(var, rhs);
             }
             return data;
         }
@@ -712,7 +712,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         public Object checkAssignment(JavaNode node, Object data) {
-            AlgoState result = (AlgoState) data;
+            SpanInfo result = (SpanInfo) data;
             if (node.getNumChildren() == 3) {
                 // assignment
                 assert node.getChild(1) instanceof ASTAssignmentOperator;
@@ -742,20 +742,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTPreDecrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (AlgoState) data);
+            return checkIncOrDecrement(node, (SpanInfo) data);
         }
 
         @Override
         public Object visit(ASTPreIncrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (AlgoState) data);
+            return checkIncOrDecrement(node, (SpanInfo) data);
         }
 
         @Override
         public Object visit(ASTPostfixExpression node, Object data) {
-            return checkIncOrDecrement(node, (AlgoState) data);
+            return checkIncOrDecrement(node, (SpanInfo) data);
         }
 
-        private AlgoState checkIncOrDecrement(JavaNode unary, AlgoState data) {
+        private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
             VariableNameDeclaration var = getVarFromExpression(unary.getChild(0), true);
             if (var != null) {
                 data.use(var);
@@ -768,7 +768,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTPrimaryExpression node, Object data) {
-            AlgoState state = (AlgoState) visit((JavaNode) node, data); // visit subexpressions
+            SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
 
             VariableNameDeclaration var = getVarFromExpression(node, false);
             if (var != null) {
@@ -885,18 +885,18 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTClassOrInterfaceBody node, Object data) {
-            visitTypeBody(node, (AlgoState) data);
+            visitTypeBody(node, (SpanInfo) data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
         @Override
         public Object visit(ASTEnumBody node, Object data) {
-            visitTypeBody(node, (AlgoState) data);
+            visitTypeBody(node, (SpanInfo) data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
 
-        private void visitTypeBody(JavaNode typeBody, AlgoState data) {
+        private void visitTypeBody(JavaNode typeBody, SpanInfo data) {
             List<ASTAnyTypeBodyDeclaration> declarations = typeBody.findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
             processInitializers(declarations, data, (ClassScope) typeBody.getScope());
 
@@ -913,15 +913,15 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
-                                                AlgoState beforeLocal,
+                                                SpanInfo beforeLocal,
                                                 ClassScope scope) {
 
             ReachingDefsVisitor visitor = new ReachingDefsVisitor(scope);
 
             // All field initializers + instance initializers
-            AlgoState ctorHeader = beforeLocal.forkCapturingNonLocal();
+            SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
             // All static field initializers + static initializers
-            AlgoState staticInit = beforeLocal.forkEmptyNonLocal();
+            SpanInfo staticInit = beforeLocal.forkEmptyNonLocal();
 
             List<ASTConstructorDeclaration> ctors = new ArrayList<>();
 
@@ -948,9 +948,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
 
 
-            AlgoState ctorEndState = ctors.isEmpty() ? ctorHeader : null;
+            SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTConstructorDeclaration ctor : ctors) {
-                AlgoState state = visitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
+                SpanInfo state = visitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
             }
 
@@ -966,7 +966,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     /**
-     * The shared state for all {@link AlgoState} instances in the same
+     * The shared state for all {@link SpanInfo} instances in the same
      * toplevel class.
      */
     private static class GlobalAlgoState {
@@ -997,52 +997,83 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
     }
 
-    private static class AlgoState {
+    // Information about a variable in a code span.
+    static class VarLocalInfo {
 
-        // nodes are arranged in a tree, to look for enclosing finallies
-        // when abrupt completion occurs. Blocks that have non-local
-        // control-flow (lambda bodies, anonymous classes, etc) aren't
-        // linked to the outer parents.
-        final AlgoState parent;
+        Set<AssignmentEntry> reachingDefs;
 
-        final GlobalAlgoState global;
-
-        // Map of var -> reaching(var)
-        // Implicit assignments, like parameter declarations, are not contained
-        // in this
-        final Map<VariableNameDeclaration, Set<AssignmentEntry>> reachingDefs;
-
-        // If != null, then this node has a finally that all abrupt-completing
-        // statements must go through.
-        AlgoState myFinally = null;
-
-        private AlgoState(GlobalAlgoState global) {
-            this(null, global, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
-        }
-
-        private AlgoState(AlgoState parent,
-                          GlobalAlgoState global,
-                          Map<VariableNameDeclaration, Set<AssignmentEntry>> reachingDefs) {
-            this.parent = parent;
-            this.global = global;
+        VarLocalInfo(Set<AssignmentEntry> reachingDefs) {
             this.reachingDefs = reachingDefs;
         }
 
+        VarLocalInfo absorb(VarLocalInfo other) {
+            if (other == this) {
+                return this;
+            }
+            Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
+            merged.addAll(reachingDefs);
+            merged.addAll(other.reachingDefs);
+            return new VarLocalInfo(merged);
+        }
+
+        @Override
+        public String toString() {
+            return "VarLocalInfo{" +
+                "reachingDefs=" + reachingDefs +
+                '}';
+        }
+
+        public VarLocalInfo copy() {
+            return new VarLocalInfo(this.reachingDefs);
+        }
+    }
+
+    /**
+     * Information about a span of code.
+     */
+    private static class SpanInfo {
+
+        // spans are arranged in a tree, to look for enclosing finallies
+        // when abrupt completion occurs. Blocks that have non-local
+        // control-flow (lambda bodies, anonymous classes, etc) aren't
+        // linked to the outer parents.
+        final SpanInfo parent;
+
+        // If != null, then abrupt completion in this span of code (and any descendant)
+        // needs to go through the finally span (the finally must absorb it)
+        SpanInfo myFinally = null;
+
+        final GlobalAlgoState global;
+
+        final Map<VariableNameDeclaration, VarLocalInfo> symtable;
+
+        private SpanInfo(GlobalAlgoState global) {
+            this(null, global, new HashMap<VariableNameDeclaration, VarLocalInfo>());
+        }
+
+        private SpanInfo(SpanInfo parent,
+                         GlobalAlgoState global,
+                         Map<VariableNameDeclaration, VarLocalInfo> symtable) {
+            this.parent = parent;
+            this.global = global;
+            this.symtable = symtable;
+        }
+
         boolean hasVar(VariableNameDeclaration var) {
-            return reachingDefs.containsKey(var);
+            return symtable.containsKey(var);
         }
 
         void assign(VariableNameDeclaration var, JavaNode rhs) {
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
-            Set<AssignmentEntry> killed = reachingDefs.put(var, Collections.singleton(entry));
-            if (killed != null) {
+            VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
+            if (previous != null) {
                 // those assignments were overwritten ("killed")
-                for (AssignmentEntry k : killed) {
+                for (AssignmentEntry killed : previous.reachingDefs) {
                     // java8: computeIfAbsent
-                    Set<AssignmentEntry> killers = global.killRecord.get(k);
+                    Set<AssignmentEntry> killers = global.killRecord.get(killed);
                     if (killers == null) {
                         killers = new HashSet<>(1);
-                        global.killRecord.put(k, killers);
+                        global.killRecord.put(killed, killers);
                     }
                     killers.add(entry);
                 }
@@ -1051,45 +1082,53 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         void use(VariableNameDeclaration var) {
-            Set<AssignmentEntry> reaching = reachingDefs.get(var);
+            VarLocalInfo info = symtable.get(var);
             // may be null for implicit assignments, like method parameter
-            if (reaching != null) {
-                global.usedAssignments.addAll(reaching);
+            if (info != null) {
+                global.usedAssignments.addAll(info.reachingDefs);
             }
         }
 
         void deleteVar(VariableNameDeclaration var) {
-            reachingDefs.remove(var);
+            symtable.remove(var);
         }
 
         // Forks duplicate this context, to preserve the reaching defs
         // of the current context while analysing a sub-block
         // Forks must be merged later if control flow merges again, see ::absorb
 
-        AlgoState fork() {
-            return doFork(this, new HashMap<>(this.reachingDefs));
+        SpanInfo fork() {
+            return doFork(this, copyTable());
         }
 
-        AlgoState forkEmpty() {
-            return doFork(this, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+        SpanInfo forkEmpty() {
+            return doFork(this, new HashMap<VariableNameDeclaration, VarLocalInfo>());
         }
 
 
-        AlgoState forkEmptyNonLocal() {
-            return doFork(null, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+        SpanInfo forkEmptyNonLocal() {
+            return doFork(null, new HashMap<VariableNameDeclaration, VarLocalInfo>());
         }
 
-        AlgoState forkCapturingNonLocal() {
-            return doFork(null, new HashMap<>(this.reachingDefs));
+        SpanInfo forkCapturingNonLocal() {
+            return doFork(null, copyTable());
         }
 
-        private AlgoState doFork(AlgoState parent, Map<VariableNameDeclaration, Set<AssignmentEntry>> reaching) {
-            return new AlgoState(parent, this.global, reaching);
+        private HashMap<VariableNameDeclaration, VarLocalInfo> copyTable() {
+            HashMap<VariableNameDeclaration, VarLocalInfo> copy = new HashMap<>(this.symtable.size());
+            for (VariableNameDeclaration var : this.symtable.keySet()) {
+                copy.put(var, this.symtable.get(var).copy());
+            }
+            return copy;
         }
 
-        AlgoState abruptCompletion(AlgoState target) {
+        private SpanInfo doFork(SpanInfo parent, Map<VariableNameDeclaration, VarLocalInfo> reaching) {
+            return new SpanInfo(parent, this.global, reaching);
+        }
+
+        SpanInfo abruptCompletion(SpanInfo target) {
             // if target == null then this will unwind all the parents
-            AlgoState parent = this;
+            SpanInfo parent = this;
             while (parent != target && parent != null) {
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
@@ -1097,75 +1136,69 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 parent = parent.parent;
             }
 
-            this.reachingDefs.clear();
+            this.symtable.clear();
             return this;
         }
 
 
-        AlgoState absorb(AlgoState sub) {
+        SpanInfo absorb(SpanInfo other) {
             // Merge reaching defs of the other scope into this
             // This is used to join paths after the control flow has forked
-            if (sub == this || sub == null || sub.reachingDefs.isEmpty()) {
+
+            // a spanInfo may be absorbed several times so this method should not
+            // destroy the parameter
+            if (other == this || other == null || other.symtable.isEmpty()) {
                 return this;
             }
 
-            for (VariableNameDeclaration var : this.reachingDefs.keySet()) {
-                Set<AssignmentEntry> myAssignments = this.reachingDefs.get(var);
-                Set<AssignmentEntry> subScopeAssignments = sub.reachingDefs.get(var);
-                if (subScopeAssignments == null) {
+            // we don't have to double the capacity since they're normally of the same size
+            // (vars are deleted when exiting a block)
+            Set<VariableNameDeclaration> keysUnion = new HashSet<>(this.symtable.keySet());
+            keysUnion.addAll(other.symtable.keySet());
+
+            for (VariableNameDeclaration var : keysUnion) {
+                VarLocalInfo thisInfo = this.symtable.get(var);
+                VarLocalInfo otherInfo = other.symtable.get(var);
+                if (thisInfo == otherInfo) {
                     continue;
                 }
-                joinSets(var, myAssignments, subScopeAssignments);
-            }
-
-            for (VariableNameDeclaration var : sub.reachingDefs.keySet()) {
-                Set<AssignmentEntry> subScopeAssignments = sub.reachingDefs.get(var);
-                Set<AssignmentEntry> myAssignments = this.reachingDefs.get(var);
-                if (myAssignments == null) {
-                    this.reachingDefs.put(var, subScopeAssignments);
-                    continue;
+                if (otherInfo != null && thisInfo != null) {
+                    this.symtable.put(var, thisInfo.absorb(otherInfo));
+                } else if (otherInfo != null) {
+                    this.symtable.put(var, otherInfo.copy());
                 }
-                joinSets(var, myAssignments, subScopeAssignments);
             }
-
             return this;
-        }
-
-        private void joinSets(VariableNameDeclaration var, Set<AssignmentEntry> set1, Set<AssignmentEntry> set2) {
-            Set<AssignmentEntry> newReaching = new HashSet<>(set1.size() + set2.size());
-            newReaching.addAll(set2);
-            newReaching.addAll(set1);
-            this.reachingDefs.put(var, newReaching);
         }
 
         @Override
         public String toString() {
-            return reachingDefs.toString();
+            return symtable.toString();
         }
     }
 
     static class TargetStack {
 
-        final Deque<AlgoState> unnamedTargets = new ArrayDeque<>();
-        final Map<String, AlgoState> namedTargets = new HashMap<>();
+        final Deque<SpanInfo> unnamedTargets = new ArrayDeque<>();
+        final Map<String, SpanInfo> namedTargets = new HashMap<>();
 
 
-        void push(AlgoState state) {
+        void push(SpanInfo state) {
             unnamedTargets.push(state);
         }
 
-        AlgoState pop() {
+        SpanInfo pop() {
             return unnamedTargets.pop();
         }
 
-        AlgoState peek() {
+        SpanInfo peek() {
             return unnamedTargets.getFirst();
         }
 
-        AlgoState doBreak(AlgoState data,/* nullable */ String label) {
+        SpanInfo doBreak(SpanInfo data,/* nullable */ String label) {
             // basically, reaching defs at the point of the break
             // also reach after the break (wherever it lands)
-            AlgoState target;
+            SpanInfo target;
             if (label == null) {
                 target = unnamedTargets.getFirst();
             } else {
