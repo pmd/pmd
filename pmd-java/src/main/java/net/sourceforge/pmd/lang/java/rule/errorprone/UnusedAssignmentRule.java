@@ -106,6 +106,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
              or at least proper graph algorithms like toposort)
                 -> this is pretty invisible as it causes false negatives, not FPs
            * test ternary expr
+           * conditional exprs in loops
 
         DONE
            * conditionals
@@ -368,6 +369,28 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return elseState.absorb(thenState);
         }
 
+        /*
+         * This recursive procedure translates shortcut conditionals
+         * that occur in condition position in the following way:
+         *
+         * if (a || b) <then>                  if (a)      <then>
+         * else <else>               ~>        else
+         *                                       if (b)    <then>
+         *                                       else      <else>
+         *
+         *
+         * if (a && b) <then>                  if (a)
+         * else <else>               ~>          if (b)    <then>
+         *                                       else      <else>
+         *                                     else        <else>
+         *
+         * The new innermost `if` is recursively processed to translate
+         * bigger conditions, like `a || b && c`
+         *
+         * This is how it works, but the <then> and <else> branch are
+         * visited only once, because it's not done in this method, but
+         * in makeConditional.
+         */
         private AlgoState linkConditional(AlgoState before, JavaNode condition, AlgoState thenState, AlgoState elseState, boolean isTopLevel) {
             condition = ConfusingTernaryRule.unwrapParentheses(condition);
 
@@ -394,12 +417,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                       AlgoState thenState,
                                       AlgoState elseState) {
 
-            //  <before>
             //  if (<a> || <b> || ... || <n>) <then>
             //  else <else>
             //
             // in <then>, we are sure that at least <a> was evaluated,
-            //  but really any prefix of <a> ... <n> is possible so they're all merged
+            // but really any prefix of <a> ... <n> is possible so they're all merged
 
             // in <else>, we are sure that all of <a> ... <n> were evaluated (to false)
 
@@ -407,7 +429,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // So this method handles the OR expr, the caller can swap the arguments to make an AND
 
             // ---
-            // This method side effects on thenState and elseState
+            // This method side effects on thenState and elseState to
+            // set the variables.
 
             Iterator<? extends JavaNode> iterator = orExpr.children().iterator();
 
@@ -539,6 +562,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                      JavaNode body,
                                      boolean checkFirstIter,
                                      VariableNameDeclaration foreachVar) {
+            // TODO linkConditional
             final GlobalAlgoState globalState = before.global;
 
             // perform a few "iterations", to make sure that assignments in
