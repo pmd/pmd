@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.AnyNodeTest;
-import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.ListIterator;
+import net.sf.saxon.tree.iter.ReverseListIterator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
@@ -77,12 +78,24 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
         return nodeKind;
     }
 
-    protected static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
-        return nodeTest != null && nodeTest != AnyNodeTest.getInstance() ? new AxisFilter(iter, nodeTest) : iter;
+    protected static AxisIterator filter(Predicate<? super NodeInfo> nodeTest, AxisIterator iter) {
+        return nodeTest == null || (nodeTest instanceof AnyNodeTest) ? new AxisFilter(iter, nodeTest) : iter;
     }
 
 
     static AxisIterator iterateList(List<? extends NodeInfo> nodes) {
-        return new ListIterator.OfNodes((List) nodes);
+        return iterateList(nodes, true);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    static AxisIterator iterateList(List<? extends NodeInfo> nodes, boolean forwards) {
+        return forwards ? new ListIterator.OfNodes((List) nodes)
+                        : new RevListAxisIterator((List) nodes);
+    }
+
+    private static class RevListAxisIterator extends ReverseListIterator<NodeInfo> implements AxisIterator {
+        RevListAxisIterator(List<NodeInfo> list) {
+            super(list);
+        }
     }
 }

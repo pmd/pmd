@@ -6,16 +6,15 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode.DescendantIter;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
@@ -48,23 +47,18 @@ class AstDocumentNode extends BaseNodeInfo {
     }
 
     @Override
-    protected AxisIterator iterateAttributes(NodeTest nodeTest) {
-        return EmptyIterator.OfNodes.THE_INSTANCE;
+    protected AxisIterator iterateAttributes(Predicate<? super NodeInfo> nodeTest) {
+        return EmptyIterator.ofNodes();
     }
 
     @Override
-    protected AxisIterator iterateChildren(NodeTest nodeTest) {
+    protected AxisIterator iterateChildren(Predicate<? super NodeInfo> nodeTest) {
         return filter(nodeTest, iterateList(children));
     }
 
     @Override
-    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
-        return EmptyIterator.OfNodes.THE_INSTANCE;
-    }
-
-    @Override
-    protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
-        return filter(nodeTest, new DescendantIter(this, includeSelf));
+    protected AxisIterator iterateSiblings(Predicate<? super NodeInfo> nodeTest, boolean forwards) {
+        return EmptyIterator.ofNodes();
     }
 
     @Override

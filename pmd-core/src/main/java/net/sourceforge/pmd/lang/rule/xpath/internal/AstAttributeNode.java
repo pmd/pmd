@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
+import net.sf.saxon.tree.iter.EmptyIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
@@ -50,29 +51,21 @@ class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
         return siblingPosition;
     }
 
-    @Override
-    protected AxisIterator iterateAttributes(NodeTest nodeTest) {
-        return null;
-    }
-
 
     @Override
-    protected AxisIterator iterateChildren(NodeTest nodeTest) {
-        return null;
+    protected AxisIterator iterateAttributes(Predicate<? super NodeInfo> nodeTest) {
+        return EmptyIterator.ofNodes();
     }
-
 
     @Override
-    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
-        return null;
+    protected AxisIterator iterateChildren(Predicate<? super NodeInfo> nodeTest) {
+        return EmptyIterator.ofNodes();
     }
-
 
     @Override
-    protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
-        return null;
+    protected AxisIterator iterateSiblings(Predicate<? super NodeInfo> nodeTest, boolean forwards) {
+        return EmptyIterator.ofNodes();
     }
-
 
     @Override
     public AtomicSequence atomize() {

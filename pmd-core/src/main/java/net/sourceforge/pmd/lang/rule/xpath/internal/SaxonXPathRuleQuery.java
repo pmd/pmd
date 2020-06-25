@@ -118,8 +118,8 @@ public class SaxonXPathRuleQuery {
             List<Expression> expressions = getExpressionsForLocalNameOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 @SuppressWarnings("PMD.CloseResource")
-                SequenceIterator<?> iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
-                Item<?> current = iterator.next();
+                SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
+                Item current = iterator.next();
                 while (current != null) {
                     if (current instanceof AstElementNode) {
                         results.add(((AstElementNode) current).getUnderlyingNode());
@@ -190,9 +190,11 @@ public class SaxonXPathRuleQuery {
             return;
         }
         try {
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-            this.configuration = xpathEvaluator.getConfiguration();
-            StaticContextWithProperties staticCtx = new StaticContextWithProperties(configuration);
+            this.configuration = Configuration.newConfiguration();
+            this.configuration.setNamePool(getNamePool());
+
+
+            StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
             staticCtx.declareNamespace("fn", NamespaceConstant.FN);
 
             for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
@@ -202,14 +204,14 @@ public class SaxonXPathRuleQuery {
                 }
             }
 
-            xpathEvaluator.setStaticContext(staticCtx);
-            configuration.setNamePool(getNamePool());
-
             for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
                 StructuredQName qname = fun.getFunctionQName();
                 staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
-                configuration.registerExtensionFunction(fun);
+                this.configuration.registerExtensionFunction(fun);
             }
+
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator(configuration);
+            xpathEvaluator.setStaticContext(staticCtx);
 
             xpathExpression = xpathEvaluator.createExpression(xpathExpr);
             analyzeXPathForRuleChain(xpathEvaluator);

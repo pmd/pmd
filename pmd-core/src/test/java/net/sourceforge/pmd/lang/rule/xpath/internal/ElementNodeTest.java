@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.type.Type;
 
 public class ElementNodeTest {
@@ -31,7 +30,7 @@ public class ElementNodeTest {
         root.addChild(c1, 1);
 
 
-        Configuration configuration = new XPathEvaluator().getStaticContext().getConfiguration();
+        Configuration configuration = Configuration.newConfiguration();
 
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
         Assert.assertSame(root, treeInfo.getRootNode().getUnderlyingNode());

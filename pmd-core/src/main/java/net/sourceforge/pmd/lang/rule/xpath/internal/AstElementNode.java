@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,11 +23,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NameTest;
-import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
 import net.sf.saxon.tree.iter.LookaheadIterator;
-import net.sf.saxon.tree.iter.ReverseListIterator;
 import net.sf.saxon.tree.iter.SingleNodeIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
@@ -120,38 +118,31 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    protected AxisIterator iterateAttributes(NodeTest nodeTest) {
-        if (nodeTest instanceof NameTest) {
-            String local = ((NameTest) nodeTest).getLocalPart();
+    protected AxisIterator iterateAttributes(Predicate<? super NodeInfo> predicate) {
+        if (predicate instanceof NameTest) {
+            String local = ((NameTest) predicate).getLocalPart();
             return SingleNodeIterator.makeIterator(getAttributes().get(local));
         }
 
-        return filter(nodeTest, new IteratorAdapter(getAttributes().values().iterator()));
+        return filter(predicate, new IteratorAdapter(getAttributes().values().iterator()));
     }
 
-
     @Override
-    protected AxisIterator iterateChildren(NodeTest nodeTest) {
+    protected AxisIterator iterateChildren(Predicate<? super NodeInfo> nodeTest) {
         return filter(nodeTest, iterateList(children));
     }
 
-
     @Override // this excludes self
-    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
+    protected AxisIterator iterateSiblings(Predicate<? super NodeInfo> nodeTest, boolean forwards) {
         if (parent == null) {
-            return EmptyIterator.OfNodes.THE_INSTANCE;
+            return EmptyIterator.ofNodes();
         }
 
         List<? extends NodeInfo> siblingsList =
             forwards ? CollectionUtil.drop(parent.getChildren(), wrappedNode.getIndexInParent() + 1)
                      : CollectionUtil.take(parent.getChildren(), wrappedNode.getIndexInParent());
 
-        @SuppressWarnings("PMD.CloseResource")
-        AxisIterator iter =
-            forwards ? iterateList(siblingsList)
-                     : new RevListAxisIterator(siblingsList);
-
-        return filter(nodeTest, iter);
+        return filter(nodeTest, iterateList(siblingsList, forwards));
     }
 
 
@@ -160,11 +151,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         AstAttributeNode attributeWrapper = getAttributes().get(local);
 
         return attributeWrapper == null ? null : attributeWrapper.getStringValue();
-    }
-
-    @Override
-    protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
-        return filter(nodeTest, new DescendantIter(this, includeSelf));
     }
 
 
@@ -214,59 +200,11 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return "Wrapper[" + getLocalPart() + "]@" + hashCode();
     }
 
-    static class DescendantIter implements AxisIterator, LookaheadIterator<NodeInfo> {
 
-        private final Deque<BaseNodeInfo> todo;
 
-        DescendantIter(BaseNodeInfo start, boolean includeSelf) {
-            todo = new ArrayDeque<>();
-            if (includeSelf) {
-                todo.addLast(start);
-            } else {
-                todo.addAll(start.getChildren());
-            }
-        }
+    private static class IteratorAdapter implements AxisIterator, LookaheadIterator {
 
-        @Override
-        public boolean hasNext() {
-            return !todo.isEmpty();
-        }
-
-        @Override
-        public NodeInfo next() {
-            if (todo.isEmpty()) {
-                return null;
-            }
-            BaseNodeInfo first = todo.removeFirst();
-            todo.addAll(first.getChildren());
-            return first;
-        }
-
-        @Override
-        public void close() {
-            todo.clear();
-        }
-
-        @Override
-        public int getProperties() {
-            return LOOKAHEAD;
-        }
-    }
-
-    private static class RevListAxisIterator extends ReverseListIterator<NodeInfo> implements AxisIterator {
-
-        RevListAxisIterator(List<? extends NodeInfo> list) {
-            super((List<NodeInfo>) list);
-        }
-
-        @Override
-        public NodeInfo next() {
-            return super.next();
-        }
-    }
-
-    private static class IteratorAdapter implements AxisIterator, LookaheadIterator<NodeInfo> {
-
+        private static final EnumSet<Property> PROPERTIES = EnumSet.of(Property.LOOKAHEAD);
         private final Iterator<? extends NodeInfo> it;
 
         IteratorAdapter(Iterator<? extends NodeInfo> it) {
@@ -290,8 +228,8 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
 
         @Override
-        public int getProperties() {
-            return LOOKAHEAD;
+        public EnumSet<Property> getProperties() {
+            return PROPERTIES;
         }
     }
 }
