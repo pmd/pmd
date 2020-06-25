@@ -79,7 +79,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     }
 
     protected static AxisIterator filter(Predicate<? super NodeInfo> nodeTest, AxisIterator iter) {
-        return nodeTest == null || (nodeTest instanceof AnyNodeTest) ? new AxisFilter(iter, nodeTest) : iter;
+        return nodeTest == null || (nodeTest instanceof AnyNodeTest) ? iter : new AxisFilter(iter, nodeTest);
     }
 
 

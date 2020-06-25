@@ -10,7 +10,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -21,20 +20,20 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.MetricFunction;
-import net.sourceforge.pmd.lang.java.rule.xpath.internal.TypeIsExactlyFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.TypeIsFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     private static final XPathHandler XPATH_HANDLER =
         XPathHandler.getHandlerForFunctionDefs(
-            TypeIsFunction.INSTANCE,
-            TypeIsExactlyFunction.INSTANCE,
+            TypeIsFunction.TYPE_IS_EXACTLY,
+            TypeIsFunction.TYPE_IS,
             MetricFunction.INSTANCE,
             GetCommentOnFunction.INSTANCE
         );

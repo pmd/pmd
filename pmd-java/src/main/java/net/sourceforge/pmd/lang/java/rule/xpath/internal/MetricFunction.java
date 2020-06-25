@@ -37,14 +37,14 @@ import net.sf.saxon.value.SequenceType;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MetricFunction extends BaseJavaXPathFunction {
+public final class MetricFunction extends BaseJavaXPathFunction {
 
     public static final MetricFunction INSTANCE = new MetricFunction();
 
     private static final Map<String, JavaClassMetricKey> CLASS_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaClassMetricKey.class);
     private static final Map<String, JavaOperationMetricKey> OPERATION_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaOperationMetricKey.class);
 
-    protected MetricFunction() {
+    private MetricFunction() {
         super("metric");
     }
 
@@ -75,7 +75,7 @@ public class MetricFunction extends BaseJavaXPathFunction {
             }
 
             @Override
-            public Sequence<?> call(XPathContext context, Sequence[] arguments) throws XPathException {
+            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String metricKey = arguments[0].head().getStringValue();
 
