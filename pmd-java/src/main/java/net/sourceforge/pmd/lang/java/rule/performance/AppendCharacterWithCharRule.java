@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -25,6 +27,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class AppendCharacterWithCharRule extends AbstractJavaRule {
 
+    public AppendCharacterWithCharRule() {
+        addRuleChainVisit(ASTLiteral.class);
+    }
+
     @Override
     public Object visit(ASTLiteral node, Object data) {
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
@@ -33,13 +39,21 @@ public class AppendCharacterWithCharRule extends AbstractJavaRule {
         }
 
         if (node.isSingleCharacterStringLiteral()) {
-            if (!InefficientStringBufferingRule.isInStringBufferOperation(node, 8, "append")) {
+            if (!InefficientStringBufferingRule.isInStringBufferOperationChain(node, "append")) {
                 return data;
             }
 
             // ignore, if the literal is part of an expression, such as "X".repeat(5)
             final ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) node.getNthParent(2);
             if (primaryExpression != null && primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class) != null) {
+                return data;
+            }
+            // ignore, if this literal is part of a different expression, e.g. "X" + something else
+            if (primaryExpression != null && !(primaryExpression.getNthParent(2) instanceof ASTArgumentList)) {
+                return data;
+            }
+            // ignore if this string literal is used as a constructor argument
+            if (primaryExpression != null && primaryExpression.getNthParent(4) instanceof ASTAllocationExpression) {
                 return data;
             }
 

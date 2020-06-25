@@ -193,4 +193,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>append single character string in constructor chain</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder sb = new StringBuilder().append("a");
+        sb = new StringBuilder().append("c");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with string as constructor arg in StringBuilder method chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String name = "bar";
+    public String toString() {
+        StringBuilder sb = new StringBuilder("#").append("Foo").append('#').append(this.name);
+        return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

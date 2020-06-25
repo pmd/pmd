@@ -14,9 +14,8 @@ class ViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 }
-        ]]></code>
-    </test-code>
-
+     ]]></code>
+</test-code>
     <test-code>
         <description>Good example #2</description>
         <expected-problems>0</expected-problems>
@@ -31,9 +30,8 @@ func jsonValue(_ jsonString: String) -> NSObject {
     }
     fatalError()
 }
-        ]]></code>
-    </test-code>
-
+     ]]></code>
+</test-code>
     <test-code>
         <description>Bad example #1</description>
         <expected-problems>1</expected-problems>
@@ -43,9 +41,8 @@ class ViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 }
-        ]]></code>
-    </test-code>
-
+     ]]></code>
+</test-code>
     <test-code>
         <description>Bad example #2</description>
         <expected-problems>1</expected-problems>
@@ -53,6 +50,6 @@ class ViewController: UIViewController {
 func doSomething() {
     fatalError("doSomething() has not been implemented")
 }
-        ]]></code>
-    </test-code>
+     ]]></code>
+</test-code>
 </test-data>

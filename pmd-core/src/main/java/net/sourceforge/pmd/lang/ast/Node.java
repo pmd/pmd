@@ -244,12 +244,14 @@ public interface Node {
         }
     }
 
+
     /**
      * Returns a data map used to store additional information on this node.
      *
      * @return The user data map of this node
      */
     DataMap<DataKey<?, ?>> getUserMap();
+
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
@@ -258,6 +260,7 @@ public interface Node {
      * @return The parent of this node
      */
     Node getParent();
+
 
     /**
      * Returns the child of this node at the given index.
