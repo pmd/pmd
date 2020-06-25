@@ -10,13 +10,13 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.StaticContext;

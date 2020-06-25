@@ -26,13 +26,13 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
@@ -148,16 +148,16 @@ public class XPathRuleTest extends RuleTst {
      *             any error
      */
     @Test
-    public void testFollowingSibling() throws Exception {
-        final String SOURCE = "public class dummy {\n" +
-            "  public String toString() {\n" +
-            "    String test = \"bad example\";\n" +
-            "    test = \"a\";\n" +
-            "    return test;\n" +
-            "  }\n" +
-            "}";
+    public void testFollowingSibling() {
+        final String source = "public class dummy {\n"
+            + "  public String toString() {\n"
+            + "    String test = \"bad example\";\n"
+            + "    test = \"a\";\n"
+            + "    return test;\n"
+            + "  }\n"
+            + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SOURCE);
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
