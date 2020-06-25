@@ -183,7 +183,6 @@ Having the Logging Level specified provides a cleaner log, and improves readabil
        <priority>3</priority>
        <properties>
           <property name="strictMode" type="Boolean" value="false" description="If true, mark statements that use the DEBUG enum of LoggingLevel."/>
-          <property name="version" value="2.0"/>
           <property name="xpath">
              <value>
 <![CDATA[

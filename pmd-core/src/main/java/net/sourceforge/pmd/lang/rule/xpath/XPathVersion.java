@@ -31,6 +31,12 @@ public enum XPathVersion {
     /** XPath 3.1. */
     XPATH_3_1("3.1");
 
+
+    /**
+     * The default XPath version for XPath queries.
+     */
+    public static final XPathVersion DEFAULT = XPATH_3_1;
+
     private static final Map<String, XPathVersion> BY_NAME = new HashMap<>();
     private final String version;
 
@@ -56,6 +62,10 @@ public enum XPathVersion {
         return version;
     }
 
+    @Override
+    public String toString() {
+        return getXmlName();
+    }
 
     /**
      * Gets an XPath version from the string used to represent

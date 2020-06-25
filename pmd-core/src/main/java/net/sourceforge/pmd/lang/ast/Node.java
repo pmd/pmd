@@ -222,7 +222,7 @@ public interface Node {
     default List<Node> findChildNodesWithXPath(String xpathString) {
         return new SaxonXPathRuleQuery(
             xpathString,
-            XPathVersion.XPATH_2_0,
+            XPathVersion.DEFAULT,
             Collections.emptyMap(),
             XPathHandler.noFunctionDefinitions(),
             // since this method will be removed, we don't log anything anymore

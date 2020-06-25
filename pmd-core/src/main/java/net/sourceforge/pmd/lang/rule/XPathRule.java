@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import static net.sourceforge.pmd.lang.rule.xpath.XPathVersion.XPATH_2_0;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +47,9 @@ public class XPathRule extends AbstractRule {
     public static final PropertyDescriptor<XPathVersion> VERSION_DESCRIPTOR =
         PropertyFactory.enumProperty("version", getXPathVersions())
                        .desc("XPath specification version")
-                       .defaultValue(XPATH_2_0)
+                       .defaultValue(XPathVersion.DEFAULT)
                        .build();
+
     /**
      * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
      */

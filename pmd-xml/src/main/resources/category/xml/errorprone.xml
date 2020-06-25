@@ -20,7 +20,6 @@ An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, an
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

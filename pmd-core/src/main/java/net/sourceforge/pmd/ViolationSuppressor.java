@@ -69,7 +69,7 @@ public interface ViolationSuppressor {
             }
             SaxonXPathRuleQuery rq = new SaxonXPathRuleQuery(
                 xpath,
-                XPathVersion.XPATH_2_0,
+                XPathVersion.DEFAULT,
                 rule.getPropertiesByPropertyDescriptor(),
                 // todo version should be carried around by the node
                 rule.getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),

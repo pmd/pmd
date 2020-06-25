@@ -45,7 +45,6 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -83,7 +82,6 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -165,7 +163,6 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -275,7 +272,6 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -289,7 +285,6 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 ]]>
                 </value>
             </property>
-            <property name="version" value="2.0"/>
             <property name="strictMode" type="Boolean" value="false"
                       description="If true, mark combined declaration even if the declarations are on separate lines."/>
         </properties>
@@ -345,7 +340,6 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

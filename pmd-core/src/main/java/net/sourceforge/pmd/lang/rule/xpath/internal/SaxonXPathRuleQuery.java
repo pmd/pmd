@@ -193,8 +193,8 @@ public class SaxonXPathRuleQuery {
             this.configuration = Configuration.newConfiguration();
             this.configuration.setNamePool(getNamePool());
 
-
             StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
+            staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
             staticCtx.declareNamespace("fn", NamespaceConstant.FN);
 
             for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {

@@ -23,7 +23,6 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -32,7 +31,6 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
                 </value>
             </property>
             <!-- XPath 2.0 is needed to use a multi-valued property. -->
-            <property name="version" value="2.0"/>
             <property name="validTypes"
                       value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
                       type="List[String]"
@@ -71,7 +69,6 @@ By far the most common problem is the use of &#x24;{project.version} in a BOM or
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

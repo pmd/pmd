@@ -22,7 +22,6 @@ indicative of the bug where the assignment operator '=' was used instead of the 
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -73,7 +72,6 @@ Avoid using 'for' statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -109,7 +107,6 @@ Avoid using if..else statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -149,7 +146,6 @@ Avoid using if statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -186,7 +182,6 @@ See also: &lt;http://eslint.org/docs/rules/no-else-return>
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -226,7 +221,6 @@ be misleading.  Considering removing this unnecessary Block.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -262,7 +256,6 @@ if (bar) {
         <description>Unnecessary parentheses should be removed.</description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -292,7 +285,6 @@ will never execute.  This is a bug, or extremely poor style.
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -334,7 +326,6 @@ Avoid using 'while' statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
