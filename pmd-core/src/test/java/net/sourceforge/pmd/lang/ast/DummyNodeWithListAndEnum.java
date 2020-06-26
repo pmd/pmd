@@ -1,14 +1,12 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.xpath;
+package net.sourceforge.pmd.lang.ast;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import net.sourceforge.pmd.lang.ast.DummyNode;
 
 public class DummyNodeWithListAndEnum extends DummyNode {
     public DummyNodeWithListAndEnum(int id) {
