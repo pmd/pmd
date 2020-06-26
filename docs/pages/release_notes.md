@@ -115,6 +115,9 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   {% jdoc apex::lang.apex.ApexParser %}
 *   {% jdoc apex::lang.apex.ApexHandler %}
+*   {% jdoc core::RuleChain %}
+*   {% jdoc core::RuleSets %}
+*   {% jdoc !!core::RulesetsFactoryUtils#getRuleSets(java.lang.String, net.sourceforge.pmd.RuleSetFactory) %}
 
 ### External Contributions
 
