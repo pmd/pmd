@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,13 +19,12 @@ public abstract class AntlrBaseRule extends AbstractRule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+    public void apply(Node target, RuleContext ctx) {
         AstVisitor<RuleContext, ?> visitor = buildVisitor();
         assert visitor != null : "Rule should provide a non-null visitor";
+        assert target instanceof AntlrNode : "Incorrect node type " + target + " passed to " + this;
 
-        for (Node node : nodes) {
-            node.acceptVisitor(visitor, ctx);
-        }
+        ((AntlrNode<?>) target).acceptVisitor(visitor, ctx);
     }
 
     /**

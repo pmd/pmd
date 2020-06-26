@@ -7,16 +7,21 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UnusedLocalVariableRule extends AbstractApexRule {
-    public UnusedLocalVariableRule() {
-        addRuleChainVisit(ASTVariableDeclaration.class);
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTVariableDeclaration.class);
     }
 
     @Override

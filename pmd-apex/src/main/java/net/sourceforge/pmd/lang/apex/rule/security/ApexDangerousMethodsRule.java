@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -16,6 +18,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Flags dangerous method calls, e.g. FinancialForce
@@ -39,10 +42,11 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
     private final Set<String> whiteListedVariables = new HashSet<>();
 
-    public ApexDangerousMethodsRule() {
-        super.addRuleChainVisit(ASTUserClass.class);
-
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {

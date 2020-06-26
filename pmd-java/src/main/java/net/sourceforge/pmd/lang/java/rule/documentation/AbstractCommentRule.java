@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -33,7 +34,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 /**
  *
  * @author Brian Remedios
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractCommentRule extends AbstractJavaRule {
 
     /**

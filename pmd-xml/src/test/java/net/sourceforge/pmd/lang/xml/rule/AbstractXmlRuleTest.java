@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -22,11 +21,8 @@ public class AbstractXmlRuleTest {
     public void testVisit() throws Exception {
         String source = "<?xml version=\"1.0\"?><foo abc=\"abc\"><bar/></foo>";
         XmlNode xmlNode = XmlParsingHelper.XML.parse(source);
-        List<XmlNode> nodes = new ArrayList<>();
-        nodes.add(xmlNode);
-
         MyRule rule = new MyRule();
-        rule.apply(nodes, null);
+        rule.apply(xmlNode, null);
 
         assertEquals(3, rule.visitedNodes.size());
         assertEquals("document", rule.visitedNodes.get(0).toString());
@@ -41,9 +37,8 @@ public class AbstractXmlRuleTest {
         }
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void start(RuleContext ctx) {
             visitedNodes.clear();
-            super.apply(nodes, ctx);
         }
 
         @Override

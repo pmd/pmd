@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,7 @@ public class DefaultRuleViolationFactoryTest {
 
     private static class TestRule extends AbstractRule {
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
             throw new UnsupportedOperationException("not implemented");
         }
     }

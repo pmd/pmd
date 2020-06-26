@@ -6,11 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
@@ -33,10 +30,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTAnyTypeDeclaration> {
 
     public ExcessivePublicCountRule() {
-        super(ASTAnyTypeDeclaration.class,
-              ASTEnumDeclaration.class,
-              ASTClassOrInterfaceDeclaration.class,
-              ASTAnnotationTypeDeclaration.class);
+        super(ASTAnyTypeDeclaration.class);
     }
 
     @Override
