@@ -26,7 +26,6 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -40,11 +39,8 @@ public class AbstractDomXmlRuleTest {
         parserOptions.setExpandEntityReferences(false);
 
         XmlNode xmlNode = XmlParsingHelper.XML.withParserOptions(parserOptions).parse(source);
-        List<XmlNode> nodes = new ArrayList<>();
-        nodes.add(xmlNode);
-
         MyRule rule = new MyRule();
-        rule.apply(nodes, null);
+        rule.apply(xmlNode, null);
 
         List<org.w3c.dom.Node> visited = rule.visitedNodes.get("Attr");
         assertEquals(1, visited.size());
@@ -108,9 +104,7 @@ public class AbstractDomXmlRuleTest {
         // no exception should be thrown
 
         MyRule rule = new MyRule();
-        List<XmlNode> nodes = new ArrayList<>();
-        nodes.add(xmlNode);
-        rule.apply(nodes, null);
+        rule.apply(xmlNode, null);
 
         // first element is still parsed
         assertNotNull(rule.visitedNodes.get("Element"));
@@ -128,9 +122,7 @@ public class AbstractDomXmlRuleTest {
         // no exception should be thrown
         // first element is still parsed
         MyRule rule = new MyRule();
-        List<XmlNode> nodes = new ArrayList<>();
-        nodes.add(xmlNode);
-        rule.apply(nodes, null);
+        rule.apply(xmlNode, null);
 
         assertNotNull(rule.visitedNodes.get("Element"));
 
@@ -150,11 +142,6 @@ public class AbstractDomXmlRuleTest {
                 visitedNodes.put(key, nodes);
             }
             nodes.add(node);
-        }
-
-        @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
-            super.apply(nodes, ctx);
         }
 
         @Override

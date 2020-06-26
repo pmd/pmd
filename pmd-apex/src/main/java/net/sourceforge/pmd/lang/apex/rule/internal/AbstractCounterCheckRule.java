@@ -6,10 +6,11 @@ package net.sourceforge.pmd.lang.apex.rule.internal;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.lang.reflect.Modifier;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -28,15 +29,17 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
                                  .desc("Threshold above which a node is reported")
                                  .require(positive())
                                  .defaultValue(defaultReportLevel()).build();
+    private final Class<T> nodeType;
 
 
     public AbstractCounterCheckRule(Class<T> nodeType) {
+        this.nodeType = nodeType;
         definePropertyDescriptor(reportLevel);
-        if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
-            addRuleChainVisit(nodeType);
-        } else {
-            throw new AssertionError("Rule chain visits must be concrete node types");
-        }
+    }
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(nodeType);
     }
 
 

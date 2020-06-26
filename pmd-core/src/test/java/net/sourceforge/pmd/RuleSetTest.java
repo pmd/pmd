@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +24,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -35,6 +38,7 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class RuleSetTest {
 
@@ -402,8 +406,6 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyRootNode");
-        assertTrue("RuleChain rule", rule.isRuleChain());
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -412,9 +414,7 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
         RuleContext ctx = new RuleContext();
@@ -422,7 +422,7 @@ public class RuleSetTest {
         ctx.setReport(r);
         ctx.setSourceCodeFile(file);
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleSets.apply(makeCompilationUnits(), ctx);
         assertEquals("Violations", 2, r.size());
 
         // One violation
@@ -431,13 +431,11 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         r = new Report();
         ctx.setReport(r);
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleSets.apply(makeCompilationUnits(), ctx);
         assertEquals("Violations", 1, r.size());
     }
 
@@ -446,7 +444,6 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -464,7 +461,7 @@ public class RuleSetTest {
         RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();
         context.setReport(new Report());
-        ruleset.apply(makeCompilationUnits(), context);
+        new RuleSets(ruleset).apply(makeCompilationUnits(), context);
 
         assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
 
@@ -497,7 +494,7 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
                 .addRule(new MockRule() {
                     @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                    public void apply(Node nodes, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
                 })
@@ -521,7 +518,7 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
                 .addRule(new MockRule() {
                     @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                    public void apply(Node target, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
                 })
@@ -538,15 +535,13 @@ public class RuleSetTest {
     public void ruleExceptionShouldNotStopProcessingFile() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
         RuleContext context = new RuleContext();
@@ -568,24 +563,26 @@ public class RuleSetTest {
     @Test
     public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyRootNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyRootNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
         RuleContext context = new RuleContext();
@@ -594,7 +591,7 @@ public class RuleSetTest {
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         RuleSets rulesets = new RuleSets(ruleset);
-        rulesets.apply(makeCompilationUnits(), context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rulesets.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());

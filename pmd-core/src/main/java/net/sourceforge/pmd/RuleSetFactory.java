@@ -180,12 +180,12 @@ public class RuleSetFactory {
      *             if unable to find a resource.
      */
     public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
-        RuleSets ruleSets = new RuleSets();
+        List<RuleSet> ruleSets = new ArrayList<>();
         for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
             RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
-            ruleSets.addRuleSet(ruleSet);
+            ruleSets.add(ruleSet);
         }
-        return ruleSets;
+        return new RuleSets(ruleSets);
     }
 
     /**

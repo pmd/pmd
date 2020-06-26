@@ -8,9 +8,12 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -28,8 +31,14 @@ public class TooManyFieldsRule extends AbstractApexRule {
 
     public TooManyFieldsRule() {
         definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
-        addRuleChainVisit(ASTUserClass.class);
     }
+
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
+    }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {

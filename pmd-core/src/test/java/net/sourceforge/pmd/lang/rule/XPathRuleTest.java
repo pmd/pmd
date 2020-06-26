@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -45,7 +44,7 @@ public class XPathRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         DummyNode firstNode = newNode();
-        eval(ctx, xpr, firstNode);
+        xpr.apply(firstNode, ctx);
         assertEquals(1, ctx.getReport().size());
 
         String log = loggingRule.getLog();
@@ -55,14 +54,15 @@ public class XPathRuleTest {
 
         loggingRule.clear();
 
-        eval(ctx, xpr, newNode()); // with another node
+        // with another node
+        xpr.apply(newNode(), ctx);
         assertEquals(2, ctx.getReport().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
 
 
         // with another rule forked from the same one (in multithreaded processor)
-        eval(ctx, xpr.deepCopy(), newNode());
+        xpr.deepCopy().apply(newNode(), ctx);
         assertEquals(3, ctx.getReport().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
@@ -70,7 +70,7 @@ public class XPathRuleTest {
         // with another rule on the same node, new warnings
         XPathRule otherRule = makeRule(version, "OtherRule");
         otherRule.setRuleSetName("rset.xml");
-        eval(ctx, otherRule, firstNode);
+        otherRule.apply(firstNode, ctx);
         assertEquals(4, ctx.getReport().size());
 
         log = loggingRule.getLog();
@@ -84,10 +84,6 @@ public class XPathRuleTest {
         xpr.setName(name);
         xpr.setMessage("gotcha");
         return xpr;
-    }
-
-    public void eval(RuleContext ctx, net.sourceforge.pmd.Rule rule, DummyNode node) {
-        rule.apply(singletonList(node), ctx);
     }
 
     public DummyNode newNode() {

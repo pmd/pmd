@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class PropertyNamingConventionsRule extends AbstractNamingConventionsRule {
@@ -24,9 +27,14 @@ public class PropertyNamingConventionsRule extends AbstractNamingConventionsRule
     public PropertyNamingConventionsRule() {
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
-
-        addRuleChainVisit(ASTField.class);
     }
+
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTField.class);
+    }
+
 
     @Override
     public Object visit(ASTField node, Object data) {

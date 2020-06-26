@@ -16,14 +16,14 @@ import org.apache.commons.lang3.StringUtils;
  * @author Juan Martín Sotuyo Dodero
  */
 public enum TimedOperationCategory {
+    /** Rule execution proper. */
     RULE,
-    RULECHAIN_RULE,
     COLLECT_FILES,
     LOAD_RULES,
     PARSER,
     /** Subdivided into one label for each stage. */
     LANGUAGE_SPECIFIC_PROCESSING,
-    RULECHAIN_AST_INDEXATION,
+    RULE_AST_INDEXATION,
     REPORTING,
     FILE_PROCESSING,
     UNACCOUNTED;

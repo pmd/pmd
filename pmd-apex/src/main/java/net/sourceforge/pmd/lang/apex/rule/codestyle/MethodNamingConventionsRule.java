@@ -10,9 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
@@ -38,9 +41,14 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
         definePropertyDescriptor(TEST_REGEX);
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
-
-        addRuleChainVisit(ASTMethod.class);
     }
+
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTMethod.class);
+    }
+
 
     @Override
     public Object visit(ASTMethod node, Object data) {
