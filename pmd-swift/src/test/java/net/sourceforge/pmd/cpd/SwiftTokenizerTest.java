@@ -4,56 +4,51 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-@RunWith(Parameterized.class)
-public class SwiftTokenizerTest extends AbstractTokenizerTest {
+public class SwiftTokenizerTest extends CpdTextComparisonTest {
 
-    private final String filename;
-    private final int nExpectedTokens;
-
-    public SwiftTokenizerTest(String filename, int nExpectedTokens) {
-        this.filename = filename;
-        this.nExpectedTokens = nExpectedTokens;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[] { "Swift5.2.swift", 90 },
-                new Object[] { "Swift5.1.swift", 242 },
-                new Object[] { "Swift5.0.swift", 172 },
-                new Object[] { "Swift4.2.swift", 91 },
-                new Object[] { "BTree.swift", 4239 }
-        );
-    }
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new SwiftTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), this.filename));
+    public SwiftTokenizerTest() {
+        super(".swift");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(this.filename), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/swift/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new SwiftTokenizer();
+    }
+
+
+    @Test
+    public void testSwift42() {
+        doTest("Swift4.2");
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = nExpectedTokens;
-        super.tokenizeTest();
+    public void testSwift50() {
+        doTest("Swift5.0");
+    }
+
+    @Test
+    public void testSwift51() {
+        doTest("Swift5.1");
+    }
+
+    @Test
+    public void testSwift52() {
+        doTest("Swift5.2");
+    }
+
+    @Test
+    public void testStackoverflowOnLongLiteral() {
+        doTest("Issue628");
     }
 }

@@ -402,7 +402,7 @@ while (true) {  // preferred approach
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#defaultpackage">
         <description>
 Use explicit scoping instead of accidental usage of default package private level.
-The rule allows methods and fields annotated with Guava's @VisibleForTesting.
+The rule allows methods and fields annotated with Guava's @VisibleForTesting and JUnit 5's annotations.
         </description>
         <priority>3</priority>
         <properties>
@@ -413,7 +413,17 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 //ClassOrInterfaceDeclaration[@Interface= false()]
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
-[not(Annotation//Name[ends-with(@Image, 'VisibleForTesting')])]
+[not(Annotation//Name[
+    pmd-java:typeIs('org.junit.jupiter.api.Test')
+    or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+    or pmd-java:typeIs('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+    or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+    or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
+    or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
+    or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
+    or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
+    or ends-with(@Image, 'VisibleForTesting')])]
 [
 FieldDeclaration[@PackagePrivate= true()]
 or MethodDeclaration[@PackagePrivate= true()]
@@ -1673,6 +1683,11 @@ Use the diamond operator to let the type be inferred automatically. With the Dia
 to avoid duplication of the type parameters.
 Instead, the compiler is now able to infer the parameter types for constructor calls,
 which makes the code also more readable.
+
+The diamond operator has been introduced with java 7. However, type inference has been improved further
+with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
+code won't compile with java7. If you use java7, make sure to enable `java7Compatibility` for this rule to avoid
+false positives.
         </description>
         <priority>3</priority>
         <properties>
@@ -1685,15 +1700,17 @@ which makes the code also more readable.
 |
 //StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
 )
-/Expression/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
+/(Expression | Expression[$java7Compatibility = false()]/ConditionalExpression | Expression[$java7Compatibility = false()]/ConditionalExpression/Expression)
+/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
 /PrimaryPrefix
 /AllocationExpression
     [@AnonymousClass=false()]
-    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(TypeArgument//TypeArguments)]]
+    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not($java7Compatibility = true() and .//TypeArgument[@Wildcard=true()])]]
     [not(ArrayDimsAndInits)]
 ]]>
                 </value>
             </property>
+            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
         </properties>
         <example>
             <![CDATA[

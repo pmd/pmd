@@ -60,6 +60,7 @@ public class Mark implements Comparable<Mark> {
         this.endToken = endToken;
     }
 
+    /** Newlines are normalized to \n. */
     public String getSourceCodeSlice() {
         return this.code.getSlice(getBeginLine(), getEndLine());
     }

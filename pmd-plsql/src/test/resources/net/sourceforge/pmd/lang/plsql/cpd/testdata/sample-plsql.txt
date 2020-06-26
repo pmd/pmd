@@ -1,0 +1,1729 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [CREATE]                                1         7
+    [OR]                                    8         10
+    [REPLACE]                               11        18
+L2
+    [PACKAGE]                               1         8
+    ["test_schema"]                         9         22
+    [.]                                     22        23
+    ["BANK_DATA"]                           23        34
+L3
+    [IS]                                    1         3
+L19
+    [pi]                                    1         3
+    [CONSTANT]                              5         13
+    [NUMBER]                                14        20
+    [:]                                     21        22
+    [=]                                     22        23
+    [3.1415]                                24        30
+    [;]                                     30        31
+L20
+    [c]                                     1         2
+    [CONSTANT]                              5         13
+    [NUMBER]                                14        20
+    [:]                                     21        22
+    [=]                                     22        23
+    [3.2e9]                                 24        29
+    [;]                                     29        30
+L21
+    [d]                                     1         2
+    [CONSTANT]                              5         13
+    [NUMBER]                                14        20
+    [:]                                     21        22
+    [=]                                     22        23
+    [3.2E9]                                 24        29
+    [;]                                     29        30
+L22
+    [year_created]                          1         13
+    [CONSTANT]                              14        22
+    [NUMBER]                                23        29
+    [:]                                     30        31
+    [=]                                     31        32
+    [2001]                                  33        37
+    [;]                                     37        38
+L23
+    [author]                                1         7
+    [CONSTANT]                              9         17
+    [VARCHAR2]                              18        26
+    [(]                                     26        27
+    [100]                                   27        30
+    [)]                                     30        31
+    [:]                                     32        33
+    [=]                                     33        34
+    ['altumano ''the wolf''']               35        58
+    [;]                                     58        59
+L24
+    [date_created]                          1         13
+    [CONSTANT]                              15        23
+    [DATE]                                  24        28
+    [:]                                     29        30
+    [=]                                     30        31
+    ['29-oct-01']                           32        43
+    [;]                                     43        44
+L29
+    [TYPE]                                  1         5
+    [assc_array]                            6         16
+    [IS]                                    17        19
+    [TABLE]                                 20        25
+    [OF]                                    26        28
+    [INTEGER]                               29        36
+    [INDEX]                                 37        42
+    [BY]                                    43        45
+    [VARCHAR2]                              46        54
+    [(]                                     54        55
+    [30]                                    55        57
+    [)]                                     57        58
+    [;]                                     58        59
+L34
+    [TYPE]                                  1         5
+    [bank_type]                             6         15
+    [IS]                                    16        18
+    [RECORD]                                19        25
+    [(]                                     26        27
+L35
+    [id]                                    3         5
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [20]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L36
+    [name]                                  3         7
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [100]                                   39        42
+    [)]                                     42        43
+    [,]                                     43        44
+L37
+    [address]                               3         10
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [105]                                   39        42
+    [)]                                     42        43
+    [,]                                     43        44
+L38
+    [location]                              3         11
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [35]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L39
+    [bic]                                   3         6
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [20]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L40
+    [auth_key]                              3         11
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [1]                                     39        40
+    [)]                                     40        41
+    [,]                                     41        42
+L41
+    [contact]                               3         10
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [100]                                   39        42
+    [)]                                     42        43
+    [,]                                     43        44
+L42
+    [phone]                                 3         8
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [50]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L43
+    [fax]                                   3         6
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [50]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L44
+    [telex]                                 3         8
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [100]                                   39        42
+    [)]                                     42        43
+    [,]                                     43        44
+L45
+    [medium]                                3         9
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [255]                                   39        42
+    [)]                                     42        43
+    [,]                                     43        44
+L46
+    [mod_time]                              3         11
+    [DATE]                                  30        34
+    [,]                                     34        35
+L47
+    [app_user]                              3         11
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [20]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L48
+    [db_user]                               3         10
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [20]                                    39        41
+    [)]                                     41        42
+    [,]                                     42        43
+L49
+    [customer_id]                           3         14
+    [VARCHAR2]                              30        38
+    [(]                                     38        39
+    [20]                                    39        41
+    [)]                                     41        42
+L50
+    [)]                                     1         2
+    [;]                                     2         3
+L54
+    [TYPE]                                  1         5
+    [bank_table]                            6         16
+    [IS]                                    17        19
+    [TABLE]                                 20        25
+    [OF]                                    26        28
+    [bank_type]                             29        38
+    [INDEX]                                 39        44
+    [BY]                                    45        47
+    [BINARY_INTEGER]                        48        62
+    [;]                                     62        63
+L58
+    [TYPE]                                  1         5
+    [ref_type]                              6         14
+    [IS]                                    15        17
+    [REF]                                   18        21
+    [CURSOR]                                22        28
+    [RETURN]                                29        35
+    [bank_type]                             36        45
+    [;]                                     45        46
+L63
+    [SUBTYPE]                               1         8
+    [files_record]                          9         21
+    [IS]                                    22        24
+    [files]                                 25        30
+    [%]                                     30        31
+    [ROWTYPE]                               31        38
+    [;]                                     38        39
+L66
+    [current_pi]                            1         11
+    [NUMBER]                                12        18
+    [:]                                     19        20
+    [=]                                     20        21
+    [3.1415]                                22        28
+    [;]                                     28        29
+L67
+    [current_year]                          1         13
+    [NUMBER]                                14        20
+    [:]                                     21        22
+    [=]                                     22        23
+    [2002]                                  24        28
+    [;]                                     28        29
+L68
+    [current_author]                        1         15
+    [VARCHAR2]                              16        24
+    [(]                                     24        25
+    [100]                                   25        28
+    [)]                                     28        29
+    [:]                                     30        31
+    [=]                                     31        32
+    ['\\altumano\\ `the wolf` äöüõç']       33        62
+    [;]                                     62        63
+L69
+    [current_date]                          1         13
+    [DATE]                                  15        19
+    [:]                                     20        21
+    [=]                                     21        22
+    ['24-feb-02']                           23        34
+    [;]                                     34        35
+L72
+    [cursor]                                1         7
+    [cur1]                                  8         12
+    [(]                                     12        13
+    [a]                                     13        14
+    [varchar2]                              15        23
+    [,]                                     23        24
+    [b]                                     25        26
+    [number]                                27        33
+    [,]                                     33        34
+    [c]                                     35        36
+    [date]                                  37        41
+    [,]                                     41        42
+    [d]                                     43        44
+    [boolean]                               45        52
+    [)]                                     52        53
+    [return]                                54        60
+    [customer]                              61        69
+    [%]                                     69        70
+    [rowtype]                               70        77
+    [;]                                     77        78
+L73
+    [cursor]                                1         7
+    [cur2]                                  8         12
+    [(]                                     12        13
+    [a]                                     13        14
+    [varchar2]                              15        23
+    [,]                                     23        24
+    [b]                                     25        26
+    [number]                                27        33
+    [,]                                     33        34
+    [c]                                     35        36
+    [date]                                  37        41
+    [,]                                     41        42
+    [d]                                     43        44
+    [boolean]                               45        52
+    [)]                                     52        53
+    [is]                                    54        56
+    [select]                                57        63
+    [*]                                     64        65
+    [from]                                  66        70
+    [customer]                              71        79
+    [where]                                 80        85
+    [id]                                    86        88
+    [=]                                     89        90
+    ['1']                                   91        94
+    [;]                                     94        95
+L86
+    [FUNCTION]                              1         9
+    [Get]                                   10        13
+    [(]                                     14        15
+L87
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L88
+    [r_bank_rec]                            3         13
+    [OUT]                                   21        24
+    [bank_type]                             25        34
+    [,]                                     34        35
+L89
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+L90
+    [RETURN]                                1         7
+    [NUMBER]                                8         14
+    [;]                                     14        15
+L93
+    [PROCEDURE]                             1         10
+    [Without_Parameters]                    11        29
+    [;]                                     29        30
+L96
+    [FUNCTION]                              1         9
+    [Get_Without_Parameters]                10        32
+    [;]                                     32        33
+L112
+    [PROCEDURE]                             1         10
+    [Get_By_ID]                             11        20
+    [(]                                     21        22
+L113
+    [p_id]                                  3         7
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L114
+    [r_records]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_table]                            28        38
+    [)]                                     38        39
+    [;]                                     39        40
+L123
+    [PROCEDURE]                             1         10
+    [Get_by_BIC]                            11        21
+    [(]                                     22        23
+L124
+    [p_bic]                                 3         8
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L125
+    [r_bank_rec]                            3         13
+    [OUT]                                   21        24
+    [bank_type]                             25        34
+    [,]                                     34        35
+L126
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L127
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L130
+    [PROCEDURE]                             1         10
+    [Get_By_BIC]                            11        21
+    [(]                                     22        23
+L131
+    [p_bic]                                 3         8
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L132
+    [r_record]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_type]                             28        37
+    [)]                                     37        38
+    [;]                                     38        39
+L145
+    [FUNCTION]                              1         9
+    [Get_Table]                             10        19
+    [(]                                     20        21
+L146
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L147
+    [r_bank_tab]                            3         13
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_table]                            28        38
+    [,]                                     38        39
+L148
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L149
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+L150
+    [RETURN]                                1         7
+    [varchar2]                              8         16
+    [;]                                     16        17
+L162
+    [PROCEDURE]                             1         10
+    [Search]                                11        17
+    [(]                                     18        19
+L163
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L164
+    [p_bic]                                 3         8
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L165
+    [p_name]                                3         9
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L166
+    [p_address]                             3         12
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L167
+    [p_location]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L168
+    [r_bank_tab]                            3         13
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_table]                            28        38
+    [,]                                     38        39
+L169
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L170
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L176
+    [PROCEDURE]                             1         10
+    [Get]                                   11        14
+    [(]                                     15        16
+L177
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L178
+    [p_bic]                                 3         8
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L179
+    [p_name]                                3         9
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L180
+    [p_address]                             3         12
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L181
+    [p_location]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L182
+    [r_bank_tab]                            3         13
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_table]                            28        38
+    [)]                                     38        39
+    [;]                                     39        40
+L190
+    [PROCEDURE]                             1         10
+    [Get_By_Criteria]                       11        26
+    [(]                                     27        28
+L191
+    [p_criteria]                            3         13
+    [bank_type]                             21        30
+    [,]                                     30        31
+L192
+    [r_bank_tab]                            3         13
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [bank_table]                            28        38
+    [,]                                     38        39
+L193
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L194
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L197
+    [PROCEDURE]                             1         10
+    [Ins]                                   11        14
+    [(]                                     15        16
+L198
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_type]                             24        33
+    [)]                                     33        34
+    [;]                                     34        35
+L201
+    [PROCEDURE]                             1         10
+    [Ins_Table]                             11        20
+    [(]                                     21        22
+L202
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_table]                            24        34
+    [)]                                     34        35
+    [;]                                     35        36
+L205
+    [PROCEDURE]                             1         10
+    [Upd]                                   11        14
+    [(]                                     15        16
+L206
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_type]                             24        33
+    [)]                                     33        34
+    [;]                                     34        35
+L213
+    [PROCEDURE]                             1         10
+    [Upd_Table]                             11        20
+    [(]                                     21        22
+L214
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_table]                            24        34
+    [)]                                     34        35
+    [;]                                     35        36
+L217
+    [PROCEDURE]                             1         10
+    [Del]                                   11        14
+    [(]                                     15        16
+L218
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_type]                             24        33
+    [)]                                     33        34
+    [;]                                     34        35
+L221
+    [PROCEDURE]                             1         10
+    [Del_Table]                             11        20
+    [(]                                     21        22
+L222
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_table]                            24        34
+    [)]                                     34        35
+    [;]                                     35        36
+L225
+    [PROCEDURE]                             1         10
+    [Lck]                                   11        14
+    [(]                                     15        16
+L226
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_type]                             24        33
+    [)]                                     33        34
+    [;]                                     34        35
+L229
+    [PROCEDURE]                             1         10
+    [Lck_Table]                             11        20
+    [(]                                     21        22
+L230
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [bank_table]                            24        34
+    [)]                                     34        35
+    [;]                                     35        36
+L233
+    [PROCEDURE]                             1         10
+    [Get_Our]                               11        18
+    [(]                                     19        20
+L234
+    [r_ourbank]                             3         12
+    [OUT]                                   21        24
+    [bank_data]                             25        34
+    [.]                                     34        35
+    [bank_type]                             35        44
+    [,]                                     44        45
+L235
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L236
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L240
+    [END]                                   1         4
+    [;]                                     4         5
+L241
+    [/]                                     1         2
+L243
+    [CREATE]                                1         7
+    [OR]                                    8         10
+    [REPLACE]                               11        18
+L244
+    [PACKAGE]                               1         8
+    [Advice_Data]                           9         20
+L245
+    [IS]                                    1         3
+L257
+    [SUBTYPE]                               1         8
+    [advice_type_record]                    9         27
+    [IS]                                    28        30
+    [advice_type]                           31        42
+    [%]                                     42        43
+    [ROWTYPE]                               43        50
+    [;]                                     50        51
+L258
+    [TYPE]                                  1         5
+    [advice_type_table]                     6         23
+    [IS]                                    24        26
+    [TABLE]                                 27        32
+    [OF]                                    33        35
+    [advice_type_record]                    36        54
+    [INDEX]                                 55        60
+    [BY]                                    61        63
+    [BINARY_INTEGER]                        64        78
+    [;]                                     78        79
+L260
+    [SUBTYPE]                               1         8
+    [advice_medium_record]                  9         29
+    [IS]                                    30        32
+    [advice_medium]                         33        46
+    [%]                                     46        47
+    [ROWTYPE]                               47        54
+    [;]                                     54        55
+L261
+    [TYPE]                                  1         5
+    [advice_medium_table]                   6         25
+    [IS]                                    26        28
+    [TABLE]                                 29        34
+    [OF]                                    35        37
+    [advice_medium_record]                  38        58
+    [INDEX]                                 59        64
+    [BY]                                    65        67
+    [BINARY_INTEGER]                        68        82
+    [;]                                     82        83
+L263
+    [SUBTYPE]                               1         8
+    [advice_record]                         9         22
+    [IS]                                    23        25
+    [advices]                               26        33
+    [%]                                     33        34
+    [ROWTYPE]                               34        41
+    [;]                                     41        42
+L264
+    [TYPE]                                  1         5
+    [advice_table]                          6         18
+    [IS]                                    19        21
+    [TABLE]                                 22        27
+    [OF]                                    28        30
+    [advice_record]                         31        44
+    [INDEX]                                 45        50
+    [BY]                                    51        53
+    [BINARY_INTEGER]                        54        68
+    [;]                                     68        69
+L266
+    [SUBTYPE]                               1         8
+    [sw_advice_record]                      9         25
+    [IS]                                    26        28
+    [sw_advice]                             29        38
+    [%]                                     38        39
+    [ROWTYPE]                               39        46
+    [;]                                     46        47
+L267
+    [TYPE]                                  1         5
+    [sw_advice_table]                       6         21
+    [IS]                                    22        24
+    [TABLE]                                 25        30
+    [OF]                                    31        33
+    [sw_advice_record]                      34        50
+    [INDEX]                                 51        56
+    [BY]                                    57        59
+    [BINARY_INTEGER]                        60        74
+    [;]                                     74        75
+L269
+    [SUBTYPE]                               1         8
+    [files_record]                          9         21
+    [IS]                                    22        24
+    [files]                                 25        30
+    [%]                                     30        31
+    [ROWTYPE]                               31        38
+    [;]                                     38        39
+L270
+    [TYPE]                                  1         5
+    [files_table]                           6         17
+    [IS]                                    18        20
+    [TABLE]                                 21        26
+    [OF]                                    27        29
+    [files_record]                          30        42
+    [INDEX]                                 43        48
+    [BY]                                    49        51
+    [BINARY_INTEGER]                        52        66
+    [;]                                     66        67
+L273
+    [FUNCTION]                              1         9
+    [Get_Advice_Types]                      10        26
+    [(]                                     27        28
+L274
+    [r_list]                                3         9
+    [OUT]                                   21        24
+    [advice_type_table]                     25        42
+    [)]                                     42        43
+L275
+    [RETURN]                                1         7
+    [NUMBER]                                8         14
+    [;]                                     14        15
+L289
+    [PROCEDURE]                             1         10
+    [Get_Advice_Defaults]                   11        30
+    [(]                                     31        32
+L290
+    [p_sector]                              3         11
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L291
+    [p_dir]                                 3         8
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L292
+    [p_type]                                3         9
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L293
+    [def_medium]                            3         13
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [,]                                     33        34
+L294
+    [def_medium_option]                     3         20
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [,]                                     33        34
+L295
+    [def_party]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [,]                                     33        34
+L296
+    [party_fixed]                           3         14
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [,]                                     33        34
+L297
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L298
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L302
+    [FUNCTION]                              1         9
+    [Get_Advice_Type_Name]                  10        30
+    [(]                                     31        32
+L303
+    [p_type]                                3         9
+    [VARCHAR2]                              21        29
+    [)]                                     29        30
+L304
+    [RETURN]                                1         7
+    [VARCHAR2]                              8         16
+    [;]                                     16        17
+L314
+    [PROCEDURE]                             1         10
+    [Get_Advice_Medium]                     11        28
+    [(]                                     29        30
+L315
+    [p_adv_type]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L316
+    [p_medium]                              3         11
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L317
+    [p_medium_option]                       3         18
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L318
+    [r_rec]                                 3         8
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [advice_medium_record]                  28        48
+    [,]                                     48        49
+L319
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L320
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L323
+    [PROCEDURE]                             1         10
+    [Get]                                   11        14
+    [(]                                     15        16
+L324
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L325
+    [p_step_seq]                            3         13
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L326
+    [p_seq]                                 3         8
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L327
+    [r_rec]                                 3         8
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [advice_record]                         28        41
+    [,]                                     41        42
+L328
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L329
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L332
+    [PROCEDURE]                             1         10
+    [List_Advices]                          11        23
+    [(]                                     24        25
+L333
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L334
+    [p_step_seq]                            3         13
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L335
+    [p_in_out]                              3         11
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L336
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L337
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [,]                                     36        37
+L338
+    [r_list]                                3         9
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [advice_table]                          28        40
+    [)]                                     40        41
+    [;]                                     41        42
+L341
+    [PROCEDURE]                             1         10
+    [Ins]                                   11        14
+    [(]                                     15        16
+L342
+    [p]                                     3         4
+    [IN]                                    23        25
+    [OUT]                                   26        29
+    [advice_record]                         30        43
+    [,]                                     43        44
+L343
+    [r_result]                              3         11
+    [OUT]                                   23        26
+    [NUMBER]                                27        33
+    [,]                                     33        34
+L344
+    [r_message]                             3         12
+    [OUT]                                   23        26
+    [VARCHAR2]                              27        35
+    [)]                                     35        36
+    [;]                                     36        37
+L347
+    [PROCEDURE]                             1         10
+    [Del]                                   11        14
+    [(]                                     15        16
+L348
+    [p]                                     3         4
+    [IN]                                    23        25
+    [OUT]                                   26        29
+    [advice_record]                         30        43
+    [,]                                     43        44
+L349
+    [r_result]                              3         11
+    [OUT]                                   23        26
+    [NUMBER]                                27        33
+    [,]                                     33        34
+L350
+    [r_message]                             3         12
+    [OUT]                                   23        26
+    [VARCHAR2]                              27        35
+    [)]                                     35        36
+    [;]                                     36        37
+L353
+    [PROCEDURE]                             1         10
+    [Ins_SW_Advice]                         11        24
+    [(]                                     25        26
+L354
+    [p]                                     3         4
+    [IN]                                    23        25
+    [OUT]                                   26        29
+    [sw_advice_record]                      30        46
+    [,]                                     46        47
+L355
+    [r_result]                              3         11
+    [OUT]                                   23        26
+    [NUMBER]                                27        33
+    [,]                                     33        34
+L356
+    [r_message]                             3         12
+    [OUT]                                   23        26
+    [VARCHAR2]                              27        35
+    [)]                                     35        36
+    [;]                                     36        37
+L359
+    [PROCEDURE]                             1         10
+    [Get_SW_Advice]                         11        24
+    [(]                                     25        26
+L360
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L361
+    [r_list]                                3         9
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [sw_advice_table]                       28        43
+    [,]                                     43        44
+L362
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L363
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L366
+    [PROCEDURE]                             1         10
+    [Ins_File]                              11        19
+    [(]                                     20        21
+L367
+    [p]                                     3         4
+    [IN]                                    23        25
+    [OUT]                                   26        29
+    [files_record]                          30        42
+    [,]                                     42        43
+L368
+    [r_result]                              3         11
+    [OUT]                                   23        26
+    [NUMBER]                                27        33
+    [,]                                     33        34
+L369
+    [r_message]                             3         12
+    [OUT]                                   23        26
+    [VARCHAR2]                              27        35
+    [)]                                     35        36
+    [;]                                     36        37
+L372
+    [PROCEDURE]                             1         10
+    [Get_Files]                             11        20
+    [(]                                     21        22
+L373
+    [p_doc_id]                              3         11
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L374
+    [r_list]                                3         9
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [files_table]                           28        39
+    [,]                                     39        40
+L375
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L376
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L386
+    [PROCEDURE]                             1         10
+    [CFR_Advice_Out]                        11        25
+    [(]                                     26        27
+L387
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L388
+    [p_step]                                3         9
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L389
+    [p_app_user]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L390
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L391
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L401
+    [PROCEDURE]                             1         10
+    [CFR_Advice_In]                         11        24
+    [(]                                     25        26
+L402
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L403
+    [p_step]                                3         9
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L404
+    [p_app_user]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L405
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L406
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L416
+    [PROCEDURE]                             1         10
+    [Release_Advice_Out]                    11        29
+    [(]                                     30        31
+L417
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L418
+    [p_step]                                3         9
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L419
+    [p_app_user]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L420
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L421
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L431
+    [PROCEDURE]                             1         10
+    [Release_Advice_In]                     11        28
+    [(]                                     29        30
+L432
+    [p_contract_id]                         3         16
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L433
+    [p_step]                                3         9
+    [NUMBER]                                21        27
+    [,]                                     27        28
+L434
+    [p_app_user]                            3         13
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L435
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L436
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L438
+    [END]                                   1         4
+    [;]                                     4         5
+L439
+    [/]                                     1         2
+L442
+    [CREATE]                                1         7
+    [OR]                                    8         10
+    [REPLACE]                               11        18
+L443
+    [PACKAGE]                               1         8
+    [CUSTOMER_DATA]                         9         22
+L444
+    [IS]                                    1         3
+L458
+    [record_locked]                         1         14
+    [EXCEPTION]                             15        24
+    [;]                                     24        25
+L460
+    [TYPE]                                  1         5
+    [customer_type]                         6         19
+    [IS]                                    20        22
+    [RECORD]                                23        29
+    [(]                                     30        31
+L461
+    [id]                                    3         5
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [20]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L462
+    [name]                                  3         7
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [100]                                   38        41
+    [)]                                     41        42
+    [,]                                     42        43
+L463
+    [short_name]                            3         13
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [35]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L464
+    [db_id]                                 3         8
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [20]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L465
+    [sub_cust_code]                         3         16
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [20]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L466
+    [sub_account]                           3         14
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [30]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L467
+    [regno]                                 3         8
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [50]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L468
+    [residence]                             3         12
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L469
+    [ct_type]                               3         10
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L470
+    [ct_entity]                             3         12
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L471
+    [language]                              3         11
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L472
+    [business_type]                         3         16
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+    [,]                                     41        42
+L473
+    [tax_code]                              3         11
+    [VARCHAR2]                              29        37
+    [(]                                     37        38
+    [10]                                    38        40
+    [)]                                     40        41
+L474
+    [)]                                     1         2
+    [;]                                     2         3
+L475
+    [TYPE]                                  1         5
+    [customer_table]                        6         20
+    [IS]                                    21        23
+    [TABLE]                                 24        29
+    [OF]                                    30        32
+    [customer_type]                         33        46
+    [INDEX]                                 47        52
+    [BY]                                    53        55
+    [BINARY_INTEGER]                        56        70
+    [;]                                     70        71
+L477
+    [SUBTYPE]                               1         8
+    [loan_customer_type]                    9         27
+    [IS]                                    28        30
+    [loan_customers]                        31        45
+    [%]                                     45        46
+    [ROWTYPE]                               46        53
+    [;]                                     53        54
+L478
+    [TYPE]                                  1         5
+    [loan_customer_table]                   6         25
+    [IS]                                    26        28
+    [TABLE]                                 29        34
+    [OF]                                    35        37
+    [loan_customer_type]                    38        56
+    [INDEX]                                 57        62
+    [BY]                                    63        65
+    [BINARY_INTEGER]                        66        80
+    [;]                                     80        81
+L481
+    [PROCEDURE]                             1         10
+    [Get_Record]                            11        21
+    [(]                                     22        23
+L482
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L483
+    [r]                                     3         4
+    [OUT]                                   21        24
+    [customer_type]                         25        38
+    [,]                                     38        39
+L484
+    [r_result]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [NUMBER]                                28        34
+    [,]                                     34        35
+L485
+    [r_message]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [VARCHAR2]                              28        36
+    [)]                                     36        37
+    [;]                                     37        38
+L488
+    [PROCEDURE]                             1         10
+    [Get_By_Id]                             11        20
+    [(]                                     21        22
+L489
+    [p_id]                                  3         7
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L490
+    [r_records]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [customer_table]                        28        42
+    [)]                                     42        43
+    [;]                                     43        44
+L493
+    [PROCEDURE]                             1         10
+    [Get_By_Criteria]                       11        26
+    [(]                                     27        28
+L494
+    [p_criteria]                            3         13
+    [IN]                                    21        23
+    [customer_type]                         24        37
+    [,]                                     37        38
+L495
+    [r_records]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [customer_table]                        28        42
+    [)]                                     42        43
+    [;]                                     43        44
+L498
+    [PROCEDURE]                             1         10
+    [Get]                                   11        14
+    [(]                                     15        16
+L499
+    [p_id]                                  3         7
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L500
+    [p_name]                                3         9
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L501
+    [p_short_name]                          3         15
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L502
+    [p_cust_code]                           3         14
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L503
+    [p_account]                             3         12
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L504
+    [p_regno]                               3         10
+    [IN]                                    21        23
+    [VARCHAR2]                              24        32
+    [,]                                     32        33
+L505
+    [r_records]                             3         12
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [customer_table]                        28        42
+    [)]                                     42        43
+    [;]                                     43        44
+L508
+    [PROCEDURE]                             1         10
+    [Search_By_Account]                     11        28
+    [(]                                     29        30
+L509
+    [p_account]                             3         12
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L510
+    [r_record]                              3         11
+    [IN]                                    21        23
+    [OUT]                                   24        27
+    [customer_type]                         28        41
+    [,]                                     41        42
+L511
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L512
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L515
+    [PROCEDURE]                             1         10
+    [Ins]                                   11        14
+    [(]                                     15        16
+L516
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [customer_table]                        24        38
+    [)]                                     38        39
+    [;]                                     39        40
+L519
+    [PROCEDURE]                             1         10
+    [Upd]                                   11        14
+    [(]                                     15        16
+L520
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [customer_table]                        24        38
+    [)]                                     38        39
+    [;]                                     39        40
+L523
+    [PROCEDURE]                             1         10
+    [Del]                                   11        14
+    [(]                                     15        16
+L524
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [customer_table]                        24        38
+    [)]                                     38        39
+    [;]                                     39        40
+L527
+    [PROCEDURE]                             1         10
+    [Lck]                                   11        14
+    [(]                                     15        16
+L528
+    [p_data]                                3         9
+    [IN]                                    21        23
+    [customer_table]                        24        38
+    [)]                                     38        39
+    [;]                                     39        40
+L537
+    [PROCEDURE]                             1         10
+    [Get_Loan_Customer]                     11        28
+    [(]                                     29        30
+L538
+    [p_id]                                  3         7
+    [VARCHAR2]                              21        29
+    [,]                                     29        30
+L539
+    [r]                                     3         4
+    [OUT]                                   21        24
+    [loan_customer_type]                    25        43
+    [,]                                     43        44
+L540
+    [r_result]                              3         11
+    [OUT]                                   21        24
+    [NUMBER]                                25        31
+    [,]                                     31        32
+L541
+    [r_message]                             3         12
+    [OUT]                                   21        24
+    [VARCHAR2]                              25        33
+    [)]                                     33        34
+    [;]                                     34        35
+L543
+    [END]                                   1         4
+    [;]                                     4         5
+L544
+    [/]                                     1         2
+L546
+    [CREATE]                                1         7
+    [OR]                                    8         10
+    [REPLACE]                               11        18
+L547
+    [Package]                               1         8
+    [EXEC_SP]                               12        19
+L548
+    [IS]                                    1         3
+L562
+    [DATEFORMAT]                            1         11
+    [constant]                              12        20
+    [VARCHAR2]                              21        29
+    [(]                                     29        30
+    [100]                                   30        33
+    [)]                                     33        34
+    [:]                                     35        36
+    [=]                                     36        37
+    ['dd.mm.yyyy hh24:mi:ss']               38        61
+    [;]                                     61        62
+L563
+    [TYPE]                                  1         5
+    [string_array]                          6         18
+    [IS]                                    19        21
+    [TABLE]                                 22        27
+    [OF]                                    28        30
+    [VARCHAR2]                              31        39
+    [(]                                     39        40
+    [32000]                                 40        45
+    [)]                                     45        46
+    [INDEX]                                 47        52
+    [BY]                                    53        55
+    [BINARY_INTEGER]                        56        70
+    [;]                                     70        71
+L565
+    [PROCEDURE]                             1         10
+    [Exec_SP]                               11        18
+    [(]                                     19        20
+L566
+    [sp_name]                               3         10
+    [VARCHAR2]                              15        23
+    [,]                                     23        24
+L567
+    [sp_package]                            3         13
+    [VARCHAR2]                              15        23
+    [,]                                     23        24
+L568
+    [sp_schema]                             3         12
+    [VARCHAR2]                              15        23
+    [,]                                     23        24
+L569
+    [sp_type]                               3         10
+    [VARCHAR2]                              15        23
+    [,]                                     23        24
+L570
+    [arg_names]                             3         12
+    [IN]                                    15        17
+    [OUT]                                   18        21
+    [string_array]                          22        34
+    [,]                                     34        35
+L571
+    [arg_types]                             3         12
+    [IN]                                    15        17
+    [OUT]                                   18        21
+    [string_array]                          22        34
+    [,]                                     34        35
+L572
+    [arg_pass]                              3         11
+    [IN]                                    15        17
+    [OUT]                                   18        21
+    [string_array]                          22        34
+    [,]                                     34        35
+L573
+    [arg_values]                            3         13
+    [IN]                                    15        17
+    [OUT]                                   18        21
+    [string_array]                          22        34
+    [,]                                     34        35
+L574
+    [error_code]                            3         13
+    [OUT]                                   15        18
+    [NUMBER]                                19        25
+    [,]                                     25        26
+L575
+    [error_msg]                             3         12
+    [OUT]                                   15        18
+    [VARCHAR2]                              19        27
+    [)]                                     27        28
+    [;]                                     28        29
+L577
+    [END]                                   1         4
+    [;]                                     4         5
+L578
+    [/]                                     1         2
+L580
+    [CREATE]                                1         7
+    [OR]                                    8         10
+    [REPLACE]                               11        18
+L581
+    [PACKAGE]                               1         8
+    [LOBS_DATA]                             9         18
+L582
+    [IS]                                    1         3
+L597
+    [FUNCTION]                              1         9
+    [put]                                   10        13
+    [(]                                     13        14
+L598
+    [p_value]                               3         10
+    [IN]                                    17        19
+    [VARCHAR2]                              20        28
+    [)]                                     28        29
+L599
+    [RETURN]                                1         7
+    [NUMBER]                                8         14
+    [;]                                     14        15
+L602
+    [FUNCTION]                              1         9
+    [get]                                   10        13
+    [(]                                     13        14
+L603
+    [p_id]                                  3         7
+    [IN]                                    17        19
+    [VARCHAR2]                              20        28
+    [)]                                     28        29
+L604
+    [RETURN]                                1         7
+    [VARCHAR2]                              8         16
+    [;]                                     16        17
+L607
+    [PROCEDURE]                             1         10
+    [remove]                                11        17
+    [(]                                     17        18
+L608
+    [p_id]                                  3         7
+    [IN]                                    17        19
+    [VARCHAR2]                              20        28
+    [)]                                     28        29
+    [;]                                     29        30
+L610
+    [FUNCTION]                              1         9
+    [HH_get_info]                           10        21
+L611
+    [(]                                     1         2
+    [erty_id_in]                            3         13
+    [IN]                                    14        16
+    [HH_t]                                  17        21
+    [.]                                     21        22
+    [a_id]                                  22        26
+    [%]                                     26        27
+    [TYPE]                                  27        31
+    [DEFAULT]                               33        40
+    [NULL]                                  41        45
+L612
+    [,]                                     1         2
+    [df_id_in]                              3         11
+    [IN]                                    14        16
+    [HH_t]                                  17        21
+    [.]                                     21        22
+    [b_id]                                  22        26
+    [%]                                     26        27
+    [TYPE]                                  27        31
+    [DEFAULT]                               33        40
+    [NULL]                                  41        45
+L613
+    [,]                                     1         2
+    [fghj_id_in]                            3         13
+    [IN]                                    14        16
+    [HH_t]                                  17        21
+    [.]                                     21        22
+    [c_id]                                  22        26
+    [%]                                     26        27
+    [TYPE]                                  27        31
+    [DEFAULT]                               33        40
+    [vk_asdgfh_pa]                          41        53
+    [.]                                     53        54
+    [some_function]                         54        67
+    [(]                                     67        68
+    [)]                                     68        69
+L614
+    [,]                                     1         2
+    [cascade_in]                            3         13
+    [IN]                                    14        16
+    [NUMBER]                                17        23
+    [DEFAULT]                               33        40
+    [vk_asdgfh_pa]                          41        53
+    [.]                                     53        54
+    [some_constant]                         54        67
+L615
+    [)]                                     1         2
+L616
+    [RETURN]                                1         7
+    [vk_types_pa]                           8         19
+    [.]                                     19        20
+    [type_rg_info_rec]                      20        36
+    [;]                                     36        37
+L618
+    [PROCEDURE]                             1         10
+    [start_batch_job]                       11        26
+    [(]                                     27        28
+    [p_interval]                            28        38
+    [IN]                                    39        41
+    [dba_jobs]                              42        50
+    [.]                                     50        51
+    [interval]                              51        59
+    [%]                                     59        60
+    [TYPE]                                  60        64
+    [)]                                     64        65
+    [;]                                     65        66
+L620
+    [procedure]                             1         10
+    [out]                                   11        14
+    [(]                                     14        15
+    [cursor]                                15        21
+    [VARCHAR2]                              22        30
+    [)]                                     30        31
+    [;]                                     31        32
+L622
+    [PROCEDURE]                             1         10
+    [refresh_all]                           11        22
+    [(]                                     22        23
+    [kehtib]                                23        29
+    [date]                                  30        34
+    [default]                               35        42
+    [last_day]                              43        51
+    [(]                                     51        52
+    [add_months]                            52        62
+    [(]                                     62        63
+    [trunc]                                 63        68
+    [(]                                     68        69
+    [sysdate]                               69        76
+    [)]                                     76        77
+    [,]                                     77        78
+    [1]                                     78        79
+    [)]                                     79        80
+    [)]                                     80        81
+    [+]                                     81        82
+    [1]                                     82        83
+    [)]                                     83        84
+    [;]                                     84        85
+L624
+    [END]                                   1         4
+    [;]                                     4         5
+EOF

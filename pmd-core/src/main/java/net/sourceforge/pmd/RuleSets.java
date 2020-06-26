@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -23,7 +24,11 @@ import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
  * Grouping of Rules per Language in a RuleSet.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class RuleSets {
 
     private final List<RuleSet> ruleSets;
