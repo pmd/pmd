@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -19,7 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
  * Java Rule with convenient visit methods to e.g. treat contructors and methods the same.
  *
  * @author Clément Fournier
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
     @Override
