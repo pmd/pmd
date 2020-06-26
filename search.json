@@ -5022,6 +5022,15 @@
 ,
 
 {
+"title": "UseIOStreamsWithApacheCommonsFileItem (Java, Performance)",
+"tags": "",
+"keywords": "UseIOStreamsWithApacheCommonsFileItem",
+"url": "pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
 "title": "UselessStringValueOf (Java, Performance)",
 "tags": "",
 "keywords": "UselessStringValueOf",

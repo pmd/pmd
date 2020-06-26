@@ -1510,12 +1510,20 @@ function from Java types to XDM types.</p>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">List&lt;E&gt;</code></td>
-      <td><code class="highlighter-rouge">conv(E)*</code> (a sequence type)</td>
+      <td><code class="highlighter-rouge">conv(E)*</code> (a sequence type) <br /> ⚠️ List support is deprecated with 6.25.0. See below.</td>
     </tr>
   </tbody>
 </table>
 
 <p>The same <code class="highlighter-rouge">conv</code> function is used to translate rule property values to XDM values.</p>
+
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Support for attributes of type <code class="highlighter-rouge">List&lt;E&gt;</code> has been deprecated
+with PMD 6.25.0 and will be removed completely with PMD 7. The reason is that newer Saxon
+versions don’t support sequences as attributes anymore. Lists are still possible in Java-based
+rules but not with XPath.
+
+<a href="pmd_userdocs_extending_defining_properties.html#multivalued-properties">Multivalued rule properties</a>
+are still supported.</div>
 
 <h2 id="migrating-from-10-to-20">Migrating from 1.0 to 2.0</h2>
 

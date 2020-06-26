@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag suboptimal code.">
-<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
+<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UseIOStreamsWithApacheCommonsFileItem, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
 <title>Performance | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1506,7 +1506,7 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p><strong>Since:</strong> PMD 6.25.0</p>
 
-<p><strong>Priority:</strong> Medium High (2)</p>
+<p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Problem: A Calendar is a heavyweight object and expensive to create.</p>
 
@@ -2403,6 +2403,57 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseIndexOfChar"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="useiostreamswithapachecommonsfileitem">UseIOStreamsWithApacheCommonsFileItem</h2>
+
+<p><strong>Since:</strong> PMD 6.25.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Problem: Use of <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--">FileItem.get()</a>
+and <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--">FileItem.getString()</a>
+could exhaust memory since they load the entire file into memory.</p>
+
+<p>Solution: Use <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--">FileItem.getInputStream()</a>
+and buffering.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.get'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getString'</span><span class="p">)]</span><span class="w">
+</span><span class="p">[</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.apache.commons.fileupload.FileItem</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileStuff</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="nc">String</span> <span class="nf">bad</span><span class="o">(</span><span class="nc">FileItem</span> <span class="n">fileItem</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">fileItem</span><span class="o">.</span><span class="na">getString</span><span class="o">();</span>
+   <span class="o">}</span>
+
+   <span class="kd">private</span> <span class="nc">InputStream</span> <span class="nf">good</span><span class="o">(</span><span class="nc">FileItem</span> <span class="n">fileItem</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">fileItem</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="uselessstringvalueof">UselessStringValueOf</h2>
