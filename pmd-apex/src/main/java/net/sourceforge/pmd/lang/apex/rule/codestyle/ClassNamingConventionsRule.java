@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
@@ -37,10 +40,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
         definePropertyDescriptor(CLASS_REGEX);
         definePropertyDescriptor(INTERFACE_REGEX);
         definePropertyDescriptor(ENUM_REGEX);
+    }
 
-        addRuleChainVisit(ASTUserClass.class);
-        addRuleChainVisit(ASTUserInterface.class);
-        addRuleChainVisit(ASTUserEnum.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTUserEnum.class);
     }
 
     @Override

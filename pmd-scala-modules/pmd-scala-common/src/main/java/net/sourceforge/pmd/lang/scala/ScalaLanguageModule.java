@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.scala;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.scala.rule.ScalaRuleChainVisitor;
 
 /**
  * Language Module for Scala.
@@ -22,7 +21,7 @@ public class ScalaLanguageModule extends BaseLanguageModule {
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(NAME, null, TERSE_NAME, ScalaRuleChainVisitor.class, "scala");
+        super(NAME, null, TERSE_NAME, "scala");
         addVersion("2.13", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala213()), true);
         addVersion("2.12", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala212()), false);
         addVersion("2.11", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala211()), false);

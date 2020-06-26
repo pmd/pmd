@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -53,27 +52,19 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
     public LoosePackageCouplingRule() {
         definePropertyDescriptor(PACKAGES_DESCRIPTOR);
         definePropertyDescriptor(CLASSES_DESCRIPTOR);
-
-        addRuleChainVisit(ASTCompilationUnit.class);
-        addRuleChainVisit(ASTPackageDeclaration.class);
-        addRuleChainVisit(ASTImportDeclaration.class);
     }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        this.thisPackage = "";
-
         // Sort the restricted packages in reverse order. This will ensure the
         // child packages are in the list before their parent packages.
         this.restrictedPackages = new ArrayList<>(super.getProperty(PACKAGES_DESCRIPTOR));
-        Collections.sort(restrictedPackages, Collections.reverseOrder());
+        restrictedPackages.sort(Collections.reverseOrder());
 
-        return data;
-    }
+        this.thisPackage = node.getPackageName();
 
-    @Override
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        this.thisPackage = node.getPackageNameImage();
+        node.children(ASTImportDeclaration.class).forEach(it -> it.jjtAccept(this, data));
+
         return data;
     }
 

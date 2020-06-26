@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.lang.reflect.Modifier;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Base class for rules using the rulechain. The visit methods don't
@@ -18,10 +19,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
 
+    private final RuleTargetSelector selector;
+
     /**
      * Specify the node types to visit as parameters.
-     *
-     * FIXME find a clean way to visit abstract node types with the rule chain
      *
      * @param first  The first node, there must be at least one
      * @param visits The rest
@@ -29,20 +30,13 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     @SafeVarargs
     @Experimental
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
-        if (!isAbstract(first)) {
-            addRuleChainVisit(first);
-        }
-        for (Class<? extends JavaNode> visit : visits) {
-            if (!isAbstract(visit)) {
-                addRuleChainVisit(visit);
-            }
-        }
+        selector = RuleTargetSelector.forTypes(first, visits);
     }
 
-    private boolean isAbstract(Class<?> clazz) {
-        return Modifier.isAbstract(clazz.getModifiers()) || clazz.isInterface();
+    @Override
+    protected final @NonNull RuleTargetSelector buildTargetSelector() {
+        return selector;
     }
-
 
     @Override
     public Object visit(JavaNode node, Object data) {

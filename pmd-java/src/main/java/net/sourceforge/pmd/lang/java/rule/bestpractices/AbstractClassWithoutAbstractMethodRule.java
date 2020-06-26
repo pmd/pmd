@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -12,11 +14,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRule {
 
-    public AbstractClassWithoutAbstractMethodRule() {
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTClassOrInterfaceDeclaration.class);
     }
 
     @Override

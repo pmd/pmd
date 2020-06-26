@@ -23,9 +23,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class BrokenNullCheckRule extends AbstractJavaRule {
+public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
+
+    public BrokenNullCheckRule() {
+        super(ASTIfStatement.class);
+    }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
