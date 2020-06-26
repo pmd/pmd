@@ -80,10 +80,18 @@ function from Java types to XDM types.
 |`String`         | `xs:string`
 |`Character`      | `xs:string`
 |`Enum<E>`        | `xs:string` (uses `Object::toString`)
-|`List<E>`        | `conv(E)*` (a sequence type)
+|`List<E>`        | `conv(E)*` (a sequence type) <br> ⚠️ List support is deprecated with 6.25.0. See below.
 
 
 The same `conv` function is used to translate rule property values to XDM values.
+
+{% include warning.html content="Support for attributes of type `List<E>` has been deprecated
+with PMD 6.25.0 and will be removed completely with PMD 7. The reason is that newer Saxon
+versions don't support sequences as attributes anymore. Lists are still possible in Java-based
+rules but not with XPath.
+
+[Multivalued rule properties](pmd_userdocs_extending_defining_properties.html#multivalued-properties)
+are still supported." %}
 
 
 ## Migrating from 1.0 to 2.0

@@ -57,6 +57,10 @@ The command line version of PMD continues to use **scala 2.13**.
     finds usages of `java.util.Calendar` whose purpose is just to get the current date. This
     can be done in a more lightweight way.
 
+*   The new Java Rule {% rule "java/performance/UseIOStreamsWithApacheCommonsFileItem" %} (`java-performance`)
+    finds usage of `FileItem.get()` and `FileItem.getString()`. These two methods are problematic since
+    they load the whole uploaded file into memory.
+
 #### Modified rules
 
 *   The Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) now by default
@@ -73,6 +77,8 @@ The command line version of PMD continues to use **scala 2.13**.
 *   apex-bestpractices
     *   [#2554](https://github.com/pmd/pmd/issues/2554): \[apex] Exception applying rule UnusedLocalVariable on trigger
 *   core
+    *   [#971](https://github.com/pmd/pmd/issues/971): \[apex]\[plsql]\[java] Deprecate overly specific base rule classes
+    *   [#2451](https://github.com/pmd/pmd/issues/2451): \[core] Deprecate support for List attributes with XPath 2.0
     *   [#2599](https://github.com/pmd/pmd/pull/2599): \[core] Fix XPath 2.0 Rule Chain Analyzer with Unions
     *   [#2483](https://github.com/pmd/pmd/issues/2483): \[lang-test] Support cpd tests based on text comparison.
         For details see
@@ -104,22 +110,54 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
 
+*   Rule implementation classes are internal API and should not be used by clients directly.
+    The rules should only be referenced via their entry in the corresponding category ruleset
+    (e.g. `<rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" />`).
+    
+    While we definitely won't move or rename the rule classes in PMD 6.x, we might consider changes
+    in PMD 7.0.0 and onwards.
+
 #### Deprecated APIs
 
-*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc java::lang.java.rule.AbstractIgnoredAnnotationRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractInefficientZeroCheck %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJUnitRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJavaMetricsRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractLombokAwareRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractPoorMethodCall %} (Java)
+*   {% jdoc java::lang.java.rule.bestpractices.AbstractSunSecureRule %} (Java)
+*   {% jdoc java::lang.java.rule.design.AbstractNcssCountRule %} (Java)
+*   {% jdoc java::lang.java.rule.documentation.AbstractCommentRule %} (Java)
+*   {% jdoc java::lang.java.rule.performance.AbstractOptimizationRule %} (Java)
+*   {% jdoc java::lang.java.rule.regex.RegexHelper %} (Java)
+*   {% jdoc apex::lang.apex.rule.AbstractApexUnitTestRule %} (Apex)
+*   {% jdoc apex::lang.apex.rule.design.AbstractNcssCountRule %} (Apex)
+*   {% jdoc plsql::lang.plsql.rule.design.AbstractNcssCountRule %} (PLSQL)
+
+##### For removal
+
 *   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
 *   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
     For details see
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
-
-
+*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+*   {% jdoc apex::lang.apex.rule.ApexXPathRule %} (Apex)
+*   {% jdoc java::lang.java.rule.SymbolTableTestRule %} (Java)
 *   {% jdoc !!java::lang.java.rule.performance.InefficientStringBufferingRule#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node, int, java.lang.String) %}
 
 #### Internal API
 
 *   {% jdoc apex::lang.apex.ApexParser %}
 *   {% jdoc apex::lang.apex.ApexHandler %}
+*   {% jdoc core::RuleChain %}
+*   {% jdoc core::RuleSets %}
+*   {% jdoc !!core::RulesetsFactoryUtils#getRuleSets(java.lang.String, net.sourceforge.pmd.RuleSetFactory) %}
 
 ### External Contributions
 

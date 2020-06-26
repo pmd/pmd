@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
@@ -16,7 +17,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * @author mgriffa
  * @since Created on Jan 11, 2005
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class AbstractOptimizationRule extends AbstractJavaRule {
 
     @Override

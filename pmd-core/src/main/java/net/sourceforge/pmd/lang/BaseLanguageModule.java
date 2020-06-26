@@ -21,18 +21,15 @@ public abstract class BaseLanguageModule implements Language {
     protected String name;
     protected String shortName;
     protected String terseName;
-    protected Class<?> ruleChainVisitorClass;
     protected List<String> extensions;
     private final List<LanguageVersion> distinctVersions = new ArrayList<>();
     protected Map<String, LanguageVersion> versions;
     protected LanguageVersion defaultVersion;
 
-    public BaseLanguageModule(String name, String shortName, String terseName, Class<?> ruleChainVisitorClass,
-            String... extensions) {
+    public BaseLanguageModule(String name, String shortName, String terseName, String... extensions) {
         this.name = name;
         this.shortName = shortName;
         this.terseName = terseName;
-        this.ruleChainVisitorClass = ruleChainVisitorClass;
         this.extensions = Arrays.asList(extensions);
     }
 
@@ -115,11 +112,6 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @NonNull
-    @Override
-    public Class<?> getRuleChainVisitorClass() {
-        return ruleChainVisitorClass;
-    }
-
     @Override
     public List<String> getExtensions() {
         return Collections.unmodifiableList(extensions);

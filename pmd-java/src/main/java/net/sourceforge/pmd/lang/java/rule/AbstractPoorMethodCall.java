@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -19,13 +20,15 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * instance of a designated class. I.e. String.indexOf. The goal is to be able
  * to suggest more efficient/modern ways of implementing the same function.
  *
- * Concrete subclasses are expected to provide the name of the target class and
+ * <p>Concrete subclasses are expected to provide the name of the target class and
  * an array of method names that we are looking for. We then pass judgment on
  * any literal arguments we find in the subclass as well.
  *
  * @author Brian Remedios
- * @version $Revision$
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
     // FIXME not sure the abstraction is generic enough to be reused as is.
 

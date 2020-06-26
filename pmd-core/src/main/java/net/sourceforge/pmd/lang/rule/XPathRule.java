@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -27,6 +30,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Rule that tries to match an XPath expression against a DOM view of an AST.
  */
 public class XPathRule extends AbstractRule {
+
+    private static final Logger LOG = Logger.getLogger(XPathRule.class.getName());
 
     // TODO move to XPath subpackage
 
@@ -51,7 +56,7 @@ public class XPathRule extends AbstractRule {
                        .build();
 
     /**
-     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
+     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetSelector()}.
      */
     private SaxonXPathRuleQuery xpathRuleQuery;
 
@@ -140,10 +145,8 @@ public class XPathRule extends AbstractRule {
 
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            evaluate(node, ctx);
-        }
+    public void apply(Node target, RuleContext ctx) {
+        evaluate(target, ctx);
     }
 
 
@@ -153,7 +156,7 @@ public class XPathRule extends AbstractRule {
      * @param node The Node that to be checked.
      * @param data The RuleContext.
      *
-     * @deprecated Use {@link #apply(List, RuleContext)}
+     * @deprecated Use {@link #apply(Node, RuleContext)}
      */
     @Deprecated
     public void evaluate(final Node node, final RuleContext data) {
@@ -198,15 +201,27 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    public List<String> getRuleChainVisits() {
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
-
-            for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
-                super.addRuleChainVisit(nodeName);
-            }
         }
-        return super.getRuleChainVisits();
+
+        List<String> visits = xpathRuleQuery.getRuleChainVisits();
+
+        logXPathRuleChainUsage(!visits.isEmpty());
+
+        return visits.isEmpty() ? RuleTargetSelector.forRootOnly()
+                                : RuleTargetSelector.forXPathNames(visits);
+    }
+
+
+    private void logXPathRuleChainUsage(boolean usesRuleChain) {
+        if (LOG.isLoggable(Level.FINE)) {
+            String message = (usesRuleChain ? "Using " : "no ")
+                + "rule chain for XPath " + getProperty(XPathRule.VERSION_DESCRIPTOR)
+                + " rule: " + getName() + " (" + getRuleSetName() + ")";
+            LOG.fine(message);
+        }
     }
 
 
