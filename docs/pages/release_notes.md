@@ -52,6 +52,10 @@ The command line version of PMD continues to use **scala 2.13**.
     finds usages of `java.util.Calendar` whose purpose is just to get the current date. This
     can be done in a more lightweight way.
 
+*   The new Java Rule {% rule "java/performance/UseIOStreamsWithApacheCommonsFileItem" %} (`java-performance`)
+    finds usage of `FileItem.get()` and `FileItem.getString()`. These two methods are problematic since
+    they load the whole uploaded file into memory.
+
 #### Modified rules
 
 *   The Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) now by default
