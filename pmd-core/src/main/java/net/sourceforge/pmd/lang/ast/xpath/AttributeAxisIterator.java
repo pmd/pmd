@@ -96,6 +96,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
     }
 
+    // Note: Lists are deprecated with 6.25.0, see #2451
+    // we still allow them here for compatibility, but this can be removed with PMD 7.
+    @Deprecated
     private boolean isSequence(Type returnType) {
         if (returnType instanceof ParameterizedType && ((ParameterizedType) returnType).getRawType() == List.class) {
             Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
