@@ -9,8 +9,8 @@
 Rules which enforce generally accepted best practices.
     </description>
 
-    <rule language="vm"
-          name="AvoidReassigningParameters"
+    <rule name="AvoidReassigningParameters"
+          language="vm"
           since="5.1"
           message="Avoid reassigning macro parameters such as ''{0}''"
           class="net.sourceforge.pmd.lang.vm.rule.bestpractices.AvoidReassigningParametersRule"
@@ -21,8 +21,8 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
         <priority>2</priority>
     </rule>
 
-    <rule language="vm"
-          name="UnusedMacroParameter"
+    <rule name="UnusedMacroParameter"
+          language="vm"
           since="5.1"
           message="Avoid unused macro parameters such as ''{0}''"
           class="net.sourceforge.pmd.lang.vm.rule.bestpractices.UnusedMacroParameterRule"

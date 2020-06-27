@@ -345,6 +345,7 @@ public class RuleSetFactory {
             throw new IllegalArgumentException("Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
         RuleSet ruleSet;
+        // java8: computeIfAbsent
         if (parsedRulesets.containsKey(ruleSetReferenceId)) {
             ruleSet = parsedRulesets.get(ruleSetReferenceId);
         } else {
