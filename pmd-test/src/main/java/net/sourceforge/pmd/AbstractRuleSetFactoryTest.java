@@ -33,6 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -50,6 +51,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * subclassed for each language.
  */
 public abstract class AbstractRuleSetFactoryTest {
+    @org.junit.Rule
+    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+
     private static SAXParserFactory saxParserFactory;
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;

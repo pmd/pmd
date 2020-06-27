@@ -10,6 +10,7 @@ Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="ApexAssertionsShouldIncludeMessage"
+          language="apex"
           since="6.13.0"
           message="Apex test assert statement should make use of the message parameter."
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
@@ -37,6 +38,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexUnitTestClassShouldHaveAsserts"
+          language="apex"
           since="5.5.1"
           message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
@@ -62,6 +64,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexUnitTestMethodShouldHaveIsTestAnnotation"
+          language="apex"
           since="6.13.0"
           message="Apex test methods should have @isTest annotation."
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestMethodShouldHaveIsTestAnnotationRule"
@@ -94,6 +97,7 @@ private class ATest {
     </rule>
 
     <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
+          language="apex"
           since="5.5.1"
           message="Apex unit tests should not use @isTest(seeAllData = true)"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
@@ -118,6 +122,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidGlobalModifier"
+          language="apex"
           since="5.5.0"
           message="Avoid using global modifier"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
@@ -139,6 +144,7 @@ global class Unchangeable {
     </rule>
 
     <rule name="AvoidLogicInTrigger"
+          language="apex"
           since="5.5.0"
           message="Avoid logic in triggers"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"

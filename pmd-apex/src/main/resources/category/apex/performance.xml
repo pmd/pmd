@@ -10,6 +10,7 @@ Rules that flag suboptimal code.
     </description>
 
     <rule name="AvoidDmlStatementsInLoops"
+          language="apex"
           since="5.5.0"
           message="Avoid DML statements inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
@@ -34,6 +35,7 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoqlInLoops"
+          language="apex"
           since="5.5.0"
           message="Avoid Soql queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
@@ -56,6 +58,7 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoslInLoops"
+          language="apex"
           since="6.0.0"
           message="Avoid Sosl queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
