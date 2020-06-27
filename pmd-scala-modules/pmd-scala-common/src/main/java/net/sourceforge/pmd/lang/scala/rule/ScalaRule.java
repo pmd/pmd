@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
+import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitor;
 
 /**
