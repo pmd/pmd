@@ -800,7 +800,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                     return findVar(primary.getScope(), true, suffix.getImage());
                 } else {
-                    if (prefix.getNumChildren() > 0 && (prefix.getChild(0) instanceof ASTName)) {
+                    if (prefix.getNumChildren() > 0 && prefix.getChild(0) instanceof ASTName) {
                         String prefixImage = prefix.getChild(0).getImage();
                         String varname = identOf(inLhs, prefixImage);
                         if (primary.getNumChildren() > 1) {
@@ -854,7 +854,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             while (scope != null) {
                 VariableNameDeclaration result = getFromSingleScope(scope, name);
                 if (result != null) {
-                    if (scope instanceof ClassScope && scope != enclosingClassScope) {
+                    if (scope instanceof ClassScope && scope != enclosingClassScope) { // NOPMD CompareObjectsWithEqual this is what we want
                         // don't handle fields
                         return null;
                     }
@@ -1018,9 +1018,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public String toString() {
-            return "VarLocalInfo{" +
-                "reachingDefs=" + reachingDefs +
-                '}';
+            return "VarLocalInfo{reachingDefs=" + reachingDefs + '}';
         }
 
         public VarLocalInfo copy() {
@@ -1114,7 +1112,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return doFork(null, copyTable());
         }
 
-        private HashMap<VariableNameDeclaration, VarLocalInfo> copyTable() {
+        private Map<VariableNameDeclaration, VarLocalInfo> copyTable() {
             HashMap<VariableNameDeclaration, VarLocalInfo> copy = new HashMap<>(this.symtable.size());
             for (VariableNameDeclaration var : this.symtable.keySet()) {
                 copy.put(var, this.symtable.get(var).copy());
@@ -1129,7 +1127,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         SpanInfo abruptCompletion(SpanInfo target) {
             // if target == null then this will unwind all the parents
             SpanInfo parent = this;
-            while (parent != target && parent != null) {
+            while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
                 }
@@ -1159,7 +1157,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (VariableNameDeclaration var : keysUnion) {
                 VarLocalInfo thisInfo = this.symtable.get(var);
                 VarLocalInfo otherInfo = other.symtable.get(var);
-                if (thisInfo == otherInfo) {
+                if (thisInfo == otherInfo) { // NOPMD CompareObjectsWithEqual this is what we want
                     continue;
                 }
                 if (otherInfo != null && thisInfo != null) {
@@ -1195,7 +1193,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return unnamedTargets.getFirst();
         }
 
-        SpanInfo doBreak(SpanInfo data,/* nullable */ String label) {
+        SpanInfo doBreak(SpanInfo data, /* nullable */ String label) {
             // basically, reaching defs at the point of the break
             // also reach after the break (wherever it lands)
             SpanInfo target;
