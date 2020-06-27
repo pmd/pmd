@@ -21,12 +21,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class RuleViolationComparatorTest {
+public class RuleViolationComparatorTest extends PmdContextualizedTest {
 
     @Test
     public void testComparator() {
-        Rule rule1 = new MockRule("name1", "desc", "msg", "rulesetname1");
-        Rule rule2 = new MockRule("name2", "desc", "msg", "rulesetname2");
+        Rule rule1 = dummyRule(new MockRule("name1", "desc", "msg", "rulesetname1"));
+        Rule rule2 = dummyRule(new MockRule("name2", "desc", "msg", "rulesetname2"));
 
         // RuleViolations created in pre-sorted order
         RuleViolation[] expectedOrder = new RuleViolation[12];

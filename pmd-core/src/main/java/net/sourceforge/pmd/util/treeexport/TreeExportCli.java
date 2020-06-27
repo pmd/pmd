@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageLoader;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -110,8 +111,8 @@ public class TreeExportCli {
         sb.append(System.lineSeparator());
 
         sb.append("Available languages: ");
-        for (Language l : LanguageRegistry.STATIC.getLanguages()) {
-            sb.append(l.getTerseName()).append(' ');
+        for (String id : LanguageLoader.DEFAULT.availableLanguageIds()) {
+            sb.append(id).append(' ');
         }
         sb.append(System.lineSeparator());
         sb.append("Available formats: ");

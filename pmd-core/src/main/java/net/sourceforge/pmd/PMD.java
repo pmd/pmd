@@ -32,6 +32,7 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageLoader;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -462,8 +463,8 @@ public class PMD {
             TimeTracker.startGlobalTracking();
         }
 
-        int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
-        try (LanguageRegistry languageRegistry = LanguageRegistry.fromDefaultClassLoader()) {
+        int status;
+        try (LanguageRegistry languageRegistry = LanguageLoader.DEFAULT.load()) { // TODO pass language properties to load
 
             final PMDConfiguration configuration = params.toConfiguration(languageRegistry);
 

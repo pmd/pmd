@@ -7,19 +7,21 @@ package net.sourceforge.pmd.lang;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A registry of languages, which are dynamically loaded through a
- * {@link ServiceLoader}.
+ * {@link ServiceLoader}. Language registries have a lifecycle:
+ * they're initially created using one of the factory methods, and
+ * need to be closed when the analysis is done. Languages of different
+ * language registries are different instances, and can be parameterized
+ * differently (todo). This allows Language instances to be configured
+ * independently, or to use heavyweight resources like external language
+ * servers and be sure those will be reclaimed.
  */
 public final class LanguageRegistry implements AutoCloseable {
 
@@ -31,44 +33,20 @@ public final class LanguageRegistry implements AutoCloseable {
      */
     @Deprecated
     // @DeprecatedUntil700
-    public static final LanguageRegistry STATIC = new LanguageRegistry(LanguageRegistry.class.getClassLoader());
+    public static final LanguageRegistry STATIC = LanguageLoader.DEFAULT.load();
 
     private final Map<String, Language> languagesByName;
     private final Map<String, Language> languagesByTerseName;
     private final Set<Language> languages;
 
 
-    private LanguageRegistry(ClassLoader languageClassLoader) {
-        // sort languages by terse name. Avoiding differences in the order of languages
-        // across JVM versions / OS.
-        Set<Language> sortedLangs = new TreeSet<>((o1, o2) -> o1.getTerseName().compareToIgnoreCase(o2.getTerseName()));
-        // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
-        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, languageClassLoader);
-        Iterator<Language> iterator = languageLoader.iterator();
-        while (true) {
-            // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
-            // it's more robust that way
-            try {
-                if (iterator.hasNext()) {
-                    Language language = iterator.next();
-                    sortedLangs.add(language);
-                } else {
-                    break;
-                }
-            } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
-                // Some languages require java8 and are therefore only available
-                // if java8 or later is used as runtime.
-                System.err.println("Ignoring language for PMD: " + e.toString());
-            }
-        }
-
-        languages = Collections.unmodifiableSet(new LinkedHashSet<>(sortedLangs));
+    LanguageRegistry(Set<Language> sortedLanguages) {
+        this.languages = sortedLanguages;
 
         // using a linked hash map to maintain insertion order
-        // TODO there may be languages with duplicate names
         Map<String, Language> byName = new LinkedHashMap<>();
         Map<String, Language> byTerseName = new LinkedHashMap<>();
-        for (Language language : sortedLangs) {
+        for (Language language : sortedLanguages) {
             byName.put(language.getName(), language);
             byTerseName.put(language.getTerseName(), language);
         }
@@ -83,23 +61,6 @@ public final class LanguageRegistry implements AutoCloseable {
         // This allows eg to shutdown a language server used by the language module
     }
 
-
-    /**
-     * Create a new language registry, using the given ClassLoader to
-     * load PMD languages (through a {@link ServiceLoader}).
-     *
-     * @param classLoader Classloader to look for PMD modules to load
-     *
-     * @return A new language registry
-     */
-    public static LanguageRegistry fromClassLoader(ClassLoader classLoader) {
-        return new LanguageRegistry(classLoader);
-    }
-
-
-    public static LanguageRegistry fromDefaultClassLoader() {
-        return fromClassLoader(LanguageRegistry.class.getClassLoader());
-    }
 
     /**
      * Returns the registered languages, as un unmodifiable set.

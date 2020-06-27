@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -19,11 +20,11 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class RuleViolationTest {
+public class RuleViolationTest extends PmdContextualizedTest {
 
     @Test
     public void testConstructor1() {
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
@@ -34,9 +35,14 @@ public class RuleViolationTest {
         assertEquals("filename is wrong", "filename", r.getFilename());
     }
 
+    @NonNull
+    public MockRule makeMockRule() {
+        return dummyRule(new MockRule("name", "desc", "msg", "rulesetname"));
+    }
+
     @Test
     public void testConstructor2() {
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
@@ -50,7 +56,7 @@ public class RuleViolationTest {
 
     @Test
     public void testComparatorWithDifferentFilenames() {
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule();
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename1"));
@@ -67,7 +73,7 @@ public class RuleViolationTest {
 
     @Test
     public void testComparatorWithSameFileDifferentLines() {
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule();
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
@@ -84,7 +90,7 @@ public class RuleViolationTest {
     @Ignore
     @Test
     public void testComparatorWithSameFileSameLines() {
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule();
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));

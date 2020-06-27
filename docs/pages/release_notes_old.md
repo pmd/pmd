@@ -7342,7 +7342,7 @@ The binary package still contains all languages and can be used as usual. Have a
 
         API Change - General code reorganization/cleanup
            Renamed - net.sourceforge.pmd.AbstractDelegateRule to net.sourceforge.pmd.lang.rule.AbstractDelegateRule
-           Renamed - net.sourceforge.pmd.MockRule to net.sourceforge.pmd.lang.rule.MockRule
+           Renamed - net.sourceforge.pmd.lang.rule.MockRule to net.sourceforge.pmd.lang.rule.MockRule
            Renamed - net.sourceforge.pmd.RuleReference to net.sourceforge.pmd.lang.rule.RuleReference
            Renamed - net.sourceforge.pmd.ScopedLogHandlersManager to net.sourceforge.pmd.util.log.ScopedLogHandlersManager
            Renamed - net.sourceforge.pmd.util.AntLogHandler to net.sourceforge.pmd.util.log.AntLogHandler

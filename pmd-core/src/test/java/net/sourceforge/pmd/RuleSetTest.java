@@ -31,7 +31,6 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -73,21 +72,21 @@ public class RuleSetTest extends PmdContextualizedTest {
 
     @Test
     public void testGetRuleByName() {
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+        MockRule mock = newMockRule("name");
         RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
     @Test
     public void testGetRuleByName2() {
-        MockRule mock = dummyRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        MockRule mock = newMockRule("name");
         RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
     }
 
     @Test
     public void testRuleList() {
-        MockRule rule = dummyRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        MockRule rule = newMockRule("name");
         RuleSet ruleset = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
 
         assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
@@ -109,23 +108,28 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test
     public void testAddRuleSet() {
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name2"))
                 .addRuleSet(set1)
                 .build();
         assertEquals("ruleset size wrong", 2, set2.size());
     }
 
+    @NonNull
+    public MockRule newMockRule(String name2) {
+        return dummyRule(new MockRule(name2, "desc", "msg", "rulesetname"));
+    }
+
     @Test(expected = RuntimeException.class)
     public void testAddRuleSetByReferenceBad() {
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         createRuleSetBuilder("ruleset2")
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name2"))
                 .addRuleSetByReference(set1, false)
                 .build();
     }
@@ -134,8 +138,8 @@ public class RuleSetTest extends PmdContextualizedTest {
     public void testAddRuleSetByReferenceAllRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
                 .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
+                .addRule(newMockRule("name2"))
                 .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
                 .addRuleSetByReference(set2, true)
@@ -153,8 +157,8 @@ public class RuleSetTest extends PmdContextualizedTest {
     public void testAddRuleSetByReferenceSingleRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
                 .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
+                .addRule(newMockRule("name2"))
                 .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
                 .addRuleSetByReference(set2, false)
@@ -199,11 +203,11 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test
     public void testEquals4() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         assertEquals("2 rulesets with same name and rules must be equals", s1, s2);
@@ -213,11 +217,11 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test
     public void testEquals5() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         RuleSet s2 = createRuleSetBuilder("my other ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
@@ -226,11 +230,11 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test
     public void testEquals6() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("name"))
                 .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("other rule", "desc", "msg", "rulesetname"))
+                .addRule(newMockRule("other rule"))
                 .build();
 
         assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
@@ -243,7 +247,7 @@ public class RuleSetTest extends PmdContextualizedTest {
 
         rule.setLanguage(dummyLanguage());
         assertFalse("Different languages should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
+                RuleSet.applies(rule, languageRegistry().getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
 
         rule.setLanguage(dummyLanguage());
         assertTrue("Same language with no min/max should apply",
@@ -491,12 +495,12 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test
     public void ruleExceptionShouldBeReported() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
+                .addRule(dummyRule(new MockRule() {
                     @Override
                     public void apply(Node nodes, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
-                })
+                }))
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
@@ -515,12 +519,12 @@ public class RuleSetTest extends PmdContextualizedTest {
     @Test(expected = RuntimeException.class)
     public void ruleExceptionShouldBeThrownIfNotIgnored() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
+                .addRule(dummyRule(new MockRule() {
                     @Override
                     public void apply(Node target, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
-                })
+                }))
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
@@ -532,17 +536,18 @@ public class RuleSetTest extends PmdContextualizedTest {
 
     @Test
     public void ruleExceptionShouldNotStopProcessingFile() {
-        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
+        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(dummyRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
-        }).addRule(new MockRule() {
+        })).
+        addRule(dummyRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
-        }).build();
+        })).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
         context.setLanguageVersion(dummyLanguage().getDefaultVersion());
@@ -561,7 +566,7 @@ public class RuleSetTest extends PmdContextualizedTest {
 
     @Test
     public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
-        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
+        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(dummyRule(new MockRule() {
 
             @Override
             protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -572,7 +577,8 @@ public class RuleSetTest extends PmdContextualizedTest {
             public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
-        }).addRule(new MockRule() {
+        })).
+        addRule(dummyRule(new MockRule() {
 
             @Override
             protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -583,7 +589,7 @@ public class RuleSetTest extends PmdContextualizedTest {
             public void apply(Node target, RuleContext ctx) {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
-        }).build();
+        })).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
         context.setLanguageVersion(dummyLanguage().getDefaultVersion());

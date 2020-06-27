@@ -31,6 +31,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageLoader;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
@@ -93,7 +94,7 @@ public final class Benchmarker {
     public static void main(String[] args) throws Exception {
 
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
-        try (LanguageRegistry registry = LanguageRegistry.fromDefaultClassLoader()) {
+        try (LanguageRegistry registry = LanguageLoader.DEFAULT.load()) {
 
             Language language = registry.getLanguage("Java");
             LanguageVersion languageVersion = language.getVersion(targetjdk);

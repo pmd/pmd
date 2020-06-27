@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -27,14 +28,17 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
-public class ReportTest implements ThreadSafeReportListener {
+public class ReportTest extends PmdContextualizedTest {
 
-    private boolean violationSemaphore;
+    static class ViolationSemaphore implements ThreadSafeReportListener {
+        private boolean hadViolation;
 
-    @Override
-    public void ruleViolationAdded(RuleViolation ruleViolation) {
-        violationSemaphore = true;
+        @Override
+        public void ruleViolationAdded(RuleViolation ruleViolation) {
+            hadViolation = true;
+        }
     }
+
 
     // Files are grouped together now.
     @Test
@@ -43,15 +47,20 @@ public class ReportTest implements ThreadSafeReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("foo"));
         Node s = getNode(10, 5);
-        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule1 = makeMockRule("name", "desc");
         r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFile(new File("bar"));
         Node s1 = getNode(10, 5);
-        Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule2 = makeMockRule("name", "desc");
         r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
+    }
+
+    @NonNull
+    public MockRule makeMockRule(String name, String desc) {
+        return dummyRule(new MockRule(name, desc, "msg", "rulesetname"));
     }
 
     @Test
@@ -60,12 +69,12 @@ public class ReportTest implements ThreadSafeReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node1 = getNode(20, 5); // line 20: after rule2 violation
-        Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
+        Rule rule1 = makeMockRule("rule1", "rule1");
         r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, node1, rule1.getMessage()));
 
         ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node2 = getNode(10, 5); // line 10: before rule1 violation
-        Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
+        Rule rule2 = makeMockRule("rule2", "rule2");
         r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, node2, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
@@ -75,14 +84,14 @@ public class ReportTest implements ThreadSafeReportListener {
     @Test
     public void testListener() {
         Report rpt = new Report();
-        rpt.addListener(this);
-        violationSemaphore = false;
+        ViolationSemaphore listener = new ViolationSemaphore();
+        rpt.addListener(listener);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("file"));
         Node s = getNode(5, 5);
-        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule1 = makeMockRule("name", "desc");
         rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        assertTrue(violationSemaphore);
+        assertTrue(listener.hadViolation);
     }
 
     @Test
@@ -91,10 +100,10 @@ public class ReportTest implements ThreadSafeReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("foo1"));
         Node s = getNode(5, 5);
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule("name", "desc");
         r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, s, rule.getMessage()));
         ctx.setSourceCodeFile(new File("foo2"));
-        Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
+        Rule mr = makeMockRule("rule1", "rule1");
         Node s1 = getNode(20, 5);
         Node s2 = getNode(30, 5);
         r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s1, mr.getMessage()));
@@ -109,7 +118,7 @@ public class ReportTest implements ThreadSafeReportListener {
     public void testTreeIterator() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Rule rule = makeMockRule("name", "desc");
         Node node1 = getNode(5, 5, true);
         r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
         Node node2 = getNode(5, 6, true);

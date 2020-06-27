@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.rules.RuleFactory;
@@ -666,13 +665,6 @@ public class RuleSetFactory {
                             + otherRuleSetReferenceId
                             + ". PMD " + PMDVersion.getNextMajorRelease()
                             + " will remove support for this deprecated Rule name usage.");
-                }
-            } else if (referencedRule instanceof MockRule) {
-                if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
-                            + " as it has been removed from PMD and no longer functions."
-                            + " PMD " + PMDVersion.getNextMajorRelease()
-                            + " will remove support for this Rule.");
                 }
             } else {
                 if (LOG.isLoggable(Level.WARNING)) {

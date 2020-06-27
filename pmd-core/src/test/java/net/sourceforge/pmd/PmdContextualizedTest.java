@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * A base class for PMD tests that rely on a {@link LanguageRegistry}.
@@ -30,5 +35,7 @@ public class PmdContextualizedTest {
         rule.setLanguage(dummyLanguage());
         return rule;
     }
+
+
 }
 
