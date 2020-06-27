@@ -9,9 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -38,7 +36,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
         }
 
         boolean checkBoolean = ((RuleContext) data).getLanguageVersion()
-                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+                .compareTo(getLanguage().getVersion("1.5")) >= 0;
 
         if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.getParent();

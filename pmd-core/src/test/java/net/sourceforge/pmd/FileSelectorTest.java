@@ -10,24 +10,21 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * Tests on FileSelector.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public class FileSelectorTest {
+public class FileSelectorTest extends PmdContextualizedTest {
 
     /**
      * Test wanted selection of a source file.
      */
     @Test
     public void testWantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
-                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
 
         File javaFile = new File("/path/to/myFile.dummy");
 
@@ -40,8 +37,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
-                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
 
         File javaFile = new File("/path/to/myFile.txt");
 
@@ -54,8 +50,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedJavaFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
-                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
 
         File javaFile = new File("/path/to/MyClass.java");
 

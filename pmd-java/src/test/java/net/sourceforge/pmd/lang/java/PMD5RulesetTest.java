@@ -10,13 +10,13 @@ import org.junit.Test;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public class PMD5RulesetTest {
 
     @Test
     public void loadRuleset() throws Exception {
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, true);
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(RulePriority.LOW, true, true);
         RuleSet ruleset = ruleSetFactory.createRuleSet("net/sourceforge/pmd/lang/java/pmd5ruleset.xml");
         Assert.assertNotNull(ruleset);
         Assert.assertNull(ruleset.getRuleByName("GuardLogStatementJavaUtil"));

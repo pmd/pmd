@@ -18,7 +18,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public class QuickstartRulesetTest {
 
@@ -50,7 +50,7 @@ public class QuickstartRulesetTest {
             }
         });
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, false);
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(RulePriority.LOW, true, false);
         RuleSet quickstart = ruleSetFactory.createRuleSet("rulesets/java/quickstart.xml");
         Assert.assertFalse(quickstart.getRules().isEmpty());
     }

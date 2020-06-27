@@ -92,7 +92,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
     @Override
     public final Language getLanguage() {
-        return LanguageRegistry.findLanguageByTerseName("java");
+        return LanguageRegistry.STATIC.findLanguageByTerseName("java");
     }
 
 

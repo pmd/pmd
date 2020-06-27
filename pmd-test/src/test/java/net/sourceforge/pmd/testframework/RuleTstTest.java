@@ -19,19 +19,19 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
-public class RuleTstTest {
-    private LanguageVersion dummyLanguage = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
+public class RuleTstTest extends PmdContextualizedTest {
+    private LanguageVersion dummyLanguage = languageRegistry().findLanguageByTerseName("dummy").getDefaultVersion();
 
     private Rule rule = mock(Rule.class);
 

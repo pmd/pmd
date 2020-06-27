@@ -27,6 +27,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -64,20 +65,14 @@ public class RuleFactory {
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
     private final ResourceLoader resourceLoader;
-
-    /**
-     * @deprecated Use {@link #RuleFactory(ResourceLoader)} instead.
-     */
-    @Deprecated
-    public RuleFactory() {
-        this(new ResourceLoader());
-    }
+    private final LanguageRegistry languageRegistry;
 
     /**
      * @param resourceLoader The resource loader to load the rule from jar
      */
-    public RuleFactory(final ResourceLoader resourceLoader) {
+    public RuleFactory(final ResourceLoader resourceLoader, LanguageRegistry languageRegistry) {
         this.resourceLoader = resourceLoader;
+        this.languageRegistry = languageRegistry;
     }
 
     /**
@@ -151,10 +146,11 @@ public class RuleFactory {
 
         String name = ruleElement.getAttribute(NAME);
 
-        RuleBuilder builder = new RuleBuilder(name,
-                resourceLoader,
-                ruleElement.getAttribute(CLASS),
-                ruleElement.getAttribute("language"));
+        RuleBuilder builder = new RuleBuilder(languageRegistry,
+                                              name,
+                                              resourceLoader,
+                                              ruleElement.getAttribute(CLASS),
+                                              ruleElement.getAttribute("language"));
 
         if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
             builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));

@@ -177,9 +177,11 @@ public class PMDParameters {
      *
      * @return A new PMDConfiguration corresponding to these parameters
      *
+     * @param languageRegistry The language registry with which to interpret languages/version strings
+     *
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
-    public PMDConfiguration toConfiguration() {
+    public PMDConfiguration toConfiguration(LanguageRegistry languageRegistry) {
         if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
             throw new IllegalArgumentException(
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
@@ -207,7 +209,7 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
-        LanguageVersion languageVersion = getLangVersion();
+        LanguageVersion languageVersion = getLangVersion(languageRegistry);
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
@@ -224,15 +226,6 @@ public class PMDParameters {
         return noCache;
     }
 
-
-    /**
-     * {@link #toConfiguration()}.
-     * @deprecated To be removed in 7.0.0. Use the instance method {@link #toConfiguration()}.
-     */
-    @Deprecated
-    public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        return params.toConfiguration();
-    }
 
     public boolean isDebug() {
         return debug;
@@ -287,23 +280,23 @@ public class PMDParameters {
     }
 
     @Nullable
-    private LanguageVersion getLangVersion() {
-        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
-                                         : LanguageRegistry.getDefaultLanguage();
+    private LanguageVersion getLangVersion(LanguageRegistry registry) {
+        Language lang = language != null ? registry.findLanguageByTerseName(language)
+                                         : registry.getDefaultLanguage();
 
         return version != null ? lang.getVersion(version)
                                : lang.getDefaultVersion();
     }
 
-    public String getVersion() {
+    public String getVersion(LanguageRegistry registry) {
         if (version != null) {
             return version;
         }
-        return LanguageRegistry.findLanguageByTerseName(getLanguage()).getDefaultVersion().getVersion();
+        return registry.findLanguageByTerseName(getLanguage(registry)).getDefaultVersion().getVersion();
     }
 
-    public String getLanguage() {
-        return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    public String getLanguage(LanguageRegistry registry) {
+        return language != null ? language : registry.getDefaultLanguage().getTerseName();
     }
 
     public String getAuxclasspath() {

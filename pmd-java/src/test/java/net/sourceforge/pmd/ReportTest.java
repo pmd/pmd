@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -17,7 +18,8 @@ import net.sourceforge.pmd.testframework.RuleTst;
 
 public class ReportTest extends RuleTst {
 
-    private LanguageVersion defaultLanguage = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+    private final Language javaLang = LanguageRegistry.STATIC.getLanguage(JavaLanguageModule.NAME);
+    private LanguageVersion defaultLanguage = javaLang.getDefaultVersion();
 
     @Test
     public void testBasic() {
@@ -49,8 +51,7 @@ public class ReportTest extends RuleTst {
     @Test
     public void testExclusionsInReportWithAnnotations() {
         Report rpt = new Report();
-        runTestFromString(TEST2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        runTestFromString(TEST2, new FooRule(), rpt, javaLang.getVersion("1.5"));
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
@@ -58,8 +59,7 @@ public class ReportTest extends RuleTst {
     @Test
     public void testExclusionsInReportWithAnnotationsFullName() {
         Report rpt = new Report();
-        runTestFromString(TEST2_FULL, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        runTestFromString(TEST2_FULL, new FooRule(), rpt, javaLang.getVersion("1.5"));
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }

@@ -38,7 +38,7 @@ public final class Initializer {
      */
     public static void initialize(IndependentContext context) {
         context.declareNamespace("pmd", "java:" + PMDFunctions.class.getName());
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : LanguageRegistry.STATIC.getLanguages()) {
             for (LanguageVersion languageVersion : language.getVersions()) {
                 LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
                 if (languageVersionHandler != null) {
@@ -58,7 +58,7 @@ public final class Initializer {
     }
 
     private static void initializeLanguages() {
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : LanguageRegistry.STATIC.getLanguages()) {
             for (LanguageVersion languageVersion : language.getVersions()) {
                 LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
                 if (languageVersionHandler != null) {

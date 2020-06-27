@@ -37,6 +37,7 @@ import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -46,7 +47,6 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -54,7 +54,7 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 /**
  * Advanced methods for test cases
  */
-public abstract class RuleTst {
+public abstract class RuleTst extends PmdContextualizedTest {
     private final DocumentBuilder documentBuilder;
 
     public RuleTst() {
@@ -499,7 +499,7 @@ public abstract class RuleTst {
     }
 
     /** FIXME this is stupid, the language version may be of a different language than the Rule... */
-    private static LanguageVersion parseSourceType(String terseNameAndVersion) {
+    private LanguageVersion parseSourceType(String terseNameAndVersion) {
         final String version;
         final String terseName;
         if (terseNameAndVersion.contains(" ")) {
@@ -509,7 +509,7 @@ public abstract class RuleTst {
             version = null;
             terseName = terseNameAndVersion;
         }
-        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        Language language = languageRegistry().findLanguageByTerseName(terseName);
         if (language != null) {
             if (version == null) {
                 return language.getDefaultVersion();

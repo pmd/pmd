@@ -233,7 +233,7 @@ public abstract class AbstractRuleSetFactoryTest {
     private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
         List<String> result = new ArrayList<>();
 
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : LanguageRegistry.STATIC.getLanguages()) {
             result.addAll(getRuleSetFileNames(language.getTerseName()));
         }
 

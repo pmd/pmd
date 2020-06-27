@@ -10,16 +10,15 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.vf.VfLanguageModule;
+import net.sourceforge.pmd.lang.vf.ast.AbstractVfNodesTest;
 
 /**
  * @author sergey.gorbaty
  *
  */
-public class LanguageVersionDiscovererTest {
+public class LanguageVersionDiscovererTest extends AbstractVfNodesTest {
 
     /**
      * Test on VF file.
@@ -30,7 +29,7 @@ public class LanguageVersionDiscovererTest {
         File vfFile = new File("/path/to/MyPage.page");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(vfFile);
         assertEquals("LanguageVersion must be VF!",
-                LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion(), languageVersion);
+                vf.getLanguage().getDefaultVersion(), languageVersion);
     }
 
     @Test
@@ -39,6 +38,6 @@ public class LanguageVersionDiscovererTest {
         File vfFile = new File("/path/to/MyPage.component");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(vfFile);
         assertEquals("LanguageVersion must be VF!",
-                LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion(), languageVersion);
+                vf.getLanguage().getDefaultVersion(), languageVersion);
     }
 }

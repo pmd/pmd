@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -30,10 +28,6 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
  *
  */
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
-
-    public AbstractJavaRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {

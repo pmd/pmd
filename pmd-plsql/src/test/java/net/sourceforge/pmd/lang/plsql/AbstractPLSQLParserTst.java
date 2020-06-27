@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-public abstract class AbstractPLSQLParserTst {
+import net.sourceforge.pmd.PmdContextualizedTest;
 
-    protected final PlsqlParsingHelper plsql = PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+public abstract class AbstractPLSQLParserTst extends PmdContextualizedTest {
+
+    protected final PlsqlParsingHelper plsql = PlsqlParsingHelper.WITH_PROCESSING.withLanguageRegistry(languageRegistry())
+                                                                                 .withResourceContext(getClass());
 
 }

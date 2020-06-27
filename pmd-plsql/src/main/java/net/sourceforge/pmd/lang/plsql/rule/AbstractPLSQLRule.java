@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.plsql.rule;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
@@ -27,10 +26,6 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage {
     private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
     private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
-
-    public AbstractPLSQLRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {

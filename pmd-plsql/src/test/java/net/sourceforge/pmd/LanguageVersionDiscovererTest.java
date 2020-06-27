@@ -10,12 +10,11 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class LanguageVersionDiscovererTest {
+public class LanguageVersionDiscovererTest extends AbstractPLSQLParserTst {
 
     /**
      * Test on PLSQL file with default version
@@ -27,6 +26,6 @@ public class LanguageVersionDiscovererTest {
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(plsqlFile);
         assertEquals("LanguageVersion must be PLSQL!",
-                LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), languageVersion);
+                plsql.getLanguage().getDefaultVersion(), languageVersion);
     }
 }

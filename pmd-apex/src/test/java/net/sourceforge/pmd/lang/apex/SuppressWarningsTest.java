@@ -13,12 +13,15 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ViolationSuppressor;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 public class SuppressWarningsTest extends RuleTst {
+
+    private final Language apexLang = LanguageRegistry.getLanguage(ApexLanguageModule.NAME);
 
     private static class BarRule extends AbstractApexRule {
         @Override
@@ -38,35 +41,30 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testClassLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(TEST1, new FooRule(), rpt, apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
-        runTestFromString(TEST2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(TEST2, new FooRule(), rpt, apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testInheritedSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST3, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(TEST3, new FooRule(), rpt, apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testMethodLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST4, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(TEST4, new FooRule(), rpt, apexLang.getDefaultVersion());
         assertEquals(1, rpt.size());
     }
 
     @Test
     public void testConstructorLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST5, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(TEST5, new FooRule(), rpt, apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
@@ -74,7 +72,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testFieldLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST6, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(1, rpt.size());
     }
 
@@ -82,7 +80,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testParameterLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST7, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(1, rpt.size());
     }
 
@@ -90,7 +88,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testLocalVariableLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST8, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(1, rpt.size());
     }
 
@@ -98,7 +96,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testSpecificSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST9, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(1, rpt.size());
     }
 
@@ -106,7 +104,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testSpecificSuppressionMulitpleValues() {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
@@ -114,7 +112,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testNoSuppressionBlank() {
         Report rpt = new Report();
         runTestFromString(TEST10, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(2, rpt.size());
     }
 
@@ -122,7 +120,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testNoSuppressionSomethingElseS() {
         Report rpt = new Report();
         runTestFromString(TEST11, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(2, rpt.size());
     }
 
@@ -130,7 +128,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testSuppressAll() {
         Report rpt = new Report();
         runTestFromString(TEST12, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
@@ -138,7 +136,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testSpecificSuppressionAtTopLevel() {
         Report rpt = new Report();
         runTestFromString(TEST13, new BarRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
     }
 
@@ -146,7 +144,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testCommentSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST14, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
 
         List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();
@@ -157,7 +155,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testMessageWithCommentSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST15, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+                          apexLang.getDefaultVersion());
         assertEquals(0, rpt.size());
 
         List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();

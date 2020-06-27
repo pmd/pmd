@@ -3,10 +3,7 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
-import net.sourceforge.pmd.lang.ParserOptions
+import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage
 import net.sourceforge.pmd.lang.ast.Node
@@ -31,7 +28,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             val defaultVerString: String?,
             val resourceLoader: Class<*>?,
             val resourcePrefix: String,
-            val parserOptions: ParserOptions? = null
+            val parserOptions: ParserOptions? = null,
+            val languageRegistry: LanguageRegistry = LanguageRegistry.STATIC
     ) {
         companion object {
 
@@ -49,6 +47,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     internal val resourcePrefix: String get() = params.resourcePrefix
 
+    val language: Language
+        get() = params.languageRegistry.getLanguage(langName)
+
     /**
      * Returns the language version with the given version string.
      * If null, this defaults to the default language version for
@@ -56,7 +57,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName)
         return if (version == null) language.defaultVersion
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
@@ -84,6 +84,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun withResourceContext(contextClass: Class<*>, resourcePrefix: String = ""): Self =
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
+    fun withLanguageRegistry(languageRegistry: LanguageRegistry): Self =
+            clone(params.copy(languageRegistry = languageRegistry))
 
     /**
      * Returns an instance of [Self] for which the [parse] methods use

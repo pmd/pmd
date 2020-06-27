@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public abstract class AbstractJspNodesTst {
+import net.sourceforge.pmd.PmdContextualizedTest;
 
-    protected JspParsingHelper jsp = JspParsingHelper.DEFAULT.withResourceContext(getClass());
+public abstract class AbstractJspNodesTst extends PmdContextualizedTest {
+
+    protected JspParsingHelper jsp = JspParsingHelper.DEFAULT.withResourceContext(getClass())
+                                                             .withLanguageRegistry(languageRegistry());
 
 }

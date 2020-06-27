@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class LanguageRegistryTest {
+import net.sourceforge.pmd.PmdContextualizedTest;
+
+public class LanguageRegistryTest extends PmdContextualizedTest {
 
     @Test
     public void getDefaultLanguageTest() {
-        Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
+        Language defaultLanguage = languageRegistry().getDefaultLanguage();
         Assert.assertNotNull(defaultLanguage);
         // as we don't have java language in this test, we get the first
         // available language now -> DummyLanguage
@@ -20,7 +22,7 @@ public class LanguageRegistryTest {
 
     @Test
     public void getDefaultVersionLanguageTest() {
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        Language dummy = languageRegistry().findLanguageByTerseName("dummy");
         LanguageVersion dummy12 = dummy.getVersion("1.2");
         Assert.assertNotNull(dummy12);
 
@@ -32,7 +34,7 @@ public class LanguageRegistryTest {
 
     @Test
     public void getLanguageVersionByAliasTest() {
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        Language dummy = languageRegistry().findLanguageByTerseName("dummy");
 
         LanguageVersion dummy17 = dummy.getVersion("1.7");
         Assert.assertNotNull(dummy17);

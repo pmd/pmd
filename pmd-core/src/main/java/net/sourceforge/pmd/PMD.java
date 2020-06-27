@@ -32,6 +32,7 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -44,7 +45,6 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -201,10 +201,8 @@ public class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory =
-            RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
-        final RuleSets ruleSets =
-            RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+        final RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
@@ -465,46 +463,50 @@ public class PMD {
         }
 
         int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
-        final PMDConfiguration configuration = params.toConfiguration();
+        try (LanguageRegistry languageRegistry = LanguageRegistry.fromDefaultClassLoader()) {
 
-        final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
-        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
-        final Level oldLogLevel = LOG.getLevel();
-        // Need to do this, since the static logger has already been initialized
-        // at this point
-        LOG.setLevel(logLevel);
+            final PMDConfiguration configuration = params.toConfiguration(languageRegistry);
 
-        try {
-            int violations = PMD.doPMD(configuration);
-            if (violations > 0 && configuration.isFailOnViolation()) {
-                status = PMDCommandLineInterface.VIOLATIONS_FOUND;
-            } else {
-                status = PMDCommandLineInterface.NO_ERRORS_STATUS;
-            }
-        } catch (Exception e) {
-            System.out.println(PMDCommandLineInterface.buildUsageText());
-            System.out.println();
-            System.err.println(e.getMessage());
-            status = PMDCommandLineInterface.ERROR_STATUS;
-        } finally {
-            logHandlerManager.close();
-            LOG.setLevel(oldLogLevel);
+            final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
+            final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
+            final Level oldLogLevel = LOG.getLevel();
+            // Need to do this, since the static logger has already been initialized
+            // at this point
+            LOG.setLevel(logLevel);
 
-            if (params.isBenchmark()) {
-                final TimingReport timingReport = TimeTracker.stopGlobalTracking();
+            try {
+                int violations = PMD.doPMD(configuration);
+                if (violations > 0 && configuration.isFailOnViolation()) {
+                    status = PMDCommandLineInterface.VIOLATIONS_FOUND;
+                } else {
+                    status = PMDCommandLineInterface.NO_ERRORS_STATUS;
+                }
+            } catch (Exception e) {
+                System.out.println(PMDCommandLineInterface.buildUsageText());
+                System.out.println();
+                System.err.println(e.getMessage());
+                status = PMDCommandLineInterface.ERROR_STATUS;
+            } finally {
+                logHandlerManager.close();
+                LOG.setLevel(oldLogLevel);
 
-                // TODO get specified report format from config
-                final TimingReportRenderer renderer = new TextTimingReportRenderer();
-                try {
-                    // Don't close this writer, we don't want to close stderr
-                    @SuppressWarnings("PMD.CloseResource")
-                    final Writer writer = new OutputStreamWriter(System.err);
-                    renderer.render(timingReport, writer);
-                } catch (final IOException e) {
-                    System.err.println(e.getMessage());
+                if (params.isBenchmark()) {
+                    final TimingReport timingReport = TimeTracker.stopGlobalTracking();
+
+                    // TODO get specified report format from config
+                    final TimingReportRenderer renderer = new TextTimingReportRenderer();
+                    try {
+                        // Don't close this writer, we don't want to close stderr
+                        @SuppressWarnings("PMD.CloseResource") final Writer writer = new OutputStreamWriter(System.err);
+                        renderer.render(timingReport, writer);
+                    } catch (final IOException e) {
+                        System.err.println(e.getMessage());
+                    }
                 }
             }
+            return status;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return status;
     }
 }

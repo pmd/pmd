@@ -15,13 +15,13 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
@@ -31,9 +31,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
-public class StageDependencyTest {
+public class StageDependencyTest extends PmdContextualizedTest {
 
-    private final LanguageVersion version = LanguageRegistry.findLanguageByTerseName("dummy").getVersion("1.0");
+    private final LanguageVersion version = languageRegistry().findLanguageByTerseName("dummy").getVersion("1.0");
 
     private DummyNode process(String source, RuleSets ruleSets) {
         PMDConfiguration configuration = new PMDConfiguration();
@@ -142,15 +142,15 @@ public class StageDependencyTest {
 
     private static RuleSets withRules(Rule r, Rule... rs) {
         List<RuleSet> rsets = new ArrayList<>();
-        rsets.add(new RuleSetFactory().createSingleRuleRuleSet(r));
+        rsets.add(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r));
         for (Rule rule : rs) {
-            rsets.add(new RuleSetFactory().createSingleRuleRuleSet(rule));
+            rsets.add(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule));
         }
 
         return new RuleSets(rsets);
     }
 
-    private static class PredicateTestRule extends AbstractRule {
+    private class PredicateTestRule extends AbstractRule {
 
         private final List<DummyAstStages> dependencies;
 
@@ -160,7 +160,7 @@ public class StageDependencyTest {
 
         @Override
         public Language getLanguage() {
-            return LanguageRegistry.findLanguageByTerseName("dummy");
+            return languageRegistry().findLanguageByTerseName("dummy");
         }
 
         @Override

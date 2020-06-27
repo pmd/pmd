@@ -11,6 +11,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public final class RulesetsFactoryUtils {
@@ -76,17 +77,6 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use {@link #createFactory(PMDConfiguration)} or {@link #createFactory(PMDConfiguration, ClassLoader)}
-     */
-    @InternalApi
-    @Deprecated
-    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration,
-                                                   final ResourceLoader resourceLoader) {
-        return new RuleSetFactory(resourceLoader, configuration.getMinimumPriority(), true,
-                                  configuration.isRuleSetFactoryCompatibilityEnabled());
-    }
-
-    /**
      * Returns a ruleset factory which uses the classloader for PMD
      * classes to resolve resource references.
      *
@@ -110,7 +100,7 @@ public final class RulesetsFactoryUtils {
      * @see #createFactory(PMDConfiguration, ClassLoader)
      */
     public static RuleSetFactory defaultFactory() {
-        return new RuleSetFactory();
+        return createFactory(LanguageRegistry.STATIC, RulePriority.LOW, false, true);
     }
 
     /**
@@ -150,8 +140,16 @@ public final class RulesetsFactoryUtils {
                                                RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility) {
+        return createFactory(LanguageRegistry.STATIC, classLoader, minimumPriority, warnDeprecated, enableCompatibility);
+    }
 
-        return new RuleSetFactory(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
+    public static RuleSetFactory createFactory(LanguageRegistry languageRegistry,
+                                               ClassLoader classLoader,
+                                               RulePriority minimumPriority,
+                                               boolean warnDeprecated,
+                                               boolean enableCompatibility) {
+
+        return new RuleSetFactory(languageRegistry, new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
     /**
@@ -171,7 +169,15 @@ public final class RulesetsFactoryUtils {
                                                boolean warnDeprecated,
                                                boolean enableCompatibility) {
 
-        return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility);
+        return createFactory(LanguageRegistry.STATIC, minimumPriority, warnDeprecated, enableCompatibility);
+    }
+
+    public static RuleSetFactory createFactory(LanguageRegistry languageRegistry,
+                                               RulePriority minimumPriority,
+                                               boolean warnDeprecated,
+                                               boolean enableCompatibility) {
+
+        return createFactory(languageRegistry, RulesetsFactoryUtils.class.getClassLoader(), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
     /**

@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
@@ -66,7 +65,7 @@ public class JspParserTest extends AbstractJspNodesTst {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
         Assert.assertEquals("LanguageVersion must be JSP!",
-                LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
+                jsp.getLanguage().getDefaultVersion(), languageVersion);
     }
 
 }

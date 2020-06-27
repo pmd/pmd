@@ -8,16 +8,18 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+
 public class PMDParametersTest {
 
     @Test
     public void testVersion() throws Exception {
         PMDParameters parameters = new PMDParameters();
         // no language set, uses default language
-        Assert.assertEquals("1.7", parameters.getVersion());
+        Assert.assertEquals("1.7", parameters.getVersion(LanguageRegistry.STATIC));
 
         // now set lanuage
         FieldUtils.writeDeclaredField(parameters, "language", "dummy2", true);
-        Assert.assertEquals("1.0", parameters.getVersion());
+        Assert.assertEquals("1.0", parameters.getVersion(LanguageRegistry.STATIC));
     }
 }

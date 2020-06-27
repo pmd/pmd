@@ -10,7 +10,6 @@ import java.util.Collection;
 import org.junit.runners.Parameterized.Parameters;
 
 import net.sourceforge.pmd.AbstractLanguageVersionTest;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 public class LanguageVersionTest extends AbstractLanguageVersionTest {
@@ -22,6 +21,6 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     @Parameters
     public static Collection<?> data() {
         return Arrays.asList(new Object[][] { { ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "35",
-            LanguageRegistry.getLanguage("Apex").getVersion("35"), }, });
+            getLanguage("Apex").getVersion("35"), }, });
     }
 }

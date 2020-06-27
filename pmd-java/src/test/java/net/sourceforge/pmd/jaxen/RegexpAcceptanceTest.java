@@ -10,10 +10,12 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class RegexpAcceptanceTest extends SimpleAggregatorTst {
+public class RegexpAcceptanceTest extends RuleTst {
+
+    // What is this testing!?
 
     private static final String XPATH = "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]";
 

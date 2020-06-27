@@ -61,7 +61,7 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
 
     @Override
     public Language getLanguage() {
-        return LanguageRegistry.findLanguageByTerseName("plsql");
+        return LanguageRegistry.STATIC.findLanguageByTerseName("plsql");
     }
 
 

@@ -15,8 +15,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -27,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 
-public class AbstractRuleTest {
+public class AbstractRuleTest extends PmdContextualizedTest {
 
     public static class MyRule extends AbstractRule {
         private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
@@ -105,7 +103,7 @@ public class AbstractRuleTest {
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ctx.setLanguageVersion(dummyLanguage().getDefaultVersion());
         ctx.setReport(new Report());
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyRoot();

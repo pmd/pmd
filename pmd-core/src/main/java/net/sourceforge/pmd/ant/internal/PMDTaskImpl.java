@@ -104,8 +104,8 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        final ResourceLoader rl = setupResourceLoader();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+        final ClassLoader rl = setupResourceLoader();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration, rl);
 
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
@@ -217,7 +217,7 @@ public class PMDTaskImpl {
         }
     }
 
-    private ResourceLoader setupResourceLoader() {
+    private ClassLoader setupResourceLoader() {
         if (classpath == null) {
             classpath = new Path(project);
         }
@@ -234,8 +234,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
-                project, classpath, parentFirst));
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
     private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {

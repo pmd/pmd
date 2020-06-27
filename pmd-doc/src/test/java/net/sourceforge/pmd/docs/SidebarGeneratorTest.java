@@ -42,8 +42,8 @@ public class SidebarGeneratorTest {
         Map<Language, List<RuleSet>> rulesets = new HashMap<>();
         RuleSet ruleSet1 = RulesetsFactoryUtils.defaultFactory().createNewRuleSet("test", "test", "bestpractices.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         RuleSet ruleSet2 = RulesetsFactoryUtils.defaultFactory().createNewRuleSet("test2", "test", "codestyle.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        rulesets.put(LanguageRegistry.findLanguageByTerseName("java"), Arrays.asList(ruleSet1, ruleSet2));
-        rulesets.put(LanguageRegistry.findLanguageByTerseName("ecmascript"), Arrays.asList(ruleSet1));
+        rulesets.put(LanguageRegistry.STATIC.findLanguageByTerseName("java"), Arrays.asList(ruleSet1, ruleSet2));
+        rulesets.put(LanguageRegistry.STATIC.findLanguageByTerseName("ecmascript"), Arrays.asList(ruleSet1));
 
         SidebarGenerator generator = new SidebarGenerator(writer, FileSystems.getDefault().getPath(".."));
         List<Map<String, Object>> result = generator.generateRuleReferenceSection(rulesets);

@@ -9,9 +9,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
+import net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
@@ -28,8 +28,7 @@ public class ReportTest extends RuleTst {
             }
         };
         String code = "function(x) // NOPMD test suppress\n" + "{ x = 1; }";
-        runTestFromString(code, rule, rpt,
-                LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
+        runTestFromString(code, rule, rpt, JsParsingHelper.DEFAULT.getLanguage().getDefaultVersion());
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }

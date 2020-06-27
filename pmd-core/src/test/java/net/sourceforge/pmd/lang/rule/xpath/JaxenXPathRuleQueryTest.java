@@ -10,13 +10,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class JaxenXPathRuleQueryTest {
+public class JaxenXPathRuleQueryTest extends PmdContextualizedTest {
 
     @Test
     public void testListAttribute() {
@@ -49,7 +49,7 @@ public class JaxenXPathRuleQueryTest {
 
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
         RuleContext data = new RuleContext();
-        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        data.setLanguageVersion(dummyLanguage().getDefaultVersion());
 
         query.evaluate(dummy, data);
         // note: the actual xpath queries are only available after evaluating
@@ -74,7 +74,7 @@ public class JaxenXPathRuleQueryTest {
 
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
         RuleContext data = new RuleContext();
-        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        data.setLanguageVersion(dummyLanguage().getDefaultVersion());
 
         query.evaluate(dummy, data);
         // note: the actual xpath queries are only available after evaluating
@@ -96,7 +96,7 @@ public class JaxenXPathRuleQueryTest {
 
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
         RuleContext data = new RuleContext();
-        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        data.setLanguageVersion(dummyLanguage().getDefaultVersion());
 
         query.evaluate(dummy, data);
         // note: the actual xpath queries are only available after evaluating
@@ -118,7 +118,7 @@ public class JaxenXPathRuleQueryTest {
 
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
         RuleContext data = new RuleContext();
-        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        data.setLanguageVersion(dummyLanguage().getDefaultVersion());
 
         query.evaluate(dummy, data);
         // note: the actual xpath queries are only available after evaluating
@@ -127,10 +127,10 @@ public class JaxenXPathRuleQueryTest {
         Assert.assertEquals(xpath, query.nodeNameToXPaths.get(JaxenXPathRuleQuery.AST_ROOT).get(0).toString());
     }
 
-    private static void assertQuery(int resultSize, String xpath, Node node) {
+    private void assertQuery(int resultSize, String xpath, Node node) {
         JaxenXPathRuleQuery query = createQuery(xpath);
         RuleContext data = new RuleContext();
-        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        data.setLanguageVersion(dummyLanguage().getDefaultVersion());
         List<Node> result = query.evaluate(node, data);
         Assert.assertEquals(resultSize, result.size());
     }

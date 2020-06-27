@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -22,7 +20,6 @@ public class XmlXPathRule extends XPathRule {
     public static final PropertyDescriptor<Boolean> XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public XmlXPathRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
         definePropertyDescriptor(COALESCING_DESCRIPTOR);
         definePropertyDescriptor(EXPAND_ENTITY_REFERENCES_DESCRIPTOR);
         definePropertyDescriptor(IGNORING_COMMENTS_DESCRIPTOR);

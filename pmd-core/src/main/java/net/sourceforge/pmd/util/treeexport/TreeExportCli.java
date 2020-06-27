@@ -43,7 +43,7 @@ public class TreeExportCli {
     @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
     @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
-    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
+    private String language = LanguageRegistry.STATIC.getDefaultLanguage().getTerseName();
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = "-P", description = "Properties for the renderer.")
@@ -110,7 +110,7 @@ public class TreeExportCli {
         sb.append(System.lineSeparator());
 
         sb.append("Available languages: ");
-        for (Language l : LanguageRegistry.getLanguages()) {
+        for (Language l : LanguageRegistry.STATIC.getLanguages()) {
             sb.append(l.getTerseName()).append(' ');
         }
         sb.append(System.lineSeparator());

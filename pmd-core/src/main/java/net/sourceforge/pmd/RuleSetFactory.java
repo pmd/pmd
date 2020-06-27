@@ -55,36 +55,19 @@ public class RuleSetFactory {
     private static final String UNEXPECTED_ELEMENT = "Unexpected element <";
     private static final String PRIORITY = "priority";
 
+    private final LanguageRegistry langRegistry;
     private final ResourceLoader resourceLoader;
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
 
-    /**
-     * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public RuleSetFactory() {
-        this(new ResourceLoader(), RulePriority.LOW, false, true);
-    }
 
-    /**
-     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
-     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
-                          final boolean warnDeprecated, final boolean enableCompatibility) {
-        this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
-    }
-
-    /**
-     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
-     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
-     */
-    @Deprecated // to be hidden with PMD 7.0.0.
-    public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-                          final boolean warnDeprecated, final boolean enableCompatibility) {
+    RuleSetFactory(LanguageRegistry langRegistry,
+                   final ResourceLoader resourceLoader,
+                   final RulePriority minimumPriority,
+                   final boolean warnDeprecated,
+                   final boolean enableCompatibility) {
+        this.langRegistry = langRegistry;
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
@@ -106,7 +89,8 @@ public class RuleSetFactory {
      *            factory.
      */
     public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
-        this(factory.resourceLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
+        this(factory.langRegistry, factory.resourceLoader, factory.minimumPriority, warnDeprecated,
+             factory.compatibilityFilter != null);
     }
 
     /**
@@ -131,7 +115,7 @@ public class RuleSetFactory {
         String rulesetsProperties = null;
         try {
             List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
-            for (Language language : LanguageRegistry.getLanguages()) {
+            for (Language language : langRegistry.getLanguages()) {
                 Properties props = new Properties();
                 rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
                 try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
@@ -541,7 +525,8 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(langRegistry, resourceLoader, RulePriority.LOW, false,
+                                                           this.compatibilityFilter != null);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
@@ -613,7 +598,7 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement);
+        Rule rule = new RuleFactory(resourceLoader, langRegistry).buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         ruleSetBuilder.addRule(rule);
@@ -650,7 +635,8 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(langRegistry, resourceLoader, RulePriority.LOW, false,
+                                                           this.compatibilityFilter != null);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -700,7 +686,7 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement);
+        RuleReference ruleReference = new RuleFactory(resourceLoader, langRegistry).decorateRule(referencedRule, ruleSetReference, ruleElement);
 
         if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
             if (LOG.isLoggable(Level.WARNING)) {

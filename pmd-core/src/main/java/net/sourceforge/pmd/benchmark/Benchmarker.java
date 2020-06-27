@@ -90,45 +90,48 @@ public final class Benchmarker {
      * @throws IOException
      * @throws PMDException
      */
-    public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
+    public static void main(String[] args) throws Exception {
 
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
-        Language language = LanguageRegistry.getLanguage("Java");
-        LanguageVersion languageVersion = language.getVersion(targetjdk);
-        if (languageVersion == null) {
-            languageVersion = language.getDefaultVersion();
-        }
+        try (LanguageRegistry registry = LanguageRegistry.fromDefaultClassLoader()) {
 
-        String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        List<DataSource> dataSources = FileUtil.collectFiles(srcDir, new LanguageFilenameFilter(language));
+            Language language = registry.getLanguage("Java");
+            LanguageVersion languageVersion = language.getVersion(targetjdk);
+            if (languageVersion == null) {
+                languageVersion = language.getDefaultVersion();
+            }
 
-        boolean debug = findBooleanSwitch(args, "--debug");
-        boolean parseOnly = findBooleanSwitch(args, "--parse-only");
+            String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
+            List<DataSource> dataSources = FileUtil.collectFiles(srcDir, new LanguageFilenameFilter(language));
 
-        if (debug) {
-            System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
-        }
-        if (parseOnly) {
-            Parser parser = PMD.parserFor(languageVersion, null);
-            parseStress(parser, dataSources, debug);
-        } else {
-            String ruleset = findOptionalStringValue(args, "--ruleset", "");
+            boolean debug = findBooleanSwitch(args, "--debug");
+            boolean parseOnly = findBooleanSwitch(args, "--parse-only");
+
             if (debug) {
-                System.out.println("Checking directory " + srcDir);
+                System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
             }
-            Set<RuleDuration> results = new TreeSet<>();
-            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-            if (StringUtils.isNotBlank(ruleset)) {
-                stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
+            if (parseOnly) {
+                Parser parser = PMD.parserFor(languageVersion, null);
+                parseStress(parser, dataSources, debug);
             } else {
-                Iterator<RuleSet> i = factory.getRegisteredRuleSets();
-                while (i.hasNext()) {
-                    stress(languageVersion, i.next(), dataSources, results, debug);
+                String ruleset = findOptionalStringValue(args, "--ruleset", "");
+                if (debug) {
+                    System.out.println("Checking directory " + srcDir);
                 }
-            }
+                Set<RuleDuration> results = new TreeSet<>();
+                RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+                if (StringUtils.isNotBlank(ruleset)) {
+                    stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
+                } else {
+                    Iterator<RuleSet> i = factory.getRegisteredRuleSets();
+                    while (i.hasNext()) {
+                        stress(languageVersion, i.next(), dataSources, results, debug);
+                    }
+                }
 
-            TextReport report = new TextReport();
-            report.generate(results, System.err);
+                TextReport report = new TextReport();
+                report.generate(results, System.err);
+            }
         }
     }
 

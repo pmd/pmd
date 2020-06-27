@@ -75,7 +75,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
             @Override
             public void initialize(IndependentContext context) {
-                super.initialize(context, LanguageRegistry.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
+                super.initialize(context, LanguageRegistry.STATIC.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
             }
         };
     }

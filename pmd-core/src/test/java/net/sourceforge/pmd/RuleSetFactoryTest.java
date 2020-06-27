@@ -20,20 +20,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.junit.LocaleRule;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
-public class RuleSetFactoryTest {
+public class RuleSetFactoryTest extends PmdContextualizedTest {
 
     @org.junit.Rule
     public ExpectedException ex = ExpectedException.none();
@@ -471,8 +470,7 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testReferencePriority() throws RuleSetNotFoundException {
-        ResourceLoader rl = new ResourceLoader();
-        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
+        RuleSetFactory rsf = createFactory(RulePriority.LOW, false);
 
         RuleSet ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
@@ -480,39 +478,44 @@ public class RuleSetFactoryTest {
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
+        rsf = createFactory(RulePriority.MEDIUM_HIGH, false);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
+        rsf = createFactory(RulePriority.HIGH, false);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
+        rsf = createFactory(RulePriority.LOW, false);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
+        rsf = createFactory(RulePriority.MEDIUM_HIGH, false);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
+        rsf = createFactory(RulePriority.HIGH, false);
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
     }
 
+    @NonNull
+    public RuleSetFactory createFactory(RulePriority mediumHigh, boolean b) {
+        return RulesetsFactoryUtils.createFactory(languageRegistry(), mediumHigh, b, true);
+    }
+
     @Test
     public void testOverridePriorityLoadWithMinimum() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.MEDIUM_LOW, true, true);
+        RuleSetFactory rsf = createFactory(RulePriority.MEDIUM_LOW, true);
         RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
@@ -568,17 +571,16 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testSetPriority() throws RuleSetNotFoundException {
-        ResourceLoader rl = new ResourceLoader();
-        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
+        RuleSetFactory rsf = createFactory(RulePriority.MEDIUM_HIGH, false);
         assertEquals(0, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_LOW, false, true);
+        rsf = createFactory(RulePriority.MEDIUM_LOW, false);
         assertEquals(1, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
     }
 
     @Test
     public void testLanguage() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(LANGUAGE);
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME), r.getLanguage());
+        assertEquals(dummyLanguage(), r.getLanguage());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -589,7 +591,7 @@ public class RuleSetFactoryTest {
     @Test
     public void testMinimumLanguageVersion() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4"),
+        assertEquals(dummyLanguage().getVersion("1.4"),
                 r.getMinimumLanguageVersion());
     }
 
@@ -620,7 +622,7 @@ public class RuleSetFactoryTest {
     @Test
     public void testMaximumLanguageVersion() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
+        assertEquals(dummyLanguage().getVersion("1.7"),
                 r.getMaximumLanguageVersion());
     }
 
@@ -750,7 +752,7 @@ public class RuleSetFactoryTest {
                 + "    <description>Ruleset which references a empty ruleset</description>\n" + "\n"
                 + "    <rule ref=\"rulesets/dummy/empty-ruleset.xml\" />\n"
                 + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, true);
+        RuleSetFactory ruleSetFactory = createFactory(RulePriority.LOW, true);
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         assertEquals(0, ruleset.getRules().size());
 

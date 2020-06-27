@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -16,10 +14,6 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  */
 @Deprecated
 public class ApexXPathRule extends XPathRule {
-
-    public ApexXPathRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
-    }
 
     @Override
     public ParserOptions getParserOptions() {

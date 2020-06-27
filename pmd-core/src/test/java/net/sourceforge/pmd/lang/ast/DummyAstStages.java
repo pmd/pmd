@@ -26,7 +26,7 @@ public enum DummyAstStages implements AstProcessingStage<DummyAstStages> {
 
     @Override
     public Language getLanguage() {
-        return LanguageRegistry.findLanguageByTerseName("dummy");
+        return LanguageRegistry.STATIC.findLanguageByTerseName("dummy");
     }
 
     @Override

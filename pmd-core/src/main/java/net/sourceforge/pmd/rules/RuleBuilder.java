@@ -48,35 +48,25 @@ public class RuleBuilder {
     private RulePriority priority;
     private boolean isDeprecated;
 
-    /**
-     * @deprecated Use {@link #RuleBuilder(String, ResourceLoader, String, String)} with the
-     * proper {@link ResourceLoader} instead. The resource loader is used to load the
-     * rule implementation class from the class path.
-     */
-    @Deprecated
-    public RuleBuilder(String name, String clazz, String language) {
-        this(name, new ResourceLoader(), clazz, language);
-    }
-
-    public RuleBuilder(String name, ResourceLoader resourceLoader, String clazz, String language) {
+    public RuleBuilder(LanguageRegistry languageRegistry, String name, ResourceLoader resourceLoader, String clazz, String language) {
         this.name = name;
         this.resourceLoader = resourceLoader;
-        language(language);
+        language(language, languageRegistry);
         className(clazz);
     }
 
-    private void language(String languageName) {
+    private void language(String languageName, LanguageRegistry languageRegistry) {
         if (StringUtils.isBlank(languageName)) {
             // Some languages don't need the attribute because the rule's
             // constructor calls setLanguage, see e.g. AbstractJavaRule
             return;
         }
 
-        Language lang = LanguageRegistry.findLanguageByTerseName(languageName);
+        Language lang = languageRegistry.findLanguageByTerseName(languageName);
         if (lang == null) {
             throw new IllegalArgumentException(
                     "Unknown Language '" + languageName + "' for rule" + name + ", supported Languages are "
-                    + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                    + languageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
             );
         }
         language = lang;

@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.modelica.ModelicaLanguageModule;
 
@@ -22,7 +21,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { ModelicaLanguageModule.NAME, ModelicaLanguageModule.TERSE_NAME, "",
-                LanguageRegistry.getLanguage(ModelicaLanguageModule.NAME).getDefaultVersion(),
+                getLanguage(ModelicaLanguageModule.NAME).getDefaultVersion(),
             },
         });
     }

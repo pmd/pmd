@@ -52,9 +52,9 @@ public class ScalaTokenizer implements Tokenizer {
         String scalaVersion = properties.getProperty(SCALA_VERSION_PROPERTY);
         LanguageVersion langVer;
         if (scalaVersion == null) {
-            langVer = LanguageRegistry.getLanguage(ScalaLanguageModule.NAME).getDefaultVersion();
+            langVer = LanguageRegistry.STATIC.getLanguage(ScalaLanguageModule.NAME).getDefaultVersion();
         } else {
-            langVer = LanguageRegistry.getLanguage(ScalaLanguageModule.NAME).getVersion(scalaVersion);
+            langVer = LanguageRegistry.STATIC.getLanguage(ScalaLanguageModule.NAME).getVersion(scalaVersion);
         }
         dialect = ((ScalaLanguageHandler) langVer.getLanguageVersionHandler()).getDialect();
     }
