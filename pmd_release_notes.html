@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.25.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.26.0-SNAPSHOT</li>
     
     
     
@@ -1403,215 +1403,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-june-2020---6250-snapshot">??-June-2020 - 6.25.0-SNAPSHOT</h2>
+  <h2 id="--2020---6260-snapshot">??-??-2020 - 6.26.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.25.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.26.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="scala-cross-compilation">Scala cross compilation</h4>
-
-<p>Up until now the PMD Scala module has been compiled against scala 2.13 only by default.
-However, this makes it impossible to use pmd as a library in scala projects,
-that use scala 2.12, e.g. in sbt plugins. Therefore PMD now provides cross compiled pmd-scala
-modules for both versions: <strong>scala 2.12</strong> and <strong>scala 2.13</strong>.</p>
-
-<p>The new modules have new maven artifactIds. The old artifactId <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala:6.25.0-SNAPSHOT</code>
-is still available, but is deprecated from now on. It has been demoted to be just a delegation to the new
-<code class="highlighter-rouge">pmd-scala_2.13</code> module and will be removed eventually.</p>
-
-<p>The coordinates for the new modules are:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;net.sourceforge.pmd&lt;/groupId&gt;
-    &lt;artifactId&gt;pmd-scala_2.12&lt;/artifactId&gt;
-    &lt;version&gt;6.25.0-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;
-
-&lt;dependency&gt;
-    &lt;groupId&gt;net.sourceforge.pmd&lt;/groupId&gt;
-    &lt;artifactId&gt;pmd-scala_2.13&lt;/artifactId&gt;
-    &lt;version&gt;6.25.0-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre></div></div>
-
-<p>The command line version of PMD continues to use <strong>scala 2.13</strong>.</p>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>
-    <p>The new Java Rule <a href="pmd_rules_java_codestyle.html#unnecessarycast"><code class="highlighter-rouge">UnnecessaryCast</code></a> (<code class="highlighter-rouge">java-codestyle</code>)
-finds casts that are unnecessary while accessing collection elements.</p>
-  </li>
-  <li>
-    <p>The new Java Rule <a href="pmd_rules_java_performance.html#avoidcalendardatecreation"><code class="highlighter-rouge">AvoidCalendarDateCreation</code></a> (<code class="highlighter-rouge">java-performance</code>)
-finds usages of <code class="highlighter-rouge">java.util.Calendar</code> whose purpose is just to get the current date. This
-can be done in a more lightweight way.</p>
-  </li>
-  <li>
-    <p>The new Java Rule <a href="pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem"><code class="highlighter-rouge">UseIOStreamsWithApacheCommonsFileItem</code></a> (<code class="highlighter-rouge">java-performance</code>)
-finds usage of <code class="highlighter-rouge">FileItem.get()</code> and <code class="highlighter-rouge">FileItem.getString()</code>. These two methods are problematic since
-they load the whole uploaded file into memory.</p>
-  </li>
-</ul>
-
-<h4 id="modified-rules">Modified rules</h4>
-
-<ul>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="highlighter-rouge">UseDiamondOperator</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now by default
-finds unnecessary usages of type parameters, which are nested, involve wildcards and are used
-within a ternary operator. These usages are usually only unnecessary with Java8 and later, when
-the type inference in Java has been improved.</p>
-
-    <p>In order to avoid false positives when checking Java7 only code, the rule has the new property
-<code class="highlighter-rouge">java7Compatibility</code>, which is disabled by default. Settings this to “true” retains
-the old rule behaviour.</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2554">#2554</a>: [apex] Exception applying rule UnusedLocalVariable on trigger</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/971">#971</a>: [apex][plsql][java] Deprecate overly specific base rule classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2451">#2451</a>: [core] Deprecate support for List attributes with XPath 2.0</li>
-      <li><a href="https://github.com/pmd/pmd/pull/2599">#2599</a>: [core] Fix XPath 2.0 Rule Chain Analyzer with Unions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2483">#2483</a>: [lang-test] Support cpd tests based on text comparison.
-For details see
-<a href="pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation">Testing your implementation</a>
-in the developer documentation.</li>
-    </ul>
-  </li>
-  <li>c#
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2551">#2551</a>: [c#] CPD suppression with comments doesn’t work</li>
-    </ul>
-  </li>
-  <li>cpp
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1757">#1757</a>: [cpp] Support unicode characters</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2549">#2549</a>: [java] Auxclasspath in PMD CLI does not support relative file path</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2545">#2545</a>: [java] UseDiamondOperator false negatives</li>
-      <li><a href="https://github.com/pmd/pmd/pull/2573">#2573</a>: [java] DefaultPackage: Allow package default JUnit 5 Test methods</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/2563">#2563</a>: [java] UselessOverridingMethod false negative with already public methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2570">#2570</a>: [java] NPathComplexity should mention the expected NPath complexity</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2544">#2544</a>: [java] UseProperClassLoader can not detect the case with method call on intermediate variable</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/2591">#2591</a>: [java] InefficientStringBuffering/AppendCharacterWithChar: Fix false negatives with concats in appends</li>
-      <li><a href="https://github.com/pmd/pmd/pull/2600">#2600</a>: [java] UseStringBufferForStringAppends: fix false negative with fields</li>
-    </ul>
-  </li>
-  <li>scala
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/2547">#2547</a>: [scala] Add cross compilation for scala 2.12 and 2.13</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<ul>
-  <li>
-    <p>The maven module <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala</code> is deprecated. Use <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.13</code>
-or <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> instead.</p>
-  </li>
-  <li>
-    <p>Rule implementation classes are internal API and should not be used by clients directly.
-The rules should only be referenced via their entry in the corresponding category ruleset
-(e.g. <code class="highlighter-rouge">&lt;rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" /&gt;</code>).</p>
-
-    <p>While we definitely won’t move or rename the rule classes in PMD 6.x, we might consider changes
-in PMD 7.0.0 and onwards.</p>
-  </li>
-</ul>
-
-<h4 id="deprecated-apis">Deprecated APIs</h4>
-
-<h5 id="internal-api">Internal API</h5>
-
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractIgnoredAnnotationRule.html#"><code>AbstractIgnoredAnnotationRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractInefficientZeroCheck.html#"><code>AbstractInefficientZeroCheck</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJUnitRule.html#"><code>AbstractJUnitRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJavaMetricsRule.html#"><code>AbstractJavaMetricsRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractLombokAwareRule.html#"><code>AbstractLombokAwareRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractPoorMethodCall.html#"><code>AbstractPoorMethodCall</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/bestpractices/AbstractSunSecureRule.html#"><code>AbstractSunSecureRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/AbstractNcssCountRule.html#"><code>AbstractNcssCountRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/documentation/AbstractCommentRule.html#"><code>AbstractCommentRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/performance/AbstractOptimizationRule.html#"><code>AbstractOptimizationRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/regex/RegexHelper.html#"><code>RegexHelper</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/AbstractApexUnitTestRule.html#"><code>AbstractApexUnitTestRule</code></a> (Apex)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/design/AbstractNcssCountRule.html#"><code>AbstractNcssCountRule</code></a> (Apex)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/AbstractNcssCountRule.html#"><code>AbstractNcssCountRule</code></a> (PLSQL)</li>
-</ul>
-
-<h5 id="for-removal">For removal</h5>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#TokenEntry(java.lang.String,java.lang.String,int)"><code>TokenEntry#TokenEntry</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/6.25.0-SNAPSHOT/net/sourceforge/pmd/testframework/AbstractTokenizerTest.html#"><code>AbstractTokenizerTest</code></a>. Use CpdTextComparisonTest in module pmd-lang-test instead.
-For details see
-<a href="pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation">Testing your implementation</a>
-in the developer documentation.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAnnotation.html#suppresses(net.sourceforge.pmd.Rule)"><code>ASTAnnotation#suppresses</code></a> (Apex)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/ApexXPathRule.html#"><code>ApexXPathRule</code></a> (Apex)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/SymbolTableTestRule.html#"><code>SymbolTableTestRule</code></a> (Java)</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.html#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node,int,java.lang.String)"><code>InefficientStringBufferingRule#isInStringBufferOperation</code></a></li>
-</ul>
-
-<h4 id="internal-api-1">Internal API</h4>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ApexParser.html#"><code>ApexParser</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ApexHandler.html#"><code>ApexHandler</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/RuleChain.html#"><code>RuleChain</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/RuleSets.html#"><code>RuleSets</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRuleSets(java.lang.String,net.sourceforge.pmd.RuleSetFactory)"><code>RulesetsFactoryUtils#getRuleSets</code></a></li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1932">#1932</a>: [java] Added 4 performance rules originating from PMD-jPinpoint-rules - <a href="https://github.com/jborgers">Jeroen Borgers</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2349">#2349</a>: [java] Optimize UnusedPrivateMethodRule - <a href="https://github.com/shilko2013">shilko2013</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2547">#2547</a>: [scala] Add cross compilation for scala 2.12 and 2.13 - <a href="https://github.com/jtjeferreira">João Ferreira</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2567">#2567</a>: [c#] Fix CPD suppression with comments doesn’t work - <a href="https://github.com/LixonLookose">Lixon Lookose</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2573">#2573</a>: [java] DefaultPackage: Allow package default JUnit 5 Test methods - <a href="https://github.com/candrews">Craig Andrews</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2593">#2593</a>: [java] NPathComplexity should mention the expected NPath complexity - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
-</ul>
 
 
 
@@ -1629,7 +1433,7 @@ in the developer documentation.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 26, 2020 <br />
+ Site last generated: Jun 27, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
