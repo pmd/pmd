@@ -133,6 +133,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   {% jdoc apex::lang.apex.rule.AbstractApexUnitTestRule %} (Apex)
 *   {% jdoc apex::lang.apex.rule.design.AbstractNcssCountRule %} (Apex)
 *   {% jdoc plsql::lang.plsql.rule.design.AbstractNcssCountRule %} (PLSQL)
+*   {% jdoc apex::lang.apex.ApexParser %}
+*   {% jdoc apex::lang.apex.ApexHandler %}
+*   {% jdoc core::RuleChain %}
+*   {% jdoc core::RuleSets %}
+*   {% jdoc !!core::RulesetsFactoryUtils#getRuleSets(java.lang.String, net.sourceforge.pmd.RuleSetFactory) %}
 
 ##### For removal
 
@@ -146,14 +151,6 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   {% jdoc java::lang.java.rule.SymbolTableTestRule %} (Java)
 *   {% jdoc !!java::lang.java.rule.performance.InefficientStringBufferingRule#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node, int, java.lang.String) %}
 
-#### Internal API
-
-*   {% jdoc apex::lang.apex.ApexParser %}
-*   {% jdoc apex::lang.apex.ApexHandler %}
-*   {% jdoc core::RuleChain %}
-*   {% jdoc core::RuleSets %}
-*   {% jdoc !!core::RulesetsFactoryUtils#getRuleSets(java.lang.String, net.sourceforge.pmd.RuleSetFactory) %}
-
 ### External Contributions
 
 *   [#1932](https://github.com/pmd/pmd/pull/1932): \[java] Added 4 performance rules originating from PMD-jPinpoint-rules - [Jeroen Borgers](https://github.com/jborgers)
@@ -162,6 +159,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
 *   [#2573](https://github.com/pmd/pmd/pull/2573): \[java] DefaultPackage: Allow package default JUnit 5 Test methods - [Craig Andrews](https://github.com/candrews)
 *   [#2593](https://github.com/pmd/pmd/pull/2593): \[java] NPathComplexity should mention the expected NPath complexity - [Artem Krosheninnikov](https://github.com/KroArtem)
+
+### Stats
+* 135 commits
+* 31 closed tickets & PRs
+* Days since last release: 33
 
 {% endtocmaker %}
 
