@@ -186,7 +186,7 @@ public class PMDParameters {
             throw new IllegalArgumentException(
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = new PMDConfiguration(languageRegistry);
         configuration.setInputPaths(this.getSourceDir());
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());

@@ -21,6 +21,21 @@ import java.util.TreeSet;
  */
 public final class LanguageLoader {
 
+    // TODO for now all languages are the same: everyone uses the DEFAULT LanguageLoader,
+    //  and the registered service is Language, not a service that creates a language from some properties.
+    //  This means Language instances are created just once in the constructor of LanguageLoader.DEFAULT.
+
+    // But the basic skeleton (create a LanguageRegistry at the very top of the call chain) is in place
+
+    // The dataflow is unclear, but mostly because PMDConfiguration is a mess:
+    //  - Rulesets should be created before we launch the analysis, not inside AbstractPmdProcessor.
+    //    This would remove the need for PMDConfiguration to contain a LanguageRegistry, or a rulesets string
+    //  - Objects of type PMD are useless.
+
+    // To support language properties, make the service interface something like described on the issue (PmdLanguagePlugin)
+    // Then add property arguments to the load methods, and decode them using the properties declared on
+    // the language plugin, before initializing language plugins with the values.
+
     public static final LanguageLoader DEFAULT = new LanguageLoader(LanguageLoader.class.getClassLoader());
 
     private final Set<Language> languages;

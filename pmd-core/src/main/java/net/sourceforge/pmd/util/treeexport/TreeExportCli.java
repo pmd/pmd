@@ -22,7 +22,6 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageLoader;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -60,7 +59,7 @@ public class TreeExportCli {
     private boolean readStdin;
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         TreeExportCli cli = new TreeExportCli();
         JCommander jcommander = JCommander.newBuilder()
                                           .addObject(cli)
@@ -86,7 +85,9 @@ public class TreeExportCli {
 
         PropertySource bundle = parseProperties(cli, descriptor);
 
-        cli.run(descriptor.produceRenderer(bundle));
+        try (LanguageRegistry lr = LanguageLoader.DEFAULT.load()) {
+            cli.run(lr, descriptor.produceRenderer(bundle));
+        }
     }
 
     public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
@@ -156,10 +157,10 @@ public class TreeExportCli {
         return StringEscapeUtils.escapeJava(prop.asDelimitedString(prop.defaultValue()));
     }
 
-    private void run(TreeRenderer renderer) throws IOException {
+    private void run(LanguageRegistry languageRegistry, TreeRenderer renderer) throws IOException {
         printWarning();
 
-        LanguageVersion langVersion = LanguageRegistry.findLanguageByTerseName(language).getDefaultVersion();
+        LanguageVersion langVersion = languageRegistry.findLanguageByTerseName(language).getDefaultVersion();
         LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
         Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
 

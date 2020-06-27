@@ -21,7 +21,7 @@ public class LanguageVersionDiscovererTest extends AbstractPLSQLParserTst {
      */
     @Test
     public void testPlsql() {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(languageRegistry());
         File plsqlFile = new File("/path/to/MY_PACKAGE.sql");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(plsqlFile);

@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleContext;
@@ -31,7 +32,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 
-public class MultiThreadProcessorTest {
+public class MultiThreadProcessorTest extends PmdContextualizedTest {
 
     private RuleContext ctx;
     private MultiThreadProcessor processor;
@@ -40,7 +41,7 @@ public class MultiThreadProcessorTest {
     private SimpleReportListener reportListener;
 
     public void setUpForTest(final String ruleset) {
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         configuration.setRuleSets(ruleset);
         configuration.setThreads(2);
         files = new ArrayList<>();
@@ -52,7 +53,7 @@ public class MultiThreadProcessorTest {
         ctx.getReport().addListener(reportListener);
 
         processor = new MultiThreadProcessor(configuration);
-        ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
+        ruleSetFactory = RulesetsFactoryUtils.defaultFactory(languageRegistry());
     }
 
     @Test

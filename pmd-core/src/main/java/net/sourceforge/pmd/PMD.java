@@ -91,7 +91,7 @@ public class PMD {
      * configuration may be required.
      */
     public PMD() {
-        this(new PMDConfiguration());
+        this(new PMDConfiguration(LanguageRegistry.STATIC));
     }
 
     /**

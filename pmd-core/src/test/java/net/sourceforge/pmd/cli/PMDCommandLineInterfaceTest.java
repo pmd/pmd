@@ -15,6 +15,7 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 
 /**
@@ -62,7 +63,7 @@ public class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         assertTrue(params.isIgnoreIncrementalAnalysis());
-        PMDConfiguration config = params.toConfiguration(languageRegistry);
+        PMDConfiguration config = params.toConfiguration(LanguageRegistry.STATIC);
         assertTrue(config.isIgnoreIncrementalAnalysis());
         assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
     }

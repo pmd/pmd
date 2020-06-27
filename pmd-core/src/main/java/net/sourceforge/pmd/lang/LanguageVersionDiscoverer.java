@@ -15,7 +15,13 @@ import java.util.Map;
  * here.
  */
 public class LanguageVersionDiscoverer {
-    private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
+
+    private final LanguageRegistry languageRegistry;
+    private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
+
+    public LanguageVersionDiscoverer(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
+    }
 
     /**
      * Set the given LanguageVersion as the current default for it's Language.
@@ -101,7 +107,7 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
-        return LanguageRegistry.STATIC.findByExtension(extension);
+        return languageRegistry.findByExtension(extension);
     }
 
     // Get the extensions from a file

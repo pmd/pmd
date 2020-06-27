@@ -100,7 +100,11 @@ public final class RulesetsFactoryUtils {
      * @see #createFactory(PMDConfiguration, ClassLoader)
      */
     public static RuleSetFactory defaultFactory() {
-        return createFactory(LanguageRegistry.STATIC, RulePriority.LOW, false, true);
+        return defaultFactory(LanguageRegistry.STATIC);
+    }
+
+    public static RuleSetFactory defaultFactory(LanguageRegistry languageRegistry) {
+        return createFactory(languageRegistry, RulePriority.LOW, false, true);
     }
 
     /**
@@ -116,7 +120,8 @@ public final class RulesetsFactoryUtils {
      * @see #createFactory(PMDConfiguration)
      */
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
-        return createFactory(classLoader,
+        return createFactory(configuration.getLanguageRegistry(),
+                             classLoader,
                              configuration.getMinimumPriority(),
                              true,
                              configuration.isRuleSetFactoryCompatibilityEnabled());

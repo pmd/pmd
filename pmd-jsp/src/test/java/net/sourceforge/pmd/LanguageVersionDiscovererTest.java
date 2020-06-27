@@ -21,7 +21,7 @@ public class LanguageVersionDiscovererTest extends AbstractJspNodesTst {
      */
     @Test
     public void testJspFile() {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(languageRegistry());
         File jspFile = new File("/path/to/MyPage.jsp");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
         assertEquals("LanguageVersion must be JSP!", jsp.getLanguage().getDefaultVersion(), languageVersion);

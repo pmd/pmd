@@ -541,8 +541,7 @@ public class RuleSetTest extends PmdContextualizedTest {
             public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
-        })).
-        addRule(dummyRule(new MockRule() {
+        })).addRule(dummyRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
@@ -577,8 +576,7 @@ public class RuleSetTest extends PmdContextualizedTest {
             public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
-        })).
-        addRule(dummyRule(new MockRule() {
+        })).addRule(dummyRule(new MockRule() {
 
             @Override
             protected @NonNull RuleTargetSelector buildTargetSelector() {

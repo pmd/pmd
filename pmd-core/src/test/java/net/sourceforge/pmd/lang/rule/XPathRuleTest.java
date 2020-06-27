@@ -11,10 +11,9 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
@@ -22,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
-public class XPathRuleTest {
+public class XPathRuleTest extends PmdContextualizedTest {
 
     @Rule
     public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
@@ -43,7 +42,7 @@ public class XPathRuleTest {
         loggingRule.clear();
 
         RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ctx.setLanguageVersion(dummyLanguage().getDefaultVersion());
         DummyNode firstNode = newNodeWithList();
         xpr.apply(firstNode, ctx);
         assertEquals(1, ctx.getReport().size());
@@ -93,7 +92,7 @@ public class XPathRuleTest {
         loggingRule.clear();
 
         RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ctx.setLanguageVersion(dummyLanguage().getDefaultVersion());
         DummyNode firstNode = newNode();
         xpr.apply(firstNode, ctx);
         assertEquals(1, ctx.getReport().size());

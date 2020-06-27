@@ -22,7 +22,7 @@ public class LanguageVersionDiscovererTest extends BaseParserTest {
      */
     @Test
     public void testJavaFileUsingDefaults() {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(languageRegistry());
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
@@ -34,7 +34,7 @@ public class LanguageVersionDiscovererTest extends BaseParserTest {
      */
     @Test
     public void testJavaFileUsing14() {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(languageRegistry());
         discoverer.setDefaultLanguageVersion(java.getLanguage().getVersion("1.4"));
         File javaFile = new File("/path/to/MyClass.java");
 
@@ -45,7 +45,7 @@ public class LanguageVersionDiscovererTest extends BaseParserTest {
 
     @Test
     public void testLanguageVersionDiscoverer() {
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = new PMDConfiguration(languageRegistry());
         LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
         Language javaLang = java.getLanguage();
         assertEquals("Default Java version", javaLang.getVersion("14"), languageVersionDiscoverer.getDefaultLanguageVersion(javaLang));

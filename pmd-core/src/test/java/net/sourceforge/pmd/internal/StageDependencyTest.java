@@ -36,7 +36,7 @@ public class StageDependencyTest extends PmdContextualizedTest {
     private final LanguageVersion version = languageRegistry().findLanguageByTerseName("dummy").getVersion("1.0");
 
     private DummyNode process(String source, RuleSets ruleSets) {
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         return process(source, ruleSets, new RulesetStageDependencyHelper(configuration), configuration);
     }
 
@@ -102,7 +102,7 @@ public class StageDependencyTest extends PmdContextualizedTest {
     @Test
     public void testNoRecomputation() throws PMDException {
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
 
         RuleSets ruleSets = withRules(new PredicateTestRule(DummyAstStages.RUNS_FOO));
@@ -119,7 +119,7 @@ public class StageDependencyTest extends PmdContextualizedTest {
     @Test
     public void testDependencyOrdering() throws PMDException {
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
 
         RuleSets ruleSets = withRules(

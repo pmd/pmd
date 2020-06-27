@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java;
 
 import static org.junit.Assert.assertEquals;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 public class SuppressWarningsTest extends RuleTst {
@@ -41,10 +43,17 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testClassLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST1, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST1, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
-        runTestFromString(TEST2, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST2, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
+    }
+
+    @NonNull
+    public FooRule newFooRule() {
+        FooRule rule = new FooRule();
+        rule.setLanguage(languageRegistry().getLanguage(DummyLanguageModule.NAME));
+        return rule;
     }
 
     private Language javaLanguage() {
@@ -54,28 +63,28 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testInheritedSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST3, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST3, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testMethodLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST4, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST4, newFooRule(), rpt, java5Version());
         assertEquals(1, rpt.size());
     }
 
     @Test
     public void testConstructorLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST5, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST5, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testFieldLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST6, new FooRule(), rpt,
+        runTestFromString(TEST6, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -83,7 +92,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testParameterLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST7, new FooRule(), rpt,
+        runTestFromString(TEST7, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -91,7 +100,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testLocalVariableLevelSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST8, new FooRule(), rpt,
+        runTestFromString(TEST8, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -99,7 +108,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testSpecificSuppression() {
         Report rpt = new Report();
-        runTestFromString(TEST9, new FooRule(), rpt,
+        runTestFromString(TEST9, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -107,7 +116,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testSpecificSuppressionValue1() {
         Report rpt = new Report();
-        runTestFromString(TEST9_VALUE1, new FooRule(), rpt,
+        runTestFromString(TEST9_VALUE1, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -115,7 +124,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testSpecificSuppressionValue2() {
         Report rpt = new Report();
-        runTestFromString(TEST9_VALUE2, new FooRule(), rpt,
+        runTestFromString(TEST9_VALUE2, newFooRule(), rpt,
                           java5Version());
         assertEquals(1, rpt.size());
     }
@@ -123,7 +132,7 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testSpecificSuppressionValue3() {
         Report rpt = new Report();
-        runTestFromString(TEST9_VALUE3, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST9_VALUE3, newFooRule(), rpt, java5Version());
         assertEquals(1, rpt.size());
     }
 
@@ -134,35 +143,35 @@ public class SuppressWarningsTest extends RuleTst {
     @Test
     public void testSpecificSuppressionMulitpleValues1() {
         Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST9_MULTIPLE_VALUES_1, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues2() {
         Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST9_MULTIPLE_VALUES_2, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
     }
 
     @Test
     public void testNoSuppressionBlank() {
         Report rpt = new Report();
-        runTestFromString(TEST10, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST10, newFooRule(), rpt, java5Version());
         assertEquals(2, rpt.size());
     }
 
     @Test
     public void testNoSuppressionSomethingElseS() {
         Report rpt = new Report();
-        runTestFromString(TEST11, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST11, newFooRule(), rpt, java5Version());
         assertEquals(2, rpt.size());
     }
 
     @Test
     public void testSuppressAll() {
         Report rpt = new Report();
-        runTestFromString(TEST12, new FooRule(), rpt, java5Version());
+        runTestFromString(TEST12, newFooRule(), rpt, java5Version());
         assertEquals(0, rpt.size());
     }
 

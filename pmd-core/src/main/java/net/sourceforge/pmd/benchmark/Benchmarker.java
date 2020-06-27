@@ -122,11 +122,11 @@ public final class Benchmarker {
                 Set<RuleDuration> results = new TreeSet<>();
                 RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
                 if (StringUtils.isNotBlank(ruleset)) {
-                    stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
+                    stress(registry, languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
                 } else {
                     Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                     while (i.hasNext()) {
-                        stress(languageVersion, i.next(), dataSources, results, debug);
+                        stress(registry, languageVersion, i.next(), dataSources, results, debug);
                     }
                 }
 
@@ -176,11 +176,15 @@ public final class Benchmarker {
      * @throws PMDException
      * @throws IOException
      */
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
-            Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageRegistry languageRegistry,
+                               LanguageVersion languageVersion,
+                               RuleSet ruleSet,
+                               List<DataSource> dataSources,
+                               Set<RuleDuration> results,
+                               boolean debug) throws PMDException, IOException {
 
         final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        for (Rule rule: ruleSet.getRules()) {
+        for (Rule rule : ruleSet.getRules()) {
             if (debug) {
                 System.out.println("Starting " + rule.getName());
             }
@@ -188,7 +192,7 @@ public final class Benchmarker {
             final RuleSet working = factory.createSingleRuleRuleSet(rule);
             RuleSets ruleSets = new RuleSets(working);
 
-            PMDConfiguration config = new PMDConfiguration();
+            PMDConfiguration config = new PMDConfiguration(languageRegistry);
             config.setDefaultLanguageVersion(languageVersion);
 
             RuleContext ctx = new RuleContext();

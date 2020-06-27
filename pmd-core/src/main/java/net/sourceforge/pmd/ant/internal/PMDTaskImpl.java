@@ -42,7 +42,6 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -54,14 +53,15 @@ public class PMDTaskImpl {
     private Path auxClasspath;
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
-    private final PMDConfiguration configuration = new PMDConfiguration();
+    private final PMDConfiguration configuration;
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
     private Project project;
 
-    public PMDTaskImpl(PMDTask task) {
+    public PMDTaskImpl(PMDTask task, LanguageRegistry registry) {
+        configuration = new PMDConfiguration(registry);
         configuration.setReportShortNames(task.isShortFilenames());
         configuration.setSuppressMarker(task.getSuppressMarker());
         this.failOnError = task.isFailOnError();
@@ -83,7 +83,7 @@ public class PMDTaskImpl {
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
-            Language lang = LanguageRegistry.findLanguageByTerseName(version.getName());
+            Language lang = registry.findLanguageByTerseName(version.getName());
             LanguageVersion languageVersion = lang == null ? null : lang.getVersion(version.getVersion());
             if (languageVersion == null) {
                 throw new BuildException("The following language is not supported:" + version + '.');

@@ -11,6 +11,7 @@ import java.io.File;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -22,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public abstract class AbstractRendererTest {
+public abstract class AbstractRendererTest extends PmdContextualizedTest {
 
     public abstract Renderer getRenderer();
 
@@ -78,7 +79,7 @@ public abstract class AbstractRendererTest {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
+        return new ParametricRuleViolation<Node>(dummyRule(new FooRule()), ctx, node, "blah");
     }
 
     protected static DummyNode createNode(int endColumn) {

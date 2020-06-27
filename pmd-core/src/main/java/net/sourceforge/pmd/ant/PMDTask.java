@@ -16,6 +16,8 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
+import net.sourceforge.pmd.lang.LanguageLoader;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 public class PMDTask extends Task {
 
@@ -45,9 +47,11 @@ public class PMDTask extends Task {
 
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(PMDTask.class.getClassLoader());
-        try {
-            PMDTaskImpl mirror = new PMDTaskImpl(this);
+        try (LanguageRegistry registry = LanguageLoader.DEFAULT.load()) {
+            PMDTaskImpl mirror = new PMDTaskImpl(this, registry);
             mirror.execute();
+        } catch (Exception e) {
+            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }

@@ -57,7 +57,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new DefaultASTXPathHandler() {
                 @Override
                 public void initialize(IndependentContext context) {
-                    super.initialize(context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
+                    super.initialize(context, LanguageRegistry.STATIC.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
                 }
 
                 @Override

@@ -83,7 +83,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = PMD.SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private final LanguageVersionDiscoverer languageVersionDiscoverer;
 
     // Rule and source file options
     private String ruleSets;
@@ -106,6 +106,17 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+
+    private final LanguageRegistry languageRegistry;
+
+    public PMDConfiguration(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
+        languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
+    }
+
+    public LanguageRegistry getLanguageRegistry() {
+        return languageRegistry;
+    }
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -249,7 +260,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(languageRegistry.getLanguage("Java"));
         }
         return languageVersion;
     }

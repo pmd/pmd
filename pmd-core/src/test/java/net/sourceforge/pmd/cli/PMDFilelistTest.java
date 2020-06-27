@@ -15,17 +15,18 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PMDFilelistTest {
+public class PMDFilelistTest extends PmdContextualizedTest {
     @Test
     public void testGetApplicableFiles() {
         Set<Language> languages = new HashSet<>();
-        languages.add(new DummyLanguageModule());
+        languages.add(dummyLanguage());
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         configuration.setInputFilePath("src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
 
         List<DataSource> applicableFiles = PMD.getApplicableFiles(configuration, languages);
@@ -39,7 +40,7 @@ public class PMDFilelistTest {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         configuration.setInputFilePath("src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
 
         List<DataSource> applicableFiles = PMD.getApplicableFiles(configuration, languages);
@@ -54,7 +55,7 @@ public class PMDFilelistTest {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         configuration.setInputFilePath("src/test/resources/net/sourceforge/pmd/cli/filelist3.txt");
         configuration.setIgnoreFilePath("src/test/resources/net/sourceforge/pmd/cli/ignorelist.txt");
 
@@ -69,7 +70,7 @@ public class PMDFilelistTest {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
-        PMDConfiguration configuration = new PMDConfiguration();
+        PMDConfiguration configuration = newConfiguration();
         configuration.setInputPaths("src/test/resources/net/sourceforge/pmd/cli/src");
         configuration.setIgnoreFilePath("src/test/resources/net/sourceforge/pmd/cli/ignorelist.txt");
 
