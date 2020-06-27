@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -86,26 +84,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     }
 
     private boolean isConsideredReturnType(Method method) {
-        return isSimpleType(method.getReturnType()) || isSequence(method.getGenericReturnType());
-    }
-
-    private boolean isSimpleType(Class<?> klass) {
+        Class<?> klass = method.getReturnType();
         return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
     }
-
-    // Note: Lists are deprecated with 6.25.0, see #2451
-    // we still allow them here for compatibility, but this can be removed with PMD 7.
-    @Deprecated
-    private boolean isSequence(Type returnType) {
-        if (returnType instanceof ParameterizedType && ((ParameterizedType) returnType).getRawType() == List.class) {
-            Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
-            return actualTypeArguments.length == 1
-                    && actualTypeArguments[0] instanceof Class
-                    && isSimpleType((Class<?>) actualTypeArguments[0]);
-        }
-        return false;
-    }
-
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
         Class<?> declaration = method.getDeclaringClass();

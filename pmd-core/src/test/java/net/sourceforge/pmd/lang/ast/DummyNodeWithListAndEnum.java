@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.DummyRoot;
-
 public class DummyNodeWithListAndEnum extends DummyRoot {
     public DummyNodeWithListAndEnum() {
         super();

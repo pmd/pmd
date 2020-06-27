@@ -63,9 +63,8 @@ public class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        assertEquals(7, atts.size());
-        assertTrue(atts.containsKey("List"));
-        assertEquals(Arrays.asList("A", "B"), atts.get("List").getValue());
+        assertEquals(6, atts.size());
+        assertFalse(atts.containsKey("List"));
         assertFalse(atts.containsKey("NodeList"));
     }
 
