@@ -2220,5 +2220,226 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>DU anomaly false positive? #1304</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static org.apache.commons.lang3.StringUtils.trimToNull;
+
+            public class DummyService {
+
+                public boolean dummyMethod(final String stringValue, final Set<String> dummySet) {
+                    final String trimmedValue = trimToNull(stringValue);
+                    return dummySet.stream()
+                                   .noneMatch(value -> value.equalsIgnoreCase(trimmedValue));
+                }
+
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis DU false positive #399</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public int indexOf(Object obj) {
+                    // throws ClassCastException
+                    Integer dig = (Integer)obj;
+                    if (dig != 0 && dig != 1) {
+                        return -1;
+                    }
+                    // throws IllegalArgumentException and NullPointerException
+                    boolean cand = int2bool(dig);//<cand
+                    for(int i = 0; i < this.size; i++) {
+                        if (cand == this.digits[i]) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis: DD false positive #400</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public T addS(List<T> args) {
+                    T res = zeroS();//<res
+                    for (T arg : args) {
+                        res = res.add(arg);
+                    }
+
+                    return res;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU Anomaly #1107</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Sample {
+
+                private static final LocalTime ONE_PAST_MIDNIGHT = MIDNIGHT.plusMinutes(1);
+
+                public ZonedDateTime sample(final String date, final ZonedDateTime paymentTimeStamp) {
+                    final ZonedDateTime startOfDayOnInceptionDate = zonedDateTimeAtOnePastMidnight(date, paymentTimeStamp.getZone());
+                    final ZonedDateTime startOfDayOnPaymentDate = zonedDateTimeAtOnePastMidnight(paymentTimeStamp.toLocalDate(), paymentTimeStamp.getZone());
+                    if (startOfDayOnInceptionDate.isAfter(paymentTimeStamp)) {
+                        return startOfDayOnInceptionDate;
+                    } else if (paymentTimeStamp.isAfter(startOfDayOnPaymentDate)) {
+                        return paymentTimeStamp;
+                    } else {
+                        return startOfDayOnPaymentDate;
+                    }
+                }
+
+                public ZonedDateTime zonedDateTimeAtOnePastMidnight(final String date, final ZoneId zoneId) {
+                    return zonedDateTimeAtOnePastMidnight(parseStringWithIsoDateFormat(date), zoneId);
+                }
+
+                private ZonedDateTime zonedDateTimeAtOnePastMidnight(final LocalDate localDate, final ZoneId zoneId) {
+                    return ZonedDateTime.of(localDate, ONE_PAST_MIDNIGHT, zoneId);
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis: DD false positive for arrays #1251</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public void test() {
+                    final BigInteger[] msg2 = new BigInteger[11];
+                    msg2[0] = G1.modPow(x2, OtrCryptoEngine.MODULUS);
+                    BigInteger[] res = proofKnowLog(x2, 3);
+                    msg2[1] = res[0];
+                    msg2[2] = res[1];
+                    // etc.
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU false positive in DataflowAnomalyAnalysis #1606</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Fib {
+                /** utility class */
+                private Fib() {}
+
+                public static int fib(final int n) {
+                    Preconditions.checkArgument(n >= 0);
+
+                    if (n < 2) {
+                        return n;
+                    } else {
+                        int a = 0;
+                        int b = 1;
+                        final int m = n - 1;
+
+                        for (int i = 0; i < m; i++) {
+                            final int c = a;
+                            a = b;
+                            b = c + b;
+                        }
+
+                        return b;
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false-positive in DD-part of DataflowAnomalyAnalysis #1675</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public void test() {
+                    Formatter formatter = null;
+                    if (formatterClassName != null) {
+                        try {
+                            Class<? extends Formatter> formatterClass = findClass(formatterClassName);
+                            formatter = formatterClass.getDeclaredConstructor().newInstance();
+                        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ignored) {
+                        }
+                    }
+                    setFormatter((formatter == null) ? new SimpleFormatter() : formatter);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU false positive in DataflowAnomalyAnalysis #1682</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public void append(LogEvent event) {
+                    String logMessage = wrapIn.wrap(new String(getLayout().toByteArray(event), getLayout().getCharset()));
+                    DiscordManager discordManager = findDiscordManager();
+                    if (discordManager == null) {
+                        bufferMessage(logMessage, event.getTimeMillis());
+                    } else {
+                        bufferedMessagesByAppenderName.computeIfPresent(getName(), (name, bufferedMessages) -> {
+                            bufferedMessages.forEach(bufferedMessage -> sendMessage(discordManager, bufferedMessage));
+                            return null;
+                        });
+                        sendMessage(discordManager, logMessage);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis has false positive for object initialised outside loop. #2131</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.stream.Collectors;
+            import java.util.stream.IntStream;
+
+            public class TestDu {
+
+                private List<String> list = new ArrayList<>();
+
+                public void run() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    for (int i = 0; i < 10_000; i++) {
+                        list.add(String.format(str, i));
+                    }
+                }
+
+                public void runAgain() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    for (int i = 0; i < 10_000; i++)
+                        list.add(String.format(str, i));
+                }
+
+                public void runOnceMore() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    list =  IntStream.range(0, 10_000)
+                                     .mapToObj(i -> String.format(str, i))
+                                     .collect(Collectors.toList());
+                }
+            }
+        ]]></code>
+    </test-code>
+
 
 </test-data>
