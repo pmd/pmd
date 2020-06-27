@@ -9,7 +9,8 @@
 Rules that help you discover design issues.
     </description>
 
-    <rule name="AvoidDeeplyNestedIfStmts"
+    <rule language="vm"
+          name="AvoidDeeplyNestedIfStmts"
           since="5.1"
           message="Deeply nested if..then statements are hard to read"
           class="net.sourceforge.pmd.lang.vm.rule.design.AvoidDeeplyNestedIfStmtsRule"
@@ -20,7 +21,8 @@ Avoid creating deeply nested if-then statements since they are harder to read an
         <priority>3</priority>
     </rule>
 
-    <rule name="CollapsibleIfStatements"
+    <rule language="vm"
+          name="CollapsibleIfStatements"
           since="5.1"
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.lang.vm.rule.design.CollapsibleIfStatementsRule"
@@ -31,7 +33,8 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
         <priority>3</priority>
     </rule>
 
-    <rule name="ExcessiveTemplateLength"
+    <rule language="vm"
+          name="ExcessiveTemplateLength"
           since="5.1"
           message="Template is too long"
           class="net.sourceforge.pmd.lang.vm.rule.design.ExcessiveTemplateLengthRule"
@@ -45,7 +48,8 @@ The template is too long. It should be broken up into smaller pieces.
         </properties>
     </rule>
 
-    <rule name="NoInlineJavaScript"
+    <rule language="vm"
+          name="NoInlineJavaScript"
           since="5.1"
           message="Avoid inline JavaScript"
           class="net.sourceforge.pmd.lang.vm.rule.design.NoInlineJavaScriptRule"
@@ -56,10 +60,10 @@ Avoid inline JavaScript. Import .js files instead.
         <priority>2</priority>
     </rule>
 
-    <rule name="NoInlineStyles"
+    <rule language="vm"
+          name="NoInlineStyles"
           since="5.1"
           message="Avoid inline styles"
-          language="vm"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#noinlinestyles">
         <description>
