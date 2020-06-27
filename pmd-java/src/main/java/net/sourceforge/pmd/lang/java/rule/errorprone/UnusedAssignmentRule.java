@@ -186,7 +186,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     reason = "goes out of scope";
                 } else if (killers.size() == 1) {
                     AssignmentEntry k = killers.iterator().next();
-                    reason = "overwritten on line " + k.rhs.getBeginLine();
+                    if (k.rhs.equals(entry.rhs)) {
+                        reason = "reassigned every iteration";
+                    } else {
+                        reason = "overwritten on line " + k.rhs.getBeginLine();
+                    }
                 } else {
                     reason = joinLines("overwritten on lines ", killers);
                 }
@@ -215,6 +219,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         if (assignment.rhs instanceof ASTVariableInitializer) {
             format.append(isField ? "field initializer for"
                                   : "initializer for variable");
+        } else if (assignment.rhs instanceof ASTVariableDeclaratorId) {
+            format.append("value of parameter"); // method param/ctor param/foreach param/exception param
         } else {
             if (assignment.rhs instanceof ASTPreIncrementExpression
                 || assignment.rhs instanceof ASTPreDecrementExpression
@@ -543,7 +549,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (node.isForeach()) {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
-                ASTVariableDeclaratorId foreachVar = (ASTVariableDeclaratorId) node.getChild(0).getChild(1).getChild(0);
+                ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
                 return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar.getNameDeclaration());
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
@@ -572,6 +578,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             before = acceptOpt(init, before);
             if (checkFirstIter) { // false for do-while
                 before = acceptOpt(cond, before);
+            }
+
+            if (foreachVar != null) {
+                // in foreach loops, the loop variable is assigned before the first iteration
+                before.assign(foreachVar, (JavaNode) foreachVar.getNode());
             }
 
             SpanInfo breakTarget = before.forkEmpty();
@@ -610,6 +621,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 // then it could be false on the first try, meaning
                 // the definitions before the loop reach after too
                 result = result.absorb(before);
+            }
+
+            if (foreachVar != null) {
+                result.deleteVar(foreachVar);
             }
 
             return result;

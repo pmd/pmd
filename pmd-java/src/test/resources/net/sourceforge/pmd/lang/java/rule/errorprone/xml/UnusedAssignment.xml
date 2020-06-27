@@ -179,11 +179,12 @@ public class Foo {
 
     <test-code>
         <description>Local variable in loop</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>10,19</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>10,11,19</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'fail' is never used (overwritten on line 19)</message>
-            <message>The value assigned to variable 'fail' is never used (overwritten on line 19)</message>
+            <message>The value of parameter 'j' is never used (reassigned every iteration)</message>
+            <message>The value assigned to variable 'fail' is never used (reassigned every iteration)</message>
         </expected-messages>
         <code><![CDATA[
 public class LoopTest {
@@ -279,8 +280,7 @@ class Test{
         <expected-linenumbers>3,5</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'a' is never used (overwritten on line 5)</message>
-            <!-- Overwrites itself -->
-            <message>The value assigned to variable 'a' is never used (overwritten on line 5)</message>
+            <message>The value assigned to variable 'a' is never used (reassigned every iteration)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -345,6 +345,24 @@ class Test{
     </test-code>
 
     <test-code>
+        <description>Foreach unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value of parameter 'a' is never used (reassigned every iteration)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int[] b = new int[10];
+        for(int a : b){
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>While loop 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -367,7 +385,7 @@ class Test{
         <expected-linenumbers>4,7</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
-            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'i' is never used (reassigned every iteration)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -1978,56 +1996,56 @@ public class Foo {
         ]]></code>
     </test-code>
 
-<!--    <test-code>-->
-<!--        <description>Test shortcut AND</description>-->
-<!--        <expected-problems>1</expected-problems>-->
-<!--        <expected-linenumbers>5</expected-linenumbers>-->
-<!--        <expected-messages>-->
-<!--            <message>The initializer for variable 'k' is never used (overwritten on line 5)</message>-->
-<!--        </expected-messages>-->
-<!--        <code><![CDATA[-->
-<!--class Foo {-->
+    <test-code>
+        <description>Test shortcut AND</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'k' is never used (overwritten on line 9)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
 
-<!--  void main(int[] bufline, int start, int bufsize) {-->
+  void main(int[] bufline, int start, int bufsize) {
 
-<!--    int i = 0, j, k = 0;-->
+    int i = 0, j, k = 0;
 
-<!--    while (i < bufline.length-->
-<!--        // this is AND-->
-<!--        && bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {-->
+    while (i < bufline.length
+        // this is AND
+        && bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
 
-<!--      bufline[j] = bufline[k];-->
-<!--      i++;-->
-<!--    }-->
-<!--  }-->
-<!--}-->
+      bufline[j] = bufline[k];
+      i++;
+    }
+  }
+}
 
-<!--        ]]></code>-->
-<!--    </test-code>-->
+        ]]></code>
+    </test-code>
 
-<!--    <test-code>-->
-<!--        <description>Test shortcut OR</description>-->
-<!--        <expected-problems>0</expected-problems>-->
-<!--        <code><![CDATA[-->
-<!--class Foo {-->
+    <test-code>
+        <description>Test shortcut OR</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
 
-<!--  void main(int[] bufline, int start, int bufsize) {-->
+  void main(int[] bufline, int start, int bufsize) {
 
-<!--    int i = 0, j, k = 0;-->
+    int i = 0, j, k = 0;
 
-<!--    while (i < bufline.length-->
-<!--        // this is OR-->
-<!--        || bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {-->
+    while (i < bufline.length
+        // this is OR
+        || bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
 
-<!--      // here j, k might be their initializers-->
-<!--      bufline[j] = bufline[k];-->
-<!--      i++;-->
-<!--    }-->
-<!--  }-->
-<!--}-->
+      // here j, k might be their initializers
+      bufline[j] = bufline[k];
+      i++;
+    }
+  }
+}
 
-<!--        ]]></code>-->
-<!--    </test-code>-->
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Test shortcut OR</description>
@@ -2438,6 +2456,37 @@ class Foo {
                                      .collect(Collectors.toList());
                 }
             }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ClassCastException with annotated foreach var</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+
+            import static unknown.K.*;
+
+            class Foo {
+                {
+                    for (String s : someExpression()) {
+
+                    }
+
+                    for (final String s : someExpression()) {
+
+                    }
+
+                    for (@Annot final String s : someExpression()) {
+
+                    }
+
+                    for (final @Annot String s : someExpression()) {
+
+                    }
+                }
+            }
+
         ]]></code>
     </test-code>
 
