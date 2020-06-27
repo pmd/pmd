@@ -626,7 +626,7 @@ public class RuleSetFactory {
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (StringUtils.isBlank(ruleElement.getAttribute("language"))) {
-            LOG.warning("Rule " + ruleSetReferenceId.toString() + "/" + rule.getName() + " does not mention attribute"
+            LOG.warning("Rule " + ruleSetReferenceId.getRuleSetFileName() + "/" + rule.getName() + " does not mention attribute"
                             + " language='" + rule.getLanguage().getTerseName() + "',"
                             + " please mention it explicitly to be compatible with PMD 7");
         }
