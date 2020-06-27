@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
@@ -134,8 +135,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     private static final PropertyDescriptor<Boolean> REPORT_UNUSED_VARS =
         PropertyFactory.booleanProperty("reportUnusedVariables")
                        .desc("Report variables that are only initialized, and never read at all. "
-                                 + "The rule UnusedVariable already cares for that, so you can disable it if needed")
-                       .defaultValue(true)
+                                 + "The rule UnusedVariable already cares for that, but you can enable it if needed")
+                       .defaultValue(false)
                        .build();
 
     public UnusedAssignmentRule() {
@@ -175,6 +176,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 Set<AssignmentEntry> killers = result.killRecord.get(entry);
                 final String reason;
                 if (killers == null || killers.isEmpty()) {
+                    // var went out of scope before being used (no assignment kills it, yet it's unused)
+
                     if (isField) {
                         // assignments to fields don't really go out of scope
                         continue;
@@ -183,7 +186,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                         continue;
                     }
                     // This is a "DU" anomaly, the others are "DD"
-                    reason = "goes out of scope";
+                    reason = null;
                 } else if (killers.size() == 1) {
                     AssignmentEntry k = killers.iterator().next();
                     if (k.rhs.equals(entry.rhs)) {
@@ -200,7 +203,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {
-        return !getProperty(REPORT_UNUSED_VARS) && entry.rhs instanceof ASTVariableInitializer;
+        return !getProperty(REPORT_UNUSED_VARS) && entry.rhs instanceof ASTVariableInitializer
+            || entry.rhs instanceof ASTVariableDeclaratorId;
+    }
+
+    private static String getKind(VariableNameDeclaration var) {
+        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.getNode();
+        return id.isField()
+               ? "field"
+               : id.isResourceDeclaration()
+                 ? "resource"
+                 : id.isExceptionBlockParameter()
+                   ? "exception parameter"
+                   : "variable";
     }
 
     private boolean isIgnorablePrefixIncrement(JavaNode assignment) {
@@ -213,27 +228,30 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         return false;
     }
 
-    private static String makeMessage(AssignmentEntry assignment, String reason, boolean isField) {
+    private static String makeMessage(AssignmentEntry assignment, /* Nullable */ String reason, boolean isField) {
         String varName = assignment.var.getName();
-        StringBuilder format = new StringBuilder("The ");
+        StringBuilder result = new StringBuilder("The ");
         if (assignment.rhs instanceof ASTVariableInitializer) {
-            format.append(isField ? "field initializer for"
+            result.append(isField ? "field initializer for"
                                   : "initializer for variable");
         } else if (assignment.rhs instanceof ASTVariableDeclaratorId) {
-            format.append("value of parameter"); // method param/ctor param/foreach param/exception param
+            result.append("value of ").append(getKind(assignment.var));
         } else {
             if (assignment.rhs instanceof ASTPreIncrementExpression
                 || assignment.rhs instanceof ASTPreDecrementExpression
                 || assignment.rhs instanceof ASTPostfixExpression) {
-                format.append("updated value of ");
+                result.append("updated value of ");
             } else {
-                format.append("value assigned to ");
+                result.append("value assigned to ");
             }
-            format.append(isField ? "field" : "variable");
+            result.append(isField ? "field" : "variable");
         }
-        format.append(" ''").append(varName).append("''");
-        format.append(" is never used (").append(reason).append(")");
-        return format.toString();
+        result.append(" ''").append(varName).append("''");
+        result.append(" is never used");
+        if (reason != null) {
+            result.append(" (").append(reason).append(")");
+        }
+        return result.toString();
     }
 
     private static String joinLines(String prefix, Set<AssignmentEntry> killers) {
@@ -703,6 +721,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         // following deals with assignment
 
+        @Override
+        public Object visit(ASTFormalParameter node, Object data) {
+            if (!node.isExplicitReceiverParameter()) {
+                ASTVariableDeclaratorId id = node.getVariableDeclaratorId();
+                ((SpanInfo) data).assign(id.getNameDeclaration(), id);
+            }
+            return data;
+        }
 
         @Override
         public Object visit(ASTVariableDeclarator node, Object data) {
@@ -711,6 +737,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
                 ((SpanInfo) data).assign(var, rhs);
+            } else {
+                ((SpanInfo) data).assign(var, node.getVariableId());
             }
             return data;
         }
@@ -989,6 +1017,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
 
+        final Set<VariableNameDeclaration> unusedVars;
+
         // track which assignments kill which
         // assignment -> killers(assignment)
         final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
@@ -999,15 +1029,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
                                 Set<AssignmentEntry> usedAssignments,
+                                Set<VariableNameDeclaration> unusedVars,
                                 Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
+            this.unusedVars = unusedVars;
             this.killRecord = killRecord;
+
         }
 
         private GlobalAlgoState() {
             this(new HashSet<AssignmentEntry>(),
                  new HashSet<AssignmentEntry>(),
+                 new HashSet<VariableNameDeclaration>(),
                  new HashMap<AssignmentEntry, Set<AssignmentEntry>>());
         }
     }
@@ -1082,6 +1116,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (previous != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry killed : previous.reachingDefs) {
+                    if (killed.rhs instanceof ASTVariableDeclaratorId && killed.rhs != rhs) {
+                        continue;
+                    }
                     // java8: computeIfAbsent
                     Set<AssignmentEntry> killers = global.killRecord.get(killed);
                     if (killers == null) {
