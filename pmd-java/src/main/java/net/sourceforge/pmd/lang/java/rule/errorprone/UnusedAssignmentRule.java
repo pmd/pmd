@@ -124,6 +124,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * shortcut conditionals have their own control-flow
            * parenthesized expressions
            * conditional exprs in loops
+           * ignore variables that start with 'ignore'
 
      */
 
@@ -205,9 +206,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else {
                     reason = joinLines("overwritten on lines ", killers);
                 }
+                if (reason == null && hasExplicitIgnorableName(entry.var.getName())) {
+                    // Then the variable is never used (cf UnusedVariable)
+                    // We ignore those that start with "ignored", as that is standard
+                    // practice for exceptions, and may be useful for resources/foreach vars
+                    continue;
+                }
                 addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, isField));
             }
         }
+    }
+
+    private boolean hasExplicitIgnorableName(String name) {
+        return name.startsWith("ignored")
+            || "_".equals(name); // before java 9 it's ok
     }
 
     private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {

@@ -2676,5 +2676,111 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Test ignored name 0</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int param) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 1</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int ignored) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 2</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int[] arr) {
+                    for (int _ : arr) {
+                        print("iter");
+                    }
+                    return 2;
+                }
+            }
+
+        ]]></code>
+        <source-type>java 7</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 2</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import Something;
+
+            class Foo {
+                int method() {
+                    try (Something ignored = Something.create()) {
+                        // even if ignored is unused, it won't be flagged
+                        // its purpose might be to side-effect in the create/close routines
+
+                    } catch (Exception e) { // this is unused and will cause a warning if `reportUnusedVariables` is true
+                        // you should choose a name that starts with "ignored"
+                        return;
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 2</description>
+        <rule-property name="reportUnusedVariables">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import Something;
+
+            class Foo {
+                int method() {
+                    try (Something ignored = Something.create()) {
+                        // even if ignored is unused, it won't be flagged
+                        // its purpose might be to side-effect in the create/close routines
+
+                    } catch (Exception e) { // this is unused and will cause a warning if `reportUnusedVariables` is true
+                        // you should choose a name that starts with "ignored"
+                        return;
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test annot suppression</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(@SuppressWarnings("unused") int param) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
 
 </test-data>
