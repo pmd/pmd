@@ -87,7 +87,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
         Detects unused assignments. This performs a reaching definition
-        analysis.
+        analysis. This makes the assumption that there is no dead code.
 
         This DFA can be modified trivially to check for all
         unused variables (just maintain a global set of variables that
