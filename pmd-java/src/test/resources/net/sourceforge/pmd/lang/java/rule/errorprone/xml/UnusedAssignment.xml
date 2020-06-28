@@ -197,9 +197,9 @@ public class Foo {
         <expected-problems>4</expected-problems>
         <expected-linenumbers>2,10,11,19</expected-linenumbers>
         <expected-messages>
-            <message>The parameter 'args' is never used</message>
+            <message>Parameter 'args' is never used</message>
             <message>The initializer for variable 'fail' is never used (overwritten on line 19)</message>
-            <message>The loop variable 'j' is never used</message>
+            <message>Loop variable 'j' is never used</message>
             <message>The value assigned to variable 'fail' is never used (reassigned every iteration)</message>
         </expected-messages>
         <code><![CDATA[
@@ -366,8 +366,8 @@ class Test{
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,4</expected-linenumbers>
         <expected-messages>
-            <message>The parameter 'args' is never used</message>
-            <message>The loop variable 'a' is never used</message>
+            <message>Parameter 'args' is never used</message>
+            <message>Loop variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -1035,7 +1035,7 @@ class Test{
         <expected-problems>3</expected-problems>
         <expected-linenumbers>2,4,6</expected-linenumbers>
         <expected-messages>
-            <message>The parameter 'args' is never used</message>
+            <message>Parameter 'args' is never used</message>
             <message>The initializer for variable 't2' is never used</message>
             <message>The value assigned to variable 't1' is never used</message>
         </expected-messages>
@@ -2518,6 +2518,34 @@ class Foo {
     <test-code>
         <description>Catch in loop</description>
         <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import static unknown.K.*;
+
+            class Foo {
+                {
+                    for (String s : someExpression()) {
+                        try {
+                            foo(s);
+                        } catch (Exception e) {
+                            print("failure");
+                        }
+
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Catch in loop (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Exception parameter 'e' is never used</message>
+        </expected-messages>
         <code><![CDATA[
 
             import static unknown.K.*;

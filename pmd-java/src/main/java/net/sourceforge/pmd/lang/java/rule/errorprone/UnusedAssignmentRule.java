@@ -243,19 +243,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     private static String makeMessage(AssignmentEntry assignment, /* Nullable */ String reason, boolean isField) {
         String varName = assignment.var.getName();
-        StringBuilder result = new StringBuilder("The ");
+        StringBuilder result = new StringBuilder(64);
         if (assignment.rhs instanceof ASTVariableInitializer) {
-            result.append(isField ? "field initializer for"
-                                  : "initializer for variable");
+            result.append(isField ? "the field initializer for"
+                                  : "the initializer for variable");
         } else if (assignment.rhs instanceof ASTVariableDeclaratorId) {
             result.append(getKind(assignment.var));
         } else {
             if (assignment.rhs instanceof ASTPreIncrementExpression
                 || assignment.rhs instanceof ASTPreDecrementExpression
                 || assignment.rhs instanceof ASTPostfixExpression) {
-                result.append("updated value of ");
+                result.append("the updated value of ");
             } else {
-                result.append("value assigned to ");
+                result.append("the value assigned to ");
             }
             result.append(isField ? "field" : "variable");
         }
