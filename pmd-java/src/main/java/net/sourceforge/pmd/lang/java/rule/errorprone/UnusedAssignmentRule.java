@@ -242,12 +242,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     private static String makeMessage(AssignmentEntry assignment, /* Nullable */ String reason, boolean isField) {
+        // if reason is null, then the variable is unused (at most assigned to)
+
         String varName = assignment.var.getName();
         StringBuilder result = new StringBuilder(64);
         if (assignment.rhs instanceof ASTVariableInitializer) {
             result.append(isField ? "the field initializer for"
                                   : "the initializer for variable");
         } else if (assignment.rhs instanceof ASTVariableDeclaratorId) {
+            if (reason != null) {
+                result.append("the initial value of ");
+            }
             result.append(getKind(assignment.var));
         } else {
             if (assignment.rhs instanceof ASTPreIncrementExpression
@@ -1149,7 +1154,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (previous != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry killed : previous.reachingDefs) {
-                    if (killed.rhs instanceof ASTVariableDeclaratorId && killed.rhs != rhs) {
+                    if (killed.rhs instanceof ASTVariableDeclaratorId
+                        && killed.rhs.getParent() instanceof ASTVariableDeclarator
+                        && killed.rhs != rhs) {
                         continue;
                     }
                     // java8: computeIfAbsent

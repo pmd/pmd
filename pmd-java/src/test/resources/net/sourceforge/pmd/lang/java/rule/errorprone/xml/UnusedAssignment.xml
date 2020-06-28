@@ -1684,7 +1684,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>FP with array access</description>
+        <description>FP with array access 0</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Map;
@@ -1700,8 +1700,12 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>FP with array access</description>
-        <expected-problems>0</expected-problems>
+        <description>FP with array access 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
         <code><![CDATA[
 
 class Foo {
@@ -1731,7 +1735,11 @@ class Foo {
 
     <test-code>
         <description>FP with long access 2</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
         <code><![CDATA[
 
 class Foo {
@@ -1744,8 +1752,12 @@ class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>FP with long access 2</description>
-        <expected-problems>0</expected-problems>
+        <description>FP with long access 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
         <code><![CDATA[
 
 class Foo {
@@ -2619,6 +2631,45 @@ class Foo {
                             i++;
                         }
                     }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>Unused formal value</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'i' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                int method(int i) {
+                    i = 2;
+                    return i;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unused formal value</description>
+        <rule-property name="reportUnusedVariables">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initial value of parameter 'i' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                int method(int i) {
+                    i = 2;
+                    return i;
                 }
             }
 
