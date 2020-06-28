@@ -1318,7 +1318,7 @@ class Foo{
 
             The rule subsumes UnusedLocalVariable, and UnusedFormalParameter. Those violations are filtered
             out by default, in case you already have enabled those rules, but may be enabled with the property
-            `reportUnusedVariable`. Variables whose name starts with `ignored` are filtered out, as
+            `reportUnusedVariables`. Variables whose name starts with `ignored` are filtered out, as
             is standard practice for exceptions.
         </description>
         <priority>3</priority>
