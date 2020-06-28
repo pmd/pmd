@@ -89,18 +89,15 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         Detects unused assignments. This performs a reaching definition
         analysis. This makes the assumption that there is no dead code.
 
-        This DFA can be modified trivially to check for all
-        unused variables (just maintain a global set of variables that
-        must be used, adding them as you go, and on each AlgoState::use,
-        remove the var from this set). This would work even without variable
-        usage pre-resolution (which in 7.0 is not implemented yet and
-        maybe won't be).
-
         Since we have the reaching definitions at each variable usage, we
         could also use that to detect other kinds of bug, eg conditions
         that are always true, or dereferences that will always NPE. In
         the general case though, this is complicated and better left to
         a DFA library, eg google Z3.
+
+        This analysis may be used as-is to detect switch labels that
+        fall-through, which could be useful to improve accuracy of other
+        rules.
 
         TODO
            * labels on arbitrary statements (currently only loops)
@@ -173,14 +170,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 if (isIgnorablePrefixIncrement(entry.rhs)) {
                     continue;
                 }
-                boolean isField = entry.var.getNode().getScope() instanceof ClassScope;
 
                 Set<AssignmentEntry> killers = result.killRecord.get(entry);
                 final String reason;
                 if (killers == null || killers.isEmpty()) {
                     // var went out of scope before being used (no assignment kills it, yet it's unused)
 
-                    if (isField) {
+                    if (entry.var.isField()) {
                         // assignments to fields don't really go out of scope
                         continue;
                     } else if (suppressUnusedVariableRuleOverlap(entry)) {
@@ -212,7 +208,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     // practice for exceptions, and may be useful for resources/foreach vars
                     continue;
                 }
-                addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, isField));
+                addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, entry.var.isField()));
             }
         }
     }
@@ -227,8 +223,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             || entry.rhs instanceof ASTVariableDeclaratorId);
     }
 
-    private static String getKind(VariableNameDeclaration var) {
-        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.getNode();
+    private static String getKind(ASTVariableDeclaratorId id) {
         if (id.isField()) {
             return "field";
         } else if (id.isResourceDeclaration()) {
@@ -342,7 +337,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // next iteration
 
             SpanInfo state = (SpanInfo) data;
-            Set<VariableNameDeclaration> localsToKill = new HashSet<>();
+            Set<ASTVariableDeclaratorId> localsToKill = new HashSet<>();
 
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
@@ -351,12 +346,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     && child.getChild(0) instanceof ASTLocalVariableDeclaration) {
                     ASTLocalVariableDeclaration local = (ASTLocalVariableDeclaration) child.getChild(0);
                     for (ASTVariableDeclaratorId id : local) {
-                        localsToKill.add(id.getNameDeclaration());
+                        localsToKill.add(id);
                     }
                 }
             }
 
-            for (VariableNameDeclaration var : localsToKill) {
+            for (ASTVariableDeclaratorId var : localsToKill) {
                 state.deleteVar(var);
             }
 
@@ -576,7 +571,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTCatchStatement node, Object data) {
             SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
-            result.deleteVar(node.getExceptionId().getNameDeclaration());
+            result.deleteVar(node.getExceptionId());
             return result;
         }
 
@@ -615,7 +610,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
                 ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-                return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar.getNameDeclaration());
+                return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar);
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
@@ -632,7 +627,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                     JavaNode update,
                                     JavaNode body,
                                     boolean checkFirstIter,
-                                    VariableNameDeclaration foreachVar) {
+                                    ASTVariableDeclaratorId foreachVar) {
             final GlobalAlgoState globalState = before.global;
 
             SpanInfo breakTarget = before.forkEmpty();
@@ -652,7 +647,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             if (foreachVar != null) {
                 // in foreach loops, the loop variable is assigned before the first iteration
-                before.assign(foreachVar, (JavaNode) foreachVar.getNode());
+                before.assign(foreachVar, foreachVar);
             }
 
 
@@ -662,7 +657,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             if (foreachVar != null && iter.hasVar(foreachVar)) {
                 // in foreach loops, the loop variable is reassigned on each update
-                iter.assign(foreachVar, (JavaNode) foreachVar.getNode());
+                iter.assign(foreachVar, foreachVar);
             } else {
                 iter = acceptOpt(update, iter);
             }
@@ -775,14 +770,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public Object visit(ASTFormalParameter node, Object data) {
             if (!node.isExplicitReceiverParameter()) {
                 ASTVariableDeclaratorId id = node.getVariableDeclaratorId();
-                ((SpanInfo) data).assign(id.getNameDeclaration(), id);
+                ((SpanInfo) data).assign(id, id);
             }
             return data;
         }
 
         @Override
         public Object visit(ASTVariableDeclarator node, Object data) {
-            VariableNameDeclaration var = node.getVariableId().getNameDeclaration();
+            ASTVariableDeclaratorId var = node.getVariableId();
             ASTVariableInitializer rhs = node.getInitializer();
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
@@ -814,7 +809,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 JavaNode rhs = node.getChild(2);
                 result = acceptOpt(rhs, result);
 
-                VariableNameDeclaration lhsVar = getVarFromExpression(node.getChild(0), true);
+                ASTVariableDeclaratorId lhsVar = getVarFromExpression(node.getChild(0), true);
                 if (lhsVar != null) {
                     // in that case lhs is a normal variable (array access not supported)
 
@@ -849,7 +844,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
-            VariableNameDeclaration var = getVarFromExpression(unary.getChild(0), true);
+            ASTVariableDeclaratorId var = getVarFromExpression(unary.getChild(0), true);
             if (var != null) {
                 data.use(var);
                 data.assign(var, unary);
@@ -863,7 +858,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public Object visit(ASTPrimaryExpression node, Object data) {
             SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
 
-            VariableNameDeclaration var = getVarFromExpression(node, false);
+            ASTVariableDeclaratorId var = getVarFromExpression(node, false);
             if (var != null) {
                 state.use(var);
             }
@@ -873,7 +868,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         /**
          * Get the variable accessed from a primary.
          */
-        private VariableNameDeclaration getVarFromExpression(JavaNode primary, boolean inLhs) {
+        private ASTVariableDeclaratorId getVarFromExpression(JavaNode primary, boolean inLhs) {
 
             if (primary instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
@@ -935,7 +930,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                          : name.substring(0, i);
         }
 
-        private VariableNameDeclaration findVar(Scope scope, boolean isField, String name) {
+        private ASTVariableDeclaratorId findVar(Scope scope, boolean isField, String name) {
             if (name == null) {
                 return null;
             }
@@ -945,7 +940,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
 
             while (scope != null) {
-                VariableNameDeclaration result = getFromSingleScope(scope, name);
+                ASTVariableDeclaratorId result = getFromSingleScope(scope, name);
                 if (result != null) {
                     if (scope instanceof ClassScope && scope != enclosingClassScope) { // NOPMD CompareObjectsWithEqual this is what we want
                         // don't handle fields
@@ -960,11 +955,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return null;
         }
 
-        private VariableNameDeclaration getFromSingleScope(Scope scope, String name) {
+        private ASTVariableDeclaratorId getFromSingleScope(Scope scope, String name) {
             if (scope != null) {
                 for (VariableNameDeclaration decl : scope.getDeclarations(VariableNameDeclaration.class).keySet()) {
                     if (decl.getImage().equals(name)) {
-                        return decl;
+                        return (ASTVariableDeclaratorId) decl.getNode();
                     }
                 }
             }
@@ -1050,10 +1045,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // assignments that reach the end of any constructor must
             // be considered used
             for (VariableNameDeclaration field : visitor.enclosingClassScope.getVariableDeclarations().keySet()) {
+                ASTVariableDeclaratorId var = (ASTVariableDeclaratorId) field.getNode();
                 if (field.getAccessNodeParent().isStatic()) {
-                    staticInit.use(field);
+                    staticInit.use(var);
                 }
-                ctorEndState.use(field);
+                ctorEndState.use(var);
             }
         }
     }
@@ -1067,8 +1063,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
 
-        final Set<VariableNameDeclaration> unusedVars;
-
         // track which assignments kill which
         // assignment -> killers(assignment)
         final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
@@ -1079,11 +1073,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
                                 Set<AssignmentEntry> usedAssignments,
-                                Set<VariableNameDeclaration> unusedVars,
                                 Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
-            this.unusedVars = unusedVars;
             this.killRecord = killRecord;
 
         }
@@ -1091,7 +1083,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         private GlobalAlgoState() {
             this(new HashSet<AssignmentEntry>(),
                  new HashSet<AssignmentEntry>(),
-                 new HashSet<VariableNameDeclaration>(),
                  new HashMap<AssignmentEntry, Set<AssignmentEntry>>());
         }
     }
@@ -1142,25 +1133,25 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         final GlobalAlgoState global;
 
-        final Map<VariableNameDeclaration, VarLocalInfo> symtable;
+        final Map<ASTVariableDeclaratorId, VarLocalInfo> symtable;
 
         private SpanInfo(GlobalAlgoState global) {
-            this(null, global, new HashMap<VariableNameDeclaration, VarLocalInfo>());
+            this(null, global, new HashMap<ASTVariableDeclaratorId, VarLocalInfo>());
         }
 
         private SpanInfo(SpanInfo parent,
                          GlobalAlgoState global,
-                         Map<VariableNameDeclaration, VarLocalInfo> symtable) {
+                         Map<ASTVariableDeclaratorId, VarLocalInfo> symtable) {
             this.parent = parent;
             this.global = global;
             this.symtable = symtable;
         }
 
-        boolean hasVar(VariableNameDeclaration var) {
+        boolean hasVar(ASTVariableDeclaratorId var) {
             return symtable.containsKey(var);
         }
 
-        void assign(VariableNameDeclaration var, JavaNode rhs) {
+        void assign(ASTVariableDeclaratorId var, JavaNode rhs) {
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
             VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
             if (previous != null) {
@@ -1183,7 +1174,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             global.allAssignments.add(entry);
         }
 
-        void use(VariableNameDeclaration var) {
+        void use(ASTVariableDeclaratorId var) {
             VarLocalInfo info = symtable.get(var);
             // may be null for implicit assignments, like method parameter
             if (info != null) {
@@ -1191,7 +1182,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        void deleteVar(VariableNameDeclaration var) {
+        void deleteVar(ASTVariableDeclaratorId var) {
             symtable.remove(var);
         }
 
@@ -1204,27 +1195,27 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         SpanInfo forkEmpty() {
-            return doFork(this, new HashMap<VariableNameDeclaration, VarLocalInfo>());
+            return doFork(this, new HashMap<ASTVariableDeclaratorId, VarLocalInfo>());
         }
 
 
         SpanInfo forkEmptyNonLocal() {
-            return doFork(null, new HashMap<VariableNameDeclaration, VarLocalInfo>());
+            return doFork(null, new HashMap<ASTVariableDeclaratorId, VarLocalInfo>());
         }
 
         SpanInfo forkCapturingNonLocal() {
             return doFork(null, copyTable());
         }
 
-        private Map<VariableNameDeclaration, VarLocalInfo> copyTable() {
-            HashMap<VariableNameDeclaration, VarLocalInfo> copy = new HashMap<>(this.symtable.size());
-            for (VariableNameDeclaration var : this.symtable.keySet()) {
+        private Map<ASTVariableDeclaratorId, VarLocalInfo> copyTable() {
+            HashMap<ASTVariableDeclaratorId, VarLocalInfo> copy = new HashMap<>(this.symtable.size());
+            for (ASTVariableDeclaratorId var : this.symtable.keySet()) {
                 copy.put(var, this.symtable.get(var).copy());
             }
             return copy;
         }
 
-        private SpanInfo doFork(SpanInfo parent, Map<VariableNameDeclaration, VarLocalInfo> reaching) {
+        private SpanInfo doFork(SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
             return new SpanInfo(parent, this.global, reaching);
         }
 
@@ -1255,10 +1246,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             // we don't have to double the capacity since they're normally of the same size
             // (vars are deleted when exiting a block)
-            Set<VariableNameDeclaration> keysUnion = new HashSet<>(this.symtable.keySet());
+            Set<ASTVariableDeclaratorId> keysUnion = new HashSet<>(this.symtable.keySet());
             keysUnion.addAll(other.symtable.keySet());
 
-            for (VariableNameDeclaration var : keysUnion) {
+            for (ASTVariableDeclaratorId var : keysUnion) {
                 VarLocalInfo thisInfo = this.symtable.get(var);
                 VarLocalInfo otherInfo = other.symtable.get(var);
                 if (thisInfo == otherInfo) { // NOPMD CompareObjectsWithEqual this is what we want
@@ -1316,20 +1307,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     static class AssignmentEntry {
 
-        final VariableNameDeclaration var;
+        final ASTVariableDeclaratorId var;
 
         // this is not necessarily an expression, it may be also the
         // variable declarator of a foreach loop
         final JavaNode rhs;
 
-        AssignmentEntry(VariableNameDeclaration var, JavaNode rhs) {
+        AssignmentEntry(ASTVariableDeclaratorId var, JavaNode rhs) {
             this.var = var;
             this.rhs = rhs;
         }
 
         @Override
         public String toString() {
-            return var.getImage() + " := " + rhs;
+            return var.getName() + " := " + rhs;
         }
 
         @Override
