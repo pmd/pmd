@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
+import static net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule.unwrapParentheses;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +77,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -381,6 +382,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return makeConditional(before, node.getCondition(), node.getChild(1), node.getChild(2));
         }
 
+        // This will be much easier with the 7.0 grammar.....
         SpanInfo makeConditional(SpanInfo before, JavaNode condition, JavaNode thenBranch, JavaNode elseBranch) {
             SpanInfo thenState = before.fork();
             SpanInfo elseState = elseBranch != null ? before.fork() : before;
@@ -414,9 +416,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
          * This is how it works, but the <then> and <else> branch are
          * visited only once, because it's not done in this method, but
          * in makeConditional.
+         *
+         * @return the state in which all expressions have been evaluated
+         *      Eg for `a || b`, this is the `else` state (all evaluated to false)
+         *      Eg for `a && b`, this is the `then` state (all evaluated to true)
+         *
          */
         private SpanInfo linkConditional(SpanInfo before, JavaNode condition, SpanInfo thenState, SpanInfo elseState, boolean isTopLevel) {
-            condition = ConfusingTernaryRule.unwrapParentheses(condition);
+            if (condition == null) {
+                return before;
+            }
+            condition = unwrapParentheses(condition);
 
             if (condition instanceof ASTConditionalOrExpression) {
                 return visitShortcutOrExpr(condition, before, thenState, elseState);
@@ -589,13 +599,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // TODO linkConditional
             final GlobalAlgoState globalState = before.global;
 
+            SpanInfo breakTarget = before.forkEmpty();
+            SpanInfo continueTarget = before.forkEmpty();
+            pushTargets(loop, breakTarget, continueTarget);
+
             // perform a few "iterations", to make sure that assignments in
             // the body can affect themselves in the next iteration, and
             // that they affect the condition, etc
 
             before = acceptOpt(init, before);
-            if (checkFirstIter) { // false for do-while
-                before = acceptOpt(cond, before);
+            if (checkFirstIter && cond != null) { // false for do-while
+                SpanInfo ifcondTrue = before.forkEmpty();
+                linkConditional(before, cond, ifcondTrue, breakTarget, true);
+                before = ifcondTrue;
             }
 
             if (foreachVar != null) {
@@ -603,10 +619,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before.assign(foreachVar, (JavaNode) foreachVar.getNode());
             }
 
-            SpanInfo breakTarget = before.forkEmpty();
-            SpanInfo continueTarget = before.forkEmpty();
-
-            pushTargets(loop, breakTarget, continueTarget);
 
             // make the defs of the body reach the other parts of the loop,
             // including itself
@@ -619,7 +631,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 iter = acceptOpt(update, iter);
             }
 
-            iter = acceptOpt(cond, iter);
+            linkConditional(iter, cond, iter, breakTarget, true);
             iter = acceptOpt(body, iter);
 
 
@@ -627,7 +639,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             continueTarget = globalState.continueTargets.peek();
             if (!continueTarget.symtable.isEmpty()) {
                 // make assignments before a continue reach the other parts of the loop
-                continueTarget = acceptOpt(cond, continueTarget);
+
+                linkConditional(continueTarget, cond, continueTarget, breakTarget, true);
+
                 continueTarget = acceptOpt(body, continueTarget);
                 continueTarget = acceptOpt(update, continueTarget);
             }
