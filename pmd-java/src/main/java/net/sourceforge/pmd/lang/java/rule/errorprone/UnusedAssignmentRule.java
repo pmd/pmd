@@ -108,7 +108,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
              or at least proper graph algorithms like toposort)
                 -> this is pretty invisible as it causes false negatives, not FPs
            * test ternary expr
-           * conditional exprs in loops
 
         DONE
            * conditionals
@@ -124,6 +123,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * test local class/anonymous class
            * shortcut conditionals have their own control-flow
            * parenthesized expressions
+           * conditional exprs in loops
 
      */
 
@@ -544,6 +544,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
+        public Object visit(ASTCatchStatement node, Object data) {
+            SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
+            result.deleteVar(node.getExceptionId().getNameDeclaration());
+            return result;
+        }
+
+        @Override
         public Object visit(ASTLambdaExpression node, Object data) {
             // Lambda expression have control flow that is separate from the method
             // So we fork the context, but don't join it
@@ -596,7 +603,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                     JavaNode body,
                                     boolean checkFirstIter,
                                     VariableNameDeclaration foreachVar) {
-            // TODO linkConditional
             final GlobalAlgoState globalState = before.global;
 
             SpanInfo breakTarget = before.forkEmpty();
