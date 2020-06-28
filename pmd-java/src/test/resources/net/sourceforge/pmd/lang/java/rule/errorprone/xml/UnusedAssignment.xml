@@ -193,11 +193,13 @@ public class Foo {
 
     <test-code>
         <description>Local variable in loop</description>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>10,11,19</expected-linenumbers>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,10,11,19</expected-linenumbers>
         <expected-messages>
+            <message>The parameter 'args' is never used</message>
             <message>The initializer for variable 'fail' is never used (overwritten on line 19)</message>
-            <message>The value of variable 'j' is never used (reassigned every iteration)</message>
+            <message>The loop variable 'j' is never used</message>
             <message>The value assigned to variable 'fail' is never used (reassigned every iteration)</message>
         </expected-messages>
         <code><![CDATA[
@@ -360,10 +362,12 @@ class Test{
 
     <test-code>
         <description>Foreach unused</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
         <expected-messages>
-            <message>The value of variable 'a' is never used (reassigned every iteration)</message>
+            <message>The parameter 'args' is never used</message>
+            <message>The loop variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -1028,9 +1032,10 @@ class Test{
     <test-code>
         <description>Assignment in operand 4</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,6</expected-linenumbers>
         <expected-messages>
+            <message>The parameter 'args' is never used</message>
             <message>The initializer for variable 't2' is never used</message>
             <message>The value assigned to variable 't1' is never used</message>
         </expected-messages>
@@ -2480,6 +2485,7 @@ class Foo {
 
     <test-code>
         <description>ClassCastException with annotated foreach var</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 

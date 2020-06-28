@@ -191,7 +191,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else if (killers.size() == 1) {
                     AssignmentEntry k = killers.iterator().next();
                     if (k.rhs.equals(entry.rhs)) {
-                        reason = "reassigned every iteration";
+                        // assignment reassigns itself, only possible in a loop
+                        if (suppressUnusedVariableRuleOverlap(entry)) {
+                            continue;
+                        } else if (entry.rhs instanceof ASTVariableDeclaratorId) {
+                            reason = null; // unused foreach variable
+                        } else {
+                            reason = "reassigned every iteration";
+                        }
                     } else {
                         reason = "overwritten on line " + k.rhs.getBeginLine();
                     }
@@ -204,19 +211,24 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {
-        return !getProperty(REPORT_UNUSED_VARS) && entry.rhs instanceof ASTVariableInitializer
-            || entry.rhs instanceof ASTVariableDeclaratorId;
+        return !getProperty(REPORT_UNUSED_VARS) && (entry.rhs instanceof ASTVariableInitializer
+            || entry.rhs instanceof ASTVariableDeclaratorId);
     }
 
     private static String getKind(VariableNameDeclaration var) {
         ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.getNode();
-        return id.isField()
-               ? "field"
-               : id.isResourceDeclaration()
-                 ? "resource"
-                 : id.isExceptionBlockParameter()
-                   ? "exception parameter"
-                   : "variable";
+        if (id.isField()) {
+            return "field";
+        } else if (id.isResourceDeclaration()) {
+            return "resource";
+        } else if (id.isExceptionBlockParameter()) {
+            return "exception parameter";
+        } else if (id.getNthParent(3) instanceof ASTForStatement) {
+            return "loop variable";
+        } else if (id.isFormalParameter()) {
+            return "parameter";
+        }
+        return "variable";
     }
 
     private boolean isIgnorablePrefixIncrement(JavaNode assignment) {
@@ -236,7 +248,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             result.append(isField ? "field initializer for"
                                   : "initializer for variable");
         } else if (assignment.rhs instanceof ASTVariableDeclaratorId) {
-            result.append("value of ").append(getKind(assignment.var));
+            result.append(getKind(assignment.var));
         } else {
             if (assignment.rhs instanceof ASTPreIncrementExpression
                 || assignment.rhs instanceof ASTPreDecrementExpression
@@ -252,6 +264,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         if (reason != null) {
             result.append(" (").append(reason).append(")");
         }
+        result.setCharAt(0, Character.toUpperCase(result.charAt(0)));
         return result.toString();
     }
 
