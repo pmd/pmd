@@ -48,6 +48,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.8", new Handler(), false);
     }
 
+    @Deprecated
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
         @Override
         protected void visit(Rule rule, Node node, RuleContext ctx) {

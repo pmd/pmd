@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitorAdapter;
 /**
  * A Rule Chain visitor for Scala.
  */
+@Deprecated
 public class ScalaRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @SuppressWarnings("unchecked")

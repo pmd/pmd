@@ -9,12 +9,18 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * The RuleChainVisitor understands how to visit an AST for a particular
  * Language.
+ *
+ * @deprecated This interface will be removed. It's only used in internal
+ *      code. Language implementors no longer need to register a rulechain
+ *      visitor implementation in the {@link BaseLanguageModule} constructor.
  */
+@Deprecated
 public interface RuleChainVisitor {
     /**
      * Add the given rule to the visitor.

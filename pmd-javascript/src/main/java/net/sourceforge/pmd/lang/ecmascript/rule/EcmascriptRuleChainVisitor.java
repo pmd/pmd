@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+@Deprecated
 public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override

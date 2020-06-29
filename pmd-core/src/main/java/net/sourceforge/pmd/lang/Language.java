@@ -77,7 +77,10 @@ public interface Language extends Comparable<Language> {
      *
      * @return The RuleChainVisitor class.
      * @see net.sourceforge.pmd.lang.rule.RuleChainVisitor
+     *
+     * @deprecated Will be removed in PMD 7, avoid using this
      */
+    @Deprecated
     Class<?> getRuleChainVisitorClass();
 
     /**

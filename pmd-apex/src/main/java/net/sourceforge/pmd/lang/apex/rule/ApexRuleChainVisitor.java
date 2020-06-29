@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+@Deprecated
 public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override

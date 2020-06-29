@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+@Deprecated
 public class ModelicaRuleChainVisitor extends AbstractRuleChainVisitor {
     @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {

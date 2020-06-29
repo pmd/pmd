@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.ast.VmParserVisitor;
 import net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter;
 
+@Deprecated
 public class VmRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override

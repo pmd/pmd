@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+@Deprecated
 public class JspRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override

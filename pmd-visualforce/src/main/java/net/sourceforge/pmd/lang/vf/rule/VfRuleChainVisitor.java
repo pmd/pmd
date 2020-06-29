@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
 
+@Deprecated
 public class VfRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override
