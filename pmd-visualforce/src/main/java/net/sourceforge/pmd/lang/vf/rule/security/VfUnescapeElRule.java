@@ -296,7 +296,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     case "$objecttype":
                     case "$component":
                     case "$remoteaction":
-                    case "$messagechannel":
                         return true;
 
                     default:
