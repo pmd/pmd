@@ -298,7 +298,7 @@ public interface Node {
      * @return What the visitor returned
      */
     // TODO remove the default implementation, convert all visitors to be generic
-    default <R, P> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         // override me
         return visitor.visitNode(this, data);
     }
