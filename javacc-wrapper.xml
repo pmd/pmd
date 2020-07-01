@@ -61,7 +61,7 @@
     <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
 
     <property name="generic-visitor-interface-name" value="${lang-name}Visitor" />
-    <property name="generic-sideeffect-visitor-interface-file"
+    <property name="generic-visitor-interface-file"
               value="${target-package-dir}/${generic-visitor-interface-name}.java" />
 
 
@@ -489,8 +489,8 @@ public interface" />
     </target>
 
     <target name="generic-visitor-replacement" depends="default-visitor" unless="jjtreeBuildNotRequired">
-        <move file="${base-visitor-interface-file}" tofile="${generic-sideeffect-visitor-interface-file}" />
-        <replace file="${generic-sideeffect-visitor-interface-file}">
+        <move file="${base-visitor-interface-file}" tofile="${generic-visitor-interface-file}" />
+        <replace file="${generic-visitor-interface-file}">
             <replacefilter token="${base-visitor-interface-name}"
                            value="${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>" />
 
