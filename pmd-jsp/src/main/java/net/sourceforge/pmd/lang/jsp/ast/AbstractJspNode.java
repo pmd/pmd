@@ -18,7 +18,7 @@ abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNo
         if (visitor instanceof JspVisitor) {
             return this.acceptVisitor((JspVisitor<? super P, ? extends R>) visitor, data);
         }
-        return visitor.visitNode(this, data);
+        return super.acceptVisitor(visitor, data);
     }
 
     protected abstract <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data);

@@ -51,7 +51,7 @@
                            value="((${visitor-name}&lt;? super P, ? extends R>) visitor)" />
 
             <replacefilter token="return visitor.visitChildren(this);"
-                           value="return visitor.visitNode(this, data);" />
+                           value="return super.acceptVisitor(visitor, data);" />
 
         </replace>
 

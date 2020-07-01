@@ -296,11 +296,18 @@ public interface Node {
      * @param data    Parameter to the visit
      *
      * @return What the visitor returned
+     *
+     * @throws IllegalArgumentException If the visitor is incompatible with this node
+     *
+     * @implSpec A typical implementation will check the type of the visitor to
+     *     be that of the language specific visitor, then call the most specific
+     *     visit method of this Node. This is typically implemented by having
+     *     a different override per concrete node class (no shortcuts).
      */
     // TODO remove the default implementation, convert all visitors to be generic
     default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         // override me
-        return visitor.visitNode(this, data);
+        throw new IllegalArgumentException("Unsupported visitor" + visitor + " for node " + this);
     }
 
 

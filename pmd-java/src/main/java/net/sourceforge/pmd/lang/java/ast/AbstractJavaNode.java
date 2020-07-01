@@ -38,7 +38,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
         if (visitor instanceof JavaVisitor) {
             return this.acceptVisitor((JavaVisitor<? super P, ? extends R>) visitor, data);
         }
-        return visitor.visitNode(this, data);
+        return super.acceptVisitor(visitor, data);
     }
 
     protected abstract <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data);
