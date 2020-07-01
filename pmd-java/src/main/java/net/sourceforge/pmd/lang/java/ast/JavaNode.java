@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -25,7 +26,7 @@ public interface JavaNode extends ScopedNode, JjtreeNode<JavaNode> {
      * @param visitor Visitor to dispatch
      * @param data    Visit data
      *
-     * @deprecated Use {@link #acceptVisitor(JavaVisitor, Object)}
+     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
      */
     @Deprecated
     @DeprecatedUntil700
