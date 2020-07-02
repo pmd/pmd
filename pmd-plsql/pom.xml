@@ -83,7 +83,9 @@
         <dependency>
             <groupId>net.java.dev.javacc</groupId>
             <artifactId>javacc</artifactId>
+            <scope>provided</scope> <!-- only needed for generating the parser via ant -->
         </dependency>
+
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>

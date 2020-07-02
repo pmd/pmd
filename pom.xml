@@ -658,6 +658,7 @@
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
+                <scope>provided</scope> <!-- only needed for generating the parser via ant -->
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
