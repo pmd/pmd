@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -41,12 +41,22 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
                 continue;
             }
 
-            if (usage.hasImageEqualTo(variableName)) {
+            if (equalsIgnoreCase(variableName, usage.getImage())) {
                 return data;
             }
         }
 
         addViolation(data, node, variableName);
         return data;
+    }
+
+    private static boolean equalsIgnoreCase(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.equalsIgnoreCase(b);
     }
 }
