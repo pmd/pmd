@@ -813,8 +813,21 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-test</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>io.kotlintest</groupId>
                 <artifactId>kotlintest-runner-junit5</artifactId>
+                <version>3.1.8</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotlintest</groupId>
+                <artifactId>kotlintest-assertions</artifactId>
                 <version>3.1.8</version>
                 <scope>test</scope>
             </dependency>
