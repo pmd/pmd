@@ -141,7 +141,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.1.3-SNAPSHOT</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -595,6 +595,12 @@
                 <version>${antlr.version}</version>
             </dependency>
             <dependency>
+                <!-- old antlr version used by apex-jorje -->
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr-runtime</artifactId>
+                <version>3.5.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
@@ -697,6 +703,26 @@
             </dependency>
 
             <dependency>
+                <groupId>com.github.oowekyala.treeutils</groupId>
+                <artifactId>tree-matchers</artifactId>
+                <version>2.1.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.oowekyala.treeutils</groupId>
+                <artifactId>tree-printers</artifactId>
+                <version>2.1.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>18.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
                 <version>2.2</version>
@@ -790,28 +816,24 @@
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-test-junit</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-test</artifactId>
@@ -829,6 +851,19 @@
                 <groupId>io.kotlintest</groupId>
                 <artifactId>kotlintest-assertions</artifactId>
                 <version>3.1.8</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotlintest</groupId>
+                <artifactId>kotlintest-core</artifactId>
+                <version>3.1.8</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>13.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
