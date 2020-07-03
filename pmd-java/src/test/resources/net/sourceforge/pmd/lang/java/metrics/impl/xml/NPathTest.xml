@@ -238,6 +238,66 @@ class Foo {
     </test-code>
 
     <test-code>
+        <description>Ensure switch labeled blocks has same complexity as equivalent ifs and switch statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 7.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1, 2 -> { }
+            case 3 -> { j = 5; }
+            case 4 -> { if (b && a) { bar(); } }
+            default -> { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test switch expressions</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 5.</message>
+            <message>'Foo#set(int)' has value 1.</message>
+            <message>'Foo#test()' has value 3.</message>
+            <message>'Foo#nothing()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    int j = 23;
+    boolean a, b;
+
+    void bar() {
+        switch(j) {
+            case 1, 2 -> nothing();
+            case 3 -> set(5);
+            case 4 -> test();
+            default -> nothing();
+        }
+    }
+
+    void set(int v) {
+        j = v;
+    }
+
+    void test() {
+        if (b && a) {
+            bar();
+        }
+    }
+
+    void nothing() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Boolean operators</description>
         <expected-problems>1</expected-problems>
         <expected-messages>

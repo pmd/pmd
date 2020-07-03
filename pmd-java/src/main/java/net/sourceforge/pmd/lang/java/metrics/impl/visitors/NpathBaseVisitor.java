@@ -16,6 +16,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -182,9 +185,14 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
             JavaNode n = (JavaNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
-            if (n instanceof ASTSwitchLabel) {
+            if (n instanceof ASTSwitchLabel || n instanceof ASTSwitchLabeledThrowStatement) {
                 npath += caseRange;
                 caseRange = 1;
+            } else if (n instanceof ASTSwitchLabeledExpression
+                    || n instanceof ASTSwitchLabeledBlock) {
+                npath += caseRange;
+                int complexity = (int) n.jjtAccept(this, data);
+                caseRange = complexity;
             } else {
                 int complexity = (int) n.jjtAccept(this, data);
                 caseRange *= complexity;
@@ -195,6 +203,13 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         return boolCompSwitch + npath;
     }
 
+    @Override
+    public Object visit(ASTSwitchLabel node, Object data) {
+        if (node.isDefault()) {
+            return 1;
+        }
+        return node.findChildrenOfType(ASTExpression.class).size();
+    }
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
