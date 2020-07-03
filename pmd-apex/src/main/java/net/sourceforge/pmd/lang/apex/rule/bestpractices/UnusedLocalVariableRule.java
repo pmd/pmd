@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
@@ -41,22 +43,12 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
                 continue;
             }
 
-            if (equalsIgnoreCase(variableName, usage.getImage())) {
+            if (StringUtils.equalsIgnoreCase(variableName, usage.getImage())) {
                 return data;
             }
         }
 
         addViolation(data, node, variableName);
         return data;
-    }
-
-    private static boolean equalsIgnoreCase(String a, String b) {
-        if (a == b) {
-            return true;
-        }
-        if (a == null || b == null) {
-            return false;
-        }
-        return a.equalsIgnoreCase(b);
     }
 }
