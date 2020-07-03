@@ -11,9 +11,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -65,13 +67,24 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
             }
 
             if (considerBooleanPaths) {
-                ((MutableInt) data).increment();
+                ((MutableInt) data).add(label.findChildrenOfType(ASTExpression.class).size());
             } else if (node.getNumChildren() > 1 + label.getIndexInParent()
                     && node.getChild(label.getIndexInParent() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
                 ((MutableInt) data).increment();
             }
         }
+
+        for (ASTSwitchLabeledRule rule : node.findChildrenOfType(ASTSwitchLabeledRule.class)) {
+            ASTSwitchLabel label = rule.getFirstChildOfType(ASTSwitchLabel.class);
+            if (label.isDefault()) {
+                continue;
+            }
+            if (considerBooleanPaths) {
+                ((MutableInt) data).add(label.findChildrenOfType(ASTExpression.class).size());
+            }
+        }
+
         return super.visit(node, data);
     }
 
