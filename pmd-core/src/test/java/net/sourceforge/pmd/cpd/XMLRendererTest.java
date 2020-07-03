@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -196,6 +197,23 @@ public class XMLRendererTest {
         assertTrue(report.contains(espaceChar));
     }
 
+    @Test
+    public void testRendererXMLEscaping() throws IOException {
+        String formfeed = "\u000C";
+        String codefragment = "code fragment" + formfeed + "\nline2\nline3";
+        CPDRenderer renderer = new XMLRenderer();
+        List<Match> list = new ArrayList<>();
+        Mark mark1 = createMark("public", "file1", 1, 2, codefragment);
+        Mark mark2 = createMark("public", "file2", 5, 2, codefragment);
+        Match match1 = new Match(75, mark1, mark2);
+        list.add(match1);
+
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
+        assertFalse(report.contains(formfeed));
+    }
+
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
         Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
 
@@ -213,9 +231,5 @@ public class XMLRendererTest {
         result.setEndToken(endToken);
         result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
     }
 }
