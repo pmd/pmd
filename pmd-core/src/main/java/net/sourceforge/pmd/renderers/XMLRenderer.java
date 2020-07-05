@@ -210,6 +210,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                     char low = sb.charAt(i + 1);
                     int codepoint = Character.toCodePoint(c, low);
                     sb.replace(i, i + 2, "&#x" + Integer.toHexString(codepoint) + ";");
+                } else if (c > 0xff) {
+                    sb.replace(i, i + 1, "&#x" + Integer.toHexString((int) c) + ";");
                 }
             }
             result = sb.toString();

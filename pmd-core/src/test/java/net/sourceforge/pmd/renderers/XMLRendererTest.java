@@ -100,7 +100,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(XMLRenderer.ENCODING, charset.name());
         Report report = new Report();
         String surrogatePair = "\ud801\udc1c";
-        String msg = "The String literal \"Tokénizer " + surrogatePair + "\" appears...";
+        String msg = "The String 'literal' \"TokénizĀr " + surrogatePair + "\" appears...";
         report.addRuleViolation(createRuleViolation(msg));
         String actual = ReportTest.renderTempFile(renderer, report, charset);
         Assert.assertTrue(actual.contains(shouldContain));
@@ -139,12 +139,14 @@ public class XMLRendererTest extends AbstractRendererTest {
 
         Report report = new Report();
         String formFeed = "\u000C";
-        String specialChar = "é";
-        String originalChars = formFeed + specialChar; // u000C should be removed, é should be encoded correctly as UTF-8
+        // é = U+00E9 : can be represented in ISO-8859-1 as is
+        // Ā = U+0100 : cannot be represented in ISO-8859-1 -> would be a unmappable character, needs to be escaped
+        String specialChars = "éĀ";
+        String originalChars = formFeed + specialChars; // u000C should be removed, é should be encoded correctly as UTF-8
         String msg = "The String literal \"" + originalChars + "\" appears...";
         report.addRuleViolation(createRuleViolation(msg));
         String actual = ReportTest.renderTempFile(renderer, report, StandardCharsets.UTF_8);
-        Assert.assertTrue(actual.contains(specialChar));
+        Assert.assertTrue(actual.contains(specialChars));
         Assert.assertFalse(actual.contains(formFeed));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new InputSource(new StringReader(actual)));
