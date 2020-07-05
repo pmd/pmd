@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -163,4 +164,17 @@ public interface Renderer extends PropertySource {
     void end() throws IOException;
 
     void flush() throws IOException;
+
+    /**
+     * Sets the filename where the report should be written to. If no filename is provided,
+     * the renderer should write to stdout.
+     *
+     * <p>Implementations must initialize the writer of the renderer.
+     *
+     * <p>See {@link AbstractRenderer#setReportFile(String)} for the default impl.
+     *
+     * @param reportFilename the filename (optional).
+     */
+    @Experimental
+    void setReportFile(String reportFilename);
 }

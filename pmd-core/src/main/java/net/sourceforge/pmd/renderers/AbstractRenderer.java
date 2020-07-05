@@ -12,9 +12,11 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
@@ -108,5 +110,17 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         } finally {
             IOUtils.closeQuietly(writer);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This default implementation always uses the system default charset for the writer.
+     * Overwrite in specific renderers to support other charsets.
+     */
+    @Experimental
+    @Override
+    public void setReportFile(String reportFilename) {
+        this.setWriter(IOUtil.createWriter(reportFilename));
     }
 }

@@ -77,7 +77,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
         String out = getOutput();
         Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ \"ä\"\\);").matcher(out).find());
+        Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ &quot;ä&quot;\\);").matcher(out).find());
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 

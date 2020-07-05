@@ -7,6 +7,7 @@ package net.sourceforge.pmd.ant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Locale;
@@ -149,14 +150,28 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
+    private static String convert(String report) {
+        // reinterpret output as cp1252 - ant BuildFileRule can only unicode
+        StringBuilder sb = new StringBuilder(report.length());
+        for (int i = 0; i < report.length(); i++) {
+            char c = report.charAt(i);
+            if (c > 0x7f) {
+                sb.append((char) (c & 0xff));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     @Test
-    public void testFormatterEncodingWithXMLConsole() {
+    public void testFormatterEncodingWithXMLConsole() throws UnsupportedEncodingException {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXMLConsole");
-        String report = buildRule.getOutput();
+        String report = convert(buildRule.getOutput());
         assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+        assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
     @Test
