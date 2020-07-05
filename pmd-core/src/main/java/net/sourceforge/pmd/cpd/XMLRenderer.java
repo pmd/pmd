@@ -77,6 +77,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -120,7 +121,8 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
             mark = iterator.next();
             final Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
-            file.setAttribute("path", mark.getFilename());
+            String filenameXml10 = StringEscapeUtils.unescapeXml(StringEscapeUtils.escapeXml10(mark.getFilename()));
+            file.setAttribute("path", filenameXml10);
             file.setAttribute("endline", String.valueOf(mark.getEndLine()));
             final int beginCol = mark.getBeginColumn();
             final int endCol = mark.getEndColumn();
