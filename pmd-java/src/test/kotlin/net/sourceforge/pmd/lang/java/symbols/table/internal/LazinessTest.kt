@@ -4,7 +4,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
@@ -84,7 +84,7 @@ private class MyTypeTable(
 ) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveTypeNameImpl(simpleName: String): ResolveResult<JTypeDeclSymbol> =
-            ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, DummyJavaNode(0))
+            ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, JavaParsingHelper.JUST_PARSE.parse(""))
 
 }
 
@@ -95,7 +95,7 @@ private class MyValueTable(
 ) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveValueNameImpl(simpleName: String): ResolveResult<JVariableSymbol>? =
-            ResolveResultImpl.VarResolveResult(variableSymbolGetter(), this, DummyJavaNode(0))
+            ResolveResultImpl.VarResolveResult(variableSymbolGetter(), this, JavaParsingHelper.JUST_PARSE.parse(""))
 
 
 }
