@@ -1194,17 +1194,17 @@ public class RuleSetFactoryTest {
     // listed here is finally removed.
     private static final String DEPRECATED_RULE_NAME = "MockRule3";
 
-    private static final String REFERENCE_TO_DEPRECATED_RULE =  "<?xml version=\"1.0\"?>\n"
+    private static final String REFERENCE_TO_DEPRECATED_RULE = "<?xml version=\"1.0\"?>\n"
         + "<ruleset name=\"test\">\n"
         + "<description>testdesc</description>\n"
-        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME + "\" />\n" +
-        "</ruleset>";
+        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME + "\" />\n"
+        + "</ruleset>";
 
     private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE = "<?xml version=\"1.0\"?>\n"
         + "<ruleset name=\"test\">\n"
         + "<description>testdesc</description>\n"
-        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\" />\n" +
-        "</ruleset>";
+        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\" />\n"
+        + "</ruleset>";
 
     private static final String DFA = "<?xml version=\"1.0\"?>\n"
         + "<ruleset name=\"test\">\n"

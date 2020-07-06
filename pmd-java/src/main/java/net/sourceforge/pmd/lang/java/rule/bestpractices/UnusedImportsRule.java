@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -83,16 +82,16 @@ public class UnusedImportsRule extends AbstractJavaRule {
             for (Pattern p : PATTERNS) {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
-                    String s = m.group(1);
+                    String fullname = m.group(1);
 
-                    if (s != null) { // may be null for "@see #" and "@link #"
-                        imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
+                    if (fullname != null) { // may be null for "@see #" and "@link #"
+                        imports.remove(new ImportWrapper(fullname, fullname));
                     }
 
                     if (m.groupCount() > 1) {
-                        s = m.group(2);
-                        if (s != null) {
-                            String[] params = s.split("\\s*,\\s*");
+                        fullname = m.group(2);
+                        if (fullname != null) {
+                            String[] params = fullname.split("\\s*,\\s*");
                             for (String param : params) {
                                 final int firstDot = param.indexOf('.');
                                 final String expectedImportName;
@@ -101,7 +100,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
                                 } else {
                                     expectedImportName = param.substring(0, firstDot);
                                 }
-                                imports.remove(new ImportWrapper(param, expectedImportName, new DummyJavaNode(-1)));
+                                imports.remove(new ImportWrapper(param, expectedImportName));
                             }
                         }
                     }
