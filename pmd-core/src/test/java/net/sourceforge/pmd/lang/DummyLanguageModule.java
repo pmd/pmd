@@ -37,7 +37,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, DummyRuleChainVisitor.class, "dummy");
+        super(NAME, null, TERSE_NAME, "dummy");
         addVersion("1.0", new Handler());
         addVersion("1.1", new Handler());
         addVersion("1.2", new Handler());
