@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   apex-bestpractices
+    *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
+
 ### API Changes
 
 * In PMD 7, The `language` attribute will be required on all `rule` elements that
