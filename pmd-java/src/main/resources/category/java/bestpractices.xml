@@ -308,6 +308,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidUsingHardCodedIP"
+          language="java"
           since="4.1"
           message="Do not hard code the IP address ${variableName}"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule"
