@@ -9,7 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -66,7 +65,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
         MyEcmascriptRule rule = new MyEcmascriptRule();
         RuleContext ctx = new RuleContext();
-        rule.apply(Arrays.asList(js.parse(source)), ctx);
+        rule.apply(js.parse(source), ctx);
 
         assertEquals("Scope from 2 to 4", output.get(0));
         assertEquals("Scope from 4 to 6", output.get(1));

@@ -26,6 +26,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Implementations are based on the iterator rather than the stream.
@@ -124,16 +125,11 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <R, A> R collect(Collector<? super T, A, R> collector) {
         A container = collector.supplier().get();
         BiConsumer<A, ? super T> accumulator = collector.accumulator();
         forEach(u -> accumulator.accept(container, u));
-        if (collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
-            return (R) container;
-        } else {
-            return collector.finisher().apply(container);
-        }
+        return CollectionUtil.finish(collector, container);
     }
 
     @Override

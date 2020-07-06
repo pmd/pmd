@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -58,16 +56,10 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
         return new XmlParserOptions(this);
     }
 
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
 
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Object element : nodes) {
-            XmlNode node = (XmlNode) element;
-            visit(node, ctx);
-        }
+    @Override
+    public void apply(Node target, RuleContext ctx) {
+        visit((XmlNode) target, ctx);
     }
 
     protected void visit(XmlNode node, RuleContext ctx) {

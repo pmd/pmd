@@ -21,12 +21,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.MapPSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -382,7 +389,6 @@ public final class CollectionUtil {
         return union;
     }
 
-
     /**
      * Returns a set containing the given elements. No guarantee is
      * made about mutability.
@@ -525,18 +531,34 @@ public final class CollectionUtil {
         return collector;
     }
 
+    /**
+     * Map each element of the given collection with the given function,
+     * and accumulates it into an unmodifiable list.
+     */
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
         return map(from.iterator(), from.size(), f);
     }
 
+    /**
+     * Map each element of the given iterable with the given function,
+     * and accumulates it into an unmodifiable list.
+     */
     public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
+    /**
+     * Map each element of the given array with the given function,
+     * and accumulates it into an unmodifiable list.
+     */
     public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
         return map(Arrays.asList(from), f);
     }
 
+    /**
+     * Map each element of the given iterator with the given function,
+     * and accumulates it into an unmodifiable list.
+     */
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
         return map(from, UNKNOWN_SIZE, f);
     }
@@ -552,6 +574,94 @@ public final class CollectionUtil {
             res.add(f.apply(from.next()));
         }
         return Collections.unmodifiableList(res);
+    }
+
+    /**
+     * Map each element of the given iterable with the given function,
+     * and accumulates it into the collector.
+     */
+    public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
+                                     Iterable<? extends T> from,
+                                     Function<? super T, ? extends U> f) {
+        return map(collector, from.iterator(), f);
+    }
+
+    /**
+     * Map each element of the given iterator with the given function,
+     * and accumulates it into the collector.
+     */
+    // one more type param and we can write tupac
+    public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
+                                     Iterator<? extends T> from,
+                                     Function<? super T, ? extends U> f) {
+        A a = collector.supplier().get();
+        BiConsumer<A, ? super U> accumulator = collector.accumulator();
+        from.forEachRemaining(t -> accumulator.accept(a, f.apply(t)));
+        return finish(collector, a);
+    }
+
+    /**
+     * A collector that returns a mutable list. This contrasts with
+     * {@link Collectors#toList()}, which makes no guarantee about the
+     * mutability of the list.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, List<T>> toMutableList() {
+        return Collector.<T, ArrayList<T>, List<T>>of(
+            ArrayList::new,
+            ArrayList::add,
+            (left, right) -> {
+                left.addAll(right);
+                return left;
+            },
+            a -> a,
+            Characteristics.IDENTITY_FINISH
+        );
+    }
+
+    /**
+     * A collector that returns an unmodifiable list. This contrasts with
+     * {@link Collectors#toList()}, which makes no guarantee about the
+     * mutability of the list. {@code Collectors::toUnmodifiableList} was
+     * only added in JDK 9.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
+        return Collectors.collectingAndThen(toMutableList(), Collections::unmodifiableList);
+    }
+
+    /**
+     * A collectors that accumulates into a persistent set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
+        class Holder {
+            MapPSet<T> set = HashTreePSet.empty();
+        }
+
+        return Collector.of(
+            Holder::new,
+            (h, t) -> h.set = h.set.plus(t),
+            (left, right) -> {
+                left.set = left.set.plusAll(right.set);
+                return left;
+            },
+            a -> a.set
+        );
+    }
+
+    /**
+     * Finish the accumulated value of the collector.
+     */
+    public static <V, A, C> C finish(Collector<? super V, A, ? extends C> collector, A acc) {
+        if (collector.characteristics().contains(Characteristics.IDENTITY_FINISH)) {
+            return (C) acc;
+        } else {
+            return collector.finisher().apply(acc);
+        }
     }
 
     public static <T> List<T> drop(List<T> list, int n) {
@@ -683,5 +793,17 @@ public final class CollectionUtil {
      */
     public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
         return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * If the set has a single element, returns it, otherwise returns null.
+     * Obviously the set should not contain null elements.
+     */
+    public static <@NonNull T> @Nullable T asSingle(Set<T> set) {
+        if (set.size() == 1) {
+            return set.iterator().next();
+        } else {
+            return null;
+        }
     }
 }

@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -48,7 +46,7 @@ public class MockRule extends AbstractRule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+    public void apply(Node node, RuleContext ctx) {
         // the mock rule does nothing. Usually you would start here to analyze the AST.
     }
 }

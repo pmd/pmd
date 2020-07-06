@@ -9,6 +9,7 @@ import java.io.Reader;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
+@InternalApi
 public final class ApexParser extends AbstractParser {
 
     public ApexParser(ParserOptions parserOptions) {

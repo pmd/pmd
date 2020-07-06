@@ -343,4 +343,115 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Violation: Avoid concat in append method invocations</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,13,18,27,33</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    private static final String STATIC_FINAL_F = "static_final_field";
+    private static String static_f = "static_field";
+    private final String FINAL_F = "final_field";
+
+    private void concatIsBad(String arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("arg='" + arg + "'"); // bad
+    }
+
+    private void concatIsBad2(String arg) {
+        StringBuilder sb = new StringBuilder().append("arg='" + arg + "'"); // bad
+    }
+
+    private void concatIsBad3(String arg) {
+        StringBuilder sb;
+        sb = new StringBuilder().append("arg='" + arg + "'"); // bad
+    }
+
+    private void concatNumeric() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(1 + 2);
+    }
+
+    private String testStaticBad() {
+        StringBuilder sb = new StringBuilder().append("fld:" + static_f); // bad
+        return sb.toString();
+    }
+
+    private String testFinalLocalBad() {
+        String local = "local"; // non-final, jdk9+ optimized with indified Strings, assumed still worse
+        return new StringBuilder().append("fld:" + local).toString(); // assumed bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violation: Avoid concat in append method invocations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private static final String STATIC_FINAL_F = "static_final_field";
+    private final String FINAL_F = "final_field";
+
+    private void good(String arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("arg='").append(arg).append("'");
+    }
+
+    public void testAddInSecondOrThirdArgAppendGood() {
+        StringBuilder wrappedLine = new StringBuilder();
+        String str = "bar";
+        int offset = 1;
+        int wrapLength = 2;
+        wrappedLine.append(str, offset + 1, wrapLength + offset + 1); // + but no string concat
+    }
+
+    private String testLiteralsGood(String arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("lit:" + "etc");
+        return sb.toString();
+    }
+
+    private String testFinalFieldGood() { // final assumed a constant expression
+        return new StringBuilder().append("fld:" + FINAL_F).toString(); //good
+    }
+
+    private String testStaticFinalFieldGood() {
+        return new StringBuilder().append("fld:" + STATIC_FINAL_F).toString(); // good
+    }
+
+    private String testFinalLocalGood() {
+        final String local = "local"; // final assumed a constant expression
+        return new StringBuilder().append("fld:" + local).toString(); // good
+    }
+
+    private String testFinalLocalGood2() {
+        final String local = "local"; // final assumed a constant expression
+        StringBuilder sb = new StringBuilder();
+        sb.append("local:" + local); // good
+        return sb.toString;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int someInt = 1;
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Foo{");
+        sb.append("someInt=").append(this.someInt < 0 ? "n/a" : this.someInt + "ms");
+        sb.append("someInt2=").append(this.someInt >= 0 ? this.someInt + "ms" : "n/a");
+        sb.append('}');
+        return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

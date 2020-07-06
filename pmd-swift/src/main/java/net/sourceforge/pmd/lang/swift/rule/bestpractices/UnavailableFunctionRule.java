@@ -7,11 +7,15 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionDeclarationContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.InitializerDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttributes;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwCodeBlock;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwFunctionDeclaration;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwInitializerDeclaration;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwStatement;
+import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 
@@ -20,22 +24,22 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
 
     public UnavailableFunctionRule() {
         super();
-        addRuleChainVisit(FunctionDeclarationContext.class);
-        addRuleChainVisit(InitializerDeclarationContext.class);
+        addRuleChainVisit(SwFunctionDeclaration.class);
+        addRuleChainVisit(SwInitializerDeclaration.class);
     }
 
     @Override
-    public SwiftBaseVisitor<Void> buildVisitor(RuleContext ruleCtx) {
-        return new SwiftBaseVisitor<Void>() {
+    public AstVisitor<RuleContext, ?> buildVisitor() {
+        return new SwiftVisitorBase<RuleContext, Void>() {
 
             @Override
-            public Void visitFunctionDeclaration(final FunctionDeclarationContext ctx) {
+            public Void visitFunctionDeclaration(final SwFunctionDeclaration ctx, RuleContext ruleCtx) {
                 if (ctx == null) {
                     return null;
                 }
 
                 if (shouldIncludeUnavailableModifier(ctx.functionBody().codeBlock())) {
-                    final SwiftParser.AttributesContext attributes = ctx.functionHead().attributes();
+                    final SwAttributes attributes = ctx.functionHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -45,13 +49,13 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
             }
 
             @Override
-            public Void visitInitializerDeclaration(final InitializerDeclarationContext ctx) {
+            public Void visitInitializerDeclaration(final SwInitializerDeclaration ctx, RuleContext ruleCtx) {
                 if (ctx == null) {
                     return null;
                 }
 
                 if (shouldIncludeUnavailableModifier(ctx.initializerBody().codeBlock())) {
-                    final SwiftParser.AttributesContext attributes = ctx.initializerHead().attributes();
+                    final SwAttributes attributes = ctx.initializerHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -60,18 +64,18 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 return null;
             }
 
-            private boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
+            private boolean shouldIncludeUnavailableModifier(final SwCodeBlock ctx) {
                 if (ctx == null || ctx.statements() == null) {
                     return false;
                 }
 
-                final List<SwiftParser.StatementContext> statements = ctx.statements().statement();
+                final List<SwStatement> statements = ctx.statements().statement();
 
-                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getStart().getText());
+                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getFirstAntlrToken().getText());
             }
 
-            private boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
-                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
+            private boolean hasUnavailableModifier(final List<SwAttribute> attributes) {
+                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.joinTokenText()));
             }
         };
     }

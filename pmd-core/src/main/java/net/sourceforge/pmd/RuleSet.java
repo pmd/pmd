@@ -15,15 +15,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -560,29 +556,12 @@ public class RuleSet implements ChecksumAware {
      *            the node list, usually the root nodes like compilation units
      * @param ctx
      *            the current context
+     *
+     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
      */
+    @Deprecated
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE)) {
-            for (Rule rule : rules) {
-                if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
-
-                    try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                        rule.apply(acuList, ctx);
-                    } catch (RuntimeException e) {
-                        if (ctx.isIgnoreExceptions()) {
-                            ctx.getReport().addError(new Report.ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
-
-                            if (LOG.isLoggable(Level.WARNING)) {
-                                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                        + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-                            }
-                        } else {
-                            throw e;
-                        }
-                    }
-                }
-            }
-        }
+        new RuleSets(this).apply(acuList, ctx);
     }
 
     /**

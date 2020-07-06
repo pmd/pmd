@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -17,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
-import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
@@ -33,7 +29,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, DummyRuleChainVisitor.class, "dummy");
+        super(NAME, null, TERSE_NAME, "dummy");
         addVersion("1.0", new Handler());
         addVersion("1.1", new Handler());
         addVersion("1.2", new Handler());
@@ -43,25 +39,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-    }
-
-    public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
-        @Override
-        protected void visit(Rule rule, Node node, RuleContext ctx) {
-            rule.apply(Arrays.asList(node), ctx);
-        }
-
-        @Override
-        protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-            for (Node n : nodes) {
-                indexNode(n);
-                List<Node> childs = new ArrayList<>();
-                for (int i = 0; i < n.getNumChildren(); i++) {
-                    childs.add(n.getChild(i));
-                }
-                indexNodes(childs, ctx);
-            }
-        }
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {

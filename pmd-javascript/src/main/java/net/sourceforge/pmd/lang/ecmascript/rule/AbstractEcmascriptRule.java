@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -13,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
-import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
+import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -40,16 +38,10 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
         return new EcmascriptParserOptions(this);
     }
 
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
 
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Object element : nodes) {
-            ASTAstRoot node = (ASTAstRoot) element;
-            visit(node, ctx);
-        }
+    @Override
+    public void apply(Node target, RuleContext ctx) {
+        ((EcmascriptNode<?>) target).jjtAccept(this, ctx);
     }
 
 }

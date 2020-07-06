@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.jsp.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -22,14 +20,7 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
-
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Object element : nodes) {
-            JspNode node = (JspNode) element;
-            visit(node, ctx);
-        }
+    public void apply(Node target, RuleContext ctx) {
+        ((JspNode) target).jjtAccept(this, ctx);
     }
 }

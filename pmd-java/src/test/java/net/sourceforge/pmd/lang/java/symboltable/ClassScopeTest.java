@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,9 +20,11 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;
@@ -70,23 +72,23 @@ public class ClassScopeTest extends BaseNonParserTest {
 
     @Test
     public void testCantContainsSuperToString() {
-        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ASTCompilationUnit cu = java.parse("class Foo { public String toString() { return super.toString(); } }");
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(cu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class));
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        DummyJavaNode node = new DummyJavaNode(1);
-        node.setImage("super.toString");
-        assertFalse(s.contains(new JavaNameOccurrence(node, node.getImage())));
+        JavaNode node = cu.getFirstDescendantOfType(ASTPrimaryExpression.class); // "super.toString();"
+        assertFalse(s.contains(new JavaNameOccurrence(node, "super.toString")));
     }
 
     @Test
     public void testContainsStaticVariablePrefixedWithClassName() {
-        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
-        ClassScope s = new ClassScope("Foo", classDeclaration);
-        ASTVariableDeclaratorId node = InternalApiBridge.newVarId("X");
+        ASTCompilationUnit cu = java.parse("class Foo { static int X; public int bar() { return Foo.X; } }");
 
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(cu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class));
+        ClassScope s = new ClassScope("Foo", classDeclaration);
+        ASTVariableDeclaratorId node = cu.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         s.addDeclaration(new VariableNameDeclaration(node));
 
-        DummyJavaNode node2 = new DummyJavaNode(2);
-        node2.setImage("Foo.X");
+        JavaNode node2 = cu.getFirstDescendantOfType(ASTName.class);
         assertTrue(s.contains(new JavaNameOccurrence(node2, node2.getImage())));
     }
 

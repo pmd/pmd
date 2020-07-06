@@ -1,0 +1,13 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L2
+    [@]                                     1         2
+    [SuppressWarnings]                      2         18
+    [(]                                     18        19
+    [{]                                     19        20
+    ["woof"]                                20        26
+    [,]                                     26        27
+L12
+    ["CPD-END"]                             26        35
+    [}]                                     35        36
+    [)]                                     36        37
+EOF

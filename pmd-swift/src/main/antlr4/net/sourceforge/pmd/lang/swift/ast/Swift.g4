@@ -35,27 +35,28 @@ grammar Swift;
 
 @header {
 import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 }
 
 
+@parser::members {
 
-@classMembers {
-
-    @Override
-	public TerminalNode createTerminalNode(ParserRuleContext parent, Token t) {
-		return new PmdAntlrTerminalNodeImpl(t);
-	}
+    static final AntlrNameDictionary DICO = new SwiftNameDictionary(VOCABULARY, ruleNames);
 
     @Override
-	public ErrorNode createErrorNode(ParserRuleContext parent, Token t) {
-		return new PmdAntlrErrorNodeImpl(t);
-	}
+    public SwiftTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+        return new SwiftTerminalNode(t);
+    }
 
+    @Override
+    public SwiftErrorNode createPmdError(ParserRuleContext parent, Token t) {
+        return new SwiftErrorNode(t);
+    }
 }
 
 options {
-    contextSuperClass = AntlrBaseNode;
-    superClass = PmdAntlrParserBase;
+    contextSuperClass = 'SwiftInnerNode';
+    superClass = 'AntlrGeneratedParserBase<SwiftNode>';
 }
 
 topLevel : statements? EOF ;

@@ -112,7 +112,7 @@ public class MultiThreadProcessorTest {
         // between the threads
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
             if (ctx.getSourceCodeFilename().contains("violation")) {
@@ -124,7 +124,7 @@ public class MultiThreadProcessorTest {
 
             letTheOtherThreadRun(100);
             if (hasViolation) {
-                addViolation(ctx, nodes.get(0));
+                addViolation(ctx, target);
             }
         }
 
@@ -143,7 +143,7 @@ public class MultiThreadProcessorTest {
         public static final String DYSFUNCTIONAL_RULE_REASON = "dysfunctional rule is dysfunctional";
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
             // noop
         }
 

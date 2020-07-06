@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.modelica.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.modelica.ModelicaLanguageModule;
-import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor;
 import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
@@ -27,15 +24,8 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
     }
 
     @Override
-    public void apply(final List<? extends Node> nodes, final RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
-
-    protected void visitAll(final List<? extends Node> nodes, final RuleContext ctx) {
-        for (final Object element : nodes) {
-            final ASTStoredDefinition node = (ASTStoredDefinition) element;
-            visit(node, ctx);
-        }
+    public void apply(Node target, RuleContext ctx) {
+        ((ModelicaNode) target).jjtAccept(this, ctx);
     }
 
     @Override

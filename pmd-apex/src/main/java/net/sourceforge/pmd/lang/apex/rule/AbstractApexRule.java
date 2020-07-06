@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -126,16 +124,8 @@ public abstract class AbstractApexRule extends AbstractRule
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
-
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node element : nodes) {
-            if (element instanceof ApexNode<?>) {
-                ((ApexNode<?>) element).jjtAccept(this, ctx);
-            }
-        }
+    public void apply(Node target, RuleContext ctx) {
+        ((ApexNode<?>) target).jjtAccept(this, ctx);
     }
 
     @Override

@@ -30,16 +30,19 @@
                     <execution>
                         <id>antlr-cleanup</id>
                         <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="src/main/ant/antlr4.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/antlr4" />
-                                </ant>
-                            </target>
-                        </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="${antlr4.ant.wrapper}">
+                                    <property name="lang-name" value="Swift" />
+                                    <property name="lang-terse-name" value="swift" />
+                                    <property name="root-node-name" value="TopLevel" />
+                                    <property name="node-prefix" value="Sw" />
+                                </ant>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -76,8 +79,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

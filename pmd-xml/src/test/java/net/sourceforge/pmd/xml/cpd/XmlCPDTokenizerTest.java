@@ -4,35 +4,26 @@
 
 package net.sourceforge.pmd.xml.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class XmlCPDTokenizerTest extends AbstractTokenizerTest {
+public class XmlCPDTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "hello.xml";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new XmlTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public XmlCPDTokenizerTest() {
+        super(".xml");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(XmlTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
+    public Tokenizer newTokenizer(Properties properties) {
+        return new XmlTokenizer();
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 37;
-        super.tokenizeTest();
+    public void tokenizeTest() {
+        doTest("simple");
     }
 }

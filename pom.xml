@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-05-24T15:34:33Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-06-27T09:31:26Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -104,12 +104,15 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>6</pmd.build-tools.version>
+        <pmd.build-tools.version>7</pmd.build-tools.version>
 
         <pmd-designer.version>6.24.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
+
+        <antlr4.outputDirectory>${project.build.directory}/generated-sources/antlr4</antlr4.outputDirectory>
+        <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
     </properties>
 
     <build>
@@ -121,6 +124,8 @@
                     <version>${antlr.version}</version>
                     <configuration>
                         <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                        <visitor>true</visitor>
+                        <listener>true</listener>
                     </configuration>
                     <executions>
                         <execution>
@@ -375,12 +380,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.23.0</version>
+                            <version>6.25.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.23.0</version>
+                            <version>6.25.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>

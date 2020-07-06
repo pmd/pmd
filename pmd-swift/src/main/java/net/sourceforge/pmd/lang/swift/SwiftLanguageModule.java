@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrRuleChainVisitor;
 
 /**
  * Language Module for Swift
@@ -21,7 +20,7 @@ public class SwiftLanguageModule extends BaseLanguageModule {
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(NAME, null, TERSE_NAME, AntlrRuleChainVisitor.class, "swift");
+        super(NAME, null, TERSE_NAME, "swift");
         addVersion("", new SwiftHandler(), true);
     }
 }

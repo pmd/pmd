@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>violation: FileItem get() used</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,12,16</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.fileupload.FileItem;
+public class Foo {
+
+    private FileItem globalFileItem;
+
+    private byte[] get(final FileItem fileItem) {
+        return fileItem.get(); // bad
+    }
+
+    private byte[] get(final FileItem fileItem) {
+        FileItem sameFileItem = fileItem;
+        return sameFileItem.get(); // bad
+    }
+
+    private byte[] get() {
+        globalFileItem.get(); // bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: FileItem get() used with fully qualified class reference</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,15</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    private org.apache.commons.fileupload.FileItem globalFileItem;
+
+    private byte[] get(final org.apache.commons.fileupload.FileItem fileItem) {
+        return fileItem.get(); // bad
+    }
+
+    private byte[] get(final org.apache.commons.fileupload.FileItem fileItem) {
+        org.apache.commons.fileupload.FileItem sameFileItem = fileItem;
+        return sameFileItem.get(); // bad
+    }
+
+    private byte[] get() {
+        globalFileItem.get(); // bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: FileItem getString() used</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,12,12,16</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.fileupload.FileItem;
+public class Foo {
+
+    private FileItem globalFileItem;
+
+    private String getString(final FileItem fileItem) {
+        return fileItem.getString(); // bad
+    }
+
+    private String getString(final FileItem fileItem) {
+        FileItem sameFileItem = fileItem;
+        return fileItem.getString() + sameFileItem.getString(); // bad (2x)
+    }
+
+    private String getString() {
+        globalFileItem.getString(); // bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: FileItem getString() used with fully qualified class reference</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,11,11,15</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    private org.apache.commons.fileupload.FileItem globalFileItem;
+
+    private String getString(final org.apache.commons.fileupload.FileItem fileItem) {
+        return fileItem.getString(); // bad
+    }
+
+    private String getString(final org.apache.commons.fileupload.FileItem fileItem) {
+        org.apache.commons.fileupload.FileItem sameFileItem = fileItem;
+        return fileItem.getString() + sameFileItem.getString(); // bad (2x)
+    }
+
+    private String getString() {
+        globalFileItem.getString(); // bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: harmless get methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String getString(final HarmlessClass harmless) {
+        return harmless.get(); // harmless
+    }
+
+    private class HarmlessClass {
+        public byte[] get() {
+            return new byte[0];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Harmless getString methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String getString(final HarmlessClass harmless) {
+        return harmless.getString(); // harmless
+    }
+
+    private class HarmlessClass {
+        public String getString() {
+            return "";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

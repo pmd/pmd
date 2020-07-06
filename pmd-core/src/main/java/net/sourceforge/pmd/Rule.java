@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -287,56 +288,28 @@ public interface Rule extends PropertySource {
 
 
     /**
-     * Gets whether this Rule uses the RuleChain.
-     *
-     * @return <code>true</code> if RuleChain is used.
+     * Returns the object that selects the nodes to which this rule applies.
+     * The selected nodes will be handed to {@link #apply(Node, RuleContext)}.
      */
-    boolean isRuleChain();
+    RuleTargetSelector getTargetSelector();
 
-    /**
-     * Gets the collection of AST node names visited by the Rule on the
-     * RuleChain.
-     *
-     * @return the list of AST node names
-     */
-    List<String> getRuleChainVisits();
-
-    /**
-     * Adds an AST node by class to be visited by the Rule on the RuleChain.
-     *
-     * @param nodeClass
-     *            the AST node to add to the RuleChain visit list
-     */
-    void addRuleChainVisit(Class<? extends Node> nodeClass);
-
-    /**
-     * Adds an AST node by XPath name to be visited by the Rule on the RuleChain.
-     *
-     * @param astNodeName
-     *            the XPath name of the node to add to the RuleChain visit list
-     *
-     * @see Node#getXPathNodeName()
-     */
-    void addRuleChainVisit(String astNodeName);
 
     /**
      * Start processing. Called once, before apply() is first called.
      *
-     * @param ctx
-     *            the rule context
+     * @param ctx the rule context
      */
     void start(RuleContext ctx);
 
+
     /**
-     * Apply this rule to the given collection of nodes, using the given
-     * context.
+     * Process the given node. The nodes that are fed to this method
+     * are the nodes selected by {@link #getTargetSelector()}.
      *
-     * @param nodes
-     *            the nodes
-     * @param ctx
-     *            the rule context
+     * @param target Node on which to apply the rule
+     * @param ctx    Rule context, handling violations
      */
-    void apply(List<? extends Node> nodes, RuleContext ctx);
+    void apply(Node target, RuleContext ctx);
 
     /**
      * End processing. Called once, after apply() is last called.
@@ -351,4 +324,6 @@ public interface Rule extends PropertySource {
      * @return A new exact copy of this rule
      */
     Rule deepCopy();
+
+
 }

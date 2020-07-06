@@ -28,9 +28,8 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
                                  .defaultValue(defaultReportLevel()).build();
 
 
-    @SafeVarargs
-    public AbstractJavaCounterCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodeTypes) {
-        super(nodeType, concreteNodeTypes);
+    public AbstractJavaCounterCheckRule(Class<T> nodeType) {
+        super(nodeType);
         definePropertyDescriptor(reportLevel);
     }
 
@@ -63,9 +62,8 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
     public abstract static class AbstractLineLengthCheckRule<T extends JavaNode> extends AbstractJavaCounterCheckRule<T> {
 
-        @SafeVarargs
-        public AbstractLineLengthCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodes) {
-            super(nodeType, concreteNodes);
+        public AbstractLineLengthCheckRule(Class<T> nodeType) {
+            super(nodeType);
         }
 
         @Override

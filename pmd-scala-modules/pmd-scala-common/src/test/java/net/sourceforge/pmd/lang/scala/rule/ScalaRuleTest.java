@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.scala.rule;
 
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
@@ -35,7 +34,7 @@ public class ScalaRuleTest extends BaseScalaTest {
             }
         };
         ASTSource root = scala.parseResource(SCALA_TEST);
-        rule.apply(Collections.singletonList(root), null);
+        rule.apply(root, null);
         Assert.assertEquals(12, visited.get());
     }
 
