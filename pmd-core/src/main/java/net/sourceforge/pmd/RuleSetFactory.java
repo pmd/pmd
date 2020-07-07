@@ -44,11 +44,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
- * content. By default Rules will be loaded using the {@link RulePriority#LOW} priority,
- * with Rule deprecation warnings off;
- * the ruleset compatibility filter is active, too (see {@link RuleSetFactoryCompatibility});
- * if the ruleset contains rule references (e.g. for renamed or moved rules), these
- * are ignored by default.
+ * content. See {@link RuleSetFactoryConfig} for configuration options and
+ * their defaults. The constructors of this class are deprecated and their
+ * usages should be replaced by use of {@link RuleSetFactoryConfig#createFactory()}.
  */
 public class RuleSetFactory {
 
@@ -67,7 +65,7 @@ public class RuleSetFactory {
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
     /**
-     * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
+     * @deprecated Use a {@link RuleSetFactoryConfig} to build a new factory
      */
     @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory() {
@@ -75,8 +73,7 @@ public class RuleSetFactory {
     }
 
     /**
-     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
-     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
+     * @deprecated Use a {@link RuleSetFactoryConfig} to build a new factory
      */
     @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
@@ -85,8 +82,7 @@ public class RuleSetFactory {
     }
 
     /**
-     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
-     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
+     * @deprecated Use a {@link RuleSetFactoryConfig} to build a new factory
      */
     @Deprecated // to be hidden with PMD 7.0.0.
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
@@ -115,10 +111,18 @@ public class RuleSetFactory {
      *            The factory whose configuration to copy.
      * @param warnDeprecated
      *            Whether deprecation warnings are to be produced by this
-     *            factory.
+     *            factory
+     *
+     * @deprecated Use {@link #toConfig()} to rebuild a factory from a configuration
      */
+    @Deprecated
     public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
         this(factory.resourceLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
+    }
+
+
+    RuleSetFactory(RuleSetFactoryConfig config) {
+        this(config.resourceLoader, config.minimumPriority, config.warnDeprecated, config.enableCompatibility, config.includeDeprecatedRuleReferences);
     }
 
     /**
@@ -154,10 +158,9 @@ public class RuleSetFactory {
             } catch (RuleSetNotFoundException e) {
                 LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
             } catch (IOException ioe) {
-                throw new RuntimeException("Couldn't find " + rulesetsProperties
-                        + "; please ensure that the directory is on the classpath. The current classpath is: "
-                        + System.getProperty("java.class.path"));
-            }
+            throw new RuntimeException("Couldn't find " + rulesetsProperties
+                    + "; please ensure that the directory is on the classpath. The current classpath is: "
+                    + System.getProperty("java.class.path"));}
         }
         return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
     }
@@ -348,7 +351,8 @@ public class RuleSetFactory {
     private Rule createRule(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         if (ruleSetReferenceId.isAllRules()) {
-            throw new IllegalArgumentException("Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
+            throw new IllegalArgumentException(
+                    "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
         RuleSet ruleSet;
         // java8: computeIfAbsent
@@ -557,7 +561,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = toConfig().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).createFactory();
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
@@ -672,7 +676,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = toConfig().warnDeprecated(false).createFactory();
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -830,6 +834,97 @@ public class RuleSetFactory {
             return ruleSetReferenceId.getRuleName() != null && ruleSetReferenceId.getRuleName().equals(ruleName);
         } else {
             return false;
+        }
+    }
+
+
+    public RuleSetFactoryConfig toConfig() {
+        return new RuleSetFactoryConfig().loadResourcesWith(resourceLoader)
+                                         .filterAbovePriority(minimumPriority)
+                                         .warnDeprecated(warnDeprecated)
+                                         .enableCompatibility(compatibilityFilter != null);
+    }
+
+
+    /**
+     * Configuration of a {@link RuleSetFactory}. This is a fluent builder
+     * pattern. Use this instead of the constructors of RuleSetFactory.
+     */
+    public static final class RuleSetFactoryConfig {
+
+        ResourceLoader resourceLoader = new ResourceLoader(RuleSetFactoryConfig.class.getClassLoader());
+        RulePriority minimumPriority = RulePriority.LOW;
+        boolean warnDeprecated = true;
+        boolean enableCompatibility = true;
+        boolean includeDeprecatedRuleReferences = false;
+
+        /**
+         * Specify that the given classloader should be used to resolve
+         * paths to external ruleset references. The default uses PMD's
+         * own classpath.
+         */
+        public RuleSetFactoryConfig loadResourcesWith(ClassLoader classLoader) {
+            this.resourceLoader = new ResourceLoader(classLoader);
+            return this;
+        }
+
+        // internal
+        RuleSetFactoryConfig loadResourcesWith(ResourceLoader loader) {
+            this.resourceLoader = loader;
+            return this;
+        }
+
+        /**
+         * Filter loaded rules to only those that match or are above
+         * the given priority. The default is {@link RulePriority#LOW},
+         * ie, no filtering occurs.
+         */
+        public RuleSetFactoryConfig filterAbovePriority(RulePriority minimumPriority) {
+            this.minimumPriority = minimumPriority;
+            return this;
+        }
+
+        /**
+         * Log a warning when referencing a deprecated rule.
+         * This is enabled by default.
+         */
+        public RuleSetFactoryConfig warnDeprecated(boolean warn) {
+            this.warnDeprecated = warn;
+            return this;
+        }
+
+        /**
+         * Enable translating old rule references to newer ones, if they have
+         * been moved or renamed. This is enabled by default, if disabled,
+         * unresolved references will not be translated and will produce an
+         * error.
+         */
+        public RuleSetFactoryConfig enableCompatibility(boolean enable) {
+            this.enableCompatibility = enable;
+            return this;
+        }
+
+        /**
+         * Follow deprecated rule references. By default this is off,
+         * and those references will be ignored (with a warning depending
+         * on {@link #enableCompatibility(boolean)}).
+         */
+        public RuleSetFactoryConfig includeDeprecatedRuleReferences(boolean enable) {
+            this.includeDeprecatedRuleReferences = enable;
+            return this;
+        }
+
+        public RuleSetFactory createFactory() {
+            return new RuleSetFactory(this);
+        }
+
+        /**
+         * Configure a new ruleset factory builder according to the parameters
+         * of the given PMD configuration.
+         */
+        public static RuleSetFactoryConfig fromPmdConfig(PMDConfiguration configuration) {
+            return new RuleSetFactoryConfig().filterAbovePriority(configuration.getMinimumPriority())
+                                             .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
         }
     }
 }

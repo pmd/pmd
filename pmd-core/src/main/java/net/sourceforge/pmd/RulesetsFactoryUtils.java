@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -76,7 +77,7 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use {@link #createFactory(PMDConfiguration)} or {@link #createFactory(PMDConfiguration, ClassLoader)}
+     * @deprecated Use a {@link RuleSetFactoryConfig}
      */
     @InternalApi
     @Deprecated
@@ -96,7 +97,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
+     *
+     * @deprecated Use {@link RuleSetFactoryConfig#fromPmdConfig(PMDConfiguration)}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
         return createFactory(configuration, RulesetsFactoryUtils.class.getClassLoader());
     }
@@ -107,7 +111,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see #createFactory(PMDConfiguration, ClassLoader)
+     * @see RuleSetFactoryConfig
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -124,7 +128,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetFactoryConfig}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
         return createFactory(classLoader,
                              configuration.getMinimumPriority(),
@@ -145,7 +152,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetFactoryConfig}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
                                                RulePriority minimumPriority,
                                                boolean warnDeprecated,
@@ -166,11 +176,13 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetFactoryConfig}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility) {
-
         return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility);
     }
 

@@ -29,9 +29,9 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -41,7 +41,6 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -103,8 +102,9 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        final ResourceLoader rl = setupResourceLoader();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+        RuleSetFactory ruleSetFactory = RuleSetFactoryConfig.fromPmdConfig(configuration)
+                                                            .loadResourcesWith(setupResourceLoader())
+                                                            .createFactory();
 
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
@@ -216,7 +216,7 @@ public class PMDTaskImpl {
         }
     }
 
-    private ResourceLoader setupResourceLoader() {
+    private ClassLoader setupResourceLoader() {
         if (classpath == null) {
             classpath = new Path(project);
         }
@@ -233,8 +233,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
-                project, classpath, parentFirst));
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
     private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
