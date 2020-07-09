@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -44,9 +43,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             return data;
         }
 
-        //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
-        // create a new hashmap to store occurrence of not-recommending string concatenation operations
-        HashMap<String, Integer> map = new HashMap<>();
+        // Remember how often we the variable has been used
+        int usageCounter = 0;
 
         for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
@@ -85,33 +83,36 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
+                    ASTAssignmentOperator assignmentOperator = statement
+                            .getFirstDescendantOfType(ASTAssignmentOperator.class);
                     if (astName.equals(name)) {
-                        ASTAssignmentOperator assignmentOperator = statement
-                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
-                            //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
-                            // check whether is first time to break the rule
-                            if (!map.containsKey(astName.getNameDeclaration().getName())) {
-                                map.put(astName.getNameDeclaration().getName(), 1);
-                            } else {
-                                map.put(astName.getNameDeclaration().getName(),
-                                        map.get(astName.getNameDeclaration().getName()) + 1);
+                            if (isWithinLoop(name)) {
+                                // always report within a loop
                                 addViolation(data, assignmentOperator);
+                            } else {
+                                usageCounter++;
+                                if (usageCounter > 1) {
+                                    // only report, if it is not the first time
+                                    addViolation(data, assignmentOperator);
+                                }
                             }
                         }
-                    } else if (astName.getImage().equals(name.getImage())) {
-                        ASTAssignmentOperator assignmentOperator = statement
-                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
+                    } else if (astName.hasImageEqualTo(name.getImage())) {
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
-                            //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
-                            // check whether is first time to break the rule
-                            if (!map.containsKey(astName.getNameDeclaration().getName())) {
-                                map.put(astName.getNameDeclaration().getName(), 1);
-                            } else {
-                                map.put(astName.getNameDeclaration().getName(),
-                                        map.get(astName.getNameDeclaration().getName()) + 1);
+                            if (isWithinLoop(name)) {
+                                // always report within a loop
                                 addViolation(data, assignmentOperator);
+                            } else {
+                                usageCounter++;
+                                if (usageCounter > 1) {
+                                    // only report, if it is not the first time
+                                    addViolation(data, assignmentOperator);
+                                }
                             }
+                        } else if (assignmentOperator != null && assignmentOperator.isCompound()
+                                && usageCounter >= 1) {
+                            addViolation(data, assignmentOperator);
                         }
                     }
                 }
@@ -124,5 +125,9 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         return name.getFirstParentOfType(ASTForStatement.class) == null
                 && name.getFirstParentOfType(ASTWhileStatement.class) == null
                 && name.getFirstParentOfType(ASTDoStatement.class) == null;
+    }
+
+    private boolean isWithinLoop(Node name) {
+        return !isNotWithinLoop(name);
     }
 }
