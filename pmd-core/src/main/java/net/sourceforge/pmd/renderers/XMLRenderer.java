@@ -14,8 +14,6 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -29,6 +27,7 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer to XML format.
@@ -121,7 +120,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
                 xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
                 xmlWriter.writeCharacters(PMD.EOL);
-                xmlWriter.writeCharacters(removeInvalidCharacters(rv.getDescription()));
+                xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
                 xmlWriter.writeCharacters(PMD.EOL);
                 xmlWriter.writeEndElement();
                 xmlWriter.writeCharacters(PMD.EOL);
@@ -199,26 +198,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         } catch (IOException | XMLStreamException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    /**
-     * Remove characters, that are not allowed in XML 1.0 documents.
-     *
-     * <p>Allowed characters are:
-     * <blockquote>
-     * Char    ::=      #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-     *  // any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
-     * </blockquote>
-     * (see <a href="https://www.w3.org/TR/xml/#charsets">Extensible Markup Language (XML) 1.0 (Fifth Edition)</a>).
-     */
-    private String removeInvalidCharacters(String text) {
-        Pattern pattern = Pattern.compile(
-                  "\\x00|\\x01|\\x02|\\x03|\\x04|\\x05|\\x06|\\x07|\\x08|"
-                + "\\x0b|\\x0c|\\x0e|\\x0f|"
-                + "\\x10|\\x11|\\x12|\\x13|\\x14|\\x15|\\x16|\\x17|\\x18|"
-                + "\\x19|\\x1a|\\x1b|\\x1c|\\x1d|\\x1e|\\x1f");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.replaceAll("");
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * @author Philippe T'Seyen - original implementation
@@ -121,14 +122,8 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
             mark = iterator.next();
             final Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
-            /*
-             * StringEscapeUtils escape basic chars like "<" and remove invalid chars like U+000C.
-             * But the DOM impl already escapes "<" by itself in attribute values, but doesn't remove
-             * invalid chars. In order to avoid double escaping, this escapes it once with StringEscapeUtils
-             * and unescapes it again - result is, that only invalid chars are removed (no escaping).
-             * Escaping is left to the DOM impl.
-             */
-            String filenameXml10 = StringEscapeUtils.unescapeXml(StringEscapeUtils.escapeXml10(mark.getFilename()));
+            // only remove invalid characters, escaping is done by the DOM impl.
+            String filenameXml10 = StringUtil.removedInvalidXml10Characters(mark.getFilename());
             file.setAttribute("path", filenameXml10);
             file.setAttribute("endline", String.valueOf(mark.getEndLine()));
             final int beginCol = mark.getBeginColumn();
