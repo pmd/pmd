@@ -125,10 +125,10 @@ public class XMLRendererTest extends AbstractRendererTest {
 
     public String getHeader() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL
-                + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"" + PMD.EOL
-                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + PMD.EOL
-                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\"" + PMD.EOL
-                + "    version=\"" + PMDVersion.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL;
+                + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + " xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\""
+                + " version=\"" + PMDVersion.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL;
     }
 
     @Test
