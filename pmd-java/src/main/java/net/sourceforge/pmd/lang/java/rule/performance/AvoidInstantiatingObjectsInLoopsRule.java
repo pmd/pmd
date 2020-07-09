@@ -4,61 +4,82 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import java.util.Collection;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
-public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRule {
+public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
+
+    public AvoidInstantiatingObjectsInLoopsRule() {
+        addRuleChainVisit(ASTAllocationExpression.class);
+    }
+
     /**
      * This method is used to check whether user instantiates variables
-     * which are not assigned in loops.
+     * which are not assigned to arrays/lists in loops.
      * @param node This is the expression of part of java code to be checked.
      * @param data This is the data to return.
      * @return Object This returns the data passed in. If violation happens, violation is added to data.
      */
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
-        if (insideLoop(node) && fourthParentNotThrow(node) && fourthParentNotReturn(node)) {
-            if (thirdParentNotASTExpression(node) && fourthParentNotASTStatementExpression(node)) {
-                addViolation(data, node);
-            }
+        if (notInsideLoop(node)) {
+            return data;
+        }
+
+        if (fourthParentNotThrow(node)
+                && fourthParentNotReturn(node)
+                && notArrayAssignment(node)
+                && notCollectionAccess(node)
+                && notBreakFollowing(node)) {
+            addViolation(data, node);
         }
         return data;
     }
 
-    /**
-     * This method is used to check whether the instantiated variable is assigned or not.
-     * @param node This is the expression of part of java code to be checked.
-     * @return boolean This returns Whether the third parent of node is an ASTExpression.
-     */
-    public boolean thirdParentNotASTExpression(ASTAllocationExpression node) {
-        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
-        if (node.getParent().getClass().toString().equals(
-                "class net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix")
-                && node.getParent().getParent().getClass().toString().equals(
-                    "class net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression")) {
-            return !node.getParent().getParent().getParent().getClass().toString().equals(
-                    "class net.sourceforge.pmd.lang.java.ast.ASTExpression");
-        } else {
-            return false;
+    private boolean notArrayAssignment(ASTAllocationExpression node) {
+        if (node.getNthParent(4) instanceof ASTStatementExpression) {
+            ASTPrimaryExpression assignee = node.getNthParent(4).getFirstChildOfType(ASTPrimaryExpression.class);
+            ASTPrimarySuffix suffix = assignee.getFirstChildOfType(ASTPrimarySuffix.class);
+            return suffix == null || !suffix.isArrayDereference();
         }
+        return true;
     }
 
-    /**
-     * This method is used to check whether the instantiated variable is assigned or not.
-     * @param node This is the expression of part of java code to be checked.
-     * @return boolean This returns Whether the fourth parent of node is an ASTStatementExpression.
-     */
-    public boolean fourthParentNotASTStatementExpression(ASTAllocationExpression node) {
-        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
-        return !node.getParent().getParent().getParent().getClass().toString().equals(
-                "class net.sourceforge.pmd.lang.java.ast.ASTStateExpression");
+    private boolean notCollectionAccess(ASTAllocationExpression node) {
+        if (node.getNthParent(4) instanceof ASTArgumentList && node.getNthParent(8) instanceof ASTStatementExpression) {
+            ASTStatementExpression statement = (ASTStatementExpression) node.getNthParent(8);
+            return !TypeHelper.isA(statement, Collection.class);
+        }
+        return true;
+    }
+
+    private boolean notBreakFollowing(ASTAllocationExpression node) {
+        ASTBlockStatement blockStatement = node.getFirstParentOfType(ASTBlockStatement.class);
+        if (blockStatement != null) {
+            ASTBlock block = blockStatement.getFirstParentOfType(ASTBlock.class);
+            if (block.getNumChildren() > blockStatement.getIndexInParent() + 1) {
+                ASTBlockStatement next = (ASTBlockStatement) block.getChild(blockStatement.getIndexInParent() + 1);
+                return !next.hasDescendantOfType(ASTBreakStatement.class);
+            }
+        }
+        return true;
     }
 
     /**
@@ -66,8 +87,8 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
      * @param node This is the expression of part of java code to be checked.
      * @return boolean This returns Whether the fourth parent of node is an instance of throw statement.
      */
-    public boolean fourthParentNotThrow(ASTAllocationExpression node) {
-        return !(node.getParent().getParent().getParent().getParent() instanceof ASTThrowStatement);
+    private boolean fourthParentNotThrow(ASTAllocationExpression node) {
+        return !(node.getNthParent(4) instanceof ASTThrowStatement);
     }
 
     /**
@@ -75,20 +96,20 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
      * @param node This is the expression of part of java code to be checked.
      * @return boolean This returns Whether the fourth parent of node is an instance of return statement.
      */
-    public boolean fourthParentNotReturn(ASTAllocationExpression node) {
-        return !(node.getParent().getParent().getParent().getParent() instanceof ASTReturnStatement);
+    private boolean fourthParentNotReturn(ASTAllocationExpression node) {
+        return !(node.getNthParent(4) instanceof ASTReturnStatement);
     }
 
     /**
-     * This method is used to check whether this expression is in a loop.
+     * This method is used to check whether this expression is not in a loop.
      * @param node This is the expression of part of java code to be checked.
-     * @return boolean This returns whether the expression is in a loop such as a switch or a while statement.
+     * @return boolean <code>false</code> if the given node is inside a loop, <code>true</code> otherwise
      */
-    public boolean insideLoop(ASTAllocationExpression node) {
+    private boolean notInsideLoop(ASTAllocationExpression node) {
         Node n = node.getParent();
         while (n != null) {
             if (n instanceof ASTDoStatement || n instanceof ASTWhileStatement || n instanceof ASTForStatement) {
-                return true;
+                return false;
             } else if (n instanceof ASTForInit) {
                 /*
                  * init part is not technically inside the loop. Skip parent
@@ -108,6 +129,6 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
             }
             n = n.getParent();
         }
-        return false;
+        return true;
     }
 }
