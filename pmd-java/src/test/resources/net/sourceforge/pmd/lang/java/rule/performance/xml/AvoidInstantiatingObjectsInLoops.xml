@@ -166,4 +166,43 @@ public class PMDDemo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with break in other for-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private SortedSet<LocalizedMessage> getFilteredMessages(
+            String fileName, FileContents fileContents, DetailAST rootAST) {
+        final SortedSet<LocalizedMessage> result = new TreeSet<>(messages);
+        for (LocalizedMessage element : messages) {
+            final TreeWalkerAuditEvent event =
+                    new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
+            for (TreeWalkerFilter filter : filters) {
+                if (!filter.accept(event)) {
+                    result.remove(element);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Instantiation in loop condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        while(new String().length() > 0) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

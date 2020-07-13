@@ -76,7 +76,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
             ASTBlock block = blockStatement.getFirstParentOfType(ASTBlock.class);
             if (block.getNumChildren() > blockStatement.getIndexInParent() + 1) {
                 ASTBlockStatement next = (ASTBlockStatement) block.getChild(blockStatement.getIndexInParent() + 1);
-                return !next.hasDescendantOfType(ASTBreakStatement.class);
+                if (next.getNumChildren() == 1 && next.getChild(0).getNumChildren() == 1) {
+                    return !(next.getChild(0).getChild(0) instanceof ASTBreakStatement);
+                }
             }
         }
         return true;
