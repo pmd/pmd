@@ -22,6 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+*   [#2590](https://github.com/pmd/pmd/pull/2590): Update libraries snyk is referring to as `unsafe` - [Artem Krosheninnikov](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
