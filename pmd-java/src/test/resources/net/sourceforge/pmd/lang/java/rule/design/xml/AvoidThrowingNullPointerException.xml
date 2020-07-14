@@ -15,4 +15,30 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>no problems if NullPointerException is only instantiated but not thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException("Test message");
+        String msg = e.getMessage();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>problem should be detected even if NullPointerException is stored in some intermediate variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
