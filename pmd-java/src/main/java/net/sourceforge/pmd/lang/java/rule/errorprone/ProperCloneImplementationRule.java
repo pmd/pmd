@@ -25,17 +25,17 @@ public class ProperCloneImplementationRule extends AbstractJavaRule {
         if (!"clone".equals(node.getName()) || node.getArity() > 0) {
             return data;
         }
-        
+
         ASTBlock block = node.getFirstChildOfType(ASTBlock.class);
         if (block == null) {
             return data;
         }
-        
+
         String enclosingClassName = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getSimpleName();
         if (blockHasAllocations(block, enclosingClassName)) {
             addViolation(data, node);
         }
-        
+
         return data;
     }
 
@@ -43,10 +43,14 @@ public class ProperCloneImplementationRule extends AbstractJavaRule {
         List<ASTAllocationExpression> allocations = block.findDescendantsOfType(ASTAllocationExpression.class);
         for (ASTAllocationExpression alloc : allocations) {
             ASTClassOrInterfaceType type = alloc.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (type.hasImageEqualTo(enclosingClassName)) {
+            if (typeHasImage(type, enclosingClassName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean typeHasImage(ASTClassOrInterfaceType type, String image) {
+        return type != null && type.hasImageEqualTo(image);
     }
 }
