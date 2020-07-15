@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>simple failure case</description>
@@ -87,6 +87,35 @@ public class Foo {
 public class InputFinalize {
     {
         super.finalize();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overloaded finalize is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        finalize("hello", "world");
+    }
+
+    public void finalize(String ... args) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>variable name false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int finalize;
+
+    public void bar() {
+        finalize++;
+        return finalize;
     }
 }
         ]]></code>

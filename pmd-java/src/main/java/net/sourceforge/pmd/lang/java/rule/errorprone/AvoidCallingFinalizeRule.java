@@ -4,68 +4,100 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import static java.lang.Math.max;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
-    private Set<MethodScope> checked = new HashSet<>();
+    private static final Pattern FINALIZE_METHOD_PATTERN = Pattern.compile("^(.+\\.)?finalize$");
 
     @Override
-    public Object visit(ASTCompilationUnit acu, Object ctx) {
-        checked.clear();
-        return super.visit(acu, ctx);
+    public Object visit(ASTBlock block, Object data) {
+        if (hasFinalizeMethodCallViolation(block)) {
+            addViolation(data, block);
+        }
+        return super.visit(block, data);
     }
 
-    @Override
-    public Object visit(ASTName name, Object ctx) {
-        if (name.getImage() == null || !name.getImage().endsWith("finalize")) {
-            return ctx;
+    private boolean hasFinalizeMethodCallViolation(ASTBlock block) {
+        if (isFinalizeMethodBlock(block)) {
+            return callsNotSuperFinalizeMethod(block);
         }
-        if (!checkForViolation(name)) {
-            return ctx;
-        }
-        addViolation(ctx, name);
-        return ctx;
+        return callsFinalizeMethod(block);
     }
 
-    @Override
-    public Object visit(ASTPrimaryPrefix pp, Object ctx) {
-        List<ASTPrimarySuffix> primarySuffixes = pp.getParent().findChildrenOfType(ASTPrimarySuffix.class);
-        ASTPrimarySuffix firstSuffix = null;
-        if (!primarySuffixes.isEmpty()) {
-            firstSuffix = primarySuffixes.get(0);
-        }
-        if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
-            return super.visit(pp, ctx);
-        }
-        if (!checkForViolation(pp)) {
-            return super.visit(pp, ctx);
-        }
-        addViolation(ctx, pp);
-        return super.visit(pp, ctx);
+    private boolean isFinalizeMethodBlock(ASTBlock block) {
+        ASTMethodDeclaration methodDeclaration = block.getFirstParentOfType(ASTMethodDeclaration.class);
+        return methodDeclaration != null && isFinalizeMethodDeclaration(methodDeclaration);
     }
 
-    private boolean checkForViolation(ScopedNode node) {
-        MethodScope meth = node.getScope().getEnclosingScope(MethodScope.class);
-        if (meth != null && "finalize".equals(meth.getName())) {
-            return false;
+    private boolean isFinalizeMethodDeclaration(ASTMethodDeclaration methodDeclaration) {
+        return "finalize".equals(methodDeclaration.getName()) && methodDeclaration.getArity() == 0;
+    }
+
+    private boolean callsNotSuperFinalizeMethod(ASTBlock block) {
+        List<ASTPrimaryExpression> primaryExpressions = block.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression primaryExpression : primaryExpressions) {
+            if (isNotSuperFinalizeMethodCall(primaryExpression)) {
+                return true;
+            }
         }
-        if (meth != null && checked.contains(meth)) {
-            return false;
+        return false;
+    }
+
+    private boolean isNotSuperFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
+        return isFinalizeMethodCall(primaryExpression) && isNotSuperMethodCall(primaryExpression);
+    }
+
+    private boolean isNotSuperMethodCall(ASTPrimaryExpression primaryExpression) {
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        return primaryPrefix == null || !primaryPrefix.usesSuperModifier();
+    }
+
+    private boolean callsFinalizeMethod(ASTBlock block) {
+        List<ASTPrimaryExpression> primaryExpressions = block.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression primaryExpression : primaryExpressions) {
+            if (isFinalizeMethodCall(primaryExpression)) {
+                return true;
+            }
         }
-        if (meth != null) {
-            checked.add(meth);
+        return false;
+    }
+
+    private boolean isFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
+        return hasFinalizeName(primaryExpression) && getArgsCount(primaryExpression) == 0;
+    }
+
+    private boolean hasFinalizeName(ASTPrimaryExpression primaryExpression) {
+        List<JavaNode> expressionNodes = primaryExpression.findDescendantsOfType(JavaNode.class);
+        for (JavaNode expressionNode : expressionNodes) {
+            if (isFinalizeName(expressionNode.getImage())) {
+                return true;
+            }
         }
-        return true;
+        return false;
+    }
+
+    private boolean isFinalizeName(String name) {
+        return name != null && FINALIZE_METHOD_PATTERN.matcher(name).find();
+    }
+
+    private int getArgsCount(ASTPrimaryExpression primaryExpression) {
+        ASTPrimarySuffix primarySuffix = primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class);
+        if (primarySuffix != null) {
+            int argsCount = primarySuffix.getArgumentCount();
+            return max(argsCount, 0);
+        }
+        return -1;
     }
 }
