@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex-bestpractices
     *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
+*   java-design
+    *   [#2181](https://github.com/pmd/pmd/issues/2181): \[java] LawOfDemeter: False positive with indexed array access
 *   java-performance
     *   [#1736](https://github.com/pmd/pmd/issues/1736): \[java] UseStringBufferForStringAppends: False positive if only one concatenation
     *   [#2207](https://github.com/pmd/pmd/issues/2207): \[java] AvoidInstantiatingObjectsInLoops: False positive - should not flag objects when assigned to lists/arrays
