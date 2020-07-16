@@ -8,7 +8,7 @@ source .travis/sourceforge-api.sh
 source .travis/pmd-code-api.sh
 
 function main() {
-    VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
+    VERSION=$(get_pom_version)
     log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
 
     #
