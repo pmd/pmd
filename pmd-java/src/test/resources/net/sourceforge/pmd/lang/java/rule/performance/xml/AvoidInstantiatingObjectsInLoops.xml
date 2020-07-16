@@ -205,4 +205,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false negative in anonymous classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
+        <code><![CDATA[
+public class Sample {
+    private static class Inner {
+        private void baz() {
+            for(;;) {
+                String a = new String();
+            }
+        }
+    }
+
+    public void foo() {
+        Sample anonymousClass = new Sample() {
+            void bar() {
+                for(;;) {
+                    String a = new String();
+                }
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
