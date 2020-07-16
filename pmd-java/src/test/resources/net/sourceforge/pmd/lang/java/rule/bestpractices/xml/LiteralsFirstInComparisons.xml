@@ -275,4 +275,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>bad, testing false negative at the end of a chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean bar() {
+        File f;
+        return f.getFileType().equals("testStr");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

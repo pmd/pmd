@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
@@ -29,59 +30,67 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        ASTPrimaryPrefix primaryPrefix = node.getFirstChildOfType(ASTPrimaryPrefix.class);
-        ASTPrimarySuffix primarySuffix = node.getFirstChildOfType(ASTPrimarySuffix.class);
-        if (primaryPrefix != null && primarySuffix != null) {
-            ASTName name = primaryPrefix.getFirstChildOfType(ASTName.class);
-            if (name == null || isIrrelevantImage(name.getImage())) {
-                return data;
-            }
-            if (!isSingleStringLiteralArgument(primarySuffix)) {
-                return data;
-            }
-            if (isWithinNullComparison(node)) {
-                return data;
-            }
-            addViolation(data, node);
+    public Object visit(ASTPrimaryExpression expression, Object data) {
+        String opName = getOperationName(expression);
+        ASTPrimarySuffix primarySuffix = getSuffixOfArguments(expression);
+        if (opName == null || primarySuffix == null) {
+            return data;
         }
-        return node;
+        if (isStringLiteralComparison(opName, primarySuffix) && !isWithinNullComparison(expression)) {
+            addViolation(data, expression);
+        }
+        return data;
     }
 
-    private boolean isIrrelevantImage(String image) {
+    private String getOperationName(ASTPrimaryExpression primaryExpression) {
+        return isMethodsChain(primaryExpression) ? getOperationNameBySuffix(primaryExpression)
+                : getOperationNameByPrefix(primaryExpression);
+    }
+
+    private boolean isMethodsChain(ASTPrimaryExpression primaryExpression) {
+        return primaryExpression.getNumChildren() > 2;
+    }
+
+    private String getOperationNameBySuffix(ASTPrimaryExpression primaryExpression) {
+        ASTPrimarySuffix opAsSuffix = getPrimarySuffixAtIndexFromEnd(primaryExpression, 1);
+        if (opAsSuffix != null) {
+            String opName = opAsSuffix.getImage(); // name of pattern "operation"
+            return "." + opName;
+        }
+        return null;
+    }
+
+    private String getOperationNameByPrefix(ASTPrimaryExpression primaryExpression) {
+        ASTPrimaryPrefix opAsPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        if (opAsPrefix != null) {
+            ASTName opName = opAsPrefix.getFirstChildOfType(ASTName.class); // name of pattern "*.operation"
+            return opName != null ? opName.getImage() : null;
+        }
+        return null;
+    }
+
+    private ASTPrimarySuffix getSuffixOfArguments(ASTPrimaryExpression primaryExpression) {
+        return getPrimarySuffixAtIndexFromEnd(primaryExpression, 0);
+    }
+
+    private ASTPrimarySuffix getPrimarySuffixAtIndexFromEnd(ASTPrimaryExpression primaryExpression, int indexFromEnd) {
+        List<ASTPrimarySuffix> primarySuffixes = primaryExpression.findChildrenOfType(ASTPrimarySuffix.class);
+        if (!primarySuffixes.isEmpty()) {
+            int suffixIndex = primarySuffixes.size() - 1 - indexFromEnd;
+            return primarySuffixes.get(suffixIndex);
+        }
+        return null;
+    }
+
+    private boolean isStringLiteralComparison(String opName, ASTPrimarySuffix argsSuffix) {
+        return isComparisonOperation(opName) && isSingleStringLiteralArgument(argsSuffix);
+    }
+
+    private boolean isComparisonOperation(String op) {
         for (String comparisonOp : COMPARISON_OPS) {
-            if (image.endsWith(comparisonOp)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isWithinNullComparison(ASTPrimaryExpression node) {
-        for (ASTExpression parentExpr : node.getParentsOfType(ASTExpression.class)) {
-            if (isComparisonWithNull(parentExpr, "==", ASTConditionalOrExpression.class)
-                    || isComparisonWithNull(parentExpr, "!=", ASTConditionalAndExpression.class)) {
+            if (op.endsWith(comparisonOp)) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    /*
-     * Expression/ConditionalAndExpression//EqualityExpression(@Image='!=']//NullLiteral
-     * Expression/ConditionalOrExpression//EqualityExpression(@Image='==']//NullLiteral
-     */
-    private boolean isComparisonWithNull(ASTExpression parentExpr, String equalOperator, Class<? extends JavaNode> condition) {
-        Node condExpr = null;
-        ASTEqualityExpression eqExpr = null;
-        if (parentExpr != null) {
-            condExpr = parentExpr.getFirstChildOfType(condition);
-        }
-        if (condExpr != null) {
-            eqExpr = condExpr.getFirstDescendantOfType(ASTEqualityExpression.class);
-        }
-        if (eqExpr != null) {
-            return eqExpr.hasImageEqualTo(equalOperator) && eqExpr.hasDescendantOfType(ASTNullLiteral.class);
         }
         return false;
     }
@@ -93,34 +102,72 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
      * ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
      */
     private boolean isSingleStringLiteralArgument(ASTPrimarySuffix primarySuffix) {
-        if (!primarySuffix.isArguments() || primarySuffix.getArgumentCount() != 1) {
+        return isSingleArgumentSuffix(primarySuffix) && isStringLiteralFirstArgumentOfSuffix(primarySuffix);
+    }
+
+    private boolean isSingleArgumentSuffix(ASTPrimarySuffix primarySuffix) {
+        return primarySuffix.getArgumentCount() == 1;
+    }
+
+    private boolean isStringLiteralFirstArgumentOfSuffix(ASTPrimarySuffix primarySuffix) {
+        try {
+            JavaNode firstArg = getFirstArgument(primarySuffix);
+            return isStringLiteral(firstArg);
+        } catch (NullPointerException e) {
             return false;
         }
-        Node node = primarySuffix;
-        node = node.getFirstChildOfType(ASTArguments.class);
-        if (node != null) {
-            node = node.getFirstChildOfType(ASTArgumentList.class);
-            if (node.getNumChildren() != 1) {
-                return false;
-            }
-        }
-        if (node != null) {
-            node = node.getFirstChildOfType(ASTExpression.class);
-        }
-        if (node != null) {
-            node = node.getFirstChildOfType(ASTPrimaryExpression.class);
-        }
-        if (node != null) {
-            node = node.getFirstChildOfType(ASTPrimaryPrefix.class);
-        }
-        if (node != null) {
-            node = node.getFirstChildOfType(ASTLiteral.class);
-        }
-        if (node != null) {
+    }
+
+    private JavaNode getFirstArgument(ASTPrimarySuffix primarySuffix) {
+        ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
+        ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
+        ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
+        ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        return primaryPrefix.getFirstChildOfType(ASTLiteral.class);
+    }
+
+    private boolean isStringLiteral(JavaNode node) {
+        if (node instanceof ASTLiteral) {
             ASTLiteral literal = (ASTLiteral) node;
-            if (literal.isStringLiteral()) {
+            return literal.isStringLiteral();
+        }
+        return false;
+    }
+
+    /*
+     * Expression/ConditionalAndExpression//EqualityExpression(@Image='!=']//NullLiteral
+     * Expression/ConditionalOrExpression//EqualityExpression(@Image='==']//NullLiteral
+     */
+    private boolean isWithinNullComparison(ASTPrimaryExpression node) {
+        for (ASTExpression parentExpr : node.getParentsOfType(ASTExpression.class)) {
+            if (isNullComparison(parentExpr)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean isNullComparison(ASTExpression expression) {
+        return isAndNotNullComparison(expression) || isOrNullComparison(expression);
+    }
+
+    private boolean isAndNotNullComparison(ASTExpression expression) {
+        ASTConditionalAndExpression andExpression = expression
+                .getFirstChildOfType(ASTConditionalAndExpression.class);
+        return andExpression != null && hasEqualityExpressionWithNullLiteral(andExpression, "!=");
+    }
+
+    private boolean isOrNullComparison(ASTExpression expression) {
+        ASTConditionalOrExpression orExpression = expression
+                .getFirstChildOfType(ASTConditionalOrExpression.class);
+        return orExpression != null && hasEqualityExpressionWithNullLiteral(orExpression, "==");
+    }
+
+    private boolean hasEqualityExpressionWithNullLiteral(JavaNode node, String equalityOp) {
+        ASTEqualityExpression equalityExpression = node.getFirstDescendantOfType(ASTEqualityExpression.class);
+        if (equalityExpression != null && equalityExpression.hasImageEqualTo(equalityOp)) {
+            return equalityExpression.hasDescendantOfType(ASTNullLiteral.class);
         }
         return false;
     }
