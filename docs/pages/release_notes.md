@@ -63,6 +63,8 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### Fixed Issues
 
+*   apex
+    *   [#2610](https://github.com/pmd/pmd/pull/2610): \[apex] Support top-level enums in rules
 *   apex-bestpractices
     *   [#2554](https://github.com/pmd/pmd/issues/2554): \[apex] Exception applying rule UnusedLocalVariable on trigger
 *   core
