@@ -23,22 +23,24 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        if (bodyHasThrowNullPointerExceptionStatement(node)) {
-            addViolation(data, node);
+    public Object visit(ASTClassOrInterfaceBody body, Object data) {
+        List<ASTThrowStatement> throwNPEs = getThrowNullPointerExceptionStatements(body);
+        for (ASTThrowStatement throwNPE : throwNPEs) {
+            addViolation(data, throwNPE);
         }
-        return super.visit(node, data);
+        return data;
     }
 
-    private boolean bodyHasThrowNullPointerExceptionStatement(ASTClassOrInterfaceBody body) {
+    private List<ASTThrowStatement> getThrowNullPointerExceptionStatements(ASTClassOrInterfaceBody body) {
         List<ASTThrowStatement> throwStatements = body.findDescendantsOfType(ASTThrowStatement.class);
         List<String> npeInstances = getNullPointerExceptionInstances(body);
+        List<ASTThrowStatement> throwNPEStatements = new ArrayList<>();
         for (ASTThrowStatement throwStatement : throwStatements) {
             if (throwsNullPointerException(throwStatement, npeInstances)) {
-                return true;
+                throwNPEStatements.add(throwStatement);
             }
         }
-        return false;
+        return throwNPEStatements;
     }
 
     private List<String> getNullPointerExceptionInstances(ASTClassOrInterfaceBody body) {
