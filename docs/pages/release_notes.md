@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+*   apex
+    *   [#2610](https://github.com/pmd/pmd/pull/2610): \[apex] Support top-level enums in rules
 *   apex-bestpractices
     *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
 *   java-design

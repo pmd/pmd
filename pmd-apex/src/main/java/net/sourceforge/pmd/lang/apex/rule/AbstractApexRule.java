@@ -137,12 +137,17 @@ public abstract class AbstractApexRule extends AbstractRule
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
+            // all nodes of type ApexRootNode...
             if (element instanceof ASTUserClass) {
                 visit((ASTUserClass) element, ctx);
             } else if (element instanceof ASTUserInterface) {
                 visit((ASTUserInterface) element, ctx);
             } else if (element instanceof ASTUserTrigger) {
                 visit((ASTUserTrigger) element, ctx);
+            } else if (element instanceof ASTUserEnum) {
+                visit((ASTUserEnum) element, ctx);
+            } else if (element instanceof ASTAnonymousClass) {
+                visit((ASTAnonymousClass) element, ctx);
             }
         }
     }
