@@ -120,4 +120,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>super.finalize in constructor false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() throws Throwable {
+        super.equals(new String());
+        super.finalize();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
