@@ -25,7 +25,7 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 # see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(echo -e 'setns x=http://maven.apache.org/POM/4.0.0\ncat /x:project/x:version/text()' | xmllint --shell pom.xml | grep -v /)
+CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
 MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
