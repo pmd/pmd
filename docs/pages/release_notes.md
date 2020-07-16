@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2610](https://github.com/pmd/pmd/pull/2610): \[apex] Support top-level enums in rules
 *   apex-bestpractices
     *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
+*   apex-performance
+    *   [#2598](https://github.com/pmd/pmd/issues/2598): \[apex] AvoidSoqlInLoops false positive for SOQL with in For-Loop
 *   core
     *   [#2594](https://github.com/pmd/pmd/issues/2594): \[core] Update exec-maven-plugin and align it in all project
 *   java-design
