@@ -1316,7 +1316,8 @@ class Foo{
 
             The rule may be suppressed with the standard `@SuppressWarnings("unused")` tag.
 
-            The rule subsumes UnusedLocalVariable, and UnusedFormalParameter. Those violations are filtered
+            The rule subsumes {% rule "UnusedLocalVariable" %}, and {% rule "UnusedFormalParameter" %}.
+            Those violations are filtered
             out by default, in case you already have enabled those rules, but may be enabled with the property
             `reportUnusedVariables`. Variables whose name starts with `ignored` are filtered out, as
             is standard practice for exceptions.

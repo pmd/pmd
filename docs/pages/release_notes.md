@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new Java rule {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`) finds assignments
+    to variables, that are never used and are useless. The new rule is supposed to entirely replace
+    {% rule "java/errorprone/DataflowAnomalyAnalysis" %}.
+
 ### Fixed Issues
 
 ### API Changes
