@@ -646,6 +646,15 @@
 ,
 
 {
+"title": "UnusedAssignment (Java, Best Practices)",
+"tags": "",
+"keywords": "UnusedAssignment",
+"url": "pmd_rules_java_bestpractices.html#unusedassignment",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "UnusedFormalParameter (Java, Best Practices)",
 "tags": "",
 "keywords": "UnusedFormalParameter",

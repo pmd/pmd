@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2882,6 +2882,155 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SystemPrintln"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unusedassignment">UnusedAssignment</h2>
+
+<p><strong>Since:</strong> PMD 6.26.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports assignments to variables that are never used before the variable is overwritten,
+or goes out of scope. Unused assignments are those for which</p>
+<ol>
+  <li>The variable is never read after the assignment, or</li>
+  <li>The assigned value is always overwritten by other assignments before the next read of
+the variable.</li>
+</ol>
+
+<p>The rule doesn’t consider assignments to fields except for those of <code class="highlighter-rouge">this</code> in a constructor,
+or static fields of the current class in static initializers.</p>
+
+<p>The rule may be suppressed with the standard <code class="highlighter-rouge">@SuppressWarnings("unused")</code> tag.</p>
+
+<p>The rule subsumes <a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="highlighter-rouge">UnusedLocalVariable</code></a>, and <a href="pmd_rules_java_bestpractices.html#unusedformalparameter"><code class="highlighter-rouge">UnusedFormalParameter</code></a>.
+Those violations are filtered
+out by default, in case you already have enabled those rules, but may be enabled with the property
+<code class="highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="highlighter-rouge">ignored</code> are filtered out, as
+is standard practice for exceptions.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedAssignmentRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>
+                <span class="c1">// this field initializer is redundant,</span>
+                <span class="c1">// it is always overwritten in the constructor</span>
+                <span class="kt">int</span> <span class="n">f</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+
+                <span class="no">A</span><span class="o">(</span><span class="kt">int</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">this</span><span class="o">.</span><span class="na">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">B</span> <span class="o">{</span>
+
+    <span class="kt">int</span> <span class="nf">method</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="kt">int</span> <span class="n">j</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// this initializer is redundant,</span>
+        <span class="c1">// it is overwritten in all branches of the `if`</span>
+        <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+        <span class="c1">// Both the assignments to k are unused, because k is</span>
+        <span class="c1">// not read after the if/else</span>
+        <span class="c1">// This may hide a bug: the programmer probably wanted to return k</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="o">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+        <span class="k">else</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">j</span><span class="o">;</span>
+
+        <span class="k">return</span> <span class="n">j</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">C</span> <span class="o">{</span>
+
+    <span class="kt">int</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+        <span class="n">checkSomething</span><span class="o">(++</span><span class="n">i</span><span class="o">);</span>
+        <span class="n">checkSomething</span><span class="o">(++</span><span class="n">i</span><span class="o">);</span>
+        <span class="n">checkSomething</span><span class="o">(++</span><span class="n">i</span><span class="o">);</span>
+        <span class="n">checkSomething</span><span class="o">(++</span><span class="n">i</span><span class="o">);</span>
+
+        <span class="c1">// That last increment is not reported unless</span>
+        <span class="c1">// the property `checkUnusedPrefixIncrement` is</span>
+        <span class="c1">// set to `true`</span>
+        <span class="c1">// Technically it could be written (i+1), but it</span>
+        <span class="c1">// is not very important</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">C</span> <span class="o">{</span>
+
+    <span class="c1">// variables that are truly unused (at most assigned to, but never accessed)</span>
+    <span class="c1">// are only reported if property `reportUnusedVariables` is true</span>
+
+    <span class="kt">void</span> <span class="nf">method</span><span class="o">(</span><span class="kt">int</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// for example this method parameter</span>
+
+    <span class="c1">// even then, you can suppress the violation with an annotation:</span>
+
+    <span class="kt">void</span> <span class="nf">method</span><span class="o">(</span><span class="nd">@SuppressWarning</span><span class="o">(</span><span class="s">"unused"</span><span class="o">)</span> <span class="kt">int</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// no violation, even if `reportUnusedVariables` is true</span>
+
+    <span class="c1">// For catch parameters, or for resources which don't need to be used explicitly,</span>
+    <span class="c1">// you can give a name that starts with "ignored" to ignore such warnings</span>
+
+    <span class="o">{</span>
+        <span class="k">try</span> <span class="o">(</span><span class="nc">Something</span> <span class="n">ignored</span> <span class="o">=</span> <span class="nc">Something</span><span class="o">.</span><span class="na">create</span><span class="o">())</span> <span class="o">{</span>
+            <span class="c1">// even if ignored is unused, it won't be flagged</span>
+            <span class="c1">// its purpose might be to side-effect in the create/close routines</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// this is unused and will cause a warning if `reportUnusedVariables` is true</span>
+            <span class="c1">// you should choose a name that starts with "ignored"</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>checkUnusedPrefixIncrement</td>
+      <td>false</td>
+      <td>Report expressions like ++i that may be replaced with (i + 1)</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>reportUnusedVariables</td>
+      <td>false</td>
+      <td>Report variables that are only initialized, and never read at all. The rule UnusedVariable already cares for that, but you can enable it if needed</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnusedAssignment"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnusedAssignment"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkUnusedPrefixIncrement"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportUnusedVariables"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unusedformalparameter">UnusedFormalParameter</h2>
