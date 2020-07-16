@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import static java.lang.Math.max;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -23,17 +22,18 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTBlock block, Object data) {
-        if (hasFinalizeMethodCallViolation(block)) {
-            addViolation(data, block);
+        List<ASTPrimaryExpression> finalizeMethodCalls = getIncorrectFinalizeMethodCalls(block);
+        for (ASTPrimaryExpression finalizeMethodCall : finalizeMethodCalls) {
+            addViolation(data, finalizeMethodCall);
         }
-        return super.visit(block, data);
+        return data;
     }
 
-    private boolean hasFinalizeMethodCallViolation(ASTBlock block) {
+    private List<ASTPrimaryExpression> getIncorrectFinalizeMethodCalls(ASTBlock block) {
         if (isFinalizeMethodBlock(block)) {
-            return callsNotSuperFinalizeMethod(block);
+            return getNotSuperFinalizeMethodCalls(block);
         }
-        return callsFinalizeMethod(block);
+        return getFinalizeMethodCalls(block);
     }
 
     private boolean isFinalizeMethodBlock(ASTBlock block) {
@@ -45,18 +45,15 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         return "finalize".equals(methodDeclaration.getName()) && methodDeclaration.getArity() == 0;
     }
 
-    private boolean callsNotSuperFinalizeMethod(ASTBlock block) {
-        List<ASTPrimaryExpression> primaryExpressions = block.findDescendantsOfType(ASTPrimaryExpression.class);
-        for (ASTPrimaryExpression primaryExpression : primaryExpressions) {
-            if (isNotSuperFinalizeMethodCall(primaryExpression)) {
-                return true;
+    private List<ASTPrimaryExpression> getNotSuperFinalizeMethodCalls(ASTBlock block) {
+        List<ASTPrimaryExpression> finalizeMethodCalls = getFinalizeMethodCalls(block);
+        List<ASTPrimaryExpression> notSuperCalls = new ArrayList<>();
+        for (ASTPrimaryExpression finalizeMethodCall : finalizeMethodCalls) {
+            if (isNotSuperMethodCall(finalizeMethodCall)) {
+                notSuperCalls.add(finalizeMethodCall);
             }
         }
-        return false;
-    }
-
-    private boolean isNotSuperFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
-        return isFinalizeMethodCall(primaryExpression) && isNotSuperMethodCall(primaryExpression);
+        return notSuperCalls;
     }
 
     private boolean isNotSuperMethodCall(ASTPrimaryExpression primaryExpression) {
@@ -64,14 +61,15 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         return primaryPrefix == null || !primaryPrefix.usesSuperModifier();
     }
 
-    private boolean callsFinalizeMethod(ASTBlock block) {
+    private List<ASTPrimaryExpression> getFinalizeMethodCalls(ASTBlock block) {
         List<ASTPrimaryExpression> primaryExpressions = block.findDescendantsOfType(ASTPrimaryExpression.class);
+        List<ASTPrimaryExpression> finalizeMethodCalls = new ArrayList<>();
         for (ASTPrimaryExpression primaryExpression : primaryExpressions) {
             if (isFinalizeMethodCall(primaryExpression)) {
-                return true;
+                finalizeMethodCalls.add(primaryExpression);
             }
         }
-        return false;
+        return finalizeMethodCalls;
     }
 
     private boolean isFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
@@ -93,10 +91,10 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
     }
 
     private int getArgsCount(ASTPrimaryExpression primaryExpression) {
-        ASTPrimarySuffix primarySuffix = primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class);
-        if (primarySuffix != null) {
-            int argsCount = primarySuffix.getArgumentCount();
-            return max(argsCount, 0);
+        List<ASTPrimarySuffix> primarySuffixes = primaryExpression.findChildrenOfType(ASTPrimarySuffix.class);
+        if (!primarySuffixes.isEmpty()) {
+            int lastSuffixIndex = primarySuffixes.size() - 1;
+            return primarySuffixes.get(lastSuffixIndex).getArgumentCount();
         }
         return -1;
     }
