@@ -1,0 +1,25 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [namespace]                             1         9
+    [ABC]                                   11        13
+L2
+    [{]                                     1         1
+L3
+    [namespace]                             3         11
+    [DEF]                                   13        15
+L4
+    [{]                                     3         3
+L7
+    [const]                                 5         9
+    [char]                                  11        14
+    [*]                                     15        15
+    [perPixelQml]                           17        27
+    [=]                                     29        29
+    [R"QML(\n    )NOTTHEND";\n)QML"]        31        5
+L9
+    [;]                                     6         6
+L10
+    [}]                                     3         3
+L11
+    [}]                                     1         1
+EOF

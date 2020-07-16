@@ -48,7 +48,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param image
      * @param tokenSrcID
      * @param beginLine the linenumber, 1-based.
+     *
+     * @deprecated Use {@link #TokenEntry(String, String, int, int, int)}, don't be lazy
      */
+    @Deprecated
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
         this(image, tokenSrcID, beginLine, -1, -1);
     }
@@ -62,12 +65,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param endColumn the column number, 1-based
      */
     public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
+        assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
         setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
         this.index = TOKEN_COUNT.get().getAndIncrement();
+    }
+
+    private boolean isOk(int coord) {
+        return coord >= 1 || coord == -1;
     }
 
     public static TokenEntry getEOF() {

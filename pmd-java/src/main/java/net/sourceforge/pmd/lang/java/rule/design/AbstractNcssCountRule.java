@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -33,7 +34,10 @@ import net.sourceforge.pmd.util.NumericConstants;
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  *
  * @author Jason Bennett
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule {
 
     private Class<?> nodeClass;

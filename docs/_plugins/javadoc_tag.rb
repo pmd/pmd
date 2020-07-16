@@ -226,6 +226,11 @@ class JavadocTag < Liquid::Tag
   def self.fqcn_type(artifact_id, fqcn)
 
     artifact_dir = File.join(BASE_PMD_DIR, artifact_id)
+    # special case for scala as we have a different directory structure there
+    if artifact_id =~ /scala/
+      artifact_dir = File.join(BASE_PMD_DIR, "pmd-scala-modules/pmd-scala-common")
+    end
+
     src_dirs = [
         File.join(artifact_dir, "src", "main", "java"),
         File.join(artifact_dir, "target", "generated-sources", "javacc")

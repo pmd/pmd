@@ -1111,7 +1111,7 @@ public class Foo extends Bar {
 
     <rule name="NPathComplexity"
           since="3.9"
-          message="The {0} ''{1}'' has an NPath complexity of {2}"
+          message="The {0} ''{1}'' has an NPath complexity of {2}, current threshold is {3}"
           class="net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#npathcomplexity">
         <description>

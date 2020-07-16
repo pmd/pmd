@@ -48,7 +48,7 @@ function pmd_code_uploadJavadoc() {
 
     log_debug "$FUNCNAME pmdVersion=$pmdVersion basePath=$basePath"
 
-    for i in ${basePath}/*/target/*-javadoc.jar; do
+    for i in ${basePath}/*/target/*-javadoc.jar */*/target/*-javadoc.jar; do
         pmd_code_uploadJavadocModule "$pmdVersion" "$i"
     done
 

@@ -86,9 +86,14 @@ class JDocNamespaceDeclaration < Liquid::Tag
       expanded_fqcn += "." + fqcn_suffix
     end
 
+    artifactId = resolved_nspace.first
+
+    if artifactId =~ /scala/
+      artifactId = "pmd-scala_2.13"
+    end
 
     # Return the resolved artifactId + the expanded FQCN
-    [resolved_nspace.first, expanded_fqcn]
+    [artifactId, expanded_fqcn]
   end
 
   private

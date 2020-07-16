@@ -88,7 +88,7 @@ echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** an
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
 echo
 echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
-echo "    the new release based on the release notes"
+echo "    the new release based on the release notes. Also add any deprecated rules to the list."
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo

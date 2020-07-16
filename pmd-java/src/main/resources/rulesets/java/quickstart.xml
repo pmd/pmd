@@ -105,6 +105,7 @@
     <!-- <rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn"/>
@@ -292,6 +293,7 @@
     <!-- <rule ref="category/java/performance.xml/AddEmptyString" /> -->
     <!-- <rule ref="category/java/performance.xml/AppendCharacterWithChar" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidArrayLoops" /> -->
+    <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidFileStream" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
@@ -316,6 +318,7 @@
     <!-- <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" /> -->
     <!-- <rule ref="category/java/performance.xml/UseArraysAsList" /> -->
     <!-- <rule ref="category/java/performance.xml/UseIndexOfChar" /> -->
+    <!-- <rule ref="category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem" /> -->
     <!-- <rule ref="category/java/performance.xml/UselessStringValueOf" /> -->
     <!-- <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" /> -->
     <!-- <rule ref="category/java/performance.xml/UseStringBufferLength" /> -->

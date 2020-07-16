@@ -1,0 +1,8 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L4
+    [var]                                   1         3
+    [str]                                   5         7
+    [=]                                     9         9
+    ["Hello Hello Hello Hello Hello Hel[    11        4404
+    [;]                                     4405      4405
+EOF

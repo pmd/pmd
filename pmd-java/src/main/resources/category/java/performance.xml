@@ -114,6 +114,73 @@ public class Test {
         </example>
     </rule>
 
+    <rule name="AvoidCalendarDateCreation"
+          since="6.25.0"
+          language="java"
+          message="A Calendar is used to create a Date or DateTime, this is expensive."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
+        <description>
+Problem: A Calendar is a heavyweight object and expensive to create.
+
+Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
+|
+//MethodDeclaration[not(MethodDeclarator/FormalParameters//ClassOrInterfaceType[pmd-java:typeIs('java.util.Calendar')])]
+  /Block/BlockStatement//PrimaryExpression
+  /PrimaryPrefix/Name
+    [pmd-java:typeIs('java.util.Calendar')]
+    [every $var in @Image satisfies (
+       (ends-with($var, '.getTime') or ends-with($var, '.getTimeInMillis'))
+       and
+       (: ignore if .set* or .add* or .clear is called on the variable :)
+       not(ancestor::Block/BlockStatement//Name[
+          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.set'))
+          or
+          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.add'))
+          or
+          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.clear'))
+       ])
+    )]
+|
+//ClassOrInterfaceType[pmd-java:typeIs('org.joda.time.DateTime') or pmd-java:typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+
+public class DateStuff {
+    private Date bad1() {
+        return Calendar.getInstance().getTime(); // now
+    }
+    private Date good1a() {
+        return new Date(); // now
+    }
+    private LocalDateTime good1b() {
+        return LocalDateTime.now();
+    }
+    private long bad2() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+    private long good2() {
+        return System.currentTimeMillis();
+    }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="AvoidFileStream"
           since="6.0.0"
           message="Avoid instantiating FileInputStream, FileOutputStream, FileReader, or FileWriter"
@@ -930,6 +997,64 @@ if (s.indexOf("d") {}
 // instead do this
 if (s.indexOf('d') {}
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UseIOStreamsWithApacheCommonsFileItem"
+          since="6.25.0"
+          language="java"
+          message="Avoid memory intensive FileItem.get() or FileItem.getString()"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem">
+        <description>
+Problem: Use of [FileItem.get()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--)
+and [FileItem.getString()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--)
+could exhaust memory since they load the entire file into memory.
+
+Solution: Use [FileItem.getInputStream()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--)
+and buffering.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//PrimaryPrefix/Name
+[ends-with(@Image, '.get') or ends-with(@Image, '.getString')]
+[
+    starts-with(@Image, concat(
+        ancestor::MethodDeclaration//FormalParameter/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
+        '.')
+    ) or
+    starts-with(@Image, concat(
+        ancestor::MethodDeclaration//LocalVariableDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
+        '.')
+    ) or
+    starts-with(@Image, concat(
+        ancestor::ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
+        '.')
+    )
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import org.apache.commons.fileupload.FileItem;
+
+public class FileStuff {
+   private String bad(FileItem fileItem) {
+        return fileItem.getString();
+   }
+
+   private InputStream good(FileItem fileItem) {
+        return fileItem.getInputStream();
+   }
+}
+            ]]>
         </example>
     </rule>
 
