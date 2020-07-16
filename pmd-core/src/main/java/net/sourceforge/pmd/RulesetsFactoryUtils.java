@@ -32,7 +32,10 @@ public final class RulesetsFactoryUtils {
      * @throws IllegalArgumentException
      *             if rulesets is empty (means, no rules have been found) or if
      *             a ruleset couldn't be found.
+     * @deprecated Internal API
      */
+    @InternalApi
+    @Deprecated
     public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
         RuleSets ruleSets = null;
         try {

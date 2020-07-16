@@ -55,7 +55,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 2016</message>
+            <message>The method 'bar()' has an NPath complexity of 2016, current threshold is 200</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -65,7 +65,7 @@ public class Foo {
         <rule-property name="reportLevel">0</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 200</message>
+            <message>The method 'bar()' has an NPath complexity of 200, current threshold is 0</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -131,7 +131,7 @@ class Foo {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 4</message>
+            <message>The method 'bar()' has an NPath complexity of 4, current threshold is 2</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
@@ -163,8 +163,8 @@ class Bar {
         <rule-property name="reportLevel">4</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>The method 'x(boolean, boolean)' has an NPath complexity of 4</message>
-            <message>The method 'y(boolean, boolean)' has an NPath complexity of 4</message>
+            <message>The method 'x(boolean, boolean)' has an NPath complexity of 4, current threshold is 4</message>
+            <message>The method 'y(boolean, boolean)' has an NPath complexity of 4, current threshold is 4</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>
@@ -174,7 +174,7 @@ class Bar {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The constructor 'Foo()' has an NPath complexity of 7</message>
+            <message>The constructor 'Foo()' has an NPath complexity of 7, current threshold is 6</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {

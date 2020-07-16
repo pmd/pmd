@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
+import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -31,8 +32,20 @@ public class GroovyTokenizer implements Tokenizer {
 
             while (token.getType() != Token.EOF_TYPE) {
                 String tokenText = token.getText();
-                TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(),
-                        token.getColumn(), tokenText.length());
+
+
+                int lastCol;
+                if (token instanceof SourceInfo) {
+                    lastCol = ((SourceInfo) token).getColumnLast() - 1;
+                    if (lastCol == 0) {
+                        // newline
+                        lastCol = token.getColumn() + 1;
+                    }
+                } else {
+                    // fallback
+                    lastCol = token.getColumn() + tokenText.length();
+                }
+                TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(), token.getColumn(), lastCol);
 
                 tokenEntries.add(tokenEntry);
                 token = tokenStream.nextToken();

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -18,6 +19,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
+/**
+ * @deprecated Internal API
+ */
+@Deprecated
+@InternalApi
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     protected static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";

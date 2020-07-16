@@ -291,4 +291,58 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive with 'this' pointer #2174</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+public class Foo {
+    private final int i;
+
+    public Foo(int i) {
+        this.i = i;
+    }
+
+    public void meth() {
+        System.out.println(this.i);     // wrong violation: method chain calls
+        System.out.println(super.i);    // wrong violation: method chain calls
+        System.out.println(i);          // no violation
+    }
+
+    public void method(Foo this) {      // receiver param!!
+        System.out.println(this.i);     // wrong violation: method chain calls
+    }
+
+    public void method(Foo this, String... args) {
+        System.out.println(this.i);     // wrong violation: method chain calls
+        for (String arg: args) {
+            System.out.println(arg);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive when casting to derived class #2189</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+class TaskManager {
+    private final List<ForkJoinTask<Integer>> tasks;
+
+    public void cancelTasks(ForkJoinTask<Integer> cancelTask) {
+        for (ForkJoinTask<Integer> task : tasks) {
+            if (!task.equals(cancelTask)) {
+                task.cancel(true);
+                ((SearchNumberTask) task).writeCancelMessage(); // wrong violation: method chain calls
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

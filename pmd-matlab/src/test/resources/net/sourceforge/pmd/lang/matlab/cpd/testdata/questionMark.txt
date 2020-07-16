@@ -1,0 +1,13 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [classdef]                              1         8
+    [Class1]                                10        15
+L2
+    [properties]                            1         10
+    [(]                                     12        12
+    [SetAccess]                             13        21
+    [=]                                     23        23
+    [?]                                     25        25
+    [Class2]                                26        31
+    [)]                                     32        32
+EOF

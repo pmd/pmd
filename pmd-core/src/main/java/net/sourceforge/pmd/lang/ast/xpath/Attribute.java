@@ -75,11 +75,16 @@ public class Attribute {
             return null;
         } else {
             DeprecatedAttribute annot = method.getAnnotation(DeprecatedAttribute.class);
-            return annot != null
+            String result = annot != null
                    ? annot.replaceWith()
                    : method.isAnnotationPresent(Deprecated.class)
                      ? DeprecatedAttribute.NO_REPLACEMENT
                      : null;
+            if (result == null && List.class.isAssignableFrom(method.getReturnType())) {
+                // Lists are generally deprecated, see #2451
+                result = DeprecatedAttribute.NO_REPLACEMENT;
+            }
+            return result;
         }
     }
 

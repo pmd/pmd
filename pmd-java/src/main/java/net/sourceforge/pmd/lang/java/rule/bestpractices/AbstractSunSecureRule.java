@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -25,7 +26,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * Created on Jan 17, 2005
  *
  * @author mgriffa
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractSunSecureRule extends AbstractJavaRule {
 
     /**

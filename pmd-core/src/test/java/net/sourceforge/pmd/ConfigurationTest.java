@@ -12,10 +12,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cache.FileAnalysisCache;
@@ -57,6 +60,50 @@ public class ConfigurationTest {
         configuration.setClassLoader(null);
         assertEquals("Revert to default ClassLoader", PMDConfiguration.class.getClassLoader(),
                 configuration.getClassLoader());
+    }
+
+    @Test
+    public void auxClasspathWithRelativeFileEmpty() throws IOException {
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.prependClasspath("file:" + relativeFilePath);
+        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
+        Assert.assertEquals(0, urls.length);
+    }
+
+    @Test
+    public void auxClasspathWithRelativeFileEmpty2() throws IOException {
+        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.prependClasspath("file:" + relativeFilePath);
+        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
+        Assert.assertEquals(0, urls.length);
+    }
+
+    @Test
+    public void auxClasspathWithRelativeFile() throws IOException, URISyntaxException {
+        final String FILE_SCHEME = "file";
+
+        String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.prependClasspath("file:" + relativeFilePath);
+        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
+        URI[] uris = new URI[urls.length];
+        for (int i = 0; i < urls.length; i++) {
+            uris[i] = urls[i].toURI();
+        }
+        URI[] expectedUris = new URI[] {
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
+        };
+        Assert.assertArrayEquals(expectedUris, uris);
     }
 
     @Test

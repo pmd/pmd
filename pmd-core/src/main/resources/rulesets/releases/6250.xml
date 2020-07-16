@@ -9,5 +9,7 @@ This ruleset contains links to rules that are new in PMD v6.25.0
   </description>
 
     <rule ref="category/java/codestyle.xml/UnnecessaryCast" />
+    <rule ref="category/java/performance.xml/AvoidCalendarDateCreation" />
+    <rule ref="category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem" />
 
 </ruleset>

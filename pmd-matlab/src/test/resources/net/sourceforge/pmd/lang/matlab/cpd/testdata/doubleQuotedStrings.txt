@@ -1,0 +1,8 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [error]                                 1         5
+    [(]                                     6         6
+    ["This is a double-quoted string"]      7         38
+    [)]                                     39        39
+    [;]                                     40        40
+EOF

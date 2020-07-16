@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,9 +10,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+/**
+ * @deprecated Internal API
+ */
+@Deprecated
+@InternalApi
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
     private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor

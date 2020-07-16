@@ -125,6 +125,57 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.25.0
+
+*   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
+    or `net.sourceforge.pmd:pmd-scala_2.12` instead.
+
+*   Rule implementation classes are internal API and should not be used by clients directly.
+    The rules should only be referenced via their entry in the corresponding category ruleset
+    (e.g. `<rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" />`).
+    
+    While we definitely won't move or rename the rule classes in PMD 6.x, we might consider changes
+    in PMD 7.0.0 and onwards.
+
+##### Deprecated APIs
+
+###### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc java::lang.java.rule.AbstractIgnoredAnnotationRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractInefficientZeroCheck %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJUnitRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJavaMetricsRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractLombokAwareRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractPoorMethodCall %} (Java)
+*   {% jdoc java::lang.java.rule.bestpractices.AbstractSunSecureRule %} (Java)
+*   {% jdoc java::lang.java.rule.design.AbstractNcssCountRule %} (Java)
+*   {% jdoc java::lang.java.rule.documentation.AbstractCommentRule %} (Java)
+*   {% jdoc java::lang.java.rule.performance.AbstractOptimizationRule %} (Java)
+*   {% jdoc java::lang.java.rule.regex.RegexHelper %} (Java)
+*   {% jdoc apex::lang.apex.rule.AbstractApexUnitTestRule %} (Apex)
+*   {% jdoc apex::lang.apex.rule.design.AbstractNcssCountRule %} (Apex)
+*   {% jdoc plsql::lang.plsql.rule.design.AbstractNcssCountRule %} (PLSQL)
+*   {% jdoc apex::lang.apex.ApexParser %}
+*   {% jdoc apex::lang.apex.ApexHandler %}
+*   {% jdoc core::RuleChain %}
+*   {% jdoc core::RuleSets %}
+*   {% jdoc !!core::RulesetsFactoryUtils#getRuleSets(java.lang.String, net.sourceforge.pmd.RuleSetFactory) %}
+
+###### For removal
+
+*   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
+*   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
+    For details see
+    [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
+    in the developer documentation.
+*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+*   {% jdoc apex::lang.apex.rule.ApexXPathRule %} (Apex)
+*   {% jdoc java::lang.java.rule.SymbolTableTestRule %} (Java)
+*   {% jdoc !!java::lang.java.rule.performance.InefficientStringBufferingRule#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node, int, java.lang.String) %}
+
 #### 6.24.0
 
 ##### Deprecated APIs

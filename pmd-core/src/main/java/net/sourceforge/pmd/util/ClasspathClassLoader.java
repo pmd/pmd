@@ -62,7 +62,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             throw new IllegalArgumentException("classpath argument cannot be null");
         }
         final List<URL> urls = new ArrayList<>();
-        if (classpath.startsWith("file://")) {
+        if (classpath.startsWith("file:")) {
             // Treat as file URL
             addFileURLs(urls, new URL(classpath));
         } else {
@@ -87,7 +87,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             while ((line = in.readLine()) != null) {
                 LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
                 line = line.trim();
-                if (line.length() > 0) {
+                if (line.length() > 0 && line.charAt(0) != '#') {
                     LOG.log(Level.FINE, "Adding classpath entry: <{0}>", line);
                     urls.add(createURLFromPath(line));
                 }
@@ -97,7 +97,7 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     private static URL createURLFromPath(String path) throws MalformedURLException {
         File file = new File(path);
-        return file.getAbsoluteFile().toURI().toURL();
+        return file.getAbsoluteFile().toURI().normalize().toURL();
     }
 
     @Override

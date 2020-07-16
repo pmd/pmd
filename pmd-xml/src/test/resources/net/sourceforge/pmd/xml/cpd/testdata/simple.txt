@@ -1,0 +1,43 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [<?xml ]                                1         6
+    [version]                               7         13
+    [=]                                     14        14
+    ["1.0"]                                 15        19
+    [encoding]                              21        28
+    [=]                                     29        29
+    ["UTF-8"]                               30        36
+    [?>]                                    37        38
+    [\n]                                    39        39
+L2
+    [<]                                     1         1
+    [someTag]                               2         8
+    [>]                                     9         9
+    [\n\t]                                  10        1
+L3
+    [<]                                     2         2
+    [someOtherTag]                          3         14
+    [>]                                     15        15
+    [Somehow we would like to improve t[    16        125
+    [<]                                     126       126
+    [/]                                     127       127
+    [someOtherTag]                          128       139
+    [>]                                     140       140
+    [\n\t]                                  141       1
+L4
+    [<]                                     2         2
+    [someOtherTag]                          3         14
+    [>]                                     15        15
+    [Somehow we would like to improve t[    16        125
+    [<]                                     126       126
+    [/]                                     127       127
+    [someOtherTag]                          128       139
+    [>]                                     140       140
+    [\n]                                    141       141
+L5
+    [<]                                     1         1
+    [/]                                     2         2
+    [someTag]                               3         9
+    [>]                                     10        10
+    [\n]                                    11        11
+EOF
