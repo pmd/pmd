@@ -18,6 +18,10 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
     private static final Pattern FINALIZE_METHOD_PATTERN = Pattern.compile("^(.+\\.)?finalize$");
 
+    public AvoidCallingFinalizeRule() {
+        addRuleChainVisit(ASTPrimaryExpression.class);
+    }
+
     @Override
     public Object visit(ASTPrimaryExpression primaryExpression, Object data) {
         if (isIncorrectFinalizeMethodCall(primaryExpression)) {
