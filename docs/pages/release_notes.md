@@ -37,6 +37,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+##### For removal
+
+* {% jdoc core::lang.rule.RuleChainVisitor %} and all implementations in language modules
+* {% jdoc core::lang.rule.AbstractRuleChainVisitor %}
+* {% jdoc core::lang.Language#getRuleChainVisitorClass() %}
+* {% jdoc core::lang.BaseLanguageModule#<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...) %}
+
+
 ### External Contributions
 *   [#2558](https://github.com/pmd/pmd/pull/2558): \[java] Fix issue #1736 and issue #2207 - [Young Chan](https://github.com/YYoungC)
 *   [#2560](https://github.com/pmd/pmd/pull/2560): \[java] Fix false positives of LawOfDemeter: this and cast expressions - [xioayuge](https://github.com/xioayuge)

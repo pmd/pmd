@@ -23,7 +23,7 @@ public class PhpLanguageModule extends BaseLanguageModule {
      * Create a new instance of the PHP Language Module.
      */
     public PhpLanguageModule() {
-        super(NAME, "PHP", TERSE_NAME, null, "php", "class");
+        super(NAME, "PHP", TERSE_NAME, "php", "class");
         addVersion("", null, true);
     }
 

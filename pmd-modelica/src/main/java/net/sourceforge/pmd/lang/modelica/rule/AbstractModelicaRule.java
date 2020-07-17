@@ -172,8 +172,9 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
 
     protected void visitAll(final List<? extends Node> nodes, final RuleContext ctx) {
         for (final Object element : nodes) {
-            final ASTStoredDefinition node = (ASTStoredDefinition) element;
-            visit(node, ctx);
+            if (element instanceof ModelicaNode) {
+                ((ModelicaNode) element).jjtAccept(this, ctx);
+            }
         }
     }
 

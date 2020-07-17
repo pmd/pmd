@@ -75,8 +75,9 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
 
     protected void visitAll(final List<? extends Node> nodes, final RuleContext ctx) {
         for (final Object element : nodes) {
-            final ASTprocess node = (ASTprocess) element;
-            visit(node, ctx);
+            if (element instanceof VmNode) {
+                ((VmNode) element).jjtAccept(this, ctx);
+            }
         }
     }
 
