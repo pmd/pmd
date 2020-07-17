@@ -187,7 +187,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
 /**
  * A spec for which AST processing beyond the parser is enabled.
  */
-abstract class ProcessorTestSpec(body: ParserTestSpec.() -> Unit) : ParserTestSpec(body), IntelliMarker {
+abstract class ProcessorTestSpec(body: ParserTestSpec.() -> Unit) : ParserTestSpec(body) {
     override fun ParserTestCtx.setup() {
         enableProcessing(true)
     }

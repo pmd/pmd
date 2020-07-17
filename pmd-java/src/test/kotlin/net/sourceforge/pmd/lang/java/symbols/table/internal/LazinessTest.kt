@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
@@ -21,7 +21,7 @@ import kotlin.test.assertEquals
  * @author Clément Fournier
  * @since 7.0.0
  */
-class LazinessTest : FunSpec({
+class LazinessTest : AbstractFunSpec({
 
     fun <T> lazinessTest(
             dummyTableConstructor: (JSymbolTable, SymbolTableHelper, () -> T?) -> JSymbolTable,

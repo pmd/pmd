@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.specs.AbstractWordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.INT_SYM
 
@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInt
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedClassSymbolTests : WordSpec({
+class ReflectedClassSymbolTests : AbstractWordSpec({
 
     "A class symbol" should {
 

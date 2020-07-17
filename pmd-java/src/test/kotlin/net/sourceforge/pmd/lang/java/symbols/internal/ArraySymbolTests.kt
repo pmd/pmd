@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.specs.AbstractWordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.JavaNode
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInt
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ArraySymbolTests : WordSpec({
+class ArraySymbolTests : AbstractWordSpec({
 
     "An array symbol" should {
 

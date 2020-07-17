@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.specs.AbstractWordSpec
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
 
@@ -10,7 +10,7 @@ import javasymbols.testdata.impls.SomeFields
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedFieldSymbolTest : WordSpec({
+class ReflectedFieldSymbolTest : AbstractWordSpec({
 
     "A field symbol" should {
 

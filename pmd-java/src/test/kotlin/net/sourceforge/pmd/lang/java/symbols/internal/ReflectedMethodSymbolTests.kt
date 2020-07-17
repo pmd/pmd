@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.specs.AbstractWordSpec
 import javasymbols.testdata.impls.Overloads
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedMethodSymbolTests : WordSpec({
+class ReflectedMethodSymbolTests : AbstractWordSpec({
 
     "A method symbol" should {
 

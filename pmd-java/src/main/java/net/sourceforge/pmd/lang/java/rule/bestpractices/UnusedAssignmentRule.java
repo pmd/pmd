@@ -22,13 +22,12 @@ import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
@@ -39,11 +38,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -52,23 +53,21 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -147,15 +146,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        for (JavaNode child : node.children()) {
-            if (child instanceof ASTTypeDeclaration) {
+        for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
+            GlobalAlgoState result = new GlobalAlgoState();
+            typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
 
-                ASTAnyTypeDeclaration typeDecl = (ASTAnyTypeDeclaration) child.getChild(child.getNumChildren() - 1);
-                GlobalAlgoState result = new GlobalAlgoState();
-                typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
-
-                reportFinished(result, (RuleContext) data);
-            }
+            reportFinished(result, (RuleContext) data);
         }
 
         return data;
@@ -241,11 +236,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     private boolean isIgnorablePrefixIncrement(JavaNode assignment) {
-        if (assignment instanceof ASTPreIncrementExpression
-            || assignment instanceof ASTPreDecrementExpression) {
+        if (assignment instanceof ASTUnaryExpression) {
             // the variable value is used if it was found somewhere else
             // than in statement position
-            return !getProperty(CHECK_PREFIX_INCREMENT) && !(assignment.getParent() instanceof ASTStatementExpression);
+            return !getProperty(CHECK_PREFIX_INCREMENT) && !(assignment.getParent() instanceof ASTExpressionStatement);
         }
         return false;
     }
@@ -264,9 +258,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
             result.append(getKind(assignment.var));
         } else {
-            if (assignment.rhs instanceof ASTPreIncrementExpression
-                || assignment.rhs instanceof ASTPreDecrementExpression
-                || assignment.rhs instanceof ASTPostfixExpression) {
+            if (assignment.rhs instanceof ASTUnaryExpression) {
                 result.append("the updated value of ");
             } else {
                 result.append("the value assigned to ");
@@ -344,7 +336,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
                 state = acceptOpt(child, state);
-                if (child instanceof ASTBlockStatement
+                if (child instanceof ASTStatement
                     && child.getChild(0) instanceof ASTLocalVariableDeclaration) {
                     ASTLocalVariableDeclaration local = (ASTLocalVariableDeclaration) child.getChild(0);
                     for (ASTVariableDeclaratorId id : local) {
@@ -381,7 +373,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 JavaNode child = switchLike.getChild(i);
                 if (child instanceof ASTSwitchLabel) {
                     current = before.fork().absorb(current);
-                } else if (child instanceof ASTSwitchLabeledRule) {
+                } else if (child instanceof ASTSwitchArrowBranch) {
                     current = acceptOpt(child.getChild(1), before.fork());
                     current = global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
@@ -511,7 +503,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTTryStatement node, Object data) {
             final SpanInfo before = (SpanInfo) data;
-            ASTFinallyStatement finallyClause = node.getFinallyClause();
+            ASTFinallyClause finallyClause = node.getFinallyClause();
 
             /*
                 <before>
@@ -537,13 +529,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before.myFinally = before.forkEmpty();
             }
 
-            ASTResourceSpecification resources = node.getFirstChildOfType(ASTResourceSpecification.class);
+            ASTResourceList resources = node.getResources();
 
             SpanInfo bodyState = acceptOpt(resources, before.fork());
             bodyState = acceptOpt(node.getBody(), bodyState);
 
             SpanInfo exceptionalState = null;
-            for (ASTCatchStatement catchClause : node.getCatchClauses()) {
+            for (ASTCatchClause catchClause : node.getCatchClauses()) {
                 SpanInfo current = acceptOpt(catchClause, before.fork().absorb(bodyState));
                 exceptionalState = current.absorb(exceptionalState);
             }
@@ -571,9 +563,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTCatchStatement node, Object data) {
+        public Object visit(ASTCatchClause node, Object data) {
             SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
-            result.deleteVar(node.getExceptionId());
+            result.deleteVar(node.getParameter().getVarId());
             return result;
         }
 
@@ -606,19 +598,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
+        public Object visit(ASTForeachStatement node, Object data) {
+            ASTStatement body = node.getBody();
+            // the iterable expression
+            JavaNode init = node.getChild(1);
+            ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
+            return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar);
+        }
+
+        @Override
         public Object visit(ASTForStatement node, Object data) {
             ASTStatement body = node.getBody();
-            if (node.isForeach()) {
-                // the iterable expression
-                JavaNode init = node.getChild(1);
-                ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-                return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar);
-            } else {
-                ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
-                ASTExpression cond = node.getCondition();
-                ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop(node, (SpanInfo) data, init, cond, update, body, true, null);
-            }
+            ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
+            ASTExpression cond = node.getCondition();
+            ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
+            return handleLoop(node, (SpanInfo) data, init, cond, update, body, true, null);
         }
 
 
@@ -770,22 +764,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTFormalParameter node, Object data) {
-            if (!node.isExplicitReceiverParameter()) {
-                ASTVariableDeclaratorId id = node.getVariableDeclaratorId();
-                ((SpanInfo) data).assign(id, id);
-            }
+            ASTVariableDeclaratorId id = node.getVarId();
+            ((SpanInfo) data).assign(id, id);
             return data;
         }
 
         @Override
         public Object visit(ASTVariableDeclarator node, Object data) {
-            ASTVariableDeclaratorId var = node.getVariableId();
-            ASTVariableInitializer rhs = node.getInitializer();
+            ASTVariableDeclaratorId var = node.getVarId();
+            ASTExpression rhs = node.getInitializer();
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
                 ((SpanInfo) data).assign(var, rhs);
             } else {
-                ((SpanInfo) data).assign(var, node.getVariableId());
+                ((SpanInfo) data).assign(var, node.getVarId());
             }
             return data;
         }
@@ -831,25 +823,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTPreDecrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
-        }
-
-        @Override
-        public Object visit(ASTPreIncrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
-        }
-
-        @Override
-        public Object visit(ASTPostfixExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
-        }
-
-        private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
-            ASTVariableDeclaratorId var = getVarFromExpression(unary.getChild(0), true);
+        public Object visit(ASTUnaryExpression node, Object data) {
+            SpanInfo state = (SpanInfo) data;
+            ASTVariableDeclaratorId var = getVarFromExpression(node.getChild(0), true);
             if (var != null) {
-                data.use(var);
-                data.assign(var, unary);
+                state.use(var);
+                state.assign(var, node);
             }
             return data;
         }
@@ -986,23 +965,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
 
-        private void visitTypeBody(JavaNode typeBody, SpanInfo data) {
-            List<ASTAnyTypeBodyDeclaration> declarations = typeBody.findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+        private void visitTypeBody(ASTTypeBody typeBody, SpanInfo data) {
+            List<ASTBodyDeclaration> declarations = typeBody.toList();
             processInitializers(declarations, data, (ClassScope) typeBody.getScope());
 
-            for (ASTAnyTypeBodyDeclaration decl : declarations) {
-                JavaNode d = decl.getDeclarationNode();
-                if (d instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
-                } else if (d instanceof ASTAnyTypeDeclaration) {
-                    JavaNode body = d.getChild(d.getNumChildren() - 1);
+            for (ASTBodyDeclaration decl : declarations) {
+                if (decl instanceof ASTMethodDeclaration) {
+                    ONLY_LOCALS.acceptOpt(decl, data.forkCapturingNonLocal());
+                } else if (decl instanceof ASTAnyTypeDeclaration) {
+                    ASTTypeBody body = (ASTTypeBody) decl.getChild(decl.getNumChildren() - 1);
                     visitTypeBody(body, data.forkEmptyNonLocal());
                 }
             }
         }
 
 
-        private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
+        private static void processInitializers(List<ASTBodyDeclaration> declarations,
                                                 SpanInfo beforeLocal,
                                                 ClassScope scope) {
 
@@ -1015,25 +993,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             List<ASTConstructorDeclaration> ctors = new ArrayList<>();
 
-            for (ASTAnyTypeBodyDeclaration declaration : declarations) {
-                JavaNode node = declaration.getDeclarationNode();
-
+            for (ASTBodyDeclaration declaration : declarations) {
                 final boolean isStatic;
-                if (node instanceof ASTFieldDeclaration) {
-                    isStatic = ((ASTFieldDeclaration) node).isStatic();
-                } else if (node instanceof ASTInitializer) {
-                    isStatic = ((ASTInitializer) node).isStatic();
-                } else if (node instanceof ASTConstructorDeclaration) {
-                    ctors.add((ASTConstructorDeclaration) node);
+                if (declaration instanceof ASTFieldDeclaration) {
+                    isStatic = ((ASTFieldDeclaration) declaration).isStatic();
+                } else if (declaration instanceof ASTInitializer) {
+                    isStatic = ((ASTInitializer) declaration).isStatic();
+                } else if (declaration instanceof ASTConstructorDeclaration) {
+                    ctors.add((ASTConstructorDeclaration) declaration);
                     continue;
                 } else {
                     continue;
                 }
 
                 if (isStatic) {
-                    staticInit = visitor.acceptOpt(node, staticInit);
+                    staticInit = visitor.acceptOpt(declaration, staticInit);
                 } else {
-                    ctorHeader = visitor.acceptOpt(node, ctorHeader);
+                    ctorHeader = visitor.acceptOpt(declaration, ctorHeader);
                 }
             }
 

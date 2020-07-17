@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -71,11 +71,11 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
     }
 
     private boolean notBreakFollowing(ASTAllocationExpression node) {
-        ASTBlockStatement blockStatement = node.getFirstParentOfType(ASTBlockStatement.class);
-        if (blockStatement != null) {
-            ASTBlock block = blockStatement.getFirstParentOfType(ASTBlock.class);
-            if (block.getNumChildren() > blockStatement.getIndexInParent() + 1) {
-                ASTBlockStatement next = (ASTBlockStatement) block.getChild(blockStatement.getIndexInParent() + 1);
+        ASTStatement statement = node.getFirstParentOfType(ASTStatement.class);
+        if (statement != null) {
+            ASTBlock block = statement.getFirstParentOfType(ASTBlock.class);
+            if (block.getNumChildren() > statement.getIndexInParent() + 1) {
+                ASTStatement next = block.getChild(statement.getIndexInParent() + 1);
                 if (next.getNumChildren() == 1 && next.getChild(0).getNumChildren() == 1) {
                     return !(next.getChild(0).getChild(0) instanceof ASTBreakStatement);
                 }

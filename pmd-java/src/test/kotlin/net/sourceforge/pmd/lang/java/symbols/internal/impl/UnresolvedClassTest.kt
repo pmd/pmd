@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl
 
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
  * @author Clément Fournier
  */
-class UnresolvedClassTest : FunSpec({
+class UnresolvedClassTest : AbstractFunSpec({
 
     test("Test simple unresolved class") {
 
