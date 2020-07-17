@@ -71,7 +71,16 @@ public final class LanguageRegistry {
         // TODO This is unnecessary, if the incomplete language modules have been removed.
         List<Language> languages = new ArrayList<>();
         for (Language language : getInstance().languages.values()) {
-            if (language.getRuleChainVisitorClass() != null) {
+            LanguageVersionHandler languageVersionHandler = language.getDefaultVersion().getLanguageVersionHandler();
+            boolean pmdSupported = false;
+
+            if (languageVersionHandler != null) {
+                ParserOptions defaultParserOptions = languageVersionHandler.getDefaultParserOptions();
+                Parser parser = languageVersionHandler.getParser(defaultParserOptions);
+                pmdSupported = parser.canParse();
+            }
+
+            if (pmdSupported) {
                 languages.add(language);
             }
         }
