@@ -10,6 +10,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
@@ -18,6 +19,9 @@ import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitorAdapter;
 
 /**
  * A Rule Chain visitor for Scala.
+ *
+ * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+ *      See {@link RuleChainVisitor}.
  */
 @Deprecated
 public class ScalaRuleChainVisitor extends AbstractRuleChainVisitor {

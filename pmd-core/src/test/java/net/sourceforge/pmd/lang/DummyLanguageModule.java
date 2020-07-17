@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -49,6 +50,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.8", new Handler(), "8");
     }
 
+    /**
+     * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+     *      See {@link RuleChainVisitor}.
+     */
+    @Deprecated
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
         @Override
         protected void visit(Rule rule, Node node, RuleContext ctx) {

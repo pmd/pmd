@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
  * @deprecated See {@link RuleChainVisitor}
  */
 @Deprecated
+@InternalApi
 public class DefaultRulechainVisitor extends AbstractRuleChainVisitor {
 
     @Override

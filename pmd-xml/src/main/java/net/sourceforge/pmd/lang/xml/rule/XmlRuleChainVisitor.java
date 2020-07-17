@@ -12,8 +12,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+/**
+ * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+ *      See {@link RuleChainVisitor}.
+ */
 @Deprecated
 public class XmlRuleChainVisitor extends AbstractRuleChainVisitor {
 
