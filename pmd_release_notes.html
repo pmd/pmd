@@ -1431,6 +1431,11 @@ to variables, that are never used and are useless. The new rule is supposed to e
       <li><a href="https://github.com/pmd/pmd/issues/2626">#2626</a>: [apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex</li>
     </ul>
   </li>
+  <li>apex-security
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2620">#2620</a>: [visualforce] False positive on VfUnescapeEl with new Message Channel feature</li>
+    </ul>
+  </li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/710">#710</a>: [core] Review used dependencies</li>
@@ -1453,12 +1458,24 @@ to variables, that are never used and are useless. The new rule is supposed to e
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleChainVisitor.html#"><code>RuleChainVisitor</code></a> and all implementations in language modules</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRuleChainVisitor.html#"><code>AbstractRuleChainVisitor</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getRuleChainVisitorClass()"><code>getRuleChainVisitorClass</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/BaseLanguageModule.html#&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...)"><code><init>&lt;/code&gt;&lt;/a&gt;</init></code></a></li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/2558">#2558</a>: [java] Fix issue #1736 and issue #2207 - <a href="https://github.com/YYoungC">Young Chan</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2560">#2560</a>: [java] Fix false positives of LawOfDemeter: this and cast expressions - <a href="https://github.com/xioayuge">xioayuge</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2590">#2590</a>: Update libraries snyk is referring to as <code class="highlighter-rouge">unsafe</code> - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2597">#2597</a>: [dependencies] Fix issue #2594, update exec-maven-plugin everywhere - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2621">#2621</a>: [visualforce] add new safe resource for VfUnescapeEl - <a href="https://github.com/pchittum">Peter Chittum</a></li>
 </ul>
 
 
