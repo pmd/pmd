@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 *   apex-bestpractices
     *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
 *   core
+    *   [#710](https://github.com/pmd/pmd/issues/710): \[core] Review used dependencies
     *   [#2594](https://github.com/pmd/pmd/issues/2594): \[core] Update exec-maven-plugin and align it in all project
 *   java-design
     *   [#2174](https://github.com/pmd/pmd/issues/2174): \[java] LawOfDemeter: False positive with 'this' pointer
