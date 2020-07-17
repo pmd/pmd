@@ -118,11 +118,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
             <scope>test</scope>
@@ -142,11 +137,6 @@
         <dependency>
             <groupId>com.github.oowekyala.treeutils</groupId>
             <artifactId>tree-printers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-runner-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
