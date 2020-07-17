@@ -15,7 +15,7 @@ public class EcmascriptLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "ecmascript";
 
     public EcmascriptLanguageModule() {
-        super(NAME, null, TERSE_NAME,"js");
+        super(NAME, null, TERSE_NAME, "js");
         addVersion("3", new Ecmascript3Handler(), true);
     }
 
