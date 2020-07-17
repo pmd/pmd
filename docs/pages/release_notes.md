@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+*   core
+    *   [#710](https://github.com/pmd/pmd/issues/710): \[core] Review used dependencies
 
 ### API Changes
 
