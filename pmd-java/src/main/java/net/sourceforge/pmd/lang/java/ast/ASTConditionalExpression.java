@@ -68,7 +68,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
      */
-    public Node getCondition() {
+    public JavaNode getCondition() {
         return getChild(0);
     }
 

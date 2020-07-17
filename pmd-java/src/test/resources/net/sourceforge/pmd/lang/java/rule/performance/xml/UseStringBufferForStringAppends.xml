@@ -7,14 +7,15 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 package xxx;
 public class Foo {
     public void bar() {
         String x;
         x = "foo";
-        x += "bar";
+        x += "bar"; // note, this won't be detected anymore due to #1736
+        x += "baz";
     }
 }
         ]]></code>
@@ -60,15 +61,16 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>failure case</description>
+        <description>failure case, constructor</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         String x;
         x = "foo";
-        x += "bar";
+        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "baz";
     }
 }
         ]]></code>
@@ -77,28 +79,30 @@ public class Foo {
     <test-code>
         <description>static failure case</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     static {
         String x;
         x = "foo";
-        x += "bar";
+        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "baz";
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>reference self</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <description>reference self inside for loop</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
-public class Foo{
-    private void bar(){
+public class Foo {
+    private void bar() {
         String result = "";
         for (int i = 0; i < 10; i++) {
             result = result + i;
+            result += i;
         }
     }
 }
@@ -517,6 +521,19 @@ public class Foo {
                 return aVariable;
         }
         return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseStringBufferForStringAppends: False positive if only one concatenation #1736</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseStringBufferForStringAppendsFP {
+    public void doSomething(String s1) {
+        String s2 = "a";
+        s2 += s1;
     }
 }
         ]]></code>

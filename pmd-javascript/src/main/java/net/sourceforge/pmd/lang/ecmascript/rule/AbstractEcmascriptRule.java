@@ -38,7 +38,6 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
         return new EcmascriptParserOptions(this);
     }
 
-
     @Override
     public void apply(Node target, RuleContext ctx) {
         ((EcmascriptNode<?>) target).jjtAccept(this, ctx);

@@ -16,7 +16,7 @@ public class PLSQLLanguageModule extends BaseLanguageModule {
 
     public PLSQLLanguageModule() {
         super(NAME, null, TERSE_NAME,
-              "sql",
+                "sql",
                 "trg",  // Triggers
                 "prc", "fnc", // Standalone Procedures and Functions
                 "pld", // Oracle*Forms

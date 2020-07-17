@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.modelica.ast
 
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper
 
-class ModelicaCoordsTest : FunSpec({
+class ModelicaCoordsTest : AbstractFunSpec({
 
 
     test("Test line/column numbers for implicit nodes") {

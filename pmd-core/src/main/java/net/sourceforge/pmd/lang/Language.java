@@ -71,7 +71,6 @@ public interface Language extends Comparable<Language> {
      */
     boolean hasExtension(String extension);
 
-
     /**
      * Gets the list of supported LanguageVersion for this Language.
      *
