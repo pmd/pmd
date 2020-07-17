@@ -124,6 +124,7 @@ public class Foo {
     <test-code>
         <description>super.finalize in constructor false-negative test</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() throws Throwable {
