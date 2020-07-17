@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
@@ -48,7 +46,7 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(apex.getDefaultVersion());
         TopLevelRule rule = new TopLevelRule();
-        rule.apply(Collections.singletonList(node), ctx);
+        rule.apply(node, ctx);
         assertEquals(1, ctx.getReport().size());
     }
 
