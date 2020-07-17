@@ -314,4 +314,24 @@ public class PmdBugBait {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2543 false negative on this.collection.size</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+
+    public void bar() {
+        if (this.list.size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
