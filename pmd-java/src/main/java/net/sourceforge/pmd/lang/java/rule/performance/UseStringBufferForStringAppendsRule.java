@@ -30,12 +30,21 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
+    /**
+     * This method is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
+     * @param node This is the expression of part of java code to be checked.
+     * @param data This is the data to return.
+     * @return Object This returns the data passed in. If violation happens, violation is added to data.
+     */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class) || node.hasArrayType()
                 || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }
+
+        // Remember how often we the variable has been used
+        int usageCounter = 0;
 
         for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
@@ -74,17 +83,36 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
+                    ASTAssignmentOperator assignmentOperator = statement
+                            .getFirstDescendantOfType(ASTAssignmentOperator.class);
                     if (astName.equals(name)) {
-                        ASTAssignmentOperator assignmentOperator = statement
-                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
-                            addViolation(data, assignmentOperator);
+                            if (isWithinLoop(name)) {
+                                // always report within a loop
+                                addViolation(data, assignmentOperator);
+                            } else {
+                                usageCounter++;
+                                if (usageCounter > 1) {
+                                    // only report, if it is not the first time
+                                    addViolation(data, assignmentOperator);
+                                }
+                            }
                         }
-                    } else if (astName.getImage().equals(name.getImage())) {
-                        ASTAssignmentOperator assignmentOperator = statement
-                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
+                    } else if (astName.hasImageEqualTo(name.getImage())) {
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
-                            addViolation(data, astName);
+                            if (isWithinLoop(name)) {
+                                // always report within a loop
+                                addViolation(data, assignmentOperator);
+                            } else {
+                                usageCounter++;
+                                if (usageCounter > 1) {
+                                    // only report, if it is not the first time
+                                    addViolation(data, assignmentOperator);
+                                }
+                            }
+                        } else if (assignmentOperator != null && assignmentOperator.isCompound()
+                                && usageCounter >= 1) {
+                            addViolation(data, assignmentOperator);
                         }
                     }
                 }
@@ -97,5 +125,9 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         return name.getFirstParentOfType(ASTForStatement.class) == null
                 && name.getFirstParentOfType(ASTWhileStatement.class) == null
                 && name.getFirstParentOfType(ASTDoStatement.class) == null;
+    }
+
+    private boolean isWithinLoop(Node name) {
+        return !isNotWithinLoop(name);
     }
 }

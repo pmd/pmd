@@ -125,13 +125,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserEnum node, Object data) {
-        entryStack.push(new Entry());
-        super.visit(node, data);
-        Entry classEntry = entryStack.pop();
-        if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { "class", node.getImage(),
-                classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')', });
-        }
         return data;
     }
 

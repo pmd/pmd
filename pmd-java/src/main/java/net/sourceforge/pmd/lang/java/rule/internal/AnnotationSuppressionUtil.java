@@ -45,7 +45,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 final class AnnotationSuppressionUtil {
 
     private static final Set<String> UNUSED_RULES
-        = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter"));
+        = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
+                "UnusedFormalParameter", "UnusedAssignment"));
     private static final Set<String> SERIAL_RULES =
         new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID"));
 

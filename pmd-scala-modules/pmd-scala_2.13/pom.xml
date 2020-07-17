@@ -26,8 +26,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scalaVersion}.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.scalameta</groupId>
-            <artifactId>scalameta_${scalaVersion}</artifactId>
+            <artifactId>parsers_${scalaVersion}</artifactId>
+            <version>${scalameta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>trees_${scalaVersion}</artifactId>
             <version>${scalameta.version}</version>
         </dependency>
     </dependencies>

@@ -5,13 +5,14 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Created by christoferdutz on 21.09.14.
@@ -26,11 +27,15 @@ public abstract class BaseLanguageModule implements Language {
     protected Map<String, LanguageVersion> versions;
     protected LanguageVersion defaultVersion;
 
-    public BaseLanguageModule(String name, String shortName, String terseName, String... extensions) {
+    public BaseLanguageModule(String name,
+                              String shortName,
+                              String terseName,
+                              String firstExtension,
+                              String... otherExtensions) {
         this.name = name;
         this.shortName = shortName;
         this.terseName = terseName;
-        this.extensions = Arrays.asList(extensions);
+        this.extensions = CollectionUtil.listOf(firstExtension, otherExtensions);
     }
 
     private void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
@@ -172,4 +177,6 @@ public abstract class BaseLanguageModule implements Language {
     public int compareTo(Language o) {
         return getName().compareTo(o.getName());
     }
+
+
 }
