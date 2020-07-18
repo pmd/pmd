@@ -13,10 +13,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
+public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;

@@ -268,7 +268,10 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         @Override
         public Iterator<S> iterator() {
             return IteratorUtil.flatMap(upstream.iterator(),
-                                        fun.andThen(walker::apply).andThen(NodeStream::iterator));
+                                        t -> {
+                                            DescendantNodeStream<? extends S> app = fun.apply(t);
+                                            return walker.apply(app).iterator();
+                                        });
         }
 
         @Override

@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
-public class DummyRoot extends DummyNode implements RootNode {
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+
+public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
     private final Map<Integer, String> suppressMap;
 

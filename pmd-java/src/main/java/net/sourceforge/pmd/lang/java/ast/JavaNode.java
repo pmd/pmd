@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode, JjtreeNode<JavaNode> {
+public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
