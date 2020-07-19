@@ -32,7 +32,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -429,14 +428,6 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
-
-        @Override
-        public Void visit(ASTCastExpression node, T data) {
-            if (node.children(ASTReferenceType.class).nonEmpty()) {
-                check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
-            }
-            return null;
-        }
 
         @Override
         public Void visit(ASTCatchClause node, T data) {
