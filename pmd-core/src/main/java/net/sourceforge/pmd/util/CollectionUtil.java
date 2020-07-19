@@ -303,11 +303,33 @@ public final class CollectionUtil {
     /**
      * Returns whether the items array is non-null and has at least one entry.
      *
-     * @param items
      * @return boolean
      */
     public static boolean isNotEmpty(Object[] items) {
         return !isEmpty(items);
+    }
+
+
+    /**
+     * Returns a list view that pretends it is the concatenation of
+     * both lists. The returned view is unmodifiable. The implementation
+     * is pretty stupid and not optimized for repeated concatenation,
+     * but should be ok for smallish chains of random-access lists.
+     *
+     * @param head Head elements (to the left)
+     * @param tail Tail elements (to the right)
+     * @param <T>  Type of elements in both lists
+     *
+     * @return A concatenated view
+     */
+    public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
+        if (head.isEmpty()) {
+            return Collections.unmodifiableList(tail);
+        } else if (tail.isEmpty()) {
+            return Collections.unmodifiableList(head);
+        } else {
+            return new ConsList<>(head, tail);
+        }
     }
 
     /**

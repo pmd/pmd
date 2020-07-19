@@ -97,4 +97,40 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         }
     }
+
+    parserTest("Ambiguity errors") {
+        val logger = enableProcessing()
+
+        val acu = parser.parse("""
+           package p;
+           class Scratch {
+               interface A { class Mem {} }
+               interface B { class Mem {} }
+               class Foo implements A, B {
+                   Mem m; // Mem is ambiguous between A.Mem, B.Mem
+               }
+
+               Foo.Mem m; // Foo.Mem is ambiguous between A.Mem, B.Mem
+           }
+        """)
+
+        val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
+        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.symbol }
+
+
+        doTest("Ambiguous inner type should produce an error (ref in Foo)") {
+            val (_, args) = logger.errors[SemanticChecksLogger.AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInFoo }!!
+            args.map { it.toString() } shouldBe listOf("Mem", "p.Scratch.A.Mem", "p.Scratch.B.Mem")
+        }
+
+        doTest("Ambiguous inner type should produce an error (ref in Scratch)") {
+            val (_, args) = logger.errors[SemanticChecksLogger.AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInScratch }!!
+            args.map { it.toString() } shouldBe listOf("Mem", "p.Scratch.A.Mem", "p.Scratch.B.Mem")
+        }
+
+        doTest("Ambiguous inner type should have a symbol anyway") {
+            refInFoo.referencedSym shouldBe aMem
+            refInScratch.referencedSym shouldBe aMem
+        }
+    }
 })

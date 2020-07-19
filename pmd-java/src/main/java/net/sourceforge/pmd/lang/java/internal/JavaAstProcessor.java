@@ -12,7 +12,6 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -108,7 +107,7 @@ public final class JavaAstProcessor {
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, NodeStream.of(acu)));
+        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, acu));
 
     }
 

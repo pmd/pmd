@@ -6,23 +6,26 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
-import io.kotlintest.matchers.collections.containExactly
+import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
-import javasymbols.testdata.Statics
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -41,26 +44,32 @@ class HeaderScopesTest : ProcessorTestSpec({
 
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
-    fun JSymbolTable.resolveClass(s: String): Class<*> =
-            resolveTypeName(s)!!.result.jvmRepr!!
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
+    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s)
 
+    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
+        resolveFirst(simpleName).shouldBeA<JClassSymbol> {
+            it::getBinaryName shouldBe qualName
+            it::getSimpleName shouldBe simpleName
+        }
+    }
 
-    fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s)!!.result.shouldBeA()
-    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
-
-    fun ASTCompilationUnit.firstImportTable() = symbolTable.parent
-
-    fun ResolveResult<*>?.shouldFail() {
-        this shouldBe null
+    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
+        return sequence {
+            val iter = iterateResults(simpleName)
+            while (iter.hasNext()) {
+                iter.next()
+                val sym = iter.results.single().shouldBeA<JClassSymbol>()
+                yield(iter.scopeTag to sym.binaryName)
+            }
+        }.toList()
     }
 
     parserTest("Test same-package scope") {
 
         val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
-        acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
-            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
-        }
+        acu.symbolTable.types().shouldResolveToClass("SomeClassA", "javasymbols.testdata.SomeClassA")
     }
 
 
@@ -68,14 +77,11 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
-        acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
 
-            it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
-
-            it.parent.shouldBeA<JavaLangSymbolTable> {
-                it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
-            }
-        }
+        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
+                // from same package
+                listOf(SAME_PACKAGE to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread")
     }
 
 
@@ -84,37 +90,20 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
+        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
+                // from same package
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA")
 
-        acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
-
-            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
-
-            it.parent.shouldBeA<SamePackageSymbolTable> {
-
-                it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
-            }
-        }
     }
-
 
     parserTest("$javalangTypes should be shadowed by $singleTypeImports") {
 
         val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
-
-        acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
-
-            it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
-
-            it.parent.shouldBeA<SamePackageSymbolTable> {
-
-                it.parent.shouldBeA<JavaLangSymbolTable> {
-
-                    it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
-
-                }
-            }
-        }
+        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread")
     }
 
 
@@ -123,36 +112,26 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.TypeImportsOnDemand::class.java)
         // import javasymbols.testdata.*;
 
-        acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
-            // from java.lang
-            it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
-            // from same package
-            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
-            // from the import-on-demand
-            it.resolveClass("Statics") shouldBe Statics::class.java
-            // from the single type import
-            it.resolveClass("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
+        val group = acu.symbolTable.types()
 
+        group.typeShadowSequence("Thread") shouldBe
+                // from java.lang
+                listOf(JAVA_LANG to "java.lang.Thread",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Thread")
 
+        group.typeShadowSequence("SomeClassA") shouldBe
+                // from same package
+                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.SomeClassA")
 
-            it.parent.shouldBeA<SamePackageSymbolTable> {
+        group.typeShadowSequence("Statics") shouldBe
+                // from the import-on-demand
+                listOf(IMPORT_ON_DEMAND to "javasymbols.testdata.Statics")
 
-                // shadowing javasymbols.testdata.SomeClassA
-                it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
-
-                it.parent.shouldBeA<JavaLangSymbolTable> {
-                    // shadows javasymbols.testdata.Thread
-                    it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
-
-                    it.parent.shouldBeA<ImportOnDemandSymbolTable> {
-                        it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
-                        it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
-                        it.resolveClass("Statics") shouldBe javasymbols.testdata.Statics::class.java
-                        it.resolveClass("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
-                    }
-                }
-            }
-        }
+        group.typeShadowSequence("TestCase1") shouldBe
+                // from the single type import
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.TestCase1",
+                       IMPORT_ON_DEMAND to "javasymbols.testdata.TestCase1")
     }
 
 
@@ -163,23 +142,23 @@ class HeaderScopesTest : ProcessorTestSpec({
         // import javasymbols.testdata.Statics.*;
 
 
-        acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
+        acu.symbolTable.let {
 
-            it.resolveValueName("PUBLIC_FIELD") shouldNotBe null
-            it.resolveValueName("PACKAGE_FIELD").shouldFail()
-            it.resolveValueName("PRIVATE_FIELD").shouldFail()
-            it.resolveValueName("PROTECTED_FIELD").shouldFail()
+            it.variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
+            it.variables().resolveFirst("PACKAGE_FIELD") shouldBe null
+            it.variables().resolveFirst("PRIVATE_FIELD") shouldBe null
+            it.variables().resolveFirst("PROTECTED_FIELD") shouldBe null
 
-            it.resolveMethodName("packageMethod").shouldHaveSize(0)
-            it.resolveMethodName("privateMethod").shouldHaveSize(0)
-            it.resolveMethodName("protectedMethod").shouldHaveSize(0)
-            it.resolveMethodName("publicMethod").shouldHaveSize(2)
-            it.resolveMethodName("publicMethod2").shouldHaveSize(1)
+            it.resolveMethods("packageMethod").shouldHaveSize(0)
+            it.resolveMethods("privateMethod").shouldHaveSize(0)
+            it.resolveMethods("protectedMethod").shouldHaveSize(0)
+            it.resolveMethods("publicMethod").shouldHaveSize(2)
+            it.resolveMethods("publicMethod2").shouldHaveSize(1)
 
-            it.resolveTypeName("PublicStatic") shouldNotBe null
-            it.resolveTypeName("PackageStatic").shouldFail()
-            it.resolveTypeName("ProtectedStatic").shouldFail()
-            it.resolveTypeName("PrivateStatic").shouldFail()
+            it.types().resolveFirst("PublicStatic") shouldNotBe null
+            it.types().resolveFirst("PackageStatic") shouldBe null
+            it.types().resolveFirst("ProtectedStatic") shouldBe null
+            it.types().resolveFirst("PrivateStatic") shouldBe null
 
         }
     }
@@ -189,18 +168,16 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
+        acu.symbolTable.apply {
 
-        acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
+            variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
+            variables().resolveFirst("publicField") shouldBe null
 
-            it.resolveValueName("PUBLIC_FIELD") shouldNotBe null
-            it.resolveValueName("publicField").shouldFail()
+            resolveMethods("publicMethod").shouldHaveSize(2)
+            resolveMethods("publicInstanceMethod").shouldHaveSize(0)
 
-            it.resolveMethodName("publicMethod").shouldHaveSize(2)
-            it.resolveMethodName("publicInstanceMethod").shouldHaveSize(0)
-
-            it.resolveTypeName("PublicStatic") shouldNotBe null
-            it.resolveTypeName("PublicInner").shouldFail()
-
+            types().resolveFirst("PublicStatic") shouldNotBe null
+            types().resolveFirst("PublicInner") shouldBe null
         }
     }
 
@@ -209,19 +186,10 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
-
-        acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
-
-            it.resolveClass("PublicShadowed") shouldBe javasymbols.testdata.deep.PublicShadowed::class.java
-
-            it.parent.shouldBeA<JavaLangSymbolTable> {
-                it.parent.shouldBeA<ImportOnDemandSymbolTable> {
-
-                    // static type member
-                    it.resolveClass("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
-                }
-            }
-        }
+        acu.symbolTable.types().typeShadowSequence("PublicShadowed") shouldBe
+                // from same package
+                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.PublicShadowed",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$PublicShadowed")
     }
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $singleTypeImports") {
@@ -229,22 +197,25 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticIOD2::class.java)
         // import javasymbols.testdata.Statics.*;
 
+        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$SomeClassA"
+                )
+    }
 
-        acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
+    parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
 
-            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
+        // import javasymbols.testdata.Statics.*;
 
-            it.parent.shouldBeA<SamePackageSymbolTable> {
-                it.parent.shouldBeA<JavaLangSymbolTable> {
-                    it.parent.shouldBeA<ImportOnDemandSymbolTable> {
-
-                        // static type member
-                        it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java
-                    }
-                }
-            }
+        acu.symbolTable.let {
+            it.resolveField("Ola") shouldBe classSym(StaticNameCollision::class.java)!!.getDeclaredField("Ola")!!
+            it.resolveMethods("Ola").shouldContainExactly(classSym(StaticNameCollision::class.java)!!.getDeclaredMethods("Ola").toList())
+            it.types().shouldResolveToClass("Ola", "javasymbols.testdata.StaticNameCollision\$Ola")
         }
     }
+
 
     parserTest("Method imported through $onDemandStaticImports should be shadowed by $staticSingleMemberImports") {
 
@@ -259,53 +230,46 @@ class HeaderScopesTest : ProcessorTestSpec({
 
                 """
         )
+        doTest("The static import should shadow methods with the same name") {
 
-        acu.symbolTable.let {
-
-            doTest("The static import should shadow methods with the same name") {
-                it.resolveMethodName("publicMethod").let {
-                    it should haveSize(2)
-                    it.forEach {
+            acu.symbolTable.methods().iterateResults("publicMethod").let {
+                it.next()
+                it.apply {
+                    scopeTag shouldBe SINGLE_IMPORT
+                    results should haveSize(2)
+                    results.forEach {
                         it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
                     }
                 }
 
-                it.parent.parent.let {
-                    it.resolveMethodName("publicMethod").let {
-                        it should haveSize(2)
-                        it.forEach {
-                            it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
-                        }
+                it.next()
+                it.apply {
+                    scopeTag shouldBe IMPORT_ON_DEMAND
+                    results should haveSize(2)
+                    results.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }
+        }
+        doTest("Other names are not shadowed but treated separately") {
 
-            doTest("Other names are not shadowed but treated separately") {
-
+            acu.symbolTable.methods().iterateResults("publicMethod2").let {
                 // other names are still imported by the import on demand
-                it.resolveMethodName("publicMethod2").let {
-                    it should haveSize(1)
-                    it.forEach {
+
+                it.next()
+                it.apply {
+                    scopeTag shouldBe IMPORT_ON_DEMAND
+                    results should haveSize(1)
+                    results.forEach {
                         it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }
         }
     }
-
-    parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
-
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
-        // import javasymbols.testdata.Statics.*;
-
-        acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
-
-            it.resolveField("Ola") shouldBe classSym(StaticNameCollision::class.java)!!.getDeclaredField("Ola")!!
-            it.resolveMethods("Ola") should containExactly(classSym(StaticNameCollision::class.java)!!.getDeclaredMethods("Ola").toList())
-            // We can't directly use the FQCN of the Ola inner class because it's obscured by the Ola field
-            it.resolveClass("Ola") shouldBe StaticNameCollision::class.nestedClasses.first().java
-        }
-    }
-
 })
+
+
+
 

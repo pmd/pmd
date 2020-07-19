@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.component6
+import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 
@@ -34,39 +35,27 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
+        val (foo, inner, other) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+
         val (insideFoo, insideInner, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).toList()
 
         doTest("Inside a type: other toplevel types and inner classes are in scope") {
 
-            val fooSym = insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Foo") {
-                result::getCanonicalName shouldBe "myTest.Foo"
-            }
-
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "myTest.Foo.Inner"
-                result::getEnclosingClass shouldBe fooSym
-            }
-
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Other") {
-                result::getCanonicalName shouldBe "myTest.Other"
-                result::getEnclosingClass shouldBe null
-            }
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Foo", foo)
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner", inner)
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Other", other)
 
         }
 
         doTest("Inside a sibling: inner classes are not in scope") {
 
-            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Foo") {
-                result::getCanonicalName shouldBe "myTest.Foo"
-            }
+            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Foo", foo)
 
-            insideOther.symbolTable.resolveTypeName("Inner") shouldBe null
+            insideOther.symbolTable.types().resolveFirst("Inner") shouldBe null
 
-            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Other") {
-                result::getCanonicalName shouldBe "myTest.Other"
-                result::getEnclosingClass shouldBe null
-            }
+            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Other", other)
 
         }
 
@@ -87,20 +76,17 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
+        val (_, inner, localInner) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+
         val (_/*the block*/, iVar, localClass, i2Var) =
                 acu.descendants(ASTStatement::class.java).toList()
 
         doTest("Before the local type declaration, only the nested class is in scope") {
 
-            iVar.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "myTest.Foo.Inner"
-            }
+            iVar.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner", inner)
 
             listOf(i2Var, localClass).forEach {
-                it.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                    result::getCanonicalName shouldBe null
-                    result::getBinaryName shouldBe "myTest.Foo$1Inner" // the local class
-                }
+                it.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner", localInner)
             }
         }
     }
@@ -134,39 +120,28 @@ class LocalTypeScopesTest : ParserTestSpec({
 
         doTest("Inside Foo/Inner: Inner is the inner class") {
 
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "myTest.Foo.Inner"
+            insideFoo.symbolTable.shouldResolveTypeTo("Inner", inner.symbol)
 
-                contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
-                    it::getSymbol shouldBe foo.symbol
-                }
-            }
-
-            insideInner.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "myTest.Foo.Inner"
-
-                contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
-                    it::getSymbol shouldBe result
-                }
+            insideInner.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner").let {
+                it::getCanonicalName shouldBe "myTest.Foo.Inner"
             }
         }
 
         doTest("Inside extends clause: Inner is the import") {
 
-            foo.superClassTypeNode.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "somewhere.Inner"
-                contributor.shouldBeA<ASTImportDeclaration> {}
+            foo.superClassTypeNode.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner").let {
+                it::getCanonicalName shouldBe "somewhere.Inner"
             }
         }
 
         doTest("Inside Other: Inner is imported") {
 
-            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
-                result::getCanonicalName shouldBe "somewhere.Inner"
-                result::isUnresolved shouldBe true
-
-                contributor.shouldBeA<ASTImportDeclaration>()
+            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner").let {
+                it::getCanonicalName shouldBe "somewhere.Inner"
+                it::isUnresolved shouldBe true
             }
         }
     }
+
+
 })

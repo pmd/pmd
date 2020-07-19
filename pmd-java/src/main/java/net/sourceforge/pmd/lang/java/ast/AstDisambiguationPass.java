@@ -5,11 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.AMBIGUOUS_NAME_REFERENCE;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_AMBIGUOUS_NAME;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_MEMBER;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL;
 
 import java.util.Iterator;
+import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -18,10 +22,10 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -56,23 +60,17 @@ final class AstDisambiguationPass {
      * for the worst kind of ambiguity
      * </ul>
      */
-    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes) {
-        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, processor)));
+    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration node, boolean outsideContext) {
+        disambigWithCtx(nodes, ReferenceCtx.ctxOf(node, processor, outsideContext));
     }
 
-
-    private static void reportUnresolvedMember(JavaNode location, JavaAstProcessor processor, Fallback fallbackStrategy, String memberName, JTypeDeclSymbol owner) {
-        if (owner.isUnresolved()) {
-            // would already have been reported on owner
-            return;
-        }
-
-        String ownerName = owner instanceof JClassSymbol ? ((JClassSymbol) owner).getCanonicalName()
-                                                         : "type variable " + owner.getSimpleName();
-
-        processor.getLogger().warning(location, CANNOT_RESOLVE_MEMBER, memberName, ownerName, fallbackStrategy);
+    public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
+        disambigWithCtx(NodeStream.of(root), new ReferenceCtx(processor, root.getPackageName(), null));
     }
 
+    private static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
+        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, ctx)));
+    }
 
     private enum Fallback {
         AMBIGUOUS("ambiguous"),
@@ -94,20 +92,6 @@ final class AstDisambiguationPass {
 
     // those ignore JTypeParameterSymbol, for error handling logic to be uniform
 
-    @Nullable
-    private static JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
-        // todo check supertypes
-        return classSym instanceof JClassSymbol ? ((JClassSymbol) classSym).getDeclaredField(name)
-                                                : null;
-    }
-
-    @Nullable
-    private static JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name) {
-        // todo check supertypes
-        return classSym instanceof JClassSymbol ? ((JClassSymbol) classSym).getDeclaredClass(name)
-                                                : null;
-    }
-
     private static String unresolvedQualifier(JTypeDeclSymbol owner, String simpleName) {
         return owner instanceof JClassSymbol
                ? ((JClassSymbol) owner).getCanonicalName() + '.' + simpleName
@@ -116,11 +100,12 @@ final class AstDisambiguationPass {
     }
 
 
-    private static void checkParentIsMember(JavaAstProcessor processor, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
+    private static void checkParentIsMember(ReferenceCtx ctx, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
         JTypeDeclSymbol sym = resolvedType.getReferencedSym();
-        JClassSymbol parentClass = findTypeMember(sym, parent.getSimpleName());
+        JClassSymbol parentClass = ctx.findTypeMember(sym, parent.getSimpleName(), parent);
         if (parentClass == null) {
-            reportUnresolvedMember(parent, processor, Fallback.TYPE, parent.getSimpleName(), sym);
+            JavaAstProcessor processor = ctx.processor;
+            ctx.reportUnresolvedMember(parent, Fallback.TYPE, parent.getSimpleName(), sym);
             String fullName = unresolvedQualifier(sym, parent.getSimpleName());
             int numTypeArgs = ASTList.orEmpty(parent.getTypeArguments()).size();
             parentClass = processor.makeUnresolvedReference(fullName, numTypeArgs);
@@ -128,11 +113,110 @@ final class AstDisambiguationPass {
         parent.setSymbol(parentClass);
     }
 
-    private static final class DisambigVisitor extends SideEffectingVisitorAdapter<JavaAstProcessor> {
+    /**
+     * Context of a usage reference ("in which class does the name occur?"),
+     * which determines accessibility of referenced symbols. The context may
+     * have no enclosing class, eg in the "extends" clause of a toplevel type.
+     */
+    static class ReferenceCtx {
+
+        final JavaAstProcessor processor;
+        final String packageName;
+        final @Nullable JClassSymbol enclosingClass;
+
+        ReferenceCtx(JavaAstProcessor processor, String packageName, @Nullable JClassSymbol enclosingClass) {
+            this.processor = processor;
+            this.packageName = packageName;
+            this.enclosingClass = enclosingClass;
+        }
+
+        ReferenceCtx scopeDownToNested(JClassSymbol newEnclosing) {
+            assert enclosingClass == null || enclosingClass.equals(newEnclosing.getEnclosingClass())
+                : "Not a child class of the current context (" + this + "): " + newEnclosing;
+            assert newEnclosing.getPackageName().equals(packageName)
+                : "Mismatched package name";
+            return new ReferenceCtx(processor, packageName, newEnclosing);
+        }
+
+        @Nullable
+        JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
+            return classSym instanceof JClassSymbol
+                   ? JavaResolvers.getMemberFieldResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveFirst(name)
+                   : null;
+        }
+
+        @Nullable
+        JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
+            if (classSym instanceof JClassSymbol) {
+                @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveHere(name);
+                return maybeAmbiguityError(name, errorLocation, found);
+            }
+            return null;
+        }
+
+        <T extends JTypeDeclSymbol> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
+            if (found.isEmpty()) {
+                return null;
+            } else if (found.size() > 1) {
+                processor.getLogger().error(
+                    errorLocation,
+                    AMBIGUOUS_NAME_REFERENCE,
+                    name,
+                    canonicalNameOf(found.get(0)),
+                    canonicalNameOf(found.get(1))
+                );
+                // fallthrough and use the first one anyway
+            }
+            return found.get(0);
+        }
+
+        private String canonicalNameOf(JTypeDeclSymbol sym) {
+            if (sym instanceof JClassSymbol) {
+                return ((JClassSymbol) sym).getCanonicalName();
+            } else {
+                assert sym instanceof JTypeParameterSymbol;
+                return sym.getEnclosingClass().getCanonicalName() + "#" + sym.getSimpleName();
+            }
+        }
+
+        static ReferenceCtx ctxOf(ASTAnyTypeDeclaration node, JavaAstProcessor processor, boolean outsideContext) {
+            assert node != null;
+
+            if (outsideContext) {
+                // then the context is the enclosing of the given type decl
+                JClassSymbol enclosing = node.isTopLevel() ? null : node.getEnclosingType().getSymbol();
+                return new ReferenceCtx(processor, node.getPackageName(), enclosing);
+            } else {
+                return new ReferenceCtx(processor, node.getPackageName(), node.getSymbol());
+            }
+        }
+
+        void reportUnresolvedMember(JavaNode location, Fallback fallbackStrategy, String memberName, JTypeDeclSymbol owner) {
+            if (owner.isUnresolved()) {
+                // would already have been reported on owner
+                return;
+            }
+
+            String ownerName = owner instanceof JClassSymbol ? ((JClassSymbol) owner).getCanonicalName()
+                                                             : "type variable " + owner.getSimpleName();
+
+            this.processor.getLogger().warning(location, CANNOT_RESOLVE_MEMBER, memberName, ownerName, fallbackStrategy);
+        }
+
+        @Override
+        public String toString() {
+            return "ReferenceCtx{"
+                + "packageName='" + packageName + '\''
+                + ", enclosingClass=" + enclosingClass
+                + '}';
+        }
+    }
+
+    private static final class DisambigVisitor extends SideEffectingVisitorAdapter<ReferenceCtx> {
 
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
 
-        private void visitChildren(JavaNode node, JavaAstProcessor data) {
+        private void visitChildren(JavaNode node, ReferenceCtx data) {
             // note that this differs from the default impl, because
             // the default declares last = node.getNumChildren()
             // at the beginning of the loop, but in this visitor the
@@ -143,7 +227,14 @@ final class AstDisambiguationPass {
         }
 
         @Override
-        public void visit(ASTAmbiguousName name, JavaAstProcessor processor) {
+        public void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
+            // since type headers are disambiguated early it doesn't matter
+            // if the context is inaccurate in type headers
+            super.visit(node, data.scopeDownToNested(node.getSymbol()));
+        }
+
+        @Override
+        public void visit(ASTAmbiguousName name, ReferenceCtx processor) {
             JSymbolTable symbolTable = name.getSymbolTable();
             assert symbolTable != null : "Symbol tables haven't been set yet??";
 
@@ -181,36 +272,50 @@ final class AstDisambiguationPass {
         }
 
         @Override
-        public void visit(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
-            if (type.getReferencedSym() != null) {
-                return;
-            }
-
-            visitChildren(type, processor);
+        public void visit(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
 
             if (type.getReferencedSym() != null) {
                 return;
             }
+
+            if (type.getFirstChild() instanceof ASTAmbiguousName) {
+                type.getFirstChild().jjtAccept(this, ctx);
+            }
+
+            // revisit children, which may have changed
+            visitChildren(type, ctx);
+
+            if (type.getReferencedSym() != null) {
+                return;
+            }
+
+            final JavaAstProcessor processor = ctx.processor;
 
             ASTClassOrInterfaceType lhsType = type.getQualifier();
             if (lhsType != null) {
                 JTypeDeclSymbol lhsSym = lhsType.getReferencedSym();
                 assert lhsSym != null : "Unresolved LHS for " + type;
-                checkParentIsMember(processor, lhsType, type);
+                checkParentIsMember(ctx, lhsType, type);
             } else {
-                ResolveResult<JTypeDeclSymbol> result = type.getSymbolTable().resolveTypeName(type.getSimpleName());
-                JTypeDeclSymbol sym;
-                if (result == null) {
-                    processor.getLogger().warning(type, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
-                    int arity = ASTList.orEmpty(type.getTypeArguments()).size();
-                    sym = processor.makeUnresolvedReference(type.getSimpleName(), arity);
+                JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
+                if (sym == null) {
+                    processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
+                    sym = setArity(type, processor, type.getSimpleName());
                 } else {
-                    sym = result.getResult();
+                    if (sym.isUnresolved()) {
+                        sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
+                    }
                 }
                 type.setSymbol(sym);
 
             }
             assert type.getReferencedSym() != null : "Null symbol for " + type;
+        }
+
+        @NonNull
+        private JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, JavaAstProcessor processor, String canonicalName) {
+            int arity = ASTList.orEmpty(type.getTypeArguments()).size();
+            return processor.makeUnresolvedReference(canonicalName, arity);
         }
 
         /*
@@ -237,7 +342,7 @@ final class AstDisambiguationPass {
          * it could be a {@link ASTFieldAccess} or {@link ASTVariableAccess},
          * and in the worst case, the original {@link ASTAmbiguousName}.
          */
-        private static ASTExpression startResolve(ASTAmbiguousName name, JavaAstProcessor processor, boolean isPackageOrTypeOnly) {
+        private static ASTExpression startResolve(ASTAmbiguousName name, ReferenceCtx ctx, boolean isPackageOrTypeOnly) {
             Iterator<JavaccToken> tokens = TokenUtils.tokenRange(name);
             JavaccToken firstIdent = tokens.next();
             TokenUtils.expectKind(firstIdent, JavaTokenKinds.IDENTIFIER);
@@ -246,24 +351,27 @@ final class AstDisambiguationPass {
 
             if (!isPackageOrTypeOnly) {
                 // first test if the leftmost segment is an expression
-                ResolveResult<JVariableSymbol> varResult = symTable.resolveValueName(firstIdent.getImage());
+                JVariableSymbol varResult = symTable.variables().resolveFirst(firstIdent.getImage());
 
                 if (varResult != null) {
-                    return resolveExpr(null, firstIdent, tokens, processor);
+                    return resolveExpr(null, firstIdent, tokens, ctx);
                 }
             }
 
             // otherwise, test if it is a type name
 
-            ResolveResult<JTypeDeclSymbol> typeResult = symTable.resolveTypeName(firstIdent.getImage());
+            JTypeDeclSymbol typeResult = resolveSingleTypeName(symTable, firstIdent.getImage(), ctx, name);
 
             if (typeResult != null) {
-                JTypeDeclSymbol result = typeResult.getResult();
-                return resolveType(null, result, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, processor);
+                return resolveType(null, typeResult, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
             }
 
             // otherwise, first is reclassified as package name.
-            return resolvePackage(firstIdent, firstIdent.getImage(), tokens, name, isPackageOrTypeOnly, processor);
+            return resolvePackage(firstIdent, firstIdent.getImage(), tokens, name, isPackageOrTypeOnly, ctx);
+        }
+
+        private static JTypeDeclSymbol resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
+            return ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
         }
 
 
@@ -280,7 +388,7 @@ final class AstDisambiguationPass {
                                                  // JVariableSymbol varSym,         // we don't need that for now
                                                  JavaccToken identifier,            // identifier for the field/var name
                                                  Iterator<JavaccToken> remaining,   // rest of tokens, starting with following '.'
-                                                 JavaAstProcessor processor) {
+                                                 ReferenceCtx ctx) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -296,7 +404,7 @@ final class AstDisambiguationPass {
             // following must also be expressions (field accesses)
             // we can't assert that for now, as symbols lack type information
 
-            return resolveExpr(var, nextIdent, remaining, processor);
+            return resolveExpr(var, nextIdent, remaining, ctx);
         }
 
         /**
@@ -323,7 +431,8 @@ final class AstDisambiguationPass {
                                                  final Iterator<JavaccToken> remaining,             // rest of tokens, starting with following '.'
                                                  final ASTAmbiguousName ambig,                      // original ambiguous name
                                                  final boolean isPackageOrTypeOnly,
-                                                 final JavaAstProcessor processor) {
+                                                 final ReferenceCtx ctx) {
+            final JavaAstProcessor processor = ctx.processor;
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -338,24 +447,24 @@ final class AstDisambiguationPass {
             final String nextSimpleName = nextIdent.getImage();
 
             if (!isPackageOrTypeOnly) {
-                JFieldSymbol field = findStaticField(sym, nextSimpleName);
+                JFieldSymbol field = ctx.findStaticField(sym, nextSimpleName);
                 if (field != null) {
                     // todo check field is static
                     ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-                    return resolveExpr(typeExpr, nextIdent, remaining, processor);
+                    return resolveExpr(typeExpr, nextIdent, remaining, ctx);
                 }
             }
 
-            JClassSymbol inner = findTypeMember(sym, nextSimpleName);
+            JClassSymbol inner = ctx.findTypeMember(sym, nextSimpleName, ambig);
 
             if (inner == null && isPackageOrTypeOnly) {
                 // normally compile-time error, continue by considering it an unresolved inner type
-                reportUnresolvedMember(ambig, processor, Fallback.TYPE, nextSimpleName, sym);
+                ctx.reportUnresolvedMember(ambig, Fallback.TYPE, nextSimpleName, sym);
                 inner = processor.makeUnresolvedReference(sym, nextSimpleName);
             }
 
             if (inner != null) {
-                return resolveType(type, inner, nextSimpleName, nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);
+                return resolveType(type, inner, nextSimpleName, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             }
 
             // no inner type, yet we have a lhs that is a type...
@@ -363,9 +472,9 @@ final class AstDisambiguationPass {
             // treat as unresolved field accesses, this is the smoothest for later type res
 
             // todo report on the specific token failing
-            reportUnresolvedMember(ambig, processor, Fallback.FIELD_ACCESS, nextSimpleName, sym);
+            ctx.reportUnresolvedMember(ambig, Fallback.FIELD_ACCESS, nextSimpleName, sym);
             ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-            return resolveExpr(typeExpr, nextIdent, remaining, processor); // this will chain for the rest of the name
+            return resolveExpr(typeExpr, nextIdent, remaining, ctx); // this will chain for the rest of the name
         }
 
         /**
@@ -385,7 +494,8 @@ final class AstDisambiguationPass {
                                                     Iterator<JavaccToken> remaining,
                                                     ASTAmbiguousName ambig,
                                                     boolean isPackageOrTypeOnly,
-                                                    JavaAstProcessor processor) {
+                                                    ReferenceCtx ctx) {
+            final JavaAstProcessor processor = ctx.processor;
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -413,9 +523,9 @@ final class AstDisambiguationPass {
             JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
 
             if (nextClass != null) {
-                return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);
+                return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             } else {
-                return resolvePackage(nextIdent, canonical, remaining, ambig, isPackageOrTypeOnly, processor);
+                return resolvePackage(nextIdent, canonical, remaining, ambig, isPackageOrTypeOnly, ctx);
             }
         }
 
@@ -458,9 +568,9 @@ final class AstDisambiguationPass {
         class Scratch2 {
             interface A { class Mem {} }
             interface B { class Mem {} }
-            class Foo implements A, B { }
-
-            Foo.Mem m; // not ok, Foo.Mem is ambiguous between A.Mem, B.Mem
+            class Foo implements A, B {
+                Foo.Mem m; // not ok, Foo.Mem is ambiguous between A.Mem, B.Mem
+            }
         }
 
         TODO both names must be visible to produce an ambiguity error
