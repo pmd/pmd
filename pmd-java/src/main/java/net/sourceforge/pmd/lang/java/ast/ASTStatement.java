@@ -37,5 +37,4 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public interface ASTStatement extends JavaNode {
-
 }

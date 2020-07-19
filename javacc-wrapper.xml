@@ -60,9 +60,9 @@
     <property name="base-visitor-interface-name" value="${lang-name}ParserVisitor" />
     <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
 
-    <property name="generic-sideeffect-visitor-interface-name" value="SideEffectingVisitor" />
-    <property name="generic-sideeffect-visitor-interface-file"
-              value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java" />
+    <property name="generic-visitor-interface-name" value="${lang-name}Visitor" />
+    <property name="generic-visitor-interface-file"
+              value="${target-package-dir}/${generic-visitor-interface-name}.java" />
 
 
     <!-- TARGETS -->
@@ -72,8 +72,8 @@
             depends="checkUpToDate,init,jjtree,jjtree-ersatz,javacc,adapt-generated,default-visitor,cleanup" />
 
     <target name="alljavacc-visitor+"
-            description="Like alljavacc, and adds another visitor"
-            depends="alljavacc,side-effecting-visitor" />
+            description="Like alljavacc, replaces default JJTree visitor with a generic one"
+            depends="alljavacc,generic-visitor-replacement" />
 
     <target name="checkUpToDate"
             description="Checks the input files are up to date">
@@ -488,17 +488,16 @@ public interface" />
 
     </target>
 
-    <target name="side-effecting-visitor" depends="default-visitor" unless="jjtreeBuildNotRequired">
-        <!-- Side effecting visitor, no return type, one generic parameter -->
-        <copy file="${base-visitor-interface-file}" tofile="${generic-sideeffect-visitor-interface-file}" />
-        <replace file="${generic-sideeffect-visitor-interface-file}">
+    <target name="generic-visitor-replacement" depends="default-visitor" unless="jjtreeBuildNotRequired">
+        <move file="${base-visitor-interface-file}" tofile="${generic-visitor-interface-file}" />
+        <replace file="${generic-visitor-interface-file}">
             <replacefilter token="${base-visitor-interface-name}"
-                           value="${generic-sideeffect-visitor-interface-name}&lt;T>" />
+                           value="${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>" />
 
-            <replacefilter token="Object" value="T" />
-            <replacefilter token="T visit" value="void visit" />
-            <replacefilter token="return data;" value="" />
-            <replacefilter token="return " value="" />
+            <replacefilter token="Object" value="P" />
+            <replacefilter token="P visit" value="R visit" />
+
+            <replacefilter token="default R visit(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }" value="default R visit(${node-name} node, P data) { return visitNode(node, data); }" />
         </replace>
     </target>
 

@@ -19,5 +19,4 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public interface ASTMemberValue extends JavaNode {
-
 }

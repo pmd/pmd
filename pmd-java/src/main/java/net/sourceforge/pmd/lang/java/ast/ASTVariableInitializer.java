@@ -19,5 +19,4 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 @Deprecated
 public interface ASTVariableInitializer extends JavaNode {
-
 }

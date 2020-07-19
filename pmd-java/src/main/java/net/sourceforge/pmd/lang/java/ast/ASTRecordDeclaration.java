@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A record declaration is a special data class type (JDK 14 preview feature).
@@ -35,16 +36,20 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    public NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTRecordBody.class).children(ASTBodyDeclaration.class);
     }
 
     @Override
+    public boolean isFindBoundary() {
+        return isNested();
+    }
+
     @NonNull
     public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);

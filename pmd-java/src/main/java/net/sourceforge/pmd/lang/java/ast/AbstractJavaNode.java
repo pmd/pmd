@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -33,6 +34,18 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     // override those to make them accessible in this package
 
     @Override
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof JavaVisitor) {
+            return this.acceptVisitor((JavaVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return super.acceptVisitor(visitor, data);
+    }
+
+    protected abstract <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data);
+
+    // override those to make them accessible in this package
+
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
     protected void addChild(AbstractJavaNode child, int index) {
         super.addChild(child, index);
     }

@@ -28,5 +28,4 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public interface ASTPrimaryExpression extends ASTExpression {
-
 }
