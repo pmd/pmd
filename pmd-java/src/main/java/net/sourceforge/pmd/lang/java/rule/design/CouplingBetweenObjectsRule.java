@@ -54,9 +54,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        for (JavaNode child : cu.children()) {
-            child.jjtAccept(this, data);
-        }
+        cu.children().forEach(it -> it.acceptVisitor(this, data));
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,

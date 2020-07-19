@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -583,6 +584,25 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     @Override
     void forEach(Consumer<? super @NonNull T> action);
+
+
+    /**
+     * Reduce the elements of this stream sequentially.
+     *
+     * @param identity   Identity element
+     * @param accumulate Combine an intermediate result with a new node from this stream,
+     *                   returns the next intermediate result
+     * @param <R>        Result type
+     *
+     * @return The last intermediate result (identity if this stream is empty)
+     */
+    default <R> R reduce(R identity, BiFunction<? super R, ? super T, ? extends R> accumulate) {
+        R result = identity;
+        for (T node : this) {
+            result = accumulate.apply(result, node);
+        }
+        return result;
+    }
 
 
     /**

@@ -32,8 +32,9 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
     @Override
     public double computeFor(MethodLikeNode node, MetricOptions options) {
-        MutableInt cyclo = (MutableInt) node.jjtAccept(new CycloVisitor(options, node), new MutableInt(1));
-        return (double) cyclo.getValue();
+        MutableInt counter = new MutableInt(1);
+        node.acceptVisitor(new CycloVisitor(options, node), counter);
+        return (double) counter.getValue();
     }
 
 

@@ -16,6 +16,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -69,7 +70,7 @@ final class AstDisambiguationPass {
     }
 
     private static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
-        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, ctx)));
+        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx)));
     }
 
     private enum Fallback {
@@ -212,29 +213,32 @@ final class AstDisambiguationPass {
         }
     }
 
-    private static final class DisambigVisitor extends SideEffectingVisitorAdapter<ReferenceCtx> {
+    private static final class DisambigVisitor extends JavaVisitorBase<ReferenceCtx, Void> {
 
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
 
-        private void visitChildren(JavaNode node, ReferenceCtx data) {
+
+        @Override
+        protected Void visitChildren(Node node, ReferenceCtx data) {
             // note that this differs from the default impl, because
             // the default declares last = node.getNumChildren()
             // at the beginning of the loop, but in this visitor the
             // number of children may change.
             for (int i = 0; i < node.getNumChildren(); i++) {
-                node.getChild(i).jjtAccept(this, data);
+                node.getChild(i).acceptVisitor(this, data);
             }
+            return null;
         }
 
         @Override
-        public void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
+        public Void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
             // since type headers are disambiguated early it doesn't matter
             // if the context is inaccurate in type headers
-            super.visit(node, data.scopeDownToNested(node.getSymbol()));
+            return super.visit(node, data.scopeDownToNested(node.getSymbol()));
         }
 
         @Override
-        public void visit(ASTAmbiguousName name, ReferenceCtx processor) {
+        public Void visit(ASTAmbiguousName name, ReferenceCtx processor) {
             JSymbolTable symbolTable = name.getSymbolTable();
             assert symbolTable != null : "Symbol tables haven't been set yet??";
 
@@ -269,24 +273,25 @@ final class AstDisambiguationPass {
             if (resolved != name) { // NOPMD - intentional check for reference equality
                 ((AbstractJavaNode) name.getParent()).setChild((AbstractJavaNode) resolved, name.getIndexInParent());
             }
+            return null;
         }
 
         @Override
-        public void visit(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
+        public Void visit(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
 
             if (type.getReferencedSym() != null) {
-                return;
+                return null;
             }
 
             if (type.getFirstChild() instanceof ASTAmbiguousName) {
-                type.getFirstChild().jjtAccept(this, ctx);
+                type.getFirstChild().acceptVisitor(this, ctx);
             }
 
             // revisit children, which may have changed
             visitChildren(type, ctx);
 
             if (type.getReferencedSym() != null) {
-                return;
+                return null;
             }
 
             final JavaAstProcessor processor = ctx.processor;
@@ -310,6 +315,7 @@ final class AstDisambiguationPass {
 
             }
             assert type.getReferencedSym() != null : "Null symbol for " + type;
+            return null;
         }
 
         @NonNull

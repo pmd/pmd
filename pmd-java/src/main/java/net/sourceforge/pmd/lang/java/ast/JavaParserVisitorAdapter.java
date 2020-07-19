@@ -4,28 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * An adapter for {@link JavaParserVisitor}. Unless visit methods are overridden without
- * calling {@code super.visit}, the visitor performs a full depth-first tree walk.
+ * An adapter for {@link JavaParserVisitor}.
  *
- * <p>Since 7.0.0 we use default methods
- * on the interface, which removes code duplication. However, if a visitor directly
- * implements the interface, then the syntax {@code super.visit(...)} is illegal and
- * doesn't refer to the default method. Instead, one would have to qualify the super,
- * like {@code JavaParserVisitor.super.visit}.
- *
- * <p>This restriction doesn't apply when the interface is not a direct super interface,
- * i.e. when there's an intermediary class like this one in the type hierarchy, or
- * e.g. {@link AbstractJavaRule}. That's why extending this class is preferred to
- * implementing the visitor directly.
+ * @deprecated Use {@link JavaVisitorBase}
  */
-public class JavaParserVisitorAdapter implements JavaParserVisitor {
+@Deprecated
+@DeprecatedUntil700
+public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> implements JavaParserVisitor {
+
+    @Override
+    protected Object visitChildren(Node node, Object data) {
+        super.visitChildren(node, data);
+        return data;
+    }
 
 
-
+    @Override
     public Object visit(ASTType node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -35,6 +33,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTType) node, data);
     }
 
+    @Override
     public Object visit(ASTReferenceType node, Object data) {
         return visit((ASTType) node, data);
     }
@@ -63,6 +62,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
 
+    @Override
     public Object visit(ASTExpression node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -106,6 +106,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
 
+    @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
@@ -166,6 +167,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTPrimaryExpression) node, data);
     }
 
+    @Override
     public Object visit(ASTLiteral node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }
@@ -221,6 +223,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
 
+    @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -238,6 +241,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
 
+    @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((MethodLikeNode) node, data);
     }
@@ -347,6 +351,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTStatement) node, data);
     }
 
+    @Override
     public Object visit(ASTStatement node, Object data) {
         return visit((JavaNode) node, data);
     }

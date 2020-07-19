@@ -14,11 +14,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public final class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
+public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
@@ -38,14 +39,8 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 
 
