@@ -21,7 +21,6 @@ public final class ASTClassLiteral extends AbstractJavaExpr implements ASTPrimar
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

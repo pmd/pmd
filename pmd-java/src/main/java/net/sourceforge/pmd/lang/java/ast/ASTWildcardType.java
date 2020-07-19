@@ -67,7 +67,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
         return getFirstChildOfType(ASTReferenceType.class);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

@@ -26,13 +26,4 @@ public final class ASTArgumentList extends ASTMaybeEmptyListOf<ASTExpression> {
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
-    /**
-     * Gets the number of arguments.
-     *
-     * @return the number of arguments.
-     */
-    public int size() {
-        return this.getNumChildren();
-    }
 }

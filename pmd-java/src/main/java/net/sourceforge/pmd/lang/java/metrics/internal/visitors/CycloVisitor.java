@@ -125,7 +125,6 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
-
     @Override
     public Void visit(ASTDoStatement node, MutableInt data) {
         data.increment();

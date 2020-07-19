@@ -50,6 +50,7 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested();
     }
 
+    @Override
     @NonNull
     public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);

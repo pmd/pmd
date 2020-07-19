@@ -129,7 +129,7 @@ public final class SymbolTableResolver {
             }
 
             // All of the header symbol tables belong to the CompilationUnit
-            visitSubtree(node);
+            visitChildren(node, null);
 
             popStack(pushed);
 
@@ -181,7 +181,7 @@ public final class SymbolTableResolver {
                        node,
                        false);
 
-            visitSubtree(node.getBody());
+            visitChildren(node.getBody(), null);
 
             // helper.popCtxType();
 
@@ -265,7 +265,7 @@ public final class SymbolTableResolver {
 
         private Void visitSwitch(ASTSwitchLike node) {
             setTopSymbolTable(node);
-            visitSubtree(node.getTestedExpression());
+            visitChildren(node.getTestedExpression(), null);
             visitBlockLike(stmtsOfSwitchBlock(node));
             return null;
         }
@@ -324,12 +324,12 @@ public final class SymbolTableResolver {
             ASTResourceList resources = node.getResources();
             if (resources != null) {
                 NodeStream<ASTStatement> union =
-                    NodeStream.union(
-                        stmtsOfResources(resources),
-                        // use the body instead of unwrapping it so
-                        // that it has the correct symbol table too
-                        NodeStream.of(node.getBody())
-                    );
+                        NodeStream.union(
+                                stmtsOfResources(resources),
+                                // use the body instead of unwrapping it so
+                                // that it has the correct symbol table too
+                                NodeStream.of(node.getBody())
+                        );
                 visitBlockLike(union);
 
                 for (Node child : node.getBody().asStream().followingSiblings()) {
@@ -338,7 +338,7 @@ public final class SymbolTableResolver {
             } else {
                 super.visit(node, data);
             }
-            
+
             return null;
         }
 
@@ -359,13 +359,7 @@ public final class SymbolTableResolver {
 
         private void setTopSymbolTableAndRecurse(JavaNode node) {
             setTopSymbolTable(node);
-            visitSubtree(node);
-        }
-
-        private void visitSubtree(JavaNode node) {
-            for (JavaNode child : node.children()) {
-                child.acceptVisitor(this, null);
-            }
+            visitChildren(node, null);
         }
 
         private int pushOnStack(JSymbolTable table) {

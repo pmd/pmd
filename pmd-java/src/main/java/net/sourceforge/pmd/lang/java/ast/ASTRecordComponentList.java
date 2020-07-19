@@ -43,10 +43,6 @@ public final class ASTRecordComponentList extends ASTMaybeEmptyListOf<ASTRecordC
         return visitor.visit(this, data);
     }
 
-    public int size() {
-        return getNumChildren();
-    }
-
     /**
      * This returns the symbol for the canonical constructor of the
      * record. There may be a compact record constructor declaration,

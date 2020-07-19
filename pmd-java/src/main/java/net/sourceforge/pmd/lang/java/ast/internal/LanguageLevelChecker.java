@@ -298,13 +298,13 @@ public class LanguageLevelChecker<T> {
                     check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
                 }
             }
+            visitChildren(node, data);
             return null;
         }
 
         @Override
         public Void visit(ASTTypeArguments node, T data) {
             check(node, RegularLanguageFeature.GENERICS, data);
-            visitChildren(node, data);
             return null;
         }
 
@@ -322,6 +322,7 @@ public class LanguageLevelChecker<T> {
             visitChildren(node, data);
             return null;
         }
+
 
         @Override
         public Void visit(ASTReceiverParameter node, T data) {
@@ -342,7 +343,6 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTForeachStatement node, T data) {
             check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-            visitChildren(node, data);
             return null;
         }
 
@@ -459,7 +459,8 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTVariableDeclaratorId node, T data) {
-            checkIdent(node, node.getName(), data);
+            checkIdent(node, node.getVariableName(), data);
+            visitChildren(node, data);
             return null;
         }
 

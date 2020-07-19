@@ -29,7 +29,6 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
         return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

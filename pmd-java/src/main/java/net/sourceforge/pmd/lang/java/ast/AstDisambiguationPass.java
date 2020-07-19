@@ -16,6 +16,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -216,7 +217,9 @@ final class AstDisambiguationPass {
 
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
 
-        private void visitChildren(JavaNode node, ReferenceCtx data) {
+
+        @Override
+        protected Void visitChildren(Node node, ReferenceCtx data) {
             // note that this differs from the default impl, because
             // the default declares last = node.getNumChildren()
             // at the beginning of the loop, but in this visitor the
@@ -224,14 +227,14 @@ final class AstDisambiguationPass {
             for (int i = 0; i < node.getNumChildren(); i++) {
                 node.getChild(i).acceptVisitor(this, data);
             }
+            return null;
         }
 
         @Override
         public Void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
             // since type headers are disambiguated early it doesn't matter
             // if the context is inaccurate in type headers
-            super.visit(node, data.scopeDownToNested(node.getSymbol()));
-            return null;
+            return super.visit(node, data.scopeDownToNested(node.getSymbol()));
         }
 
         @Override

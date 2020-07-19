@@ -22,84 +22,8 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
         return data;
     }
 
-    // REMOVE ME
-    // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
-    // todo on java-grammar: uncomment
-    //
-    //    @Deprecated
-    //    public Object visit(ASTAllocationExpression node, Object data) {
-    //        return null;
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTTypeArgument node, Object data) {
-    //        return null;
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTWildcardBounds node, Object data) {
-    //        return null;
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTConditionalOrExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTConditionalAndExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTInclusiveOrExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTExclusiveOrExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTAndExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTEqualityExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTRelationalExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTShiftExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTAdditiveExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTMultiplicativeExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-    //
-    //    @Deprecated
-    //    public Object visit(ASTInstanceOfExpression node, Object data) {
-    //        return visit((ASTExpression) node, data);
-    //    }
-
-
-
-
+    @Override
     public Object visit(ASTType node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -109,6 +33,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
         return visit((ASTType) node, data);
     }
 
+    @Override
     public Object visit(ASTReferenceType node, Object data) {
         return visit((ASTType) node, data);
     }
@@ -137,6 +62,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
     }
 
 
+    @Override
     public Object visit(ASTExpression node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -180,6 +106,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
     }
 
 
+    @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
@@ -240,6 +167,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
         return visit((ASTPrimaryExpression) node, data);
     }
 
+    @Override
     public Object visit(ASTLiteral node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }
@@ -295,6 +223,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
     }
 
 
+    @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -312,6 +241,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
     }
 
 
+    @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((MethodLikeNode) node, data);
     }
@@ -421,6 +351,7 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
         return visit((ASTStatement) node, data);
     }
 
+    @Override
     public Object visit(ASTStatement node, Object data) {
         return visit((JavaNode) node, data);
     }

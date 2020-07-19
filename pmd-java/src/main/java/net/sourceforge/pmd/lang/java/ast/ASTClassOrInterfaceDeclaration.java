@@ -36,10 +36,12 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean isPackagePrivate() {
         return super.isPackagePrivate() && !isLocal();
     }
 
+    @Override
     public boolean isInterface() {
         return this.isInterface;
     }

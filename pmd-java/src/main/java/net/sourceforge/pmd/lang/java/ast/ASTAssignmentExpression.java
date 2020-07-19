@@ -47,7 +47,6 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
         return operator;
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

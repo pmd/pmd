@@ -46,7 +46,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         return getDimensions().size();
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
