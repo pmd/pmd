@@ -41,12 +41,6 @@ public final class ASTUnaryExpression extends AbstractJavaExpr {
     }
 
 
-    /** Returns the expression nested within this expression. */
-    public ASTExpression getOperand() {
-        return (ASTExpression) getChild(0);
-    }
-
-
     /**
      * Returns true if this is a prefix expression.
      *

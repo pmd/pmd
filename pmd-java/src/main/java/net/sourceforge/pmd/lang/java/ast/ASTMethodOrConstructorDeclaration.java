@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 
@@ -31,7 +32,8 @@ public interface ASTMethodOrConstructorDeclaration
             AccessNode,
             SignedNode<ASTMethodOrConstructorDeclaration>,
             ASTBodyDeclaration,
-            TypeParamOwnerNode {
+            TypeParamOwnerNode,
+            GenericNode<JavaNode> {
 
 
     @Override
