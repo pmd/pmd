@@ -253,12 +253,6 @@ public interface Node {
     DataMap<DataKey<?, ?>> getUserMap();
 
 
-    // The acceptVisitor of #2589
-    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visitNode(this, data);
-    }
-
-
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
@@ -288,6 +282,34 @@ public interface Node {
      * @return The index of this node in its parent's children
      */
     int getIndexInParent();
+
+
+    /**
+     * Calls back the visitor's visit method corresponding to the runtime
+     * type of this Node. This should usually be preferred to calling
+     * a {@code visit} method directly (usually the only calls to those
+     * are in the implementations of this {@code acceptVisitor} method).
+     *
+     * @param <R>     Return type of the visitor
+     * @param <P>     Parameter type of the visitor
+     * @param visitor Visitor to dispatch
+     * @param data    Parameter to the visit
+     *
+     * @return What the visitor returned
+     *
+     * @throws IllegalArgumentException If the visitor is incompatible with this node
+     *
+     * @implSpec A typical implementation will check the type of the visitor to
+     *     be that of the language specific visitor, then call the most specific
+     *     visit method of this Node. This is typically implemented by having
+     *     a different override per concrete node class (no shortcuts).
+     */
+    // TODO remove the default implementation, convert all visitors to be generic
+    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        // override me
+        throw new IllegalArgumentException("Unsupported visitor" + visitor + " for node " + this);
+    }
+
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.

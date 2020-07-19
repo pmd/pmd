@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
 
 
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
  * @author Clément Fournier
  * @author Jason Bennett
  */
-public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
+public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
