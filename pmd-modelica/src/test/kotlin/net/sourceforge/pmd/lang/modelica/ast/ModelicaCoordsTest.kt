@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.modelica.ast
 
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.matchNode

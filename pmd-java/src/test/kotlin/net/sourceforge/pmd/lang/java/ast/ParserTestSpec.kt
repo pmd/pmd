@@ -1,10 +1,12 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.AbstractSpec
-import io.kotlintest.TestContext
-import io.kotlintest.TestType
+import io.kotest.core.config.Project
+import io.kotest.core.spec.style.DslDrivenSpec
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
 import net.sourceforge.pmd.lang.ast.test.Assertions
-import io.kotlintest.should as kotlintestShould
+import io.kotest.matchers.should as kotlintestShould
 
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into

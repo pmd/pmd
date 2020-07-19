@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import io.kotlintest.should
+import io.kotest.matchers.should
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
-import io.kotlintest.shouldBe as ktShouldBe
+import io.kotest.matchers.shouldBe as ktShouldBe
 
 /**
  * Extension to add the name of a property to error messages.
@@ -48,7 +48,7 @@ private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N,
  * have to use the name of the getter instead of that of the generated
  * property (with the get prefix).
  *
- * If this conflicts with [io.kotlintest.shouldBe], use the equivalent [shouldEqual]
+ * If this conflicts with [io.kotest.matchers.shouldBe], use the equivalent [shouldEqual]
  *
  */
 infix fun <N, V : N> KCallable<N>.shouldBe(expected: V?) = this.shouldEqual(expected)

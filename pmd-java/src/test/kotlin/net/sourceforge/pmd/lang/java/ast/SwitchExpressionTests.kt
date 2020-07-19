@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 
 /**
  * @author Clément Fournier
