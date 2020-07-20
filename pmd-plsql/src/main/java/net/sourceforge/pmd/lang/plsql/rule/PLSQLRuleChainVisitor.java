@@ -16,8 +16,14 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+/**
+ * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+ *      See {@link RuleChainVisitor}.
+ */
+@Deprecated
 public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
     private static final Logger LOGGER = Logger.getLogger(PLSQLRuleChainVisitor.class.getName());
     private static final String CLASS_NAME = PLSQLRuleChainVisitor.class.getName();

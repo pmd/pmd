@@ -24,7 +24,7 @@ public class ObjectiveCLanguageModule extends BaseLanguageModule {
      * default file extensions for Objective-C.
      */
     public ObjectiveCLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "h", "m");
+        super(NAME, null, TERSE_NAME, "h", "m");
         addVersion("", new ObjectiveCHandler(), true);
     }
 }

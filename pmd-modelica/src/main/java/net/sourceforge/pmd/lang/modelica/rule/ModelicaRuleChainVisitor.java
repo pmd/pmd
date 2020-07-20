@@ -14,8 +14,14 @@ import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+/**
+ * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+ *      See {@link RuleChainVisitor}.
+ */
+@Deprecated
 public class ModelicaRuleChainVisitor extends AbstractRuleChainVisitor {
     @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {

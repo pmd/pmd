@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -185,6 +186,15 @@ public final class CollectionUtil {
             list.add(it.next());
         }
         return list;
+    }
+
+    @SafeVarargs
+    public static <T> List<T> listOf(T first, T... rest) {
+        // note: 7.0.x already has a better version of that
+        ArrayList<T> result = new ArrayList<>(rest.length + 1);
+        result.add(first);
+        Collections.addAll(result, rest);
+        return result;
     }
 
 

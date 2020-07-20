@@ -101,4 +101,10 @@ public class ASTCatchStatement extends AbstractJavaNode {
         return getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage();
     }
 
+    /**
+     * Returns the declarator id for the exception parameter.
+     */
+    public ASTVariableDeclaratorId getExceptionId() {
+        return getFirstChildOfType(ASTFormalParameter.class).getVariableDeclaratorId();
+    }
 }

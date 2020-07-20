@@ -7,7 +7,7 @@ source .travis/github-releases-api.sh
 source .travis/sourceforge-api.sh
 source .travis/regression-tester.sh
 
-VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+VERSION=$(get_pom_version)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 MVN_BUILD_FLAGS="-B -V"
