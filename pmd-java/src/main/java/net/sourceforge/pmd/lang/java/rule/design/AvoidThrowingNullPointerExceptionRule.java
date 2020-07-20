@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -22,58 +24,80 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRule {
 
+    private final Set<String> npeInstances = new HashSet<>();
+
     @Override
-    public Object visit(ASTClassOrInterfaceBody body, Object data) {
-        List<ASTThrowStatement> throwNPEs = getThrowNullPointerExceptionStatements(body);
-        for (ASTThrowStatement throwNPE : throwNPEs) {
-            addViolation(data, throwNPE);
+    public Object visit(ASTVariableInitializer varInitializer, Object data) {
+        String initialedVarName = getInitializedVariableName(varInitializer);
+        processAssignmentToVariable(varInitializer, initialedVarName);
+        return super.visit(varInitializer, data);
+    }
+
+    private String getInitializedVariableName(ASTVariableInitializer initializer) {
+        ASTVariableDeclaratorId varDeclaratorId = initializer.getParent()
+                .getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+        return varDeclaratorId != null ? varDeclaratorId.getName() : null;
+    }
+
+    @Override
+    public Object visit(ASTAssignmentOperator assignment, Object data) {
+        String assignedVarName = getAssignedVariableName(assignment);
+        processAssignmentToVariable(assignment, assignedVarName);
+        return super.visit(assignment, data);
+    }
+
+    private String getAssignedVariableName(ASTAssignmentOperator assignment) {
+        ASTName varName = assignment.getParent().getFirstDescendantOfType(ASTName.class);
+        return varName != null ? varName.getImage() : null;
+    }
+
+    private void processAssignmentToVariable(JavaNode assignment, String varName) {
+        Class<?> assignedValueType = getAssignedValueType(assignment);
+        if (isNullPointerException(assignedValueType)) {
+            npeInstances.add(varName);
+        } else {
+            npeInstances.remove(varName);
         }
-        return data;
     }
 
-    private List<ASTThrowStatement> getThrowNullPointerExceptionStatements(ASTClassOrInterfaceBody body) {
-        List<ASTThrowStatement> throwStatements = body.findDescendantsOfType(ASTThrowStatement.class);
-        List<String> npeInstances = getNullPointerExceptionInstances(body);
-        List<ASTThrowStatement> throwNPEStatements = new ArrayList<>();
-        for (ASTThrowStatement throwStatement : throwStatements) {
-            if (throwsNullPointerException(throwStatement, npeInstances)) {
-                throwNPEStatements.add(throwStatement);
-            }
+    private Class<?> getAssignedValueType(JavaNode assignment) {
+        ASTClassOrInterfaceType assignedValueType = assignment.getParent()
+                .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        return assignedValueType != null ? assignedValueType.getType() : null;
+    }
+
+    private boolean isNullPointerException(Class<?> clazz) {
+        return NullPointerException.class.equals(clazz);
+    }
+
+    @Override
+    public Object visit(ASTThrowStatement throwStatement, Object data) {
+        if (throwsNullPointerException(throwStatement)) {
+            addViolation(data, throwStatement);
         }
-        return throwNPEStatements;
+        return super.visit(throwStatement, data);
     }
 
-    private List<String> getNullPointerExceptionInstances(ASTClassOrInterfaceBody body) {
-        List<ASTAllocationExpression> allocations = body.findDescendantsOfType(ASTAllocationExpression.class);
-        List<String> npeInstances = new ArrayList<>();
-        for (ASTAllocationExpression allocation : allocations) {
-            if (allocatesNullPointerException(allocation)) {
-                String assignedVarName = getNameOfAssignedVariable(allocation);
-                npeInstances.add(assignedVarName);
-            }
+    private boolean throwsNullPointerException(ASTThrowStatement throwStatement) {
+        return throwsNullPointerExceptionType(throwStatement)
+                || throwsNullPointerExceptionVariable(throwStatement);
+    }
+
+    private boolean throwsNullPointerExceptionType(ASTThrowStatement throwStatement) {
+        ASTClassOrInterfaceType thrownType = throwStatement.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (thrownType != null) {
+            Class<?> thrownException = thrownType.getType();
+            return NullPointerException.class.equals(thrownException);
         }
-        return npeInstances;
+        return false;
     }
 
-    private boolean allocatesNullPointerException(ASTAllocationExpression allocation) {
-        Class<?> allocatedType = getAllocatedInstanceType(allocation);
-        return allocatedType != null && NullPointerException.class.isAssignableFrom(allocatedType);
-    }
-
-    private Class<?> getAllocatedInstanceType(ASTAllocationExpression allocation) {
-        List<ASTClassOrInterfaceType> allocatedTypes = allocation
-                .findDescendantsOfType(ASTClassOrInterfaceType.class);
-        return allocatedTypes.isEmpty() ? null : allocatedTypes.get(0).getType();
-    }
-
-    private String getNameOfAssignedVariable(ASTAllocationExpression allocation) {
-        List<ASTVariableDeclarator> variableDeclarators = allocation.getParent()
-                .findDescendantsOfType(ASTVariableDeclarator.class);
-        return variableDeclarators.isEmpty() ? null : variableDeclarators.get(0).getName();
-    }
-
-    private boolean throwsNullPointerException(ASTThrowStatement throwStatement, List<String> npeInstances) {
-        String thrownImage = throwStatement.getFirstClassOrInterfaceTypeImage();
-        return "NullPointerException".equals(thrownImage) || npeInstances.contains(thrownImage);
+    private boolean throwsNullPointerExceptionVariable(ASTThrowStatement throwStatement) {
+        ASTName thrownVar = throwStatement.getFirstDescendantOfType(ASTName.class);
+        if (thrownVar != null) {
+            String thrownVarName = thrownVar.getImage();
+            return npeInstances.contains(thrownVarName);
+        }
+        return false;
     }
 }
