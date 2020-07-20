@@ -82,4 +82,9 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
         doTest("string_multiline");
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
 }
