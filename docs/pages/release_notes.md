@@ -18,10 +18,13 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex-bestpractices
     *   [#2626](https://github.com/pmd/pmd/issues/2626): \[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex
+*   java-design
+    *   [#2580](https://github.com/pmd/pmd/issues/2580): \[java] AvoidThrowingNullPointerException marks all NullPointerException objects as wrong, whether or not thrown
 
 ### API Changes
 
 ### External Contributions
+*   [#2641](https://github.com/pmd/pmd/pull/2641): \[java] AvoidThrowingNullPointerException marks all NullPointerException… - [Mykhailo Palahuta](https://github.com/Drofff)
 
 {% endtocmaker %}
 
