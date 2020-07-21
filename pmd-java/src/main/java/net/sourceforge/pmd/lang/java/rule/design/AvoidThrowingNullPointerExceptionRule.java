@@ -66,10 +66,6 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRule {
         return assignedValueType != null ? assignedValueType.getType() : null;
     }
 
-    private boolean isNullPointerException(Class<?> clazz) {
-        return NullPointerException.class.equals(clazz);
-    }
-
     @Override
     public Object visit(ASTThrowStatement throwStatement, Object data) {
         if (throwsNullPointerException(throwStatement)) {
@@ -87,9 +83,13 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRule {
         ASTClassOrInterfaceType thrownType = throwStatement.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (thrownType != null) {
             Class<?> thrownException = thrownType.getType();
-            return NullPointerException.class.equals(thrownException);
+            return isNullPointerException(thrownException);
         }
         return false;
+    }
+
+    private boolean isNullPointerException(Class<?> clazz) {
+        return NullPointerException.class.equals(clazz);
     }
 
     private boolean throwsNullPointerExceptionVariable(ASTThrowStatement throwStatement) {
