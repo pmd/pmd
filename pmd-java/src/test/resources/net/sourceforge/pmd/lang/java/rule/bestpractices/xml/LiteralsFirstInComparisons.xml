@@ -288,4 +288,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ok, should be ignored in case both operands are string literals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean isFoo;
+    public void bar() {
+        this.isFoo = "Hello".equals("World");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -31,15 +31,27 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryExpression expression, Object data) {
-        String opName = getOperationName(expression);
-        ASTPrimarySuffix primarySuffix = getSuffixOfArguments(expression);
-        if (opName == null || primarySuffix == null) {
-            return data;
-        }
-        if (isStringLiteralComparison(opName, primarySuffix) && !isWithinNullComparison(expression)) {
+        if (violatesLiteralsFirstInComparisonsRule(expression)) {
             addViolation(data, expression);
         }
         return data;
+    }
+
+    private boolean violatesLiteralsFirstInComparisonsRule(ASTPrimaryExpression expression) {
+        return !hasStringLiteralFirst(expression) && isNullableComparisonWithStringLiteral(expression);
+    }
+
+    private boolean hasStringLiteralFirst(ASTPrimaryExpression expression) {
+        ASTPrimaryPrefix primaryPrefix = expression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        ASTLiteral firstLiteral = primaryPrefix.getFirstDescendantOfType(ASTLiteral.class);
+        return firstLiteral != null && firstLiteral.isStringLiteral();
+    }
+
+    private boolean isNullableComparisonWithStringLiteral(ASTPrimaryExpression expression) {
+        String opName = getOperationName(expression);
+        ASTPrimarySuffix argsSuffix = getSuffixOfArguments(expression);
+        return opName != null && argsSuffix != null && isStringLiteralComparison(opName, argsSuffix)
+                && isNotWithinNullComparison(expression);
     }
 
     private String getOperationName(ASTPrimaryExpression primaryExpression) {
@@ -133,6 +145,10 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
             return literal.isStringLiteral();
         }
         return false;
+    }
+
+    private boolean isNotWithinNullComparison(ASTPrimaryExpression node) {
+        return !isWithinNullComparison(node);
     }
 
     /*
