@@ -215,7 +215,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] NPathComplexity can't handle switch expressions #2625</description>
+        <description>Switch arrow branch (#2625)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NPathTest {
@@ -223,14 +223,37 @@ public class NPathTest {
         if (title.length() > 100 || title.length() == 0) {
             throw new IllegalArgumentException("Invalid title length (1-100 chars): " + title);
         }
-        val product = new Product();
-        val description = new MultiLangString();
+        var product = new Product();
+        var description = new MultiLangString();
         switch (language) {
             case FR -> description.setFr(title);
             case IT -> description.setIt(title);
             case EN -> description.setEn(title);
             default -> description.setDe(title);
         }
+        product.setDescription(description);
+        product.setMagicNumber(3);
+        return product;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expressions (#2625)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NPathTest {
+    Product buildProduct(String title, Language language) {
+        if (title.length() > 100 || title.length() == 0) {
+            throw new IllegalArgumentException("Invalid title length (1-100 chars): " + title);
+        }
+        var product = new Product();
+        var description = switch (language) {
+            case FR -> description.setFr(title);
+            case IT -> description.setIt(title);
+            case EN -> description.setEn(title);
+            default -> description.setDe(title);
+        };
         product.setDescription(description);
         product.setMagicNumber(3);
         return product;

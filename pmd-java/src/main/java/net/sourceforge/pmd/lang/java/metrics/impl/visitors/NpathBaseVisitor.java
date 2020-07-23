@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
@@ -47,7 +48,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         int product = 1;
 
         for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+            JavaNode n = node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newProduct = product * childComplexity;
@@ -69,7 +70,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         int sum = 0;
 
         for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+            JavaNode n = node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newSum = sum + childComplexity;
@@ -174,15 +175,24 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
 
     @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return handleSwitch(node, data);
+    }
+
+    @Override
     public Object visit(ASTSwitchStatement node, Object data) {
+        return handleSwitch(node, data);
+    }
+
+    public int handleSwitch(JavaNode node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
         int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
         int npath = 0;
         int caseRange = 0;
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+
+        for (JavaNode n : node.children()) {
 
             // Fall-through labels count as 1 for complexity
             if (n instanceof ASTSwitchLabel || n instanceof ASTSwitchLabeledThrowStatement) {
