@@ -5,10 +5,20 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.Node;
 
 @DeprecatedUntil700
 @Deprecated
 public interface ApexParserVisitor extends ApexVisitor<Object, Object> {
+
+    @Override
+    default Object visitNode(Node node, Object param) {
+        for (Node child : node.children()) {
+            child.acceptVisitor(this, param);
+        }
+        return param;
+    }
+
 
     @Override
     default Object visitApexNode(ApexNode<?> node, Object data) {
@@ -17,7 +27,7 @@ public interface ApexParserVisitor extends ApexVisitor<Object, Object> {
 
     @Deprecated
     default Object visit(ApexNode<?> node, Object data) {
-        return visitApexNode(node, data);
+        return visitNode(node, data);
     }
 
 }
