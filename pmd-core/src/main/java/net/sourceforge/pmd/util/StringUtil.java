@@ -9,9 +9,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -27,6 +30,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
+
+    private static final Pattern XML_10_INVALID_CHARS = Pattern.compile(
+            "\\x00|\\x01|\\x02|\\x03|\\x04|\\x05|\\x06|\\x07|\\x08|"
+          + "\\x0b|\\x0c|\\x0e|\\x0f|"
+          + "\\x10|\\x11|\\x12|\\x13|\\x14|\\x15|\\x16|\\x17|\\x18|"
+          + "\\x19|\\x1a|\\x1b|\\x1c|\\x1d|\\x1e|\\x1f");
 
     private StringUtil() {
     }
@@ -311,7 +320,9 @@ public final class StringUtil {
     /**
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
+     * @deprecated for removal. Use {@link StringEscapeUtils#escapeXml10(String)} instead.
      */
+    @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
         int i = 0;
@@ -344,6 +355,20 @@ public final class StringUtil {
         }
     }
 
+    /**
+     * Remove characters, that are not allowed in XML 1.0 documents.
+     *
+     * <p>Allowed characters are:
+     * <blockquote>
+     * Char    ::=      #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+     *  // any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
+     * </blockquote>
+     * (see <a href="https://www.w3.org/TR/xml/#charsets">Extensible Markup Language (XML) 1.0 (Fifth Edition)</a>).
+     */
+    public static String removedInvalidXml10Characters(String text) {
+        Matcher matcher = XML_10_INVALID_CHARS.matcher(text);
+        return matcher.replaceAll("");
+    }
 
     /**
      * Replace some whitespace characters so they are visually apparent.
