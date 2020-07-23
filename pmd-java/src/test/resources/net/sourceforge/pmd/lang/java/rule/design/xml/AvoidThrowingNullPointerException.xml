@@ -15,4 +15,92 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>no problems if NullPointerException is only instantiated but not thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException("Test message");
+        String msg = e.getMessage();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>problem should be detected even if NullPointerException is stored in some intermediate variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>variables with same name false positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        Exception e = new NullPointerException();
+        e.printStackTrace();
+    }
+
+    void bar() {
+        Exception e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable has been reassigned to RuntimeException before thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException();
+        e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable is reassigned with NullPointerException after thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(String s) {
+        Exception e = new RuntimeException();
+        if (s.equals("throw")) {
+            throw e;
+        }
+        e = new NullPointerException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, variable had been reassigned with NullPointerException before thrown</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new RuntimeException();
+        e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

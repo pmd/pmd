@@ -24,7 +24,7 @@ public class CppLanguageModule extends BaseLanguageModule {
      * extensions for C++.
      */
     public CppLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "h", "c", "cpp", "cxx", "cc", "C");
+        super(NAME, null, TERSE_NAME, "h", "c", "cpp", "cxx", "cc", "C");
         addVersion("", new CppHandler(), true);
     }
 }

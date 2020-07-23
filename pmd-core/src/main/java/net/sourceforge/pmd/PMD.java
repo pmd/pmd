@@ -217,8 +217,7 @@ public class PMD {
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
                 renderers = Collections.singletonList(renderer);
-
-                renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
+                renderer.setReportFile(configuration.getReportFile());
                 renderer.start();
             }
 

@@ -200,7 +200,7 @@ public void bar() {
           language="java"
           since="1.8"
           message="Avoid throwing null pointer exceptions."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingNullPointerExceptionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingnullpointerexception">
         <description>
 <![CDATA[
@@ -234,16 +234,6 @@ public class Foo {
 ]]>
         </description>
         <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {

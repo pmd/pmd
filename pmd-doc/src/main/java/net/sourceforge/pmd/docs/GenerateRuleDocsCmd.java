@@ -30,6 +30,11 @@ public final class GenerateRuleDocsCmd {
     }
 
     public static void main(String[] args) throws RuleSetNotFoundException {
+        if (args.length != 1) {
+            System.err.println("One argument is required: The base directory of the module pmd-doc.");
+            System.exit(1);
+        }
+
         long start = System.currentTimeMillis();
         Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);

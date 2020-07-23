@@ -15,6 +15,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -157,7 +158,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (firstMethodCallInChain == null || firstMethodCallInChain.isNotBuilder()) {
                     List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
                     for (ASTPrimarySuffix suffix : suffixes) {
-                        result.add(new MethodCall(expression, suffix));
+                        if (!expression.hasDescendantOfType(ASTCastExpression.class)) {
+                            result.add(new MethodCall(expression, suffix));
+                        }
                     }
                 }
             }
@@ -205,7 +208,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
             List<ASTPrimarySuffix> result = new ArrayList<>();
             if (hasRealPrefix(expr)) {
-                List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
+                List<ASTPrimarySuffix> suffixes = expr.findChildrenOfType(ASTPrimarySuffix.class);
                 for (ASTPrimarySuffix suffix : suffixes) {
                     if (!suffix.isArguments() && !suffix.isArrayDereference()) {
                         result.add(suffix);

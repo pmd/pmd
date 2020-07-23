@@ -5,14 +5,14 @@
 package net.sourceforge.pmd.lang.scala.ast
 
 import io.kotlintest.should
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import java.io.StringReader
 
-class ScalaTreeTests : FunSpec({
+class ScalaTreeTests : AbstractFunSpec({
 
 
     test("Test line/column numbers") {
