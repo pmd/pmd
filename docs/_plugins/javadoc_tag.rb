@@ -180,6 +180,9 @@ class JavadocTag < Liquid::Tag
     if member_suffix && Regexp.new('(\w+|<init>)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
 
       suffix = $1 # method or field name
+      if suffix == '<init>'
+        suffix = '&lt;init&gt;'
+      end
 
       if opts.show_args? && $2 && !$2.empty? # is method
 

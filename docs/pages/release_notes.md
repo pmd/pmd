@@ -52,8 +52,8 @@ This is a {{ site.pmd.release_type }} release.
 
 * {% jdoc core::lang.rule.RuleChainVisitor %} and all implementations in language modules
 * {% jdoc core::lang.rule.AbstractRuleChainVisitor %}
-* {% jdoc core::lang.Language#getRuleChainVisitorClass() %}
-* {% jdoc core::lang.BaseLanguageModule#<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...) %}
+* {% jdoc !!core::lang.Language#getRuleChainVisitorClass() %}
+* {% jdoc !!core::lang.BaseLanguageModule#<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...) %}
 
 
 ### External Contributions
