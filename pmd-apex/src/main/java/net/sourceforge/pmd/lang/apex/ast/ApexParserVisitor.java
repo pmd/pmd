@@ -19,15 +19,14 @@ public interface ApexParserVisitor extends ApexVisitor<Object, Object> {
         return param;
     }
 
-
-    @Override
-    default Object visitApexNode(ApexNode<?> node, Object data) {
-        return visit(node, data); // calls the overload below for compatibility
-    }
-
     @Deprecated
     default Object visit(ApexNode<?> node, Object data) {
         return visitNode(node, data);
+    }
+
+    @Override
+    default Object visitApexNode(ApexNode<?> node, Object data) {
+        return visit(node, data); // calls the overload above for compatibility
     }
 
 }

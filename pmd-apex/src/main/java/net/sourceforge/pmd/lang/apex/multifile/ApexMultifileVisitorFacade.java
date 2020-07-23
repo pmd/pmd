@@ -5,12 +5,11 @@
 package net.sourceforge.pmd.lang.apex.multifile;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 
 /**
  * @author Clément Fournier
  */
-public class ApexMultifileVisitorFacade extends ApexParserVisitorAdapter {
+public class ApexMultifileVisitorFacade {
 
     public void initializeWith(ApexNode<?> rootNode) {
         ApexMultifileVisitor visitor = new ApexMultifileVisitor(ApexProjectMirror.INSTANCE);
