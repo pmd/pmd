@@ -621,15 +621,22 @@ public class RuleDocGenerator {
      */
     private void determineRuleClassSourceFiles(Map<Language, List<RuleSet>> sortedRulesets) {
         // first collect all the classes, we need to resolve and the rulesets
+        // this also provides a default fallback path, which is used in unit tests.
+        // if the actual file is found during walkFileTree, then the default fallback path
+        // is replaced by a correct path.
         for (List<RuleSet> rulesets : sortedRulesets.values()) {
             for (RuleSet ruleset : rulesets) {
-                String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()));
+                // Note: the path is normalized to unix path separators, so that the editme link
+                // uses forward slashes
+                String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()), true);
                 allRulesets.put(ruleset.getFileName(), rulesetFilename);
                 for (Rule rule : ruleset.getRules()) {
                     String ruleClass = rule.getRuleClass();
                     String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
                             + ".java";
-                    allRules.put(ruleClass, relativeSourceFilename);
+                    // Note: the path is normalized to unix path separators, so that the editme link
+                    // uses forward slashes
+                    allRules.put(ruleClass, FilenameUtils.normalize(relativeSourceFilename, true));
                 }
             }
         }
