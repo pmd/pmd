@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.java.types.internal.ast
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.java.types.*
 
 /**
  * @author Clément Fournier
  */
-class ConditionalTypeTest : FunSpec() {
+class ConditionalTypeTest : AbstractFunSpec() {
 
     private val tested = mutableMapOf<TypePair, JTypeMirror>()
 

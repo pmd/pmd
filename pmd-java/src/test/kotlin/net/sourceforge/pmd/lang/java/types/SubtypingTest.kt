@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotlintest.inspectors.forNone
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.*
@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 /**
  * @author Clément Fournier
  */
-class SubtypingTest : FunSpec({
+class SubtypingTest : AbstractFunSpec({
 
     val ts = testTypeSystem
     with(TypeDslOf(ts)) {

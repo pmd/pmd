@@ -9,12 +9,12 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 
 /**
  * @author Clément Fournier
  */
-class GraphTest : FunSpec({
+class GraphTest : AbstractFunSpec({
 
     test("Test unique graph") {
 

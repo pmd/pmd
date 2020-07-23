@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.typeresolution.testdata.GenericFbound
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MutualTypeRecursion
 /**
  * @author Clément Fournier
  */
-class TypeParamSubstTest : FunSpec({
+class TypeParamSubstTest : AbstractFunSpec({
 
     val ts = testTypeSystem
     with(TypeDslOf(ts)) {

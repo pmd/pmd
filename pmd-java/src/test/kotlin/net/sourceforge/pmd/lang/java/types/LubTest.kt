@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import java.io.Serializable
 
 /**
  * @author Clément Fournier
  */
-class LubTest : FunSpec({
+class LubTest : AbstractFunSpec({
     with(TypeDslOf(testTypeSystem)) { // import construction DSL
         with(gen) { // import constants
 

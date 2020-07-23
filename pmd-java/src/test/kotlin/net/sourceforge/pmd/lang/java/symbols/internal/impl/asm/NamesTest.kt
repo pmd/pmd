@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.asm
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
-class NamesTest : FunSpec({
+class NamesTest : AbstractFunSpec({
 
     test("Test inner class names") {
 

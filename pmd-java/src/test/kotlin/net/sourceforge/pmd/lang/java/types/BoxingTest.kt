@@ -9,13 +9,13 @@ import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**
  * @author Clément Fournier
  */
-class BoxingTest : FunSpec({
+class BoxingTest : AbstractFunSpec({
 
     test("Test boxing is dual of unboxing") {
 
