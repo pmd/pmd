@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -17,7 +18,7 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
-        if (insideLoop(node) && parentNotReturn(node) && parentNotForEach(node)) {
+        if (insideLoop(node) && parentNotReturn(node)) {
             addViolation(data, node);
         }
         return data;
@@ -27,16 +28,16 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
         return !(node.getParent() instanceof ASTReturnStatement);
     }
 
-    private boolean parentNotForEach(ASTSoqlExpression node) {
-        return !(node.getParent() instanceof ASTForEachStatement);
-    }
-
     private boolean insideLoop(ASTSoqlExpression node) {
         Node n = node.getParent();
 
         while (n != null) {
+            if (n instanceof ASTBlockStatement && n.getParent() instanceof ASTForEachStatement) {
+                // only consider the block of the for-each statement, not the iterator
+                return true;
+            }
             if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
-                    || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
+                    || n instanceof ASTForLoopStatement) {
                 return true;
             }
             n = n.getParent();

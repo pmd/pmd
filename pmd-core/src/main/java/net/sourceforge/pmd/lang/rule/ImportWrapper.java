@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -66,8 +67,13 @@ public class ImportWrapper {
         if (other == this) {
             return true;
         }
-        if (other instanceof ImportWrapper) {
+        if (other.getClass() == ImportWrapper.class) {
             ImportWrapper i = (ImportWrapper) other;
+
+            if (isStaticDemand != i.isStaticDemand) {
+                return false;
+            }
+
             if (name == null) {
                 return fullname.equals(i.getFullName());
             }
@@ -91,9 +97,9 @@ public class ImportWrapper {
     @Override
     public int hashCode() {
         if (name == null) {
-            return fullname.hashCode();
+            return Objects.hash(fullname, isStaticDemand);
         }
-        return name.hashCode();
+        return Objects.hash(name, isStaticDemand);
     }
 
     public String getName() {
