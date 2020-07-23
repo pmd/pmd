@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -74,7 +74,7 @@ class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements 
     public List<JTypeMirror> getExplicitTypeArguments() {
         return CollectionUtil.map(
             ASTList.orEmpty(myNode.getExplicitTypeArguments()),
-            TypedNode::getTypeMirror
+            TypeNode::getTypeMirror
         );
     }
 

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -34,7 +34,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     public List<JTypeMirror> getExplicitTypeArguments() {
         return myNode.getExplicitTypeArgumentList()
                      .stream()
-                     .map(TypedNode::getTypeMirror)
+                     .map(TypeNode::getTypeMirror)
                      .collect(Collectors.toList());
     }
 

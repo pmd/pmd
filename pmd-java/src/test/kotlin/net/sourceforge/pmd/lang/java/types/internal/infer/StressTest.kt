@@ -31,7 +31,7 @@ class StressTest : ProcessorTestSpec({
     parserTest("Test hard overload resolution - no generics involved") {
         asIfIn(BoolLogic::class.java)
 
-        fun TreeNodeWrapper<Node, out TypedNode>.typeIs(value: Boolean) {
+        fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
             it.typeMirror.toString() shouldBe "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString().capitalize()}"
         }
 

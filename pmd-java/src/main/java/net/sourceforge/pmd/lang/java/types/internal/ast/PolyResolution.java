@@ -40,7 +40,6 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -120,7 +119,7 @@ final class PolyResolution {
                 if (e instanceof ASTConditionalExpression) {
                     return computeStandaloneConditionalType((ASTConditionalExpression) e);
                 } else if (e instanceof ASTSwitchExpression) {
-                    List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypedNode::getTypeMirror);
+                    List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
                     return computeStandaloneConditionalType(ts, branches);
                 } else {
                     return ts.ERROR_TYPE;

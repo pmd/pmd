@@ -88,6 +88,8 @@ public final class ASTFormalParameter extends AbstractJavaNode
         return getFirstChildOfType(ASTType.class);
     }
 
+    // Honestly FormalParameter shouldn't be a TypeNode.
+    // The node that represents the variable is the variable ID.
 
     @Override
     public JavaTypeDefinition getTypeDefinition() {

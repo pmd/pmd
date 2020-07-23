@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
  * classes).
  *
  * <p>Type mirrors can be obtained {@linkplain TypesFromReflection from reflected types},
- * directly {@linkplain TypedNode#getTypeMirror() from nodes}, or from
+ * directly {@linkplain TypeNode#getTypeMirror() from nodes}, or from
  * arbitrary symbols (see {@link TypeSystem}).
  */
 @Experimental

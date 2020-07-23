@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -108,7 +108,7 @@ public final class TypesFromAst {
 
         } else if (node instanceof ASTUnionType) {
 
-            return ts.lub(CollectionUtil.map(((ASTUnionType) node).getComponents(), TypedNode::getTypeMirror));
+            return ts.lub(CollectionUtil.map(((ASTUnionType) node).getComponents(), TypeNode::getTypeMirror));
 
         }
 

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.TypedNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
@@ -34,7 +34,7 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     public List<JTypeMirror> getExplicitParameterTypes() {
         return myNode.getParameters().toStream()
                      .map(ASTLambdaParameter::getTypeNode)
-                     .toList(TypedNode::getTypeMirror);
+                     .toList(TypeNode::getTypeMirror);
     }
 
     @Override
