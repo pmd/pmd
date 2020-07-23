@@ -7,6 +7,7 @@
     <test-code>
         <description>fail, == 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -67,6 +69,7 @@ public class Foo {
     <test-code>
         <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst, boolean b) {
@@ -97,6 +100,7 @@ public class Foo {
     <test-code>
         <description>fail, 0 ==</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -112,6 +116,7 @@ public class Foo {
     <test-code>
         <description>fail, &gt; 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -159,6 +164,7 @@ public class Foo {
     <test-code>
         <description>#1214 UseCollectionIsEmpty misses some usage</description>
         <expected-problems>5</expected-problems>
+        <expected-linenumbers>25,28,31,34,37</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 
@@ -314,10 +320,11 @@ public class PmdBugBait {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#2543 false negative on this.collection.size</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
 import java.util.List;
 import java.util.ArrayList;
@@ -325,11 +332,18 @@ import java.util.ArrayList;
 public class Foo {
 
     private List<String> list = new ArrayList<>();
+    private Bar notACollection = new Bar();
 
     public void bar() {
         if (this.list.size() == 0) {
             throw new RuntimeException("Empty list");
         }
+        if (notACollection.size() == 0) { }
+        if (this.notACollection.size() == 0) { }
+    }
+
+    public int size() {
+        return 0;
     }
 }
         ]]></code>
