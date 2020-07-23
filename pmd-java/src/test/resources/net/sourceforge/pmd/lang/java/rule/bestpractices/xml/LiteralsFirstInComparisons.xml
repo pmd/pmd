@@ -301,4 +301,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Equals on method result with String argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String getStr(String a) {
+        return "a" + a;
+    }
+    public void bar() {
+        if (getStr("b").equals("ab")) { }   // nok
+        if ("ab".equals(getStr("b"))) { }   // ok
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
