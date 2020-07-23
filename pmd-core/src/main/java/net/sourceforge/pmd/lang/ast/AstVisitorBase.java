@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.ast;
 public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
 
     /** Initial value when combining values returned by children. */
-    protected R zero() {
+    protected R zero(P data) {
         return null;
     }
 
@@ -19,7 +19,7 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
      * Merge two values of type R, used to combine values returned by children.
      *
      * @param acc        Current accumulated value for the previous siblings
-     *                   (or {@link #zero()} if the child is the first child)
+     *                   (or {@link #zero(P)} if the child is the first child)
      * @param childValue Value for the new child
      *
      * @return New accumulated value to use for the next sibling
@@ -30,7 +30,7 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
 
     /**
      * Visit the children. By default the data parameter is passed unchanged
-     * to all descendants. The {@link #zero() zero} and {@link #combine(Object, Object) combine}
+     * to all descendants. The {@link #zero(P) zero} and {@link #combine(Object, Object) combine}
      * functions should be implemented if this is to return something else
      * than null.
      *
@@ -41,7 +41,7 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
      */
     // kept separate from super.visit for clarity
     protected R visitChildren(Node node, P data) {
-        R result = zero();
+        R result = zero(data);
         for (Node child : node.children()) {
             R r1 = child.acceptVisitor(this, data);
             result = combine(result, r1);
