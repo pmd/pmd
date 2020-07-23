@@ -73,7 +73,7 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
         protected Integer countNodeChildren(ApexNode<?> node, Object data) {
             int nodeCount = 0;
             for (int i = 0; i < node.getNumChildren(); i++) {
-                nodeCount += (Integer) node.getChild(i).jjtAccept(this, data);
+                nodeCount += (Integer) node.getChild(i).acceptVisitor(this, data);
             }
             return nodeCount;
         }

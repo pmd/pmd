@@ -27,7 +27,9 @@ public class CycloMetric extends AbstractApexOperationMetric {
 
     @Override
     public double computeFor(ASTMethod node, MetricOptions options) {
-        return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).doubleValue();
+        MutableInt result = new MutableInt(1);
+        node.acceptVisitor(new StandardCycloVisitor(), result);
+        return result.doubleValue();
     }
 
 

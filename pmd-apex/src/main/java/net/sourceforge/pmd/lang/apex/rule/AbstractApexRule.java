@@ -125,13 +125,13 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((ApexNode<?>) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, (Object) ctx);
     }
 
     @Override
     public Object visit(ApexNode<?> node, Object data) {
         for (ApexNode<?> child : node.children()) {
-            child.jjtAccept(this, data);
+            child.acceptVisitor(this, data);
         }
         return data;
     }

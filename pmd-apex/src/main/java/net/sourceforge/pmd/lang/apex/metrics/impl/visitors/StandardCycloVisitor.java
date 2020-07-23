@@ -16,85 +16,76 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 import net.sourceforge.pmd.lang.apex.metrics.impl.CycloMetric;
 
 /**
  * @author Clément Fournier
  */
-public class StandardCycloVisitor extends ApexParserVisitorAdapter {
+public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public Void visit(ASTMethod node, MutableInt data) {
         return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTIfBlockStatement node, Object data) {
-        ((MutableInt) data).add(
-            1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTIfBlockStatement node, MutableInt data) {
+        data.add(1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTCatchBlockStatement node, Object data) {
-        ((MutableInt) data).increment();
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTCatchBlockStatement node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTForLoopStatement node, Object data) {
-        ((MutableInt) data).add(
-            1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTForLoopStatement node, MutableInt data) {
+        data.add(
+                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTForEachStatement node, Object data) {
-        ((MutableInt) data).increment();
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTForEachStatement node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTThrowStatement node, Object data) {
-        ((MutableInt) data).increment();
-        super.visit(node, data);
-        return data;
-    }
-
-
-    @Override
-    public Object visit(ASTWhileLoopStatement node, Object data) {
-        ((MutableInt) data).add(
-            1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTThrowStatement node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTDoLoopStatement node, Object data) {
-        ((MutableInt) data).add(
-            1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTWhileLoopStatement node, MutableInt data) {
+        data.add(
+                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        return super.visit(node, data);
     }
 
 
     @Override
-    public Object visit(ASTTernaryExpression node, Object data) {
-        ((MutableInt) data).add(
-            1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
-        super.visit(node, data);
-        return data;
+    public Void visit(ASTDoLoopStatement node, MutableInt data) {
+        data.add(
+                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        return super.visit(node, data);
+    }
+
+
+    @Override
+    public Void visit(ASTTernaryExpression node, MutableInt data) {
+        data.add(
+                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        return super.visit(node, data);
     }
 
 

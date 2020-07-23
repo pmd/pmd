@@ -9,12 +9,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 public abstract class ApexVisitorBase<P, R> extends AstVisitorBase<P, R> implements ApexVisitor<P, R> {
 
     @Override
-    public final R visit(ASTUserInterface node, P data) {
+    public R visit(ASTUserInterface node, P data) {
         return visitTypeDecl(node, data);
     }
 
     @Override
-    public final R visit(ASTUserClass node, P data) {
+    public R visit(ASTUserClass node, P data) {
         return visitTypeDecl(node, data);
     }
 

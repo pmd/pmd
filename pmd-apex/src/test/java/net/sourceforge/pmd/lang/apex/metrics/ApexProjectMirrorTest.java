@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexClassMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexOperationMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -72,24 +72,24 @@ public class ApexProjectMirrorTest extends ApexParserTestBase {
     private List<Integer> visitWith(ApexNode<Compilation> acu, final boolean force) {
         final List<Integer> result = new ArrayList<>();
 
-        acu.jjtAccept(new ApexParserVisitorAdapter() {
+        acu.acceptVisitor(new ApexVisitorBase<List<Integer>, Void>() {
             @Override
-            public Object visit(ASTMethod node, Object data) {
+            public Void visit(ASTMethod node, List<Integer> result) {
                 if (opMetricKey.supports(node)) {
                     result.add((int) MetricsUtil.computeMetric(opMetricKey, node, MetricOptions.emptyOptions(), force));
                 }
-                return super.visit(node, data);
+                return super.visit(node, result);
             }
 
 
             @Override
-            public Object visit(ASTUserClass node, Object data) {
+            public Void visit(ASTUserClass node, List<Integer> result) {
                 if (classMetricKey.supports(node)) {
                     result.add((int) MetricsUtil.computeMetric(classMetricKey, node, MetricOptions.emptyOptions(), force));
                 }
-                return super.visit(node, data);
+                return super.visit(node, result);
             }
-        }, null);
+        }, result);
 
         return result;
     }

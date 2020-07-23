@@ -209,7 +209,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         State state = (State) data;
 
         for (ApexNode<?> child : node.children()) {
-            child.jjtAccept(this, data);
+            child.acceptVisitor(this, data);
 
             // This needs to happen because the current 'run' of boolean operations is terminated
             // once we finish a statement.
