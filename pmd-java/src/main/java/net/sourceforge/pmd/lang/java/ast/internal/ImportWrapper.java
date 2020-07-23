@@ -1,24 +1,25 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule;
+
+package net.sourceforge.pmd.lang.java.ast.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
 /**
- * @deprecated This class is only useful for Java rules and should not have been added to pmd-core.
- *             It will be removed with PMD 7.
+ * Helper class to analyze {@link ASTImportDeclaration}s.
  */
-@Deprecated
 public class ImportWrapper {
-    private Node node;
+    private ASTImportDeclaration node;
     private String name;
     private String fullname;
     private boolean isStaticDemand;
@@ -28,13 +29,18 @@ public class ImportWrapper {
         this(fullname, name, null);
     }
 
-    public ImportWrapper(String fullname, String name, Node node) {
+    public ImportWrapper(String fullname, String name, ASTImportDeclaration node) {
         this(fullname, name, node, false);
     }
 
-    public ImportWrapper(String fullname, String name, Node node, Class<?> type, boolean isStaticDemand) {
-        this(fullname, name, node, isStaticDemand);
-        if (type != null) {
+    public ImportWrapper(String fullname, String name, ASTImportDeclaration node, boolean isStaticDemand) {
+        this.fullname = fullname;
+        this.name = name;
+        this.node = node;
+        this.isStaticDemand = isStaticDemand;
+
+        if (node != null && node.getType() != null) {
+            Class<?> type = node.getType();
             for (Method m : type.getMethods()) {
                 allDemands.add(m.getName());
             }
@@ -56,13 +62,6 @@ public class ImportWrapper {
         }
     }
 
-    public ImportWrapper(String fullname, String name, Node node, boolean isStaticDemand) {
-        this.fullname = fullname;
-        this.name = name;
-        this.node = node;
-        this.isStaticDemand = isStaticDemand;
-    }
-
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -71,14 +70,18 @@ public class ImportWrapper {
         if (other == this) {
             return true;
         }
-        if (other instanceof ImportWrapper) {
-            ImportWrapper i = (ImportWrapper) other;
-            if (name == null) {
-                return fullname.equals(i.getFullName());
-            }
-            return name.equals(i.getName());
+        if (other.getClass() != ImportWrapper.class) {
+            return false;
         }
-        return false;
+
+        ImportWrapper i = (ImportWrapper) other;
+        if (isStaticDemand != i.isStaticDemand) {
+            return false;
+        }
+        if (name == null) {
+            return fullname.equals(i.getFullName());
+        }
+        return name.equals(i.getName());
     }
 
     public boolean matches(ImportWrapper i) {
@@ -96,9 +99,9 @@ public class ImportWrapper {
     @Override
     public int hashCode() {
         if (name == null) {
-            return fullname.hashCode();
+            return Objects.hash(fullname, isStaticDemand);
         }
-        return name.hashCode();
+        return Objects.hash(name, isStaticDemand);
     }
 
     public String getName() {
