@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -39,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
@@ -108,6 +110,16 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     @Deprecated
     public Object visit(ASTConditionalOrExpression node, Object data) {
         return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTVariableInitializer node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTAssignmentOperator node, Object data) {
+        return visit((JavaNode) node, data);
     }
 
     @Deprecated
