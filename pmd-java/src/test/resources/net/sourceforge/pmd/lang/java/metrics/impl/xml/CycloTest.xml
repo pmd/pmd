@@ -424,10 +424,10 @@ class Foo {
         <code><![CDATA[
 class Foo {
     void bar(){}
-    void foo() {
+    void foo() {                                // +1
         int x=0;
         boolean a, b;
-        switch (x) {                            // +1
+        switch (x) {
             case 1, 2 -> { if (a && b) bar(); } // +4
             default -> { bar(); }
         }
@@ -446,13 +446,36 @@ class Foo {
         <code><![CDATA[
 class Foo {
     void bar(){}
-    void foo() {
+    void foo() {                    // +1
         int x=0;
-        switch (x) {                // +1
+        switch (x) {
             case 1, 2, 3 -> bar();  // +3
             case 4       -> bar();  // +1
             default -> bar();
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch labeled expression with default only</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void foo(int x) {     // +1
+        foo(switch (x) {
+            default -> {
+                if (a) { // +1
+                    yield 1;
+                } else {
+                    yield 2;
+                }
+            }
+        });
     }
 }
         ]]></code>
