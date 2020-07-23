@@ -55,10 +55,6 @@ class SubstTest : ProcessorTestSpec({
                     listOf(`List{F}`, k)
             )
 
-
-        subst.toString() shouldBe "Substitution[K => java.util.List<F>; F => K]"
-
-
         subst.apply(f) shouldBe k
         subst.apply(k) shouldBe `List{F}`
 
@@ -68,8 +64,6 @@ class SubstTest : ProcessorTestSpec({
 
 
     }
-
-
 
     fun subOf(vararg pairs: Pair<SubstVar, JTypeMirror>) =
             pairs.toList()

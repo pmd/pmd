@@ -71,6 +71,24 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
         return children(ASTMemberValuePair.class).iterator();
     }
 
+    /**
+     * Return the expression values for the attribute with the given name.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
+     * <pre>{@code
+     * - @SuppressWarnings -> returns empty node stream
+     * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
+     * - @SuppressWarning(value={"fallthrough"}) -> returns ["fallthrough"]
+     * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns ["fallthrough", "rawtypes"]
+     * }</pre>
+     */
+    public NodeStream<ASTMemberValue> getValuesForName(String attrName) {
+        return getMembers().filter(pair -> pair.getName().equals(attrName))
+                           .map(ASTMemberValuePair::getValue)
+                           .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
+                                                                                     : NodeStream.of(v));
+    }
+
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

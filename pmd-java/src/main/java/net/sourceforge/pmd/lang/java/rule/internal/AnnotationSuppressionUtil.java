@@ -17,11 +17,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
  * Helper methods to suppress violations based on annotations.
@@ -107,16 +107,18 @@ final class AnnotationSuppressionUtil {
 
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
-        // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
-        if (TypeHelper.isA(annotation, SuppressWarnings.class)) {
-            for (ASTLiteral element : annotation.findDescendantsOfType(ASTLiteral.class)) {
-                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(
-                    "\"PMD." + rule.getName() + "\"")
-                    // Check for standard annotations values
-                    || element.hasImageEqualTo("\"all\"")
-                    || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
-                    || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())
-                    || element.hasImageEqualTo("\"all\"")) {
+        // if (TypeHelper.symbolEquals(annotation.getTypeMirror(), SuppressWarnings.class)) { // fixme annot name disambiguation
+        if ("SuppressWarnings".equals(annotation.getSimpleName())) {
+
+            for (ASTStringLiteral lit : annotation.getValuesForName(ASTMemberValuePair.VALUE_ATTR)
+                                                  .filterIs(ASTStringLiteral.class)) {
+                String value = lit.getConstValue();
+                if ("PMD".equals(value)
+                    || ("PMD." + rule.getName()).equals(value)
+                    || "all".equals(value)
+                    || "serial".equals(value) && SERIAL_RULES.contains(rule.getName())
+                    || "unused".equals(value) && UNUSED_RULES.contains(rule.getName())
+                ) {
                     return true;
                 }
             }
