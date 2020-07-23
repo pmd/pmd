@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
@@ -136,7 +134,6 @@ public final class ApexMetrics {
     }
 
 
-    @NonNull
     public static List<ASTMethod> findOps(ASTUserClassOrInterface<?> node) {
         List<ASTMethod> candidates = node.findChildrenOfType(ASTMethod.class);
         List<ASTMethod> result = new ArrayList<>(candidates);

@@ -23,7 +23,7 @@ public class FortranLanguageModule extends BaseLanguageModule {
      * Creates a new instance of {@link FortranLanguageModule}
      */
     public FortranLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "for", "f", "f66", "f77", "f90");
+        super(NAME, null, TERSE_NAME, "for", "f", "f66", "f77", "f90");
         addVersion("", null, true);
     }
 

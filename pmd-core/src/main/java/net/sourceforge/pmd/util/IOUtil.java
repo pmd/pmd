@@ -12,7 +12,11 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,10 +39,39 @@ public final class IOUtil {
         return new OutputStreamWriter(System.out);
     }
 
+    /**
+     * Gets the current default charset.
+     *
+     * <p>In contrast to {@link Charset#defaultCharset()}, the result is not cached,
+     * so that in unit tests, the charset can be changed.
+     * @return
+     */
+    private static Charset getDefaultCharset() {
+        String csn = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("file.encoding");
+            }
+        });
+        try {
+            return Charset.forName(csn);
+        } catch (UnsupportedCharsetException e) {
+            return StandardCharsets.UTF_8;
+        }
+    }
+
+    /**
+     * Creates a writer that writes to the given file or to stdout.
+     *
+     * <p>Warning: This writer always uses the system default charset.
+     *
+     * @param reportFile the file name (optional)
+     * @return the writer, never <code>null</code>
+     */
     public static Writer createWriter(String reportFile) {
         try {
             return StringUtils.isBlank(reportFile) ? createWriter()
-                    : Files.newBufferedWriter(new File(reportFile).toPath(), Charset.defaultCharset());
+                    : Files.newBufferedWriter(new File(reportFile).toPath(), getDefaultCharset());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

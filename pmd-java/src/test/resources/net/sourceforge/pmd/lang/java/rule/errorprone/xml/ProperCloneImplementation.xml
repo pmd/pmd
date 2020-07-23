@@ -53,4 +53,17 @@ public class Bar {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ok, should not throw NullPointerException while processing primitive array allocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void clone() {
+        super.clone();
+        byte[] array = new byte[6];
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -28,7 +28,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  * This is a base class for RuleChainVisitor implementations which extracts
  * interesting nodes from an AST, and lets each Rule visit the nodes it has
  * expressed interest in.
+ *
+ * @deprecated See {@link RuleChainVisitor}
  */
+@Deprecated
 public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     private static final Logger LOG = Logger.getLogger(AbstractRuleChainVisitor.class.getName());
 

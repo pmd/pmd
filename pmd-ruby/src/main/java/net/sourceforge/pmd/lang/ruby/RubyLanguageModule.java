@@ -23,7 +23,7 @@ public class RubyLanguageModule extends BaseLanguageModule {
      * Creates a new Ruby Language Module instance.
      */
     public RubyLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "rb", "cgi", "class");
+        super(NAME, null, TERSE_NAME, "rb", "cgi", "class");
         addVersion("", null, true);
     }
 }

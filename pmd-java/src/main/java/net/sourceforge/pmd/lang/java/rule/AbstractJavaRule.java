@@ -158,14 +158,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            /*
-                It is important to note that we are assuming that all nodes here are of type Compilation Unit,
-                but our caller method may be called with any type of node, and that's why we need to check the kind
-                of instance of each element
-            */
-            if (element instanceof ASTCompilationUnit) {
-                ASTCompilationUnit node = (ASTCompilationUnit) element;
-                visit(node, ctx);
+            if (element instanceof JavaNode) {
+                ((JavaNode) element).jjtAccept(this, ctx);
             }
         }
     }
