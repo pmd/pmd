@@ -12,17 +12,17 @@ public class ApexParserVisitorReducedAdapter extends ApexParserVisitorAdapter {
 
     @Override
     public final Object visit(ASTUserInterface node, Object data) {
-        return visit((ASTUserClassOrInterface<?>) node, data);
+        return visitClassOrInterface((ASTUserClassOrInterface<?>) node, data);
     }
 
 
     @Override
     public final Object visit(ASTUserClass node, Object data) {
-        return visit((ASTUserClassOrInterface<?>) node, data);
+        return visitClassOrInterface((ASTUserClassOrInterface<?>) node, data);
     }
 
 
-    public Object visit(ASTUserClassOrInterface<?> node, Object data) {
+    public Object visitClassOrInterface(ASTUserClassOrInterface<?> node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 

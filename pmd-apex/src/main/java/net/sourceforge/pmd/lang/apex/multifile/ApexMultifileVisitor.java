@@ -10,12 +10,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 
 /**
  * @author Clément Fournier
  */
-public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
+public class ApexMultifileVisitor extends ApexVisitorBase<Void, Void> {
 
     private final ApexProjectMirror mirror;
 
@@ -28,28 +28,28 @@ public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
 
 
     @Override
-    public Object visit(ASTUserClassOrInterface<?> node, Object data) {
+    public Void visitClassOrInterface(ASTUserClassOrInterface<?> node, Void data) {
         stack.push(mirror.getClassStats(node.getQualifiedName(), true));
-        super.visit(node, data);
+        super.visitClassOrInterface(node, data);
         stack.pop();
 
         return data;
     }
 
     @Override
-    public Object visit(ASTUserTrigger node, Object data) {
+    public Void visit(ASTUserTrigger node, Void data) {
         return data; // ignore
     }
 
 
     @Override
-    public Object visit(ASTUserEnum node, Object data) {
+    public Void visit(ASTUserEnum node, Void data) {
         return data; // ignore
     }
 
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public Void visit(ASTMethod node, Void data) {
         stack.peek().addOperation(node.getQualifiedName().getOperation(), node.getSignature());
         return data;
     }
