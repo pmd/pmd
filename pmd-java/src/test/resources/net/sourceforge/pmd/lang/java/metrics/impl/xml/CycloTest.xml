@@ -459,6 +459,27 @@ class Foo {
     </test-code>
 
     <test-code>
+        <description>Switch expressions</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 1.</message>
+            <message>'Foo#foo(int)' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    int bar() { return 1; }
+    void foo(int i) {               // +1
+        int x = switch (i) {
+            case 1, 2, 3 -> bar();  // +3
+            case 4       -> bar();  // +1
+            default -> bar();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Switch labeled expression with default only</description>
         <expected-problems>1</expected-problems>
         <expected-messages>

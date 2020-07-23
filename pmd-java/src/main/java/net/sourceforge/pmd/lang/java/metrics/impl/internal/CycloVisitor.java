@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
@@ -52,26 +53,34 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
         return localNode.isFindBoundary() && !localNode.equals(topNode) ? data : super.visit(localNode, data);
     }
 
+    @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return handleSwitch(node, (MutableInt) data);
+    }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
+        return handleSwitch(node, (MutableInt) data);
+    }
+
+    private Object handleSwitch(JavaNode node, MutableInt data) {
 
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getTestedExpression()));
+            data.add(CycloMetric.booleanExpressionComplexity(node.getChild(0)));
         }
 
-        for (ASTSwitchLabel label : node) {
+        for (ASTSwitchLabel label : node.findChildrenOfType(ASTSwitchLabel.class)) {
             if (label.isDefault()) {
                 // like for "else", default is not a decision point
                 continue;
             }
 
             if (considerBooleanPaths) {
-                ((MutableInt) data).add(label.findChildrenOfType(ASTExpression.class).size());
+                data.add(label.findChildrenOfType(ASTExpression.class).size());
             } else if (node.getNumChildren() > 1 + label.getIndexInParent()
                     && node.getChild(label.getIndexInParent() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
-                ((MutableInt) data).increment();
+                data.increment();
             }
         }
 
@@ -81,11 +90,11 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
                 continue;
             }
             if (considerBooleanPaths) {
-                ((MutableInt) data).add(label.findChildrenOfType(ASTExpression.class).size());
+                data.add(label.findChildrenOfType(ASTExpression.class).size());
             }
         }
 
-        return super.visit(node, data);
+        return visit(node, data);
     }
 
 
