@@ -28,9 +28,9 @@ public class ApexMultifileVisitor extends ApexVisitorBase<Void, Void> {
 
 
     @Override
-    public Void visitClassOrInterface(ASTUserClassOrInterface<?> node, Void data) {
+    public Void visitTypeDecl(ASTUserClassOrInterface<?> node, Void data) {
         stack.push(mirror.getClassStats(node.getQualifiedName(), true));
-        super.visitClassOrInterface(node, data);
+        super.visitTypeDecl(node, data);
         stack.pop();
 
         return data;

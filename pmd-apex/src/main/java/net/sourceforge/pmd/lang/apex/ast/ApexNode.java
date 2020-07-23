@@ -29,7 +29,9 @@ public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
      */
     @Deprecated
     @DeprecatedUntil700
-    Object jjtAccept(ApexParserVisitor visitor, Object data);
+    default Object jjtAccept(ApexParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
 
     /**

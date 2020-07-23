@@ -10,13 +10,4 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 @DeprecatedUntil700
 public class ApexParserVisitorAdapter extends ApexVisitorBase<Object, Object> implements ApexParserVisitor {
 
-    @Override
-    public Object visitApexNode(ApexNode<?> node, Object data) {
-        return visit(node, data);
-    }
-
-    @Override
-    public Object visit(ApexNode<?> node, Object data) {
-        return visitNode(node, data);
-    }
 }

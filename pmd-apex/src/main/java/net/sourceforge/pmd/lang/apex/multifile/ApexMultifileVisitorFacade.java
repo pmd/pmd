@@ -14,7 +14,7 @@ public class ApexMultifileVisitorFacade extends ApexParserVisitorAdapter {
 
     public void initializeWith(ApexNode<?> rootNode) {
         ApexMultifileVisitor visitor = new ApexMultifileVisitor(ApexProjectMirror.INSTANCE);
-        rootNode.jjtAccept(visitor, null);
+        rootNode.acceptVisitor(visitor, null);
     }
 
 }

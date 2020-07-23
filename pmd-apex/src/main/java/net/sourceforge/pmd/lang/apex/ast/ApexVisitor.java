@@ -13,6 +13,10 @@ public interface ApexVisitor<P, R> extends AstVisitor<P, R> {
     }
 
 
+    default R visit(ASTApexFile node, P data) {
+        return visitNode(node, data);
+    }
+
     default R visit(ASTAnnotation node, P data) {
         return visitApexNode(node, data);
     }
