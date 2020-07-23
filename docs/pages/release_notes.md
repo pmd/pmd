@@ -30,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#710](https://github.com/pmd/pmd/issues/710): \[core] Review used dependencies
     *   [#2594](https://github.com/pmd/pmd/issues/2594): \[core] Update exec-maven-plugin and align it in all project
+    *   [#2615](https://github.com/pmd/pmd/issues/2615): \[core] PMD/CPD produces invalid XML (insufficient escaping/wrong encoding)
 *   java-bestpractices
     *   [#2543](https://github.com/pmd/pmd/issues/2543): \[java] UseCollectionIsEmpty can not detect the case this.foo.size()
     *   [#2569](https://github.com/pmd/pmd/issues/2569): \[java] LiteralsFirstInComparisons: False negative for methods returning Strings

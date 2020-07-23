@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * This class contains the details for the runtime configuration of PMD. There
@@ -406,7 +405,7 @@ public class PMDConfiguration extends AbstractConfiguration {
             renderer.setUseShortNames(Arrays.asList(inputPaths.split(",")));
         }
         if (withReportWriter) {
-            renderer.setWriter(IOUtil.createWriter(reportFile));
+            renderer.setReportFile(reportFile);
         }
         return renderer;
     }
