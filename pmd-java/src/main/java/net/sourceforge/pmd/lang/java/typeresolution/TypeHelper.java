@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -20,9 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader.ClassLoaderWrapper;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 public final class TypeHelper {
 
@@ -42,8 +45,16 @@ public final class TypeHelper {
         PRIMITIVES_BY_NAME.put("void", Void.TYPE);
     }
 
+
     private TypeHelper() {
         // utility class
+    }
+
+    public static boolean symbolEquals(JTypeMirror type, Class<?> someClass) {
+        Objects.requireNonNull(someClass);
+        Objects.requireNonNull(type);
+        JTypeDeclSymbol symbol = type.getSymbol();
+        return symbol != null && symbol.equals(type.getTypeSystem().getClassSymbol(someClass));
     }
 
     /**

@@ -17,8 +17,13 @@ public interface TypeNode extends TypedNode {
      * Get the Java Class associated with this node.
      *
      * @return The Java Class, may return <code>null</code>.
+     *
+     * @deprecated This doesn't work. PMD doesn't load classes, it just
+     *         reads the bytecode. Compare the symbol of the {@link #getTypeMirror() type mirror}
+     *         instead.
      */
     @Nullable
+    @Deprecated
     default Class<?> getType() {
         JavaTypeDefinition td = getTypeDefinition();
         return td == null ? null : td.getType();
@@ -31,8 +36,11 @@ public interface TypeNode extends TypedNode {
      * is returned by <code>getType()</code>.
      *
      * @return The TypeDefinition, may return <code>null</code>
+     *
+     * @deprecated This is not implemented anymore
      */
     @Nullable
+    @Deprecated
     JavaTypeDefinition getTypeDefinition();
 
 
