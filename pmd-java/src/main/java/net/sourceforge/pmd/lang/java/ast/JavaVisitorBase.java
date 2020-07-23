@@ -30,31 +30,31 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     // <editor-fold defaultstate="collapsed" desc="Methods/constructors">
 
 
-    public R visit(ASTMethodOrConstructorDeclaration node, P data) {
-        return visit((JavaNode) node, data);
+    public R visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, P data) {
+        return visitJavaNode(node, data);
     }
 
     @Override
     public R visit(ASTMethodDeclaration node, P data) {
-        return visit((ASTMethodOrConstructorDeclaration) node, data);
+        return visitMethodOrCtor(node, data);
     }
 
     @Override
     public R visit(ASTConstructorDeclaration node, P data) {
-        return visit((ASTMethodOrConstructorDeclaration) node, data);
+        return visitMethodOrCtor(node, data);
     }
 
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Type declarations">
 
-    public R visit(ASTAnyTypeDeclaration node, P data) {
-        return visit((JavaNode) node, data);
+    public R visitTypeDecl(ASTAnyTypeDeclaration node, P data) {
+        return visitJavaNode(node, data);
     }
 
     @Override
     public R visit(ASTClassOrInterfaceDeclaration node, P data) {
-        return visit((ASTAnyTypeDeclaration) node, data);
+        return visitTypeDecl(node, data);
     }
 
     //    @Override
@@ -64,17 +64,17 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTRecordDeclaration node, P data) {
-        return visit((ASTAnyTypeDeclaration) node, data);
+        return visitTypeDecl(node, data);
     }
 
     @Override
     public R visit(ASTEnumDeclaration node, P data) {
-        return visit((ASTAnyTypeDeclaration) node, data);
+        return visitTypeDecl(node, data);
     }
 
     @Override
     public R visit(ASTAnnotationTypeDeclaration node, P data) {
-        return visit((ASTAnyTypeDeclaration) node, data);
+        return visitTypeDecl(node, data);
     }
 
     // </editor-fold>

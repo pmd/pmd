@@ -479,10 +479,10 @@ public interface" />
             <replacefilter token="SimpleNode" value="${node-name}" />
             <!-- Default methods -->
             <replacefilter token="public Object visit(" value="default Object visit(" />
-            <replacefilter token=");" value=") { return visit((${node-name}) node, data); }" />
+            <replacefilter token=");" value=") { return visit${node-name}(node, data); }" />
             <replacefilter
-                    token="default Object visit(${node-name} node, Object data) { return visit((${node-name}) node, data); }"
-                    value="default Object visit(${node-name} node, Object data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }">
+                    token="default Object visit(${node-name} node, Object data) { return visit${node-name}(node, data); }"
+                    value="default Object visit${node-name}(${node-name} node, Object data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }">
             </replacefilter>
         </replace>
 
@@ -497,7 +497,8 @@ public interface" />
             <replacefilter token="Object" value="P" />
             <replacefilter token="P visit" value="R visit" />
 
-            <replacefilter token="default R visit(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }" value="default R visit(${node-name} node, P data) { return visitNode(node, data); }" />
+            <replacefilter token="default R visit${node-name}(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }"
+                           value="default R visit${node-name}(${node-name} node, P data) { return visitNode(node, data); }" />
         </replace>
     </target>
 

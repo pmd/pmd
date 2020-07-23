@@ -64,9 +64,9 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public final Object visit(JavaNode node, Object data) {
+    public final Object visitJavaNode(JavaNode node, Object data) {
         // same here
-        return super.visit(node, data);
+        return super.visitJavaNode(node, data);
     }
 
 

@@ -323,11 +323,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // following deals with control flow structures
 
         @Override
-        public Object visit(JavaNode node, Object data) {
+        public Object visitJavaNode(JavaNode node, Object data) {
 
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
-                data = child.jjtAccept(this, data);
+                data = child.acceptVisitor(this, data);
             }
 
             return data;
@@ -572,7 +572,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTCatchStatement node, Object data) {
-            SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
+            SpanInfo result = (SpanInfo) visitJavaNode(node, data);
             result.deleteVar(node.getExceptionId());
             return result;
         }
@@ -826,7 +826,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
                 return result;
             } else {
-                return visit(node, data);
+                return visitJavaNode(node, data);
             }
         }
 
@@ -858,7 +858,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTPrimaryExpression node, Object data) {
-            SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
+            SpanInfo state = (SpanInfo) visitJavaNode(node, data); // visit subexpressions
 
             ASTVariableDeclaratorId var = getVarFromExpression(node, false);
             if (var != null) {

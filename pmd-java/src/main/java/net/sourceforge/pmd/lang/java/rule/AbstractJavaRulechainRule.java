@@ -39,7 +39,7 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object data) {
         return data;
     }
 }
