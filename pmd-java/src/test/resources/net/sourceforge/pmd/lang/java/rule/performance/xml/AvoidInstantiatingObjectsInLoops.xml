@@ -89,8 +89,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <!-- FIXME -->
-    <!--test-code>
+    <test-code>
         <description>#278 Semi-false positive for instantiating new object in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -106,7 +105,7 @@ public class Foo {
     }
 }
         ]]></code>
-    </test-code-->
+    </test-code>
 
     <test-code>
         <description>#1215 AvoidInstantiatingObjectsInLoops matches the right side of a list iteration loop</description>
@@ -123,6 +122,112 @@ public class TestInstantiationInLoop {
         for (String filename : new File("subdirectory").list()) { // complex but realistically conceivable (albeit exagerrated/oversimplified/rarely advisable) example
             System.out.println(filename);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] False positive: AvoidInstantiatingObjectsInLoops should not flag objects with different parameters or objects assigned or passed as parameters #2207</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.awt.Dimension;
+
+public class PMDDemo {
+    public static void main(final String[] args) {
+        final Dimension[] arr = new Dimension[10];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = new Dimension(i, i); // rule violation here
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when assigning to a list/array (see #2207 and #1043)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class PMDDemo {
+    public void checkArray() {
+        Car[] cars = new Car[3];
+        for(int i = 0; i < cars.length; ++i) {
+           cars[i] = new Car();
+        }
+    }
+    public void checkCollection() {
+        Collection<Car> cars = new ArrayList<>();
+        for(int i = 0; i < 3; ++i) {
+           cars.add(new Car());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with break in other for-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private SortedSet<LocalizedMessage> getFilteredMessages(
+            String fileName, FileContents fileContents, DetailAST rootAST) {
+        final SortedSet<LocalizedMessage> result = new TreeSet<>(messages);
+        for (LocalizedMessage element : messages) {
+            final TreeWalkerAuditEvent event =
+                    new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
+            for (TreeWalkerFilter filter : filters) {
+                if (!filter.accept(event)) {
+                    result.remove(element);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Instantiation in loop condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        while(new String().length() > 0) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative in anonymous classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
+        <code><![CDATA[
+public class Sample {
+    private static class Inner {
+        private void baz() {
+            for(;;) {
+                String a = new String();
+            }
+        }
+    }
+
+    public void foo() {
+        Sample anonymousClass = new Sample() {
+            void bar() {
+                for(;;) {
+                    String a = new String();
+                }
+            }
+        };
     }
 }
         ]]></code>

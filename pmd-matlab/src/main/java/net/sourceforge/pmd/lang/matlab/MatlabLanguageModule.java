@@ -24,7 +24,7 @@ public class MatlabLanguageModule extends BaseLanguageModule {
      * file extensions for Matlab.
      */
     public MatlabLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "m");
+        super(NAME, null, TERSE_NAME, "m");
         addVersion("", new MatlabHandler(), true);
     }
 }

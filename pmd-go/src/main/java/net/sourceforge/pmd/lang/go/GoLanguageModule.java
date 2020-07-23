@@ -20,7 +20,7 @@ public class GoLanguageModule extends BaseLanguageModule {
      * Create a new instance of Golang Language Module.
      */
     public GoLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "go");
+        super(NAME, null, TERSE_NAME, "go");
         addVersion("1", null, true);
     }
 }

@@ -6,7 +6,7 @@ source .travis/common-functions.sh
 source .travis/github-releases-api.sh
 source .travis/sourceforge-api.sh
 
-VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+VERSION=$(get_pom_version)
 log_info "PMD Release ${VERSION}"
 
 if ! travis_isPush; then

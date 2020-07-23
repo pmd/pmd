@@ -24,7 +24,7 @@ public class PythonLanguageModule extends BaseLanguageModule {
      * file extensions for Python.
      */
     public PythonLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "py");
+        super(NAME, null, TERSE_NAME, "py");
         addVersion("", new PythonHandler(), true);
     }
 }

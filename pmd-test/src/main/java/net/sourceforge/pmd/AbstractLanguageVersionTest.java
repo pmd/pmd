@@ -19,6 +19,9 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -103,6 +106,18 @@ public class AbstractLanguageVersionTest {
         assertEquals(expected, languageVersion);
     }
 
+    private boolean supportsRules() {
+        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null
+                || expected.getLanguageVersionHandler() == null) {
+            return false;
+        }
+
+        LanguageVersionHandler languageVersionHandler = expected.getLanguageVersionHandler();
+        ParserOptions defaultParserOptions = languageVersionHandler.getDefaultParserOptions();
+        Parser parser = languageVersionHandler.getParser(defaultParserOptions);
+        return parser.canParse();
+    }
+
     /**
      * Makes sure, that for each language a "categories.properties" file exists.
      *
@@ -112,7 +127,7 @@ public class AbstractLanguageVersionTest {
     @Test
     public void testRegisteredRulesets() throws Exception {
         // only check for languages, that support rules
-        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
+        if (!supportsRules()) {
             return;
         }
 

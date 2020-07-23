@@ -3,7 +3,6 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
-import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import io.kotlintest.should as kotlintestShould
 
@@ -15,7 +14,7 @@ import io.kotlintest.should as kotlintestShould
  *
  * @author Clément Fournier
  */
-abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(), IntelliMarker {
+abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() {
 
     init {
         body()

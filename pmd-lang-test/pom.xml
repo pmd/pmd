@@ -89,11 +89,38 @@
             <artifactId>pmd-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
         <!--
              the following dependencies are all scope compile,
+             so that they can be used here in src/main and also
              so that they are automatically available to users
              of the pmd-lang-test module
         -->
+        <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest-assertions</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
@@ -130,24 +157,14 @@
         </dependency>
 
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-runner-junit5</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.oowekyala.treeutils</groupId>
             <artifactId>tree-matchers</artifactId>
-            <version>2.1.0</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Use pmd-java for tests -->
         <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-java</artifactId>
-            <version>6.12.0</version>
-            <scope>test</scope>
+            <groupId>com.github.oowekyala.treeutils</groupId>
+            <artifactId>tree-printers</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

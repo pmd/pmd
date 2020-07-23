@@ -23,7 +23,7 @@ public class CsLanguageModule extends BaseLanguageModule {
      * Create a new instance of C# Language Module.
      */
     public CsLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "cs");
+        super(NAME, null, TERSE_NAME, "cs");
         addVersion("", null, true);
     }
 }
