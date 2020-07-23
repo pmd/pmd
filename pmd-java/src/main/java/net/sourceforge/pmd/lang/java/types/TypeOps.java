@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -35,7 +36,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.util.OptionalBool;
 import net.sourceforge.pmd.util.StreamUtils;
-import net.sourceforge.pmd.util.StreamUtils.Flatmap;
 
 /**
  * Common operations on types.
@@ -256,8 +256,8 @@ public final class TypeOps {
      * @param t                  Type to search
      * @param interfacesBehavior Whether to include interfaces or not
      */
-    public static Flatmap<JClassType> getSuperTypeStream(@NonNull JClassType t, Interfaces interfacesBehavior) {
-        return new StreamUtils.Flatmap<>(getSuperTypesIterator(t, interfacesBehavior));
+    public static Stream<JClassType> getSuperTypeStream(@NonNull JClassType t, Interfaces interfacesBehavior) {
+        return StreamUtils.streamOf(getSuperTypesIterator(t, interfacesBehavior));
     }
 
     public static Iterable<JClassType> iterateSuperTypes(@NonNull JClassType t, Interfaces interfacesBehavior) {
