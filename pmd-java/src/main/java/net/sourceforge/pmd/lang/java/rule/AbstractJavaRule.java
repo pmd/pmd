@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -37,7 +36,7 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((JavaNode) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
     /**
