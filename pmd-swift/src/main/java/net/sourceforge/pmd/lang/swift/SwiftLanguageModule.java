@@ -23,7 +23,7 @@ public class SwiftLanguageModule extends BaseLanguageModule {
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "swift");
+        super(NAME, null, TERSE_NAME, "swift");
         addVersion("", null, true);
     }
 }

@@ -81,20 +81,12 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
         </dependency>
 
         <dependency>

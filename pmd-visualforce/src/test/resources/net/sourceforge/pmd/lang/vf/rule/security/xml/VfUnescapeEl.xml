@@ -537,4 +537,17 @@
 <a onclick="openTab({!HTMLENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Support new message channel feature #2620</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<script type="text/javascript">
+    // Binding message channel to variable accessible to static resource.
+    window.util = {
+        messageChannel: '{!$MessageChannel.Record_Selected__c}'
+    };
+</script>
+        ]]></code>
+    </test-code>
 </test-data>
