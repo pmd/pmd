@@ -40,7 +40,7 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
             LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
             assert resolver != null : "Null type resolver!";
 
-            JTypeMirror result = (JTypeMirror) this.jjtAccept(resolver, null);
+            JTypeMirror result = this.acceptVisitor(resolver, null);
 
             this.typeMirror = result != null ? result : resolver.getTypeSystem().UNRESOLVED_TYPE;
         }

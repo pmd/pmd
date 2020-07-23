@@ -50,7 +50,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -74,7 +74,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
  * Lazy version of ClassTypeResolver. This is not appropriate for
  * all nodes, though it is appropriate for standalone expressions.
  */
-public class LazyTypeResolver extends JavaParserVisitorAdapter {
+public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
 
     private final TypeSystem ts;
     private final PolyResolution polyResolution;
@@ -92,46 +92,46 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public JTypeMirror visit(JavaNode node, Void data) {
         // don't recurse
         return ts.NO_TYPE;
     }
 
     @Override
-    public Object visit(ASTPatternExpression node, Object data) {
+    public JTypeMirror visit(ASTPatternExpression node, Void data) {
         return ts.NO_TYPE;
     }
 
     @Override
-    public Object visit(ASTVariableDeclarator node, Object data) {
+    public JTypeMirror visit(ASTVariableDeclarator node, Void data) {
         return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
     }
 
 
     @Override
-    public Object visit(ASTFormalParameter node, Object data) {
+    public JTypeMirror visit(ASTFormalParameter node, Void data) {
         return node.getVarId().getTypeMirror();
     }
 
 
 
     @Override
-    public Object visit(ASTTypeParameter node, Object data) {
+    public JTypeMirror visit(ASTTypeParameter node, Void data) {
         return node.getSymbol().getTypeMirror();
     }
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public JTypeMirror visit(ASTAnyTypeDeclaration node, Void data) {
         return ts.declaration(node.getSymbol());
     }
 
     @Override
-    public Object visit(ASTType node, Object data) {
+    public JTypeMirror visit(ASTType node, Void data) {
         return TypesFromAst.fromAst(ts, Substitution.EMPTY, node);
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public JTypeMirror visit(ASTVariableDeclaratorId node, Void data) {
         boolean isTypeInferred = node.isTypeInferred();
         if (isTypeInferred && node.getInitializer() != null) {
             // var k = foo()
@@ -190,7 +190,7 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
      */
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
+    public JTypeMirror visit(ASTAssignmentExpression node, Void data) {
         // The type of the assignment expression is the type of the variable after capture conversion
         return TypeConversion.capture(node.getLeftOperand().getTypeMirror());
     }
@@ -203,47 +203,47 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public JTypeMirror visit(ASTMethodCall node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
+    public JTypeMirror visit(ASTConditionalExpression node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTLambdaExpression node, Object data) {
+    public JTypeMirror visit(ASTLambdaExpression node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTSwitchExpression node, Object data) {
+    public JTypeMirror visit(ASTSwitchExpression node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTMethodReference node, Object data) {
+    public JTypeMirror visit(ASTMethodReference node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTConstructorCall node, Object data) {
+    public JTypeMirror visit(ASTConstructorCall node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+    public JTypeMirror visit(ASTExplicitConstructorInvocation node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTEnumConstant node, Object data) {
+    public JTypeMirror visit(ASTEnumConstant node, Void data) {
         return handlePoly(node);
     }
 
     @Override
-    public Object visit(ASTInfixExpression node, Object data) {
+    public JTypeMirror visit(ASTInfixExpression node, Void data) {
         BinaryOp op = node.getOperator();
         switch (op) {
         case CONDITIONAL_OR:
@@ -314,7 +314,7 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTUnaryExpression node, Object data) {
+    public JTypeMirror visit(ASTUnaryExpression node, Void data) {
         switch (node.getOperator()) {
         case UNARY_PLUS:
         case UNARY_MINUS:
@@ -333,27 +333,27 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTCastExpression node, Object data) {
+    public JTypeMirror visit(ASTCastExpression node, Void data) {
         return node.getCastType().getTypeMirror();
     }
 
     @Override
-    public Object visit(ASTNullLiteral node, Object data) {
+    public JTypeMirror visit(ASTNullLiteral node, Void data) {
         return ts.NULL_TYPE;
     }
 
     @Override
-    public Object visit(ASTCharLiteral node, Object data) {
+    public JTypeMirror visit(ASTCharLiteral node, Void data) {
         return ts.CHAR;
     }
 
     @Override
-    public Object visit(ASTStringLiteral node, Object data) {
+    public JTypeMirror visit(ASTStringLiteral node, Void data) {
         return stringType;
     }
 
     @Override
-    public Object visit(ASTNumericLiteral node, Object data) {
+    public JTypeMirror visit(ASTNumericLiteral node, Void data) {
         if (node.isIntegral()) {
             return node.isLongLiteral() ? ts.LONG : ts.INT;
         } else {
@@ -362,7 +362,7 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTClassLiteral node, Object data) {
+    public JTypeMirror visit(ASTClassLiteral node, Void data) {
         JClassSymbol klassSym = ts.getClassSymbol(Class.class);
         if (node.getTypeNode() == null) {
             // void.class : Class<Void>
@@ -374,12 +374,12 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTArrayAllocation node, Object data) {
+    public JTypeMirror visit(ASTArrayAllocation node, Void data) {
         return node.getTypeNode().getTypeMirror();
     }
 
     @Override
-    public Object visit(ASTArrayInitializer node, Object data) {
+    public JTypeMirror visit(ASTArrayInitializer node, Void data) {
         JavaNode parent = node.getParent();
         if (parent instanceof ASTArrayAllocation) {
             return ((ASTArrayAllocation) parent).getTypeMirror();
@@ -392,7 +392,7 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTVariableAccess node, Object data) {
+    public JTypeMirror visit(ASTVariableAccess node, Void data) {
         @Nullable JVariableSymbol result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
         if (result == null) {
             return null;
@@ -410,14 +410,14 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTFieldAccess node, Object data) {
+    public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JVariableSig sig = TypeConversion.capture(node.getQualifier().getTypeMirror()).getField(node.getFieldName());
         return sig != null ? sig.getTypeMirror() : ts.UNRESOLVED_TYPE;
     }
 
 
     @Override
-    public Object visit(ASTArrayAccess node, Object data) {
+    public JTypeMirror visit(ASTArrayAccess node, Void data) {
         JTypeMirror comp = node.getQualifier().getTypeMirror();
         if (comp instanceof JArrayType) {
             return ((JArrayType) comp).getComponentType();
@@ -429,7 +429,7 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTSuperExpression node, Object data) {
+    public JTypeMirror visit(ASTSuperExpression node, Void data) {
         if (node.getQualifier() != null) {
             return node.getQualifier().getTypeMirror();
         } else {
@@ -438,14 +438,14 @@ public class LazyTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTThisExpression node, Object data) {
+    public JTypeMirror visit(ASTThisExpression node, Void data) {
         return node.getQualifier() != null
                ? node.getQualifier().getTypeMirror()
                : node.getEnclosingType().getTypeMirror();
     }
 
     @Override
-    public Object visit(ASTAmbiguousName node, Object data) {
+    public JTypeMirror visit(ASTAmbiguousName node, Void data) {
         return ts.UNRESOLVED_TYPE;
     }
 }
