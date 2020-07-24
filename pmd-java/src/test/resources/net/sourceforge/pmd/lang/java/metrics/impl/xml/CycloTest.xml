@@ -392,4 +392,113 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Multiple switch labels should count each</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 1.</message>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar(){}
+    void foo() {
+        int x=0;
+        switch (x) {                 // +1
+            case 1, 2: foo(); break; // +2
+            default: bar(); break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch labeled blocks should count</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 1.</message>
+            <message>'Foo#foo()' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar(){}
+    void foo() {                                // +1
+        int x=0;
+        boolean a, b;
+        switch (x) {
+            case 1, 2 -> { if (a && b) bar(); } // +4
+            default -> { bar(); }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch labeled expressions should count</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 1.</message>
+            <message>'Foo#foo()' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar(){}
+    void foo() {                    // +1
+        int x=0;
+        switch (x) {
+            case 1, 2, 3 -> bar();  // +3
+            case 4       -> bar();  // +1
+            default -> bar();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expressions</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 1.</message>
+            <message>'Foo#foo(int)' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    int bar() { return 1; }
+    void foo(int i) {               // +1
+        int x = switch (i) {
+            case 1, 2, 3 -> bar();  // +3
+            case 4       -> bar();  // +1
+            default -> bar();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch labeled expression with default only</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void foo(int x) {     // +1
+        foo(switch (x) {
+            default -> {
+                if (a) { // +1
+                    yield 1;
+                } else {
+                    yield 2;
+                }
+            }
+        });
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
