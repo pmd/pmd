@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -190,6 +191,7 @@ class TypeParamScopingTest : ParserTestSpec({
             val annot = acu.descendants(ASTAnnotation::class.java).first()!!
 
             annot.symbolTable.shouldResolveTypeTo("T", t.symbol) //not t2
+            annot.symbol.shouldBeSameInstanceAs(t.symbol)
         }
 
         doTest("Local class shadows type param") {

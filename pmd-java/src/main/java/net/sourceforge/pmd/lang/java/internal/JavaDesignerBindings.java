@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -31,7 +32,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof JavaNode) {
-            Attribute attr = ((JavaNode) node).acceptVisitor(MainAttrVisitor.INSTANCE, null);
+            Attribute attr = node.acceptVisitor(MainAttrVisitor.INSTANCE, null);
             if (attr != null) {
                 return attr;
             }
@@ -80,6 +81,11 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
         @Override
         public Attribute visit(ASTAnyTypeDeclaration node, Void data) {
+            return new Attribute(node, "SimpleName", node.getSimpleName());
+        }
+
+        @Override
+        public Attribute visit(ASTAnnotation node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 
