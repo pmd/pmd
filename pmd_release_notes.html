@@ -1419,7 +1419,16 @@ to variables, that are never used and are useless. The new rule is supposed to e
 <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="highlighter-rouge">DataflowAnomalyAnalysis</code></a>.</li>
 </ul>
 
+<h4 id="modified-rules">Modified rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#arrayisstoreddirectly"><code class="highlighter-rouge">ArrayIsStoredDirectly</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) now ignores
+by default private methods and constructors. You can restore the old behavior by setting the new property
+<code class="highlighter-rouge">allowPrivate</code> to “false”.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
+
 <ul>
   <li>apex
     <ul>
@@ -1452,6 +1461,7 @@ to variables, that are never used and are useless. The new rule is supposed to e
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2543">#2543</a>: [java] UseCollectionIsEmpty can not detect the case this.foo.size()</li>
       <li><a href="https://github.com/pmd/pmd/issues/2569">#2569</a>: [java] LiteralsFirstInComparisons: False negative for methods returning Strings</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2622">#2622</a>: [java] ArrayIsStoredDirectly false positive with private constructor/methods</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -1465,6 +1475,7 @@ to variables, that are never used and are useless. The new rule is supposed to e
       <li><a href="https://github.com/pmd/pmd/issues/2181">#2181</a>: [java] LawOfDemeter: False positive with indexed array access</li>
       <li><a href="https://github.com/pmd/pmd/issues/2189">#2189</a>: [java] LawOfDemeter: False positive when casting to derived class</li>
       <li><a href="https://github.com/pmd/pmd/issues/2580">#2580</a>: [java] AvoidThrowingNullPointerException marks all NullPointerException objects as wrong, whether or not thrown</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2625">#2625</a>: [java] NPathComplexity can’t handle switch expressions</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1492,6 +1503,7 @@ to variables, that are never used and are useless. The new rule is supposed to e
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRuleChainVisitor.html#"><code>AbstractRuleChainVisitor</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getRuleChainVisitorClass()"><code>Language#getRuleChainVisitorClass</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/BaseLanguageModule.html#&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...)"><code>BaseLanguageModule#&lt;init&gt;</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.26.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/ImportWrapper.html#"><code>ImportWrapper</code></a></li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1524,7 +1536,7 @@ to variables, that are never used and are useless. The new rule is supposed to e
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 23, 2020 <br />
+ Site last generated: Jul 24, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
