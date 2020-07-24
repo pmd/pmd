@@ -14,11 +14,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -180,7 +181,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
         return handleSwitch(node, data);
     }
 
-    public int handleSwitch(JavaNode node, Object data) {
+    public int handleSwitch(ASTSwitchLike node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
         int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -188,14 +189,13 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
         int npath = 0;
         int caseRange = 0;
 
-        for (JavaNode n : node.children()) {
+        for (ASTSwitchBranch n : node) {
 
             // Fall-through labels count as 1 for complexity
-            if (n instanceof ASTSwitchLabel || n instanceof ASTSwitchLabeledThrowStatement) {
+            if (n instanceof ASTSwitchFallthroughBranch) {
                 npath += caseRange;
                 caseRange = 1;
-            } else if (n instanceof ASTSwitchLabeledExpression
-                    || n instanceof ASTSwitchLabeledBlock) {
+            } else if (n instanceof ASTSwitchArrowBranch) {
                 npath += caseRange;
                 int complexity = (int) n.jjtAccept(this, data);
                 caseRange = complexity;
