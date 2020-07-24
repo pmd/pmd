@@ -20,7 +20,14 @@ This is a {{ site.pmd.release_type }} release.
     to variables, that are never used and are useless. The new rule is supposed to entirely replace
     {% rule "java/errorprone/DataflowAnomalyAnalysis" %}.
 
+#### Modified rules
+
+*   The Java rule {% rule "java/bestpractices/ArrayIsStoredDirectly" %} (`java-bestpractices`) now ignores
+    by default private methods and constructors. You can restore the old behavior by setting the new property
+    `allowPrivate` to "false".
+
 ### Fixed Issues
+
 *   apex
     *   [#2610](https://github.com/pmd/pmd/pull/2610): \[apex] Support top-level enums in rules
 *   apex-bestpractices
@@ -36,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#2543](https://github.com/pmd/pmd/issues/2543): \[java] UseCollectionIsEmpty can not detect the case this.foo.size()
     *   [#2569](https://github.com/pmd/pmd/issues/2569): \[java] LiteralsFirstInComparisons: False negative for methods returning Strings
+    *   [#2622](https://github.com/pmd/pmd/issues/2622): \[java] ArrayIsStoredDirectly false positive with private constructor/methods
 *   java-codestyle
     *   [#2546](https://github.com/pmd/pmd/issues/2546): \[java] DuplicateImports reported for the same import... and import static...
 *   java-design

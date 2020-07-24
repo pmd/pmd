@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * If a method or constructor receives an array as an argument, the array should
@@ -32,6 +34,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
  * @author mgriffa
  */
 public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
+    private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE =
+            PropertyFactory.booleanProperty("allowPrivate")
+                .defaultValue(true)
+                .desc("If true, allow private methods/constructors to store arrays directly")
+                .build();
+
+    public ArrayIsStoredDirectlyRule() {
+        definePropertyDescriptor(ALLOW_PRIVATE);
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -43,6 +54,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
+        if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
+            return data;
+        }
+
         ASTFormalParameter[] arrs = getArrays(node.getFormalParameters());
         // TODO check if one of these arrays is stored in a non local
         // variable
@@ -53,6 +68,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
+            return data;
+        }
+
         final ASTFormalParameters params = node.getFirstDescendantOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
         checkAll(data, arrs, node.findDescendantsOfType(ASTBlockStatement.class));
