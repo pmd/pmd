@@ -83,15 +83,21 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     }
 
     private boolean isArgumentOfEqualsMethodCall(ASTPrimaryExpression expr) {
-        JavaNode parent = expr.getParent().getParent();
-        if (parent instanceof ASTArgumentList) {
-            ASTPrimarySuffix parentMethodCallArgs = parent.getFirstParentOfType(ASTPrimarySuffix.class);
+        ASTPrimarySuffix parentMethodCallArgs = getParentMethodCallArgsSuffix(expr);
+        if (parentMethodCallArgs != null) {
             List<JavaNode> parentNodes = parentMethodCallArgs.getParent().findChildrenOfType(JavaNode.class);
             int parentMethodCallIndex = parentNodes.indexOf(parentMethodCallArgs) - 1;
             JavaNode parentMethodCall = parentNodes.get(parentMethodCallIndex);
             return isEqualsMethodCall(parentMethodCall, parentMethodCallArgs);
         }
         return false;
+    }
+
+    private ASTPrimarySuffix getParentMethodCallArgsSuffix(ASTPrimaryExpression expr) {
+        JavaNode parent = expr.getParent().getParent(); // ASTArgumentList/ASTExpression/ASTPrimaryExpression
+        return parent instanceof ASTArgumentList
+                ? parent.getFirstParentOfType(ASTPrimarySuffix.class)
+                : null;
     }
 
     private boolean isEqualsMethodCall(JavaNode methodCall, JavaNode methodCallArgs) {
