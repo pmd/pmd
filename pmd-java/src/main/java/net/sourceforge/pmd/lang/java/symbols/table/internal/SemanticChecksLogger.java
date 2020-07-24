@@ -48,6 +48,9 @@ public interface SemanticChecksLogger {
      */
     String MALFORMED_GENERIC_TYPE = "Maformed generic type: expected {0} type arguments, got {1}";
 
+    // this is an error
+    String EXPECTED_ANNOTATION_TYPE = "Expected an annotation type";
+
     /**
      * An ambiguous name is completely ambiguous. We don't have info
      * about it at all, classpath is incomplete or code is incorrect.

@@ -1,11 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class TypeDisambiguationTest : ParserTestSpec({
 
@@ -132,5 +134,61 @@ class TypeDisambiguationTest : ParserTestSpec({
             refInFoo.referencedSym shouldBe aMem
             refInScratch.referencedSym shouldBe aMem
         }
+    }
+
+    parserTest("Malformed types") {
+        val logger = enableProcessing()
+
+        val acu = parser.parse("""
+           package p;
+           class Scratch<X> {
+               static class K {}
+               static class Foo<Y, X> {}
+               class Inner<Y> {} // non-static
+
+               Scratch.Foo<K, K>        m0; // ok
+               Scratch.K<K>             m1; // error
+               Scratch.K                m2; // ok
+               Scratch.Foo<K>           m3; // error
+               Scratch.Foo<K, K, K>     m4; // error
+               Scratch.Foo              m5; // raw type, ok
+
+               Scratch<K>               s0; // ok
+               Scratch<K, K>            s1; // error
+               Scratch                  s2; // raw type, ok
+
+               // Scratch<K>.Foo        m6; // todo error: Foo is static
+               // Scratch<K>.Foo<K, K>  m7; // todo error: Foo is static
+
+               // Scratch<K>.Inner<K, K>    m; // ok, fully parameterized
+               // Scratch.Inner<K, K>       m; // todo error: Scratch must be parameterized 
+               // Scratch.Inner             m; // ok, raw type
+           }
+        """)
+
+        val (m0, m1, m2, m3, m4, m5, s0, s1, s2) =
+                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
+
+        fun assertErrored(t: ASTClassOrInterfaceType, expected: Int, actual: Int) {
+            val errs = logger.errors[SemanticChecksLogger.MALFORMED_GENERIC_TYPE]?.filter { it.first == t } ?: emptyList()
+            assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
+            errs.single().second.toList() shouldBe listOf(expected, actual)
+        }
+
+        fun assertNoError(t: ASTClassOrInterfaceType) {
+            val err = logger.errors[SemanticChecksLogger.MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            assertNull(err, "`${t.text}` should not have produced an error")
+        }
+
+        assertNoError(m0)
+        assertErrored(m1, expected = 0, actual = 1)
+        assertNoError(m2)
+        assertErrored(m3, expected = 2, actual = 1)
+        assertErrored(m4, expected = 2, actual = 3)
+        assertNoError(m5)
+
+        assertNoError(s0)
+        assertErrored(s1, expected = 1, actual = 2)
+        assertNoError(s2)
     }
 })

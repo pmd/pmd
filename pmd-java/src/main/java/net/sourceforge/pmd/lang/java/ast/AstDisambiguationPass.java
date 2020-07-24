@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -292,6 +293,7 @@ final class AstDisambiguationPass {
             visitChildren(type, ctx);
 
             if (type.getReferencedSym() != null) {
+                postProcess(type, ctx.processor);
                 return null;
             }
 
@@ -317,7 +319,25 @@ final class AstDisambiguationPass {
             }
 
             assert type.getReferencedSym() != null : "Null symbol for " + type;
+
+            postProcess(type, processor);
             return null;
+        }
+
+        private void postProcess(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
+            JTypeDeclSymbol sym = type.getReferencedSym();
+            if (type.getParent() instanceof ASTAnnotation) {
+                if (!sym.isUnresolved() && !(sym instanceof JClassSymbol)) {
+                    processor.getLogger().error(type, SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE);
+                }
+                return;
+            }
+
+            int actualArity = ASTList.sizeOrZero(type.getTypeArguments());
+            int expectedArity = sym instanceof JClassSymbol ? ((JClassSymbol) sym).getTypeParameterCount() : 0;
+            if (actualArity != 0 && actualArity != expectedArity) {
+                processor.getLogger().error(type, SemanticChecksLogger.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
+            }
         }
 
         @NonNull
