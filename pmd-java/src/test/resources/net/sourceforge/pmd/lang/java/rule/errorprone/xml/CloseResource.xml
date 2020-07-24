@@ -1295,4 +1295,25 @@ public class CloseResourceNullPointer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2470 false-positive at lambda returned from method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+import java.util.function.Supplier;
+public class Foo {
+    public Supplier<Integer> bar() throws IOException {
+        InputStream inputStream = new FileInputStream("/test.txt");
+        return () -> {
+            try {
+                return inputStream.read();
+            } finally {
+                inputStream.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
