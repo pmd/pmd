@@ -31,4 +31,8 @@ public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement
         }
         return null;
     }
+
+    public ASTBlockStatement getBody() {
+        return (ASTBlockStatement) getChild(0);
+    }
 }
