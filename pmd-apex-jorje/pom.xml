@@ -14,7 +14,7 @@
 
   <properties>
     <java.version>8</java.version>
-    <apex.jorje.version>2019-11-07-964d4a</apex.jorje.version>
+    <apex.jorje.version>2020-06-04-ba31c0</apex.jorje.version>
   </properties>
 
   <build>
@@ -79,7 +79,6 @@
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>26.0-jre</version>
     </dependency>
     <dependency>
         <groupId>com.google.j2objc</groupId>
