@@ -13,6 +13,11 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * @deprecated This class is only useful for Java rules and should not have been added to pmd-core.
+ *             It will be removed with PMD 7.
+ */
+@Deprecated
 public class ImportWrapper {
     private Node node;
     private String name;

@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
@@ -120,8 +120,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
         // If tests are failing, refer to the history of this file to get the
         // previously working version.
         if (node.isImportOnDemand()) {
-            Class<?> importedType = node.getRoot().getClassTypeResolver().loadClass(node.getImportedName());
-            imports.add(new ImportWrapper(node.getImportedName(), null, node, importedType, node.isStatic()));
+            imports.add(new ImportWrapper(node.getImportedName(), null, node, node.isStatic()));
         } else {
             String importedType = node.getImportedName();
             String className;
