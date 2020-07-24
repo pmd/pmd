@@ -753,7 +753,8 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <!-- using 29.0-android flavor instead of 29.0-jre, so that we are compatible with java7 -->
+                <version>29.0-android</version>
                 <scope>test</scope>
             </dependency>
 

@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -21,7 +22,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import java.util.Locale;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
