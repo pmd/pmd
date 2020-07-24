@@ -36,7 +36,8 @@ function minimize() {
     pushd temp
     find . -not -path "." \
         -and -not -path ".." \
-        -and -not -path "./apex*" \
+        -and -not -path "./apex" \
+        -and -not -path "./apex/*" \
         -and -not -path "./StandardApex*" \
         -and -not -path "./messages*" \
         -and -not -path "./com" \

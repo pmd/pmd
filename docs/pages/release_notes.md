@@ -25,7 +25,14 @@ This is a {{ site.pmd.release_type }} release.
     to variables, that are never used and are useless. The new rule is supposed to entirely replace
     {% rule "java/errorprone/DataflowAnomalyAnalysis" %}.
 
+#### Modified rules
+
+*   The Java rule {% rule "java/bestpractices/ArrayIsStoredDirectly" %} (`java-bestpractices`) now ignores
+    by default private methods and constructors. You can restore the old behavior by setting the new property
+    `allowPrivate` to "false".
+
 ### Fixed Issues
+
 *   apex
     *   [#2610](https://github.com/pmd/pmd/pull/2610): \[apex] Support top-level enums in rules
 *   apex-bestpractices
@@ -41,6 +48,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#2543](https://github.com/pmd/pmd/issues/2543): \[java] UseCollectionIsEmpty can not detect the case this.foo.size()
     *   [#2569](https://github.com/pmd/pmd/issues/2569): \[java] LiteralsFirstInComparisons: False negative for methods returning Strings
+    *   [#2622](https://github.com/pmd/pmd/issues/2622): \[java] ArrayIsStoredDirectly false positive with private constructor/methods
 *   java-codestyle
     *   [#2546](https://github.com/pmd/pmd/issues/2546): \[java] DuplicateImports reported for the same import... and import static...
 *   java-design
@@ -48,6 +56,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2181](https://github.com/pmd/pmd/issues/2181): \[java] LawOfDemeter: False positive with indexed array access
     *   [#2189](https://github.com/pmd/pmd/issues/2189): \[java] LawOfDemeter: False positive when casting to derived class
     *   [#2580](https://github.com/pmd/pmd/issues/2580): \[java] AvoidThrowingNullPointerException marks all NullPointerException objects as wrong, whether or not thrown
+    *   [#2625](https://github.com/pmd/pmd/issues/2625): \[java] NPathComplexity can't handle switch expressions
 *   java-errorprone
     *   [#2578](https://github.com/pmd/pmd/issues/2578): \[java] AvoidCallingFinalize detects some false positives
     *   [#2634](https://github.com/pmd/pmd/issues/2634): \[java] NullPointerException in rule ProperCloneImplementation
@@ -65,6 +74,7 @@ This is a {{ site.pmd.release_type }} release.
 * {% jdoc core::lang.rule.AbstractRuleChainVisitor %}
 * {% jdoc !!core::lang.Language#getRuleChainVisitorClass() %}
 * {% jdoc !!core::lang.BaseLanguageModule#<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...) %}
+* {% jdoc core::lang.rule.ImportWrapper %}
 
 
 ### External Contributions
