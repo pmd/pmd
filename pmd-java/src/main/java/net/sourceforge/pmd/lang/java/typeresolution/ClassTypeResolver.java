@@ -895,7 +895,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
             // skip children which already have their type assigned
             if (currentChild.getType() == null) {
                 // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+                if ("this".equals(currentChild.jjtGetLastToken().toString())) {
 
                     if (previousChild != null) { // Qualified 'this' expression
                         currentChild.setTypeDefinition(previousChild.getTypeDefinition());
@@ -909,7 +909,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     }
 
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+                } else if ("super".equals(currentChild.jjtGetLastToken().toString())) {
 
                     if (previousChild != null) { // Qualified 'super' expression
                         // anonymous classes can't have qualified super expression, thus

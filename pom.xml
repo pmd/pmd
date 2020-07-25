@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>7</pmd.build-tools.version>
+        <pmd.build-tools.version>8-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.24.0</pmd-designer.version>
     </properties>
@@ -390,12 +390,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
