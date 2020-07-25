@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.26.0-SNAPSHOT</version>
+    <version>6.26.0</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -55,7 +55,7 @@
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-        <tag>HEAD</tag>
+        <tag>pmd_releases/6.26.0</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-06-27T09:31:26Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-07-25T11:36:48Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
