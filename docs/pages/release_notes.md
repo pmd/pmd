@@ -84,5 +84,10 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2651](https://github.com/pmd/pmd/pull/2651): \[java] False negative: LiteralsFirstInComparisons for methods... (2569) - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2652](https://github.com/pmd/pmd/pull/2652): \[java] UseCollectionIsEmpty can not detect the case this.foo.size() - [Mykhailo Palahuta](https://github.com/Drofff)
 
+### Stats
+* 156 commits
+* 43 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
