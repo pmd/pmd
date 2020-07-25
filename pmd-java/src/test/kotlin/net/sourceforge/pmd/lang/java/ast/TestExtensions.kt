@@ -5,6 +5,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.internal.util.IteratorUtil
 import net.sourceforge.pmd.lang.ast.Node
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
+import org.junit.platform.commons.util.StringUtils
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -371,16 +373,11 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, disambiguated: Boolean = true, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
         child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
             val simpleName = canoName.substringAfterLast('.')
-            if (disambiguated) {
-                it::getImage shouldBe canoName
-                it::getSimpleName shouldBe simpleName
-            } else {
-                it::getImage shouldBe simpleName
-                it::getTypeImage shouldBe canoName
-            }
+            it::getSimpleName shouldBe simpleName
+            it.text.toString() shouldBe canoName
             contents()
         }
 

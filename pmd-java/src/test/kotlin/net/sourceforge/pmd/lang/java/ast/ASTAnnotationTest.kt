@@ -43,7 +43,7 @@ class ASTAnnotationTest : ParserTestSpec({
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "Override"
 
-                    it::getTypeNode shouldBe qualClassType("java.lang.Override", disambiguated = false)
+                    it::getTypeNode shouldBe qualClassType("java.lang.Override")
 
                     it::getMemberList shouldBe null
                 }
@@ -74,7 +74,7 @@ class ASTAnnotationTest : ParserTestSpec({
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
 
-                    it::getTypeNode shouldBe qualClassType("org.F", disambiguated = false)
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -93,7 +93,7 @@ class ASTAnnotationTest : ParserTestSpec({
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
 
-                    it::getTypeNode shouldBe qualClassType("org.F", disambiguated = false)
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -109,7 +109,7 @@ class ASTAnnotationTest : ParserTestSpec({
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
 
-                    it::getTypeNode shouldBe qualClassType("org.F", disambiguated = false)
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -144,7 +144,7 @@ class ASTAnnotationTest : ParserTestSpec({
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
 
-                    it::getTypeNode shouldBe qualClassType("org.F", disambiguated = false)
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         memberValuePair("a") {

@@ -26,11 +26,12 @@ class TypeDisambiguationTest : ParserTestSpec({
         val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
         f1.typeNode.shouldMatchNode<ASTClassOrInterfaceType> {
+            it::isFullyQualified shouldBe false
             it::getSimpleName shouldBe "Inner"
-            it::getImage shouldBe "Inner"
             it::getReferencedSym shouldBe inner
             it::getAmbiguousLhs shouldBe null
             it::getQualifier shouldBe classType("Foo") {
+                it::isFullyQualified shouldBe false
                 it::getReferencedSym shouldBe foo
             }
         }
@@ -42,18 +43,19 @@ class TypeDisambiguationTest : ParserTestSpec({
 
         inContext(TypeParsingCtx) {
             "javasymbols.testdata.Statics" should parseAs {
-                classType("Statics") {
-                    it::getImage shouldBe "javasymbols.testdata.Statics"
+                qualClassType("javasymbols.testdata.Statics") {
+                    it::isFullyQualified shouldBe true
                     it::getQualifier shouldBe null
                     it::getAmbiguousLhs shouldBe null
                 }
             }
 
             "javasymbols.testdata.Statics.PublicStatic" should parseAs {
-                classType("PublicStatic") {
+                qualClassType("javasymbols.testdata.Statics.PublicStatic") {
+                    it::isFullyQualified shouldBe false
 
-                    it::getQualifier shouldBe classType("Statics") {
-                        it::getImage shouldBe "javasymbols.testdata.Statics"
+                    it::getQualifier shouldBe qualClassType("javasymbols.testdata.Statics") {
+                        it::isFullyQualified shouldBe true
                         it::getQualifier shouldBe null
                         it::getAmbiguousLhs shouldBe null
                     }

@@ -39,7 +39,8 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
      */
     public JClassSymbol getSymbol() {
         // This cast would fail if you use a type parameter as an
-        // annotation name
+        // annotation name. This is reported as an error by the
+        // disambiguation pass
         return (JClassSymbol) getTypeNode().getReferencedSym();
     }
 

@@ -135,8 +135,8 @@ class TypeParamScopingTest : ParserTestSpec({
 
             class Foo<X, T> {
 
-                @ /*Foo#*/ T // type params are not in scope in modifier list
-                <T extends /*Foo#*/ X> void foo(T pt, X px) {
+                @ /*Foo#*/ Y // type params of the method are not in scope in modifier list
+                <T extends /*Foo#*/ X, Y> void foo(T pt, X px) {
                     T vt;
                     X vx;
 
@@ -146,12 +146,14 @@ class TypeParamScopingTest : ParserTestSpec({
                          X vx2;
                     }
                 }
+
+                @interface Y { }
             }
 
             """)
 
         // type parameters
-        val (x, t, t2) = acu.descendants(ASTTypeParameter::class.java).toList()
+        val (x, t, t2, y2) = acu.descendants(ASTTypeParameter::class.java).toList()
 
         // parameters
         val (pt, px) = acu.descendants(ASTFormalParameter::class.java).map { it.typeNode }.toList()
@@ -160,7 +162,7 @@ class TypeParamScopingTest : ParserTestSpec({
         val (vt, vx, vx2) = acu.descendants(ASTLocalVariableDeclaration::class.java).map { it.typeNode }.toList()
 
         // classes
-        val (_, localX) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+        val (_, localX, annotY) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
 
         doTest("TParams of class are in scope inside method tparam declaration") {
 
@@ -190,8 +192,8 @@ class TypeParamScopingTest : ParserTestSpec({
 
             val annot = acu.descendants(ASTAnnotation::class.java).first()!!
 
-            annot.symbolTable.shouldResolveTypeTo("T", t.symbol) //not t2
-            annot.symbol.shouldBeSameInstanceAs(t.symbol)
+            annot.symbolTable.shouldResolveTypeTo("Y", annotY.symbol) // not the Y of the method
+            annot.symbol.shouldBeSameInstanceAs(annotY.symbol)
         }
 
         doTest("Local class shadows type param") {

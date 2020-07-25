@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
@@ -31,31 +32,44 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
  */
 // @formatter:on
 public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
+    // todo rename to ASTClassType
 
     private JTypeDeclSymbol symbol;
 
-    ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
+    private String simpleName;
+
+    // Note that this is only populated during disambiguation, if
+    // the ambiguous qualifier is resolved to a package name
+    private boolean isFqcn;
+
+    ASTClassOrInterfaceType(ASTAmbiguousName lhs, String simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+        assert lhs != null : "Null LHS";
+
         this.addChild(lhs, 0);
-        this.setImage(image);
+        this.simpleName = simpleName;
+        assertSimpleNameOk();
     }
 
 
     ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.setImage(simpleName.getImage());
-    }
+        this.simpleName = simpleName.getName();
 
+        assertSimpleNameOk();
+    }
 
     // Just for one usage in Symbol table
+    @Deprecated
     public ASTClassOrInterfaceType(String simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.setImage(simpleName);
+        this.simpleName = simpleName;
     }
 
-    ASTClassOrInterfaceType(ASTClassOrInterfaceType lhs, String image, JavaccToken firstToken, JavaccToken identifier) {
+    ASTClassOrInterfaceType(@Nullable ASTClassOrInterfaceType lhs, boolean isFqcn, JavaccToken firstToken, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.setImage(image);
+        this.setImage(identifier.getImage());
+        this.isFqcn = isFqcn;
         if (lhs != null) {
             this.addChild(lhs, 0);
         }
@@ -68,6 +82,35 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         super(id);
     }
 
+    @Override
+    protected void setImage(String image) {
+        this.simpleName = image;
+        assertSimpleNameOk();
+    }
+
+    @Deprecated
+    @Override
+    public String getImage() {
+        return null;
+    }
+
+    private void assertSimpleNameOk() {
+        assert this.simpleName != null
+            && this.simpleName.indexOf('.') < 0
+            && AssertionUtil.isJavaIdentifier(this.simpleName)
+            : "Invalid simple name '" + this.simpleName + "'";
+    }
+
+    /**
+     * Returns true if the type was written with a full package qualification.
+     * For example, {@code java.lang.Override}. For nested types, only the
+     * leftmost type is considered fully qualified. Eg in {@code p.Outer.Inner},
+     * this method will return true for the type corresponding to {@code p.Outer},
+     * but false for the enclosing {@code p.Outer.Inner}.
+     */
+    public boolean isFullyQualified() {
+        return isFqcn;
+    }
 
     void setSymbol(JTypeDeclSymbol symbol) {
         this.symbol = symbol;
@@ -109,20 +152,25 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
 
     /**
-     * Returns the simple name of this type.
+     * Returns the simple name of this type. Use the {@linkplain #getReferencedSym() symbol}
+     * to get more information.
      */
     public String getSimpleName() {
-        return AstImplUtil.getLastSegment(getImage(), '.');
+        return simpleName;
     }
 
     /**
      * For now this returns the name of the type with all the segments,
      * without annotations or type parameters.
+     *
+     * @deprecated This is useless and won't be implemented. We can use the
+     *     symbol, or better the upcoming type API to pretty print the type.
      */
     @Override
     @Experimental
+    @Deprecated
     public String getTypeImage() {
-        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".").orElse("") + getImage();
+        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".").orElse("") + getSimpleName();
     }
 
     /**
@@ -132,7 +180,10 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      *
      * @return {@code true} if this node referencing a type in the same
      * compilation unit, {@code false} otherwise.
+     *
+     * @deprecated This may be removed once type resolution is afoot
      */
+    @Deprecated
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
         for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
@@ -148,9 +199,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         return false;
     }
 
-
-    public boolean isAnonymousClass() {
-        return getParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
+    void setFullyQualified() {
+        this.isFqcn = true;
     }
-
 }
