@@ -32,7 +32,7 @@ enum SuperTypesEnumerator {
 
     /**
      * Superclasses of t, including t, in innermost to outermost. If t
-     * is an interface, contains just t.
+     * is an interface, contains t, and Object.
      */
     SUPERCLASSES_AND_SELF {
         @Override
@@ -43,8 +43,7 @@ enum SuperTypesEnumerator {
 
     /**
      * All direct strict supertypes, starting with the superclass if
-     * it exists. This does not include Object if the search starts
-     * on an interface.
+     * it exists. This includes Object if the search starts on an interface.
      */
     DIRECT_STRICT_SUPERTYPES {
         @Override
@@ -89,7 +88,7 @@ enum SuperTypesEnumerator {
     },
 
     /**
-     * Walks supertypes depth-first, without duplicates.  This includes
+     * Walks supertypes depth-first, without duplicates. This includes
      * Object if the search starts on an interface. For example for the following:
      * <pre>{@code
      *
@@ -102,24 +101,16 @@ enum SuperTypesEnumerator {
      * class Sub extends Sup implements I1 { } // yields Sub, I1, Sup, I2, Object
      *
      * }</pre>
-     *
-     * iterating from {@code Sub} will yield {@code Sub, I1, Sup, I2}
      */
     ALL_SUPERTYPES_INCLUDING_SELF {
         @Override
         public Iterator<JClassType> iterator(JClassType t) {
             final Set<JClassType> seenInterfaces = new HashSet<>();
-            Iterator<JClassType> baseIter = IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
+            return IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
                 final Set<JClassType> currentInterfaces = new LinkedHashSet<>();
                 walkInterfaces(seenInterfaces, currentInterfaces, type);
                 return currentInterfaces.iterator();
             });
-
-            if (t.isInterface()) {
-                // then we need to add Object, otherwise it's already somewhere
-                return IteratorUtil.concat(baseIter, IteratorUtil.singletonIterator(t.getTypeSystem().OBJECT));
-            }
-            return baseIter;
         }
 
         private void walkInterfaces(final Set<JClassType> seen, final Set<JClassType> addTo, final JClassType c) {

@@ -152,12 +152,19 @@ final class ClassStub implements JClassSymbol, AsmStub {
             sets of flags.
          */
 
+        int myAccess = this.accessFlags;
         if (fromClassInfo) {
             // we don't care about ACC_SUPER and it conflicts
             // with ACC_SYNCHRONIZED
             accessFlags = accessFlags & ~Opcodes.ACC_SUPER;
+        } else if ((myAccess & Opcodes.ACC_PUBLIC) != 0
+            && (accessFlags & Opcodes.ACC_PROTECTED) != 0) {
+            // ClassInfo mentions ACC_PUBLIC even if the real
+            // visibility is protected
+            // We remove the public to avoid a "public protected" combination
+            myAccess = myAccess & ~Opcodes.ACC_PUBLIC;
         }
-        this.accessFlags |= accessFlags;
+        this.accessFlags = myAccess | accessFlags;
     }
 
     void setOuterClass(String outerName, @Nullable String methodName, @Nullable String methodDescriptor) {

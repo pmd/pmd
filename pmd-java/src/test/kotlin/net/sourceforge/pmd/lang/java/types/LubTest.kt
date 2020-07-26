@@ -48,7 +48,7 @@ class LubTest : AbstractFunSpec({
                         t_List,
                         t_Collection,
                         t_Iterable,
-                        java.util.RandomAccess::class.raw,
+                        ts.erasedType(ts.getClassSymbol(java.util.RandomAccess::class.java)),
                         ts.CLONEABLE,
                         ts.SERIALIZABLE
                 )

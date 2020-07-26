@@ -382,11 +382,10 @@ public final class TypeSystem {
      * <li>If it represents a class or interface type, a {@link JClassType}
      * is returned.
      * <ul>
-     *     <li>If the parameter {@code isErased} is true, then the type
-     *     will be {@linkplain JClassType#hasErasedSuperTypes() erased},
-     *     which means all its generic supertypes are erased. In particular,
-     *     if the symbol declares type parameters itself, then it will be a
-     *     {@linkplain JClassType#isRaw() raw type}.
+     *     <li>If the parameter {@code isErased} is true, and if the
+     *     symbol declares type parameters, then it will be a
+     *     {@linkplain JClassType#isRaw() raw type}. This means,
+     *     which means all its generic supertypes are {@linkplain JClassType#hasErasedSuperTypes() erased}.
      *     <li>Otherwise, the generic supertypes are preserved. In particular,
      *     if the symbol declares type parameters itself, then it will
      *     be a {@linkplain JClassType#isGenericTypeDeclaration() generic type declaration}.
@@ -425,10 +424,6 @@ public final class TypeSystem {
                 //  ts.typeOf(genArr.symbol(), false) != genArr
                 JTypeMirror component = rawType(classSym.getArrayComponent());
                 return arrayType(component, 1);
-
-            } else if (isErased && classSym.getTypeParameterCount() == 0) {
-
-                return new ErasedClassType(this, classSym);
             } else {
                 return new ClassTypeImpl(this, classSym, emptyList(), !isErased);
             }
@@ -440,7 +435,8 @@ public final class TypeSystem {
 
     /**
      * Like {@link #typeOf(JTypeDeclSymbol, boolean)}, defaulting the
-     * erased parameter to true.
+     * erased parameter to true. If the symbol is not generic,
+     * the returned symbol is not actually raw.
      *
      * @param klass Symbol
      *

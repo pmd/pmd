@@ -155,7 +155,7 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public boolean isGeneric() {
-        return !getFormalTypeParams().isEmpty();
+        return symbol.isGeneric();
     }
 
     @Override
@@ -203,7 +203,7 @@ class ClassTypeImpl implements JClassType {
     @Override
     @Nullable
     public JClassType getSuperClass() {
-        if (superClass == null && !isInterface()) {
+        if (superClass == null) {
             if (hasErasedSuperTypes()) {
                 superClass = ts.erasedType(symbol.getSuperclass());
             } else {

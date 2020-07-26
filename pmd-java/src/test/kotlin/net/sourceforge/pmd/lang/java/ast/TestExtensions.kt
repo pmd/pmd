@@ -639,7 +639,7 @@ fun TreeNodeWrapper<Node, *>.arrayInitializer(assertions: NodeSpec<ASTArrayIniti
         }
 
 fun TreeNodeWrapper<Node, *>.arrayAlloc(assertions: NodeSpec<ASTArrayAllocation> = EmptyAssertions) =
-        child<ASTArrayAllocation> {
+        child<ASTArrayAllocation>(ignoreChildren = assertions == EmptyAssertions) {
             assertions()
         }
 

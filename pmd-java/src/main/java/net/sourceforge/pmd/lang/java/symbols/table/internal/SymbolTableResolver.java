@@ -178,7 +178,7 @@ public final class SymbolTableResolver {
             f.disambig(node.getDeclarations()
                            .filterIs(ASTFieldDeclaration.class)
                            .map(ASTFieldDeclaration::getTypeNode),
-node,
+                       node,
                        false);
             visitChildren(node.getBody(), null);
 

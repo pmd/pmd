@@ -9,9 +9,11 @@ import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AbstractFunSpec
 import javasymbols.testdata.NestedClasses
+import javasymbols.testdata.Statics
 import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
+import org.objectweb.asm.Opcodes
 
 /**
  * @author Clément Fournier
@@ -64,7 +66,7 @@ class AsmLoaderTest : AbstractFunSpec({
         }
     }
 
-    test("f:Nested class test") {
+    test("Nested class test") {
 
         val outerName = NestedClasses::class.java.name
 
@@ -84,5 +86,15 @@ class AsmLoaderTest : AbstractFunSpec({
         iinner.enclosingMethod.shouldBe(null)
         inner.enclosingMethod.shouldBe(null)
         outer.enclosingMethod.shouldBe(null)
+    }
+
+
+    test("Nested class modifiers") {
+
+        val outerName = Statics::class.java.name
+
+        val inner = symLoader.resolveClassFromBinaryName("$outerName\$ProtectedStatic")!!
+
+        inner.modifiers shouldBe (Opcodes.ACC_PROTECTED or Opcodes.ACC_STATIC)
     }
 })

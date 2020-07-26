@@ -63,8 +63,8 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         }
 
         doTest("DIRECT_STRICT_SUPERTYPES") {
-            DIRECT_STRICT_SUPERTYPES.list(i1) should beEmpty()
-            DIRECT_STRICT_SUPERTYPES.list(i2) should containExactly(i1)
+            DIRECT_STRICT_SUPERTYPES.list(i1) should containExactly(sup.typeSystem.OBJECT)
+            DIRECT_STRICT_SUPERTYPES.list(i2) should containExactly(sup.typeSystem.OBJECT, i1)
             DIRECT_STRICT_SUPERTYPES.list(sup) should containExactly(sup.typeSystem.OBJECT, i2)
             DIRECT_STRICT_SUPERTYPES.list(sub) should containExactly(sup, i1)
         }
@@ -77,8 +77,8 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         }
 
         doTest("SUPERCLASSES_AND_SELF") {
-            SUPERCLASSES_AND_SELF.list(i1) should containExactly(i1)
-            SUPERCLASSES_AND_SELF.list(i2) should containExactly(i2)
+            SUPERCLASSES_AND_SELF.list(i1) should containExactly(i1, sup.typeSystem.OBJECT)
+            SUPERCLASSES_AND_SELF.list(i2) should containExactly(i2, sup.typeSystem.OBJECT)
             SUPERCLASSES_AND_SELF.list(sup) should containExactly(sup, sup.typeSystem.OBJECT)
             SUPERCLASSES_AND_SELF.list(sub) should containExactly(sub, sup, sup.typeSystem.OBJECT)
         }

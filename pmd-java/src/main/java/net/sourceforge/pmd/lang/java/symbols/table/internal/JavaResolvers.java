@@ -113,6 +113,9 @@ public final class JavaResolvers {
         };
     }
 
+    // todo using two separate resolvers for inherited + declared here
+    //  is artificial and only done to get the ScopeInfo right. Would
+    //  be better to do a single traversal.
     static NameResolver<JMethodSig> methodResolver(JClassType t, boolean onlyInherited) {
         JClassSymbol nestRoot = t.getSymbol().getNestRoot();
         return new NameResolver<JMethodSig>() {

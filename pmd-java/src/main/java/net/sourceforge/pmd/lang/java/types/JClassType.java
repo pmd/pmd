@@ -33,13 +33,13 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
  * <ul>
  * <li><i>{@linkplain #isGenericTypeDeclaration() Generic declaration}</i>:
  * the type arguments are the formal type parameters. All enclosing types are
- * either non-generic or also generic type declarations.
+ * either non-generic or also generic type declarations. Eg {@code interface List<T> { .. } }.
  * <li><i>{@linkplain #isParameterizedType() Parameterized}</i>: the type
  * has type arguments. All enclosing types are either non-generic or
- * also parameterised.
+ * also parameterised. Eg {@code List<String>}.
  * <li><i>{@linkplain #isRaw() Raw}</i>: the type doesn't have type arguments,
  * it's considered {@linkplain #hasErasedSuperTypes() erased}, so all its supertypes are
- * also erased. All enclosing types are also erased.
+ * also erased. All enclosing types are also erased. Eg {@code List}.
  * </ul>
  */
 public interface JClassType extends JTypeMirror {
@@ -192,8 +192,9 @@ public interface JClassType extends JTypeMirror {
 
 
     /**
-     * Returns null if this is {@link TypeSystem#OBJECT Object} or if this is
-     * an interface type.
+     * Returns the generic superclass type. Returns null if this is
+     * {@link TypeSystem#OBJECT Object}. Returns {@link TypeSystem#OBJECT}
+     * if this is an interface type.
      */
     @Nullable JClassType getSuperClass();
 

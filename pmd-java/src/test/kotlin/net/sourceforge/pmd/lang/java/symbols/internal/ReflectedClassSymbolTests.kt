@@ -15,7 +15,10 @@ class ReflectedClassSymbolTests : AbstractWordSpec({
 
         "reflect its superclass correctly" {
             TestClassesGen.forAllEqual {
-                classSym(it)!!.superclass to classSym(it.superclass)
+                if (it.isInterface)
+                    classSym(it)!!.superclass to testTypeSystem.OBJECT.symbol
+                else
+                    classSym(it)!!.superclass to classSym(it.superclass)
             }
         }
 

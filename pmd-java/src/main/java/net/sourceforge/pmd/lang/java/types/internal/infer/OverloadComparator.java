@@ -18,19 +18,16 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.OptionalBool;
 
 final class OverloadComparator {
 
     private final Infer infer;
     private final TypeInferenceLogger LOG;
-    private final TypeSystem ts;
 
 
     OverloadComparator(Infer infer) {
         this.infer = infer;
-        this.ts = infer.getTypeSystem();
         this.LOG = infer.getLogger();
     }
 
@@ -66,10 +63,6 @@ final class OverloadComparator {
             // then one of them is strictly more specific than the other
             return m1OverM2;
         } else if (areOverrideEquivalent(m1, m2)) {
-            // select
-            // 1. the non-bridge
-            // 2. the one that overrides the other
-            // 3. the non-abstract method
 
             OptionalBool result = shouldTakePrecedence(m1, m2, site.getExpr().getEnclosingType());
             if (result == UNKNOWN) {
@@ -230,7 +223,7 @@ final class OverloadComparator {
         ctx.solve();         // throws ResolutionFailedException
         ctx.callListeners(); // may throw ResolutionFailedException
 
-        return false;
+        return true;
     }
 
     private boolean isMoreSpecificNonGeneric(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {

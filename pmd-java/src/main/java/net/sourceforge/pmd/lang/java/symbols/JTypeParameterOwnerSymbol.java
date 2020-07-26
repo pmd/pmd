@@ -40,6 +40,11 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
     }
 
 
+    default boolean isGeneric() {
+        return getTypeParameterCount() > 0;
+    }
+
+
     /**
      * Returns the {@link JClassSymbol#getEnclosingMethod() enclosing method} or
      * the {@link #getEnclosingClass() enclosing class}, in that order
