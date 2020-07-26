@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.asm;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -110,19 +112,25 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         }
 
         static LazyClassSignature defaultWhenUnresolved(ClassStub ctx, int observedArity) {
-            String sig;
-            if (observedArity > 0) {
-                StringBuilder sigBuilder = new StringBuilder("<");
-                for (int i = 0; i < observedArity; i++) {
-                    sigBuilder.append('T').append(i).append(OBJECT_BOUND);
-                }
-                sigBuilder.append(">").append(OBJECT_SIG);
-                sig = sigBuilder.toString();
-            } else {
-                sig = OBJECT_SIG;
-            }
+            String sig = sigWithNTypeParams(observedArity);
 
             return new LazyClassSignature(ctx, sig, OBJECT_SIG, null);
+        }
+
+        @NonNull
+        private static String sigWithNTypeParams(int observedArity) {
+            assert observedArity >= 0;
+
+            // use constants for common values
+            switch (observedArity) {
+            case 0: return OBJECT_SIG;
+            case 1: return "<T0" + OBJECT_BOUND + ">" + OBJECT_SIG;
+            case 2: return "<T0" + OBJECT_BOUND + "T1" + OBJECT_BOUND + ">" + OBJECT_SIG;
+            default: return Stream.iterate(0, i -> i + 1)
+                                  .limit(observedArity)
+                                  .map(i -> "T" + i + OBJECT_BOUND)
+                                  .collect(Collectors.joining("", "<", ">" + OBJECT_SIG));
+            }
         }
 
         @Override
@@ -162,7 +170,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             return (List<JClassType>) (List) TypeOps.subst(superItfs, subst);
         }
 
-        public JClassSymbol getRawSuper() {
+        public @Nullable JClassSymbol getRawSuper() {
             return rawSuper;
         }
 

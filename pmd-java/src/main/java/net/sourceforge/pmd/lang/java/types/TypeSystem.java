@@ -346,7 +346,11 @@ public final class TypeSystem {
         if (clazz == null) {
             return null;
         } else if (clazz.isPrimitive()) {
-            return getPrimitive(PrimitiveTypeKind.fromName(clazz.getName())).getSymbol();
+            PrimitiveTypeKind kind = PrimitiveTypeKind.fromName(clazz.getName());
+            if (kind == null) { // void
+                return (JClassSymbol) NO_TYPE.getSymbol();
+            }
+            return getPrimitive(kind).getSymbol();
         } else if (clazz.isArray()) {
             return symbols().makeArraySymbol(getClassSymbol(clazz.getComponentType()));
         }
@@ -416,8 +420,15 @@ public final class TypeSystem {
                 // generic array types are represented by a special
                 // type in the j.l.reflect API, so the component is
                 // also raw
+                // fixme this is wrong:
+                //  genArr = ts.array(tvar, 1);
+                //  ts.typeOf(genArr.symbol(), false) != genArr
                 JTypeMirror component = rawType(classSym.getArrayComponent());
                 return arrayType(component, 1);
+
+            } else if (isErased && classSym.getTypeParameterCount() == 0) {
+
+                return new ErasedClassType(this, classSym);
             } else {
                 return new ClassTypeImpl(this, classSym, emptyList(), !isErased);
             }
@@ -429,9 +440,11 @@ public final class TypeSystem {
 
     /**
      * Like {@link #typeOf(JTypeDeclSymbol, boolean)}, defaulting the
-     * erased parameter to
-     * @param klass
-     * @return
+     * erased parameter to true.
+     *
+     * @param klass Symbol
+     *
+     * @return An erased class type
      */
     public JTypeMirror rawType(JTypeDeclSymbol klass) {
         return typeOf(klass, true);
@@ -588,10 +601,12 @@ public final class TypeSystem {
      *
      * @param kind Kind of primitive type
      *
-     * @return A primitive type, or null if the argument is null
+     * @return A primitive type
+     *
+     * @throws NullPointerException if kind is null
      */
-    @Nullable
-    public JPrimitiveType getPrimitive(PrimitiveTypeKind kind) {
+    @NonNull
+    public JPrimitiveType getPrimitive(@NonNull PrimitiveTypeKind kind) {
         return primitivesByKind.get(kind);
     }
 

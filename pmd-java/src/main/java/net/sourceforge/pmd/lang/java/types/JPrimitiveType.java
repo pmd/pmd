@@ -136,7 +136,8 @@ public final class JPrimitiveType implements JTypeMirror {
 
         /**
          * Gets an enum constant from the token used to represent it in source,
-         * e.g. "int" or "double".
+         * e.g. "int" or "double". Note that "void" is not a valid primitive name
+         * in this API, and this would return null in this case.
          *
          * @param token String token
          *

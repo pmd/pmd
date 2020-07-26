@@ -13,6 +13,9 @@ import java.io.Serializable
  * @author Clément Fournier
  */
 class LubTest : AbstractFunSpec({
+
+    // TODO rewrite to use JDK-independent testdata classes
+
     with(TypeDslOf(testTypeSystem)) { // import construction DSL
         with(gen) { // import constants
 
@@ -24,11 +27,11 @@ class LubTest : AbstractFunSpec({
                         `t_ArrayList{Integer}`,
                         `t_AbstractList{Integer}`,
                         `t_AbstractCollection{Integer}`,
+                        ts.OBJECT,
                         `t_List{Integer}`,
                         `t_Collection{Integer}`,
                         `t_Iterable{Integer}`,
                         java.util.RandomAccess::class.decl,
-                        ts.OBJECT,
                         ts.CLONEABLE,
                         ts.SERIALIZABLE
                 )
@@ -45,7 +48,7 @@ class LubTest : AbstractFunSpec({
                         t_List,
                         t_Collection,
                         t_Iterable,
-                        java.util.RandomAccess::class.decl,
+                        java.util.RandomAccess::class.raw,
                         ts.CLONEABLE,
                         ts.SERIALIZABLE
                 )

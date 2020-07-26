@@ -226,7 +226,8 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     /**
      * Returns the superclass symbol if it exists. Returns null if this
-     * class represents an interface or the class {@link Object}.
+     * class represents the class {@link Object}. If this symbol is an
+     * interface, returns the symbol for {@link Object}.
      */
     @Nullable
     JClassSymbol getSuperclass();

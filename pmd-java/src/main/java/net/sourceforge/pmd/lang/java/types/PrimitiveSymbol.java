@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.java.types;
 
 
@@ -157,7 +153,7 @@ final class PrimitiveSymbol implements JClassSymbol {
 
     @Override
     public int getModifiers() {
-        return Modifier.PUBLIC;
+        return Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.FINAL;
     }
 
     @Override

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.withClue
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
@@ -33,11 +34,13 @@ fun <T, K> List<T>.groupByUnique(keySelector: (T) -> K): Map<K, T> =
 
 fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
     random().forEach {
-        val (t, r) = test(it)
-        if (t != r && r == t || t == r && r != t) {
-            throw AssertionError("Asymmetry in equals relation $t <=> $r")
-        } else if (t != r) {
-            throw AssertionError("Expected property of $it to be $r, got $t")
+        withClue("For $it:") {
+            val (t, r) = test(it)
+            if (t != r && r == t || t == r && r != t) {
+                throw AssertionError("Asymmetry in equals relation $t <=> $r")
+            } else if (t != r) {
+                throw AssertionError("Expected property of $it to be $r, got $t")
+            }
         }
     }
 }

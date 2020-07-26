@@ -22,12 +22,10 @@ class PolyResolutionTest : ProcessorTestSpec({
 
     parserTest("Test context passing") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
-
         inContext(StatementParsingCtx) {
 
             """
-            List<Integer> c = Arrays.asList(null);
+            java.util.List<Integer> c = java.util.Arrays.asList(null);
 
         """ should parseAs {
                 localVarDecl {
