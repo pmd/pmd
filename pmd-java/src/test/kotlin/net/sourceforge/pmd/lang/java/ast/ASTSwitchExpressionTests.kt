@@ -330,7 +330,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """ should parseAs {
                 switchStmt {
 
-                    it::isExhaustiveEnumSwitch shouldBe false
+                    // Needs typeres
+                    // it::isExhaustiveEnumSwitch shouldBe false
                     it::getTestedExpression shouldBe variableAccess("day")
 
                     it.branches.toList() shouldBe listOf(

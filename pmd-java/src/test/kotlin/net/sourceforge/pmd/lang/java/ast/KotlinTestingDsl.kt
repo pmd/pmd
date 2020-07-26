@@ -207,7 +207,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             "Unsupported class $klass"
         }
 
-        fullSource = javaVersion.parser.readClassSource(klass)
+        fullSource = javaVersion.parser.withResourceContext(javaClass).readClassSource(klass)
     }
 
 

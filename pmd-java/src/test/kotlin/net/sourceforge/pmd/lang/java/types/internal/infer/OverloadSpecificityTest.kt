@@ -9,6 +9,8 @@ import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JMethodSig
+import net.sourceforge.pmd.lang.java.types.TypeOps
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.*
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
@@ -135,10 +137,12 @@ class Other extends Scratch {
             val (scratchM, otherM, otherOverload) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
 
 
-            // precondition
             assert(areOverrideEquivalent(scratchM, otherM)) {
-                "override equivalence"
+                "Precondition: override-equivalence"
             }
+
+            fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
+                    TypeOps.overrides(m1, m2, otherM.declaringType)
 
             doTest("Other::m should override Scratch::m") {
                 doesOverride(otherM, scratchM) shouldBe true
@@ -195,10 +199,12 @@ class Scratch {
         val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
 
 
-        // precondition
         assert(areOverrideEquivalent(scratchM, otherM)) {
-            "override equivalence"
+            "Precondition: override-equivalence"
         }
+
+        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
+                TypeOps.overrides(m1, m2, otherM.declaringType)
 
         doTest("Other::m should override Scratch::m") {
             doesOverride(otherM, scratchM) shouldBe true
@@ -225,10 +231,13 @@ class Scratch {
         val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
 
 
-        // precondition
         assert(areOverrideEquivalent(scratchM, otherM)) {
-            "override equivalence"
+            "Precondition: override-equivalence"
         }
+
+
+        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
+                TypeOps.overrides(m1, m2, otherM.declaringType)
 
         doTest("Other::m should override Scratch::m") {
             doesOverride(otherM, scratchM) shouldBe true

@@ -118,20 +118,15 @@ final class OverloadComparator {
             // both are unrelated abstract, inherited into 'site'
             // their signature would be merged into the site
             // if exactly one is declared in a class, prefer it
-            // if both are declared in a class, ambiguity error
+            // if both are declared in a class, ambiguity error (recall, neither overrides the other)
             // if both are declared in an interface, select any of them
-            return firstOrAny(
-                m1.getSymbol().getEnclosingClass().isClass(),
-                m2.getSymbol().getEnclosingClass().isClass()
-            );
+            boolean m1InClass = m1.getSymbol().getEnclosingClass().isClass();
+            boolean m2Class = m2.getSymbol().getEnclosingClass().isClass();
+
+            return m1InClass && m2Class ? UNKNOWN : definitely(m1InClass);
         }
 
         return UNKNOWN;
-    }
-
-
-    private static OptionalBool firstOrAny(boolean a, boolean b) {
-        return a && b ? UNKNOWN : definitely(a);
     }
 
     // TODO test if doesOverride handles hiding between static methods properly
@@ -141,38 +136,42 @@ final class OverloadComparator {
      * Returns whether m1 shadows m2 in the body of the given site, ie
      * m1 is declared in a class C1 that encloses the site, and m2 is declared
      * in a type that strictly encloses C1.
+     *
+     * <p>Assumes m1 and m2 are override-equivalent, and declared in different
+     * classes.
      */
     static OptionalBool shadows(JMethodSig m1, JMethodSig m2, JClassType site) {
         final JClassSymbol c1 = m1.getSymbol().getEnclosingClass();
         final JClassSymbol c2 = m2.getSymbol().getEnclosingClass();
 
-        int depth = 0;
-        int c1Depth = 0;
-        int c2Depth = 0;
+        // We go outward from the `site`. The height measure is the distance
+        // from the site (ie, the reverted depth of each class)
+
+        int height = 0;
+        int c1Height = -1;
+        int c2Height = -1;
         JClassSymbol c = site.getSymbol();
 
-        while (c.getEnclosingClass() != null) {
+        while (c != null) {
             if (c.equals(c1)) {
-                c1Depth = depth;
+                c1Height = height;
             }
             if (c.equals(c2)) {
-                c2Depth = depth;
+                c2Height = height;
             }
             c = c.getEnclosingClass();
-            depth++;
+            height++;
         }
 
-        return definitely(c1Depth > c2Depth);
+        if (c1Height < 0 || c2Height < 0 || c1Height == c2Height) {
+            return UNKNOWN;
+        }
+        return definitely(c1Height < c2Height);
     }
 
     private boolean isMoreSpecific(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
         return m2.isGeneric() ? isInferredMoreSpecific(m1, m2, site, phase)
                               : isMoreSpecificNonGeneric(m1, m2, site, phase);
-    }
-
-    // test only
-    static boolean doesOverride(JMethodSig m1, JMethodSig m2) {
-        return overrides(m1, m2, m1.getDeclaringType());
     }
 
 

@@ -49,7 +49,7 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Type equality">
 
     public static boolean isSameType(JMethodSig t, JMethodSig s) {
-        return haveSameSignature(t, s);
+        return t.getDeclaringType().equals(s.getDeclaringType()) && haveSameSignature(t, s);
     }
 
     /*
@@ -1100,9 +1100,6 @@ public final class TypeOps {
      * a static method to override an instance method, or the reverse.
      */
     public static boolean overrides(JMethodSig m1, JMethodSig m2, JTypeMirror origin) {
-        if (m1.equals(m2)) {
-            return true;
-        }
 
         if (m1.isConstructor() || m2.isConstructor()) {
             return false;

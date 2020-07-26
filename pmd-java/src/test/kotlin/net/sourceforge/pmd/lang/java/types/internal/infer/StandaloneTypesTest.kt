@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
@@ -46,8 +47,6 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
     parserTest("Test array length") {
 
-        asIfIn(Overloads::class.java)
-
         inContext(ExpressionParsingCtx) {
 
             arrayComponentSubjects.forEach { t ->
@@ -66,8 +65,6 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
     parserTest("Test binary numeric promotion on infix ops") {
-
-        asIfIn(Overloads::class.java)
 
         inContext(ExpressionParsingCtx) {
 
@@ -92,11 +89,9 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
     parserTest("Test unary mutation expressions have the same type as the variable") {
 
-        asIfIn(Overloads::class.java)
-
         inContext(StatementParsingCtx) {
 
-            listOf(JPrimitiveType.PrimitiveTypeKind.CHAR, JPrimitiveType.PrimitiveTypeKind.BYTE, JPrimitiveType.PrimitiveTypeKind.SHORT, JPrimitiveType.PrimitiveTypeKind.INT, JPrimitiveType.PrimitiveTypeKind.LONG).forEach { kind ->
+            listOf(CHAR, BYTE, SHORT, INT, LONG).forEach { kind ->
 
                 val block = doParse("{ $kind v; v++; v--; --v; ++v; }")
 
@@ -129,10 +124,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
     parserTest("Test unary numeric promotion on shift ops") {
 
-        asIfIn(Overloads::class.java)
-
         inContext(ExpressionParsingCtx) {
-            val ts = testTypeSystem
 
             listOf(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT)
                     .forEach {
@@ -154,8 +146,6 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
     parserTest("Test boolean ops") {
 
-        asIfIn(Overloads::class.java)
-
         inContext(ExpressionParsingCtx) {
 
             listOf(
@@ -173,7 +163,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
                         val op = it.token
 
-                        "1  $op String" should haveType { boolean }
+                        "1 $op String" should haveType { boolean }
 
                     }
         }
