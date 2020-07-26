@@ -183,7 +183,7 @@ class LocalTypeScopesTest : ParserTestSpec({
 
         // setup
         n2.referencedSym shouldBe cN2.symbol
-        mapEntry.referencedSym shouldBe with(acu.typeDsl) { java.util.Map.Entry::class.decl }
+        mapEntry.referencedSym shouldBe with(acu.typeDsl) { java.util.Map.Entry::class.decl.symbol }
         kkEntry.referencedSym shouldBe cKkEntry.symbol
         n2i2.referencedSym shouldBe cN2i2.symbol
         i4.referencedSym::isUnresolved shouldBe true

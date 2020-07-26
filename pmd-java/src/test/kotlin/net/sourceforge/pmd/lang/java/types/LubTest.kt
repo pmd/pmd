@@ -41,11 +41,11 @@ class LubTest : AbstractFunSpec({
                         t_ArrayList,
                         t_AbstractList,
                         t_AbstractCollection,
+                        ts.OBJECT,
                         t_List,
                         t_Collection,
                         t_Iterable,
                         java.util.RandomAccess::class.decl,
-                        ts.OBJECT,
                         ts.CLONEABLE,
                         ts.SERIALIZABLE
                 )

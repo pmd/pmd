@@ -16,8 +16,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MutualTypeRecursion
  */
 class TypeParamSubstTest : AbstractFunSpec({
 
-    val ts = testTypeSystem
-    with(TypeDslOf(ts)) {
+    with(TypeDslOf(testTypeSystem)) {
 
         test("Test type param building on F-bound") {
 

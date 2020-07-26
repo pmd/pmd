@@ -156,7 +156,7 @@ class TypeSigParser {
         JClassType t = b.makeClassType(internalName.toString(), b.popList());
 
         while (b.charAt(cur) == '.') {
-            internalName.append('.');
+            internalName.append('$');
             cur += 1;
             cur = identifier(cur, b, internalName);
             cur = typeArgsOpt(cur, b);
