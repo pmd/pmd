@@ -193,4 +193,45 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertErrored(s1, expected = 1, actual = 2)
         assertNoError(s2)
     }
+
+    parserTest("Invalid annotations") {
+        val logger = enableProcessing()
+
+        val acu = parser.parse("""
+           package p;
+           class C<T> {
+                @interface A { }
+                interface I { }
+
+
+                @T
+                @C
+                @I
+                @Unresolved
+                @A
+                int field;
+           }
+        """)
+
+        val (aT, aC, aI, aUnresolved, aOk) =
+                acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
+
+        fun assertErrored(t: ASTClassOrInterfaceType) {
+            val errs = logger.errors[SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t } ?: emptyList()
+            assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
+            errs.single().second.toList() shouldBe emptyList()
+        }
+
+        fun assertNoError(t: ASTClassOrInterfaceType) {
+            val err = logger.errors[SemanticChecksLogger.MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            assertNull(err, "`${t.text}` should not have produced an error")
+        }
+
+        assertNoError(aUnresolved)
+        assertNoError(aOk)
+
+        assertErrored(aT)
+        assertErrored(aC)
+        assertErrored(aI)
+    }
 })

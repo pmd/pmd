@@ -327,7 +327,7 @@ final class AstDisambiguationPass {
         private void postProcess(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
             JTypeDeclSymbol sym = type.getReferencedSym();
             if (type.getParent() instanceof ASTAnnotation) {
-                if (!sym.isUnresolved() && !(sym instanceof JClassSymbol)) {
+                if (!(sym instanceof JClassSymbol && (sym.isUnresolved() || ((JClassSymbol) sym).isAnnotation()))) {
                     processor.getLogger().error(type, SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE);
                 }
                 return;
