@@ -131,7 +131,8 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     static class FilteredAncestorOrSelfStream<T extends Node> extends AxisStream<T> {
 
-        FilteredAncestorOrSelfStream(@NonNull Node node, Filtermap<Node, ? extends T> target) {
+        // the first node always matches the filter
+        FilteredAncestorOrSelfStream(@NonNull T node, Filtermap<Node, ? extends T> target) {
             super(node, target);
         }
 
@@ -143,21 +144,32 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public NodeStream<T> drop(int n) {
             AssertionUtil.requireNonNegative("n", n);
-            switch (n) {
-            case 0:
+            if (n == 0) {
                 return this;
-            case 1:
-                return StreamImpl.ancestors(node, filter);
-            default:
-                // eg for NodeStream.of(a,b,c).drop(2)
-                Node nth = get(n); // get(2) == c
-                return StreamImpl.ancestorsOrSelf(nth, filter); // c.ancestorsOrSelf() == [c]
             }
+            // eg for NodeStream.of(a,b,c).drop(2)
+            Node nth = get(n); // get(2) == c
+            return StreamImpl.ancestorsOrSelf(nth, filter); // c.ancestorsOrSelf() == [c]
         }
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, ? extends S> filterMap) {
-            return new FilteredAncestorOrSelfStream<>(node, filterMap);
+            S newFirst = TraversalUtils.getFirstParentOrSelfMatching(node, filterMap);
+            if (newFirst == null) {
+                return StreamImpl.empty();
+            } else {
+                return new FilteredAncestorOrSelfStream<>(newFirst, filterMap);
+            }
+        }
+
+        @Override
+        public @Nullable T first() {
+            return (T) node;
+        }
+
+        @Override
+        public boolean nonEmpty() {
+            return true;
         }
 
         @Override
