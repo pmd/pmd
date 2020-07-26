@@ -26,18 +26,11 @@ class SubtypingTest : AbstractFunSpec({
 
             test("Test primitive subtyping") {
 
-                typeHierarchyTest(double) {
-                    float / {
-                        long / {
-                            int / {
-                                short / {
-                                    byte / {}
-                                }
-                                char / {}
-                            }
-                        }
-                    }
-                }
+                assertSubtypeOrdering(double, float, long, int, short, byte)
+                assertSubtypeOrdering(double, float, long, int, char)
+
+                short shouldBeUnrelatedTo char
+                byte shouldBeUnrelatedTo char
 
                 (ts.allPrimitives.toList() - boolean).forEach {
                     it shouldBeUnrelatedTo boolean
@@ -92,7 +85,7 @@ class SubtypingTest : AbstractFunSpec({
 
             test("Test enum f-bound") {
 
-                val someEnum = SomeEnum::class.raw
+                val someEnum = SomeEnum::class.decl
 
                 val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java), listOf(someEnum))
 
@@ -174,23 +167,18 @@ class SubtypingTest : AbstractFunSpec({
                 // this is the tree on this page:
                 // https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
 
-                typeHierarchyTest(`t_List{?}`) {
-                    `t_List{? extends Number}` / {
-                        `t_List{? extends Integer}` / {
-                            `t_List{Integer}` / {
-                                extends(`t_List{? super Integer}`)
-                            }
-                        }
-                    }
+                assertSubtypeOrdering(`t_List{?}`, `t_List{? extends Number}`, `t_List{? extends Integer}`, `t_List{Integer}`)
+                assertSubtypeOrdering(`t_List{?}`, `t_List{? super Integer}`, `t_List{? super Number}`, `t_List{Number}`)
+                assertSubtypeOrdering(`t_List{?}`, `t_List{? extends Number}`, `t_List{Number}`)
+                assertSubtypeOrdering(`t_List{?}`, `t_List{? super Integer}`, `t_List{Integer}`)
 
-                    `t_List{? super Integer}` / {
-                        `t_List{? super Number}` / {
-                            `t_List{Number}` / {
-                                extends(`t_List{? extends Number}`)
-                            }
-                        }
-                    }
-                }
+                `t_List{Number}` shouldBeUnrelatedTo `t_List{? extends Integer}`
+                `t_List{Integer}` shouldBeUnrelatedTo `t_List{? super Number}`
+
+                `t_List{? extends Number}` shouldBeUnrelatedTo `t_List{? super Integer}`
+                `t_List{? extends Integer}` shouldBeUnrelatedTo `t_List{? super Number}`
+                `t_List{Number}` shouldBeUnrelatedTo `t_List{Integer}`
+
             }
 
             test("Test primitive supertype set") {

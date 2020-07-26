@@ -152,98 +152,17 @@ class TypeGen(override val ts: TypeSystem) : Gen<JTypeMirror>, TypeDslMixin {
 
 val RefTypeGen = TypeGen(testTypeSystem)
 
-fun typeHierarchyTest(t: JTypeMirror, spec: ThNode.() -> Unit): ThNode =
-        ThNode(null, t).also(spec).apply { runTest() }
-
-class ThNode(val parent: ThNode?, val myType: JTypeMirror) {
-
-    private val children = mutableListOf<ThNode>()
-    private val extendsEdges = mutableListOf<ThNode>()
-
-    operator fun JTypeMirror.div(spec: ThNode.() -> Unit) {
-        children += ThNode(this@ThNode, this).also { it.spec() }
-    }
-
-    fun extends(s: JTypeMirror) {
-        extendsEdges += ThNode(null, s)
-    }
-
-    fun close() {
-
-        with(ThNode.ext) {
-            root.descendantsOrSelf().filter { it in extendsEdges }.forEach {
-                it.children += this@ThNode
-                extendsEdges -= it
-            }
-            for (it in children.toList()) {
-                it.close()
-            }
-        }
-    }
-
-    override fun toString(): String = myType.toString()
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ThNode
-
-        if (myType != other.myType) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return myType.hashCode()
-    }
-
-
-    companion object : DoublyLinkedTreeLikeAdapter<ThNode> {
-        override fun getChildren(node: ThNode): List<ThNode> = node.children
-
-        override fun getParent(node: ThNode): ThNode? = node.parent
-
-        override fun nodeName(node: ThNode): String = node.myType.toString()
+/**
+ * assertSubtypeOrdering(a, b, c) asserts that a >: b >: c
+ * In other words, the supertypes are on the left, subtypes on the right
+ */
+fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
+    for ((a, b) in ts.zip(ts.asList().drop(1))) {
+        b shouldBeSubtypeOf a
     }
 }
 
-fun ThNode.runTest() {
-
-
-
-    fun runTestImpl(me: ThNode, unrelated: List<ThNode>) {
-
-        with(ThNode.ext) {
-
-
-            me.descendants().forEach {
-                it.myType shouldBeSubtypeOf me.myType
-            }
-
-            unrelated.asSequence()
-                    .flatMap { it.descendantsOrSelf() }
-                    .filterNot { it in me.descendantsOrSelf() || me in it.descendantsOrSelf() }
-                    .forEach {
-                        it.myType shouldBeUnrelatedTo me.myType
-                    }
-
-            for (child in me.children) {
-                runTestImpl(child, unrelated + (me.children - child))
-            }
-        }
-    }
-
-    // close dangling edges
-    close()
-
-    println("Asserting hierarchy:")
-    println(SimpleTreePrinter(ThNode).dumpSubtree(this))
-
-    runTestImpl(this, emptyList())
-}
-
-fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror) = withTypeArguments(listOf(m1, *mirror))
+fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
 private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, pos: Boolean) {
     assertSubtypeUnchecked(t, s, pos, unchecked = false)
@@ -277,15 +196,32 @@ infix fun JTypeMirror.shouldBeUnrelatedTo(other: JTypeMirror) {
     assertSubtype(other, this, false)
 }
 
+/**
+ * A DSL over the API of [TypeSystem], to build types concisely.
+ * Eg:
+ *
+ * List<String>:            List::class[String::class]
+ * int[][]:                 int.toArray(2)
+ * List<? extends Number>:  List::class[`?` extends Number::class]
+ *
+ * Use [typeDsl] (eg `with(node.typeDsl) { ... }`,
+ * or [TypeDslOf] (eg `with(TypeDslOf(ts)) { ... }`)
+ *
+ * to bring it into scope.
+ */
 interface TypeDslMixin {
 
     val ts: TypeSystem
-    
-    val gen get()= TypeGen(ts)
+
+    val gen get() = TypeGen(ts)
+
+    /* extensions to turn a class (literal) into a type mirror */
 
     val KClass<*>.raw: JClassType get() = ts.rawType(ts.getClassSymbol(this.java)) as JClassType
     val KClass<*>.decl: JClassType get() = java.decl
     val Class<*>.decl: JClassType get() = ts.declaration(ts.getClassSymbol(this)) as JClassType
+
+    /* aliases with regular java keywords */
 
     val int get() = ts.INT
     val char get() = ts.CHAR
@@ -297,10 +233,12 @@ interface TypeDslMixin {
     val float get() = ts.FLOAT
 
 
+    /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
             // flatten
             ts.intersect(TypeOps.asList(this) + TypeOps.asList(t))
 
+    /** subtyping */
     operator fun JTypeMirror.compareTo(t: JTypeMirror): Int = when {
         this.isSubtypeOf(t) -> -1
         t.isSubtypeOf(this) -> +1
@@ -309,10 +247,23 @@ interface TypeDslMixin {
 
     fun JTypeMirror.toArray(dims: Int = 1): JTypeMirror = ts.arrayType(this, dims)
 
+    // these operators overload the array access syntax
+    // to represent parameterization:
+    //  t[s] === t<s>
+    //  List::class[String::class] === List<String>
+
     operator fun JTypeMirror.get(vararg t: JTypeMirror): JClassType = (this as JClassType).withTypeArguments(t.toList())
     operator fun KClass<*>.get(vararg t: JTypeMirror): JClassType = this.decl.withTypeArguments(t.toList())
     operator fun KClass<*>.get(vararg t: KClass<*>): JClassType = this.decl.withTypeArguments(t.toList().map { it.decl })
 
+    /** Unbounded wildcard. The wildcard DSL allows
+     * using extends and super as methods.
+     *
+     * Eg
+     *      List::class[`?` extends Number::class]
+     *      List::class[`?` super String::class]
+     *
+     */
     val `?`: WildcardDsl get() = WildcardDsl(ts)
 
 }
