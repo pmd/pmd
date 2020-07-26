@@ -93,8 +93,7 @@ public class TypeHelperTest extends BaseNonParserTest {
         Assert.assertNull(annotation.getType());
         Assert.assertTrue(TypeHelper.isA(annotation, "foo.Stuff"));
         Assert.assertFalse(TypeHelper.isA(annotation, "other.Stuff"));
-        // if the searched class name is not fully qualified, then the search should still be successfull
-        Assert.assertTrue(TypeHelper.isA(annotation, "Stuff"));
+        Assert.assertFalse(TypeHelper.isA(annotation, "Stuff"));
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {

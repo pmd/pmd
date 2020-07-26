@@ -12,12 +12,9 @@ class ASTConstructorCallTest : ParserTestSpec({
                 constructorCall {
                     it::isQualifiedInstanceCreation shouldBe false
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
-                    }
+                    it::getTypeNode shouldBe classType("Foo")
 
-                    it::getArguments shouldBe child {
-
+                    it::getArguments shouldBe argList(1) {
                         variableAccess("a")
                     }
                 }
@@ -31,9 +28,7 @@ class ASTConstructorCallTest : ParserTestSpec({
                         unspecifiedChild()
                     }
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
-
+                    it::getTypeNode shouldBe classType("Foo") {
                         it::getTypeArguments shouldBe child {
                             unspecifiedChild()
                         }
@@ -49,8 +44,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
                     it::getExplicitTypeArguments shouldBe null
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
+                    it::getTypeNode shouldBe classType("Foo") {
 
                         annotation("Lol")
 
@@ -84,9 +78,7 @@ class ASTConstructorCallTest : ParserTestSpec({
                         it::getQualifier shouldBe ambiguousName("a.g")
                     }
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
-                    }
+                    it::getTypeNode shouldBe classType("Foo")
 
                     it::getArguments shouldBe argList {
 
@@ -102,9 +94,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
                     it::getQualifier shouldBe variableAccess("a")
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
-                    }
+                    it::getTypeNode shouldBe classType("Foo")
 
                     it::getArguments shouldBe child {
 
@@ -153,8 +143,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
                     it::getExplicitTypeArguments shouldBe null
 
-                    it::getTypeNode shouldBe child {
-                        it::getTypeImage shouldBe "Foo"
+                    it::getTypeNode shouldBe classType("Foo") {
 
                         annotation("Lol")
 

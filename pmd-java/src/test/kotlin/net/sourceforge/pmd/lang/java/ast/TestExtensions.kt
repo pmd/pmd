@@ -5,19 +5,16 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.internal.util.IteratorUtil
-import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatch
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
-import java.util.*
-import kotlin.reflect.KCallable
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -69,9 +66,9 @@ fun TreeNodeWrapper<Node, *>.annotation(spec: ValuedNodeSpec<ASTAnnotation, Unit
         child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
 
 
-fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: NodeSpec<ASTAnnotation> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.annotation(simpleName: String, spec: NodeSpec<ASTAnnotation> = EmptyAssertions) =
         child<ASTAnnotation>(ignoreChildren = spec == EmptyAssertions) {
-            it::getAnnotationName shouldBe name
+            it::getSimpleName shouldBe simpleName
             spec()
         }
 
@@ -370,9 +367,9 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
 
 fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
         child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
-            it::getCanonicalName shouldBe canoName
-            it::getImage shouldBe canoName
-            it::getSimpleName shouldBe canoName.substringAfterLast('.')
+            val simpleName = canoName.substringAfterLast('.')
+            it::getSimpleName shouldBe simpleName
+            it.text.toString() shouldBe canoName
             contents()
         }
 

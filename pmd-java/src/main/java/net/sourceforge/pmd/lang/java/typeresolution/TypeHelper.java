@@ -8,19 +8,20 @@ import static net.sourceforge.pmd.util.CollectionUtil.any;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
@@ -102,21 +103,21 @@ public final class TypeHelper {
             || clazzName.equals(n.getName());
     }
 
-    private static boolean fallbackIsA(TypeNode n, String clazzName) {
-        if (n.getImage() != null && !n.getImage().contains(".") && clazzName.contains(".")) {
-            // simple name detected, check the imports to get the full name and use that for fallback
-            List<ASTImportDeclaration> imports = n.getRoot().findChildrenOfType(ASTImportDeclaration.class);
-            for (ASTImportDeclaration importDecl : imports) {
-                if (n.hasImageEqualTo(importDecl.getImportedSimpleName())) {
-                    // found the import, compare the full names
-                    return clazzName.equals(importDecl.getImportedName());
-                }
-            }
-        }
+    private static boolean fallbackIsA(final TypeNode n, String clazzName) {
+        // Later we won't need a fallback. Symbols already contain subclass information.
 
-        // fall back on using the simple name of the class only
-        if (clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage())) {
+        if (n instanceof ASTAnyTypeDeclaration && ((ASTAnyTypeDeclaration) n).getBinaryName().equals(clazzName)) {
             return true;
+        } else if (n instanceof ASTClassOrInterfaceType || n instanceof ASTAnnotation) {
+            ASTClassOrInterfaceType classType;
+            if (n instanceof ASTAnnotation) {
+                classType = ((ASTAnnotation) n).getTypeNode();
+            } else {
+                classType = (ASTClassOrInterfaceType) n;
+            }
+
+            JTypeDeclSymbol sym = classType.getReferencedSym();
+            return sym instanceof JClassSymbol && ((JClassSymbol) sym).getBinaryName().equals(clazzName);
         }
 
         if (n instanceof ASTClassOrInterfaceDeclaration) {

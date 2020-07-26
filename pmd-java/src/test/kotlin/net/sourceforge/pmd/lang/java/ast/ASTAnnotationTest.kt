@@ -31,8 +31,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@F" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
+
+                    it::getTypeNode shouldBe classType("F")
 
                     it::getMemberList shouldBe null
                 }
@@ -40,8 +41,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@java.lang.Override" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "java.lang.Override"
                     it::getSimpleName shouldBe "Override"
+
+                    it::getTypeNode shouldBe qualClassType("java.lang.Override")
 
                     it::getMemberList shouldBe null
                 }
@@ -56,8 +58,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@F(\"ohio\")" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
+
+                    it::getTypeNode shouldBe classType("F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -69,8 +72,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@org.F({java.lang.Math.PI})" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
+
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -87,9 +91,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@org.F({@Aha, @Oh})" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -103,9 +107,9 @@ class ASTAnnotationTest : ParserTestSpec({
             }
             "@org.F(@Oh)" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         shorthandMemberValue {
@@ -124,9 +128,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@F(a=\"ohio\")" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
 
+                    it::getTypeNode shouldBe classType("F")
 
                     it::getMemberList shouldBe child {
                         memberValuePair("a") {
@@ -138,9 +142,9 @@ class ASTAnnotationTest : ParserTestSpec({
 
             "@org.F(a={java.lang.Math.PI}, b=2)" should parseAs {
                 child<ASTAnnotation> {
-                    it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
+                    it::getTypeNode shouldBe qualClassType("org.F")
 
                     it::getMemberList shouldBe child {
                         memberValuePair("a") {
@@ -167,12 +171,16 @@ class ASTAnnotationTest : ParserTestSpec({
 
                 child<ASTAnnotation> {
 
+                    it::getTypeNode shouldBe classType("TestAnnotation")
+
                     it::getMemberList shouldBe child {
 
                         shorthandMemberValue {
 
                             child<ASTMemberValueArrayInitializer> {
                                 annotation {
+
+                                    it::getTypeNode shouldBe classType("SuppressWarnings")
 
                                     it::getMemberList shouldBe child {
                                         shorthandMemberValue {
@@ -181,6 +189,9 @@ class ASTAnnotationTest : ParserTestSpec({
                                     }
                                 }
                                 annotation {
+
+                                    it::getTypeNode shouldBe classType("SuppressWarnings")
+
                                     it::getMemberList shouldBe child {
                                         memberValuePair("value") {
                                             it::isShorthand shouldBe false
@@ -191,6 +202,9 @@ class ASTAnnotationTest : ParserTestSpec({
                                     }
                                 }
                                 annotation {
+
+                                    it::getTypeNode shouldBe classType("SuppressWarnings")
+
                                     it::getMemberList shouldBe child {
                                         shorthandMemberValue {
                                             child<ASTMemberValueArrayInitializer> {

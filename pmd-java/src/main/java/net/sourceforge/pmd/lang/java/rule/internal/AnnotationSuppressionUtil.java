@@ -107,18 +107,15 @@ final class AnnotationSuppressionUtil {
 
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
-        // if (TypeHelper.symbolEquals(annotation.getTypeMirror(), SuppressWarnings.class)) { // fixme annot name disambiguation
-        if ("SuppressWarnings".equals(annotation.getSimpleName())) {
-
-            for (ASTStringLiteral lit : annotation.getValuesForName(ASTMemberValuePair.VALUE_ATTR)
-                                                  .filterIs(ASTStringLiteral.class)) {
-                String value = lit.getConstValue();
-                if ("PMD".equals(value)
-                    || ("PMD." + rule.getName()).equals(value)
-                    || "all".equals(value)
-                    || "serial".equals(value) && SERIAL_RULES.contains(rule.getName())
-                    || "unused".equals(value) && UNUSED_RULES.contains(rule.getName())
-                ) {
+        if (annotation.getSymbol().getBinaryName().equals("java.lang.SuppressWarnings")) {
+            for (ASTStringLiteral element : annotation.findDescendantsOfType(ASTStringLiteral.class)) {
+                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(
+                    "\"PMD." + rule.getName() + "\"")
+                    // Check for standard annotations values
+                    || element.hasImageEqualTo("\"all\"")
+                    || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
+                    || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())
+                    || element.hasImageEqualTo("\"all\"")) {
                     return true;
                 }
             }

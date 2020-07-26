@@ -99,6 +99,10 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         return list == null ? NodeStream.empty() : list.toStream();
     }
 
+    public static int sizeOrZero(@Nullable ASTList<?> list) {
+        return list == null ? 0 : list.size();
+    }
+
     /**
      * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
      * as a child.
