@@ -159,7 +159,7 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
         fCall.shouldMatchN {
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
-                it.methodType.toString() shouldBe "Scratch.<T> f($serialFun) -> $serialFun"
+                it.methodType.toString() shouldBe "Scratch.<T extends $serialFun> f($serialFun) -> $serialFun"
 
                 argList {
                     exprLambda {
@@ -200,10 +200,12 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
         val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
+        val boundOfF = "java.util.function.Function<java.lang.String, R> & java.io.Serializable"
+
         fCall.shouldMatchN {
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
-                it.methodType.toString() shouldBe "Scratch.<R, T> f($serialFun) -> $serialFun"
+                it.methodType.toString() shouldBe "Scratch.<R, T extends $boundOfF> f($serialFun) -> $serialFun"
 
                 argList {
                     exprLambda {

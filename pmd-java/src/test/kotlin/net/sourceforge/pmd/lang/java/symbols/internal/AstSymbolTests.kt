@@ -88,8 +88,8 @@ class AstSymbolTests : ParserTestSpec({
         doTest("should reflect their super class") {
             with(acu.typeSystem) {
                 fooClass::getSuperclass shouldBe getClassSymbol(java.util.ArrayList::class.java)
-                innerItf::getSuperclass shouldBe null
-                innerClass::getSuperclass shouldBe OBJECT.getSymbol()
+                innerItf::getSuperclass shouldBe OBJECT.symbol
+                innerClass::getSuperclass shouldBe OBJECT.symbol
                 innerEnum::getSuperclass shouldBe getClassSymbol(java.lang.Enum::class.java)
             }
         }

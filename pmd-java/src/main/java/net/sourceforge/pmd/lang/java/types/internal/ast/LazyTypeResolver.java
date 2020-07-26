@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -123,6 +124,11 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
     @Override
     public JTypeMirror visit(ASTAnyTypeDeclaration node, Void data) {
         return ts.declaration(node.getSymbol());
+    }
+
+    @Override
+    public JTypeMirror visit(ASTAnnotation node, Void data) {
+        return node.getTypeNode().getTypeMirror();
     }
 
     @Override
