@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -37,21 +38,18 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
         ASTExpression expr = node.getExpr();
         ASTClassOrInterfaceType thrownType;
         if (expr instanceof ASTConstructorCall) {
+            // todo when typeres is up we can just use the static type of the expression
             thrownType = ((ASTConstructorCall) expr).getTypeNode();
         } else {
             return data;
         }
 
-        for (ASTTryStatement tryAncestor : enclosingTries) {
-            for (ASTCatchClause catchStmt : tryAncestor.getCatchClauses()) {
-                for (ASTClassOrInterfaceType ex : catchStmt.getParameter().getAllExceptionTypes()) {
-                    // todo when type res is up: use a subtyping test
-                    if (ex.getReferencedSym().equals(thrownType.getReferencedSym())) {
-                        addViolation(data, ex);
-                    }
-                }
-            }
-        }
+        enclosingTries.flatMap(ASTTryStatement::getCatchClauses)
+                      .map(ASTCatchClause::getParameter)
+                      .flatMap(ASTCatchParameter::getAllExceptionTypes)
+                      // todo when type res is up: use a subtyping test
+                      .filter(ex -> ex.getReferencedSym().equals(thrownType.getReferencedSym()))
+                      .forEach(ex -> addViolation(data, ex));
         return data;
     }
 

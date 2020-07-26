@@ -52,7 +52,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
 
     /** Returns the name of this parameter. */
     public String getName() {
-        return getVarId().getVariableName();
+        return getVarId().getName();
     }
 
 
@@ -61,7 +61,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
      * {@link ASTUnionType UnionType}.
      */
     public ASTType getTypeNode() {
-        return children(ASTType.class).first();
+        return (ASTType) getChild(1);
     }
 
 
