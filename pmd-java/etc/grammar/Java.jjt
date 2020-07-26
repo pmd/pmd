@@ -1431,7 +1431,7 @@ FloatingPointType:
 void PrimitiveType() :
 {}
 {
-    ( "boolean" {jjtThis.setKind(PrimitiveTypeKind.BOOLEAN);}
+      "boolean" {jjtThis.setKind(PrimitiveTypeKind.BOOLEAN);}
     | "char"    {jjtThis.setKind(PrimitiveTypeKind.CHAR);}
     | "byte"    {jjtThis.setKind(PrimitiveTypeKind.BYTE);}
     | "short"   {jjtThis.setKind(PrimitiveTypeKind.SHORT);}
@@ -1439,8 +1439,6 @@ void PrimitiveType() :
     | "long"    {jjtThis.setKind(PrimitiveTypeKind.LONG);}
     | "float"   {jjtThis.setKind(PrimitiveTypeKind.FLOAT);}
     | "double"  {jjtThis.setKind(PrimitiveTypeKind.DOUBLE);}
-    )
-    {setLastTokenImage(jjtThis);}
 }
 
 

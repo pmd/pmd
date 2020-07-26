@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
@@ -45,7 +43,6 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     void setKind(PrimitiveTypeKind kind) {
         assert this.kind == null : "Cannot set kind multiple times";
         this.kind = kind;
-        setImage(kind.getSimpleName());
     }
 
     public PrimitiveTypeKind getKind() {
@@ -54,8 +51,14 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     }
 
     @Override
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    @Override
     public String getTypeImage() {
-        return getImage();
+        return getKind().getSimpleName();
     }
 
 
@@ -67,10 +70,5 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     @Override
     public @NonNull JPrimitiveType getTypeMirror() {
         return (JPrimitiveType) super.getTypeMirror();
-    }
-
-    @Override
-    public @Nullable JavaTypeDefinition getTypeDefinition() {
-        return null;
     }
 }

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -145,6 +146,11 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         @Override
         public Attribute visit(ASTClassOrInterfaceType node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
+        }
+
+        @Override
+        public Attribute visit(ASTPrimitiveType node, Void data) {
+            return new Attribute(node, "Kind", node.getKind().getSimpleName());
         }
 
         @Override

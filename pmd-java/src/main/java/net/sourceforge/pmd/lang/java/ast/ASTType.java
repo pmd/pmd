@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
 
 
 /**
@@ -34,6 +35,7 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
      * a method return a qualified name with help of the symbol table.
      */
     @Experimental
+    @NoAttribute
     String getTypeImage();
 
     /**

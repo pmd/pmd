@@ -314,7 +314,7 @@ final class PolyResolution {
             return ((ASTAssignmentExpression) context).getLeftOperand().getTypeMirror();
         } else if (context instanceof ASTVariableDeclarator) {
             ASTType type = ((ASTVariableDeclarator) context).getVarId().getTypeNode();
-            return Objects.requireNonNull(type, "For inferred type contextOf() should not return it").getTypeMirror();
+            return Objects.requireNonNull(type, "For inferred type contextOf() should not return null").getTypeMirror();
         } else if (context instanceof ASTCastExpression) {
             return ((ASTCastExpression) context).getCastType().getTypeMirror();
         } else {
