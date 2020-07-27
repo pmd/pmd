@@ -1018,7 +1018,7 @@ ImplicitParameterName : '$' DecimalLiteral ; // TODO: don't allow '_' here
 // GRAMMAR OF A LITERAL
 
 booleanLiteral: BooleanLiteral ;
-literal : numericLiteral | MultiStringLiteral | SingleStringLiteral | BooleanLiteral | NilLiteral ;
+literal : numericLiteral | MultiStringLiteral | DashedSingleStringLiteral | SingleStringLiteral | BooleanLiteral | NilLiteral ;
 
 // GRAMMAR OF AN INTEGER LITERAL
 
@@ -1077,6 +1077,13 @@ fragment MultiQuotedTextItem : MultiInterpolatedString
  | ~[\\\u000A\u000D]
  ;
 fragment MultiInterpolatedString: '\\(' (MultiQuotedTextItem | SingleStringLiteral)* ')';
+
+DashedSingleStringLiteral : '#"' DashedMultiQuotedText? '"#' ;
+fragment DashedMultiQuotedText : DashedMultiQuotedTextItem+ ;
+fragment DashedMultiQuotedTextItem : EscapedCharacter | DashedMultiInterpolatedString
+ | ~[\\\u000A\u000D]
+ ;
+fragment DashedMultiInterpolatedString: '\\#(' (DashedMultiQuotedTextItem | DashedSingleStringLiteral)* ')';
 
 // StringLiteral : '"' QuotedText? '"' ;
 SingleStringLiteral : '"' QuotedText? '"' ;

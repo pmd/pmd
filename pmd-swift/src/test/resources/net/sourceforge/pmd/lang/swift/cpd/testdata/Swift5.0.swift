@@ -38,3 +38,11 @@ var x = 2
 print(x[keyPath: id]) // prints 2
 x[keyPath: id] = 3
 print(x[keyPath: id]) // prints 3
+
+// https://www.swiftbysundell.com/articles/string-literals-in-swift/
+let rawString = #"Press "Continue" to close this dialog."#
+extension URL {
+    func html(withTitle title: String) -> String {
+        return #"<a href="\#(absoluteString)">\#(title)</a>"#
+    }
+}
