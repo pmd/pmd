@@ -137,7 +137,7 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
 
         @Override
         public T getChild(int index) {
-            return elementType.cast(super.getChild(index));
+            return (T) super.getChild(index);
         }
     }
 }
