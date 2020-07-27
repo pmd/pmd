@@ -30,8 +30,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -81,7 +79,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -884,7 +881,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     if (numChildren < 2 || numChildren > 2 && inLhs) {
                         if (numChildren == 3 || numChildren == 1) {
                             // method call on this, or just bare `this` reference
-                            state.setThisIsLeaking(true);
+                            state.recordThisLeak(true, enclosingClassScope);
                         }
                         return null;
                     }
@@ -895,7 +892,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     } else if (primary.getNumChildren() > 2 && ((ASTPrimarySuffix) primary.getChild(2)).isArguments()) {
                         //     this.foo()
                         // first suffix is the name, second is the arguments
-                        state.setThisIsLeaking(true);
+                        state.recordThisLeak(true, enclosingClassScope);
                         return null;
                     }
 
@@ -986,32 +983,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTClassOrInterfaceBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data, hasUnsafeSuperCtor(node.getParent()));
+            visitTypeBody(node, (SpanInfo) data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
         @Override
         public Object visit(ASTEnumBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data, false);
+            visitTypeBody(node, (SpanInfo) data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
 
-        // Whether the superclass has a constructor that may invoke any virtual methods.
-        // Only Object and Enum are whitelisted (enums are actually handled elsewhere but
-        // this is relevant when porting this code to the newer grammar)
-        private boolean hasUnsafeSuperCtor(JavaNode typeDecl) {
-            if (typeDecl instanceof ASTClassOrInterfaceDeclaration) {
-                ASTClassOrInterfaceDeclaration decl = (ASTClassOrInterfaceDeclaration) typeDecl;
-                ASTClassOrInterfaceType superclass = decl.getSuperClassTypeNode();
-                return !decl.isInterface() && superclass != null && !TypeHelper.isA(superclass, Object.class);
-            }
-            return true;
-        }
-
-        private void visitTypeBody(JavaNode typeBody, SpanInfo data, boolean hasSuperCtor) {
+        private void visitTypeBody(JavaNode typeBody, SpanInfo data) {
             List<ASTAnyTypeBodyDeclaration> declarations = typeBody.findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
-            processInitializers(declarations, data, hasSuperCtor, (ClassScope) typeBody.getScope());
+            processInitializers(declarations, data, (ClassScope) typeBody.getScope());
 
             for (ASTAnyTypeBodyDeclaration decl : declarations) {
                 JavaNode d = decl.getDeclarationNode();
@@ -1019,20 +1004,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
                 } else if (d instanceof ASTAnyTypeDeclaration) {
                     JavaNode body = d.getChild(d.getNumChildren() - 1);
-                    visitTypeBody(body, data.forkEmptyNonLocal(), hasUnsafeSuperCtor(d));
+                    visitTypeBody(body, data.forkEmptyNonLocal());
                 }
             }
         }
 
         private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
                                                 SpanInfo beforeLocal,
-                                                boolean hasSuperCtor,
                                                 ClassScope scope) {
 
             ReachingDefsVisitor visitor = new ReachingDefsVisitor(scope);
 
             // All field initializers + instance initializers
-            SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal().setThisIsLeaking(hasSuperCtor);
+            SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
             // All static field initializers + static initializers
             SpanInfo staticInit = beforeLocal.forkEmptyNonLocal();
 
@@ -1069,12 +1053,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             // assignments that reach the end of any constructor must
             // be considered used
-            for (VariableNameDeclaration field : visitor.enclosingClassScope.getVariableDeclarations().keySet()) {
-                ASTVariableDeclaratorId var = (ASTVariableDeclaratorId) field.getNode();
+            useAllSelfFields(staticInit, ctorEndState, visitor.enclosingClassScope);
+        }
+
+        static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, ClassScope classScope) {
+            for (VariableNameDeclaration field : classScope.getVariableDeclarations().keySet()) {
+                ASTVariableDeclaratorId var = field.getDeclaratorId();
                 if (field.getAccessNodeParent().isStatic()) {
-                    staticInit.use(var);
+                    if (staticState != null) {
+                        staticState.use(var);
+                    }
+                } else {
+                    instanceState.use(var);
                 }
-                ctorEndState.use(var);
             }
         }
     }
@@ -1156,35 +1147,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // needs to go through the finally span (the finally must absorb it)
         SpanInfo myFinally = null;
 
-        /**
-         * Whether the `this` reference may be leaking in this span.
-         * This may happen as early as in field initializers.
-         *
-         * <p>From the point the self reference is leaked, all assignments
-         * to any field of the current instance must be considered potentially
-         * used. This includes all reaching definitions at the point of the leak.
-         *
-         * <p>Constructs that are considered to leak the `this` reference:
-         * - anonymous class creation
-         * - local or inner class creation (todo needs new symtable)
-         * - capturing lambda creation (todo needs new type res)
-         * - using `this` as the RHS of any assignment
-         * - using `this` as a method/ctor argument
-         * - using `this` as the LHS of a method/ctor call (todo needs new type res)
-         * - `this(..)` ctor call, if the called ctor may leak the reference (todo needs new typeres)
-         * - `super(..)` ctor call, if the called ctor may leak the reference, or calls any virtual method (todo needs new typeres)
-         *
-         * <p>Before 7.0, we'll adopt the following conservative strategy:
-         * - is considered leaking:
-         *   - any ctor of a class that has a superclass != Object
-         *   - any `this(..)` ctor call
-         *   - any occurrence of `this`, except as the LHS of a field access
-         *   - any lambda creation
-         *   - any anonymous class creation
-         * - constructor calls will be ignored (may cause FPs if they create inner/local classes)
-         */
-        boolean thisIsLeaking;
-
         final GlobalAlgoState global;
 
         final Map<ASTVariableDeclaratorId, VarLocalInfo> symtable;
@@ -1206,16 +1168,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         void assign(ASTVariableDeclaratorId var, JavaNode rhs) {
-            boolean mayBeUsedByLeakedThis = this.thisIsLeaking && var.isField();
-
-            if (mayBeUsedByLeakedThis) {
-                // after a leak, all assignments are considered used
-                use(var);
-            }
-
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
             VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
-            if (previous != null && !mayBeUsedByLeakedThis) {
+            if (previous != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry killed : previous.reachingDefs) {
                     if (killed.rhs instanceof ASTVariableDeclaratorId
@@ -1247,9 +1202,31 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             symtable.remove(var);
         }
 
-        public SpanInfo setThisIsLeaking(boolean thisIsLeaking) {
-            this.thisIsLeaking = thisIsLeaking;
-            return this;
+        /**
+         * Record a leak of the `this` reference in a ctor (including field initializers).
+         *
+         * <p>This means, all defs reaching this point, for all fields
+         * of `this`, may be used in the expression. We assume that the
+         * ctor finishes its execution atomically, that is, following
+         * definitions are not observable at an arbitrary point (that
+         * would be too conservative).
+         *
+         * <p>Constructs that are considered to leak the `this` reference
+         * (only processed if they occur in a ctor):
+         * - using `this` as a method/ctor argument
+         * - using `this` as the receiver of a method/ctor invocation
+         *
+         * <p>Because `this` may be aliased (eg in a field, a local var,
+         * inside an anon class or capturing lambda, etc), any method
+         * call, on any receiver, may actually observe field definitions
+         * of `this`. So the analysis may show some false positives, which
+         * hopefully should be rare enough.
+         */
+        public void recordThisLeak(boolean thisIsLeaking, ClassScope enclosingClassScope) {
+            if (thisIsLeaking && enclosingClassScope != null) {
+                // all reaching defs to fields until now may be observed
+                ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassScope);
+            }
         }
 
         // Forks duplicate this context, to preserve the reaching defs
@@ -1282,9 +1259,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo doFork(SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
-            SpanInfo spanInfo = new SpanInfo(parent, this.global, reaching);
-            spanInfo.thisIsLeaking = this.thisIsLeaking;
-            return spanInfo;
+            return new SpanInfo(parent, this.global, reaching);
         }
 
         SpanInfo abruptCompletion(SpanInfo target) {
@@ -1311,10 +1286,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (other == this || other == null || other.symtable.isEmpty()) {
                 return this;
             }
-
-            // When merging two branches, the `this` reference may leak
-            // in the output if it may leak in any of the branches
-            this.thisIsLeaking |= other.thisIsLeaking;
 
             // we don't have to double the capacity since they're normally of the same size
             // (vars are deleted when exiting a block)
