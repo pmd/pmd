@@ -187,15 +187,6 @@ public class CloseResourceRule extends AbstractJavaRule {
         return null;
     }
 
-    private boolean isNotMethodCall(ASTExpression expr) {
-        return !isMethodCall(expr);
-    }
-
-    private boolean isMethodCall(ASTExpression expression) {
-        return expression != null && expression.getNumChildren() > 0
-                && expression.getChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
-    }
-
     private TypeNode wrappedResourceTypeOrReturn(ASTVariableDeclarator var, TypeNode defaultVal) {
         if (var.hasInitializer()) {
             TypeNode wrappedResType = getWrappedResourceType(var);
@@ -221,7 +212,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTArgumentList argsList = allocation.getFirstDescendantOfType(ASTArgumentList.class);
             if (argsList != null) {
                 ASTExpression firstArg = argsList.getFirstChildOfType(ASTExpression.class);
-                return isNotLiteral(firstArg) ? firstArg : null;
+                return isNotLiteral(firstArg) && isNotMethodCall(firstArg) ? firstArg : null;
             }
         }
         return null;
@@ -239,6 +230,15 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isNotLiteral(ASTExpression expression) {
         ASTLiteral literal = expression.getFirstDescendantOfType(ASTLiteral.class);
         return literal == null;
+    }
+
+    private boolean isNotMethodCall(ASTExpression expr) {
+        return !isMethodCall(expr);
+    }
+
+    private boolean isMethodCall(ASTExpression expression) {
+        return expression != null && expression.getNumChildren() > 0
+                && expression.getChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
     }
 
     private boolean isNotAllowedResourceType(TypeNode varType) {

@@ -1316,4 +1316,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>wrapped ByteArrayInputStream false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+    public void bar() {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(new byte[10]);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+        int c = ois.read();
+        bos.close();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
