@@ -2782,5 +2782,136 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>This reference leak #2668</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>19</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'ignore' is never used (overwritten on line 20)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+            class Worker {
+                private final Worker.Listener listener;
+
+                Worker(Listener listener) {
+                    this.listener = listener;
+                    work();
+                }
+
+                void work() {listener.onWork();}
+
+                interface Listener { void onWork(); }
+            }
+
+            class A implements Worker.Listener {
+                private boolean ignore;
+                private Worker worker;
+
+                A() {
+                    ignore = false; // actually unused
+                    ignore = true;
+                    worker = new Worker(this); // leak (`ignore = true` may be used)
+                    ignore = false; // since the this reference has leaked, this may be observed by another thread
+                    ignore = false;
+                }
+
+                void doWork() { worker.work(); }
+
+                public void onWork() {
+                    if (ignore) {
+                        return;
+                    }
+                    System.out.println("onWork");
+                }
+            }
+
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak in field initializers #2668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;  // used
+
+                A() {
+                    ignore = false; // used
+                }
+
+                private Worker worker = new Worker(this.foo()); // there is a leak here
+
+                A foo() { return null; } // is virtual
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak in conditional #2668</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'ignore' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;  // unused
+
+                A() {
+                    ignore = false; // may be used by leak
+                    if (Worker.something()) {
+                        worker = new Worker(this.foo());
+                    } else {
+                        worker = null;
+                        ignore = true; // false negative? there is no leak in this branch
+                    }
+                    ignore = true; // but there is in the merged state
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak with super call #2668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A extends Worker { // extends some unknown class
+                private boolean ignore = true;  // may be used by virtual method in super call
+
+                A() {
+                    // implicit super call
+                    ignore = false; // may be used by leak
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak in conditional 2 #2668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;  // may be used by leak
+
+                A() {
+                    this(2); // this is opaque and we must assume that the ref is leaked
+                    ignore = false; // may be used by leak
+                }
+
+                A(int k) {
+                    // actually doesn't leak the this..
+                }
+            }
+            ]]></code>
+    </test-code>
 
 </test-data>
