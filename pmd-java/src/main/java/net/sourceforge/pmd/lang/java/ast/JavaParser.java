@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
@@ -22,8 +21,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
 
-    public JavaParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
-        super(parserOptions);
+    public JavaParser(LanguageLevelChecker<?> checker) {
         this.checker = checker;
     }
 
@@ -39,9 +37,8 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
-        String suppressMarker = options.getSuppressMarker();
         if (suppressMarker != null) {
             parser.setSuppressMarker(suppressMarker);
         }

@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd;
 
+import static java.util.Collections.emptyList;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.StringReader;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.processor.PmdRunnable;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class ExcludeLinesTest extends RuleTst {
     private Rule rule;
@@ -34,15 +33,19 @@ public class ExcludeLinesTest extends RuleTst {
 
     @Test
     public void testAlternateMarker() throws Exception {
-        PMD p = new PMD();
-        p.getConfiguration().setSuppressMarker("FOOBAR");
-        RuleContext ctx = new RuleContext();
-        Report r = new Report();
-        ctx.setReport(r);
-        ctx.setSourceCodeFile(new File("n/a"));
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
+        PMDConfiguration config = new PMDConfiguration();
+        config.setSuppressMarker("FOOBAR");
+
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
+
+        Report r = new PmdRunnable(
+            DataSource.forString(TEST3, "test.java"),
+            emptyList(),
+            new RuleContext(),
+            listOf(rules),
+            config
+        ).call();
+
         assertTrue(r.getViolations().isEmpty());
         assertEquals(r.getSuppressedViolations().size(), 1);
     }

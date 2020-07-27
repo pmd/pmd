@@ -20,7 +20,7 @@ public class XmlHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new XmlParser(parserOptions);
+        return new XmlParser((XmlParserOptions) parserOptions);
     }
 
 }

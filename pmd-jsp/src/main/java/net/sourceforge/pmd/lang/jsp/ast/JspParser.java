@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -16,10 +15,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
  * JSP language parser.
  */
 public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
-
-    public JspParser(ParserOptions parserOptions) {
-        super(parserOptions);
-    }
 
     @Override
     protected JavaccTokenDocument newDocument(String fullText) {
@@ -32,7 +27,7 @@ public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker) throws ParseException {
         return new JspParserImpl(cs).CompilationUnit();
     }
 

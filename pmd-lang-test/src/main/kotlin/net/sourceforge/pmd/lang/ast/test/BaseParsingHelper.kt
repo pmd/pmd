@@ -3,14 +3,8 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
-import net.sourceforge.pmd.lang.ParserOptions
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.*
+import net.sourceforge.pmd.lang.ast.*
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.io.StringReader
@@ -116,7 +110,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
+        val task = Parser.ParserTask(lversion, "test-file", sourceCode, SemanticErrorReporter.noop())
+        val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
             postProcessing(handler, lversion, rootNode)
         }

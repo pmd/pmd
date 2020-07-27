@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.testframework;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,21 +33,22 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.processor.PmdRunnable;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Advanced methods for test cases
@@ -265,18 +265,18 @@ public abstract class RuleTst {
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
         try {
-            PMD p = new PMD();
-            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
+            PMDConfiguration config = new PMDConfiguration();
+            config.setIgnoreIncrementalAnalysis(true);
+
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                p.getConfiguration().prependClasspath(".");
+                config.prependClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                p.getConfiguration().setClassLoader(new ClassLoader() {
+                config.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -286,13 +286,20 @@ public abstract class RuleTst {
                     }
                 });
             }
-            RuleContext ctx = new RuleContext();
+
+            RuleContext ctx = RuleContext.throwingExceptions();
             ctx.setReport(report);
-            ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
-            ctx.setIgnoreExceptions(false);
             RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-            p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+
+            report.merge(new PmdRunnable(
+                DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
+                Collections.emptyList(),
+                ctx,
+                listOf(rules),
+                config
+            ).call());
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

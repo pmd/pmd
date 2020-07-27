@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.internal;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -24,11 +22,13 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public class StageDependencyTest {
@@ -36,19 +36,18 @@ public class StageDependencyTest {
     private final LanguageVersion version = LanguageRegistry.findLanguageByTerseName("dummy").getVersion("1.0");
 
     private DummyNode process(String source, RuleSets ruleSets) {
-        PMDConfiguration configuration = new PMDConfiguration();
-        return process(source, ruleSets, new RulesetStageDependencyHelper(configuration), configuration);
+        return process(source, ruleSets, new RulesetStageDependencyHelper(new PMDConfiguration()));
     }
 
-    private DummyNode process(String source, RuleSets ruleSets, RulesetStageDependencyHelper helper, PMDConfiguration configuration) {
+    private DummyNode process(String source, RuleSets ruleSets, RulesetStageDependencyHelper helper) {
 
-        RuleContext context = new RuleContext();
+        // TODO Handle Rules having different parser options.
 
+        Parser parser = version.getLanguageVersionHandler().getParser();
 
-        Parser parser = PMD.parserFor(version, configuration);
-        context.setLanguageVersion(version);
+        ParserTask task = new ParserTask(version, "dummyfile.dummy", source, SemanticErrorReporter.noop());
 
-        RootNode rootNode = (RootNode) parser.parse("dummyfile.dummy", new StringReader(source));
+        RootNode rootNode = parser.parse(task);
 
         helper.runLanguageSpecificStages(ruleSets, version, rootNode);
 

@@ -63,6 +63,11 @@ public interface LanguageVersionHandler {
     Parser getParser(ParserOptions parserOptions);
 
 
+    default Parser getParser() {
+        return getParser(getDefaultParserOptions());
+    }
+
+
     /**
      * Get the RuleViolationFactory.
      */

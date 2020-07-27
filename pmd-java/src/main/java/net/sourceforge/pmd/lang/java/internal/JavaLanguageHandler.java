@@ -53,7 +53,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JavaParser(levelChecker, parserOptions);
+        return new JavaParser(levelChecker);
     }
 
     @Override

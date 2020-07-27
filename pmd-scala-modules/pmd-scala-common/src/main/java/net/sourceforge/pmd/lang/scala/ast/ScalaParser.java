@@ -4,12 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import org.apache.commons.io.IOUtils;
-
-import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
@@ -23,7 +18,7 @@ import scala.meta.internal.parsers.ScalametaParser;
  * Scalameta. This parser then wraps all of ScalaMeta's Nodes in Java versions
  * for compatibility.
  */
-public final class ScalaParser extends AbstractParser {
+public final class ScalaParser implements Parser {
     private final Dialect dialect;
 
     /**
@@ -35,19 +30,13 @@ public final class ScalaParser extends AbstractParser {
      *            any additional options for this parser
      */
     public ScalaParser(Dialect scalaDialect, ParserOptions parserOptions) {
-        super(parserOptions);
+        super();
         this.dialect = scalaDialect;
     }
 
     @Override
-    public ASTSource parse(String fileName, Reader source) throws ParseException {
-        Input.VirtualFile virtualFile;
-        try {
-            String sourceString = IOUtils.toString(source);
-            virtualFile = new Input.VirtualFile(fileName, sourceString);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+    public ASTSource parse(ParserTask task) throws ParseException {
+        Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         return (ASTSource) new ScalaTreeBuilder().build(src);
     }

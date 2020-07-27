@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -25,8 +24,6 @@ import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
- * Temporary helper for {@link SourceCodeProcessor} until we change rulesets.
- * See comment in SourceCodeProcessor.
  *
  * @author Clément Fournier
  */

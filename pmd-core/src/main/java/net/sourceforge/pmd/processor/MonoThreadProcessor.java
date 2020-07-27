@@ -15,7 +15,7 @@ import net.sourceforge.pmd.renderers.Renderer;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public final class MonoThreadProcessor extends AbstractPMDProcessor {
+final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     private final List<Report> reports = new ArrayList<>();
 

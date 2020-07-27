@@ -34,12 +34,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
-import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
@@ -76,8 +71,6 @@ public class PMD {
      */
     protected final PMDConfiguration configuration;
 
-    private final SourceCodeProcessor rulesetsFileProcessor;
-
     /**
      * Constant that contains always the current version of PMD.
      * @deprecated Use {@link PMDVersion#VERSION} instead.
@@ -101,7 +94,6 @@ public class PMD {
      */
     public PMD(PMDConfiguration configuration) {
         this.configuration = configuration;
-        this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
     }
 
     /**
@@ -152,27 +144,6 @@ public class PMD {
     }
 
     /**
-     * Helper method to get a configured parser for the requested language. The
-     * parser is configured based on the given {@link PMDConfiguration}.
-     *
-     * @param languageVersion
-     *            the requested language
-     * @param configuration
-     *            the given configuration
-     * @return the pre-configured parser
-     */
-    public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
-
-        // TODO Handle Rules having different parser options.
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-        ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-        if (configuration != null) {
-            options.setSuppressMarker(configuration.getSuppressMarker());
-        }
-        return languageVersionHandler.getParser(options);
-    }
-
-    /**
      * Get the runtime configuration. The configuration can be modified to
      * affect how PMD behaves.
      *
@@ -181,15 +152,6 @@ public class PMD {
      */
     public PMDConfiguration getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * Gets the source code processor.
-     *
-     * @return SourceCodeProcessor
-     */
-    public SourceCodeProcessor getSourceCodeProcessor() {
-        return rulesetsFileProcessor;
     }
 
     /**
@@ -233,6 +195,7 @@ public class PMD {
             });
 
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                encourageToUseIncrementalAnalysis(configuration);
                 processFiles(configuration, ruleSetFactory, files, ctx, renderers);
             }
 
@@ -295,17 +258,55 @@ public class PMD {
      * @param renderers
      *            List of {@link Renderer}s
      */
-    public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-            final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+    public static void processFiles(final PMDConfiguration configuration,
+                                    final RuleSetFactory ruleSetFactory,
+                                    final List<DataSource> files,
+                                    final RuleContext ctx,
+                                    final List<Renderer> renderers) {
+
+        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
+
+        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), silentFactory);
+
+        final Set<Rule> brokenRules = removeBrokenRules(rs);
+        for (final Rule rule : brokenRules) {
+            ctx.getReport().addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
+        }
+
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
-        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
+        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+
+        AbstractPMDProcessor.newFileProcessor(configuration).processFiles(rs, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }
+
+
+    /**
+     * Remove and return the misconfigured rules from the rulesets and log them
+     * for good measure.
+     *
+     * @param ruleSets RuleSets to prune of broken rules.
+     *
+     * @return Set<Rule>
+     */
+    private static Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
+        final Set<Rule> brokenRules = new HashSet<>();
+        ruleSets.removeDysfunctionalRules(brokenRules);
+
+        for (final Rule rule : brokenRules) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING,
+                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
+            }
+        }
+
+        return brokenRules;
+    }
+
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
         if (configuration.isStressTest()) {
@@ -334,15 +335,6 @@ public class PMD {
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
                     + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
         }
-    }
-
-    /*
-     * Check if multithreaded support is available. ExecutorService can also
-     * be disabled if threadCount is not positive, e.g. using the
-     * "-threads 0" command line option.
-     */
-    private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
-        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration) : new MonoThreadProcessor(configuration);
     }
 
     /**

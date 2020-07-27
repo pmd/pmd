@@ -20,7 +20,7 @@ public class Ecmascript3Handler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new Ecmascript3Parser(parserOptions);
+        return new Ecmascript3Parser((EcmascriptParserOptions) parserOptions);
     }
 
 }

@@ -39,7 +39,7 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new ApexParser(parserOptions);
+        return new ApexParser();
     }
 
 

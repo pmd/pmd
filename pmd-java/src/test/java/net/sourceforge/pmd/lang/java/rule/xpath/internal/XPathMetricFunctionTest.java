@@ -4,28 +4,31 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.StringReader;
+import java.util.Collections;
 import java.util.Iterator;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.processor.PmdRunnable;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Clément Fournier
@@ -47,16 +50,16 @@ public class XPathMetricFunctionTest {
     }
 
 
-    private Iterator<RuleViolation> getViolations(Rule rule, String code) throws PMDException {
-        PMD p = new PMD();
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFile(new File("n/a"));
-        ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
+    private Iterator<RuleViolation> getViolations(Rule rule, String code) {
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
-        return report.getViolations().iterator();
+
+        return new PmdRunnable(
+            DataSource.forString(code, "test.java"),
+            Collections.emptyList(),
+            RuleContext.throwingExceptions(),
+            listOf(rules),
+            new PMDConfiguration()
+        ).call().getViolations().iterator();
     }
 
 
@@ -132,15 +135,11 @@ public class XPathMetricFunctionTest {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
 
-        expected.expect(expectedThrowable);
-        expected.expectMessage(expectedMessage);
+        expected.expect(FileAnalysisException.class);
+        expected.expectCause(Matchers.allOf(CoreMatchers.instanceOf(expectedThrowable),
+                                            Matchers.hasProperty("message", Matchers.equalTo(expectedMessage))));
 
-        try {
-            getViolations(rule, code);
-        } catch (PMDException pmdE) {
-            throw (Exception) pmdE.getCause();
-        }
-
+        getViolations(rule, code);
     }
 
 

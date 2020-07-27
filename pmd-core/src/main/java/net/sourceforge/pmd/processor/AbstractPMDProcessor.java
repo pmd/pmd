@@ -5,22 +5,14 @@
 package net.sourceforge.pmd.processor;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -33,15 +25,13 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public abstract class AbstractPMDProcessor {
 
-    private static final Logger LOG = Logger.getLogger(AbstractPMDProcessor.class.getName());
-
     protected final PMDConfiguration configuration;
 
-    public AbstractPMDProcessor(PMDConfiguration configuration) {
+    AbstractPMDProcessor(PMDConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public void renderReports(final List<Renderer> renderers, final Report report) {
+    protected void renderReports(final List<Renderer> renderers, final Report report) {
 
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             for (Renderer r : renderers) {
@@ -52,74 +42,13 @@ public abstract class AbstractPMDProcessor {
         }
     }
 
-    /**
-     *
-     * @deprecated this method will be removed. It was once used to determine a short filename
-     * for the file being analyzed, so that shortnames can be reported. But the logic has
-     * been moved to the renderers.
-     */
-    @Deprecated
-    protected String filenameFrom(DataSource dataSource) {
-        return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
-    }
-
-    /**
-     * Create instances for each rule defined in the ruleset(s) in the
-     * configuration. Please note, that the returned instances <strong>must
-     * not</strong> be used by different threads. Each thread must create its
-     * own copy of the rules.
-     *
-     * @param factory The factory used to create the configured rule sets
-     * @param report The base report on which to report any configuration errors
-     * @return the rules within a rulesets
-     */
-    protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
-        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
-
-        final Set<Rule> brokenRules = removeBrokenRules(rs);
-        for (final Rule rule : brokenRules) {
-            report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
-
-        return rs;
-    }
-
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets RuleSets to prune of broken rules.
-     * @return Set<Rule>
-     */
-    private Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
-        final Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (final Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
-        }
-
-        return brokenRules;
-    }
-
     @SuppressWarnings("PMD.CloseResource")
-    // the data sources must only be closed after the threads are finished
-    // this is done manually without a try-with-resources
-    public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
-            List<Renderer> renderers) {
+    public void processFiles(RuleSets rulesets, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
+        // the data sources must only be closed after the threads are finished
+        // this is done manually without a try-with-resources
         try {
-            final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
-            configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-            final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
-
             for (final DataSource dataSource : files) {
-                // this is the real, canonical and absolute filename (not shortened)
-                String realFileName = dataSource.getNiceFileName(false, null);
-
-                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
+                runAnalysis(new PmdRunnable(dataSource, renderers, ctx, rulesets, configuration));
             }
 
             // render base report first - general errors
@@ -139,4 +68,13 @@ public abstract class AbstractPMDProcessor {
     protected abstract void runAnalysis(PmdRunnable runnable);
 
     protected abstract void collectReports(List<Renderer> renderers);
+
+    /**
+     * Returns a new file processor. The strategy used for threading is
+     * determined by {@link PMDConfiguration#getThreads()}.
+     */
+    public static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
+        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration)
+                                              : new MonoThreadProcessor(configuration);
+    }
 }

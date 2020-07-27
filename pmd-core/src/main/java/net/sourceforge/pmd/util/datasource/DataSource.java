@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.datasource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 
 /**
  * Represents a source file to be analyzed. Different implementations can get
@@ -33,4 +34,10 @@ public interface DataSource extends Closeable {
      * @return String
      */
     String getNiceFileName(boolean shortNames, String inputFileName);
+
+
+    static DataSource forString(String sourceText, String fileName) {
+        return new ReaderDataSource(new StringReader(sourceText), fileName);
+    }
+
 }

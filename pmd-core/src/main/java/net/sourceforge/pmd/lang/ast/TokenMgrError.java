@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * An error thrown during lexical analysis of a file.
  */
-public final class TokenMgrError extends RuntimeException {
+public final class TokenMgrError extends FileAnalysisException {
 
     private final int line;
     private final int column;

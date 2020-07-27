@@ -50,6 +50,7 @@ public class RuleContext {
      */
     public RuleContext(RuleContext ruleContext) {
         this.report.addListeners(ruleContext.getReport().getListeners());
+        this.setIgnoreExceptions(ruleContext.ignoreExceptions);
     }
 
     /**
@@ -97,7 +98,11 @@ public class RuleContext {
      * If there is no source file, then an empty string is returned.
      *
      * @return The file name.
+     *
+     * @deprecated Will be replaced by the document API. Nodes will
+     *     have access to their document.
      */
+    @Deprecated
     public String getSourceCodeFilename() {
         if (sourceCodeFile != null) {
             return sourceCodeFile.getName();
@@ -125,7 +130,11 @@ public class RuleContext {
      * Get the LanguageVersion associated with the current source file.
      *
      * @return The LanguageVersion, <code>null</code> if unknown.
+     *
+     * @deprecated Will be replaced by a method on Node (nodes will
+     *     know their language version).
      */
+    @Deprecated
     public LanguageVersion getLanguageVersion() {
         return this.languageVersion;
     }
@@ -138,6 +147,7 @@ public class RuleContext {
      * @param languageVersion
      *            The LanguageVersion.
      */
+    @Deprecated
     public void setLanguageVersion(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
     }
@@ -168,5 +178,11 @@ public class RuleContext {
      */
     public boolean isIgnoreExceptions() {
         return ignoreExceptions;
+    }
+
+    public static RuleContext throwingExceptions() {
+        RuleContext ctx = new RuleContext();
+        ctx.setIgnoreExceptions(false);
+        return ctx;
     }
 }

@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.test.lang;
 
-import java.io.Reader;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -50,15 +46,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public DummyRootNode parse(String fileName, Reader source) throws ParseException {
-                    DummyRootNode node = new DummyRootNode();
-                    node.setCoords(1, 1, 1, 2);
-                    node.setImage("Foo");
-                    return node;
-                }
-
+            return task -> {
+                DummyRootNode node = new DummyRootNode();
+                node.setCoords(1, 1, 1, 2);
+                node.setImage("Foo");
+                return node;
             };
         }
     }

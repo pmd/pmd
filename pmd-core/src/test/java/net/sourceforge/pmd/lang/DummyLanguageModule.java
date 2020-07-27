@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -50,15 +48,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public DummyRoot parse(String fileName, Reader source) throws ParseException {
-                    DummyRoot node = new DummyRoot();
-                    node.setCoords(1, 1, 2, 10);
-                    node.setImage("Foo");
-                    return node;
-                }
-
+            return task -> {
+                DummyRoot node = new DummyRoot();
+                node.setCoords(1, 1, 2, 10);
+                node.setImage("Foo");
+                return node;
             };
         }
     }

@@ -19,7 +19,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
-public class MultiThreadProcessor extends AbstractPMDProcessor {
+final class MultiThreadProcessor extends AbstractPMDProcessor {
     private final ExecutorService executor;
     private final CompletionService<Report> completionService;
 

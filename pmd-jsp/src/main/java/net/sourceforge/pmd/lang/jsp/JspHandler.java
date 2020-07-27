@@ -18,7 +18,7 @@ public class JspHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JspParser(parserOptions);
+        return new JspParser();
     }
 
 }

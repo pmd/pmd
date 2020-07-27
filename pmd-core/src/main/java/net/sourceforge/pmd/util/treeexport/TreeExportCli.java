@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -27,8 +28,10 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -159,24 +162,28 @@ public class TreeExportCli {
 
         LanguageVersion langVersion = LanguageRegistry.findLanguageByTerseName(language).getDefaultVersion();
         LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
-        Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
+        Parser parser = languageHandler.getParser();
 
         @SuppressWarnings("PMD.CloseResource")
-        Reader source;
+        final Reader source;
+        final String filename;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
             source = new StringReader(readFromSystemIn());
+            filename = "stdin";
         } else {
             source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
+            filename = file;
         }
 
         // disable warnings for deprecated attributes
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
-        try (Reader reader = source) {
-            RootNode root = (RootNode) parser.parse(file, reader);
+        try {
+            String fullSource = IOUtils.toString(source);
+            RootNode root = parser.parse(new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop()));
 
             AstAnalysisContext ctx = new AstAnalysisContext() {
                 @Override
@@ -193,6 +200,8 @@ public class TreeExportCli {
             languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
 
             renderer.renderSubtree(root, System.out);
+        } finally {
+            source.close();
         }
     }
 
