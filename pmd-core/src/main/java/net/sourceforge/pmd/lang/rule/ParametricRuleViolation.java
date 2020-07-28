@@ -85,7 +85,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             return packageName;
         } else {
             final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return String.valueOf(rule.getProperty(propertyDescriptor));
+            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
         }
     }
 

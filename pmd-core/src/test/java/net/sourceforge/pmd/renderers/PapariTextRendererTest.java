@@ -30,7 +30,7 @@ public class PapariTextRendererTest extends AbstractRendererTest {
     public String getExpected() {
         return "* file: " + getSourceCodeFilename() + PMD.EOL + "    src:  " + getSourceCodeFilename() + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL
                 + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL
-                + "Summary:" + PMD.EOL + PMD.EOL + " : 1" + PMD.EOL + "* warnings: 1" + PMD.EOL;
+                + "Summary:" + PMD.EOL + PMD.EOL + "* warnings: 1" + PMD.EOL;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PapariTextRendererTest extends AbstractRendererTest {
                 + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + "    src:  "
                 + getSourceCodeFilename() + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL
                 + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL
-                + PMD.EOL + " : 2" + PMD.EOL + "* warnings: 2" + PMD.EOL;
+                + PMD.EOL + "* warnings: 2" + PMD.EOL;
     }
 
     @Override

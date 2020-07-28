@@ -83,7 +83,9 @@ public class Report implements Iterable<RuleViolation> {
             long seconds = duration.getSeconds();
 
             long hours = seconds / 3600;
+            seconds -= hours * 3600;
             long minutes = seconds / 60;
+            seconds -= minutes * 60;
 
             StringBuilder res = new StringBuilder();
             if (hours > 0) {

@@ -183,10 +183,10 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         // adding error message count, if any
         if (numberOfErrors > 0) {
             writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
-                             + this.colorReset + PMD.EOL);
+                    + this.colorReset + PMD.EOL);
         }
         writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings
-                         + this.colorReset + PMD.EOL);
+                + this.colorReset + PMD.EOL);
     }
 
 
@@ -216,8 +216,10 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     /**
      * Retrieves the requested line from the specified file.
      *
-     * @param sourceFile the java or cpp source file
-     * @param line       line number to extract
+     * @param sourceFile
+     *            the java or cpp source file
+     * @param line
+     *            line number to extract
      *
      * @return a trimmed line of source code
      */
