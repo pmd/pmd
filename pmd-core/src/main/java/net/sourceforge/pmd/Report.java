@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
-import net.sourceforge.pmd.util.DateTimeUtil;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -79,7 +78,23 @@ public class Report implements Iterable<RuleViolation> {
          * @return human readable representation of the duration
          */
         public String getTime() {
-            return DateTimeUtil.asHoursMinutesSeconds(duration);
+            assert this.duration >= 0;
+            Duration duration = Duration.ofMillis(this.duration);
+            long seconds = duration.getSeconds();
+
+            long hours = seconds / 3600;
+            long minutes = seconds / 60;
+
+            StringBuilder res = new StringBuilder();
+            if (hours > 0) {
+                res.append(hours).append("h ");
+            }
+            if (hours > 0 || minutes > 0) {
+                res.append(minutes).append("m ");
+            }
+            res.append(seconds).append('s');
+
+            return res.toString();
         }
     }
 
@@ -178,7 +193,7 @@ public class Report implements Iterable<RuleViolation> {
         for (RuleViolation rv : violations) {
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
-                summary.put(name, NumericConstants.ZERO);
+                summary.put(name, 0);
             }
             Integer count = summary.get(name);
             summary.put(name, count + 1);

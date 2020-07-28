@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.Iterator;
-
-import net.sourceforge.pmd.util.SearchFunction;
+import java.util.function.Predicate;
 
 public final class Applier {
 
@@ -14,8 +13,8 @@ public final class Applier {
         // utility class
     }
 
-    public static <E> void apply(SearchFunction<E> f, Iterator<? extends E> i) {
-        while (i.hasNext() && f.applyTo(i.next())) {
+    public static <E> void apply(Predicate<E> f, Iterator<? extends E> i) {
+        while (i.hasNext() && f.test(i.next())) {
             // Nothing to do
         }
     }

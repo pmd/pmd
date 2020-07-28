@@ -26,7 +26,7 @@ public class ImageFinderFunctionTest {
         // This is an example of why tests should never build nodes manually
         ASTVariableDeclaratorId node = InternalApiBridge.newVarId("foo");
         NameDeclaration decl = new VariableNameDeclaration(node);
-        f.applyTo(decl);
+        f.test(decl);
         assertEquals(decl, f.getDecl());
     }
 
@@ -38,7 +38,7 @@ public class ImageFinderFunctionTest {
         ImageFinderFunction f = new ImageFinderFunction(imgs);
         ASTVariableDeclaratorId node = InternalApiBridge.newVarId("foo");
         NameDeclaration decl = new VariableNameDeclaration(node);
-        f.applyTo(decl);
+        f.test(decl);
         assertEquals(decl, f.getDecl());
     }
 

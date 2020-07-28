@@ -84,7 +84,10 @@ public final class CollectionUtil {
      * @param includeInterfaces
      *            boolean
      * @return boolean
+     *
+     * @deprecated Will be replaced with type resolution
      */
+    @Deprecated
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
 
         if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
@@ -92,18 +95,6 @@ public final class CollectionUtil {
         }
 
         return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
-    }
-
-    /**
-     * Returns the items as a populated set.
-     *
-     * @param items
-     *            Object[]
-     * @return Set
-     */
-    public static <T> Set<T> asSet(T[] items) {
-
-        return new HashSet<>(Arrays.asList(items));
     }
 
     /**
@@ -115,7 +106,10 @@ public final class CollectionUtil {
      * @param values
      *            V[]
      * @return Map
+     *
+     * @deprecated Used by deprecated property types
      */
+    @Deprecated
     public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
         if (keys.length != values.length) {
             throw new RuntimeException("mapFrom keys and values arrays have different sizes");
@@ -133,7 +127,10 @@ public final class CollectionUtil {
      * @param source
      *            Map
      * @return Map
+     *
+     * @deprecated Used by deprecated property types
      */
+    @Deprecated
     public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
         Map<V, K> map = new HashMap<>(source.size());
         for (Map.Entry<K, V> entry : source.entrySet()) {

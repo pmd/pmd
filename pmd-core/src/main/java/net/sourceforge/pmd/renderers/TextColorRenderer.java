@@ -22,7 +22,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * <p>
@@ -204,7 +203,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                 continue;
             }
             Integer o = summary.get(key);
-            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
+            summary.put(key, o == null ? 1 : o + 1);
         }
         return summary;
     }

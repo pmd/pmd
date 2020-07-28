@@ -117,19 +117,6 @@ public enum PropertyTypeId {
 
 
     /**
-     * Returns true if the property corresponding to this factory is packaged,
-     * which means it can be safely cast to a {@link PackagedPropertyDescriptor}.
-     *
-     * @return whether the property is packaged
-     */
-    @Deprecated
-    public boolean isPropertyPackaged() {
-        return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged
-               || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged;
-    }
-
-
-    /**
      * Returns true if the property corresponding to this factory takes
      * lists of values as its value.
      *
