@@ -18,6 +18,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+- {% jdoc !!core::Report#treeSize() %}
+- {% jdoc !!core::Report#treeIterator() %}
+- {% jdoc !!core::Report#treeIsEmpty() %}
+- {% jdoc !!core::Report#getCountSummary() %}
+
 ### External Contributions
 
 {% endtocmaker %}

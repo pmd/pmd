@@ -258,7 +258,10 @@ public class Report implements Iterable<RuleViolation> {
      * Calculate a summary of violation counts per fully classified class name.
      *
      * @return violations per class name
+     *
+     * @deprecated This is too specific. Not every violation has a qualified name.
      */
+    @Deprecated
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<>();
         for (RuleViolation rv : violationTree) {
@@ -465,7 +468,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return <code>true</code> if no violations have been reported,
      *         <code>false</code> otherwise
+     *
+     * @deprecated The {@link ReportTree} is deprecated
      */
+    @Deprecated
     public boolean treeIsEmpty() {
         return !violationTree.iterator().hasNext();
     }
@@ -474,7 +480,10 @@ public class Report implements Iterable<RuleViolation> {
      * Returns an iteration over the reported violations.
      *
      * @return an iterator
+     *
+     * @deprecated The {@link ReportTree} is deprecated
      */
+    @Deprecated
     public Iterator<RuleViolation> treeIterator() {
         return violationTree.iterator();
     }
@@ -506,7 +515,10 @@ public class Report implements Iterable<RuleViolation> {
      * The number of violations.
      *
      * @return number of violations.
+     *
+     * @deprecated The {@link ReportTree} is deprecated
      */
+    @Deprecated
     public int treeSize() {
         return violationTree.size();
     }
