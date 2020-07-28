@@ -20,10 +20,10 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
-- {% jdoc !!core::Report#treeSize() %}
-- {% jdoc !!core::Report#treeIterator() %}
-- {% jdoc !!core::Report#treeIsEmpty() %}
-- {% jdoc !!core::Report#getCountSummary() %}
+- Many methods of {% jdoc !!core::Report %}. They are replaced by accessors
+that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
+(and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
+replaced by {% jdoc !a!core::Report#getViolations() %}.
 
 ### External Contributions
 

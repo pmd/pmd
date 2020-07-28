@@ -45,12 +45,12 @@ public class Report implements Iterable<RuleViolation> {
     private final List<RuleViolation> violations = new ArrayList<>();
     private final Set<Metric> metrics = new HashSet<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
-    private List<ProcessingError> errors = new ArrayList<>();
-    private List<ConfigurationError> configErrors = new ArrayList<>();
+    private final List<ProcessingError> errors = new ArrayList<>();
+    private final List<ConfigurationError> configErrors = new ArrayList<>();
     private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
-    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
+    private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
      * Creates a new, initialized, empty report for the given file name.
@@ -272,6 +272,10 @@ public class Report implements Iterable<RuleViolation> {
         return summary;
     }
 
+    /**
+     * @deprecated The {@link ReportTree} is deprecated
+     */
+    @Deprecated
     public ReportTree getViolationTree() {
         return this.violationTree;
     }
@@ -281,7 +285,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return a Map summarizing the Report: String (rule name) -&gt; Integer (count
      *         of violations)
+     *
+     * @deprecated This is too specific, only used by one renderer.
      */
+    @Deprecated
     public Map<String, Integer> getSummary() {
         Map<String, Integer> summary = new HashMap<>();
         for (RuleViolation rv : violations) {
@@ -303,10 +310,6 @@ public class Report implements Iterable<RuleViolation> {
      */
     public void addListener(ThreadSafeReportListener listener) {
         listeners.add(listener);
-    }
-
-    public List<SuppressedViolation> getSuppressedRuleViolations() {
-        return suppressedRuleViolations;
     }
 
     /**
@@ -360,9 +363,6 @@ public class Report implements Iterable<RuleViolation> {
      *            the error to add
      */
     public void addConfigError(ConfigurationError error) {
-        if (configErrors == null) {
-            configErrors = new ArrayList<>();
-        }
         configErrors.add(error);
     }
 
@@ -373,9 +373,6 @@ public class Report implements Iterable<RuleViolation> {
      *            the error to add
      */
     public void addError(ProcessingError error) {
-        if (errors == null) {
-            errors = new ArrayList<>();
-        }
         errors.add(error);
     }
 
@@ -389,28 +386,15 @@ public class Report implements Iterable<RuleViolation> {
      * @see AbstractAccumulatingRenderer
      */
     public void merge(Report r) {
-        Iterator<ProcessingError> i = r.errors();
-        while (i.hasNext()) {
-            addError(i.next());
-        }
-        Iterator<ConfigurationError> ce = r.configErrors();
-        while (ce.hasNext()) {
-            addConfigError(ce.next());
-        }
-        Iterator<Metric> m = r.metrics();
-        while (m.hasNext()) {
-            addMetric(m.next());
-        }
-        Iterator<RuleViolation> v = r.iterator();
-        while (v.hasNext()) {
-            RuleViolation violation = v.next();
+        errors.addAll(r.errors);
+        configErrors.addAll(r.configErrors);
+        metrics.addAll(r.metrics);
+        suppressedRuleViolations.addAll(r.suppressedRuleViolations);
+
+        for (RuleViolation violation : r.getViolations()) {
             int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
             violations.add(index < 0 ? -index - 1 : index, violation);
             violationTree.addRuleViolation(violation);
-        }
-        Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
-        while (s.hasNext()) {
-            suppressedRuleViolations.add(s.next());
         }
     }
 
@@ -457,7 +441,7 @@ public class Report implements Iterable<RuleViolation> {
      */
     @Deprecated
     public boolean hasErrors() {
-        return getProcessingErrors().isEmpty();
+        return !getProcessingErrors().isEmpty();
     }
 
     /**
@@ -470,7 +454,7 @@ public class Report implements Iterable<RuleViolation> {
      */
     @Deprecated
     public boolean hasConfigErrors() {
-        return getConfigErrors().isEmpty();
+        return !getConfigErrors().isEmpty();
     }
 
     /**
@@ -509,8 +493,15 @@ public class Report implements Iterable<RuleViolation> {
 
 
     /**
+     * Returns an unmodifiable list of violations that were suppressed.
+     */
+    public List<SuppressedViolation> getSuppressedRuleViolations() {
+        return Collections.unmodifiableList(suppressedRuleViolations);
+    }
+
+    /**
      * Returns an unmodifiable list of violations that have been
-     * recorded until now.
+     * recorded until now. None of those violations were suppressed.
      */
     public List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);
@@ -587,7 +578,10 @@ public class Report implements Iterable<RuleViolation> {
      * in the end.
      *
      * @see #getElapsedTimeInMillis()
+     *
+     * @deprecated Not used, {@link #getElapsedTimeInMillis()} will be removed
      */
+    @Deprecated
     public void start() {
         start = System.currentTimeMillis();
     }
@@ -596,11 +590,17 @@ public class Report implements Iterable<RuleViolation> {
      * Mark the end time of the report. This is ued to get the elapsed time.
      *
      * @see #getElapsedTimeInMillis()
+     * @deprecated Not used, {@link #getElapsedTimeInMillis()} will be removed
      */
+    @Deprecated
     public void end() {
         end = System.currentTimeMillis();
     }
 
+    /**
+     * @deprecated Unused
+     */
+    @Deprecated
     public long getElapsedTimeInMillis() {
         return end - start;
     }
