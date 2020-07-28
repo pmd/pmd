@@ -54,10 +54,7 @@ public enum PropertyTypeId {
     @Deprecated
     FLOAT_LIST("List[Float]", FloatMultiProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
     DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    //    ENUM("Enum", EnumeratedProperty.FACTORY),                     // TODO:cf we need new syntax in the xml to support that
-    //    ENUM_LIST("List[Enum]", EnumeratedMultiProperty.FACTORY),
-    ;
+    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER);
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.Collection;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -26,7 +27,9 @@ public class LooseCouplingRule extends AbstractJavaRule {
             return data;
         }
         Node parent = node.getNthParent(3);
-        boolean isType = TypeHelper.isA(node, Collection.class);
+        boolean isType = (TypeHelper.isA(node, Collection.class) || TypeHelper.isA(node, Map.class))
+            && !(node.getType() != null && node.getType().isInterface());
+
         if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter
                 || parent instanceof ASTResultType)) {
             addViolation(data, node, node.getImage());

@@ -53,7 +53,7 @@ public final class CollectionUtil {
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
     public static final Set<String> COLLECTION_INTERFACES_BY_NAMES = collectionTypes(List.class, Collection.class, Map.class, Set.class);
 
-    @SuppressWarnings( {"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
+    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
     public static final Set<String> COLLECTION_CLASSES_BY_NAMES
         = collectionTypes(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
                           java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
