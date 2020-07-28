@@ -562,9 +562,7 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @param strings String[]
-     *
-     * @return int
+     * @throws NullPointerException If the parameter is null
      */
     public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
 
@@ -575,14 +573,12 @@ public final class StringUtil {
 
         char[] matches = new char[shortest];
 
-        String str;
         for (int m = 0; m < matches.length; m++) {
             matches[m] = strings[0].charAt(m);
             if (!Character.isWhitespace(matches[m])) {
                 return m;
             }
-            for (int i = 0; i < strings.length; i++) {
-                str = strings[i];
+            for (String str : strings) {
                 if (str.charAt(m) != matches[m]) {
                     return m;
                 }
@@ -597,13 +593,11 @@ public final class StringUtil {
      * Return the length of the shortest string in the array. If the collection
      * is empty or any one of them is null then it returns 0.
      *
-     * @param strings String[]
-     *
-     * @return int
+     * @throws NullPointerException If the parameter is null
      */
     public static int lengthOfShortestIn(String[] strings) {
 
-        if (CollectionUtil.isEmpty(strings)) {
+        if (strings.length == 0) {
             return 0;
         }
 

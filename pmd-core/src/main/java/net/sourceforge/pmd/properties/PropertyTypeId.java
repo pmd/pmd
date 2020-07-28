@@ -57,10 +57,7 @@ public enum PropertyTypeId {
     DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
     //    ENUM("Enum", EnumeratedProperty.FACTORY),                     // TODO:cf we need new syntax in the xml to support that
     //    ENUM_LIST("List[Enum]", EnumeratedMultiProperty.FACTORY),
-    @Deprecated
-    CLASS("Class", TypeProperty.extractor(), ValueParserConstants.CLASS_PARSER),
-    @Deprecated
-    CLASS_LIST("List[Class]", TypeMultiProperty.extractor(), ValueParserConstants.CLASS_PARSER);
+    ;
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
