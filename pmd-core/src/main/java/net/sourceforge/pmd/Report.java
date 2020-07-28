@@ -15,9 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -28,13 +25,6 @@ import net.sourceforge.pmd.util.NumericConstants;
  * and configuration errors.
  */
 public class Report implements Iterable<RuleViolation> {
-
-    /*
-     * The idea is to store the violations in a tree instead of a list, to do
-     * better and faster sort and filter mechanism and to visualize the result
-     * as tree. (ide plugins).
-     */
-    private final ReportTree violationTree = new ReportTree();
 
     // Note that this and the above data structure are both being maintained for
     // a bit
@@ -177,30 +167,6 @@ public class Report implements Iterable<RuleViolation> {
     }
 
 
-    private static String keyFor(RuleViolation rv) {
-
-        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
-    }
-
-    /**
-     * Calculate a summary of violation counts per fully classified class name.
-     *
-     * @return violations per class name
-     */
-    public Map<String, Integer> getCountSummary() {
-        Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : violationTree) {
-            String key = keyFor(rv);
-            Integer o = summary.get(key);
-            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
-        }
-        return summary;
-    }
-
-    public ReportTree getViolationTree() {
-        return this.violationTree;
-    }
-
     /**
      * Calculate a summary of violations per rule.
      *
@@ -283,7 +249,6 @@ public class Report implements Iterable<RuleViolation> {
     public void addRuleViolation(RuleViolation violation) {
         int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
         violations.add(index < 0 ? -index - 1 : index, violation);
-        violationTree.addRuleViolation(violation);
         for (ThreadSafeReportListener listener : listeners) {
             listener.ruleViolationAdded(violation);
         }
@@ -333,17 +298,11 @@ public class Report implements Iterable<RuleViolation> {
         while (ce.hasNext()) {
             addConfigError(ce.next());
         }
-        Iterator<RuleViolation> v = r.iterator();
-        while (v.hasNext()) {
-            RuleViolation violation = v.next();
+        for (RuleViolation violation : r) {
             int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
             violations.add(index < 0 ? -index - 1 : index, violation);
-            violationTree.addRuleViolation(violation);
         }
-        Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
-        while (s.hasNext()) {
-            suppressedRuleViolations.add(s.next());
-        }
+        suppressedRuleViolations.addAll(r.getSuppressedRuleViolations());
     }
 
     public boolean isEmpty() {
@@ -370,25 +329,6 @@ public class Report implements Iterable<RuleViolation> {
         return configErrors != null && !configErrors.isEmpty();
     }
 
-    /**
-     * Checks whether no violations have been reported.
-     *
-     * @return <code>true</code> if no violations have been reported,
-     *         <code>false</code> otherwise
-     */
-    public boolean treeIsEmpty() {
-        return !violationTree.iterator().hasNext();
-    }
-
-    /**
-     * Returns an iteration over the reported violations.
-     *
-     * @return an iterator
-     */
-    public Iterator<RuleViolation> treeIterator() {
-        return violationTree.iterator();
-    }
-
     @Override
     public Iterator<RuleViolation> iterator() {
         return violations.iterator();
@@ -410,15 +350,6 @@ public class Report implements Iterable<RuleViolation> {
      */
     public Iterator<ConfigurationError> configErrors() {
         return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
-    }
-
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     */
-    public int treeSize() {
-        return violationTree.size();
     }
 
     /**

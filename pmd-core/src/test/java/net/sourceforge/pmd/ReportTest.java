@@ -106,7 +106,7 @@ public class ReportTest implements ThreadSafeReportListener {
     }
 
     @Test
-    public void testTreeIterator() {
+    public void testIterator() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
@@ -122,14 +122,6 @@ public class ReportTest implements ThreadSafeReportListener {
             violationCount++;
         }
         assertEquals(2, violationCount);
-
-        Iterator<RuleViolation> treeIterator = r.treeIterator();
-        int treeCount = 0;
-        while (treeIterator.hasNext()) {
-            treeIterator.next();
-            treeCount++;
-        }
-        assertEquals(2, treeCount);
     }
 
     private static Node getNode(int line, int column) {

@@ -11,14 +11,18 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * <p>
@@ -145,8 +149,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         }
         writer.write(PMD.EOL + PMD.EOL);
         writer.write("Summary:" + PMD.EOL + PMD.EOL);
-        Map<String, Integer> summary = report.getCountSummary();
-        for (Map.Entry<String, Integer> entry : summary.entrySet()) {
+        for (Map.Entry<String, Integer> entry : getCountSummary(report).entrySet()) {
             buf.setLength(0);
             String key = entry.getKey();
             buf.append(key).append(" : ").append(entry.getValue()).append(PMD.EOL);
@@ -181,19 +184,42 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         // adding error message count, if any
         if (numberOfErrors > 0) {
             writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
-                    + this.colorReset + PMD.EOL);
+                             + this.colorReset + PMD.EOL);
         }
         writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings
-                + this.colorReset + PMD.EOL);
+                         + this.colorReset + PMD.EOL);
     }
+
+
+    /**
+     * Calculate a summary of violation counts per fully classified class name.
+     *
+     * @return violations per class name
+     */
+    private static Map<String, Integer> getCountSummary(Report report) {
+        Map<String, Integer> summary = new HashMap<>();
+        for (RuleViolation rv : report) {
+            String key = keyFor(rv);
+            if (key.isEmpty()) {
+                continue;
+            }
+            Integer o = summary.get(key);
+            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
+        }
+        return summary;
+    }
+
+    private static String keyFor(RuleViolation rv) {
+        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
+    }
+
 
     /**
      * Retrieves the requested line from the specified file.
      *
-     * @param sourceFile
-     *            the java or cpp source file
-     * @param line
-     *            line number to extract
+     * @param sourceFile the java or cpp source file
+     * @param line       line number to extract
+     *
      * @return a trimmed line of source code
      */
     private String getLine(String sourceFile, int line) {
