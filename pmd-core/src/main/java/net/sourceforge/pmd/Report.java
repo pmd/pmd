@@ -45,8 +45,8 @@ public class Report implements Iterable<RuleViolation> {
     private final List<RuleViolation> violations = new ArrayList<>();
     private final Set<Metric> metrics = new HashSet<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
-    private List<ProcessingError> errors;
-    private List<ConfigurationError> configErrors;
+    private List<ProcessingError> errors = new ArrayList<>();
+    private List<ConfigurationError> configErrors = new ArrayList<>();
     private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
@@ -439,6 +439,10 @@ public class Report implements Iterable<RuleViolation> {
         return metrics.iterator();
     }
 
+    /**
+     * @deprecated Use {@link #getViolations()} or {@link #getProcessingErrors()}
+     */
+    @Deprecated
     public boolean isEmpty() {
         return !violations.iterator().hasNext() && !hasErrors();
     }
@@ -448,9 +452,12 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return <code>true</code> if there were any processing errors,
      *         <code>false</code> otherwise
+     *
+     * @deprecated Use {@link #getProcessingErrors()}.isEmpty()
      */
+    @Deprecated
     public boolean hasErrors() {
-        return errors != null && !errors.isEmpty();
+        return getProcessingErrors().isEmpty();
     }
 
     /**
@@ -458,9 +465,12 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return <code>true</code> if there were any configuration errors,
      *         <code>false</code> otherwise
+     *
+     * @deprecated Use {@link #getConfigErrors()}.isEmpty()
      */
+    @Deprecated
     public boolean hasConfigErrors() {
-        return configErrors != null && !configErrors.isEmpty();
+        return getConfigErrors().isEmpty();
     }
 
     /**
@@ -488,27 +498,64 @@ public class Report implements Iterable<RuleViolation> {
         return violationTree.iterator();
     }
 
+    /**
+     * @deprecated Use {@link #getViolations()}
+     */
+    @Deprecated
     @Override
     public Iterator<RuleViolation> iterator() {
         return violations.iterator();
     }
 
+
+    /**
+     * Returns an unmodifiable list of violations that have been
+     * recorded until now.
+     */
+    public List<RuleViolation> getViolations() {
+        return Collections.unmodifiableList(violations);
+    }
+
+
+    /**
+     * Returns an unmodifiable list of processing errors that have been
+     * recorded until now.
+     */
+    public List<ProcessingError> getProcessingErrors() {
+        return Collections.unmodifiableList(errors);
+    }
+
+
+    /**
+     * Returns an unmodifiable list of configuration errors that have
+     * been recorded until now.
+     */
+    public List<ConfigurationError> getConfigErrors() {
+        return Collections.unmodifiableList(configErrors);
+    }
+
+
     /**
      * Returns an iterator of the reported processing errors.
      *
      * @return the iterator
+     *
+     * @deprecated Use {@link #getProcessingErrors()}
      */
+    @Deprecated
     public Iterator<ProcessingError> errors() {
-        return errors == null ? Collections.<ProcessingError>emptyIterator() : errors.iterator();
+        return getProcessingErrors().iterator();
     }
 
     /**
      * Returns an iterator of the reported configuration errors.
      *
      * @return the iterator
+     * @deprecated Use {@link #getConfigErrors()}
      */
+    @Deprecated
     public Iterator<ConfigurationError> configErrors() {
-        return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
+        return getConfigErrors().iterator();
     }
 
     /**
@@ -527,7 +574,10 @@ public class Report implements Iterable<RuleViolation> {
      * The number of violations.
      *
      * @return number of violations.
+     *
+     * @deprecated Use {@link #getViolations()}
      */
+    @Deprecated
     public int size() {
         return violations.size();
     }
