@@ -8,6 +8,12 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * @deprecated The data flow codebase will be removed from PMD in PMD 7.
+ *      The feature is unreliable, hard to use, and the implementation is
+ *      unmaintainable.
+ */
+@Deprecated
 public interface DataFlowNode {
     List<VariableAccess> getVariableAccess();
 
