@@ -26,26 +26,26 @@ public class XmlParserOptions extends ParserOptions {
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
     public static final BooleanProperty COALESCING_DESCRIPTOR = new BooleanProperty("coalescing",
-            "Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.",
+            "deprecated!Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.",
             Boolean.FALSE, 3.0f);
     public static final BooleanProperty EXPAND_ENTITY_REFERENCES_DESCRIPTOR = new BooleanProperty(
-            "expandEntityReferences", "Specifies that the XML parser expand entity reference nodes.", Boolean.TRUE,
+            "expandEntityReferences", "deprecated!Specifies that the XML parser expand entity reference nodes.", Boolean.TRUE,
             4.0f);
     public static final BooleanProperty IGNORING_COMMENTS_DESCRIPTOR = new BooleanProperty("ignoringComments",
-            "Specifies that the XML parser ignore comments.", Boolean.FALSE, 5.0f);
+            "deprecated!Specifies that the XML parser ignore comments.", Boolean.FALSE, 5.0f);
     public static final BooleanProperty IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = new BooleanProperty(
             "ignoringElementContentWhitespace",
-            "Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.",
+            "deprecated!Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.",
             Boolean.FALSE, 6.0f);
     public static final BooleanProperty NAMESPACE_AWARE_DESCRIPTOR = new BooleanProperty("namespaceAware",
-            "Specifies that the XML parser will provide support for XML namespaces.", Boolean.TRUE, 7.0f);
+            "deprecated!Specifies that the XML parser will provide support for XML namespaces.", Boolean.TRUE, 7.0f);
     public static final BooleanProperty VALIDATING_DESCRIPTOR = new BooleanProperty("validating",
-            "Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.",
+            "deprecated!Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.",
             Boolean.FALSE, 8.0f);
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = new BooleanProperty("xincludeAware",
-            "Specifies that the XML parser will process XInclude markup.", Boolean.FALSE, 9.0f);
+            "deprecated!Specifies that the XML parser will process XInclude markup.", Boolean.FALSE, 9.0f);
     public static final BooleanProperty LOOKUP_DESCRIPTOR_DTD = new BooleanProperty("xincludeAware",
-            "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
+            "deprecated!Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
 
     public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
         @Override

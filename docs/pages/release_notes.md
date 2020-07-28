@@ -18,6 +18,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+- {% jdoc !!core::Rule#getParserOptions() %}
+- {% jdoc !!core::lang.Parser#getParserOptions() %}
+- {% jdoc !!core::lang.AbstractParser %}
+- {% jdoc apex::lang.apex.ApexParserOptions %}
+- {% jdoc xml::lang.xml.XmlParserOptions %}
+- {% jdoc xml::lang.xml.rule.XmlXpathRule %}
+- Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+- {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
+
 ### External Contributions
 
 {% endtocmaker %}
