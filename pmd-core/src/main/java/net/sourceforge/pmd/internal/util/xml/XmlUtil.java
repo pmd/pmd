@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__MISSIN
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -18,10 +17,10 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 
+import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 public final class XmlUtil {
@@ -30,18 +29,10 @@ public final class XmlUtil {
 
     }
 
-    public static List<Node> toList(NodeList lst) {
-        ArrayList<Node> nodes = new ArrayList<>();
-        for (int i = 0; i < lst.getLength(); i++) {
-            nodes.add(lst.item(i));
-        }
-        return nodes;
-    }
-
     public static Stream<Element> getElementChildren(Element parent) {
-        return toList(parent.getChildNodes()).stream()
-                                             .filter(it -> it.getNodeType() == Node.ELEMENT_NODE)
-                                             .map(Element.class::cast);
+        return DomUtils.asList(parent.getChildNodes()).stream()
+                       .filter(it -> it.getNodeType() == Node.ELEMENT_NODE)
+                       .map(Element.class::cast);
     }
 
     public static Stream<Element> getElementChildrenNamed(Element parent, Set<String> names) {

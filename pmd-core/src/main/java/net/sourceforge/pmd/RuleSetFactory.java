@@ -35,6 +35,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -451,7 +452,7 @@ public class RuleSetFactory {
 
         for (Element node : DomUtils.elementsIn(ruleSetElement)) {
             String nodeName = node.getNodeName();
-            String text = parseTextNode(node);
+            String text = XmlUtil.parseTextNode(node);
             switch (nodeName) {
             case RuleFactory.DESCRIPTION:
                 builder.withDescription(text);
@@ -593,7 +594,7 @@ public class RuleSetFactory {
                 String excludedRuleName = excludeElement.getAttribute("name");
                 excludedRulesCheck.add(excludedRuleName);
             } else if (isElementNode(child, RuleFactory.PRIORITY)) {
-                priority = parseTextNode(child).trim();
+                priority = XmlUtil.parseTextNode(child).trim();
             }
         }
         final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
@@ -827,31 +828,6 @@ public class RuleSetFactory {
 
     private static boolean isElementNode(Node node, String name) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
-    }
-
-    /**
-     * Parse a String from a textually type node.
-     *
-     * @param node
-     *            The node.
-     * @return The String.
-     */
-    private static String parseTextNode(Node node) {
-
-        final int nodeCount = node.getChildNodes().getLength();
-        if (nodeCount == 0) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < nodeCount; i++) {
-            Node childNode = node.getChildNodes().item(i);
-            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(childNode.getNodeValue());
-            }
-        }
-        return buffer.toString();
     }
 
 
