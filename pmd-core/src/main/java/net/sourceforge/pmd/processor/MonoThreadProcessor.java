@@ -9,7 +9,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.Renderer;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -26,16 +25,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
     @Override
     protected void runAnalysis(PmdRunnable runnable) {
         // single thread execution, run analysis on same thread
-        reports.add(runnable.call());
+        runnable.run();
     }
 
-    @Override
-    protected void collectReports(List<Renderer> renderers) {
-        for (Report r : reports) {
-            super.renderReports(renderers, r);
-        }
-
-        // Since this thread may run PMD again, clean up the runnable
-        PmdRunnable.reset();
-    }
 }

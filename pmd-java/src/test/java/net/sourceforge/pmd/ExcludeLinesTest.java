@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +39,6 @@ public class ExcludeLinesTest extends RuleTst {
 
         Report r = new PmdRunnable(
             DataSource.forString(TEST3, "test.java"),
-            emptyList(),
             new RuleContext(),
             listOf(rules),
             config

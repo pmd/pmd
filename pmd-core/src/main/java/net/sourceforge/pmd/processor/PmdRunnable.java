@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +21,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -31,10 +32,9 @@ import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PmdRunnable implements Callable<Report> {
+public class PmdRunnable implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
 
@@ -42,33 +42,31 @@ public class PmdRunnable implements Callable<Report> {
 
     private final DataSource dataSource;
     private final File file;
-    private final List<Renderer> renderers;
-    private final RuleContext ruleContext;
-    private final RuleSets ruleSets;
+    private final GlobalAnalysisListener ruleContext;
+
+    // rename so that it's significantly different from tc.rulesets
+    private final Supplier<RuleSets> ruleSetMaker;
     private final PMDConfiguration configuration;
 
     private final RulesetStageDependencyHelper dependencyHelper;
 
     public PmdRunnable(DataSource dataSource,
-                       List<Renderer> renderers,
-                       RuleContext ruleContext,
+                       GlobalAnalysisListener ruleContext,
                        List<RuleSet> ruleSets,
                        PMDConfiguration configuration) {
-        this(dataSource, renderers, ruleContext, new RuleSets(ruleSets), configuration);
+        this(dataSource, ruleContext, new RuleSets(ruleSets), configuration);
     }
 
     public PmdRunnable(DataSource dataSource,
-                       List<Renderer> renderers,
-                       RuleContext ruleContext,
+                       GlobalAnalysisListener ruleContext,
                        RuleSets ruleSets,
                        PMDConfiguration configuration) {
-        this.ruleSets = ruleSets;
+        this.ruleSetMaker = () -> new RuleSets(ruleSets);
         this.dataSource = dataSource;
         // this is the real, canonical and absolute filename (not shortened)
         String realFileName = dataSource.getNiceFileName(false, null);
 
         this.file = new File(realFileName);
-        this.renderers = renderers;
         this.ruleContext = ruleContext;
         this.configuration = configuration;
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
@@ -79,64 +77,54 @@ public class PmdRunnable implements Callable<Report> {
     }
 
     @Override
-    public Report call() {
+    public void run() {
         TimeTracker.initThread();
 
         ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
         if (tc == null) {
-            tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
+            tc = new ThreadContext(ruleSetMaker.get());
             LOCAL_THREAD_CONTEXT.set(tc);
         }
-        RuleContext ruleCtx = tc.ruleContext;
-        LanguageVersion langVersion =
-            ruleContext.getLanguageVersion() != null ? ruleCtx.getLanguageVersion()
-                                                     : configuration.getLanguageVersionOfFile(file.getPath());
+        try (RuleContext ruleCtx = new RuleContext(ruleContext.startFileAnalysis(dataSource))) {
 
-        Report report = new Report();
-        // overtake the listener
-        report.addListeners(ruleCtx.getReport().getListeners());
-        ruleCtx.setReport(report);
-        ruleCtx.setSourceCodeFile(file);
-        ruleCtx.setLanguageVersion(langVersion);
+            LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
+            ruleCtx.setLanguageVersion(langVersion);
+            ruleCtx.setSourceCodeFile(file);
 
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("Processing " + file);
-        }
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Processing " + file);
+            }
 
-        for (Renderer r : renderers) {
-            r.startFileAnalysis(dataSource);
-        }
+            // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
+            if (tc.ruleSets.applies(file)) {
+                if (configuration.getAnalysisCache().isUpToDate(file)) {
+                    reportCachedRuleViolations(ruleCtx);
+                } else {
+                    try {
+                        processSource(ruleCtx, langVersion, tc.ruleSets);
+                    } catch (Exception e) {
+                        configuration.getAnalysisCache().analysisFailed(file);
+                        ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
 
-
-        // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
-        if (ruleSets.applies(file)) {
-            if (configuration.getAnalysisCache().isUpToDate(file)) {
-                reportCachedRuleViolations(ruleCtx);
-            } else {
-                try {
-                    processSource(ruleCtx, langVersion);
-                } catch (Exception e) {
-                    configuration.getAnalysisCache().analysisFailed(file);
-                    report.addError(new Report.ProcessingError(e, file.getPath()));
-
-                    if (ruleCtx.isIgnoreExceptions()) {
-                        LOG.log(Level.FINE, "Exception while processing file: " + file, e);
-                    } else {
-                        if (e instanceof FileAnalysisException) {
-                            throw (FileAnalysisException) e;
+                        if (ruleCtx.isIgnoreExceptions()) {
+                            LOG.log(Level.FINE, "Exception while processing file: " + file, e);
+                        } else {
+                            if (e instanceof FileAnalysisException) {
+                                throw (FileAnalysisException) e;
+                            }
+                            throw new FileAnalysisException(e);
                         }
-                        throw new FileAnalysisException(e);
                     }
                 }
             }
+        } catch (Exception e) {
+            throw new FileAnalysisException("Exception while closing listener for file " + file, e);
         }
 
         TimeTracker.finishThread();
-
-        return report;
     }
 
-    public void processSource(RuleContext ruleCtx, LanguageVersion languageVersion) throws IOException, FileAnalysisException {
+    public void processSource(RuleContext ruleCtx, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
         String fullSource;
         try (InputStream stream = dataSource.getInputStream()) {
             fullSource = IOUtils.toString(stream, configuration.getSourceEncoding());
@@ -154,7 +142,7 @@ public class PmdRunnable implements Callable<Report> {
 
     private void reportCachedRuleViolations(final RuleContext ctx) {
         for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
-            ctx.getReport().addRuleViolation(rv);
+            ctx.addViolationNoSuppress(rv);
         }
     }
 
@@ -190,11 +178,9 @@ public class PmdRunnable implements Callable<Report> {
     private static class ThreadContext {
 
         /* default */ final RuleSets ruleSets;
-        /* default */ final RuleContext ruleContext;
 
-        ThreadContext(RuleSets ruleSets, RuleContext ruleContext) {
+        ThreadContext(RuleSets ruleSets) {
             this.ruleSets = ruleSets;
-            this.ruleContext = ruleContext;
         }
     }
 }

@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -399,42 +400,46 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws PMDException {
+    public void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws Exception {
         File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
 
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .addRule(rule)
-                .build();
+            .addRule(rule)
+            .build();
 
         RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2")
-                .addRule(rule)
-                .build();
+            .addRule(rule)
+            .build();
 
         RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
-        RuleContext ctx = new RuleContext();
-        Report r = new Report();
-        ctx.setReport(r);
-        ctx.setSourceCodeFile(file);
-        ctx.setLanguageVersion(dummyLang.getDefaultVersion());
-        ruleSets.apply(makeCompilationUnits(), ctx);
-        assertEquals("Violations", 2, r.getViolations().size());
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setSourceCodeFile(file);
+            ctx.setLanguageVersion(dummyLang.getDefaultVersion());
+            ruleSets.apply(makeCompilationUnits(), ctx);
+        }
+        assertEquals("Violations", 2, reportBuilder.getReport().getViolations().size());
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .withFileExclusions(Pattern.compile(".*/package/.*"))
-                .addRule(rule)
-                .build();
+            .withFileExclusions(Pattern.compile(".*/package/.*"))
+            .addRule(rule)
+            .build();
 
         ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
-        r = new Report();
-        ctx.setReport(r);
-        ruleSets.apply(makeCompilationUnits(), ctx);
-        assertEquals("Violations", 1, r.getViolations().size());
+        reportBuilder = new ReportBuilderListener();
+
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setSourceCodeFile(file);
+            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+            ruleSets.apply(makeCompilationUnits(), ctx);
+        }
+        assertEquals("Violations", 1, reportBuilder.getReport().getViolations().size());
     }
 
     @Test
@@ -482,7 +487,7 @@ public class RuleSetTest {
     }
 
     @Test
-    public void ruleExceptionShouldBeReported() {
+    public void ruleExceptionShouldBeReported() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
                 .addRule(new MockRule() {
                     @Override
@@ -491,15 +496,16 @@ public class RuleSetTest {
                     }
                 })
                 .build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(dummyLang.getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
-        context.setIgnoreExceptions(true); // the default
-        ruleset.apply(makeCompilationUnits(), context);
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext context = new RuleContext(reportBuilder)) {
+            context.setLanguageVersion(dummyLang.getDefaultVersion());
+            context.setSourceCodeFile(new File("foo.dummy"));
+            context.setIgnoreExceptions(true); // the default
+            ruleset.apply(makeCompilationUnits(), context);
+        }
 
-        List<ProcessingError> errors = context.getReport().getProcessingErrors();
-        assertTrue("Report should have processing errors", !errors.isEmpty());
+        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
+        assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
@@ -524,7 +530,7 @@ public class RuleSetTest {
     }
 
     @Test
-    public void ruleExceptionShouldNotStopProcessingFile() {
+    public void ruleExceptionShouldNotStopProcessingFile() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
@@ -536,24 +542,24 @@ public class RuleSetTest {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(dummyLang.getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
-        context.setIgnoreExceptions(true); // the default
-        ruleset.apply(makeCompilationUnits(), context);
-
-        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext context = new RuleContext(reportBuilder)) {
+            context.setLanguageVersion(dummyLang.getDefaultVersion());
+            context.setSourceCodeFile(new File("foo.dummy"));
+            context.setIgnoreExceptions(true); // the default
+            ruleset.apply(makeCompilationUnits(), context);
+        }
+        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+        assertEquals("There should be a violation", 1, reportBuilder.getReport().getViolations().size());
     }
 
     @Test
-    public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
+    public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
 
             @Override
@@ -577,20 +583,23 @@ public class RuleSetTest {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(dummyLang.getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
-        context.setIgnoreExceptions(true); // the default
         RuleSets rulesets = new RuleSets(ruleset);
-        rulesets.apply(makeCompilationUnits(), context);
 
-        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext context = new RuleContext(reportBuilder)) {
+            context.setLanguageVersion(dummyLang.getDefaultVersion());
+            context.setSourceCodeFile(new File("foo.dummy"));
+            context.setIgnoreExceptions(true); // the default
+            rulesets.apply(makeCompilationUnits(), context);
+        }
+
+
+        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+        assertEquals("There should be a violation", 1, reportBuilder.getReport().getViolations().size());
     }
 
 

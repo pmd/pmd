@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.scala.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.util.Collections;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -37,7 +35,6 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
         return new PmdRunnable(
             DataSource.forString(testSourceCode, "test.scala"),
-            Collections.emptyList(),
             RuleContext.throwingExceptions(),
             listOf(rules),
             new PMDConfiguration()

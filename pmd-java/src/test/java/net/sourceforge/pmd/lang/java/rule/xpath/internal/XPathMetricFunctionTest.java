@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.Iterator;
 
 import org.hamcrest.CoreMatchers;
@@ -55,7 +54,6 @@ public class XPathMetricFunctionTest {
 
         return new PmdRunnable(
             DataSource.forString(code, "test.java"),
-            Collections.emptyList(),
             RuleContext.throwingExceptions(),
             listOf(rules),
             new PMDConfiguration()

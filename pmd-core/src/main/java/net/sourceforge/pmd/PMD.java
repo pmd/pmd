@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -16,11 +18,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -176,34 +179,21 @@ public class PMD {
 
         try {
             Renderer renderer;
-            final List<Renderer> renderers;
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
-                renderers = Collections.singletonList(renderer);
                 renderer.setReportFile(configuration.getReportFile());
                 renderer.start();
             }
 
-            final RuleContext ctx = new RuleContext();
-            final AtomicInteger violations = new AtomicInteger(0);
-            ctx.getReport().addListener(new ThreadSafeReportListener() {
-                @Override
-                public void ruleViolationAdded(final RuleViolation ruleViolation) {
-                    violations.getAndIncrement();
+            ReportBuilderListener reportBuilder = new ReportBuilderListener();
+
+            try (GlobalAnalysisListener listener = GlobalAnalysisListener.forReporter(renderer)) {
+                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                    encourageToUseIncrementalAnalysis(configuration);
+                    processFiles(configuration, ruleSetFactory, files, listener);
                 }
-
-            });
-
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                encourageToUseIncrementalAnalysis(configuration);
-                processFiles(configuration, ruleSetFactory, files, ctx, renderers);
             }
-
-            try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                renderer.end();
-                renderer.flush();
-                return violations.get();
-            }
+            return reportBuilder.getReport().getViolations().size();
         } catch (final Exception e) {
             String message = e.getMessage();
             if (message == null) {
@@ -227,60 +217,42 @@ public class PMD {
     }
 
     /**
-     * Creates a new rule context, initialized with a new, empty report.
-     *
-     * @param sourceCodeFilename
-     *            the source code filename
-     * @param sourceCodeFile
-     *            the source code file
-     * @return the rule context
-     */
-    public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
-
-        RuleContext context = new RuleContext();
-        context.setSourceCodeFile(sourceCodeFile);
-        context.setReport(new Report());
-        return context;
-    }
-
-    /**
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
      *
-     * @param configuration
-     *            Configuration
-     * @param ruleSetFactory
-     *            RuleSetFactory
-     * @param files
-     *            List of {@link DataSource}s
-     * @param ctx
-     *            RuleContext
-     * @param renderers
-     *            List of {@link Renderer}s
+     * @param configuration  Configuration
+     * @param ruleSetFactory RuleSetFactory
+     * @param files          List of {@link DataSource}s
+     * @param listener       RuleContext
      */
-    public static void processFiles(final PMDConfiguration configuration,
-                                    final RuleSetFactory ruleSetFactory,
-                                    final List<DataSource> files,
-                                    final RuleContext ctx,
-                                    final List<Renderer> renderers) {
+    public static void processFiles(PMDConfiguration configuration,
+                                    RuleSetFactory ruleSetFactory,
+                                    List<DataSource> files,
+                                    GlobalAnalysisListener listener) {
 
         final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
 
         final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), silentFactory);
 
-        final Set<Rule> brokenRules = removeBrokenRules(rs);
-        for (final Rule rule : brokenRules) {
-            ctx.getReport().addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
+        // Just like we throw for invalid properties, "broken rules"
+        // shouldn't be a "config error". This is the only instance of
+        // config errors...
+
+        // final Set<Rule> brokenRules = removeBrokenRules(rs);
+        // for (final Rule rule : brokenRules) {
+        //      ctx.getReport().addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
+        // }
 
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
         // Make sure the cache is listening for analysis results
-        ctx.getReport().addListener(configuration.getAnalysisCache());
+        listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
 
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
-        AbstractPMDProcessor.newFileProcessor(configuration).processFiles(rs, files, ctx, renderers);
+        try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
+            processor.processFiles(rs, files, listener);
+        }
         configuration.getAnalysisCache().persist();
     }
 

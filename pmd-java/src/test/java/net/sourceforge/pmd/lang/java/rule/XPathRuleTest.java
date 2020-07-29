@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -175,7 +174,6 @@ public class XPathRuleTest extends RuleTst {
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
         return new PmdRunnable(
             DataSource.forString(test, "test.java"),
-            Collections.emptyList(),
             RuleContext.throwingExceptions(),
             listOf(rules),
             new PMDConfiguration()

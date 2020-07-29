@@ -32,7 +32,9 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -226,10 +228,14 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void ruleViolationAdded(final RuleViolation ruleViolation) {
-        final AnalysisResult analysisResult = updatedResultsCache.get(ruleViolation.getFilename());
+    public ThreadSafeAnalysisListener startFileAnalysis(DataSource filename) {
+        return new ThreadSafeAnalysisListener() {
+            @Override
+            public void onRuleViolation(RuleViolation violation) {
+                final AnalysisResult analysisResult = updatedResultsCache.get(violation.getFilename());
 
-        analysisResult.addViolation(ruleViolation);
+                analysisResult.addViolation(violation); // fixme this does NOT look thread-safe
+            }
+        };
     }
-
 }

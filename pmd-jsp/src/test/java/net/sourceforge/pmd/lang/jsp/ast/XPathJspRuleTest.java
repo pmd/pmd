@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -43,7 +41,6 @@ public class XPathJspRuleTest extends RuleTst {
 
         Report report = new PmdRunnable(
             DataSource.forString(MATCH, "test.jsp"),
-            Collections.emptyList(),
             RuleContext.throwingExceptions(),
             listOf(rules),
             new PMDConfiguration()

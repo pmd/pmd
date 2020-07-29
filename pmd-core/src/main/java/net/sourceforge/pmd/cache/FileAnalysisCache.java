@@ -139,6 +139,10 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+        // todo
+    }
 
     @Override
     protected boolean cacheExists() {

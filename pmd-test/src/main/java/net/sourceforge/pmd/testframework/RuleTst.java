@@ -294,7 +294,6 @@ public abstract class RuleTst {
 
             report.merge(new PmdRunnable(
                 DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
-                Collections.emptyList(),
                 ctx,
                 listOf(rules),
                 config

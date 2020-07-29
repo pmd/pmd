@@ -62,7 +62,7 @@ public class RuleApplicator {
                     rcto.close(1);
                 } catch (RuntimeException e) {
                     if (ctx.isIgnoreExceptions()) {
-                        ctx.addError(new ProcessingError(e, ctx.getSourceCodeFilename()));
+                        ctx.reportError(new ProcessingError(e, ctx.getSourceCodeFilename()));
 
                         if (LOG.isLoggable(Level.WARNING)) {
                             LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "

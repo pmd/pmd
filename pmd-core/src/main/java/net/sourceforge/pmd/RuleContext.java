@@ -73,11 +73,11 @@ public class RuleContext implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        listener.finish();
+        listener.close();
     }
 
-    public void addError(ProcessingError error) {
-
+    public void reportError(ProcessingError error) {
+        listener.onError(error);
     }
 
 
@@ -95,6 +95,10 @@ public class RuleContext implements AutoCloseable {
 
     public void addViolationWithMessage(Rule rule, Node location, String message, Object... formatArgs) {
         addViolationWithPosition(rule, location, -1, -1, message, formatArgs);
+    }
+
+    public void addViolationNoSuppress(RuleViolation rv) {
+        listener.onRuleViolation(rv);
     }
 
     public void addViolationWithPosition(Rule rule, Node location, int beginLine, int endLine, String message, Object... formatArgs) {

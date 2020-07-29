@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
@@ -20,18 +21,19 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -135,7 +137,6 @@ public class PMDTaskImpl {
 
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
-        RuleContext ctx = new RuleContext();
         Report errorReport = new Report();
         final AtomicInteger reportSize = new AtomicInteger();
         final String separator = System.getProperty("file.separator");
@@ -156,36 +157,7 @@ public class PMDTaskImpl {
                 reportShortNamesPaths.add(commonInputPath);
             }
 
-            Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
-                @Override
-                public void start() {
-                    // Nothing to do
-                }
-
-                @Override
-                public void startFileAnalysis(DataSource dataSource) {
-                    project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
-                            Project.MSG_VERBOSE);
-                }
-
-                @Override
-                public void renderFileReport(Report r) {
-                    int size = r.getViolations().size();
-                    if (size > 0) {
-                        reportSize.addAndGet(size);
-                    }
-                }
-
-                @Override
-                public void end() {
-                    // Nothing to do
-                }
-
-                @Override
-                public String defaultFileExtension() {
-                    return null;
-                } // not relevant
-            };
+            Renderer logRenderer = makeRenderer(reportSize, commonInputPath);
             List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
@@ -193,10 +165,12 @@ public class PMDTaskImpl {
                 renderer.setUseShortNames(reportShortNamesPaths);
                 renderers.add(renderer);
             }
+
+            GlobalAnalysisListener listener = GlobalAnalysisListener.tee(renderers.stream().map(GlobalAnalysisListener::forReporter).collect(Collectors.toList()));
             try {
-                PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                PMD.processFiles(configuration, ruleSetFactory, files, listener);
             } catch (RuntimeException pmde) {
-                handleError(ctx, errorReport, pmde);
+                handleError(errorReport, pmde);
             }
         }
 
@@ -215,6 +189,40 @@ public class PMDTaskImpl {
         if (failOnRuleViolation && problemCount > maxRuleViolations) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
         }
+    }
+
+    @NonNull
+    private AbstractRenderer makeRenderer(AtomicInteger reportSize, String commonInputPath) {
+        return new AbstractRenderer("log", "Logging renderer") {
+            @Override
+            public void start() {
+                // Nothing to do
+            }
+
+            @Override
+            public void startFileAnalysis(DataSource dataSource) {
+                project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
+                            Project.MSG_VERBOSE);
+            }
+
+            @Override
+            public void renderFileReport(Report r) {
+                int size = r.getViolations().size();
+                if (size > 0) {
+                    reportSize.addAndGet(size);
+                }
+            }
+
+            @Override
+            public void end() {
+                // Nothing to do
+            }
+
+            @Override
+            public String defaultFileExtension() {
+                return null;
+            } // not relevant
+        };
     }
 
     private ResourceLoader setupResourceLoader() {
@@ -238,7 +246,7 @@ public class PMDTaskImpl {
                 project, classpath, parentFirst));
     }
 
-    private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
+    private void handleError(Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
         project.log(pmde.toString(), Project.MSG_VERBOSE);
@@ -261,7 +269,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde, String.valueOf(ctx.getSourceCodeFile())));
+        errorReport.addError(new Report.ProcessingError(pmde, "(unknown file)"));
     }
 
     private void setupClassLoader() {

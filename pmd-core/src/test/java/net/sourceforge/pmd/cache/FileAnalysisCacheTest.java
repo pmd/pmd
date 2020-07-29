@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class FileAnalysisCacheTest {
 
@@ -104,7 +105,7 @@ public class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.ruleViolationAdded(rv);
+        cache.startFileAnalysis(mock(DataSource.class)).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);

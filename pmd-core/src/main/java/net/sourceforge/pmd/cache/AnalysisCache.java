@@ -9,7 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ThreadSafeReportListener;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 @Deprecated
 @InternalApi
-public interface AnalysisCache extends ThreadSafeReportListener {
+public interface AnalysisCache extends GlobalAnalysisListener {
 
     /**
      * Persists the updated analysis results on whatever medium is used by the cache.
@@ -31,7 +31,7 @@ public interface AnalysisCache extends ThreadSafeReportListener {
     /**
      * Checks if a given file is up to date in the cache and can be skipped from analysis.
      * Regardless of the return value of this method, each call adds the parameter to the
-     * updated cache, which allows {@link #ruleViolationAdded(RuleViolation)} to add a rule
+     * updated cache, which allows {@link #onRuleViolation(RuleViolation)} to add a rule
      * violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
      *
      * @param sourceFile The file to check in the cache

@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -186,10 +187,12 @@ public class Report {
      * @param violation the violation to add
      */
     public void addRuleViolation(RuleViolation violation) {
-        int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
-        violations.add(index < 0 ? -index - 1 : index, violation);
-        for (ThreadSafeReportListener listener : listeners) {
-            listener.ruleViolationAdded(violation);
+        synchronized (violations) {
+            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+            violations.add(index < 0 ? -index - 1 : index, violation);
+            //            for (ThreadSafeReportListener listener : listeners) {
+            //                listener.ruleViolationAdded(violation);
+            //            }
         }
     }
 
@@ -290,15 +293,23 @@ public class Report {
     }
 
 
-    public static class ReportBuilderListener implements ThreadSafeAnalysisListener {
+    public static final class ReportBuilderListener implements ThreadSafeAnalysisListener {
 
-        private final Report report = new Report();
+        private final Report report;
         private boolean done;
+
+        public ReportBuilderListener() {
+            this(new Report());
+        }
+
+        ReportBuilderListener(Report report) {
+            this.report = report;
+        }
 
         /**
          * Returns the final report.
          *
-         * @throws IllegalStateException If {@link #finish()} has not been called yet
+         * @throws IllegalStateException If {@link #close()} has not been called yet
          */
         public Report getReport() {
             if (!done) {
@@ -318,13 +329,42 @@ public class Report {
         }
 
         @Override
-        public void onError(FileAnalysisException exception) {
-            report.addError(new ProcessingError(exception, exception.getFileName()));
+        public void onError(ProcessingError error) {
+            report.addError(error);
         }
 
         @Override
-        public void finish() {
+        public void close() {
             done = true;
+        }
+    }
+
+
+    public final static class GlobalReportBuilder implements GlobalAnalysisListener {
+
+        private final Report report = new Report();
+        private boolean done;
+
+        @Override
+        public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
+            return new ReportBuilderListener(this.report);
+        }
+
+        @Override
+        public void close() throws Exception {
+            done = true;
+        }
+
+        /**
+         * Returns the final report.
+         *
+         * @throws IllegalStateException If {@link #close()} has not been called yet
+         */
+        public Report getReport() {
+            if (!done) {
+                throw new IllegalStateException("Reporting not done");
+            }
+            return report;
         }
     }
 }

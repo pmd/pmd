@@ -4,16 +4,11 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.List;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.Renderer;
 
 
 /**
@@ -21,41 +16,29 @@ import net.sourceforge.pmd.renderers.Renderer;
  */
 final class MultiThreadProcessor extends AbstractPMDProcessor {
     private final ExecutorService executor;
-    private final CompletionService<Report> completionService;
-
-    private long submittedTasks = 0L;
 
     public MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
 
         executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());
-        completionService = new ExecutorCompletionService<>(executor);
     }
 
     @Override
     protected void runAnalysis(PmdRunnable runnable) {
-        completionService.submit(runnable);
-        submittedTasks++;
+        executor.submit(runnable);
     }
 
     @Override
-    protected void collectReports(List<Renderer> renderers) {
+    public void close() {
+        super.close();
         try {
-            for (int i = 0; i < submittedTasks; i++) {
-                final Report report = completionService.take().get();
-                super.renderReports(renderers, report);
+            executor.shutdown();
+            while (!executor.awaitTermination(10, TimeUnit.HOURS)) {
+                // still waiting
+                Thread.yield();
             }
-        } catch (final InterruptedException ie) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (final ExecutionException ee) {
-            final Throwable t = ee.getCause();
-            if (t instanceof RuntimeException) {
-                throw (RuntimeException) t;
-            } else if (t instanceof Error) {
-                throw (Error) t;
-            } else {
-                throw new IllegalStateException("PmdRunnable exception", t);
-            }
         } finally {
             executor.shutdownNow();
         }
