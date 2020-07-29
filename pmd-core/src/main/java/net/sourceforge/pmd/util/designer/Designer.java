@@ -142,7 +142,7 @@ public class Designer implements ClipboardOwner {
 
     public Designer(String[] args) {
         if (args.length > 0) {
-            exitOnClose = !args[0].equals("-noexitonclose");
+            exitOnClose = !"-noexitonclose".equals(args[0]);
         }
 
         Initializer.initialize();

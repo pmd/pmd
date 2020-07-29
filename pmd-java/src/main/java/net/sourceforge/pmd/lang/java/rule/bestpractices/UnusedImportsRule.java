@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
@@ -117,7 +117,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
     public Object visit(ASTImportDeclaration node, Object data) {
         if (node.isImportOnDemand()) {
             ASTName importedType = (ASTName) node.getChild(0);
-            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
+            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.isStatic()));
         } else {
             if (!node.isImportOnDemand()) {
                 ASTName importedType = (ASTName) node.getChild(0);

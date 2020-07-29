@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.26.0-SNAPSHOT</version>
+    <version>6.27.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-06-27T09:31:26Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-07-25T11:45:36Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>7</pmd.build-tools.version>
+        <pmd.build-tools.version>8-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.24.0</pmd-designer.version>
     </properties>
@@ -390,12 +390,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -697,6 +697,11 @@
                 <version>3.8.1</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.6</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.25</version>
@@ -738,7 +743,8 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <!-- using 29.0-android flavor instead of 29.0-jre, so that we are compatible with java7 -->
+                <version>29.0-android</version>
                 <scope>test</scope>
             </dependency>
 

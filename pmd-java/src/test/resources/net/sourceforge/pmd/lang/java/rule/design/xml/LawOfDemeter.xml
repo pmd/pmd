@@ -345,4 +345,22 @@ class TaskManager {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive with indexed array access #2181</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Util {
+    public static boolean check(String passwd, String hashed) {
+        try {
+            final String[] parts = hashed.split("\\$");
+
+            if (parts.length != 5 || !parts[1].equals("s0")) {      // wrong violation - method chain calls
+                throw new IllegalArgumentException("Invalid hashed value");
+            }
+        } catch (Exception e) { }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
