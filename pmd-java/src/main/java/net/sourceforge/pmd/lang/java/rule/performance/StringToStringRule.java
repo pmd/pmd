@@ -30,7 +30,7 @@ public class StringToStringRule extends AbstractJavaRule {
             if (qualifier != null) {
                 if (!isArray && isNotAMethodReference(qualifier) && qualifier.getImage().indexOf("toString") != -1) {
                     addViolation(data, jocc.getLocation());
-                } else if (isArray && isNotAName(qualifier) && qualifier.getImage().equals("toString")) {
+                } else if (isArray && isNotAName(qualifier) && "toString".equals(qualifier.getImage())) {
                     addViolation(data, jocc.getLocation());
                 }
             }

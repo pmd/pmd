@@ -60,7 +60,7 @@ public class AntLogHandler extends Handler {
                     declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
                 } else if (l instanceof RecorderEntry) {
                     declaredField = RecorderEntry.class.getDeclaredField("loglevel");
-                } else if (l.getClass().getName().equals("org.gradle.api.internal.project.ant.AntLoggingAdapter")) {
+                } else if ("org.gradle.api.internal.project.ant.AntLoggingAdapter".equals(l.getClass().getName())) {
                     return determineGradleLogLevel(l);
                 } else {
                     try {
