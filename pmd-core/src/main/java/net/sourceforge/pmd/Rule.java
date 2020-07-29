@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
@@ -29,13 +30,14 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public interface Rule extends PropertySource {
 
+    // TODO these should not be properties
+
     /**
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<Optional<Pattern>>
-    PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR =
-        PropertyFactory.stringProperty("violationSuppressRegex")
+    PropertyDescriptor<Optional<Pattern>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR =
+        PropertyFactory.regexProperty("violationSuppressRegex")
                        .desc("Suppress violations with messages matching a regular expression")
                        .toOptional()
                        .defaultValue(Optional.empty())

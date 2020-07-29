@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class ReportTest extends RuleTst {
     public void testExclusionsInReportWithRuleViolationSuppressRegex() {
         Report rpt = new Report();
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Optional.of(".*No Foo.*"));
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Optional.of(Pattern.compile(".*No Foo.*")));
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
         assertEquals(1, rpt.getSuppressedViolations().size());

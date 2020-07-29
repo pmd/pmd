@@ -39,10 +39,10 @@ public interface ViolationSuppressor {
 
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            Optional<String> regex = rv.getRule().getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
+            Optional<Pattern> regex = rv.getRule().getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
             if (regex.isPresent() && rv.getDescription() != null) {
-                if (Pattern.matches(regex.get(), rv.getDescription())) {
-                    return new SuppressedViolation(rv, this, regex.get());
+                if (regex.get().matcher(rv.getDescription()).matches()) {
+                    return new SuppressedViolation(rv, this, regex.get().pattern());
                 }
             }
             return null;
