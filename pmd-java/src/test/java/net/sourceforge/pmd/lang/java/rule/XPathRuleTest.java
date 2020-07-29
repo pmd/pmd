@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
@@ -115,7 +115,7 @@ public class XPathRuleTest extends RuleTst {
             + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
             + "    }\n" + "}";
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SUFFIX);
-        try (RuleContext ruleContext = new RuleContext(ThreadSafeAnalysisListener.noop())) {
+        try (RuleContext ruleContext = new RuleContext(FileAnalysisListener.noop())) {
 
             String xpath = "//PrimarySuffix[@Image='list']";
 
@@ -144,7 +144,7 @@ public class XPathRuleTest extends RuleTst {
             + "  }\n"
             + "}";
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
-        try (RuleContext ruleContext = new RuleContext(ThreadSafeAnalysisListener.noop())) {
+        try (RuleContext ruleContext = new RuleContext(FileAnalysisListener.noop())) {
 
             String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
 

@@ -136,8 +136,8 @@ public class MultiThreadProcessorTest {
         public AtomicInteger violations = new AtomicInteger(0);
 
         @Override
-        public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
-            return new ThreadSafeAnalysisListener() {
+        public FileAnalysisListener startFileAnalysis(DataSource file) {
+            return new FileAnalysisListener() {
                 @Override
                 public void onRuleViolation(RuleViolation violation) {
                     violations.incrementAndGet();

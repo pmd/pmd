@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -228,8 +228,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public ThreadSafeAnalysisListener startFileAnalysis(DataSource filename) {
-        return new ThreadSafeAnalysisListener() {
+    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+        return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {
                 final AnalysisResult analysisResult = updatedResultsCache.get(violation.getFilename());

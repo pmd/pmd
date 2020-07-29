@@ -20,7 +20,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * A handler for analysis events. This must be thread safe.
  */
-public interface ThreadSafeAnalysisListener extends AutoCloseable {
+public interface FileAnalysisListener extends AutoCloseable {
 
 
     /**
@@ -54,7 +54,7 @@ public interface ThreadSafeAnalysisListener extends AutoCloseable {
     /**
      * A listener that does nothing.
      */
-    static ThreadSafeAnalysisListener noop() {
+    static FileAnalysisListener noop() {
         return violation -> { /* do nothing*/};
     }
 
@@ -68,26 +68,26 @@ public interface ThreadSafeAnalysisListener extends AutoCloseable {
      * @return A new listener
      */
     @SuppressWarnings("PMD.CloseResource")
-    static ThreadSafeAnalysisListener tee(Collection<? extends ThreadSafeAnalysisListener> listeners) {
-        List<ThreadSafeAnalysisListener> list = Collections.unmodifiableList(new ArrayList<>(listeners));
-        return new ThreadSafeAnalysisListener() {
+    static FileAnalysisListener tee(Collection<? extends FileAnalysisListener> listeners) {
+        List<FileAnalysisListener> list = Collections.unmodifiableList(new ArrayList<>(listeners));
+        return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {
-                for (ThreadSafeAnalysisListener it : list) {
+                for (FileAnalysisListener it : list) {
                     it.onRuleViolation(violation);
                 }
             }
 
             @Override
             public void onSuppressedRuleViolation(SuppressedViolation violation) {
-                for (ThreadSafeAnalysisListener it : list) {
+                for (FileAnalysisListener it : list) {
                     it.onSuppressedRuleViolation(violation);
                 }
             }
 
             @Override
             public void onError(ProcessingError error) {
-                for (ThreadSafeAnalysisListener it : list) {
+                for (FileAnalysisListener it : list) {
                     it.onError(error);
                 }
             }
@@ -95,7 +95,7 @@ public interface ThreadSafeAnalysisListener extends AutoCloseable {
             @Override
             public void close() throws Exception {
                 Exception composed = null;
-                for (ThreadSafeAnalysisListener it : list) {
+                for (FileAnalysisListener it : list) {
                     try {
                         it.close();
                     } catch (Exception e) {

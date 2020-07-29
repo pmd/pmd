@@ -15,7 +15,7 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 /**
  * The RuleContext provides access to Rule processing state. This information
@@ -39,17 +39,17 @@ public class RuleContext implements AutoCloseable {
 
     private boolean ignoreExceptions = true;
 
-    private final ThreadSafeAnalysisListener listener;
+    private final FileAnalysisListener listener;
 
     /**
      * Default constructor.
      */
     @Deprecated
     public RuleContext() {
-        this(ThreadSafeAnalysisListener.noop());
+        this(FileAnalysisListener.noop());
     }
 
-    public RuleContext(ThreadSafeAnalysisListener listener) {
+    public RuleContext(FileAnalysisListener listener) {
         this.listener = listener;
     }
 

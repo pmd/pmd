@@ -16,25 +16,48 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- *
+ * Listens to an analysis for file events. This object should be thread-safe.
+ * It produces new {@link FileAnalysisListener} for each analysed file.
  */
 public interface GlobalAnalysisListener extends AutoCloseable {
 
-    ThreadSafeAnalysisListener startFileAnalysis(DataSource file);
+    /**
+     * Start the analysis of the given file. The analysis stops
+     * when the {@link FileAnalysisListener#close()} method is called.
+     *
+     * @param file File to be processed
+     *
+     * @return A new listener
+     */
+    FileAnalysisListener startFileAnalysis(DataSource file);
 
+    /**
+     * Notify the implementation that the analysis ended, ie all files
+     * have been processed.
+     */
+    @Override
+    void close() throws Exception;
 
-    static GlobalAnalysisListener tee(List<? extends GlobalAnalysisListener> list) {
-        List<GlobalAnalysisListener> listeners = Collections.unmodifiableList(new ArrayList<>(list));
+    /**
+     * Produce an analysis listener that forwards all events to the given
+     * listeners.
+     *
+     * @param listeners Listeners
+     *
+     * @return A new listener
+     */
+    static GlobalAnalysisListener tee(List<? extends GlobalAnalysisListener> listeners) {
+        List<GlobalAnalysisListener> myList = Collections.unmodifiableList(new ArrayList<>(listeners));
         return new GlobalAnalysisListener() {
             @Override
-            public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
-                return ThreadSafeAnalysisListener.tee(CollectionUtil.map(listeners, it -> it.startFileAnalysis(file)));
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
+                return FileAnalysisListener.tee(CollectionUtil.map(myList, it -> it.startFileAnalysis(file)));
             }
 
             @Override
             public void close() throws Exception {
                 Exception composed = null;
-                for (GlobalAnalysisListener it : list) {
+                for (GlobalAnalysisListener it : listeners) {
                     try {
                         it.close();
                     } catch (Exception e) {

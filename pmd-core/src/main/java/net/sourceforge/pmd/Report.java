@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.processor.GlobalAnalysisListener;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -245,7 +245,7 @@ public class Report {
     }
 
 
-    public static final class ReportBuilderListener implements ThreadSafeAnalysisListener {
+    public static final class ReportBuilderListener implements FileAnalysisListener {
 
         private final Report report;
         private boolean done;
@@ -298,7 +298,7 @@ public class Report {
         private boolean done;
 
         @Override
-        public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(DataSource file) {
             return new ReportBuilderListener(this.report);
         }
 

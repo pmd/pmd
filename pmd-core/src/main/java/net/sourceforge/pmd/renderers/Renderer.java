@@ -17,8 +17,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.processor.GlobalAnalysisListener;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -201,9 +201,9 @@ public interface Renderer extends PropertySource {
 
         return new GlobalAnalysisListener() {
             @Override
-            public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
                 Renderer.this.startFileAnalysis(file);
-                return new ThreadSafeAnalysisListener() {
+                return new FileAnalysisListener() {
                     final ReportBuilderListener reportBuilder = new ReportBuilderListener();
 
                     @Override

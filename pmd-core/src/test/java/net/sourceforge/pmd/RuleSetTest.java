@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 public class RuleSetTest {
 
@@ -515,7 +515,7 @@ public class RuleSetTest {
                     }
                 })
                 .build();
-        RuleContext context = new RuleContext(ThreadSafeAnalysisListener.noop());
+        RuleContext context = new RuleContext(FileAnalysisListener.noop());
         context.setIgnoreExceptions(false);
         ruleset.apply(makeCompilationUnits(), context);
     }

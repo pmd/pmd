@@ -10,7 +10,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -49,8 +49,8 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public ThreadSafeAnalysisListener startFileAnalysis(DataSource filename) {
-        return ThreadSafeAnalysisListener.noop();
+    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+        return FileAnalysisListener.noop();
     }
 
     @Override
