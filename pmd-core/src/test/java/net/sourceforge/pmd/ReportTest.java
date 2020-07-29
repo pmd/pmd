@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -38,15 +37,12 @@ public class ReportTest implements ThreadSafeReportListener {
     @Test
     public void testSortedReportFile() throws IOException {
         Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo"));
         Node s = getNode(10, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        ctx.setSourceCodeFile(new File("bar"));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule1, "foo", s, rule1.getMessage()));
         Node s1 = getNode(10, 5);
         Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule2, "bar", s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
@@ -55,16 +51,13 @@ public class ReportTest implements ThreadSafeReportListener {
     @Test
     public void testSortedReportLine() throws IOException {
         Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node1 = getNode(20, 5); // line 20: after rule2 violation
         Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, node1, rule1.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule1, "foo1", node1, rule1.getMessage()));
 
-        ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node2 = getNode(10, 5); // line 10: before rule1 violation
         Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, node2, rule2.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule2, "foo1", node2, rule2.getMessage())); // same file!!
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -75,23 +68,20 @@ public class ReportTest implements ThreadSafeReportListener {
         Report rpt = new Report();
         rpt.addListener(this);
         violationSemaphore = false;
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("file"));
         Node s = getNode(5, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
+        rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, "file", s, rule1.getMessage()));
         assertTrue(violationSemaphore);
     }
 
     @Test
     public void testIterator() {
         Report r = new Report();
-        RuleContext ctx = new RuleContext();
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, "", node1, rule.getMessage()));
         Node node2 = getNode(5, 6, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, rule.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, "", node2, rule.getMessage()));
 
         assertEquals(2, r.getViolations().size());
     }

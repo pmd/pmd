@@ -4,38 +4,26 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * This class handles of producing a Language specific RuleViolation and adding
- * to a Report.
+ * Creates violations and controls suppression behavior for a language.
  *
- * <p>Since PMD 6.21.0, implementations of this interface are considered internal
- * API and hence deprecated. Clients should exclusively use this interface and obtain
- * instances through {@link LanguageVersionHandler#getRuleViolationFactory()}.
+ * TODO split this into violation decorators + violation suppressors.
+ * There is no need to have language-specific violation classes.
  */
 public interface RuleViolationFactory {
-    /**
-     * Adds a violation to the report.
-     *
-     * @param ruleContext
-     *            the RuleContext
-     * @param rule
-     *            the rule
-     * @param node
-     *            the node that produces the violation
-     * @param message
-     *            specific message to put in the report
-     * @param args
-     *            arguments to embed in the rule violation message
-     */
-    void addViolation(RuleContext ruleContext, Rule rule, @Nullable Node node, String message, Object[] args);
 
 
-    void addViolation(RuleContext ruleContext, Rule rule, @Nullable Node node, String message, int beginLine, int endLine, Object[] args);
+    RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage);
+
+
+    SuppressedViolation suppressOrNull(Node location, RuleViolation violation);
+
+
 }

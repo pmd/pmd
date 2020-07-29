@@ -4,16 +4,11 @@
 
 package net.sourceforge.pmd.test.lang;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
@@ -61,23 +56,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
 
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return createRuleViolation(rule, ruleContext, node, message, 0, 0);
-        }
 
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
-                @Override
-                public String getPackageName() {
-                    this.packageName = "foo"; // just for testing variable expansion
-                    return super.getPackageName();
-                }
-            };
-            rv.setLines(beginLine, endLine);
-            return rv;
-        }
     }
 }

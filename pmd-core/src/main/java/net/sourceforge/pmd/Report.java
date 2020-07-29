@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static java.util.Collections.synchronizedList;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 
 /**
@@ -23,10 +26,10 @@ public class Report {
 
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
 
-    private final List<RuleViolation> violations = new ArrayList<>();
-    private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
-    private final List<ProcessingError> errors = new ArrayList<>();
-    private final List<ConfigurationError> configErrors = new ArrayList<>();
+    private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
+    private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
+    private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
+    private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
     /**
      * Creates a new, initialized, empty report for the given file name.
@@ -52,6 +55,7 @@ public class Report {
      * Represents a configuration error.
      */
     public static class ConfigurationError {
+
         private final Rule rule;
         private final String issue;
 
@@ -91,6 +95,7 @@ public class Report {
      * Represents a processing error, such as a parse error.
      */
     public static class ProcessingError {
+
         private final Throwable error;
         private final String file;
 
@@ -113,7 +118,7 @@ public class Report {
 
         public String getDetail() {
             try (StringWriter stringWriter = new StringWriter();
-                    PrintWriter writer = new PrintWriter(stringWriter)) {
+                 PrintWriter writer = new PrintWriter(stringWriter)) {
                 error.printStackTrace(writer);
                 return stringWriter.toString();
             } catch (IOException e) {
@@ -135,6 +140,7 @@ public class Report {
      * Represents a violation, that has been suppressed.
      */
     public static class SuppressedViolation {
+
         private final RuleViolation rv;
         private final String userMessage;
         private final ViolationSuppressor suppressor;
@@ -277,10 +283,48 @@ public class Report {
     /**
      * Adds all given listeners to this report
      *
-     * @param allListeners
-     *            the report listeners
+     * @param allListeners the report listeners
      */
     public void addListeners(List<ThreadSafeReportListener> allListeners) {
         listeners.addAll(allListeners);
+    }
+
+
+    public static class ReportBuilderListener implements ThreadSafeAnalysisListener {
+
+        private final Report report = new Report();
+        private boolean done;
+
+        /**
+         * Returns the final report.
+         *
+         * @throws IllegalStateException If {@link #finish()} has not been called yet
+         */
+        public Report getReport() {
+            if (!done) {
+                throw new IllegalStateException("Reporting not done");
+            }
+            return report;
+        }
+
+        @Override
+        public void onRuleViolation(RuleViolation violation) {
+            report.addRuleViolation(violation);
+        }
+
+        @Override
+        public void onSuppressedRuleViolation(SuppressedViolation violation) {
+            report.addSuppressedViolation(violation);
+        }
+
+        @Override
+        public void onError(FileAnalysisException exception) {
+            report.addError(new ProcessingError(exception, exception.getFileName()));
+        }
+
+        @Override
+        public void finish() {
+            done = true;
+        }
     }
 }

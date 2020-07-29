@@ -36,7 +36,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         try {
             return parseImpl(charStream, task.getCommentMarker());
         } catch (TokenMgrError tme) {
-            throw tme.withFileName(task.getFileDisplayName());
+            throw tme.setFileName(task.getFileDisplayName());
         }
     }
 

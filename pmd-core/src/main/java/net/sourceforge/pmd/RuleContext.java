@@ -5,9 +5,19 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * The RuleContext provides access to Rule processing state. This information
@@ -25,7 +35,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * between calls to difference source files. Failure to do so, may result in
  * undefined behavior.
  */
-public class RuleContext {
+public class RuleContext implements AutoCloseable {
+
+    private static final Object[] NO_ARGS = new Object[0];
 
     private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
 
@@ -34,24 +46,87 @@ public class RuleContext {
     private LanguageVersion languageVersion;
     private boolean ignoreExceptions = true;
 
+    private final ThreadSafeAnalysisListener listener;
+
     /**
      * Default constructor.
      */
     public RuleContext() {
-        // nothing to do
+        listener = ThreadSafeAnalysisListener.noop();
     }
 
     /**
      * Constructor which shares attributes and report listeners with the given
      * RuleContext.
      *
-     * @param ruleContext
-     *            the context from which the values are shared
+     * @param ruleContext the context from which the values are shared
      */
     public RuleContext(RuleContext ruleContext) {
-        this.report.addListeners(ruleContext.getReport().getListeners());
+        this.listener = ruleContext.listener;
         this.setIgnoreExceptions(ruleContext.ignoreExceptions);
     }
+
+    public RuleContext(ThreadSafeAnalysisListener listener) {
+        this.listener = listener;
+    }
+
+
+    @Override
+    public void close() throws Exception {
+        listener.finish();
+    }
+
+    public void addError(ProcessingError error) {
+
+    }
+
+
+    public void addViolation(Rule rule, Node location) {
+        addViolationWithMessage(rule, location, rule.getMessage(), NO_ARGS);
+    }
+
+    public void addViolation(Rule rule, Node location, Object... formatArgs) {
+        addViolationWithMessage(rule, location, rule.getMessage(), formatArgs);
+    }
+
+    public void addViolationWithMessage(Rule rule, Node location, String message) {
+        addViolationWithPosition(rule, location, -1, -1, message, NO_ARGS);
+    }
+
+    public void addViolationWithMessage(Rule rule, Node location, String message, Object... formatArgs) {
+        addViolationWithPosition(rule, location, -1, -1, message, formatArgs);
+    }
+
+    public void addViolationWithPosition(Rule rule, Node location, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(rule);
+        Objects.requireNonNull(location);
+        Objects.requireNonNull(message);
+        Objects.requireNonNull(formatArgs);
+
+        RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+
+        RuleViolation violation = fact.createViolation(rule, location, getSourceCodeFilename(), makeMessage(message, formatArgs));
+        if (beginLine != -1 && endLine != -1) {
+            // fixme, this is needed until we have actual Location objects
+            ((ParametricRuleViolation<?>) violation).setLines(beginLine, endLine);
+        }
+
+        SuppressedViolation suppressed = fact.suppressOrNull(location, violation);
+
+        if (suppressed != null) {
+            listener.onSuppressedRuleViolation(suppressed);
+        } else {
+            listener.onRuleViolation(violation);
+        }
+    }
+
+    private String makeMessage(@NonNull String message, Object[] args) {
+        // Escape PMD specific variable message format, specifically the {
+        // in the ${, so MessageFormat doesn't bitch.
+        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
+        return MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
+    }
+
 
     /**
      * Get the Report to which Rule Violations are sent.

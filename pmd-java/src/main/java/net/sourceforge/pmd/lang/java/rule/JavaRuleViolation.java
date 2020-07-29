@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -43,32 +44,24 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 @Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
-        this(rule, ctx, node, message);
+    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String filename, String message) {
+        super(rule, filename, node, message);
 
-        setLines(beginLine, endLine);
-    }
+        final Scope scope = node.getScope();
+        final SourceFileScope sourceFileScope = scope.getEnclosingScope(SourceFileScope.class);
 
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
-        super(rule, ctx, node, message);
+        // Package name is on SourceFileScope
+        packageName = sourceFileScope.getPackageName() == null ? "" : sourceFileScope.getPackageName();
 
-        if (node != null) {
-            final Scope scope = node.getScope();
-            final SourceFileScope sourceFileScope = scope.getEnclosingScope(SourceFileScope.class);
+        // Class name is built from enclosing ClassScopes
+        setClassNameFrom(node);
 
-            // Package name is on SourceFileScope
-            packageName = sourceFileScope.getPackageName() == null ? "" : sourceFileScope.getPackageName();
-
-            // Class name is built from enclosing ClassScopes
-            setClassNameFrom(node);
-
-            // Method name comes from 1st enclosing MethodScope
-            if (scope.getEnclosingScope(MethodScope.class) != null) {
-                methodName = scope.getEnclosingScope(MethodScope.class).getName();
-            }
-            // Variable name node specific
-            setVariableNameIfExists(node);
+        // Method name comes from 1st enclosing MethodScope
+        if (scope.getEnclosingScope(MethodScope.class) != null) {
+            methodName = scope.getEnclosingScope(MethodScope.class).getName();
         }
+        // Variable name node specific
+        setVariableNameIfExists(node);
     }
 
     /**

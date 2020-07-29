@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -41,7 +42,7 @@ public interface LanguageVersionHandler {
      */
     @Experimental
     default List<? extends AstProcessingStage<?>> getProcessingStages() {
-        return Collections.emptyList();
+        return emptyList();
     }
 
 

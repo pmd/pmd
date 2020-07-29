@@ -23,7 +23,7 @@ public class ReportTest extends RuleTst {
         Rule rule = new AbstractEcmascriptRule() {
             @Override
             public Object visit(ASTFunctionNode node, Object data) {
-                EcmascriptLanguageModule.defaultHandler().getRuleViolationFactory().addViolation((RuleContext) data, this, node, "Test", null);
+                addViolationWithMessage(data, node, "Test");
                 return super.visit(node, data);
             }
         };

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
@@ -16,10 +16,12 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -146,13 +148,15 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Report createEmptyReportWithSuppression() {
-        Map<Integer, String> suppressions = new HashMap<>();
-        suppressions.put(1, "test");
-        RuleContext ctx = new RuleContext();
-        DummyRoot root = new DummyRoot(suppressions);
-        root.setCoords(1, 10, 4, 5);
-        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, new FooRule(), root, "suppress test", 1, 1, new Object[0]);
-        return ctx.getReport();
+    private Report createEmptyReportWithSuppression() throws Exception {
+        Map<Integer, String> suppressions = Collections.singletonMap(1, "test");
+        ReportBuilderListener listener = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(listener)) {
+            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+            DummyRoot root = new DummyRoot(suppressions);
+            root.setCoords(1, 10, 4, 5);
+            ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test");
+        }
+        return listener.getReport();
     }
 }

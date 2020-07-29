@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
@@ -58,26 +59,14 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return createRuleViolation(rule, ruleContext, node, message, 0, 0);
-        }
 
         @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage) {
+            return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
                 {
                     this.packageName = "foo"; // just for testing variable expansion
                 }
-
-                @Override
-                public String getPackageName() {
-                    return super.getPackageName();
-                }
             };
-            rv.setLines(beginLine, endLine);
-            return rv;
         }
     }
 }

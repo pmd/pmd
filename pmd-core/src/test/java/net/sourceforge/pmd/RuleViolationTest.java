@@ -7,8 +7,6 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,11 +22,9 @@ public class RuleViolationTest {
     @Test
     public void testConstructor1() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(2, 1, 2, 3);
-        RuleViolation r = new ParametricRuleViolation<Node>(rule, ctx, s, rule.getMessage());
+        RuleViolation r = new ParametricRuleViolation<Node>(rule, "filename", s, rule.getMessage());
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
@@ -37,11 +33,9 @@ public class RuleViolationTest {
     @Test
     public void testConstructor2() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(2, 1, 2, 3);
-        RuleViolation r = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
+        RuleViolation r = new ParametricRuleViolation<Node>(rule, "filename", s, "description");
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
@@ -52,15 +46,12 @@ public class RuleViolationTest {
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename1"));
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 11, 3);
-        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
-        ctx.setSourceCodeFile(new File("filename2"));
+        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, "filename1", s, "description");
         DummyNode s1 = new DummyNode();
         s1.setCoords(10, 1, 11, 3);
-        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, ctx, s1, "description");
+        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, "filename2", s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }
@@ -69,14 +60,12 @@ public class RuleViolationTest {
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
         DummyNode s1 = new DummyNode();
         s1.setCoords(20, 1, 25, 10);
-        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
-        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, ctx, s1, "description");
+        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, "filename", s, "description");
+        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, "filename", s1, "description");
         assertTrue(comp.compare(r1, r2) < 0);
         assertTrue(comp.compare(r2, r1) > 0);
     }
@@ -86,14 +75,12 @@ public class RuleViolationTest {
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
         DummyNode s1 = new DummyNode();
         s.setCoords(10, 1, 15, 10);
-        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
-        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, ctx, s1, "description");
+        RuleViolation r1 = new ParametricRuleViolation<Node>(rule, "filename", s, "description");
+        RuleViolation r2 = new ParametricRuleViolation<Node>(rule, "filename", s1, "description");
         assertEquals(1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }

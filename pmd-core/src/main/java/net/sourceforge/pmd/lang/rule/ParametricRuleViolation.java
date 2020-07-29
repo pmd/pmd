@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.io.File;
-
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -34,16 +31,11 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // RuleViolationFactory to support identifying without a Node, and update
     // Rule base classes too.
     // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
-    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
+    public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
         rule = theRule;
         description = message;
+        this.filename = filename == null ? "" : filename;
 
-        File file = ctx.getSourceCodeFile();
-        if (file != null) {
-            filename = file.getPath();
-        } else {
-            filename = "";
-        }
         if (node != null) {
             beginLine = node.getBeginLine();
             beginColumn = node.getBeginColumn();

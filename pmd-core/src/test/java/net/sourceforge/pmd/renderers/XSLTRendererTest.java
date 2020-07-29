@@ -10,7 +10,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -24,8 +23,7 @@ public class XSLTRendererTest {
         Report report = new Report();
         DummyNode node = new DummyNode();
         node.setCoords(1, 1, 1, 2);
-        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), new RuleContext(), node,
-                "violation message");
+        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), "file", node, "violation message");
         report.addRuleViolation(rv);
         String result = ReportTest.render(renderer, report);
         Assert.assertTrue(result.contains("violation message"));
