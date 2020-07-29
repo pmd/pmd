@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ThreadSafeAnalysisListener;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 

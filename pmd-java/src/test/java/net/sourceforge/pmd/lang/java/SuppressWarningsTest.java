@@ -11,6 +11,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -18,7 +19,10 @@ import net.sourceforge.pmd.testframework.RuleTst;
 
 public class SuppressWarningsTest extends RuleTst {
 
+    private final LanguageVersion java5 = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+
     private static class BarRule extends AbstractJavaRule {
+
         @Override
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
@@ -39,140 +43,107 @@ public class SuppressWarningsTest extends RuleTst {
 
     @Test
     public void testClassLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt;
+        rpt = runTestFromString(TEST1, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
-        runTestFromString(TEST2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        rpt = runTestFromString(TEST2, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testInheritedSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST3, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST3, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testMethodLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST4, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt;
+        rpt = runTestFromString(TEST4, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testConstructorLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST5, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST5, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testFieldLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST6, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST6, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testParameterLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST7, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST7, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testLocalVariableLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST8, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST8, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST9, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionValue1() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9_VALUE1, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionValue2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9_VALUE2, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionValue3() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE3, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9_VALUE3, new FooRule(), java5);
         assertEquals(1, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues1() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testNoSuppressionBlank() {
-        Report rpt = new Report();
-        runTestFromString(TEST10, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST10, new FooRule(), java5);
         assertEquals(2, rpt.getViolations().size());
     }
 
     @Test
     public void testNoSuppressionSomethingElseS() {
-        Report rpt = new Report();
-        runTestFromString(TEST11, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST11, new FooRule(), java5);
         assertEquals(2, rpt.getViolations().size());
     }
 
     @Test
     public void testSuppressAll() {
-        Report rpt = new Report();
-        runTestFromString(TEST12, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST12, new FooRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 
     @Test
     public void testSpecificSuppressionAtTopLevel() {
-        Report rpt = new Report();
-        runTestFromString(TEST13, new BarRule(), rpt,
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        Report rpt = runTestFromString(TEST13, new BarRule(), java5);
         assertEquals(0, rpt.getViolations().size());
     }
 

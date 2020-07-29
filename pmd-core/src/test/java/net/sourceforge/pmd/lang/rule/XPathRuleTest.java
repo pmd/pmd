@@ -11,10 +11,12 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
@@ -27,26 +29,32 @@ public class XPathRuleTest {
     public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
 
     @Test
-    public void testAttributeDeprecation10() {
+    public void testAttributeDeprecation10() throws Exception {
         testDeprecation(XPathVersion.XPATH_1_0);
     }
 
     @Test
-    public void testAttributeDeprecation20() {
+    public void testAttributeDeprecation20() throws Exception {
         testDeprecation(XPathVersion.XPATH_2_0);
     }
 
 
-    public void testDeprecation(XPathVersion version) {
+    public void testDeprecation(XPathVersion version) throws Exception {
         XPathRule xpr = makeRule(version, "SomeRule");
 
         loggingRule.clear();
 
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        LanguageVersion dummyVersion = LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion();
         DummyNode firstNode = newNode();
-        xpr.apply(firstNode, ctx);
-        assertEquals(1, ctx.getReport().getViolations().size());
+
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setLanguageVersion(dummyVersion);
+            // with another rule forked from the same one (in multithreaded processor)
+            xpr.apply(firstNode, ctx);
+        }
+
+        assertEquals(1, reportBuilder.getReport().getViolations().size());
 
         String log = loggingRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'SomeRule'"));
@@ -55,24 +63,39 @@ public class XPathRuleTest {
 
         loggingRule.clear();
 
-        // with another node
-        xpr.apply(newNode(), ctx);
-        assertEquals(2, ctx.getReport().getViolations().size());
+        reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setLanguageVersion(dummyVersion);
+            // with another node
+            xpr.apply(newNode(), ctx);
+        }
+
+        assertEquals(1, reportBuilder.getReport().getViolations().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
 
 
-        // with another rule forked from the same one (in multithreaded processor)
-        xpr.deepCopy().apply(newNode(), ctx);
-        assertEquals(3, ctx.getReport().getViolations().size());
+        reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setLanguageVersion(dummyVersion);
+            // with another rule forked from the same one (in multithreaded processor)
+            xpr.deepCopy().apply(newNode(), ctx);
+        }
+
+        assertEquals(1, reportBuilder.getReport().getViolations().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
 
-        // with another rule on the same node, new warnings
-        XPathRule otherRule = makeRule(version, "OtherRule");
-        otherRule.setRuleSetName("rset.xml");
-        otherRule.apply(firstNode, ctx);
-        assertEquals(4, ctx.getReport().getViolations().size());
+        reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
+            ctx.setLanguageVersion(dummyVersion);
+            // with another rule on the same node, new warnings
+            XPathRule otherRule = makeRule(version, "OtherRule");
+            otherRule.setRuleSetName("rset.xml");
+            otherRule.apply(firstNode, ctx);
+        }
+
+        assertEquals(1, reportBuilder.getReport().getViolations().size());
 
         log = loggingRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'OtherRule' (in ruleset 'rset.xml')"));

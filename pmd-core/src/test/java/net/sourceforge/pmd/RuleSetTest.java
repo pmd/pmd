@@ -458,16 +458,18 @@ public class RuleSetTest {
         assertNotSame(rule, ruleSet2.getRuleByName("FooRule1"));
     }
 
-    private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) {
+    private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) throws Exception {
 
-        RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();
-        context.setReport(new Report());
-        new RuleSets(ruleset).apply(makeCompilationUnits(), context);
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext context = new RuleContext(reportBuilder)) {
+            new RuleSets(ruleset).apply(makeCompilationUnits(), context);
 
-        assertEquals("Invalid number of Violations Reported", size, context.getReport().getViolations().size());
+        }
 
-        for (RuleViolation violation : context.getReport().getViolations()) {
+        assertEquals("Invalid number of Violations Reported", size, reportBuilder.getReport().getViolations().size());
+
+        for (RuleViolation violation : reportBuilder.getReport().getViolations()) {
             reportedValues.add(violation);
             assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
         }

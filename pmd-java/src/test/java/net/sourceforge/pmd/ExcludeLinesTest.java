@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.processor.PmdRunnable;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class ExcludeLinesTest extends RuleTst {
     private Rule rule;
@@ -35,14 +33,7 @@ public class ExcludeLinesTest extends RuleTst {
         PMDConfiguration config = new PMDConfiguration();
         config.setSuppressMarker("FOOBAR");
 
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-
-        Report r = new PmdRunnable(
-            DataSource.forString(TEST3, "test.java"),
-            new RuleContext(),
-            listOf(rules),
-            config
-        ).call();
+        Report r = JavaParsingHelper.WITH_PROCESSING.executeRule(rule, TEST3, config);
 
         assertTrue(r.getViolations().isEmpty());
         assertEquals(r.getSuppressedViolations().size(), 1);

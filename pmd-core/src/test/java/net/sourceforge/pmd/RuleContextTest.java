@@ -13,21 +13,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 
 import junit.framework.JUnit4TestAdapter;
 
 public class RuleContextTest {
-
-    @Test
-    public void testReport() {
-        RuleContext ctx = new RuleContext();
-        assertEquals(0, ctx.getReport().getViolations().size());
-        Report r = new Report();
-        ctx.setReport(r);
-        Report r2 = ctx.getReport();
-        assertEquals("report object mismatch", r, r2);
-    }
 
     @Test
     public void testSourceCodeFilename() {
@@ -42,6 +34,7 @@ public class RuleContextTest {
     public void testMessage() throws Exception {
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
+            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
             ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\"");
         }
 
@@ -53,6 +46,7 @@ public class RuleContextTest {
     public void testMessageArgs() throws Exception {
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
+            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
             ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1");
         }
 

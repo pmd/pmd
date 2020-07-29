@@ -3,8 +3,11 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
+import net.sourceforge.pmd.*
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.processor.PmdRunnable
+import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.io.StringReader
@@ -190,6 +193,25 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
         return consume(input)
+    }
+
+
+    @JvmOverloads
+    fun executeRule(rule: Rule, code: String, configuration: PMDConfiguration = PMDConfiguration()): Report {
+        val rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)
+
+        val reportBuilder = Report.GlobalReportBuilder()
+
+        PmdRunnable(
+                DataSource.forString(code, "test.${getVersion(null).language.extensions[0]}"),
+                reportBuilder,
+                listOf(rules),
+                configuration
+        ).run()
+
+        reportBuilder.close()
+
+        return reportBuilder.report
     }
 
 

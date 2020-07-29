@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -22,32 +23,35 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public class AbstractApexRuleTest extends ApexParserTestBase {
 
     @Test
-    public void shouldVisitTopLevelClass() {
+    public void shouldVisitTopLevelClass() throws Exception {
         run("class Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelInterface() {
+    public void shouldVisitTopLevelInterface() throws Exception {
         run("interface Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelTrigger() {
+    public void shouldVisitTopLevelTrigger() throws Exception {
         run("trigger Foo on Account (before insert, before update) { }");
     }
 
     @Test
-    public void shouldVisitTopLevelEnum() {
+    public void shouldVisitTopLevelEnum() throws Exception {
         run("enum Foo { }");
     }
 
-    private void run(String code) {
+    private void run(String code) throws Exception {
         ApexNode<Compilation> node = parse(code);
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(apex.getDefaultVersion());
-        TopLevelRule rule = new TopLevelRule();
-        rule.apply(node, ctx);
-        assertEquals(1, ctx.getReport().getViolations().size());
+
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext()) {
+            ctx.setLanguageVersion(apex.getDefaultVersion());
+            TopLevelRule rule = new TopLevelRule();
+            rule.apply(node, ctx);
+        }
+        assertEquals(1, reportBuilder.getReport().getViolations().size());
     }
 
     private static class TopLevelRule extends AbstractApexRule {

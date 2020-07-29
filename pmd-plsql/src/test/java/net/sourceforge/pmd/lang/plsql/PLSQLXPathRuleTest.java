@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.plsql;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
@@ -30,7 +31,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1() {
+    public void testXPathRule1() throws Exception {
         testOnVersion(XPathVersion.XPATH_1_0);
     }
 
@@ -38,7 +39,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1Compatibility() {
+    public void testXPathRule1Compatibility() throws Exception {
         testOnVersion(XPathVersion.XPATH_1_0_COMPATIBILITY);
     }
 
@@ -46,21 +47,24 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule2() {
+    public void testXPathRule2() throws Exception {
         testOnVersion(XPathVersion.XPATH_2_0);
     }
 
 
-    private void testOnVersion(XPathVersion xpath10) {
+    private void testOnVersion(XPathVersion xpath10) throws Exception {
         XPathRule rule = new XPathRule(xpath10, "//PrimaryPrefix");
         rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
         rule.setMessage("Test Violation");
 
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(plsql.getDefaultVersion());
+        ReportBuilderListener reportBuilder = new ReportBuilderListener();
+        try (RuleContext ctx = new RuleContext()) {
+            ctx.setLanguageVersion(plsql.getDefaultVersion());
+            rule.apply(node, ctx);
+        }
 
-        rule.apply(node, ctx);
-        Assert.assertEquals(2, ctx.getReport().getViolations().size());
+
+        Assert.assertEquals(2, reportBuilder.getReport().getViolations().size());
     }
 
 

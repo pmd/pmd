@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**

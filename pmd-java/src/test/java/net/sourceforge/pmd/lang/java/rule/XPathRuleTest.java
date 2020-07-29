@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
@@ -13,14 +12,11 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -31,11 +27,9 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.processor.PmdRunnable;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author daniels
@@ -171,13 +165,7 @@ public class XPathRuleTest extends RuleTst {
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
-        return new PmdRunnable(
-            DataSource.forString(test, "test.java"),
-            RuleContext.throwingExceptions(),
-            listOf(rules),
-            new PMDConfiguration()
-        ).call();
+        return JavaParsingHelper.WITH_PROCESSING.executeRule(r, test);
     }
 
 

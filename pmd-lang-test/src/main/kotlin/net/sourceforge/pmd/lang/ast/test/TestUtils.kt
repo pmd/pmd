@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
+import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
-import io.kotest.matchers.shouldBe as ktShouldBe
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.equalityMatcher
-import io.kotest.matchers.collections.haveSize
-import java.util.stream.Stream
 import kotlin.streams.toList
 
 /**

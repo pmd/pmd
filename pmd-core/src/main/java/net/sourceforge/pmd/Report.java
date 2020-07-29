@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.ThreadSafeAnalysisListener.GlobalAnalysisListener;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -24,8 +25,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * and configuration errors.
  */
 public class Report {
-
-    private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
 
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
     private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
@@ -43,9 +42,6 @@ public class Report {
      */
     public static Report createReport(RuleContext ctx, String fileName) {
         Report report = new Report();
-
-        // overtake the listener
-        report.addListeners(ctx.getReport().getListeners());
 
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File(fileName));
@@ -173,15 +169,6 @@ public class Report {
     }
 
     /**
-     * Registers a report listener
-     *
-     * @param listener the listener
-     */
-    public void addListener(ThreadSafeReportListener listener) {
-        listeners.add(listener);
-    }
-
-    /**
      * Adds a new rule violation to the report and notify the listeners.
      *
      * @param violation the violation to add
@@ -190,9 +177,6 @@ public class Report {
         synchronized (violations) {
             int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
             violations.add(index < 0 ? -index - 1 : index, violation);
-            //            for (ThreadSafeReportListener listener : listeners) {
-            //                listener.ruleViolationAdded(violation);
-            //            }
         }
     }
 
@@ -276,20 +260,6 @@ public class Report {
      */
     public final List<ConfigurationError> getConfigurationErrors() {
         return Collections.unmodifiableList(configErrors);
-    }
-
-
-    public List<ThreadSafeReportListener> getListeners() {
-        return listeners;
-    }
-
-    /**
-     * Adds all given listeners to this report
-     *
-     * @param allListeners the report listeners
-     */
-    public void addListeners(List<ThreadSafeReportListener> allListeners) {
-        listeners.addAll(allListeners);
     }
 
 

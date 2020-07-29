@@ -36,9 +36,8 @@ import org.xml.sax.SAXParseException;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.GlobalReportBuilder;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
@@ -251,22 +250,23 @@ public abstract class RuleTst {
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
         Report report = new Report();
-        runTestFromString(test, rule, report);
+        runTestFromString(test, rule);
         return report;
     }
 
     /**
      * Run the rule on the given code and put the violations in the report.
      */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
+        return runTestFromString(code, rule, languageVersion, true);
     }
 
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion,
+                                    boolean isUseAuxClasspath) {
         try {
             PMDConfiguration config = new PMDConfiguration();
             config.setIgnoreIncrementalAnalysis(true);
+            config.setDefaultLanguageVersion(languageVersion);
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
@@ -287,25 +287,26 @@ public abstract class RuleTst {
                 });
             }
 
-            RuleContext ctx = RuleContext.throwingExceptions();
-            ctx.setReport(report);
-            ctx.setLanguageVersion(languageVersion);
-            RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+            GlobalReportBuilder builder = new GlobalReportBuilder();
 
-            report.merge(new PmdRunnable(
+
+            new PmdRunnable(
                 DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
-                ctx,
-                listOf(rules),
+                builder,
+                listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
                 config
-            ).call());
+            ).run();
 
+            builder.close();
+
+            return builder.getReport();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
+    public void runTestFromString(TestDescriptor test, Rule rule) {
+        runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**

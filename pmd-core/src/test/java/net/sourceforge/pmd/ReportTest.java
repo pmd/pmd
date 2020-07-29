@@ -24,14 +24,8 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
-public class ReportTest implements ThreadSafeReportListener {
+public class ReportTest  {
 
-    private boolean violationSemaphore;
-
-    @Override
-    public void ruleViolationAdded(RuleViolation ruleViolation) {
-        violationSemaphore = true;
-    }
 
     // Files are grouped together now.
     @Test
@@ -61,17 +55,6 @@ public class ReportTest implements ThreadSafeReportListener {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
-    }
-
-    @Test
-    public void testListener() {
-        Report rpt = new Report();
-        rpt.addListener(this);
-        violationSemaphore = false;
-        Node s = getNode(5, 5);
-        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, "file", s, rule1.getMessage()));
-        assertTrue(violationSemaphore);
     }
 
     @Test

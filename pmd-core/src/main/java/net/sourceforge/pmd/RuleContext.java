@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 
 /**
  * The RuleContext provides access to Rule processing state. This information
@@ -107,6 +108,7 @@ public class RuleContext implements AutoCloseable {
         Objects.requireNonNull(message);
         Objects.requireNonNull(formatArgs);
 
+        // at some point each Node will know its language version
         RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
         RuleViolation violation = fact.createViolation(rule, location, getSourceCodeFilename(), makeMessage(message, formatArgs));

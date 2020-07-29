@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
@@ -14,20 +13,14 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.processor.PmdRunnable;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Clément Fournier
@@ -49,20 +42,13 @@ public class XPathMetricFunctionTest {
     }
 
 
-    private Iterator<RuleViolation> getViolations(Rule rule, String code) {
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-
-        return new PmdRunnable(
-            DataSource.forString(code, "test.java"),
-            RuleContext.throwingExceptions(),
-            listOf(rules),
-            new PMDConfiguration()
-        ).call().getViolations().iterator();
+    private Iterator<RuleViolation> getViolations(Rule rule, String code) throws Exception {
+        return JavaParsingHelper.WITH_PROCESSING.executeRule(rule, code).getViolations().iterator();
     }
 
 
     @Test
-    public void testWellFormedClassMetricRule() throws PMDException {
+    public void testWellFormedClassMetricRule() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
         final String code = "class Foo { Foo() {} void bar() {}}";
 
@@ -72,7 +58,7 @@ public class XPathMetricFunctionTest {
 
 
     @Test
-    public void testWellFormedOperationMetricRule() throws PMDException {
+    public void testWellFormedOperationMetricRule() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
         final String code = "class Goo { Goo() {if(true){}} }";
 
@@ -82,7 +68,7 @@ public class XPathMetricFunctionTest {
 
 
     @Test
-    public void testBadCase() throws PMDException {
+    public void testBadCase() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('cYclo') > 1]");
         final String code = "class Hoo { Hoo() {if(true){}} }";
 
