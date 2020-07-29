@@ -24,6 +24,7 @@ This is a {{ site.pmd.release_type }} release.
 that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
 (and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
 replaced by {% jdoc !a!core::Report#getViolations() %}.
+- {% jdoc !!core::Report.ReadableDuration %}
 
 ### External Contributions
 

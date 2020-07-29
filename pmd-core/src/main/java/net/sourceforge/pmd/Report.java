@@ -74,7 +74,10 @@ public class Report implements Iterable<RuleViolation> {
 
     /**
      * Represents a duration. Useful for reporting processing time.
+     *
+     * @deprecated Not used within PMD. Rendering durations is format-specific.
      */
+    @Deprecated
     public static class ReadableDuration {
         private final long duration;
 
