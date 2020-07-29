@@ -29,7 +29,7 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
      * in {@code <? extends Integer>}.
      */
     public boolean isUpperBound() {
-        return getFirstToken().getImage().equals("extends");
+        return "extends".equals(getFirstToken().getImage());
     }
 
 
