@@ -209,6 +209,36 @@ class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidReassigningCatchVariables"
+          since="6.27.0"
+          message="Avoid reassigning caught exception ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningCatchVariablesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables">
+        <description>
+Reassigning exception variables caught in a catch statement should be avoided because of:
+1) If it is needed, multi catch can be easily added and code will still compile
+2) Following the principle of least surprise we want to make sure that a variable caught in a catch statement is always the one thrown in a try block
+        </description>
+        <priority>2</priority>
+        <example><![CDATA[
+public class Foo {
+    public void foo() {
+        try {
+            // do something
+        } catch (Exception e) {
+            e = new NullPointerException(); // not recommended
+        }
+
+        try {
+            // do something
+        } catch (MyException | ServerException e) {
+            e = new RuntimeException(); // won't compile
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
     <rule name="AvoidReassigningLoopVariables"
           since="6.11.0"
           message="Avoid reassigning the loop control variable ''{0}''"

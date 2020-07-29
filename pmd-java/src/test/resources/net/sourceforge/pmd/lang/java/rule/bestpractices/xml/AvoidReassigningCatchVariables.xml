@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple catch variable reassignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+public class Foo {
+    public void foo() {
+        try {
+            new File("/text.txt");
+        } catch (IOException e) {
+            e = new NullPointerException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>new exception variable allocation is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+public class Foo {
+    public void foo() {
+        try {
+            new File("/text.txt");
+        } catch (IOException e) {
+            Exception t;
+            t = new NullPointerException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
