@@ -59,7 +59,6 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext()) {
-            ctx.setLanguageVersion(plsql.getDefaultVersion());
             rule.apply(node, ctx);
         }
 

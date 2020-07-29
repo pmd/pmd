@@ -214,5 +214,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return reportBuilder.report
     }
 
+    @JvmOverloads
+    fun executeRuleOnResource(rule: Rule, resourcePath: String, configuration: PMDConfiguration = PMDConfiguration()): Report =
+            executeRule(rule, readResource(resourcePath), configuration)
+
 
 }

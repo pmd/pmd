@@ -49,13 +49,13 @@ public class RuleApplicator {
 
     private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
-            if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
-                continue;
-            }
 
             Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
             while (targets.hasNext()) {
                 Node node = targets.next();
+                if (!RuleSet.applies(rule, node.getLanguageVersion())) {
+                    continue;
+                }
 
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(node, ctx);

@@ -46,9 +46,9 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
         ApexNode<Compilation> node = parse(code);
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext()) {
-            ctx.setLanguageVersion(apex.getDefaultVersion());
+        try (RuleContext ctx = new RuleContext(reportBuilder)) {
             TopLevelRule rule = new TopLevelRule();
+            rule.setMessage("Message");
             rule.apply(node, ctx);
         }
         assertEquals(1, reportBuilder.getReport().getViolations().size());

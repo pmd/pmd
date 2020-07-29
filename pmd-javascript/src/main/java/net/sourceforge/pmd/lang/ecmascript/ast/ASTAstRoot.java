@@ -9,14 +9,25 @@ import java.util.Map;
 
 import org.mozilla.javascript.ast.AstRoot;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
 
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
+    private LanguageVersion languageVersion;
 
     public ASTAstRoot(AstRoot astRoot) {
         super(astRoot);
+    }
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    void setLanguageVersion(LanguageVersion languageVersion) {
+        this.languageVersion = languageVersion;
     }
 
     @Override

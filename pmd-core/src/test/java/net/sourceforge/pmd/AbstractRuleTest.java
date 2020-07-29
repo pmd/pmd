@@ -17,8 +17,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -104,7 +102,6 @@ public class AbstractRuleTest {
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
-            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
             ctx.setSourceCodeFile(new File("filename"));
             DummyNode s = new DummyRoot();
             s.setCoords(5, 1, 6, 1);

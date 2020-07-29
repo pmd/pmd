@@ -49,7 +49,7 @@ public class ScalaRuleTest extends BaseScalaTest {
                 return data;
             }
         };
-        Report report = scala.getReportForResource(rule, SCALA_TEST);
+        Report report = scala.executeRuleOnResource(rule, SCALA_TEST);
 
         Assert.assertEquals(1, report.getViolations().size());
     }

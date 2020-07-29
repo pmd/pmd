@@ -11,6 +11,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -22,6 +23,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
+    private LanguageVersion languageVersion;
 
     @InternalApi
     @Deprecated
@@ -32,6 +34,17 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
     public List<Comment> getComments() {
         return comments;
     }
+
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    void setLanguageVersion(LanguageVersion languageVersion) {
+        this.languageVersion = languageVersion;
+    }
+
 
     @InternalApi
     @Deprecated

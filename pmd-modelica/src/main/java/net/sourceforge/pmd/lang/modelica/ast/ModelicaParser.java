@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -18,8 +19,8 @@ public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
     }
 
     @Override
-    protected ASTStoredDefinition parseImpl(CharStream cs, String suppressMarker) throws ParseException {
-        return new ModelicaParserImpl(cs).StoredDefinition();
+    protected ASTStoredDefinition parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException {
+        return new ModelicaParserImpl(cs).StoredDefinition().setLanguageVersion(languageVersion);
     }
 
 }

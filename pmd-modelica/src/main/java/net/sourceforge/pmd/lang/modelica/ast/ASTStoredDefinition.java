@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 
@@ -12,6 +13,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
  */
 public class ASTStoredDefinition extends AbstractModelicaNode implements RootNode {
     private boolean hasBOM = false;
+    private LanguageVersion languageVersion;
 
     ASTStoredDefinition(int id) {
         super(id);
@@ -24,6 +26,16 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
 
     void markHasBOM() {
         hasBOM = true;
+    }
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    ASTStoredDefinition setLanguageVersion(LanguageVersion languageVersion) {
+        this.languageVersion = languageVersion;
+        return this;
     }
 
     /**

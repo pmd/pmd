@@ -419,7 +419,6 @@ public class RuleSetTest {
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
             ctx.setSourceCodeFile(file);
-            ctx.setLanguageVersion(dummyLang.getDefaultVersion());
             ruleSets.apply(makeCompilationUnits(), ctx);
         }
         assertEquals("Violations", 2, reportBuilder.getReport().getViolations().size());
@@ -436,7 +435,6 @@ public class RuleSetTest {
 
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
             ctx.setSourceCodeFile(file);
-            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
             ruleSets.apply(makeCompilationUnits(), ctx);
         }
         assertEquals("Violations", 1, reportBuilder.getReport().getViolations().size());
@@ -500,7 +498,6 @@ public class RuleSetTest {
                 .build();
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setLanguageVersion(dummyLang.getDefaultVersion());
             context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             ruleset.apply(makeCompilationUnits(), context);
@@ -525,7 +522,6 @@ public class RuleSetTest {
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored"));
         context.setIgnoreExceptions(false);
         ruleset.apply(makeCompilationUnits(), context);
@@ -546,7 +542,6 @@ public class RuleSetTest {
         }).build();
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setLanguageVersion(dummyLang.getDefaultVersion());
             context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             ruleset.apply(makeCompilationUnits(), context);
@@ -589,7 +584,6 @@ public class RuleSetTest {
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setLanguageVersion(dummyLang.getDefaultVersion());
             context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             rulesets.apply(makeCompilationUnits(), context);

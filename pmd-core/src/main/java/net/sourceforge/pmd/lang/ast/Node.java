@@ -12,6 +12,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -295,6 +296,11 @@ public interface Node {
     default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         // override me
         throw new IllegalArgumentException("Unsupported visitor" + visitor + " for node " + this);
+    }
+
+
+    default LanguageVersion getLanguageVersion() {
+        return getRoot().getLanguageVersion();
     }
 
 

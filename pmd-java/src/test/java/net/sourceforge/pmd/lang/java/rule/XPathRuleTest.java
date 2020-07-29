@@ -18,15 +18,16 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
@@ -111,33 +112,30 @@ public class XPathRuleTest extends RuleTst {
     @Test
     public void testImageOfPrimarySuffix() throws Exception {
         final String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
-                + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
-                + "    }\n" + "}";
-        LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+            + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
+            + "    }\n" + "}";
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SUFFIX);
-        RuleContext ruleContext = new RuleContext();
-        ruleContext.setLanguageVersion(language);
+        try (RuleContext ruleContext = new RuleContext(ThreadSafeAnalysisListener.noop())) {
 
-        String xpath = "//PrimarySuffix[@Image='list']";
+            String xpath = "//PrimarySuffix[@Image='list']";
 
-        // XPATH version 2.0
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                                     XPathVersion.XPATH_2_0,
-                                                                     new HashMap<>(),
-                                                                     language.getLanguageVersionHandler().getXPathHandler(),
-                                                                     DeprecatedAttrLogger.noop());
-        List<Node> nodes = xpathRuleQuery.evaluate(cu);
-        assertEquals(1, nodes.size());
+            SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                         XPathVersion.DEFAULT,
+                                                                         new HashMap<>(),
+                                                                         XPathHandler.noFunctionDefinitions(),
+                                                                         DeprecatedAttrLogger.noop());
+            List<Node> nodes = xpathRuleQuery.evaluate(cu);
+            assertEquals(1, nodes.size());
+        }
     }
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
      *
-     * @throws Exception
-     *             any error
+     * @throws Exception any error
      */
     @Test
-    public void testFollowingSibling() {
+    public void testFollowingSibling() throws Exception {
         final String source = "public class dummy {\n"
             + "  public String toString() {\n"
             + "    String test = \"bad example\";\n"
@@ -145,23 +143,22 @@ public class XPathRuleTest extends RuleTst {
             + "    return test;\n"
             + "  }\n"
             + "}";
-        LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
-        RuleContext ruleContext = new RuleContext();
-        ruleContext.setLanguageVersion(language);
+        try (RuleContext ruleContext = new RuleContext(ThreadSafeAnalysisListener.noop())) {
 
-        String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
+            String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
 
-        // XPATH version 2.0
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                                     XPathVersion.XPATH_2_0,
-                                                                     new HashMap<>(),
-                                                                     language.getLanguageVersionHandler().getXPathHandler(),
-                                                                     DeprecatedAttrLogger.noop());
-        List<Node> nodes = xpathRuleQuery.evaluate(cu);
-        assertEquals(2, nodes.size());
-        assertEquals(4, nodes.get(0).getBeginLine());
-        assertEquals(5, nodes.get(1).getBeginLine());
+
+            SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                         XPathVersion.DEFAULT,
+                                                                         new HashMap<>(),
+                                                                         XPathHandler.noFunctionDefinitions(),
+                                                                         DeprecatedAttrLogger.noop());
+            List<Node> nodes = xpathRuleQuery.evaluate(cu);
+            assertEquals(2, nodes.size());
+            assertEquals(4, nodes.get(0).getBeginLine());
+            assertEquals(5, nodes.get(1).getBeginLine());
+        }
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {

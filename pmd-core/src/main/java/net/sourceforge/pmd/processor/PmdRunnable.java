@@ -85,9 +85,7 @@ public class PmdRunnable implements Runnable {
             LOCAL_THREAD_CONTEXT.set(tc);
         }
         try (RuleContext ruleCtx = new RuleContext(ruleContext.startFileAnalysis(dataSource))) {
-
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
-            ruleCtx.setLanguageVersion(langVersion);
             ruleCtx.setSourceCodeFile(file);
 
             if (LOG.isLoggable(Level.FINE)) {

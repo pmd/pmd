@@ -14,9 +14,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
@@ -44,12 +41,10 @@ public class XPathRuleTest {
 
         loggingRule.clear();
 
-        LanguageVersion dummyVersion = LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion();
         DummyNode firstNode = newNode();
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setLanguageVersion(dummyVersion);
             // with another rule forked from the same one (in multithreaded processor)
             xpr.apply(firstNode, ctx);
         }
@@ -65,7 +60,6 @@ public class XPathRuleTest {
 
         reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setLanguageVersion(dummyVersion);
             // with another node
             xpr.apply(newNode(), ctx);
         }
@@ -77,7 +71,6 @@ public class XPathRuleTest {
 
         reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setLanguageVersion(dummyVersion);
             // with another rule forked from the same one (in multithreaded processor)
             xpr.deepCopy().apply(newNode(), ctx);
         }
@@ -88,7 +81,6 @@ public class XPathRuleTest {
 
         reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setLanguageVersion(dummyVersion);
             // with another rule on the same node, new warnings
             XPathRule otherRule = makeRule(version, "OtherRule");
             otherRule.setRuleSetName("rset.xml");

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.test.lang;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -44,6 +45,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return task -> {
                 DummyRootNode node = new DummyRootNode();
                 node.setCoords(1, 1, 1, 2);
+                node.setLanguageVersion(task.getLanguageVersion());
                 node.setImage("Foo");
                 return node;
             };
@@ -51,6 +53,20 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class DummyRootNode extends DummyNode implements RootNode {
+
+
+        private LanguageVersion languageVersion;
+
+        @Override
+        public LanguageVersion getLanguageVersion() {
+            return languageVersion;
+        }
+
+        public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {
+            this.languageVersion = languageVersion;
+            return this;
+        }
+
 
     }
 

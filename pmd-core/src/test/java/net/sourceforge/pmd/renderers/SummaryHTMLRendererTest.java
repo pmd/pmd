@@ -19,8 +19,6 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
@@ -152,7 +150,6 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Map<Integer, String> suppressions = Collections.singletonMap(1, "test");
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
-            ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
             DummyRoot root = new DummyRoot(suppressions);
             root.setCoords(1, 10, 4, 5);
             ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test");

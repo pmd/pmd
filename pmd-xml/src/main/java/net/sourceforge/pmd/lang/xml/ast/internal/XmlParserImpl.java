@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 public class XmlParserImpl {
 
     private final XmlParserOptions parserOptions;
-    private Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
+    private final Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
 
     public XmlParserImpl(XmlParserOptions parserOptions) {
@@ -61,7 +62,7 @@ public class XmlParserImpl {
     public RootXmlNode parse(ParserTask task) {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document);
+        RootXmlNode root = new RootXmlNode(this, document, task.getLanguageVersion());
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
         lineNumbers.determine();
         nodeCache.put(document, root);
@@ -90,8 +91,17 @@ public class XmlParserImpl {
      * The root should implement {@link RootNode}.
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        RootXmlNode(XmlParserImpl parser, Node domNode) {
+
+        private final LanguageVersion languageVersion;
+
+        RootXmlNode(XmlParserImpl parser, Node domNode, LanguageVersion languageVersion) {
             super(parser, domNode);
+            this.languageVersion = languageVersion;
+        }
+
+        @Override
+        public LanguageVersion getLanguageVersion() {
+            return languageVersion;
         }
     }
 

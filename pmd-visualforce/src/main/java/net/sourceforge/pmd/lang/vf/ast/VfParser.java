@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -27,8 +28,8 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker) throws ParseException {
-        return new VfParserImpl(cs).CompilationUnit();
+    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException {
+        return new VfParserImpl(cs).CompilationUnit().setLanguageVersion(languageVersion);
     }
 
 }

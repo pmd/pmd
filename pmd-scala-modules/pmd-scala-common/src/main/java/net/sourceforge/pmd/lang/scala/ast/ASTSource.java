@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 import scala.meta.Source;
@@ -13,8 +14,19 @@ import scala.meta.Source;
  */
 public final class ASTSource extends AbstractScalaNode<Source> implements RootNode {
 
+    private LanguageVersion languageVersion;
+
     ASTSource(Source scalaNode) {
         super(scalaNode);
+    }
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    void setLanguageVersion(LanguageVersion languageVersion) {
+        this.languageVersion = languageVersion;
     }
 
     @Override

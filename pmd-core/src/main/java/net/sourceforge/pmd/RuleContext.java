@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -44,7 +43,6 @@ public class RuleContext implements AutoCloseable {
 
     private Report report = new Report();
     private File sourceCodeFile;
-    private LanguageVersion languageVersion;
     private boolean ignoreExceptions = true;
 
     private final ThreadSafeAnalysisListener listener;
@@ -52,6 +50,7 @@ public class RuleContext implements AutoCloseable {
     /**
      * Default constructor.
      */
+    @Deprecated
     public RuleContext() {
         listener = ThreadSafeAnalysisListener.noop();
     }
@@ -109,7 +108,7 @@ public class RuleContext implements AutoCloseable {
         Objects.requireNonNull(formatArgs);
 
         // at some point each Node will know its language version
-        RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
         RuleViolation violation = fact.createViolation(rule, location, getSourceCodeFilename(), makeMessage(message, formatArgs));
         if (beginLine != -1 && endLine != -1) {
@@ -208,32 +207,6 @@ public class RuleContext implements AutoCloseable {
     }
 
     /**
-     * Get the LanguageVersion associated with the current source file.
-     *
-     * @return The LanguageVersion, <code>null</code> if unknown.
-     *
-     * @deprecated Will be replaced by a method on Node (nodes will
-     *     know their language version).
-     */
-    @Deprecated
-    public LanguageVersion getLanguageVersion() {
-        return this.languageVersion;
-    }
-
-    /**
-     * Set the LanguageVersion associated with the current source file. This may
-     * be set to <code>null</code> to indicate the version is unknown and should
-     * be automatically determined.
-     *
-     * @param languageVersion
-     *            The LanguageVersion.
-     */
-    @Deprecated
-    public void setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
-    }
-
-    /**
      * Configure whether exceptions during applying a rule should be ignored or
      * not. If set to <code>true</code> then such exceptions are logged as
      * warnings and the processing is continued with the next rule - the failing
@@ -261,9 +234,4 @@ public class RuleContext implements AutoCloseable {
         return ignoreExceptions;
     }
 
-    public static RuleContext throwingExceptions() {
-        RuleContext ctx = new RuleContext();
-        ctx.setIgnoreExceptions(false);
-        return ctx;
-    }
 }

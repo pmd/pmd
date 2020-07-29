@@ -23,14 +23,8 @@ import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 public class EcmascriptParser {
     protected final EcmascriptParserOptions parserOptions;
 
-    private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD"; // that's the default value
-
     public EcmascriptParser(EcmascriptParserOptions parserOptions) {
         this.parserOptions = parserOptions;
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
     }
 
     protected AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems)
@@ -62,8 +56,10 @@ public class EcmascriptParser {
         final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
+        tree.setLanguageVersion(task.getLanguageVersion());
 
-        suppressMap = new HashMap<>();
+        String suppressMarker = task.getCommentMarker();
+        Map<Integer, String> suppressMap = new HashMap<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {
                 int nopmd = comment.getValue().indexOf(suppressMarker);
@@ -78,7 +74,4 @@ public class EcmascriptParser {
         return tree;
     }
 
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
-    }
 }
