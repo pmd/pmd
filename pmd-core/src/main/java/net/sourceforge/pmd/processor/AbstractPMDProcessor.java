@@ -45,6 +45,7 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
     /**
      * Joins tasks and await completion of the analysis.
      */
+    @Override
     public void close() {
         // to be overridden
     }

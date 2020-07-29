@@ -45,7 +45,7 @@ public class MultiThreadProcessorTest {
             reportListener
         ));
 
-        return RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleset);
+        return new RuleSets(RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleset));
     }
 
     // Dysfunctional rules are pruned upstream of the processor.

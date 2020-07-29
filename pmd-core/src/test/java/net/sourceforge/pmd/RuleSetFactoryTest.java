@@ -71,7 +71,7 @@ public class RuleSetFactoryTest {
         in.close();
 
         RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
+        RuleSets rs = new RuleSets(rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml"));
         // added by referencing a complete ruleset (TestRuleset1.xml)
         assertNotNull(rs.getRuleByName("MockRule1"));
         assertNotNull(rs.getRuleByName("MockRule2"));

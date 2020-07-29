@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,12 +37,12 @@ public final class RulesetsFactoryUtils {
      */
     @InternalApi
     @Deprecated
-    public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
-        RuleSets ruleSets = null;
+    public static List<RuleSet> getRuleSets(String rulesets, RuleSetFactory factory) {
+        List<RuleSet> ruleSets;
         try {
             ruleSets = factory.createRuleSets(rulesets);
             printRuleNamesInDebug(ruleSets);
-            if (ruleSets.ruleCount() == 0) {
+            if (ruleSets.stream().mapToInt(RuleSet::size).sum() == 0) {
                 String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);
@@ -69,7 +70,7 @@ public final class RulesetsFactoryUtils {
      */
     @InternalApi
     @Deprecated
-    public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
+    public static List<RuleSet> getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             return getRuleSets(rulesets, factory);
         }
@@ -179,10 +180,12 @@ public final class RulesetsFactoryUtils {
      *
      * @param rulesets the RuleSets to print
      */
-    private static void printRuleNamesInDebug(RuleSets rulesets) {
+    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
         if (LOG.isLoggable(Level.FINER)) {
-            for (Rule r : rulesets.getAllRules()) {
-                LOG.finer("Loaded rule " + r.getName());
+            for (RuleSet rset : rulesets) {
+                for (Rule rule : rset.getRules()) {
+                    LOG.finer("Loaded rule " + rule.getName());
+                }
             }
         }
     }

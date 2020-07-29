@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -20,6 +21,9 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 /**
  * Listens to an analysis for file events. This object should be thread-safe.
  * It produces new {@link FileAnalysisListener} for each analysed file.
+ *
+ * <p>Listeners are assumed to be ready to receive events as soon as they
+ * are constructed.
  */
 public interface GlobalAnalysisListener extends AutoCloseable {
 
@@ -39,6 +43,16 @@ public interface GlobalAnalysisListener extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
+
+
+    /**
+     * Record a configuration error. This happens before the start of
+     * file analysis.
+     */
+    default void onConfigError(ConfigurationError error) {
+        // do nothing
+    }
+
 
     /**
      * Produce an analysis listener that forwards all events to the given

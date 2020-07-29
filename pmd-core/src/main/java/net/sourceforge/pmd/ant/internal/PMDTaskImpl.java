@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
@@ -31,7 +30,6 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
@@ -111,6 +109,7 @@ public class PMDTaskImpl {
         final ResourceLoader rl = setupResourceLoader();
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
 
+        List<RuleSet> rules;
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
@@ -118,7 +117,7 @@ public class PMDTaskImpl {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
-            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+            rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
@@ -160,17 +159,22 @@ public class PMDTaskImpl {
             }
 
             Renderer logRenderer = makeRenderer(reportSize, commonInputPath);
-            List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
-            renderers.add(logRenderer);
-            for (Formatter formatter : formatters) {
-                Renderer renderer = formatter.getRenderer();
-                renderer.setUseShortNames(reportShortNamesPaths);
-                renderers.add(renderer);
+            List<GlobalAnalysisListener> renderers;
+            try {
+                renderers = new ArrayList<>(formatters.size() + 1);
+                renderers.add(logRenderer.newListener());
+                for (Formatter formatter : formatters) {
+                    Renderer renderer = formatter.getRenderer();
+                    renderer.setUseShortNames(reportShortNamesPaths);
+                    renderers.add(renderer.newListener());
+                }
+            } catch (IOException e) {
+                handleError(errorReport, e);
+                return;
             }
 
-            GlobalAnalysisListener listener = GlobalAnalysisListener.tee(renderers.stream().map(Renderer::newListener).collect(Collectors.toList()));
             try {
-                PMD.processFiles(configuration, ruleSetFactory, files, listener);
+                PMD.processFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
             } catch (RuntimeException pmde) {
                 handleError(errorReport, pmde);
             }
@@ -248,7 +252,7 @@ public class PMDTaskImpl {
                 project, classpath, parentFirst));
     }
 
-    private void handleError(Report errorReport, RuntimeException pmde) {
+    private void handleError(Report errorReport, Throwable pmde) {
 
         pmde.printStackTrace();
         project.log(pmde.toString(), Project.MSG_VERBOSE);
@@ -300,10 +304,10 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(RuleSets rules) {
+    private void logRulesUsed(List<RuleSet> rules) {
         project.log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
 
-        for (RuleSet ruleSet : rules.getAllRuleSets()) {
+        for (RuleSet ruleSet : rules) {
             for (Rule rule : ruleSet.getRules()) {
                 project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }

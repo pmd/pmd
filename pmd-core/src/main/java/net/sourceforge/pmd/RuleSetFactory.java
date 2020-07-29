@@ -147,7 +147,7 @@ public class RuleSetFactory {
                     LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
                 }
             }
-            return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
+            return createRuleSets(ruleSetReferenceIds).iterator();
         } catch (IOException ioe) {
             throw new RuntimeException("Couldn't find " + rulesetsProperties
                     + "; please ensure that the directory is on the classpath. The current classpath is: "
@@ -168,7 +168,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
+    public List<RuleSet> createRuleSets(String referenceString) throws RuleSetNotFoundException {
         return createRuleSets(RuleSetReferenceId.parse(referenceString));
     }
 
@@ -182,13 +182,13 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
+    public List<RuleSet> createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
         List<RuleSet> ruleSets = new ArrayList<>();
         for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
             RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
             ruleSets.add(ruleSet);
         }
-        return new RuleSets(ruleSets);
+        return ruleSets;
     }
 
     /**

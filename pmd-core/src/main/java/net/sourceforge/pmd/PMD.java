@@ -166,10 +166,8 @@ public class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory =
-            RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
-        final RuleSets ruleSets =
-            RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+        final RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
+        final List<RuleSet> ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
@@ -178,19 +176,18 @@ public class PMD {
         final List<DataSource> files = getApplicableFiles(configuration, languages);
 
         try {
-            Renderer renderer;
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                renderer = configuration.createRenderer();
-                renderer.setReportFile(configuration.getReportFile());
-                renderer.start();
-            }
+            Renderer renderer = configuration.createRenderer(true);
 
+            @SuppressWarnings("PMD.CloseResource")
             ViolationCounterListener violationCounter = new ViolationCounterListener();
 
-            try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(renderer.newListener(), violationCounter))) {
+            try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(renderer.newListener(),
+                                                                                     violationCounter))) {
+
+
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
                     encourageToUseIncrementalAnalysis(configuration);
-                    processFiles(configuration, ruleSetFactory, files, listener);
+                    processFiles(configuration, ruleSets, files, listener);
                 }
             }
             return violationCounter.getCount();
@@ -221,30 +218,28 @@ public class PMD {
      * available
      *
      * @param configuration  Configuration
-     * @param ruleSetFactory RuleSetFactory
+     * @param ruleSets RuleSetFactory
      * @param files          List of {@link DataSource}s
      * @param listener       RuleContext
      */
     public static void processFiles(PMDConfiguration configuration,
-                                    RuleSetFactory ruleSetFactory,
+                                    List<RuleSet> ruleSets,
                                     List<DataSource> files,
                                     GlobalAnalysisListener listener) {
 
-        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
+        final RuleSets rs = new RuleSets(ruleSets);
 
-        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), silentFactory);
-
-        // Just like we throw for invalid properties, "broken rules"
+        // todo Just like we throw for invalid properties, "broken rules"
         // shouldn't be a "config error". This is the only instance of
         // config errors...
 
-        // final Set<Rule> brokenRules = removeBrokenRules(rs);
-        // for (final Rule rule : brokenRules) {
-        //      ctx.getReport().addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        // }
+        for (final Rule rule : removeBrokenRules(rs)) {
+            listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
+        }
 
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
+
         // Make sure the cache is listening for analysis results
         listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
 
@@ -383,18 +378,20 @@ public class PMD {
         return files;
     }
 
-    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {
+    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final List<RuleSet> ruleSets) {
         final Set<Language> languages = new HashSet<>();
         final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
-        for (final Rule rule : ruleSets.getAllRules()) {
-            final Language ruleLanguage = rule.getLanguage();
-            if (!languages.contains(ruleLanguage)) {
-                final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                if (RuleSet.applies(rule, version)) {
-                    languages.add(ruleLanguage);
-                    if (LOG.isLoggable(Level.FINE)) {
-                        LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+        for (final RuleSet ruleSet : ruleSets) {
+            for (Rule rule : ruleSet.getRules()) {
+                final Language ruleLanguage = rule.getLanguage();
+                if (!languages.contains(ruleLanguage)) {
+                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                    if (RuleSet.applies(rule, version)) {
+                        languages.add(ruleLanguage);
+                        if (LOG.isLoggable(Level.FINE)) {
+                            LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+                        }
                     }
                 }
             }

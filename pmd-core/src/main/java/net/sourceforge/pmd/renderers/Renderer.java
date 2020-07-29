@@ -197,9 +197,13 @@ public interface Renderer extends PropertySource {
     //  ie violations are batched by file and forwarded to the renderer
     //  when the file is done. Many renderers could directly handle
     //  violations as they come though.
-    default GlobalAnalysisListener newListener() {
+    default GlobalAnalysisListener newListener() throws IOException {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            this.start();
+        }
 
         return new GlobalAnalysisListener() {
+
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
                 Renderer.this.startFileAnalysis(file);
@@ -224,7 +228,9 @@ public interface Renderer extends PropertySource {
                     @Override
                     public void close() throws Exception {
                         reportBuilder.close();
-                        renderFileReport(reportBuilder.getReport());
+                        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                            renderFileReport(reportBuilder.getReport());
+                        }
                     }
                 };
             }
