@@ -1434,4 +1434,15 @@ public class RedundantFieldInitializerTest {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2441 can not detect a case char c = '\0';</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    char c = '\0';
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -16,9 +16,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-performance
+    *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
+
 ### API Changes
 
 ### External Contributions
+
+*   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)
+
 
 {% endtocmaker %}
 
