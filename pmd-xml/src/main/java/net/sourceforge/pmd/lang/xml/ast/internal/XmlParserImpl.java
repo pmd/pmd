@@ -62,7 +62,7 @@ public class XmlParserImpl {
     public RootXmlNode parse(ParserTask task) {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document, task.getLanguageVersion());
+        RootXmlNode root = new RootXmlNode(this, document, task);
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
         lineNumbers.determine();
         nodeCache.put(document, root);
@@ -93,15 +93,22 @@ public class XmlParserImpl {
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
 
         private final LanguageVersion languageVersion;
+        private final String filename;
 
-        RootXmlNode(XmlParserImpl parser, Node domNode, LanguageVersion languageVersion) {
+        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
             super(parser, domNode);
-            this.languageVersion = languageVersion;
+            this.languageVersion = task.getLanguageVersion();
+            this.filename = task.getFileDisplayName();
         }
 
         @Override
         public LanguageVersion getLanguageVersion() {
             return languageVersion;
+        }
+
+        @Override
+        public String getSourceCodeFile() {
+            return filename;
         }
     }
 

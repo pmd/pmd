@@ -84,9 +84,9 @@ public class PmdRunnable implements Runnable {
             tc = new ThreadContext(ruleSetMaker.get());
             LOCAL_THREAD_CONTEXT.set(tc);
         }
+
         try (RuleContext ruleCtx = new RuleContext(ruleContext.startFileAnalysis(dataSource))) {
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
-            ruleCtx.setSourceCodeFile(file);
 
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.fine("Processing " + file);
@@ -95,7 +95,7 @@ public class PmdRunnable implements Runnable {
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (tc.ruleSets.applies(file)) {
                 if (configuration.getAnalysisCache().isUpToDate(file)) {
-                    reportCachedRuleViolations(ruleCtx);
+                    reportCachedRuleViolations(ruleCtx, file);
                 } else {
                     try {
                         processSource(ruleCtx, langVersion, tc.ruleSets);
@@ -126,10 +126,11 @@ public class PmdRunnable implements Runnable {
         try (InputStream stream = dataSource.getInputStream()) {
             fullSource = IOUtils.toString(stream, configuration.getSourceEncoding());
         }
+        String filename = dataSource.getNiceFileName(false, null);
 
         try {
             ruleSets.start(ruleCtx);
-            processSource(fullSource, ruleSets, ruleCtx, languageVersion);
+            processSource(fullSource, ruleSets, ruleCtx, languageVersion, filename);
         } finally {
             ruleSets.end(ruleCtx);
         }
@@ -137,8 +138,8 @@ public class PmdRunnable implements Runnable {
     }
 
 
-    private void reportCachedRuleViolations(final RuleContext ctx) {
-        for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
+    private void reportCachedRuleViolations(final RuleContext ctx, File file) {
+        for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(file)) {
             ctx.addViolationNoSuppress(rv);
         }
     }
@@ -153,11 +154,12 @@ public class PmdRunnable implements Runnable {
     private void processSource(String sourceCode,
                                RuleSets ruleSets,
                                RuleContext ctx,
-                               LanguageVersion languageVersion) throws FileAnalysisException, IOException {
+                               LanguageVersion languageVersion,
+                               String filename) throws FileAnalysisException, IOException {
 
         ParserTask task = new ParserTask(
             languageVersion,
-            String.valueOf(ctx.getSourceCodeFile()),
+            filename,
             sourceCode,
             SemanticErrorReporter.noop(),
             configuration.getSuppressMarker()

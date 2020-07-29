@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTTemplate extends AbstractVmNode implements RootNode {
 
     private LanguageVersion languageVersion;
+    private String filename;
 
     public ASTTemplate(int id) {
         super(id);
@@ -20,8 +22,14 @@ public final class ASTTemplate extends AbstractVmNode implements RootNode {
         return languageVersion;
     }
 
-    ASTTemplate setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
+    @Override
+    public String getSourceCodeFile() {
+        return filename;
+    }
+
+    ASTTemplate addTaskInfo(ParserTask languageVersion) {
+        this.languageVersion = languageVersion.getLanguageVersion();
+        this.filename = languageVersion.getFileDisplayName();
         return this;
     }
 

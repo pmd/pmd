@@ -39,7 +39,7 @@
         <!-- Adapt parser. -->
         <replace file="${parser-file}">
             <replacefilter token="${root-node-name}Context extends ${lang-name}InnerNode"
-                           value="${root-node-name}Context extends ${lang-name}InnerNode implements net.sourceforge.pmd.lang.ast.RootNode"/>
+                           value="${root-node-name}Context extends ${lang-name}RootNode"/>
 
             <replacefilter token="_ctx = _localctx;"
                            value="_ctx = _localctx.asAntlrNode();"/>

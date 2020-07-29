@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -34,11 +35,11 @@ import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 
 public class RuleSetTest {
 
@@ -401,24 +402,18 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws Exception {
-        File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
-
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
-            .addRule(rule)
-            .build();
+        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
-        RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2")
-            .addRule(rule)
-            .build();
+        RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1").addRule(rule).build();
+        RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2").addRule(rule).build();
 
         RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setSourceCodeFile(file);
             ruleSets.apply(makeCompilationUnits(), ctx);
         }
         assertEquals("Violations", 2, reportBuilder.getReport().getViolations().size());
@@ -432,10 +427,8 @@ public class RuleSetTest {
         ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         reportBuilder = new ReportBuilderListener();
-
         try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ctx.setSourceCodeFile(file);
-            ruleSets.apply(makeCompilationUnits(), ctx);
+            ruleSets.apply(makeCompilationUnits("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), ctx);
         }
         assertEquals("Violations", 1, reportBuilder.getReport().getViolations().size());
     }
@@ -478,12 +471,15 @@ public class RuleSetTest {
     }
 
     private List<Node> makeCompilationUnits() {
-        List<Node> nodes = new ArrayList<>();
-        DummyNode node = new DummyRoot();
+        return makeCompilationUnits("sampleFile.dummy");
+    }
+
+    private List<Node> makeCompilationUnits(String filename) {
+        DummyRoot node = new DummyRoot();
         node.setCoords(1, 1, 10, 1);
         node.setImage("Foo");
-        nodes.add(node);
-        return nodes;
+        node.withFileName(filename);
+        return Collections.singletonList(node);
     }
 
     @Test
@@ -498,7 +494,6 @@ public class RuleSetTest {
                 .build();
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             ruleset.apply(makeCompilationUnits(), context);
         }
@@ -520,9 +515,7 @@ public class RuleSetTest {
                     }
                 })
                 .build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored"));
+        RuleContext context = new RuleContext(ThreadSafeAnalysisListener.noop());
         context.setIgnoreExceptions(false);
         ruleset.apply(makeCompilationUnits(), context);
     }
@@ -542,7 +535,6 @@ public class RuleSetTest {
         }).build();
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             ruleset.apply(makeCompilationUnits(), context);
         }
@@ -584,7 +576,6 @@ public class RuleSetTest {
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
         try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setSourceCodeFile(new File("foo.dummy"));
             context.setIgnoreExceptions(true); // the default
             rulesets.apply(makeCompilationUnits(), context);
         }

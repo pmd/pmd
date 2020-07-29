@@ -39,7 +39,7 @@ public final class ScalaParser implements Parser {
         Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         ASTSource root = (ASTSource) new ScalaTreeBuilder().build(src);
-        root.setLanguageVersion(task.getLanguageVersion());
+        root.addTaskInfo(task);
         return root;
     }
 

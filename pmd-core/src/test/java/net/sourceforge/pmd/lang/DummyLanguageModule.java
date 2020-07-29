@@ -50,9 +50,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         public Parser getParser(ParserOptions parserOptions) {
             return task -> {
-                DummyRoot node = new DummyRoot();
+                DummyRoot node = new DummyRoot(task.getLanguageVersion());
                 node.setCoords(1, 1, 2, 10);
                 node.setImage("Foo");
+                node.withFileName(task.getFileDisplayName());
                 return node;
             };
         }

@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,15 +13,6 @@ import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 import junit.framework.JUnit4TestAdapter;
 
 public class RuleContextTest {
-
-    @Test
-    public void testSourceCodeFilename() {
-        RuleContext ctx = new RuleContext();
-        assertEquals("filename should be empty", "", ctx.getSourceCodeFilename());
-        ctx.setSourceCodeFile(new File("dir/foo.java"));
-        assertEquals("filename mismatch", "foo.java", ctx.getSourceCodeFilename());
-    }
-
 
     @Test
     public void testMessage() throws Exception {
@@ -49,15 +35,6 @@ public class RuleContextTest {
         RuleViolation violation = listener.getReport().getViolations().get(0);
         Assert.assertEquals("message with 1 argument: \"testarg1\"", violation.getDescription());
     }
-
-    @Test
-    public void testSourceCodeFile() {
-        RuleContext ctx = new RuleContext();
-        assertNull("file should be null", ctx.getSourceCodeFile());
-        ctx.setSourceCodeFile(new File("somefile.java"));
-        assertEquals("filename mismatch", new File("somefile.java"), ctx.getSourceCodeFile());
-    }
-
 
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(RuleContextTest.class);

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -28,8 +27,8 @@ public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException {
-        return new JspParserImpl(cs).CompilationUnit().setLanguageVersion(languageVersion);
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
+        return new JspParserImpl(cs).CompilationUnit().addTaskInfo(task);
     }
 
 }

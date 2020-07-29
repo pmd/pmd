@@ -187,7 +187,7 @@ public class PMD {
 
             ReportBuilderListener reportBuilder = new ReportBuilderListener();
 
-            try (GlobalAnalysisListener listener = GlobalAnalysisListener.forReporter(renderer)) {
+            try (GlobalAnalysisListener listener = renderer.newListener()) {
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
                     encourageToUseIncrementalAnalysis(configuration);
                     processFiles(configuration, ruleSetFactory, files, listener);

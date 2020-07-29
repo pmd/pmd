@@ -9,7 +9,16 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener;
+import net.sourceforge.pmd.processor.ThreadSafeAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -177,4 +186,56 @@ public interface Renderer extends PropertySource {
      */
     @Experimental
     void setReportFile(String reportFilename);
+
+
+
+    /**
+     * Returns a new analysis listener, that handles violations by rendering
+     * them in an implementation-defined way.
+     */
+    // TODO the default implementation matches the current behavior,
+    //  ie violations are batched by file and forwarded to the renderer
+    //  when the file is done. Many renderers could directly handle
+    //  violations as they come though.
+    default GlobalAnalysisListener newListener() {
+
+        return new GlobalAnalysisListener() {
+            @Override
+            public ThreadSafeAnalysisListener startFileAnalysis(DataSource file) {
+                Renderer.this.startFileAnalysis(file);
+                return new ThreadSafeAnalysisListener() {
+                    final ReportBuilderListener reportBuilder = new ReportBuilderListener();
+
+                    @Override
+                    public void onRuleViolation(RuleViolation violation) {
+                        reportBuilder.onRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onSuppressedRuleViolation(SuppressedViolation violation) {
+                        reportBuilder.onSuppressedRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onError(ProcessingError error) {
+                        reportBuilder.onError(error);
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        reportBuilder.close();
+                        renderFileReport(reportBuilder.getReport());
+                    }
+                };
+            }
+
+            @Override
+            public void close() throws Exception {
+                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                    end();
+                    flush();
+                }
+            }
+        };
+    }
 }

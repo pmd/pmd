@@ -65,7 +65,9 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
-        configuration.setSuppressMarker(task.getSuppressMarker());
+        if (task.getSuppressMarker() != null) {
+            configuration.setSuppressMarker(task.getSuppressMarker());
+        }
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();
@@ -166,7 +168,7 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
 
-            GlobalAnalysisListener listener = GlobalAnalysisListener.tee(renderers.stream().map(GlobalAnalysisListener::forReporter).collect(Collectors.toList()));
+            GlobalAnalysisListener listener = GlobalAnalysisListener.tee(renderers.stream().map(Renderer::newListener).collect(Collectors.toList()));
             try {
                 PMD.processFiles(configuration, ruleSetFactory, files, listener);
             } catch (RuntimeException pmde) {

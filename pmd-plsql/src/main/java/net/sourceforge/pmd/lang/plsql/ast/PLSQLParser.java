@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -25,8 +24,8 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
     }
 
     @Override
-    protected ASTInput parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException {
-        return new PLSQLParserImpl(cs).Input().setLanguageVersion(languageVersion);
+    protected ASTInput parseImpl(CharStream cs, ParserTask task) throws ParseException {
+        return new PLSQLParserImpl(cs).Input().addTaskInfo(task);
     }
 
 }

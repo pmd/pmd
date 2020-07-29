@@ -249,9 +249,7 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
-        Report report = new Report();
-        runTestFromString(test, rule);
-        return report;
+        return runTestFromString(test, rule);
     }
 
     /**
@@ -305,8 +303,8 @@ public abstract class RuleTst {
         }
     }
 
-    public void runTestFromString(TestDescriptor test, Rule rule) {
-        runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    public Report runTestFromString(TestDescriptor test, Rule rule) {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**

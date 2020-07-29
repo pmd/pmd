@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 final class MonoThreadProcessor extends AbstractPMDProcessor {
-
-    private final List<Report> reports = new ArrayList<>();
 
     public MonoThreadProcessor(PMDConfiguration configuration) {
         super(configuration);

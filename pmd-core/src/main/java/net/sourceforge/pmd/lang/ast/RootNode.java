@@ -41,4 +41,8 @@ public interface RootNode extends Node {
 
     @Override
     LanguageVersion getLanguageVersion();
+
+
+    @Override
+    String getSourceCodeFile();
 }

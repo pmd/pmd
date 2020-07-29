@@ -34,10 +34,10 @@ public abstract class AntlrBaseParser<
     @Override
     public R parse(ParserTask task) throws ParseException {
         CharStream cs = CharStreams.fromString(task.getSourceText(), task.getFileDisplayName());
-        return parse(getLexer(cs));
+        return parse(getLexer(cs), task);
     }
 
-    protected abstract R parse(Lexer parser);
+    protected abstract R parse(Lexer parser, ParserTask task);
 
     protected abstract Lexer getLexer(CharStream source);
 }

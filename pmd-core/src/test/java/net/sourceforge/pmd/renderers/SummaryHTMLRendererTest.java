@@ -150,7 +150,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Map<Integer, String> suppressions = Collections.singletonMap(1, "test");
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
-            DummyRoot root = new DummyRoot(suppressions);
+            DummyRoot root = new DummyRoot(suppressions).withFileName("");
             root.setCoords(1, 10, 4, 5);
             ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test");
         }

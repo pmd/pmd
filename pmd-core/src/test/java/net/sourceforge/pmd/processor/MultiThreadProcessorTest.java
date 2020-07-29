@@ -6,10 +6,6 @@ package net.sourceforge.pmd.processor;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,9 +34,10 @@ public class MultiThreadProcessorTest {
     public RuleSets setUpForTest(final String ruleset) throws RuleSetNotFoundException {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
-        files = new ArrayList<>();
-        files.add(DataSource.forString("abc", "file1-violation.dummy"));
-        files.add(DataSource.forString("DEF", "file2-foo.dummy"));
+        files = listOf(
+            DataSource.forString("abc", "file1-violation.dummy"),
+            DataSource.forString("DEF", "file2-foo.dummy")
+        );
 
         reportListener = new SimpleReportListener();
         listener = GlobalAnalysisListener.tee(listOf(
@@ -96,7 +93,7 @@ public class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (ctx.getSourceCodeFilename().contains("violation")) {
+            if (target.getSourceCodeFile().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);

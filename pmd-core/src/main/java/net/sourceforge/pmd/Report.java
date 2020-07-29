@@ -6,7 +6,6 @@ package net.sourceforge.pmd;
 
 import static java.util.Collections.synchronizedList;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,23 +29,6 @@ public class Report {
     private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
-
-    /**
-     * Creates a new, initialized, empty report for the given file name.
-     *
-     * @param ctx
-     *            The context to use to connect to the report
-     * @param fileName
-     *            the filename used to report any violations
-     * @return the new report
-     */
-    public static Report createReport(RuleContext ctx, String fileName) {
-        Report report = new Report();
-
-        ctx.setReport(report);
-        ctx.setSourceCodeFile(new File(fileName));
-        return report;
-    }
 
     /**
      * Represents a configuration error.

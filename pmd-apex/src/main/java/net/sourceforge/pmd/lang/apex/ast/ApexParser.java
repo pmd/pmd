@@ -35,7 +35,7 @@ public final class ApexParser implements Parser {
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            ASTApexFile fileNode = new ASTApexFile(positioner, task.getLanguageVersion(), treeRoot);
+            ASTApexFile fileNode = new ASTApexFile(positioner, task, treeRoot);
             fileNode.setNoPmdComments(treeBuilder.getSuppressMap());
             return fileNode;
         } catch (apex.jorje.services.exception.ParseException e) {

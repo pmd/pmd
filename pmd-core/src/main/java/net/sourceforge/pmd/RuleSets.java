@@ -136,13 +136,15 @@ public class RuleSets {
             this.ruleApplicator = prepareApplicator();
         }
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
-            ruleApplicator.index(acuList);
-        }
+        for (Node node : acuList) {
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
+                ruleApplicator.index(Collections.singletonList(node));
+            }
 
-        for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(ctx.getSourceCodeFile())) {
-                ruleApplicator.apply(ruleSet.getRules(), ctx);
+            for (RuleSet ruleSet : ruleSets) {
+                if (ruleSet.applies(new File(node.getSourceCodeFile()))) {
+                    ruleApplicator.apply(ruleSet.getRules(), ctx);
+                }
             }
         }
     }

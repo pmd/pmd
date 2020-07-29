@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
@@ -102,8 +101,7 @@ public class AbstractRuleTest {
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         ReportBuilderListener listener = new ReportBuilderListener();
         try (RuleContext ctx = new RuleContext(listener)) {
-            ctx.setSourceCodeFile(new File("filename"));
-            DummyNode s = new DummyRoot();
+            DummyNode s = new DummyRoot().withFileName("filename");
             s.setCoords(5, 1, 6, 1);
             s.setImage("TestImage");
             r.addViolation(ctx, s);

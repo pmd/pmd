@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -35,13 +34,13 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         CharStream charStream = newCharStream(doc);
 
         try {
-            return parseImpl(charStream, task.getCommentMarker(), task.getLanguageVersion());
+            return parseImpl(charStream, task);
         } catch (TokenMgrError tme) {
             throw tme.setFileName(task.getFileDisplayName());
         }
     }
 
-    protected abstract R parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException;
+    protected abstract R parseImpl(CharStream cs, ParserTask task) throws ParseException;
 
 
     @Override

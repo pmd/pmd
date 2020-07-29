@@ -26,16 +26,14 @@ public interface ThreadSafeAnalysisListener extends AutoCloseable {
     /**
      * Handle a new violation (not suppressed).
      */
-    default void onRuleViolation(RuleViolation violation) {
-
-    }
+    void onRuleViolation(RuleViolation violation);
 
 
     /**
      * Handle a new suppressed violation.
      */
     default void onSuppressedRuleViolation(SuppressedViolation violation) {
-
+        // by default do nothing
     }
 
 
@@ -43,21 +41,33 @@ public interface ThreadSafeAnalysisListener extends AutoCloseable {
      * Handle an error that occurred while processing a file.
      */
     default void onError(ProcessingError error) {
-
+        // by default do nothing
     }
 
 
     @Override
     default void close() throws Exception {
-
+        // by default do nothing
     }
 
 
+    /**
+     * A listener that does nothing.
+     */
     static ThreadSafeAnalysisListener noop() {
-        return new ThreadSafeAnalysisListener() {};
+        return violation -> { /* do nothing*/};
     }
 
 
+    /**
+     * Produce an analysis listener that forwards all events to the given
+     * listeners.
+     *
+     * @param listeners Listeners
+     *
+     * @return A new listener
+     */
+    @SuppressWarnings("PMD.CloseResource")
     static ThreadSafeAnalysisListener tee(Collection<? extends ThreadSafeAnalysisListener> listeners) {
         List<ThreadSafeAnalysisListener> list = Collections.unmodifiableList(new ArrayList<>(listeners));
         return new ThreadSafeAnalysisListener() {

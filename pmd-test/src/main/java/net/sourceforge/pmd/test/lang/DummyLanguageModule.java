@@ -62,6 +62,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return languageVersion;
         }
 
+        @Override
+        public String getSourceCodeFile() {
+            return "someFile.dummy";
+        }
+
         public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {
             this.languageVersion = languageVersion;
             return this;

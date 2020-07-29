@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -124,6 +125,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *            The suppress marker to use.
      */
     public void setSuppressMarker(String suppressMarker) {
+        Objects.requireNonNull(suppressMarker, "Suppress marker was null");
         this.suppressMarker = suppressMarker;
     }
 

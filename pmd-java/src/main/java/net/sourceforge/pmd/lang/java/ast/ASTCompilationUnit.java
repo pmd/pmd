@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -24,6 +25,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
     private LanguageVersion languageVersion;
+    private String filename;
 
     @InternalApi
     @Deprecated
@@ -41,8 +43,15 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
         return languageVersion;
     }
 
-    void setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
+
+    @Override
+    public String getSourceCodeFile() {
+        return filename;
+    }
+
+    void addTaskInfo(ParserTask languageVersion) {
+        this.languageVersion = languageVersion.getLanguageVersion();
+        this.filename = languageVersion.getFileDisplayName();
     }
 
 

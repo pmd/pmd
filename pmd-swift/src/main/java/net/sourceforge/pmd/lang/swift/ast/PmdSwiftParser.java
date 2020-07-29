@@ -22,9 +22,11 @@ public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwTopLevel>
     }
 
     @Override
-    protected SwTopLevel parse(final Lexer lexer) {
+    protected SwTopLevel parse(final Lexer lexer, ParserTask task) {
         SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
-        return parser.topLevel();
+        SwTopLevel swTopLevel = parser.topLevel();
+        swTopLevel.addTaskInfo(task);
+        return swTopLevel;
     }
 
     @Override

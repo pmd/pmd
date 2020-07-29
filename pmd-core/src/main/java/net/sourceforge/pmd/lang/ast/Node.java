@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -301,6 +302,16 @@ public interface Node {
 
     default LanguageVersion getLanguageVersion() {
         return getRoot().getLanguageVersion();
+    }
+
+
+    /**
+     * @deprecated This is simply a placeholder until we have TextDocuments
+     */
+    @Deprecated
+    @NoAttribute
+    default String getSourceCodeFile() {
+        return getRoot().getSourceCodeFile();
     }
 
 

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
@@ -38,17 +37,15 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, String suppressMarker, LanguageVersion languageVersion) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
-        if (suppressMarker != null) {
-            parser.setSuppressMarker(suppressMarker);
-        }
+        parser.setSuppressMarker(task.getCommentMarker());
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
-        acu.setLanguageVersion(languageVersion);
+        acu.addTaskInfo(task);
         checker.check(acu);
         return acu;
     }
