@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.processor.FileAnalysisListener;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -203,8 +203,7 @@ public class Report {
         suppressedRuleViolations.addAll(r.suppressedRuleViolations);
 
         for (RuleViolation violation : r.getViolations()) {
-            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
-            violations.add(index < 0 ? -index - 1 : index, violation);
+            addRuleViolation(violation);
         }
     }
 
@@ -286,13 +285,13 @@ public class Report {
         }
 
         @Override
-        public void close() {
+        public void close() throws Exception {
             done = true;
         }
     }
 
 
-    public final static class GlobalReportBuilder implements GlobalAnalysisListener {
+    public static final class GlobalReportBuilder implements GlobalAnalysisListener {
 
         private final Report report = new Report();
         private boolean done;

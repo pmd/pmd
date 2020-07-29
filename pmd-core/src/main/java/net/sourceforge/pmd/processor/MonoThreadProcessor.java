@@ -12,7 +12,7 @@ import net.sourceforge.pmd.PMDConfiguration;
  */
 final class MonoThreadProcessor extends AbstractPMDProcessor {
 
-    public MonoThreadProcessor(PMDConfiguration configuration) {
+    MonoThreadProcessor(PMDConfiguration configuration) {
         super(configuration);
     }
 

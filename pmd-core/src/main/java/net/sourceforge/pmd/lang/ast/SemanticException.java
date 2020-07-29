@@ -20,6 +20,7 @@ public class SemanticException extends FileAnalysisException {
     public SemanticException(Throwable cause) {
         super(cause);
     }
+
     public SemanticException(String message, Throwable cause) {
         super(message, cause);
     }

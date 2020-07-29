@@ -22,7 +22,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -38,6 +37,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.GlobalAnalysisListener;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
@@ -185,15 +185,15 @@ public class PMD {
                 renderer.start();
             }
 
-            ReportBuilderListener reportBuilder = new ReportBuilderListener();
+            ViolationCounterListener violationCounter = new ViolationCounterListener();
 
-            try (GlobalAnalysisListener listener = renderer.newListener()) {
+            try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(renderer.newListener(), violationCounter))) {
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
                     encourageToUseIncrementalAnalysis(configuration);
                     processFiles(configuration, ruleSetFactory, files, listener);
                 }
             }
-            return reportBuilder.getReport().getViolations().size();
+            return violationCounter.getCount();
         } catch (final Exception e) {
             String message = e.getMessage();
             if (message == null) {

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 final class MultiThreadProcessor extends AbstractPMDProcessor {
     private final ExecutorService executor;
 
-    public MultiThreadProcessor(final PMDConfiguration configuration) {
+    MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
 
         executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());

@@ -11,7 +11,9 @@ package net.sourceforge.pmd.processor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -73,6 +75,37 @@ public interface GlobalAnalysisListener extends AutoCloseable {
                 }
             }
         };
+    }
+
+    /**
+     * A listener that just counts recorded violations.
+     */
+    final class ViolationCounterListener implements GlobalAnalysisListener, FileAnalysisListener {
+
+        private final AtomicInteger count = new AtomicInteger();
+
+
+        /**
+         * Get the number of violations recorded.
+         */
+        public int getCount() {
+            return count.get();
+        }
+
+        @Override
+        public FileAnalysisListener startFileAnalysis(DataSource file) {
+            return this;
+        }
+
+        @Override
+        public void onRuleViolation(RuleViolation violation) {
+            count.incrementAndGet();
+        }
+
+        @Override
+        public void close() {
+
+        }
     }
 
 

@@ -9,8 +9,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 
 /**
  * An analysis cache for incremental analysis.

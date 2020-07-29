@@ -24,8 +24,7 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
-public class ReportTest  {
-
+public class ReportTest {
 
     // Files are grouped together now.
     @Test
