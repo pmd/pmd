@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class XPathRuleTest extends RuleTst {
         XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals("a", rv.getDescription());
     }
 
@@ -74,12 +73,7 @@ public class XPathRuleTest extends RuleTst {
         rule.definePropertyDescriptor(varDescriptor);
 
         Report report = getReportForTestString(rule, TEST3);
-        Iterator<RuleViolation> rv = report.iterator();
-        int i = 0;
-        for (; rv.hasNext(); ++i) {
-            rv.next();
-        }
-        assertEquals(2, i);
+        assertEquals(2, report.getViolations().size());
     }
 
 
@@ -92,7 +86,7 @@ public class XPathRuleTest extends RuleTst {
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -100,7 +94,7 @@ public class XPathRuleTest extends RuleTst {
     public void testFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -108,7 +102,7 @@ public class XPathRuleTest extends RuleTst {
     public void testNoFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 

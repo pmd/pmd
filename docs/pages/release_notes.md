@@ -26,6 +26,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+- Many methods of {% jdoc !!core::Report %}. They are replaced by accessors
+that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
+(and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
+replaced by {% jdoc !a!core::Report#getViolations() %}.
+- {% jdoc !!core::Report.ReadableDuration %}
+
 ### External Contributions
 
 *   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)

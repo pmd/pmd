@@ -14,8 +14,6 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -86,26 +84,6 @@ public class ReportTest implements ThreadSafeReportListener {
     }
 
     @Test
-    public void testSummary() {
-        Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo1"));
-        Node s = getNode(5, 5);
-        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, s, rule.getMessage()));
-        ctx.setSourceCodeFile(new File("foo2"));
-        Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        Node s1 = getNode(20, 5);
-        Node s2 = getNode(30, 5);
-        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s1, mr.getMessage()));
-        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s2, mr.getMessage()));
-        Map<String, Integer> summary = r.getSummary();
-        assertEquals(summary.keySet().size(), 2);
-        assertTrue(summary.containsValue(1));
-        assertTrue(summary.containsValue(2));
-    }
-
-    @Test
     public void testIterator() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
@@ -115,13 +93,7 @@ public class ReportTest implements ThreadSafeReportListener {
         Node node2 = getNode(5, 6, true);
         r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, rule.getMessage()));
 
-        Iterator<RuleViolation> violations = r.iterator();
-        int violationCount = 0;
-        while (violations.hasNext()) {
-            violations.next();
-            violationCount++;
-        }
-        assertEquals(2, violationCount);
+        assertEquals(2, r.getViolations().size());
     }
 
     private static Node getNode(int line, int column) {

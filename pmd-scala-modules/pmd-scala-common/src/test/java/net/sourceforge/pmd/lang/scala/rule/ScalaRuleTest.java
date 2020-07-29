@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
@@ -52,6 +51,6 @@ public class ScalaRuleTest extends BaseScalaTest {
         };
         Report report = scala.getReportForResource(rule, SCALA_TEST);
 
-        Assert.assertEquals(1, IteratorUtil.count(report.iterator()));
+        Assert.assertEquals(1, report.getViolations().size());
     }
 }

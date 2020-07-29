@@ -12,13 +12,14 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -126,10 +127,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         int numberOfErrors = 0;
         int numberOfWarnings = 0;
 
-        for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
+        for (RuleViolation rv : report.getViolations()) {
             buf.setLength(0);
             numberOfWarnings++;
-            RuleViolation rv = i.next();
             String nextFile = determineFileName(rv.getFilename());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
@@ -155,10 +155,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             writer.write(buf.toString());
         }
 
-        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
+        for (ProcessingError error : report.getProcessingErrors()) {
             buf.setLength(0);
             numberOfErrors++;
-            Report.ProcessingError error = i.next();
             String nextFile = determineFileName(error.getFile());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
@@ -170,10 +169,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             writer.write(buf.toString());
         }
 
-        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
+        for (ConfigurationError error : report.getConfigErrors()) {
             buf.setLength(0);
             numberOfErrors++;
-            Report.ConfigurationError error = i.next();
             buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold
                     + error.rule().getName() + this.colorReset + PMD.EOL);
             buf.append(this.green + "    err:  " + this.cyan + error.issue() + this.colorReset + PMD.EOL + PMD.EOL);
@@ -197,7 +195,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      */
     private static Map<String, Integer> getCountSummary(Report report) {
         Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : report) {
+        for (RuleViolation rv : report.getViolations()) {
             String key = keyFor(rv);
             if (key.isEmpty()) {
                 continue;

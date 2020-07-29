@@ -57,19 +57,15 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
     @Override
     public void renderFileReport(Report report) throws IOException {
-        Iterator<RuleViolation> violations = report.iterator();
+        Iterator<RuleViolation> violations = report.getViolations().iterator();
         if (violations.hasNext()) {
             renderFileViolations(violations);
             getWriter().flush();
         }
 
-        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
-            errors.add(i.next());
-        }
+        errors.addAll(report.getProcessingErrors());
 
-        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
-            configErrors.add(i.next());
-        }
+        configErrors.addAll(report.getConfigErrors());
 
         if (showSuppressedViolations) {
             suppressed.addAll(report.getSuppressedRuleViolations());

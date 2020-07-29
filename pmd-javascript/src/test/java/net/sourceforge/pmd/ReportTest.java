@@ -30,7 +30,7 @@ public class ReportTest extends RuleTst {
         String code = "function(x) // NOPMD test suppress\n" + "{ x = 1; }";
         runTestFromString(code, rule, rpt,
                 LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
-        assertTrue(rpt.isEmpty());
+        assertTrue(rpt.getViolations().isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
 }

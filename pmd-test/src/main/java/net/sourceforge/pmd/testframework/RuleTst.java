@@ -14,7 +14,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -148,7 +147,7 @@ public abstract class RuleTst {
                 }
 
                 report = processUsingStringReader(test, rule);
-                res = report.size();
+                res = report.getViolations().size();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
@@ -187,15 +186,13 @@ public abstract class RuleTst {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.size() != expectedMessages.size()) {
+        if (report.getViolations().size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             String actual = violation.getDescription();
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
@@ -213,16 +210,14 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.size() != expected.size()) {
+        if (report.getViolations().size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
-                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + " doesn't match number of violations " + report.getViolations().size() + " for test case '"
                     + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             Integer actual = violation.getBeginLine();
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
@@ -236,7 +231,7 @@ public abstract class RuleTst {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.size()
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());

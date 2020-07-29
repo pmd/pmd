@@ -47,9 +47,9 @@ public class XPathJspRuleTest extends RuleTst {
 
         p.getSourceCodeProcessor().processSourceCode(new StringReader(MATCH), new RuleSets(rules), ctx);
 
-        assertEquals("One violation expected!", 1, report.size());
+        assertEquals("One violation expected!", 1, report.getViolations().size());
 
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(1, rv.getBeginLine());
     }
 
