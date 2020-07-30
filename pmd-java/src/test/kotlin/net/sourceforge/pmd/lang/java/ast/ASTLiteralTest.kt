@@ -58,6 +58,9 @@ class ASTLiteralTest : ParserTestSpec({
                     }
                 }
             }
+            suspend fun String.testTextBlock() {
+                this.testTextBlock(EmptyAssertions)
+            }
 
             """
 $delim
