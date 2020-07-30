@@ -106,7 +106,7 @@ final class AnnotationSuppressionUtil {
 
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
-        if (annotation.getSymbol().getBinaryName().equals("java.lang.SuppressWarnings")) {
+        if ("java.lang.SuppressWarnings".equals(annotation.getSymbol().getBinaryName())) {
             for (ASTStringLiteral element : annotation.findDescendantsOfType(ASTStringLiteral.class)) {
                 if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(
                     "\"PMD." + rule.getName() + "\"")
