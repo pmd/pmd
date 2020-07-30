@@ -359,19 +359,17 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
                 + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
     }
 
-    protected Rule newInstance() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public Rule deepCopy() {
+        Rule result;
         try {
-            return getClass().getConstructor().newInstance();
+            result = getClass().getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
             // Can't happen... we already have an instance
             throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Rule deepCopy() {
-        Rule rule = newInstance();
+        Rule rule = result;
         rule.setName(getName());
         rule.setLanguage(getLanguage());
         rule.setMinimumLanguageVersion(getMinimumLanguageVersion());

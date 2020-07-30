@@ -24,6 +24,12 @@ public class SuppressWarningsTest extends ApexParserTestBase {
     // This could be a regular xml test
 
     private static class BarRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "someMessage";
+        }
+
         @Override
         public Object visit(ASTUserClass clazz, Object ctx) {
             if (clazz.getImage().equalsIgnoreCase("bar")) {

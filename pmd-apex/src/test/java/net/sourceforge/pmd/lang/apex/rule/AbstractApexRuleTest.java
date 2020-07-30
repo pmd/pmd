@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
@@ -48,11 +47,6 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
     }
 
     private static class TopLevelRule extends AbstractApexRule {
-
-        @Override
-        protected Rule newInstance() {
-            return new TopLevelRule();
-        }
 
         @Override
         public Object visit(ASTUserClass node, Object data) {

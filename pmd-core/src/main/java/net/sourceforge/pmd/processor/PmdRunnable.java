@@ -6,13 +6,7 @@ package net.sourceforge.pmd.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -33,8 +27,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 
 class PmdRunnable implements Runnable {
 
-    private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
-
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener ruleContext;
@@ -42,8 +34,6 @@ class PmdRunnable implements Runnable {
     // this should only be used within the run method (when we are on the actual carrier thread)
     private final ThreadLocal<RuleSets> ruleSetCopy;
 
-    // rename so that it's significantly different from tc.rulesets
-    private final Supplier<RuleSets> ruleSetMaker;
     private final PMDConfiguration configuration;
 
     private final RulesetStageDependencyHelper dependencyHelper;
@@ -51,10 +41,8 @@ class PmdRunnable implements Runnable {
     PmdRunnable(DataSource dataSource,
                 GlobalAnalysisListener ruleContext,
                 ThreadLocal<RuleSets> ruleSetCopy,
-                RuleSets ruleSets,
                 PMDConfiguration configuration) {
         this.ruleSetCopy = ruleSetCopy;
-        this.ruleSetMaker = () -> new RuleSets(ruleSets);
         this.dataSource = dataSource;
         // this is the real, canonical and absolute filename (not shortened)
         String realFileName = dataSource.getNiceFileName(false, null);
@@ -66,24 +54,17 @@ class PmdRunnable implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() throws FileAnalysisException {
         TimeTracker.initThread();
 
         RuleSets ruleSets = ruleSetCopy.get();
-        if (ruleSets == null) {
-            ruleSets = ruleSetMaker.get();
-            ruleSetCopy.set(ruleSets);
-        }
-
+        assert ruleSets != null : "ThreadLocal should have an initial value";
 
         try (FileAnalysisListener listener = ruleContext.startFileAnalysis(dataSource)) {
             final RuleContext ruleCtx = RuleContext.create(listener);
 
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
 
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.fine("Processing " + file);
-            }
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(file)) {
@@ -92,25 +73,29 @@ class PmdRunnable implements Runnable {
                 } else {
                     try {
                         processSource(ruleCtx, langVersion, ruleSets);
+                    } catch (FileAnalysisException e) {
+                        configuration.getAnalysisCache().analysisFailed(file);
+                        throw e; // bubble managed exceptions, they were already reported
                     } catch (Exception e) {
                         configuration.getAnalysisCache().analysisFailed(file);
+
+                        // The listener handles logging if needed,
+                        // it may also rethrow the error.
                         ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
-                        LOG.log(Level.FINE, "Exception while processing file: " + file, e);
                     }
                 }
             }
+        } catch (FileAnalysisException e) {
+            throw e; // bubble managed exceptions, they were already reported
         } catch (Exception e) {
-            throw new FileAnalysisException("Exception while closing listener for file " + file, e);
+            throw FileAnalysisException.wrap(file.getPath(), "Exception while closing listener", e);
         }
 
         TimeTracker.finishThread();
     }
 
     public void processSource(RuleContext ruleCtx, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
-        String fullSource;
-        try (InputStream stream = dataSource.getInputStream()) {
-            fullSource = IOUtils.toString(stream, configuration.getSourceEncoding());
-        }
+        String fullSource = DataSource.readToString(dataSource, configuration.getSourceEncoding());
         String filename = dataSource.getNiceFileName(false, null);
 
         try {

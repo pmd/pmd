@@ -3,13 +3,11 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.PMDConfiguration
-import net.sourceforge.pmd.Report
-import net.sourceforge.pmd.Rule
-import net.sourceforge.pmd.RulesetsFactoryUtils
+import net.sourceforge.pmd.*
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
+import net.sourceforge.pmd.processor.GlobalAnalysisListener
 import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
@@ -115,7 +113,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val task = Parser.ParserTask(lversion, "test-file", sourceCode, SemanticErrorReporter.noop(), options.suppressMarker)
+        val source = DataSource.forString(sourceCode, "test-file")
+        val toString = DataSource.readToString(source, StandardCharsets.UTF_8)
+        val task = Parser.ParserTask(lversion, "test-file", toString, SemanticErrorReporter.noop(), options.suppressMarker)
         val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
             postProcessing(handler, lversion, rootNode)
@@ -199,33 +199,33 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
 
     /**
-     * Execute the given [rule] on the [code]. The [configuration] may be used to
-     * set the suppress marker. Produce a report with the violations found by the
-     * rule. The language version of the piece of code is determined by the [params].
+     * Execute the given [rule] on the [code]. Produce a report with the violations
+     * found by the rule. The language version of the piece of code is determined by the [params].
      */
-    @JvmOverloads
-    fun executeRule(rule: Rule, code: String, configuration: PMDConfiguration = PMDConfiguration()): Report {
+    fun executeRule(rule: Rule, code: String): Report {
         val rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)
 
+        val configuration = PMDConfiguration()
         configuration.setDefaultLanguageVersion(defaultVersion)
+        configuration.suppressMarker = params.parserOptions?.suppressMarker ?: PMD.SUPPRESS_MARKER
 
         val reportBuilder = Report.GlobalReportBuilder()
+        val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
 
         AbstractPMDProcessor.runSingleFile(
                 listOf(rules),
                 DataSource.forString(code, "test.${getVersion(null).language.extensions[0]}"),
-                reportBuilder,
+                fullListener,
                 configuration
         )
 
-        reportBuilder.close()
+        fullListener.close()
 
         return reportBuilder.report
     }
 
-    @JvmOverloads
-    fun executeRuleOnResource(rule: Rule, resourcePath: String, configuration: PMDConfiguration = PMDConfiguration()): Report =
-            executeRule(rule, readResource(resourcePath), configuration)
+    fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
+            executeRule(rule, readResource(resourcePath))
 
 
 }

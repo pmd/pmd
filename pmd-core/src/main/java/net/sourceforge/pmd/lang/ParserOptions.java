@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.PMD;
 
 /**
@@ -15,15 +17,24 @@ import net.sourceforge.pmd.PMD;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
-    protected String suppressMarker = PMD.SUPPRESS_MARKER;
 
-    public String getSuppressMarker() {
+    private @NonNull String suppressMarker;
+
+    public final @NonNull String getSuppressMarker() {
         return suppressMarker;
     }
 
-    public void setSuppressMarker(String suppressMarker) {
+    public final void setSuppressMarker(String suppressMarker) {
         Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
+    }
+
+    public ParserOptions() {
+        this(PMD.SUPPRESS_MARKER);
+    }
+
+    public ParserOptions(String suppressMarker) {
+        setSuppressMarker(suppressMarker);
     }
 
     @Override

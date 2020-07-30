@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
@@ -29,11 +30,10 @@ public class ExcludeLinesTest extends RuleTst {
     }
 
     @Test
-    public void testAlternateMarker() throws Exception {
-        PMDConfiguration config = new PMDConfiguration();
-        config.setSuppressMarker("FOOBAR");
+    public void testAlternateMarker() {
 
-        Report r = JavaParsingHelper.WITH_PROCESSING.executeRule(rule, TEST3, config);
+        Report r = JavaParsingHelper.WITH_PROCESSING.withParserOptions(new ParserOptions("FOOBAR"))
+                                                    .executeRule(rule, TEST3);
 
         assertTrue(r.getViolations().isEmpty());
         assertEquals(r.getSuppressedViolations().size(), 1);

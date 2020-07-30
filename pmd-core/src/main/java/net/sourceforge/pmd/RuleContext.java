@@ -62,10 +62,10 @@ public final class RuleContext {
     }
 
     public void addViolationWithPosition(Rule rule, Node location, int beginLine, int endLine, String message, Object... formatArgs) {
-        Objects.requireNonNull(rule);
-        Objects.requireNonNull(location);
-        Objects.requireNonNull(message);
-        Objects.requireNonNull(formatArgs);
+        Objects.requireNonNull(rule, "Rule was null");
+        Objects.requireNonNull(location, "Node was null");
+        Objects.requireNonNull(message, "Message was null");
+        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 

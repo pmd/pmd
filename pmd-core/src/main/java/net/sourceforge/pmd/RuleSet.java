@@ -667,6 +667,8 @@ public class RuleSet implements ChecksumAware {
 
     /**
      * Remove and collect any misconfigured rules.
+     * TODO remove this method. This mutates rulesets for nothing. Whether
+     *  a rule is dysfunctional or not should be checked when it is initialized.
      *
      * @param collector
      *            the removed rules will be added to this collection

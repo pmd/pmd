@@ -52,6 +52,7 @@ public final class FileUtil {
      *
      * @return An exception, or null if no 'close' routine threw
      */
+    @SuppressWarnings("PMD.CloseResource") // false-positive
     public static Exception closeAll(Collection<? extends AutoCloseable> closeables) {
         Exception composed = null;
         for (AutoCloseable it : closeables) {

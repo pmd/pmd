@@ -53,4 +53,25 @@ public class FileAnalysisException extends RuntimeException {
     public @NonNull String getFileName() {
         return filename;
     }
+
+
+    /**
+     * Wraps the cause into an analysis exception. If it is itself an analysis
+     * exception, just returns it after setting the filename for context.
+     *
+     * @param filename Filename
+     * @param message  Context message, if the cause is not a {@link FileAnalysisException}
+     * @param cause    Exception to wrap
+     *
+     * @return An exception
+     */
+    public static FileAnalysisException wrap(@NonNull String filename, @NonNull String message, @NonNull Throwable cause) {
+        if (cause instanceof FileAnalysisException) {
+            return ((FileAnalysisException) cause).setFileName(filename);
+        }
+
+        String fullMessage = "In file '" + filename + "': " + message;
+
+        return new FileAnalysisException(fullMessage, cause).setFileName(filename);
+    }
 }

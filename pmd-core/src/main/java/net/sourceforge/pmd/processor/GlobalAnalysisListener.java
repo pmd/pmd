@@ -123,6 +123,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         return new GlobalAnalysisListener() {
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
+                String filename = file.getNiceFileName(false, null);
                 return new FileAnalysisListener() {
                     @Override
                     public void onRuleViolation(RuleViolation violation) {
@@ -131,11 +132,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
                     @Override
                     public void onError(ProcessingError error) throws FileAnalysisException {
-                        Throwable cause = error.getError();
-                        if (cause instanceof FileAnalysisException) {
-                            throw (FileAnalysisException) cause;
-                        }
-                        throw new FileAnalysisException(cause);
+                        throw FileAnalysisException.wrap(filename, "Unknown error", error.getError());
                     }
                 };
             }

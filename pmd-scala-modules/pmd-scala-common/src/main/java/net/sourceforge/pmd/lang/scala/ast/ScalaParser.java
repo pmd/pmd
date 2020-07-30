@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
 import scala.meta.Dialect;
@@ -26,11 +25,8 @@ public final class ScalaParser implements Parser {
      *
      * @param scalaDialect
      *            the Scala Dialect for this parser
-     * @param parserOptions
-     *            any additional options for this parser
      */
-    public ScalaParser(Dialect scalaDialect, ParserOptions parserOptions) {
-        super();
+    public ScalaParser(Dialect scalaDialect) {
         this.dialect = scalaDialect;
     }
 

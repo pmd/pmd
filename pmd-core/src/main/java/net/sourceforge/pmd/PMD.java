@@ -139,6 +139,7 @@ public class PMD {
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
 
         try {
+
             final List<DataSource> files = getApplicableFiles(configuration, languages);
             Renderer renderer = configuration.createRenderer(true);
 
@@ -150,7 +151,6 @@ public class PMD {
 
 
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                    encourageToUseIncrementalAnalysis(configuration);
                     processFiles(configuration, ruleSets, files, listener);
                 }
             }
@@ -178,8 +178,11 @@ public class PMD {
     }
 
     /**
-     * Run PMD on a list of files using multiple threads - if more than one is
-     * available
+     * Run PMD on a list of files using the number of threads specified
+     * by the configuration.
+     *
+     * TODO rulesets should be validated more strictly upon construction.
+     *   We shouldn't be removing rules after construction.
      *
      * @param configuration Configuration
      * @param ruleSets      RuleSetFactory
@@ -205,6 +208,7 @@ public class PMD {
         }
 
         encourageToUseIncrementalAnalysis(configuration);
+
         sortFiles(configuration, files);
 
         // Make sure the cache is listening for analysis results

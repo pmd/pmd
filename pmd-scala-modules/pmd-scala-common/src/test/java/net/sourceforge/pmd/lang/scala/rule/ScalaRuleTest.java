@@ -41,6 +41,11 @@ public class ScalaRuleTest extends BaseScalaTest {
     public void testDummyRule() {
         ScalaRule rule = new ScalaRule() {
             @Override
+            public String getMessage() {
+                return "message";
+            }
+
+            @Override
             public RuleContext visit(ASTTermApply node, RuleContext data) {
                 ASTTermName child = node.getFirstChildOfType(ASTTermName.class);
                 if (child != null && child.hasImageEqualTo("println")) {

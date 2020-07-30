@@ -52,8 +52,13 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testLineNumbersWithinEcmascriptRules() {
-        String source = "function f(x){\n" + "   if (x) {\n" + "       return 1;\n" + "   } else {\n"
-                + "       return 0;\n" + "   }\n" + "}";
+        String source =
+            "function f(x){\n"
+                + "   if (x) {\n"
+                + "       return 1;\n"
+                + "   } else {\n"
+                + "       return 0;\n" + "   }\n"
+                + "}";
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
 

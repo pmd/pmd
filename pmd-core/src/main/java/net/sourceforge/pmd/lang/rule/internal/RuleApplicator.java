@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
@@ -21,7 +19,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 /** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
 
-    private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
     // we reuse the type lattice from run to run, eventually it converges
     // towards the final topology (all node types have been encountered)
     // This has excellent performance! Indexing time is insignificant
@@ -61,13 +58,9 @@ public class RuleApplicator {
                     rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
-                    String filename = node.getSourceCodeFile();
-                    ctx.reportError(new ProcessingError(e, filename));
-
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                            + filename + ", continuing with next rule", e);
-                    }
+                    // The listener handles logging if needed,
+                    // it may also rethrow the error.
+                    ctx.reportError(new ProcessingError(e, node.getSourceCodeFile()));
                 }
             }
         }
