@@ -10,7 +10,7 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
-import io.kotlintest.should as ktShould
+import io.kotest.matchers.should as ktShould
 
 /** An adapter for [baseShouldMatchSubtree]. */
 object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {

@@ -122,7 +122,6 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
         context.registerTestCase(
                 name = TestName(name),
-                spec = this,
                 test = { ParserTestCtx(javaVersion).apply { setup() }.assertions() },
                 config = actualDefaultConfig(),
                 type = TestType.Test
@@ -148,7 +147,6 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
                 context.registerTestCase(
                         name = TestName("Java ${javaVersion.pmdName}"),
-                        spec = this@ParserTestSpec,
                         test = { VersionedTestCtx(this, javaVersion).apply { setup() }.spec() },
                         config = actualDefaultConfig(),
                         type = TestType.Container

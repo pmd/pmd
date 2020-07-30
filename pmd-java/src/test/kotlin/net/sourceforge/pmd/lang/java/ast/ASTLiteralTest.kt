@@ -48,7 +48,7 @@ class ASTLiteralTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
 
-            fun String.testTextBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) {
+            suspend fun String.testTextBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) {
 
                 this should parseAs {
 

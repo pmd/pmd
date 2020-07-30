@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl
 
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.should
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.should
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
  * @author Clément Fournier
  */
-class UnresolvedClassTest : AbstractFunSpec({
+class UnresolvedClassTest : FunSpec({
 
     test("Test simple unresolved class") {
 

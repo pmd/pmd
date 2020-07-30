@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
-import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldNotBe
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.GenericClassCopy
 
@@ -9,7 +9,7 @@ import javasymbols.testdata.impls.GenericClassCopy
  * @author Clément Fournier
  * @since 7.0.0
  */
-class JTypeParameterSymbolTest : AbstractWordSpec({
+class JTypeParameterSymbolTest : WordSpec({
 
     "A type parameter symbol" should {
 
