@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
  * A block of code. This is a {@linkplain ASTStatement statement} that
@@ -18,10 +17,10 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  *
  * </pre>
  */
-public final class ASTBlock extends AbstractStatement implements Iterable<ASTStatement>, ASTSwitchArrowRHS {
+public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements Iterable<ASTStatement>, ASTSwitchArrowRHS, ASTStatement {
 
     ASTBlock(int id) {
-        super(id);
+        super(id, ASTStatement.class);
     }
 
 
@@ -41,16 +40,5 @@ public final class ASTBlock extends AbstractStatement implements Iterable<ASTSta
         }
 
         return false;
-    }
-
-    @Override
-    public Iterator<ASTStatement> iterator() {
-        return children(ASTStatement.class).iterator();
-    }
-
-
-    @Override
-    public ASTStatement getChild(int index) {
-        return (ASTStatement) super.getChild(index);
     }
 }

@@ -52,5 +52,4 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
                       .forEach(ex -> addViolation(data, ex));
         return data;
     }
-
 }

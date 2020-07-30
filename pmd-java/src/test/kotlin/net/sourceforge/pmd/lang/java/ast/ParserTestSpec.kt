@@ -1,9 +1,16 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.AbstractSpec
-import io.kotlintest.Matcher
-import io.kotlintest.TestContext
-import io.kotlintest.TestType
+import io.kotest.core.config.Project
+import io.kotest.core.spec.style.DslDrivenSpec
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootScope
+import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
+import io.kotest.matchers.Matcher
+import io.kotest.runner.junit.platform.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.Assertions
@@ -13,8 +20,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.types.JTypeMirror
 import net.sourceforge.pmd.lang.java.types.TypeDslMixin
 import net.sourceforge.pmd.lang.java.types.TypeDslOf
-import net.sourceforge.pmd.lang.java.types.TypeSystem
-import io.kotlintest.should as kotlintestShould
+import io.kotest.matchers.should as kotlintestShould
 
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
@@ -24,14 +30,23 @@ import io.kotlintest.should as kotlintestShould
  *
  * @author Clément Fournier
  */
-abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() {
+abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec(), RootScope, IntelliMarker {
 
     init {
         body()
     }
 
-    fun test(name: String, test: TestContext.() -> Unit) =
-            addTestCase(name, test, defaultTestCaseConfig, TestType.Test)
+    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+    override fun defaultConfig(): TestCaseConfig = actualDefaultConfig()
+    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
+
+    fun test(name: String, disabled: Boolean = false, test: suspend TestContext.() -> Unit) =
+            registration().addTest(
+                    name = TestName(name),
+                    xdisabled = disabled,
+                    test = test,
+                    config = actualDefaultConfig()
+            )
 
     /**
      * Defines a group of tests that should be named similarly,
@@ -44,14 +59,19 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
      * regression tests without bothering to find a name.
      *
      * @param name Name of the container test
-     * @param spec Assertions. Each call to [io.kotlintest.should] on a string
+     * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
      *             receiver is replaced by a [GroupTestCtx.should], which creates a
      *             new parser test.
      *
      */
     fun parserTestGroup(name: String,
-                        spec: GroupTestCtx.() -> Unit) =
-            addTestCase(name, { GroupTestCtx(this).spec() }, defaultTestCaseConfig, TestType.Container)
+                        disabled: Boolean = false,
+                        spec: suspend GroupTestCtx.() -> Unit) =
+            registration().addContainerTest(
+                    name = TestName(name),
+                    test = { GroupTestCtx(this).spec() },
+                    xdisabled = disabled
+            )
 
     /**
      * Defines a group of tests that should be named similarly.
@@ -63,14 +83,14 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
      *
      * @param name Name of the container test
      * @param javaVersion Language versions to use when parsing
-     * @param spec Assertions. Each call to [io.kotlintest.should] on a string
+     * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
      *             receiver is replaced by a [GroupTestCtx.should], which creates a
      *             new parser test.
      *
      */
     fun parserTest(name: String,
                    javaVersion: JavaVersion = JavaVersion.Latest,
-                   spec: GroupTestCtx.VersionedTestCtx.() -> Unit) =
+                   spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
             parserTest(name, listOf(javaVersion), spec)
 
     /**
@@ -84,30 +104,29 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
      *
      * @param name Name of the container test
      * @param javaVersions Language versions for which to generate tests
-     * @param spec Assertions. Each call to [io.kotlintest.should] on a string
+     * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
      *             receiver is replaced by a [GroupTestCtx.should], which creates a
      *             new parser test.
      */
     fun parserTest(name: String,
                    javaVersions: List<JavaVersion>,
-                   spec: GroupTestCtx.VersionedTestCtx.() -> Unit) =
+                   spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
             parserTestGroup(name) {
                 onVersions(javaVersions) {
                     spec()
                 }
             }
 
-    private fun containedParserTestImpl(
+    private suspend fun containedParserTestImpl(
             context: TestContext,
             name: String,
             javaVersion: JavaVersion,
             assertions: ParserTestCtx.() -> Unit) {
 
         context.registerTestCase(
-                name = name,
-                spec = this,
+                name = TestName(name),
                 test = { ParserTestCtx(javaVersion).apply { setup() }.assertions() },
-                config = defaultTestCaseConfig,
+                config = actualDefaultConfig(),
                 type = TestType.Test
         )
     }
@@ -120,16 +139,19 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
 
     }
 
+    private fun actualDefaultConfig() =
+            defaultTestConfig ?: defaultTestCaseConfig()
+            ?: Project.testCaseConfig()
+
     inner class GroupTestCtx(private val context: TestContext) {
 
-        fun onVersions(javaVersions: List<JavaVersion>, spec: VersionedTestCtx.() -> Unit) {
+        suspend fun onVersions(javaVersions: List<JavaVersion>, spec: suspend VersionedTestCtx.() -> Unit) {
             javaVersions.forEach { javaVersion ->
 
                 context.registerTestCase(
-                        name = "Java ${javaVersion.pmdName}",
-                        spec = this@ParserTestSpec,
+                        name = TestName("Java ${javaVersion.pmdName}"),
                         test = { VersionedTestCtx(this, javaVersion).apply { setup() }.spec() },
-                        config = defaultTestCaseConfig,
+                        config = actualDefaultConfig(),
                         type = TestType.Container
                 )
             }
@@ -137,29 +159,28 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec() 
 
         inner class VersionedTestCtx(private val context: TestContext, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
-
-            fun doTest(name: String, assertions: VersionedTestCtx.() -> Unit) {
+            suspend fun doTest(name: String, assertions: VersionedTestCtx.() -> Unit) {
                 containedParserTestImpl(context, name, javaVersion = javaVersion) {
                     assertions()
                 }
             }
 
-            infix fun String.should(matcher: Assertions<String>) {
+            suspend infix fun String.should(matcher: Assertions<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
                 }
             }
 
-            infix fun String.should(matcher: Matcher<String>) {
+            suspend infix fun String.should(matcher: Matcher<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
                 }
             }
 
-            infix fun String.shouldNot(matcher: Matcher<String>) =
+            suspend infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
 
-            fun <T : Node> inContext(nodeParsingCtx: NodeParsingCtx<T>, assertions: ImplicitNodeParsingCtx<T>.() -> Unit) {
+            suspend fun <T : Node> inContext(nodeParsingCtx: NodeParsingCtx<T>, assertions: suspend ImplicitNodeParsingCtx<T>.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
             }
 

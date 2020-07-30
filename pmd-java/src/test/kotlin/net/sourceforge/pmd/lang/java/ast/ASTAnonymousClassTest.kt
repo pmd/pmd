@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_ANONYMOUS
 

@@ -128,7 +128,7 @@ public class ApexDocRule extends AbstractApexRule {
 
         // is this a test?
         for (final ASTAnnotation annotation : node.findDescendantsOfType(ASTAnnotation.class)) {
-            if (annotation.getImage().equals("IsTest")) {
+            if ("IsTest".equals(annotation.getImage())) {
                 return false;
             }
         }

@@ -36,6 +36,8 @@ class ASTAnnotationTest : ParserTestSpec({
                     it::getTypeNode shouldBe classType("F")
 
                     it::getMemberList shouldBe null
+
+                    it::getAnnotationName shouldBe "F"
                 }
             }
 
@@ -46,6 +48,20 @@ class ASTAnnotationTest : ParserTestSpec({
                     it::getTypeNode shouldBe qualClassType("java.lang.Override")
 
                     it::getMemberList shouldBe null
+
+                    it::getAnnotationName shouldBe "java.lang.Override"
+                }
+            }
+
+            "@Override" should parseAs {
+                child<ASTAnnotation> {
+                    it::getSimpleName shouldBe "Override"
+
+                    it::getTypeNode shouldBe qualClassType("Override")
+
+                    it::getMemberList shouldBe null
+
+                    it::getAnnotationName shouldBe "Override"
                 }
             }
         }

@@ -207,7 +207,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                     // .children(ASTAdditiveExpression.class)
                     // .filter(expr ->
                     //             expr.getNumChildren() == 2
-                    //                 && expr.getOperator().equals("-")
+                    //                 && "-".equals(expr.getOperator())
                     //                 && expr.children(ASTPrimaryExpression.class)
                     //                        .children(ASTPrimaryPrefix.class)
                     //                        .children(ASTLiteral.class)

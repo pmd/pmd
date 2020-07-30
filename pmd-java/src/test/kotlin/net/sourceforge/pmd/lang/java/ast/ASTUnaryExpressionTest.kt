@@ -19,24 +19,6 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     number()
                 }
             }
-
-            "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
-                    number()
-                }
-            }
-
-            "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
-                    number()
-                }
-            }
-
-            "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
-                    number()
-                }
-            }
         }
     }
 

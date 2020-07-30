@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
  * @author Clément Fournier
  * @since 7.0.0
  */
-class PrimitiveSymbolTests : AbstractWordSpec({
+class PrimitiveSymbolTests : WordSpec({
 
     fun primitives(): List<JClassSymbol> = testTypeSystem.allPrimitives.map { it.symbol!! }
 

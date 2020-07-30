@@ -152,9 +152,9 @@ public class RuleFactory {
         String name = ruleElement.getAttribute(NAME);
 
         RuleBuilder builder = new RuleBuilder(name,
-                resourceLoader,
-                ruleElement.getAttribute(CLASS),
-                ruleElement.getAttribute("language"));
+                                              resourceLoader,
+                                              ruleElement.getAttribute(CLASS),
+                                              ruleElement.getAttribute("language"));
 
         if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
             builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));

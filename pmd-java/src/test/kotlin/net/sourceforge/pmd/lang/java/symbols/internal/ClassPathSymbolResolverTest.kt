@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.SomeInnerClasses
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymb
 /**
  * @author Clément Fournier
  */
-class ClassPathSymbolResolverTest : AbstractFunSpec({
+class ClassPathSymbolResolverTest : FunSpec({
 
 
     val cl = Thread.currentThread().contextClassLoader

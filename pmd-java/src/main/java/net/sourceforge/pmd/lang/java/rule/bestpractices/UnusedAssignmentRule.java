@@ -82,7 +82,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-@SuppressWarnings("PMD.DontCallSuperVisitWhenUsingRuleChain")
 public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*

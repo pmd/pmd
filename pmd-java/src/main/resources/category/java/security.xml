@@ -9,6 +9,7 @@ Rules that flag potential security flaws.
     </description>
 
     <rule name="HardCodedCryptoKey"
+          language="java"
           since="6.4.0"
           message="Do not use hard coded encryption keys"
           class="net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule"
@@ -56,6 +57,7 @@ public class Foo {
     </rule>
 
     <rule name="InsecureCryptoIv"
+          language="java"
           since="6.3.0"
           message="Do not use hard coded initialization vector in crypto operations"
           class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"

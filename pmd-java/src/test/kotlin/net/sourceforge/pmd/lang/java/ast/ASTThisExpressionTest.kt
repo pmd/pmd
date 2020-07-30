@@ -45,7 +45,6 @@ class ASTThisExpressionTest : ParserTestSpec({
 
             // type arguments and annots are disallowed on the qualifier
             "T.B<C>.this" shouldNot parse()
-            "T.B<C>.this" shouldNot parse()
             "T.@F B.this" shouldNot parse()
         }
     }

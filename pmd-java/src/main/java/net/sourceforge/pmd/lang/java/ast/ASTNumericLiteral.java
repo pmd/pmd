@@ -36,7 +36,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
 
     @NonNull
     @Override
-    public Object getConstValue() {
+    public Number getConstValue() {
         // don't use ternaries, the compiler messes up autoboxing.
         if (isIntegral()) {
             if (isIntLiteral()) {

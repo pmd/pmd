@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedClassSymbolTests : AbstractWordSpec({
+class ReflectedClassSymbolTests : WordSpec({
 
     "A class symbol" should {
 

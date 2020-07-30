@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
@@ -44,6 +45,17 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
         return (JClassSymbol) getTypeNode().getReferencedSym();
     }
 
+    /**
+     * Returns the name of the annotation as it is used,
+     * eg {@code java.lang.Override} or {@code Override}.
+     *
+     * @deprecated Use {@link #getSymbol()} instead.
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    public String getAnnotationName() {
+        return (String) getTypeNode().getText();
+    }
 
     /**
      * Returns the simple name of the annotation.
