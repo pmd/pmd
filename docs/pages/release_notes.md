@@ -21,10 +21,25 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#724](https://github.com/pmd/pmd/issues/724): \[core] Avoid parsing rulesets multiple times
+    *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
 *   java-performance
     *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
 
 ### API Changes
+
+*   XML rule definition in rulesets: In PMD 7, the `language` attribute will be required on all `rule`
+    elements that declare a new rule. Some base rule classes set the language implicitly in their
+    constructor, and so this is not required in all cases for the rule to work. But this
+    behavior will be discontinued in PMD 7, so missing `language` attributes are now
+    reported as a forward compatibility warning.
+
+#### Deprecated API
+
+##### For removal
+
+*   {% jdoc !!pmd-java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
 
 ### External Contributions
 
