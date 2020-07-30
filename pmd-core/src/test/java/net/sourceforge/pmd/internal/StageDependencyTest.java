@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -56,7 +55,7 @@ public class StageDependencyTest {
 
 
     @Test
-    public void testSimpleDependency() throws PMDException {
+    public void testSimpleDependency() {
 
         DummyNode root = process("foo bar", withRules(new PredicateTestRule(DummyAstStages.FOO)));
 
@@ -65,7 +64,7 @@ public class StageDependencyTest {
     }
 
     @Test
-    public void testNoDependency() throws PMDException {
+    public void testNoDependency() {
 
         DummyNode root = process("foo bar", withRules(new PredicateTestRule()));
 
@@ -74,7 +73,7 @@ public class StageDependencyTest {
     }
 
     @Test
-    public void testDependencyUnion() throws PMDException {
+    public void testDependencyUnion() {
 
         DummyNode root =
             process("foo bar",
@@ -89,7 +88,7 @@ public class StageDependencyTest {
     }
 
     @Test
-    public void testTransitiveDependency() throws PMDException {
+    public void testTransitiveDependency() {
 
         DummyNode root = process("foo bar", withRules(new PredicateTestRule(DummyAstStages.RUNS_FOO)));
 
@@ -99,7 +98,7 @@ public class StageDependencyTest {
     }
 
     @Test
-    public void testNoRecomputation() throws PMDException {
+    public void testNoRecomputation() {
 
         PMDConfiguration configuration = new PMDConfiguration();
         RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
@@ -116,7 +115,7 @@ public class StageDependencyTest {
     }
 
     @Test
-    public void testDependencyOrdering() throws PMDException {
+    public void testDependencyOrdering() {
 
         PMDConfiguration configuration = new PMDConfiguration();
         RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);

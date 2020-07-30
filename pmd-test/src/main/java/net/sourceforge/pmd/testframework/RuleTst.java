@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.GlobalReportBuilder;
 import net.sourceforge.pmd.Rule;
@@ -252,7 +251,7 @@ public abstract class RuleTst {
         System.out.println("--------------------------------------------------------------");
     }
 
-    private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+    private Report processUsingStringReader(TestDescriptor test, Rule rule) {
         return runTestFromString(test, rule);
     }
 

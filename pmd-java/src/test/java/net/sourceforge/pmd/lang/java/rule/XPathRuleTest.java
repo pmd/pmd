@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -159,7 +158,7 @@ public class XPathRuleTest extends RuleTst {
         }
     }
 
-    private static Report getReportForTestString(Rule r, String test) throws PMDException {
+    private static Report getReportForTestString(Rule r, String test) {
         return JavaParsingHelper.WITH_PROCESSING.executeRule(r, test);
     }
 

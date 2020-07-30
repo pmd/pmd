@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -77,14 +78,14 @@ public class PMD {
      * Parses the given string as a database uri and returns a list of
      * datasources.
      *
-     * @param uriString
-     *            the URI to parse
+     * @param uriString the URI to parse
+     *
      * @return list of data sources
-     * @throws PMDException
-     *             if the URI couldn't be parsed
+     *
+     * @throws IOException if the URI couldn't be parsed
      * @see DBURI
      */
-    public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
+    public static List<DataSource> getURIDataSources(String uriString) throws IOException {
         List<DataSource> dataSources = new ArrayList<>();
 
         try {
@@ -106,16 +107,16 @@ public class PMD {
                 }
             }
         } catch (URISyntaxException e) {
-            throw new PMDException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
+            throw new IOException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
         } catch (SQLException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
+            throw new IOException(
+                "Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
         } catch (ClassNotFoundException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"",
-                    e);
+            throw new IOException(
+                "Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"",
+                e);
         } catch (Exception e) {
-            throw new PMDException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
+            throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
         return dataSources;
     }
@@ -136,9 +137,9 @@ public class PMD {
         }
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
-        final List<DataSource> files = getApplicableFiles(configuration, languages);
 
         try {
+            final List<DataSource> files = getApplicableFiles(configuration, languages);
             Renderer renderer = configuration.createRenderer(true);
 
             @SuppressWarnings("PMD.CloseResource")
@@ -277,14 +278,14 @@ public class PMD {
      *            used to filter by file extension
      * @return List of {@link DataSource} of files
      */
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
+    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) throws IOException {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             return internalGetApplicableFiles(configuration, languages);
         }
     }
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
-            Set<Language> languages) {
+                                                               Set<Language> languages) throws IOException {
         LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
         List<DataSource> files = new ArrayList<>();
 
@@ -294,30 +295,21 @@ public class PMD {
 
         if (null != configuration.getInputUri()) {
             String uriString = configuration.getInputUri();
-            try {
-                List<DataSource> dataSources = getURIDataSources(uriString);
-
-                files.addAll(dataSources);
-            } catch (PMDException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input URI", ex);
-                throw new RuntimeException("Problem with DBURI: " + uriString, ex);
-            }
+            files.addAll(getURIDataSources(uriString));
         }
 
         if (null != configuration.getInputFilePath()) {
             String inputFilePath = configuration.getInputFilePath();
             File file = new File(inputFilePath);
+            if (!file.exists()) {
+                throw new FileNotFoundException(inputFilePath);
+            }
+
             try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
-                    throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(inputFilePath));
-                    files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
+                String filePaths = FileUtil.readFilelist(file);
+                files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input File", ex);
-                throw new RuntimeException("Problem with Input File Path: " + inputFilePath, ex);
+                throw new IOException("Problem with Input File Path: " + inputFilePath, ex);
             }
 
         }
@@ -325,14 +317,13 @@ public class PMD {
         if (null != configuration.getIgnoreFilePath()) {
             String ignoreFilePath = configuration.getIgnoreFilePath();
             File file = new File(ignoreFilePath);
+            if (!file.exists()) {
+                throw new FileNotFoundException(ignoreFilePath);
+            }
+
             try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Ignore File Path", ignoreFilePath);
-                    throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(ignoreFilePath));
-                    files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
+                String filePaths = FileUtil.readFilelist(file);
+                files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
                 throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);

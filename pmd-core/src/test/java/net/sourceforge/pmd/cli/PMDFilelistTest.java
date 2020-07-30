@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cli;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class PMDFilelistTest {
     @Test
-    public void testGetApplicableFiles() {
+    public void testGetApplicableFiles() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
@@ -35,7 +36,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesMultipleLines() {
+    public void testGetApplicableFilesMultipleLines() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
@@ -50,7 +51,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicatbleFilesWithIgnores() {
+    public void testGetApplicatbleFilesWithIgnores() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
@@ -65,7 +66,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicatbleFilesWithDirAndIgnores() {
+    public void testGetApplicatbleFilesWithDirAndIgnores() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
