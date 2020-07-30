@@ -20,8 +20,9 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  * Those last two are included, because they are special syntax
  * to call a constructor.
  *
- * <p>This bestows an invocation context upon the arguments, so
- * that the type of the arguments may depend on the resolution
+ * <p>The arguments of the invocation are said to be in an "invocation context",
+ * which influences what conversions they are subject to. It also
+ * means the type of the arguments may depend on the resolution
  * of the {@linkplain #getMethodType() compile-time declaration}
  * of this node.
  */
@@ -34,17 +35,6 @@ public interface InvocationNode extends TypeNode {
      */
     @Nullable
     ASTArgumentList getArguments();
-
-
-    /**
-     * Returns the list of arguments passed to the invocation.
-     * This is never null and as such is safer than {@link #getArguments()}.
-     */
-    @NonNull
-    default List<ASTExpression> getArgumentsList() {
-        ASTArgumentList args = getArguments();
-        return args == null ? Collections.emptyList() : IteratorUtil.toList(args.iterator());
-    }
 
 
     /**
@@ -86,7 +76,7 @@ public interface InvocationNode extends TypeNode {
 
     /**
      * Returns true if this is a varargs call. This means, that the
-     * called method is varargs, and was not resolved in the varargs
+     * called method is varargs, and was overload-selected in the varargs
      * phase. For example:
      * <pre>{@code
      * String[] arr = { "a", "b" };

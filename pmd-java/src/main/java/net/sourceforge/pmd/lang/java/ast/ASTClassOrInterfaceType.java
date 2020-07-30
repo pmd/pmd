@@ -160,13 +160,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     }
 
     /**
-     * Returns the canonical name of this type.
-     */
-    public String getCanonicalName() {
-        return getTypeImage(); // TODO
-    }
-
-    /**
      * For now this returns the name of the type with all the segments,
      * without annotations or type parameters.
      *

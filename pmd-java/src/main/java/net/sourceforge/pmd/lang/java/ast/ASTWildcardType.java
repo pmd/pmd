@@ -42,7 +42,7 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
 
     /**
      * Returns true if this is an upper type bound, e.g.
-     * in {@code <? extends Integer>}, or when it is unbounded ({@code ?}).
+     * in {@code <? extends Integer>}.
      */
     public boolean hasUpperBound() {
         return isUpperBound && getNumChildren() > 0;

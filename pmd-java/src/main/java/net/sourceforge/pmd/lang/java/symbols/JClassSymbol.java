@@ -96,37 +96,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /**
-     * Returns a class symbol declared in this class, or one of its
-     * supertypes.
-     *
-     * TODO there may be ambiguity, eg a type declared in several interfaces.
-     *
-     * @param name Simple name of the class to look for
-     */
-    @Nullable
-    default JClassSymbol getMemberClass(String name) {
-        JClassSymbol klass = getDeclaredClass(name);
-        if (klass != null) {
-            return klass;
-        }
-        JClassSymbol superclass = getSuperclass();
-        if (superclass != null) {
-            klass = superclass.getMemberClass(name);
-        }
-        if (klass != null) {
-            return klass;
-        }
-        for (JClassSymbol itf : getSuperInterfaces()) {
-            klass = itf.getMemberClass(name);
-            if (klass != null) {
-                return klass;
-            }
-        }
-        return null;
-    }
-
-
-    /**
      * Returns the methods declared directly in this class.
      * <i>This excludes bridges and other synthetic methods.</i>
      *
@@ -183,22 +152,24 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Meant to be a shortcut for subtyping checks if there is an efficient
      * implementation available, eg {@link Class#isAssignableFrom(Class)}.
      */
-    default OptionalBool fastIsSubtypeOf(JClassSymbol symbol) {
+    default OptionalBool fastIsSubClassOf(JClassSymbol symbol) {
         return OptionalBool.UNKNOWN;
     }
 
 
-    default boolean isSubtypeOf(JClassSymbol symbol, Interfaces interfaceBehaviour) {
-        OptionalBool fast = fastIsSubtypeOf(symbol);
+    default boolean isSubClassOf(JClassSymbol symbol, Interfaces interfaceBehaviour) {
+        if (symbol.equals(this)) {
+            return true;
+        }
+
+        OptionalBool fast = fastIsSubClassOf(symbol);
         if (fast.isKnown()) {
             return fast.isTrue();
-        } else if (symbol.equals(this)) {
-            return true;
         }
 
         JClassSymbol superclass = getSuperclass();
         if (superclass != null) {
-            if (superclass.isSubtypeOf(symbol, interfaceBehaviour)) {
+            if (superclass.isSubClassOf(symbol, interfaceBehaviour)) {
                 return true;
             }
         }
@@ -208,7 +179,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
 
         for (JClassSymbol itf : getSuperInterfaces()) {
-            if (itf.isSubtypeOf(symbol, Interfaces.INCLUDE)) {
+            if (itf.isSubClassOf(symbol, Interfaces.INCLUDE)) {
                 return true;
             }
         }

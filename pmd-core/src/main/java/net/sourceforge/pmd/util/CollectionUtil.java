@@ -418,11 +418,6 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(union);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Set<T> unmodifiableByContract(Set<? extends T> set) {
-        return (Set<T>) set;
-    }
-
 
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {

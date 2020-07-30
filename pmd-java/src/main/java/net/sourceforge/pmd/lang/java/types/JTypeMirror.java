@@ -345,6 +345,8 @@ public interface JTypeMirror extends JTypeVisitable {
     /**
      * The toString of type mirrors prints useful debug information,
      * but shouldn't be relied on anywhere.
+     *
+     * FIXME this is relied on in many tests...
      */
     @Override
     String toString();

@@ -28,6 +28,14 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
     List<JTypeVar> getTypeParameters();
 
 
+    /**
+     * Returns the lexical scope of this symbol. This is little more than
+     * a map of all the type parameters that are in scope at the point
+     * of this declaration, indexed by their name. For example, for a
+     * method, this includes the type parameters of the method, the type
+     * parameters of its enclosing class, and all the other enclosing
+     * classes.
+     */
     default LexicalScope getLexicalScope() {
         JTypeParameterOwnerSymbol encl = getEnclosingTypeParameterOwner();
         LexicalScope base = encl != null ? encl.getLexicalScope() : LexicalScope.EMPTY;
@@ -52,6 +60,7 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
      */
     @Nullable
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
+        // may be overridden to add getEnclosingMethod
         return getEnclosingClass();
     }
 }

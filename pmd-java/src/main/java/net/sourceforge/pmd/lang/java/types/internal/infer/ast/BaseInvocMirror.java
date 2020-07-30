@@ -54,7 +54,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     @Override
     public int getArgumentCount() {
-        return myNode.getArgumentsList().size();
+        return ASTList.sizeOrZero(myNode.getArguments());
     }
 
     @Override

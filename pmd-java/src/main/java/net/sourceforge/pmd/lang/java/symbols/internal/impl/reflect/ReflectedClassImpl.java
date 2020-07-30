@@ -254,7 +254,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
-    public OptionalBool fastIsSubtypeOf(JClassSymbol symbol) {
+    public OptionalBool fastIsSubClassOf(JClassSymbol symbol) {
         Class<?> other = symbol.getJvmRepr();
         if (other != null) {
             return other.isAssignableFrom(myClass) ? OptionalBool.YES : OptionalBool.NO;

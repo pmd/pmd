@@ -618,7 +618,7 @@ public final class TypeOps {
 
             {
                 // we may shortcut this failure case early
-                if (t.getSymbol().fastIsSubtypeOf(cs.getSymbol()) == OptionalBool.NO) {
+                if (t.getSymbol().fastIsSubClassOf(cs.getSymbol()) == OptionalBool.NO) {
                     return false;
                 }
                 // otherwise getAsSuper will perform the subtyping check

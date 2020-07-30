@@ -77,7 +77,8 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
      * Returns true if this symbol is accessible in the given class symbol
      * according to the modifiers of this element and its enclosing classes.
      *
-     * TODO this is WIP and not entirely specified yet, though it's enough for type inference
+     * TODO this is not entirely specified, though it's enough for overload resolution
+     *  Maybe this should be moved to the internals of the inference framework
      *
      * TODO visibility of local classes in separate instance initializers
      *   is impossible to recover from reflection. Luckily local classes may
@@ -133,7 +134,7 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
 
         return ctx.getPackageName().equals(owner.getPackageName())
             // we can exclude interfaces because their members are all public
-            || Modifier.isProtected(mods) && ctx.isSubtypeOf(owner, Interfaces.EXCLUDE);
+            || Modifier.isProtected(mods) && ctx.isSubClassOf(owner, Interfaces.EXCLUDE);
     }
 
 }
