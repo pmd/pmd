@@ -79,7 +79,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                     }
 
                     // TODO use symbol table
-                    if (m.getName().equals("suite")) {
+                    if ("suite".equals(m.getName())) {
                         ASTResultType res = m.getResultType();
                         ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                         if (c != null && c.hasImageEqualTo("Test")) {
@@ -107,7 +107,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                      .map(ASTMemberValuePair::getValue)
                      // This is from the AccessLevel enum in Lombok
                      // if the constructor is found and the accesslevel is private no need to check anything else
-                     .any(it -> it.getImage().equals("PRIVATE"));
+                     .any(it -> "PRIVATE".equals(it.getImage()));
     }
 
     private Node skipAnnotations(Node p) {

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.shouldThrow
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.test.Assertions
 /**
  * @author Clément Fournier
  */
-class TokenUtilsTest : AbstractFunSpec({
+class TokenUtilsTest : FunSpec({
 
     fun setup1(assertions: Assertions<List<JavaccToken>>) {
 

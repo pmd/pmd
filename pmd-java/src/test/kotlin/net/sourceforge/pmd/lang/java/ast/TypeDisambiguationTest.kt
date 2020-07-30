@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol

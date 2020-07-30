@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.properties.Gen
-import io.kotlintest.should
+import io.kotest.matchers.collections.haveSize
+import io.kotest.properties.Gen
+import io.kotest.matchers.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
@@ -51,7 +51,7 @@ fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
 object TestClassesGen : Gen<Class<*>> {
     override fun constants(): Iterable<Class<*>> = emptyList()
 
-    override fun random(): Sequence<Class<*>> =
+    override fun random(seed: Long?): Sequence<Class<*>> =
             sequenceOf(
                     java.lang.Object::class.java,
                     IntArray::class.java,
@@ -118,7 +118,7 @@ object PrimitiveSymGen : Gen<JClassSymbol> {
             BOOLEAN_SYM
     )
 
-    override fun random() = emptySequence<JClassSymbol>()
+    override fun random(seed: Long?) = emptySequence<JClassSymbol>()
 }
 
 

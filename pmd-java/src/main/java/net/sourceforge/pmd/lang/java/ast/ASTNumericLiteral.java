@@ -36,7 +36,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
 
     @NonNull
     @Override
-    public Object getConstValue() {
+    public Number getConstValue() {
         PrimitiveType t = getPrimitiveType();
         switch (t) {
         case INT:

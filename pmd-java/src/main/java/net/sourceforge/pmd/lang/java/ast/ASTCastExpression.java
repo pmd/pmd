@@ -28,7 +28,6 @@ public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpr
         return (ASTExpression) getChild(getNumChildren() - 1);
     }
 
-
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

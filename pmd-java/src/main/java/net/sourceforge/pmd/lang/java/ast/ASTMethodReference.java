@@ -45,7 +45,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * e.g. {@code ArrayList::new}.
      */
     public boolean isConstructorReference() {
-        return "new".equals(getImage());
+        return JavaTokenKinds.NEW == getLastToken().kind;
     }
 
     /**
@@ -80,7 +80,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      */
     @Nullable
     public String getMethodName() {
-        return getImage().equals("new") ? null : getImage();
+        return isConstructorReference() ? null : getImage();
     }
 
 

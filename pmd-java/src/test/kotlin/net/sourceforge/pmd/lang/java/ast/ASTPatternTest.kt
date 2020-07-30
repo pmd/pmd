@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J14__PREVIEW
 import java.io.IOException

@@ -18,7 +18,9 @@ public interface JavaParserVisitor extends JavaVisitor<Object, Object> {
 
     @Override
     default Object visitNode(Node node, Object param) {
-        node.children().forEach(c -> c.acceptVisitor(this, param));
+        for (Node c : node.children()) {
+            c.acceptVisitor(this, param);
+        }
         return param;
     }
 

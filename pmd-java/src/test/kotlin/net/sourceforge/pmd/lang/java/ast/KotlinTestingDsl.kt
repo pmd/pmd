@@ -2,10 +2,11 @@ package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.matchers.collections.shouldContainAll
-import io.kotlintest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -144,10 +145,26 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Extensible environment to describe parse/match testing workflows in a concise way.
  * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
+ * Parsing contexts allow to parse a string containing only the node you're interested
+ * in instead of writing up a full class that the parser can handle. See [parseExpression],
+ * [parseStatement].
+ *
+ * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
+ * on the strings, using their type parameter and the info in this test context to parse, find
+ * the node, and execute the matcher in a single call. These may be used by [io.kotest.matchers.should],
+ * e.g.
+ *
+ *      parserTest("Test ShiftExpression operator") {
+ *          "1 >> 2" should matchExpr<ASTShiftExpression>(ignoreChildren = true) {
+ *              it.operator shouldBe ">>"
+ *          }
+ *      }
+ *
+ *
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
- * Technically the utilities provided by this class may be used outside of [io.kotlintest.specs.FunSpec]s,
+ * Technically the utilities provided by this class may be used outside of [io.kotest.specs.FunSpec]s,
  * e.g. in regular JUnit tests, but I think we should strive to uniformize our testing style,
  * especially since KotlinTest defines so many.
  *
@@ -220,7 +237,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseIn(nodeParsingCtx: NodeParsingCtx<*>) = object : Matcher<String> {
 
-        override fun test(value: String): Result {
+        override fun test(value: String): MatcherResult {
             val (pass, e) = try {
                 nodeParsingCtx.parseNode(value, this@ParserTestCtx)
                 Pair(true, null)
@@ -230,7 +247,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 Pair(false, e)
             }
 
-            return Result(pass,
+            return MatcherResult(pass,
                     "Expected '$value' to parse in $nodeParsingCtx, got $e",
                     "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
             )

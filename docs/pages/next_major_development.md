@@ -244,6 +244,18 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.26.0
+
+##### Deprecated API
+
+###### For removal
+
+* {% jdoc core::lang.rule.RuleChainVisitor %} and all implementations in language modules
+* {% jdoc core::lang.rule.AbstractRuleChainVisitor %}
+* {% jdoc !!core::lang.Language#getRuleChainVisitorClass() %}
+* {% jdoc !!core::lang.BaseLanguageModule#<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.Class,java.lang.String...) %}
+* {% jdoc core::lang.rule.ImportWrapper %}
+
 #### 6.25.0
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`

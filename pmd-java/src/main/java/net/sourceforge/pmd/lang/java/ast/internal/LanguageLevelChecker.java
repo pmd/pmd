@@ -247,6 +247,16 @@ public class LanguageLevelChecker<T> {
     private class CheckVisitor extends JavaVisitorBase<T, Void> {
 
         @Override
+        protected Void visitChildren(Node node, T data) {
+            throw new AssertionError("Shouldn't recurse");
+        }
+
+        @Override
+        public Void visitNode(Node node, T param) {
+            return null;
+        }
+
+        @Override
         public Void visit(ASTStringLiteral node, T data) {
             if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
                 check(node, PreviewFeature.SPACE_STRING_ESCAPES, data);
@@ -298,7 +308,6 @@ public class LanguageLevelChecker<T> {
                     check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
                 }
             }
-            visitChildren(node, data);
             return null;
         }
 
@@ -319,7 +328,6 @@ public class LanguageLevelChecker<T> {
             if (node.isVarargs()) {
                 check(node, RegularLanguageFeature.VARARGS_PARAMETERS, data);
             }
-            visitChildren(node, data);
             return null;
         }
 
@@ -459,8 +467,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTVariableDeclaratorId node, T data) {
-            checkIdent(node, node.getVariableName(), data);
-            visitChildren(node, data);
+            checkIdent(node, node.getName(), data);
             return null;
         }
 

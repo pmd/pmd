@@ -10,6 +10,7 @@ Rules that are related to code documentation.
     </description>
 
     <rule name="CommentContent"
+          language="java"
           since="5.0"
           message="Invalid words or phrases found"
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentContentRule"
@@ -26,6 +27,7 @@ A rule for the politically correct... we don't want to offend anyone.
     </rule>
 
     <rule name="CommentRequired"
+          language="java"
           since="5.1"
           message="Comment is required"
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule"
@@ -46,6 +48,7 @@ Denotes whether javadoc (formal) comments are required (or unwanted) for specifi
     </rule>
 
     <rule name="CommentSize"
+          language="java"
           since="5.0"
           message="Comment is too large"
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentSizeRule"
