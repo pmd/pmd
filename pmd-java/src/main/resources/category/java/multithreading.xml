@@ -253,6 +253,7 @@ public class Foo {
     </rule>
 
     <rule name="NonThreadSafeSingleton"
+          language="java"
           since="3.4"
           message="Singleton is not thread safe"
           class="net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule"
@@ -287,6 +288,7 @@ public static Foo getFoo() {
     </rule>
 
     <rule name="UnsynchronizedStaticFormatter"
+          language="java"
           since="6.11.0"
           message="Static Formatter objects should be accessed in a synchronized manner"
           class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule"

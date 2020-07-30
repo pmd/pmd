@@ -34,6 +34,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidDollarSigns"
+          language="java"
           since="1.5"
           message="Avoid using dollar signs in variable/method/class/interface names"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.AvoidDollarSignsRule"
@@ -235,6 +236,7 @@ public class Foo extends Bar{
     </rule>
 
     <rule name="ClassNamingConventions"
+          language="java"
           since="1.2"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule"
@@ -268,6 +270,7 @@ public class Éléphant {}
     </rule>
 
     <rule name="CommentDefaultAccessModifier"
+          language="java"
           since="5.4.0"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule"
           message="Missing commented default access modifier"
@@ -307,6 +310,7 @@ public class Foo {
     </rule>
 
     <rule name="ConfusingTernary"
+          language="java"
           since="1.9"
           message="Avoid if (x != y) ..; else ..;"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule"
@@ -435,6 +439,7 @@ or MethodDeclaration[@PackagePrivate= true()]
     </rule>
 
     <rule name="DontImportJavaLang"
+          language="java"
           since="0.5"
           message="Avoid importing anything from the package 'java.lang'"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule"
@@ -459,6 +464,7 @@ public class Foo {}
     </rule>
 
     <rule name="DuplicateImports"
+          language="java"
           since="0.5"
           message="Avoid duplicate imports such as ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule"
@@ -582,6 +588,7 @@ public class HelloWorldBean {
 
 
     <rule name="FieldNamingConventions"
+          language="java"
           since="6.7.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule"
@@ -653,6 +660,7 @@ public class Foo {
     </rule>
 
     <rule name="FormalParameterNamingConventions"
+          language="java"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule"
@@ -911,6 +919,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
     </rule>
 
     <rule name="LocalVariableCouldBeFinal"
+          language="java"
           since="2.2"
           message="Local variable ''{0}'' could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableCouldBeFinalRule"
@@ -932,6 +941,7 @@ public class Bar {
     </rule>
 
     <rule name="LocalVariableNamingConventions"
+          language="java"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule"
@@ -1044,6 +1054,7 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
     </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
+          language="java"
           since="2.2"
           message="Parameter ''{0}'' is not assigned and could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodArgumentCouldBeFinalRule"
@@ -1066,6 +1077,7 @@ public void foo2 (final String param) { // better, do stuff with param never ass
     </rule>
 
     <rule name="MethodNamingConventions"
+          language="java"
           since="1.2"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule"
@@ -1173,6 +1185,7 @@ public class Foo {
     </rule>
 
     <rule name="OnlyOneReturn"
+          language="java"
           since="1.0"
           message="A method should have only one exit point, and that should be the last statement in the method"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.OnlyOneReturnRule"
@@ -1480,6 +1493,7 @@ import static Yoko; // Too much !
 
 
     <rule name="UnnecessaryAnnotationValueElement"
+          language="java"
           since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
@@ -1592,6 +1606,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryLocalBeforeReturn"
+          language="java"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
@@ -1651,6 +1666,7 @@ public class Bar {
     </rule>
 
     <rule name="UnnecessaryReturn"
+          language="java"
           since="1.3"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule"
