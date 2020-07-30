@@ -12,6 +12,7 @@ import java.util.List;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * A handler for analysis events. Instances are only used on a single
@@ -104,18 +105,7 @@ public interface FileAnalysisListener extends AutoCloseable {
 
             @Override
             public void close() throws Exception {
-                Exception composed = null;
-                for (FileAnalysisListener it : list) {
-                    try {
-                        it.close();
-                    } catch (Exception e) {
-                        if (composed == null) {
-                            composed = e;
-                        } else {
-                            composed.addSuppressed(e);
-                        }
-                    }
-                }
+                Exception composed = FileUtil.closeAll(list);
                 if (composed != null) {
                     throw composed;
                 }

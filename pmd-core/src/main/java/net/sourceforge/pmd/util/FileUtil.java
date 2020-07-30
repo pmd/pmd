@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,31 @@ import net.sourceforge.pmd.util.datasource.ZipDataSource;
 public final class FileUtil {
 
     private FileUtil() {
+    }
+
+    /**
+     * Close all closeable resources in order. If any exception occurs,
+     * it is saved and returned. If more than one exception occurs, the
+     * following are accumulated as suppressed violations.
+     *
+     * @param closeables Resources to close
+     *
+     * @return An exception, or null if no 'close' routine threw
+     */
+    public static Exception closeAll(Collection<? extends AutoCloseable> closeables) {
+        Exception composed = null;
+        for (AutoCloseable it : closeables) {
+            try {
+                it.close();
+            } catch (Exception e) {
+                if (composed == null) {
+                    composed = e;
+                } else {
+                    composed.addSuppressed(e);
+                }
+            }
+        }
+        return composed;
     }
 
     /**

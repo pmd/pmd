@@ -181,15 +181,18 @@ public class PMD {
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
      *
-     * @param configuration  Configuration
-     * @param ruleSets RuleSetFactory
-     * @param files          List of {@link DataSource}s
-     * @param listener       RuleContext
+     * @param configuration Configuration
+     * @param ruleSets      RuleSetFactory
+     * @param files         List of {@link DataSource}s
+     * @param listener      RuleContext
+     *
+     * @throws Exception If an exception occurs while closing the data sources
+     *                   Todo wrap that into a known exception type
      */
     public static void processFiles(PMDConfiguration configuration,
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
-                                    GlobalAnalysisListener listener) {
+                                    GlobalAnalysisListener listener) throws Exception {
 
         final RuleSets rs = new RuleSets(ruleSets);
 
@@ -209,10 +212,19 @@ public class PMD {
 
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
+        Exception ex;
         try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
             processor.processFiles(rs, files, listener);
+        } finally {
+            // in case we analyzed files within Zip Files/Jars, we need to close them after
+            // the analysis is finished
+            ex = FileUtil.closeAll(files);
+            configuration.getAnalysisCache().persist();
         }
-        configuration.getAnalysisCache().persist();
+
+        if (ex != null) {
+            throw ex;
+        }
     }
 
 

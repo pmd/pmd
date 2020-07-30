@@ -14,6 +14,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -72,20 +73,8 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             }
 
             @Override
-            @SuppressWarnings("PMD.CloseResource") // false-positive
             public void close() throws Exception {
-                Exception composed = null;
-                for (GlobalAnalysisListener it : listeners) {
-                    try {
-                        it.close();
-                    } catch (Exception e) {
-                        if (composed == null) {
-                            composed = e;
-                        } else {
-                            composed.addSuppressed(e);
-                        }
-                    }
-                }
+                Exception composed = FileUtil.closeAll(myList);
                 if (composed != null) {
                     throw composed;
                 }

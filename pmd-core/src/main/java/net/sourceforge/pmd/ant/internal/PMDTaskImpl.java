@@ -175,7 +175,7 @@ public class PMDTaskImpl {
 
             try {
                 PMD.processFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
-            } catch (RuntimeException pmde) {
+            } catch (Exception pmde) {
                 handleError(errorReport, pmde);
             }
         }
