@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
@@ -99,14 +98,12 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
-        ReportBuilderListener listener = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(listener)) {
-            DummyNode s = new DummyRoot().withFileName("filename");
-            s.setCoords(5, 1, 6, 1);
-            s.setImage("TestImage");
-            r.addViolation(ctx, s);
-        }
-        RuleViolation rv = listener.getReport().getViolations().get(0);
+
+        DummyNode s = new DummyRoot().withFileName("filename");
+        s.setCoords(5, 1, 6, 1);
+        s.setImage("TestImage");
+
+        RuleViolation rv = RuleContextTest.getReport(ctx -> r.addViolation(ctx, s)).getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 

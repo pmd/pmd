@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
@@ -262,7 +264,7 @@ public class Report {
          *
          * @throws IllegalStateException If {@link #close()} has not been called yet
          */
-        public Report getReport() {
+        public @NonNull Report getReport() {
             if (!done) {
                 throw new IllegalStateException("Reporting not done");
             }

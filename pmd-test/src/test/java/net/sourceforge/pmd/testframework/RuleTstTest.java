@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -43,6 +42,7 @@ public class RuleTstTest {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
         Report report = ruleTester.runTestFromString("the code", rule, dummyLanguage, false);
 
@@ -55,7 +55,6 @@ public class RuleTstTest {
         verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
-        verifyNoMoreInteractions(rule);
     }
 
     @Test
@@ -63,6 +62,7 @@ public class RuleTstTest {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(int beginLine, String message) {

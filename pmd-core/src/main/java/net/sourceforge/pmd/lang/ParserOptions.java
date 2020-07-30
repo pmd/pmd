@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
+import net.sourceforge.pmd.PMD;
+
 /**
  * Represents a set of configuration options for a {@link Parser}. For each
  * unique combination of ParserOptions a Parser will be used to create an AST.
@@ -11,13 +15,14 @@ package net.sourceforge.pmd.lang;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
-    protected String suppressMarker;
+    protected String suppressMarker = PMD.SUPPRESS_MARKER;
 
     public String getSuppressMarker() {
         return suppressMarker;
     }
 
     public void setSuppressMarker(String suppressMarker) {
+        Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
     }
 

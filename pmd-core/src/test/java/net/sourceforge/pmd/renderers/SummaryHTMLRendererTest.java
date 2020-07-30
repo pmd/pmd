@@ -7,7 +7,6 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -16,9 +15,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
@@ -147,13 +145,10 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     private Report createEmptyReportWithSuppression() throws Exception {
-        Map<Integer, String> suppressions = Collections.singletonMap(1, "test");
-        ReportBuilderListener listener = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(listener)) {
-            DummyRoot root = new DummyRoot(suppressions).withFileName("");
-            root.setCoords(1, 10, 4, 5);
-            ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test");
-        }
-        return listener.getReport();
+
+        DummyRoot root = new DummyRoot(Collections.singletonMap(1, "test")).withFileName("");
+        root.setCoords(1, 10, 4, 5);
+
+        return RuleContextTest.getReport(ctx -> ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test"));
     }
 }

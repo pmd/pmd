@@ -38,7 +38,9 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.GlobalReportBuilder;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
@@ -99,7 +101,8 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            List<RuleSet> ruleSets = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet);
+            Rule rule = new RuleSets(ruleSets).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
@@ -265,6 +268,7 @@ public abstract class RuleTst {
             PMDConfiguration config = new PMDConfiguration();
             config.setIgnoreIncrementalAnalysis(true);
             config.setDefaultLanguageVersion(languageVersion);
+            config.setThreads(1);
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing

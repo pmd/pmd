@@ -29,7 +29,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -173,9 +172,9 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testApply0Rules() {
+    public void testApply0Rules() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleset").build();
-        verifyRuleSet(ruleset, 0, new HashSet<RuleViolation>());
+        verifyRuleSet(ruleset, new HashSet<RuleViolation>());
     }
 
     @Test
@@ -409,14 +408,12 @@ public class RuleSetTest {
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1").addRule(rule).build();
         RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2").addRule(rule).build();
 
+
         RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ruleSets.apply(makeCompilationUnits(), ctx);
-        }
-        assertEquals("Violations", 2, reportBuilder.getReport().getViolations().size());
+        Report report = RuleContextTest.getReport(ctx -> ruleSets.apply(makeCompilationUnits(), ctx));
+        assertEquals("Violations", 2, report.getViolations().size());
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
@@ -424,13 +421,10 @@ public class RuleSetTest {
             .addRule(rule)
             .build();
 
-        ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
+        RuleSets ruleSets2 = new RuleSets(listOf(ruleSet1, ruleSet2));
 
-        reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            ruleSets.apply(makeCompilationUnits("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), ctx);
-        }
-        assertEquals("Violations", 1, reportBuilder.getReport().getViolations().size());
+        report = RuleContextTest.getReport(ctx -> ruleSets2.apply(makeCompilationUnits("C:\\package\\RandomClass.java"), ctx));
+        assertEquals("Violations", 1, report.getViolations().size());
     }
 
     @Test
@@ -449,24 +443,18 @@ public class RuleSetTest {
         assertNotSame(rule, ruleSet2.getRuleByName("FooRule1"));
     }
 
-    private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) throws Exception {
+    private void verifyRuleSet(RuleSet ruleset, Set<RuleViolation> expected) throws Exception {
 
-        Set<RuleViolation> reportedValues = new HashSet<>();
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext context = new RuleContext(reportBuilder)) {
-            new RuleSets(ruleset).apply(makeCompilationUnits(), context);
+        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
 
+        assertEquals("Invalid number of Violations Reported", expected.size(), report.getViolations().size());
+
+        for (RuleViolation violation : report.getViolations()) {
+            assertTrue("Unexpected Violation Returned: " + violation, expected.contains(violation));
         }
 
-        assertEquals("Invalid number of Violations Reported", size, reportBuilder.getReport().getViolations().size());
-
-        for (RuleViolation violation : reportBuilder.getReport().getViolations()) {
-            reportedValues.add(violation);
-            assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
-        }
-
-        for (RuleViolation violation : values) {
-            assertTrue("Expected Violation not Returned: " + violation, reportedValues.contains(violation));
+        for (RuleViolation violation : expected) {
+            assertTrue("Expected Violation not Returned: " + violation, report.getViolations().contains(violation));
         }
     }
 
@@ -492,13 +480,10 @@ public class RuleSetTest {
                     }
                 })
                 .build();
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setIgnoreExceptions(true); // the default
-            ruleset.apply(makeCompilationUnits(), context);
-        }
 
-        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
+        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+
+        List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
@@ -508,15 +493,14 @@ public class RuleSetTest {
     @Test(expected = RuntimeException.class)
     public void ruleExceptionShouldBeThrownIfNotIgnored() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
-                    @Override
-                    public void apply(Node target, RuleContext ctx) {
-                        throw new RuntimeException("Test exception while applying rule");
-                    }
-                })
-                .build();
-        RuleContext context = new RuleContext(FileAnalysisListener.noop());
-        context.setIgnoreExceptions(false);
+            .addRule(new MockRule() {
+                @Override
+                public void apply(Node target, RuleContext ctx) {
+                    throw new RuntimeException("Test exception while applying rule");
+                }
+            })
+            .build();
+        RuleContext context = RuleContext.createThrowingExceptions(FileAnalysisListener.noop());
         ruleset.apply(makeCompilationUnits(), context);
     }
 
@@ -533,18 +517,16 @@ public class RuleSetTest {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setIgnoreExceptions(true); // the default
-            ruleset.apply(makeCompilationUnits(), context);
-        }
-        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
+
+        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+
+        List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, reportBuilder.getReport().getViolations().size());
+        assertEquals("There should be a violation", 1, report.getViolations().size());
     }
 
     @Test
@@ -572,21 +554,15 @@ public class RuleSetTest {
                 addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        RuleSets rulesets = new RuleSets(ruleset);
 
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext context = new RuleContext(reportBuilder)) {
-            context.setIgnoreExceptions(true); // the default
-            rulesets.apply(makeCompilationUnits(), context);
-        }
+        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
 
-
-        List<ProcessingError> errors = reportBuilder.getReport().getProcessingErrors();
+        List<ProcessingError> errors = report.getProcessingErrors();
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, reportBuilder.getReport().getViolations().size());
+        assertEquals("There should be a violation", 1, report.getViolations().size());
     }
 
 

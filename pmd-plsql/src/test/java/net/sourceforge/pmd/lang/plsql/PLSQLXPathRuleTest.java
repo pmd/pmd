@@ -58,7 +58,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         rule.setMessage("Test Violation");
 
         ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext()) {
+        try (RuleContext ctx = RuleContext.create(reportBuilder)) {
             rule.apply(node, ctx);
         }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import java.util.function.Consumer;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,26 +16,26 @@ import junit.framework.JUnit4TestAdapter;
 
 public class RuleContextTest {
 
+    public static Report getReport(Consumer<RuleContext> sideEffects) throws Exception {
+        ReportBuilderListener listener = new ReportBuilderListener();
+        try (RuleContext ctx = RuleContext.create(listener)) {
+            sideEffects.accept(ctx);
+        }
+        return listener.getReport();
+    }
+
     @Test
     public void testMessage() throws Exception {
-        ReportBuilderListener listener = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(listener)) {
-            ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\"");
-        }
+        Report report = getReport(ctx -> ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
 
-        RuleViolation violation = listener.getReport().getViolations().get(0);
-        Assert.assertEquals("message with \"{\"", violation.getDescription());
+        Assert.assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
 
     @Test
     public void testMessageArgs() throws Exception {
-        ReportBuilderListener listener = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(listener)) {
-            ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1");
-        }
+        Report report = getReport(ctx -> ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1"));
 
-        RuleViolation violation = listener.getReport().getViolations().get(0);
-        Assert.assertEquals("message with 1 argument: \"testarg1\"", violation.getDescription());
+        Assert.assertEquals("message with 1 argument: \"testarg1\"", report.getViolations().get(0).getDescription());
     }
 
     public static junit.framework.Test suite() {

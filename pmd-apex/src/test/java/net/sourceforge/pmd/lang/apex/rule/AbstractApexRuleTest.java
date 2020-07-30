@@ -8,8 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.ReportBuilderListener;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
@@ -17,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -44,14 +44,11 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
 
     private void run(String code) throws Exception {
         ApexNode<Compilation> node = parse(code);
+        TopLevelRule rule = new TopLevelRule();
+        rule.setMessage("Message");
 
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            TopLevelRule rule = new TopLevelRule();
-            rule.setMessage("Message");
-            rule.apply(node, ctx);
-        }
-        assertEquals(1, reportBuilder.getReport().getViolations().size());
+        Report report = TestUtilsKt.makeReport(ctx -> rule.apply(node, ctx));
+        assertEquals(1, report.getViolations().size());
     }
 
     private static class TopLevelRule extends AbstractApexRule {

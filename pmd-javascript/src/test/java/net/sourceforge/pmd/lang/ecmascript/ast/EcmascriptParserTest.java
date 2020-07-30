@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
@@ -64,7 +65,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         }
 
         MyEcmascriptRule rule = new MyEcmascriptRule();
-        RuleContext ctx = new RuleContext();
+        RuleContext ctx = RuleContext.create(FileAnalysisListener.noop());
         rule.apply(js.parse(source), ctx);
 
         assertEquals("Scope from 2 to 4", output.get(0));
@@ -138,7 +139,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testSuppressionComment() {
-        ASTAstRoot root = js.parse("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
+        ASTAstRoot root = js.parse("function(x) {\n"
+                                       + "x = x; //NOPMD I know what I'm doing\n"
+                                       + "}\n");
         assertEquals(" I know what I'm doing", root.getNoPmdComments().get(2));
         assertEquals(1, root.getNoPmdComments().size());
 

@@ -68,6 +68,7 @@ public final class TokenMgrError extends FileAnalysisException {
      *
      * @return A new exception
      */
+    @Override
     public TokenMgrError setFileName(String filename) {
         super.setFileName(filename);
         return this;

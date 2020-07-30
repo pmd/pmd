@@ -85,7 +85,7 @@ public class PmdRunnable implements Runnable {
             LOCAL_THREAD_CONTEXT.set(tc);
         }
 
-        try (RuleContext ruleCtx = new RuleContext(ruleContext.startFileAnalysis(dataSource))) {
+        try (RuleContext ruleCtx = RuleContext.create(ruleContext.startFileAnalysis(dataSource))) {
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
 
             if (LOG.isLoggable(Level.FINE)) {
@@ -106,7 +106,7 @@ public class PmdRunnable implements Runnable {
                         if (ruleCtx.isIgnoreExceptions()) {
                             LOG.log(Level.FINE, "Exception while processing file: " + file, e);
                         } else {
-                            if (e instanceof FileAnalysisException) {
+                            if (e instanceof FileAnalysisException) { // NOPMD AvoidInstanceofChecksInCatchClause
                                 throw (FileAnalysisException) e;
                             }
                             throw new FileAnalysisException(e);

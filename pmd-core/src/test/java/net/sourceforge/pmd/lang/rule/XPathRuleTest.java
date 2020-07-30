@@ -11,8 +11,8 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.ReportBuilderListener;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
@@ -43,13 +43,9 @@ public class XPathRuleTest {
 
         DummyNode firstNode = newNode();
 
-        ReportBuilderListener reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            // with another rule forked from the same one (in multithreaded processor)
-            xpr.apply(firstNode, ctx);
-        }
-
-        assertEquals(1, reportBuilder.getReport().getViolations().size());
+        // with another rule forked from the same one (in multithreaded processor)
+        Report report = RuleContextTest.getReport(ctx -> xpr.apply(firstNode, ctx));
+        assertEquals(1, report.getViolations().size());
 
         String log = loggingRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'SomeRule'"));
@@ -58,36 +54,28 @@ public class XPathRuleTest {
 
         loggingRule.clear();
 
-        reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            // with another node
-            xpr.apply(newNode(), ctx);
-        }
+        // with another node
+        report = RuleContextTest.getReport(ctx -> xpr.apply(newNode(), ctx));
 
-        assertEquals(1, reportBuilder.getReport().getViolations().size());
+        assertEquals(1, report.getViolations().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
 
 
-        reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            // with another rule forked from the same one (in multithreaded processor)
-            xpr.deepCopy().apply(newNode(), ctx);
-        }
+        // with another rule forked from the same one (in multithreaded processor)
+        report = RuleContextTest.getReport(ctx -> xpr.deepCopy().apply(newNode(), ctx));
 
-        assertEquals(1, reportBuilder.getReport().getViolations().size());
+        assertEquals(1, report.getViolations().size());
 
         assertEquals("", loggingRule.getLog()); // no additional warnings
 
-        reportBuilder = new ReportBuilderListener();
-        try (RuleContext ctx = new RuleContext(reportBuilder)) {
-            // with another rule on the same node, new warnings
-            XPathRule otherRule = makeRule(version, "OtherRule");
-            otherRule.setRuleSetName("rset.xml");
-            otherRule.apply(firstNode, ctx);
-        }
+        // with another rule on the same node, new warnings
+        XPathRule otherRule = makeRule(version, "OtherRule");
+        otherRule.setRuleSetName("rset.xml");
 
-        assertEquals(1, reportBuilder.getReport().getViolations().size());
+        report = RuleContextTest.getReport(ctx -> otherRule.apply(firstNode, ctx));
+
+        assertEquals(1, report.getViolations().size());
 
         log = loggingRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'OtherRule' (in ruleset 'rset.xml')"));

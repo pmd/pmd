@@ -71,6 +71,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             }
 
             @Override
+            @SuppressWarnings("PMD.CloseResource") // false-positive
             public void close() throws Exception {
                 Exception composed = null;
                 for (GlobalAnalysisListener it : listeners) {
@@ -118,7 +119,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
         @Override
         public void close() {
-
+            // nothing to do
         }
     }
 

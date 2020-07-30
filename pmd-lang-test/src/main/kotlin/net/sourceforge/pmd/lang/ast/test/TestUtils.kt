@@ -8,6 +8,11 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
+import net.sourceforge.pmd.*
+import net.sourceforge.pmd.processor.PmdRunnable
+import net.sourceforge.pmd.util.CollectionUtil
+import net.sourceforge.pmd.util.datasource.DataSource
+import java.util.function.Consumer
 import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
@@ -74,4 +79,26 @@ inline  fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
 
 fun Stream<*>.shouldHaveSize(i: Int) {
     toList() should haveSize(i)
+}
+
+
+/**
+ * Make a report by side-effecting on a rule context.
+ */
+@JvmSynthetic // hide from Java consumers, Kotlin users can still use it
+fun makeReport(sideEffects: (RuleContext) -> Unit): Report =
+        makeReport(Consumer(sideEffects))
+
+/**
+ * Make a report by side-effecting on a rule context.
+ */
+fun makeReport(sideEffects: Consumer<RuleContext>): Report {
+    val reportBuilder = Report.ReportBuilderListener()
+    val ctx = RuleContext.create(reportBuilder)
+
+    sideEffects.accept(ctx)
+
+    ctx.close()
+
+    return reportBuilder.report
 }

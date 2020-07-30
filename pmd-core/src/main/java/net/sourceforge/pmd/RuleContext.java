@@ -18,22 +18,12 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 /**
- * The RuleContext provides access to Rule processing state. This information
- * includes the following global information:
- * <ul>
- * <li>The Report to which Rule Violations are sent.</li>
- * <li>Named attributes.</li>
- * </ul>
- * As well as the following source file specific information:
- * <ul>
- * <li>A File for the source file.</li>
- * <li>The Language Version of the source file.</li>
- * </ul>
- * It is <strong>required</strong> that all source file specific options be set
- * between calls to difference source files. Failure to do so, may result in
- * undefined behavior.
+ * The API for rules to report violations or errors during analysis.
+ * This forwards events to a {@link FileAnalysisListener}. It implements
+ * violation suppression by filtering some violations out, according to
+ * the {@link ViolationSuppressor}s for the language.
  */
-public class RuleContext implements AutoCloseable {
+public final class RuleContext implements AutoCloseable {
 
     private static final Object[] NO_ARGS = new Object[0];
 
@@ -41,15 +31,7 @@ public class RuleContext implements AutoCloseable {
 
     private final FileAnalysisListener listener;
 
-    /**
-     * Default constructor.
-     */
-    @Deprecated
-    public RuleContext() {
-        this(FileAnalysisListener.noop());
-    }
-
-    public RuleContext(FileAnalysisListener listener) {
+    private RuleContext(FileAnalysisListener listener) {
         this.listener = listener;
     }
 
@@ -80,17 +62,12 @@ public class RuleContext implements AutoCloseable {
         addViolationWithPosition(rule, location, -1, -1, message, formatArgs);
     }
 
-    public void addViolationNoSuppress(RuleViolation rv) {
-        listener.onRuleViolation(rv);
-    }
-
     public void addViolationWithPosition(Rule rule, Node location, int beginLine, int endLine, String message, Object... formatArgs) {
         Objects.requireNonNull(rule);
         Objects.requireNonNull(location);
         Objects.requireNonNull(message);
         Objects.requireNonNull(formatArgs);
 
-        // at some point each Node will know its language version
         RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
         RuleViolation violation = fact.createViolation(rule, location, location.getSourceCodeFile(), makeMessage(message, formatArgs));
@@ -108,6 +85,10 @@ public class RuleContext implements AutoCloseable {
         }
     }
 
+    public void addViolationNoSuppress(RuleViolation rv) {
+        listener.onRuleViolation(rv);
+    }
+
     private String makeMessage(@NonNull String message, Object[] args) {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
@@ -117,31 +98,27 @@ public class RuleContext implements AutoCloseable {
 
 
     /**
-     * Configure whether exceptions during applying a rule should be ignored or
-     * not. If set to <code>true</code> then such exceptions are logged as
-     * warnings and the processing is continued with the next rule - the failing
-     * rule is simply skipped. This is the default behavior. <br>
-     * If set to <code>false</code> then the processing will be aborted with the
-     * exception. This is especially useful during unit tests, in order to not
-     * oversee any exceptions.
-     *
-     * @param ignoreExceptions
-     *            if <code>true</code> simply skip failing rules (default).
-     */
-    public void setIgnoreExceptions(boolean ignoreExceptions) {
-        this.ignoreExceptions = ignoreExceptions;
-    }
-
-    /**
      * Gets the configuration whether to skip failing rules (<code>true</code>)
      * or whether to throw a a RuntimeException and abort the processing for the
      * first failing rule.
      *
      * @return <code>true</code> when failing rules are skipped,
      *         <code>false</code> otherwise.
+     *
+     * TODO this looks only useful in unit tests...
      */
     public boolean isIgnoreExceptions() {
         return ignoreExceptions;
     }
 
+
+    public static RuleContext create(FileAnalysisListener listener) {
+        return new RuleContext(listener);
+    }
+
+    public static RuleContext createThrowingExceptions(FileAnalysisListener listener) {
+        RuleContext ruleContext = new RuleContext(listener);
+        ruleContext.ignoreExceptions = false;
+        return ruleContext;
+    }
 }

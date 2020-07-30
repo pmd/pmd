@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser {
 
     protected JjtreeParserAdapter() {
+        // inheritance only
     }
 
     protected abstract JavaccTokenDocument newDocument(String fullText);

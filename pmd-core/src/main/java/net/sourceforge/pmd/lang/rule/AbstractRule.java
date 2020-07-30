@@ -287,6 +287,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         // Override as needed
     }
 
+    // TODO remove those methods, make Rules have type-safe access to a RuleContext
+
     /**
      * @see RuleContext#addViolation(Rule, Node, Object...)
      */
