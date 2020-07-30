@@ -69,35 +69,9 @@ public class PMD {
     /** The default suppress marker string. */
     public static final String SUPPRESS_MARKER = "NOPMD";
 
-    /**
-     * Contains the configuration with which this PMD instance has been created.
-     */
-    protected final PMDConfiguration configuration;
-
-    /**
-     * Constant that contains always the current version of PMD.
-     * @deprecated Use {@link PMDVersion#VERSION} instead.
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public static final String VERSION = PMDVersion.VERSION;
-
-    /**
-     * Create a PMD instance using a default Configuration. Changes to the
-     * configuration may be required.
-     */
-    public PMD() {
-        this(new PMDConfiguration());
+    private PMD() {
     }
 
-    /**
-     * Create a PMD instance using the specified Configuration.
-     *
-     * @param configuration
-     *            The runtime Configuration of PMD to use.
-     */
-    public PMD(PMDConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     /**
      * Parses the given string as a database uri and returns a list of
@@ -144,17 +118,6 @@ public class PMD {
             throw new PMDException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
         return dataSources;
-    }
-
-    /**
-     * Get the runtime configuration. The configuration can be modified to
-     * affect how PMD behaves.
-     *
-     * @return The configuration.
-     * @see PMDConfiguration
-     */
-    public PMDConfiguration getConfiguration() {
-        return configuration;
     }
 
     /**
