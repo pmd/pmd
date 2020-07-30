@@ -30,6 +30,12 @@ This is a {{ site.pmd.release_type }} release.
     behavior will be discontinued in PMD 7, so missing `language` attributes are now
     reported as a forward compatibility warning.
 
+#### Deprecated API
+
+##### For removal
+
+*   {% jdoc !!pmd-java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
+
 ### External Contributions
 
 *   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)
