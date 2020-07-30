@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -59,6 +61,8 @@ public class RuleSetFactory {
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
+
+    private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
     /**
      * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
@@ -338,10 +342,16 @@ public class RuleSetFactory {
     private Rule createRule(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         if (ruleSetReferenceId.isAllRules()) {
-            throw new IllegalArgumentException(
-                    "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
+            throw new IllegalArgumentException("Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
-        RuleSet ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
+        RuleSet ruleSet;
+        // java8: computeIfAbsent
+        if (parsedRulesets.containsKey(ruleSetReferenceId)) {
+            ruleSet = parsedRulesets.get(ruleSetReferenceId);
+        } else {
+            ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
+            parsedRulesets.put(ruleSetReferenceId, ruleSet);
+        }
         return ruleSet.getRuleByName(ruleSetReferenceId.getRuleName());
     }
 
@@ -610,11 +620,17 @@ public class RuleSetFactory {
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
+            && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
         Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
+
+        if (StringUtils.isBlank(ruleElement.getAttribute("language"))) {
+            LOG.warning("Rule " + ruleSetReferenceId.getRuleSetFileName() + "/" + rule.getName() + " does not mention attribute"
+                            + " language='" + rule.getLanguage().getTerseName() + "',"
+                            + " please mention it explicitly to be compatible with PMD 7");
+        }
 
         ruleSetBuilder.addRule(rule);
     }

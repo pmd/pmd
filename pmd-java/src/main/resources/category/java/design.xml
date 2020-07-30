@@ -92,6 +92,7 @@ public class PrimitiveType {
     </rule>
 
     <rule name="AvoidDeeplyNestedIfStmts"
+          language="java"
           since="1.0"
           message="Deeply nested if..then statements are hard to read"
           class="net.sourceforge.pmd.lang.java.rule.design.AvoidDeeplyNestedIfStmtsRule"
@@ -400,6 +401,7 @@ void bar() {
     </rule>
 
     <rule name="CouplingBetweenObjects"
+          language="java"
           since="1.04"
           message="High amount of different objects as members denotes a high coupling"
           class="net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule"
@@ -432,6 +434,7 @@ public class Foo {
     </rule>
 
     <rule name="CyclomaticComplexity"
+          language="java"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="1.03"
           class="net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule"
@@ -485,6 +488,7 @@ class Foo {
     </rule>
 
     <rule name="DataClass"
+          language="java"
           since="6.0.0"
           message="The class ''{0}'' is suspected to be a Data Class (WOC={1}, NOPA={2}, NOAM={3}, WMC={4})"
           class="net.sourceforge.pmd.lang.java.rule.design.DataClassRule"
@@ -552,6 +556,7 @@ public class Foo extends Error { }
     </rule>
 
     <rule name="ExceptionAsFlowControl"
+          language="java"
           since="1.8"
           message="Avoid using exceptions as flow control."
           class="net.sourceforge.pmd.lang.java.rule.design.ExceptionAsFlowControlRule"
@@ -579,6 +584,7 @@ public void bar() {
     </rule>
 
     <rule name="ExcessiveClassLength"
+          language="java"
           since="0.6"
           message="Avoid really long classes."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveClassLengthRule"
@@ -611,6 +617,7 @@ public class Foo {
     </rule>
 
     <rule name="ExcessiveImports"
+          language="java"
           since="1.04"
           message="A high number of imports can indicate a high degree of coupling within an object."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveImportsRule"
@@ -634,6 +641,7 @@ public class Foo {
     </rule>
 
     <rule name="ExcessiveMethodLength"
+          language="java"
           since="0.6"
           message="Avoid really long methods."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveMethodLengthRule"
@@ -657,6 +665,7 @@ public void doSomething() {
     </rule>
 
     <rule name="ExcessiveParameterList"
+          language="java"
           since="0.9"
           message="Avoid long parameter lists."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule"
@@ -684,6 +693,7 @@ public void addPerson(      // preferred approach
     </rule>
 
     <rule name="ExcessivePublicCount"
+          language="java"
           since="1.04"
           message="This class has a bunch of public methods and attributes"
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessivePublicCountRule"
@@ -767,6 +777,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
     </rule>
 
     <rule name="ImmutableField"
+          language="java"
           since="2.0"
           message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
@@ -875,6 +886,7 @@ public boolean bar(int a, int b) {
     </rule>
 
     <rule name="LoosePackageCoupling"
+          language="java"
           since="5.0"
           message="Use of ''{0}'' outside of package hierarchy ''{1}'' is not recommended; use recommended classes instead"
           class="net.sourceforge.pmd.lang.java.rule.design.LoosePackageCouplingRule"
@@ -898,6 +910,7 @@ public class Bar {
     </rule>
 
     <rule name="ModifiedCyclomaticComplexity"
+          language="java"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
           class="net.sourceforge.pmd.lang.java.rule.design.ModifiedCyclomaticComplexityRule"
@@ -957,6 +970,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
     </rule>
 
     <rule name="NcssConstructorCount"
+          language="java"
           message="The constructor with {0} parameters has an NCSS line count of {1}"
           since="3.9"
           deprecated="true"
@@ -990,6 +1004,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="NcssCount"
+          language="java"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0.0"
           class="net.sourceforge.pmd.lang.java.rule.design.NcssCountRule"
@@ -1033,6 +1048,7 @@ class Foo {                         // +1, total Ncss = 12
     </rule>
 
     <rule name="NcssMethodCount"
+          language="java"
           message="The method {0}() has an NCSS line count of {1}"
           deprecated="true"
           since="3.9"
@@ -1067,6 +1083,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="NcssTypeCount"
+          language="java"
           message="The type has an NCSS line count of {0}"
           since="3.9"
           deprecated="true"
@@ -1100,6 +1117,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="NPathComplexity"
+          language="java"
           since="3.9"
           message="The {0} ''{1}'' has an NPath complexity of {2}, current threshold is {3}"
           class="net.sourceforge.pmd.lang.java.rule.design.NPathComplexityRule"
@@ -1156,6 +1174,7 @@ public class Foo {
     </rule>
 
     <rule name="SignatureDeclareThrowsException"
+          language="java"
           since="1.2"
           message="A method/constructor should not explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsExceptionRule"
@@ -1325,6 +1344,7 @@ public class Bar {
     </rule>
 
     <rule name="SimplifyBooleanReturns"
+          language="java"
           since="0.9"
           message="Avoid unnecessary if..then..else statements when returning booleans"
           class="net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule"
@@ -1408,6 +1428,7 @@ class Foo {
     </rule>
 
     <rule name="SingularField"
+          language="java"
           since="3.1"
           message="Perhaps ''{0}'' could be replaced by a local variable."
           class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
@@ -1432,6 +1453,7 @@ public class Foo {
     </rule>
 
     <rule name="StdCyclomaticComplexity"
+          language="java"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
           class="net.sourceforge.pmd.lang.java.rule.design.StdCyclomaticComplexityRule"
@@ -1490,6 +1512,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
     </rule>
 
     <rule name="SwitchDensity"
+          language="java"
           since="1.02"
           message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
           class="net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule"
@@ -1520,6 +1543,7 @@ public class Foo {
     </rule>
 
     <rule name="TooManyFields"
+          language="java"
           since="3.0"
           message="Too many fields"
           class="net.sourceforge.pmd.lang.java.rule.design.TooManyFieldsRule"
@@ -1604,6 +1628,7 @@ complexity and find a way to have more fine grained objects.
     </rule>
 
     <rule name="UselessOverridingMethod"
+          language="java"
           since="3.3"
           message="Overriding method merely calls super"
           class="net.sourceforge.pmd.lang.java.rule.design.UselessOverridingMethodRule"
@@ -1677,6 +1702,7 @@ public class MyClass {
     </rule>
 
     <rule name="UseUtilityClass"
+          language="java"
           since="0.3"
           message="All methods are static.  Consider using a utility class instead. Alternatively, you could add a private constructor or make the class abstract to silence this warning."
           class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
