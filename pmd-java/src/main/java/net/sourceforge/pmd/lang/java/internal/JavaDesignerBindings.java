@@ -9,7 +9,9 @@ import java.util.Collections;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -31,7 +33,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof JavaNode) {
-            Attribute attr = ((JavaNode) node).acceptVisitor(MainAttrVisitor.INSTANCE, null);
+            Attribute attr = node.acceptVisitor(MainAttrVisitor.INSTANCE, null);
             if (attr != null) {
                 return attr;
             }
@@ -84,7 +86,22 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
+        public Attribute visit(ASTAnnotation node, Void data) {
+            return new Attribute(node, "SimpleName", node.getSimpleName());
+        }
+
+        @Override
+        public Attribute visit(ASTClassOrInterfaceType node, Void data) {
+            return new Attribute(node, "SimpleName", node.getSimpleName());
+        }
+
+        @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTVariableDeclaratorId node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
     }

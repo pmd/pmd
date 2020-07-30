@@ -21,6 +21,28 @@ public final class AssertionUtil {
         return PACKAGE_PATTERN.matcher(name).matches();
     }
 
+    /**
+     * Returns true if the charsequence is a valid java identifier.
+     *
+     * @param name Name (non-null)
+     *
+     * @throws NullPointerException If the name is null
+     */
+    public static boolean isJavaIdentifier(CharSequence name) {
+        int len = name.length();
+        if (len == 0 || !Character.isJavaIdentifierStart(name.charAt(0))) {
+            return false;
+        }
+
+        for (int i = 1; i < len; i++) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static int requireOver1(String name, final int value) {
         if (value < 1) {
             throw mustBe(name, value, ">= 1");

@@ -2392,7 +2392,7 @@ void RSIGNEDSHIFT() #void:
 void Annotation():
 {}
 {
-    "@" jjtThis.name=VoidName() [ AnnotationMemberList() ]
+    "@" ClassName() [ AnnotationMemberList() ]
 }
 
 void AnnotationMemberList():
@@ -2554,6 +2554,13 @@ String VoidName() #void:
   ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
   )*
   {return s.toString();}
+}
+
+// Produces a ClassOrInterfaceType, possibly with an ambiguous LHS
+void ClassName() #void:
+{}
+{
+    AmbiguousName() { forceTypeContext(); }
 }
 
 // This is used to get JJTree to generate a node.

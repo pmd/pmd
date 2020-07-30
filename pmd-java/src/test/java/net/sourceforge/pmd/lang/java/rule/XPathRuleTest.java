@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
@@ -182,8 +183,8 @@ public class XPathRuleTest extends RuleTst {
         xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
         List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
-        assertEquals("Bar", nodes.get(0).getImage());
-        assertEquals("Baz", nodes.get(1).getImage());
+        assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
+        assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());
 
         // XPATH version 2.0
         xpathRuleQuery = new SaxonXPathRuleQuery();
@@ -192,8 +193,8 @@ public class XPathRuleTest extends RuleTst {
         xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
         nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
-        assertEquals("Bar", nodes.get(0).getImage());
-        assertEquals("Baz", nodes.get(1).getImage());
+        assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
+        assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {

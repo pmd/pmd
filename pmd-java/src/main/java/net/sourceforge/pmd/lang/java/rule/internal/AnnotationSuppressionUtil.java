@@ -17,11 +17,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
  * Helper methods to suppress violations based on annotations.
@@ -107,9 +106,8 @@ final class AnnotationSuppressionUtil {
 
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
-        // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
-        if (TypeHelper.isA(annotation, SuppressWarnings.class)) {
-            for (ASTLiteral element : annotation.findDescendantsOfType(ASTLiteral.class)) {
+        if ("java.lang.SuppressWarnings".equals(annotation.getSymbol().getBinaryName())) {
+            for (ASTStringLiteral element : annotation.findDescendantsOfType(ASTStringLiteral.class)) {
                 if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(
                     "\"PMD." + rule.getName() + "\"")
                     // Check for standard annotations values

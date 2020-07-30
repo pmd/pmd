@@ -32,26 +32,4 @@ public final class ASTThrowStatement extends AbstractStatement implements ASTSwi
         return (ASTExpression) getFirstChild();
     }
 
-    /**
-     * Gets the image of the first ASTClassOrInterfaceType child or
-     * <code>null</code> if none is found. Note that when the statement is
-     * something like throw new Exception, this method returns 'Exception' and
-     * if the throw statement is like throw e: this method returns 'e'. A
-     * special case of returning <code>null</code> is when the throws is like
-     * throw this.e or throw this.
-     *
-     * This is too specific
-     *
-     * <p>TODO - use symbol table (?)</p>
-     *
-     * @return the image of the first ASTClassOrInterfaceType node found or
-     *     <code>null</code>
-     * @deprecated This method is too specific and doesn't support all cases.
-     *             It will be removed with PMD 7.
-     */
-    @Deprecated
-    public String getFirstClassOrInterfaceTypeImage() {
-        final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        return t == null ? null : t.getImage();
-    }
 }

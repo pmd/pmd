@@ -42,9 +42,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
                 methodCall("foo") {
 
                     it::getQualifier shouldBe child<ASTSuperExpression> {
-                        it::getQualifier shouldBe child {
-                            it::getImage shouldBe "Type"
-                        }
+                        it::getQualifier shouldBe classType("Type")
                     }
 
                     unspecifiedChild()
@@ -55,8 +53,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
                 methodCall("foo") {
 
                     it::getQualifier shouldBe child<ASTSuperExpression> {
-                        it::getQualifier shouldBe child {
-                            it::getImage shouldBe "ASTThisExpression"
+                        it::getQualifier shouldBe qualClassType("net.sourceforge.pmd.lang.java.ast.ASTThisExpression") {
                             it::getTypeArguments shouldBe null
                             it::getQualifier shouldBe null
 

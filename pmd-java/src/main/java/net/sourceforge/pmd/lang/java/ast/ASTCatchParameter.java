@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 
 /**
  * Formal parameter of a {@linkplain ASTCatchClause catch clause}
@@ -50,7 +52,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
 
     /** Returns the name of this parameter. */
     public String getName() {
-        return getVarId().getVariableName();
+        return getVarId().getName();
     }
 
 
@@ -59,7 +61,21 @@ public final class ASTCatchParameter extends AbstractJavaNode
      * {@link ASTUnionType UnionType}.
      */
     public ASTType getTypeNode() {
-        return children(ASTType.class).first();
+        return (ASTType) getChild(1);
+    }
+
+
+    /**
+     * Returns a stream of all declared exception types (expanding a union
+     * type if present).
+     */
+    public NodeStream<ASTClassOrInterfaceType> getAllExceptionTypes() {
+        ASTType typeNode = getTypeNode();
+        if (typeNode instanceof ASTUnionType) {
+            return typeNode.children(ASTClassOrInterfaceType.class);
+        } else {
+            return NodeStream.of((ASTClassOrInterfaceType) typeNode);
+        }
     }
 
 }

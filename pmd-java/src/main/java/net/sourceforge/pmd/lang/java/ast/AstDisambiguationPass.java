@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -292,6 +293,7 @@ final class AstDisambiguationPass {
             visitChildren(type, ctx);
 
             if (type.getReferencedSym() != null) {
+                postProcess(type, ctx.processor);
                 return null;
             }
 
@@ -317,7 +319,25 @@ final class AstDisambiguationPass {
             }
 
             assert type.getReferencedSym() != null : "Null symbol for " + type;
+
+            postProcess(type, processor);
             return null;
+        }
+
+        private void postProcess(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
+            JTypeDeclSymbol sym = type.getReferencedSym();
+            if (type.getParent() instanceof ASTAnnotation) {
+                if (!(sym instanceof JClassSymbol && (sym.isUnresolved() || ((JClassSymbol) sym).isAnnotation()))) {
+                    processor.getLogger().error(type, SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE);
+                }
+                return;
+            }
+
+            int actualArity = ASTList.sizeOrZero(type.getTypeArguments());
+            int expectedArity = sym instanceof JClassSymbol ? ((JClassSymbol) sym).getTypeParameterCount() : 0;
+            if (actualArity != 0 && actualArity != expectedArity) {
+                processor.getLogger().error(type, SemanticChecksLogger.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
+            }
         }
 
         @NonNull
@@ -371,11 +391,11 @@ final class AstDisambiguationPass {
             JTypeDeclSymbol typeResult = resolveSingleTypeName(symTable, firstIdent.getImage(), ctx, name);
 
             if (typeResult != null) {
-                return resolveType(null, typeResult, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
+                return resolveType(null, typeResult, false, firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
             }
 
             // otherwise, first is reclassified as package name.
-            return resolvePackage(firstIdent, firstIdent.getImage(), tokens, name, isPackageOrTypeOnly, ctx);
+            return resolvePackage(firstIdent, new StringBuilder(firstIdent.getImage()), tokens, name, isPackageOrTypeOnly, ctx);
         }
 
         private static JTypeDeclSymbol resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
@@ -434,7 +454,7 @@ final class AstDisambiguationPass {
          */
         private static ASTExpression resolveType(final @Nullable ASTClassOrInterfaceType qualifier, // lhs
                                                  final JTypeDeclSymbol sym,                         // symbol for the type
-                                                 final String image,                                // image of the new ClassType, possibly with a prepended package name
+                                                 final boolean isFqcn,                              // whether this is a fully-qualified name
                                                  final JavaccToken identifier,                      // ident of the simple name of the symbol
                                                  final Iterator<JavaccToken> remaining,             // rest of tokens, starting with following '.'
                                                  final ASTAmbiguousName ambig,                      // original ambiguous name
@@ -444,7 +464,7 @@ final class AstDisambiguationPass {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, image, ambig.getFirstToken(), identifier);
+            final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, isFqcn, ambig.getFirstToken(), identifier);
             type.setSymbol(sym);
 
             if (!remaining.hasNext()) { // done
@@ -472,7 +492,7 @@ final class AstDisambiguationPass {
             }
 
             if (inner != null) {
-                return resolveType(type, inner, nextSimpleName, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
+                return resolveType(type, inner, false, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             }
 
             // no inner type, yet we have a lhs that is a type...
@@ -498,7 +518,7 @@ final class AstDisambiguationPass {
          * class, then we report it and return the original ambiguous name.
          */
         private static ASTExpression resolvePackage(JavaccToken identifier,
-                                                    String packageImage,
+                                                    StringBuilder packageImage,
                                                     Iterator<JavaccToken> remaining,
                                                     ASTAmbiguousName ambig,
                                                     boolean isPackageOrTypeOnly,
@@ -524,16 +544,17 @@ final class AstDisambiguationPass {
             JavaccToken nextIdent = skipToNextIdent(remaining);
 
 
-            String canonical = packageImage + '.' + nextIdent.getImage();
+            packageImage.append('.').append(nextIdent.getImage());
+            String canonical = packageImage.toString();
 
             // Don't interpret periods as nested class separators (this will be handled by resolveType).
             // Otherwise lookup of a fully qualified name would be quadratic
             JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
 
             if (nextClass != null) {
-                return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
+                return resolveType(null, nextClass, true, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             } else {
-                return resolvePackage(nextIdent, canonical, remaining, ambig, isPackageOrTypeOnly, ctx);
+                return resolvePackage(nextIdent, packageImage, remaining, ambig, isPackageOrTypeOnly, ctx);
             }
         }
 
@@ -541,17 +562,19 @@ final class AstDisambiguationPass {
          * Force resolution of the ambiguous name as a package name.
          * The parent type's image is set to a package name + simple name.
          */
-        private static void forceResolveAsFullPackageNameOfParent(String packageImage, ASTAmbiguousName ambig, JavaAstProcessor processor) {
+        private static void forceResolveAsFullPackageNameOfParent(StringBuilder packageImage, ASTAmbiguousName ambig, JavaAstProcessor processor) {
             ASTClassOrInterfaceType parent = (ASTClassOrInterfaceType) ambig.getParent();
 
-            String fullName = packageImage + '.' + parent.getSimpleName();
+            packageImage.append('.').append(parent.getSimpleName());
+            String fullName = packageImage.toString();
             JClassSymbol parentClass = processor.getSymResolver().resolveClassFromCanonicalName(fullName);
             if (parentClass == null) {
                 processor.getLogger().warning(parent, CANNOT_RESOLVE_AMBIGUOUS_NAME, fullName, Fallback.TYPE);
                 parentClass = processor.makeUnresolvedReference(fullName);
             }
             parent.setSymbol(parentClass);
-            ambig.deleteInParentPrependImage('.');
+            parent.setFullyQualified();
+            ambig.deleteInParent();
         }
 
         private static JavaccToken skipToNextIdent(Iterator<JavaccToken> remaining) {

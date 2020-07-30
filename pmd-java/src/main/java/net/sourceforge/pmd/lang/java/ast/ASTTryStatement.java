@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
@@ -64,8 +64,8 @@ public final class ASTTryStatement extends AbstractStatement {
      * Returns the catch statement nodes of this try statement.
      * If there are none, returns an empty list.
      */
-    public List<ASTCatchClause> getCatchClauses() {
-        return findChildrenOfType(ASTCatchClause.class);
+    public NodeStream<ASTCatchClause> getCatchClauses() {
+        return children(ASTCatchClause.class);
     }
 
 

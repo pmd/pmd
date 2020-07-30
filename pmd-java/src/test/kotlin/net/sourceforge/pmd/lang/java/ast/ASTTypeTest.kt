@@ -16,8 +16,6 @@ class ASTTypeTest : ParserTestSpec({
             "java.util.List" should parseAs {
                 classType("List") {
 
-                    it::getTypeImage shouldBe "java.util.List"
-                    it::getImage shouldBe "List"
                     it::getTypeArguments shouldBe null
                     it::getQualifier shouldBe null
 
@@ -31,25 +29,19 @@ class ASTTypeTest : ParserTestSpec({
                 classType("List") {
 
                     it::getQualifier shouldBe null
-                    it::getImage shouldBe "List"
 
                     it::getAmbiguousLhs shouldBe child {
                         it::getName shouldBe "java.util"
                     }
 
-                    it::getTypeArguments shouldBe child {
-                        child<ASTClassOrInterfaceType> {
-                            it::getTypeImage shouldBe "F"
-                        }
+                    it::getTypeArguments shouldBe typeArgList(1) {
+                        classType("F")
                     }
                 }
             }
 
             "foo" should parseAs {
                 classType("foo") {
-                    it::getTypeImage shouldBe "foo"
-                    it::getImage shouldBe "foo"
-
                     it::getAmbiguousLhs shouldBe null
                     it::getQualifier shouldBe null
                 }
@@ -82,21 +74,15 @@ class ASTTypeTest : ParserTestSpec({
 
                     annotation("C")
                     annotation("K")
-
-                    it::getTypeImage shouldBe "java.util.Map"
                 }
             }
 
 
             "java.util.Map.@Foo Entry<K, V>" should parseAs {
                 classType("Entry") {
-                    it::getTypeImage shouldBe "java.util.Map.Entry"
-
                     it::getQualifier shouldBe null
 
                     it::getAmbiguousLhs shouldBe child {
-                        it::getTypeImage shouldBe "java.util.Map"
-                        it::getImage shouldBe "java.util.Map"
                         it::getName shouldBe "java.util.Map"
                     }
 
@@ -120,14 +106,10 @@ class ASTTypeTest : ParserTestSpec({
             "Foo<K>.@A Bar.Brew<V>" should parseAs {
                 classType("Brew") {
 
-                    it::getTypeImage shouldBe "Foo.Bar.Brew"
-
                     it::getQualifier shouldBe classType("Bar") {
-                        it::getTypeImage shouldBe "Foo.Bar"
                         it::getTypeArguments shouldBe null
 
                         it::getQualifier shouldBe classType("Foo") {
-                            it::getTypeImage shouldBe "Foo"
 
                             it::getTypeArguments shouldBe typeArgList {
                                 classType("K")

@@ -20,16 +20,13 @@ class ASTThisExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "Type.this" should parseAs {
                 thisExpr {
-                    child {
-                        it::getImage shouldBe "Type"
-                    }
+                    classType("Type")
                 }
             }
 
             "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.this" should parseAs {
                 thisExpr {
-                    child {
-                        it::getImage shouldBe "ASTThisExpression"
+                    qualClassType("net.sourceforge.pmd.lang.java.ast.ASTThisExpression") {
                         it::getTypeArguments shouldBe null
                         it::getQualifier shouldBe null
 

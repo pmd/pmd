@@ -26,7 +26,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode();
-        assertEquals("String", name.getImage());
+        assertEquals("String", name.getSimpleName());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNode();
-        assertEquals("String", name.getImage());
+        assertEquals("String", name.getSimpleName());
     }
 
     @Test

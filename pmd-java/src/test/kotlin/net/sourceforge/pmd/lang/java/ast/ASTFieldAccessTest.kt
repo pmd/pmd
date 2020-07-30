@@ -16,10 +16,7 @@ class ASTFieldAccessTest : ParserTestSpec({
                 fieldAccess("foo") {
 
                     it::getQualifier shouldBe child<ASTThisExpression> {
-                        it::getQualifier shouldBe child {
-                            it.typeArguments shouldBe null
-                            it.typeImage shouldBe "Type"
-                        }
+                        it::getQualifier shouldBe classType("Type")
                     }
                 }
             }
