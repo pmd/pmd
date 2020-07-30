@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
@@ -15,35 +13,36 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 
 public class AbstractApexRuleTest extends ApexParserTestBase {
 
     @Test
-    public void shouldVisitTopLevelClass() throws Exception {
+    public void shouldVisitTopLevelClass() {
         run("class Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelInterface() throws Exception {
+    public void shouldVisitTopLevelInterface() {
         run("interface Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelTrigger() throws Exception {
+    public void shouldVisitTopLevelTrigger() {
         run("trigger Foo on Account (before insert, before update) { }");
     }
 
     @Test
-    public void shouldVisitTopLevelEnum() throws Exception {
+    public void shouldVisitTopLevelEnum() {
         run("enum Foo { }");
     }
 
-    private void run(String code) throws Exception {
+    private void run(String code) {
         TopLevelRule rule = new TopLevelRule();
         rule.setMessage("Message");
 
         Report report = apex.executeRule(rule, code);
-        assertEquals(1, report.getViolations().size());
+        TestUtilsKt.assertSize(report, 1);
     }
 
     private static class TopLevelRule extends AbstractApexRule {

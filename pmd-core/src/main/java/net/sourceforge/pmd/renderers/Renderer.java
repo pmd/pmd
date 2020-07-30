@@ -236,7 +236,7 @@ public interface Renderer extends PropertySource {
                         synchronized (reportMergeLock) {
                             // TODO renderFileReport should be thread-safe instead
                             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                                renderer.renderFileReport(reportBuilder.getReport());
+                                renderer.renderFileReport(reportBuilder.getResult());
                             }
                         }
                     }

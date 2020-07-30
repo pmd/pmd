@@ -303,7 +303,7 @@ public abstract class RuleTst {
 
             reportBuilder.close();
 
-            return reportBuilder.getReport();
+            return reportBuilder.getResult();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

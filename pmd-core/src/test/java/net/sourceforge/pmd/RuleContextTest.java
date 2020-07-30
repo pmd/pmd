@@ -23,7 +23,7 @@ public class RuleContextTest {
         } finally {
             listener.close();
         }
-        return listener.getReport();
+        return listener.getResult();
     }
 
     @Test

@@ -109,12 +109,9 @@ public class PMD {
         } catch (URISyntaxException e) {
             throw new IOException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
         } catch (SQLException e) {
-            throw new IOException(
-                "Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
+            throw new IOException("Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
         } catch (ClassNotFoundException e) {
-            throw new IOException(
-                "Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"",
-                e);
+            throw new IOException("Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"", e);
         } catch (Exception e) {
             throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
@@ -154,7 +151,7 @@ public class PMD {
                     processFiles(configuration, ruleSets, files, listener);
                 }
             }
-            return violationCounter.getCount();
+            return violationCounter.getResult();
         } catch (final Exception e) {
             String message = e.getMessage();
             if (message == null) {

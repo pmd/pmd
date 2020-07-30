@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
+import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -246,10 +245,13 @@ public class Report {
     }
 
 
-    public static final class ReportBuilderListener implements FileAnalysisListener {
+    /**
+     * A {@link FileAnalysisListener} that accumulates events into a
+     * {@link Report}.
+     */
+    public static final class ReportBuilderListener extends BaseResultProducingCloseable<Report> implements FileAnalysisListener {
 
         private final Report report;
-        private boolean done;
 
         public ReportBuilderListener() {
             this(new Report());
@@ -259,15 +261,8 @@ public class Report {
             this.report = report;
         }
 
-        /**
-         * Returns the final report.
-         *
-         * @throws IllegalStateException If {@link #close()} has not been called yet
-         */
-        public @NonNull Report getReport() {
-            if (!done) {
-                throw new IllegalStateException("Reporting not done");
-            }
+        @Override
+        protected Report getResultImpl() {
             return report;
         }
 
@@ -285,27 +280,20 @@ public class Report {
         public void onError(ProcessingError error) {
             report.addError(error);
         }
-
-        @Override
-        public void close() throws Exception {
-            done = true;
-        }
     }
 
-
-    public static final class GlobalReportBuilder implements GlobalAnalysisListener {
+    /**
+     * A {@link GlobalAnalysisListener} that accumulates all files into a
+     * {@link Report}.
+     */
+    public static final class GlobalReportBuilder extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
 
         private final Report report = new Report();
-        private boolean done;
 
         @Override
         public FileAnalysisListener startFileAnalysis(DataSource file) {
+            // note that the report is shared, but Report is now thread-safe
             return new ReportBuilderListener(this.report);
-        }
-
-        @Override
-        public void close() throws Exception {
-            done = true;
         }
 
         @Override
@@ -313,15 +301,8 @@ public class Report {
             report.addConfigError(error);
         }
 
-        /**
-         * Returns the final report.
-         *
-         * @throws IllegalStateException If {@link #close()} has not been called yet
-         */
-        public Report getReport() {
-            if (!done) {
-                throw new IllegalStateException("Reporting not done");
-            }
+        @Override
+        protected Report getResultImpl() {
             return report;
         }
     }

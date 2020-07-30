@@ -221,7 +221,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         fullListener.close()
 
-        return reportBuilder.report
+        return reportBuilder.result
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
