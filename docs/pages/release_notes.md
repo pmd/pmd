@@ -21,11 +21,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-* In PMD 7, The `language` attribute will be required on all `rule` elements that
-declare a new rule. Some base rule classes set the language implicitly in their
-constructor, and so this is not required in all cases for the rule to work. But this
-behavior will be discontinued in PMD 7, so missing `language` attributes are now
-reported as a forward compatibility warning.
+*   XML rule definition in rulesets: In PMD 7, the `language` attribute will be required on all `rule`
+    elements that declare a new rule. Some base rule classes set the language implicitly in their
+    constructor, and so this is not required in all cases for the rule to work. But this
+    behavior will be discontinued in PMD 7, so missing `language` attributes are now
+    reported as a forward compatibility warning.
 
 ### External Contributions
 
