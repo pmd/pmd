@@ -1414,6 +1414,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/724">#724</a>: [core] Avoid parsing rulesets multiple times</li>
+    </ul>
+  </li>
   <li>java-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2441">#2441</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="highlighter-rouge">char foo = '\0';</code></li>
@@ -1422,6 +1427,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<ul>
+  <li>XML rule definition in rulesets: In PMD 7, the <code class="highlighter-rouge">language</code> attribute will be required on all <code class="highlighter-rouge">rule</code>
+elements that declare a new rule. Some base rule classes set the language implicitly in their
+constructor, and so this is not required in all cases for the rule to work. But this
+behavior will be discontinued in PMD 7, so missing <code class="highlighter-rouge">language</code> attributes are now
+reported as a forward compatibility warning.</li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
@@ -1445,7 +1458,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 29, 2020 <br />
+ Site last generated: Jul 30, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

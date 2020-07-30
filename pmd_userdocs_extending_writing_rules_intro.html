@@ -1512,6 +1512,12 @@ with the implementation class of your rule.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> In PMD 7, the <code class="highlighter-rouge">language</code> attribute will be required on all <code class="highlighter-rouge">rule</code>
+    elements that declare a new rule. Some base rule classes set the language implicitly in their
+    constructor, and so this is not required in all cases for the rule to work. But this
+    behavior will be discontinued in PMD 7, so missing <code class="highlighter-rouge">language</code> attributes are
+    reported beginning with PMD 6.27.0 as a forward compatibility warning.</div>
+
 <h2 id="resource-index">Resource index</h2>
 
 <p>To learn how to write a rule:</p>
@@ -1566,7 +1572,7 @@ your rule</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Jul 29, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Jul 30, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
