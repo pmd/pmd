@@ -85,8 +85,8 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.3.0</kotlin.version>
-        <kotlintest.version>3.1.8</kotlintest.version>
+        <kotlin.version>1.3.72</kotlin.version>
+        <kotest.version>4.1.2</kotest.version>
         <dokka.version>0.10.1</dokka.version>
 
 
@@ -269,9 +269,9 @@
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
-                            <groupId>io.kotlintest</groupId>
-                            <artifactId>kotlintest-runner-junit5</artifactId>
-                            <version>${kotlintest.version}</version>
+                            <groupId>io.kotest</groupId>
+                            <artifactId>kotest-runner-junit5-jvm</artifactId>
+                            <version>${kotest.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -827,22 +827,21 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test</artifactId>
-                <version>${kotlin.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>io.kotlintest</groupId>
-                <artifactId>kotlintest-assertions</artifactId>
-                <version>${kotlintest.version}</version>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-runner-junit5-jvm</artifactId>
+                <version>${kotest.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>io.kotlintest</groupId>
-                <artifactId>kotlintest-core</artifactId>
-                <version>${kotlintest.version}</version>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-core-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-property-jvm</artifactId>
+                <version>${kotest.version}</version>
                 <scope>test</scope>
             </dependency>
 
