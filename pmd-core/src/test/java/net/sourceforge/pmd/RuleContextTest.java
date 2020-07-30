@@ -18,8 +18,10 @@ public class RuleContextTest {
 
     public static Report getReport(Consumer<RuleContext> sideEffects) throws Exception {
         ReportBuilderListener listener = new ReportBuilderListener();
-        try (RuleContext ctx = RuleContext.create(listener)) {
-            sideEffects.accept(ctx);
+        try {
+            sideEffects.accept(RuleContext.create(listener));
+        } finally {
+            listener.close();
         }
         return listener.getReport();
     }

@@ -10,11 +10,13 @@ import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import net.sourceforge.pmd.Report
 import net.sourceforge.pmd.RuleContext
+import net.sourceforge.pmd.RuleViolation
 import java.util.function.Consumer
 import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
 import kotlin.streams.toList
+import kotlin.test.assertEquals
 
 /**
  * Extension to add the name of a property to error messages.
@@ -80,23 +82,14 @@ fun Stream<*>.shouldHaveSize(i: Int) {
 }
 
 
-/**
- * Make a report by side-effecting on a rule context.
- */
-@JvmSynthetic // hide from Java consumers, Kotlin users can still use it
-fun makeReport(sideEffects: (RuleContext) -> Unit): Report =
-        makeReport(Consumer(sideEffects))
+/** Assert number of violations. */
+fun assertSize(report: Report, size: Int): List<RuleViolation> {
+    assertEquals(size, report.violations.size, message = "Wrong number of violations!")
+    return report.violations
+}
 
-/**
- * Make a report by side-effecting on a rule context.
- */
-fun makeReport(sideEffects: Consumer<RuleContext>): Report {
-    val reportBuilder = Report.ReportBuilderListener()
-    val ctx = RuleContext.create(reportBuilder)
-
-    sideEffects.accept(ctx)
-
-    ctx.close()
-
-    return reportBuilder.report
+/** Assert number of suppressed violations. */
+fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation> {
+    assertEquals(size, report.suppressedRuleViolations.size, message = "Wrong number of suppressed violations!")
+    return report.suppressedRuleViolations
 }

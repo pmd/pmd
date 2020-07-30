@@ -198,9 +198,16 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
 
+    /**
+     * Execute the given [rule] on the [code]. The [configuration] may be used to
+     * set the suppress marker. Produce a report with the violations found by the
+     * rule. The language version of the piece of code is determined by the [params].
+     */
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, configuration: PMDConfiguration = PMDConfiguration()): Report {
         val rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)
+
+        configuration.setDefaultLanguageVersion(defaultVersion)
 
         val reportBuilder = Report.GlobalReportBuilder()
 

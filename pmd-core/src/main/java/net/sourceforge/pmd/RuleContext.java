@@ -25,7 +25,7 @@ import net.sourceforge.pmd.processor.FileAnalysisListener;
  * violation suppression by filtering some violations out, according to
  * the {@link ViolationSuppressor}s for the language.
  */
-public final class RuleContext implements AutoCloseable {
+public final class RuleContext {
     // Rule contexts do not need to be thread-safe, within PmdRunnable
     // they are stack-local
 
@@ -37,15 +37,7 @@ public final class RuleContext implements AutoCloseable {
         this.listener = listener;
     }
 
-
-    /**
-     * Close the listener.
-     */
-    @Override
-    public void close() throws Exception {
-        listener.close();
-    }
-
+    // TODO we could have one RuleCtx per rule; that way addViolation wouldn't need the rule parameter.
     // TODO document
 
     public void reportError(ProcessingError error) {
@@ -106,6 +98,8 @@ public final class RuleContext implements AutoCloseable {
     /**
      * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}
      * (can likely be hidden when everything relevant is moved into rule package).
+     *
+     * The listener must be closed by its creator.
      */
     @InternalApi
     public static RuleContext create(FileAnalysisListener listener) {

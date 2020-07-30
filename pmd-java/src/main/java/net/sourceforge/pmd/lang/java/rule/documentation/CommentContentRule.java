@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
@@ -71,15 +70,6 @@ public class CommentContentRule extends AbstractCommentRule {
                 currentBadWords.add(badWord.toUpperCase(Locale.ROOT));
             }
         }
-    }
-
-    /**
-     * .
-     * @see Rule#end(RuleContext)
-     */
-    @Override
-    public void end(RuleContext ctx) {
-        // Override as needed
     }
 
     private List<String> illegalTermsIn(Comment comment) {

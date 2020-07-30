@@ -14,7 +14,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -141,21 +140,20 @@ public class XPathRuleTest extends RuleTst {
             + "  }\n"
             + "}";
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
-        try (RuleContext ruleContext = RuleContext.create(FileAnalysisListener.noop())) {
 
-            String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
+        String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
 
 
-            SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                                         XPathVersion.DEFAULT,
-                                                                         new HashMap<>(),
-                                                                         XPathHandler.noFunctionDefinitions(),
-                                                                         DeprecatedAttrLogger.noop());
-            List<Node> nodes = xpathRuleQuery.evaluate(cu);
-            assertEquals(2, nodes.size());
-            assertEquals(4, nodes.get(0).getBeginLine());
-            assertEquals(5, nodes.get(1).getBeginLine());
-        }
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.DEFAULT,
+                                                                     new HashMap<>(),
+                                                                     XPathHandler.noFunctionDefinitions(),
+                                                                     DeprecatedAttrLogger.noop());
+        List<Node> nodes = xpathRuleQuery.evaluate(cu);
+        assertEquals(2, nodes.size());
+        assertEquals(4, nodes.get(0).getBeginLine());
+        assertEquals(5, nodes.get(1).getBeginLine());
+
     }
 
     private static Report getReportForTestString(Rule r, String test) {

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -37,11 +35,12 @@ class PmdRunnable implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
 
-    private static final ThreadLocal<ThreadContext> LOCAL_THREAD_CONTEXT = new ThreadLocal<>();
-
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener ruleContext;
+
+    // this should only be used within the run method (when we are on the actual carrier thread)
+    private final ThreadLocal<RuleSets> ruleSetCopy;
 
     // rename so that it's significantly different from tc.rulesets
     private final Supplier<RuleSets> ruleSetMaker;
@@ -49,17 +48,12 @@ class PmdRunnable implements Runnable {
 
     private final RulesetStageDependencyHelper dependencyHelper;
 
-    public PmdRunnable(DataSource dataSource,
-                       GlobalAnalysisListener ruleContext,
-                       List<RuleSet> ruleSets,
-                       PMDConfiguration configuration) {
-        this(dataSource, ruleContext, new RuleSets(ruleSets), configuration);
-    }
-
-    public PmdRunnable(DataSource dataSource,
-                       GlobalAnalysisListener ruleContext,
-                       RuleSets ruleSets,
-                       PMDConfiguration configuration) {
+    PmdRunnable(DataSource dataSource,
+                GlobalAnalysisListener ruleContext,
+                ThreadLocal<RuleSets> ruleSetCopy,
+                RuleSets ruleSets,
+                PMDConfiguration configuration) {
+        this.ruleSetCopy = ruleSetCopy;
         this.ruleSetMaker = () -> new RuleSets(ruleSets);
         this.dataSource = dataSource;
         // this is the real, canonical and absolute filename (not shortened)
@@ -71,21 +65,20 @@ class PmdRunnable implements Runnable {
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
-    public static void reset() {
-        LOCAL_THREAD_CONTEXT.remove();
-    }
-
     @Override
     public void run() {
         TimeTracker.initThread();
 
-        ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
-        if (tc == null) {
-            tc = new ThreadContext(ruleSetMaker.get());
-            LOCAL_THREAD_CONTEXT.set(tc);
+        RuleSets ruleSets = ruleSetCopy.get();
+        if (ruleSets == null) {
+            ruleSets = ruleSetMaker.get();
+            ruleSetCopy.set(ruleSets);
         }
 
-        try (RuleContext ruleCtx = RuleContext.create(ruleContext.startFileAnalysis(dataSource))) {
+
+        try (FileAnalysisListener listener = ruleContext.startFileAnalysis(dataSource)) {
+            final RuleContext ruleCtx = RuleContext.create(listener);
+
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
 
             if (LOG.isLoggable(Level.FINE)) {
@@ -93,12 +86,12 @@ class PmdRunnable implements Runnable {
             }
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
-            if (tc.ruleSets.applies(file)) {
+            if (ruleSets.applies(file)) {
                 if (configuration.getAnalysisCache().isUpToDate(file)) {
                     reportCachedRuleViolations(ruleCtx, file);
                 } else {
                     try {
-                        processSource(ruleCtx, langVersion, tc.ruleSets);
+                        processSource(ruleCtx, langVersion, ruleSets);
                     } catch (Exception e) {
                         configuration.getAnalysisCache().analysisFailed(file);
                         ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
@@ -166,12 +159,4 @@ class PmdRunnable implements Runnable {
         ruleSets.apply(Collections.singletonList(rootNode), ctx);
     }
 
-    private static class ThreadContext {
-
-        /* default */ final RuleSets ruleSets;
-
-        ThreadContext(RuleSets ruleSets) {
-            this.ruleSets = ruleSets;
-        }
-    }
 }

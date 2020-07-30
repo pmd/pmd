@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -358,16 +359,19 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
                 + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Rule deepCopy() {
-        Rule rule = null;
+    protected Rule newInstance() {
         try {
-            rule = getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException ignored) {
+            return getClass().getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
             // Can't happen... we already have an instance
             throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Rule deepCopy() {
+        Rule rule = newInstance();
         rule.setName(getName());
         rule.setLanguage(getLanguage());
         rule.setMinimumLanguageVersion(getMinimumLanguageVersion());

@@ -29,8 +29,12 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
         // the data sources must only be closed after the threads are finished
         // this is done manually without a try-with-resources
         try {
+            // The thread-local is not static, but analysis-global
+            // This means we don't have to reset it manually, every analysis is isolated.
+            final ThreadLocal<RuleSets> ruleSetCopy = new ThreadLocal<>();
+
             for (final DataSource dataSource : files) {
-                runAnalysis(new PmdRunnable(dataSource, listener, rulesets, configuration));
+                runAnalysis(new PmdRunnable(dataSource, listener, ruleSetCopy, rulesets, configuration));
             }
         } finally {
             // in case we analyzed files within Zip Files/Jars, we need to close them after
@@ -62,6 +66,6 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
 
 
     public static void runSingleFile(List<RuleSet> ruleSets, DataSource file, GlobalAnalysisListener listener, PMDConfiguration configuration) {
-        new PmdRunnable(file, listener, ruleSets, configuration).run();
+        new PmdRunnable(file, listener, new ThreadLocal<>(), new RuleSets(ruleSets), configuration).run();
     }
 }

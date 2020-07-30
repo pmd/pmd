@@ -4,22 +4,19 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static org.junit.Assert.assertEquals;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.testframework.RuleTst;
 
-public class SuppressWarningsTest extends RuleTst {
+public class SuppressWarningsTest {
 
-    private final LanguageVersion java5 = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING;
 
     private static class BarRule extends AbstractJavaRule {
 
@@ -43,108 +40,107 @@ public class SuppressWarningsTest extends RuleTst {
 
     @Test
     public void testClassLevelSuppression() {
-        Report rpt;
-        rpt = runTestFromString(TEST1, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
-        rpt = runTestFromString(TEST2, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST1);
+        assertSize(rpt, 0);
+        rpt = java.executeRule(new FooRule(), TEST2);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testInheritedSuppression() {
-        Report rpt = runTestFromString(TEST3, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST3);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testMethodLevelSuppression() {
         Report rpt;
-        rpt = runTestFromString(TEST4, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        rpt = java.executeRule(new FooRule(), TEST4);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testConstructorLevelSuppression() {
-        Report rpt = runTestFromString(TEST5, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST5);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testFieldLevelSuppression() {
-        Report rpt = runTestFromString(TEST6, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST6);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testParameterLevelSuppression() {
-        Report rpt = runTestFromString(TEST7, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST7);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testLocalVariableLevelSuppression() {
-        Report rpt = runTestFromString(TEST8, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST8);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppression() {
-        Report rpt = runTestFromString(TEST9, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue1() {
-        Report rpt = runTestFromString(TEST9_VALUE1, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE1);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue2() {
-        Report rpt = runTestFromString(TEST9_VALUE2, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE2);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue3() {
-        Report rpt = runTestFromString(TEST9_VALUE3, new FooRule(), java5);
-        assertEquals(1, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE3);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues1() {
-        Report rpt = runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_1);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues2() {
-        Report rpt = runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_2);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testNoSuppressionBlank() {
-        Report rpt = runTestFromString(TEST10, new FooRule(), java5);
-        assertEquals(2, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST10);
+        assertSize(rpt, 2);
     }
 
     @Test
     public void testNoSuppressionSomethingElseS() {
-        Report rpt = runTestFromString(TEST11, new FooRule(), java5);
-        assertEquals(2, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST11);
+        assertSize(rpt, 2);
     }
 
     @Test
     public void testSuppressAll() {
-        Report rpt = runTestFromString(TEST12, new FooRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new FooRule(), TEST12);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testSpecificSuppressionAtTopLevel() {
-        Report rpt = runTestFromString(TEST13, new BarRule(), java5);
-        assertEquals(0, rpt.getViolations().size());
+        Report rpt = java.executeRule(new BarRule(), TEST13);
+        assertSize(rpt, 0);
     }
 
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";

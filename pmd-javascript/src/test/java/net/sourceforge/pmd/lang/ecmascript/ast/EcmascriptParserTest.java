@@ -15,11 +15,10 @@ import org.junit.Test;
 import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
@@ -55,21 +54,20 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     public void testLineNumbersWithinEcmascriptRules() {
         String source = "function f(x){\n" + "   if (x) {\n" + "       return 1;\n" + "   } else {\n"
                 + "       return 0;\n" + "   }\n" + "}";
-        final List<String> output = new ArrayList<>();
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
+
             public Object visit(ASTScope node, Object data) {
-                output.add("Scope from " + node.getBeginLine() + " to " + node.getEndLine());
+                addViolationWithMessage(data, node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
                 return super.visit(node, data);
             }
         }
 
-        MyEcmascriptRule rule = new MyEcmascriptRule();
-        RuleContext ctx = RuleContext.create(FileAnalysisListener.noop());
-        rule.apply(js.parse(source), ctx);
+        Report report = js.executeRule(new MyEcmascriptRule(), source);
 
-        assertEquals("Scope from 2 to 4", output.get(0));
-        assertEquals("Scope from 4 to 6", output.get(1));
+        assertEquals("Expecting 2 violations", 2, report.getViolations().size());
+        assertEquals("Scope from 2 to 4", report.getViolations().get(0).getDescription());
+        assertEquals("Scope from 4 to 6", report.getViolations().get(1).getDescription());
     }
 
     /**
