@@ -12,9 +12,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 /**
@@ -24,10 +26,10 @@ import net.sourceforge.pmd.processor.FileAnalysisListener;
  * the {@link ViolationSuppressor}s for the language.
  */
 public final class RuleContext implements AutoCloseable {
+    // Rule contexts do not need to be thread-safe, within PmdRunnable
+    // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-
-    private boolean ignoreExceptions = true;
 
     private final FileAnalysisListener listener;
 
@@ -36,10 +38,15 @@ public final class RuleContext implements AutoCloseable {
     }
 
 
+    /**
+     * Close the listener.
+     */
     @Override
     public void close() throws Exception {
         listener.close();
     }
+
+    // TODO document
 
     public void reportError(ProcessingError error) {
         listener.onError(error);
@@ -93,32 +100,16 @@ public final class RuleContext implements AutoCloseable {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
         final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-        return MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
+        return MessageFormat.format(escapedMessage, args);
     }
-
 
     /**
-     * Gets the configuration whether to skip failing rules (<code>true</code>)
-     * or whether to throw a a RuntimeException and abort the processing for the
-     * first failing rule.
-     *
-     * @return <code>true</code> when failing rules are skipped,
-     *         <code>false</code> otherwise.
-     *
-     * TODO this looks only useful in unit tests...
+     * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}
+     * (can likely be hidden when everything relevant is moved into rule package).
      */
-    public boolean isIgnoreExceptions() {
-        return ignoreExceptions;
-    }
-
-
+    @InternalApi
     public static RuleContext create(FileAnalysisListener listener) {
         return new RuleContext(listener);
     }
 
-    public static RuleContext createThrowingExceptions(FileAnalysisListener listener) {
-        RuleContext ruleContext = new RuleContext(listener);
-        ruleContext.ignoreExceptions = false;
-        return ruleContext;
-    }
 }

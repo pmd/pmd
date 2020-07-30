@@ -61,16 +61,12 @@ public class RuleApplicator {
                     rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
-                    if (ctx.isIgnoreExceptions()) {
-                        String filename = node.getSourceCodeFile();
-                        ctx.reportError(new ProcessingError(e, filename));
+                    String filename = node.getSourceCodeFile();
+                    ctx.reportError(new ProcessingError(e, filename));
 
-                        if (LOG.isLoggable(Level.WARNING)) {
-                            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                + filename + ", continuing with next rule", e);
-                        }
-                    } else {
-                        throw e;
+                    if (LOG.isLoggable(Level.WARNING)) {
+                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                            + filename + ", continuing with next rule", e);
                     }
                 }
             }

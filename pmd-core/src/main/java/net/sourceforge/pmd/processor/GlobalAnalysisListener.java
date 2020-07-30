@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -120,6 +122,40 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         public void close() {
             // nothing to do
         }
+    }
+
+
+    /**
+     * A listener that throws processing errors when they occur. They
+     * are all thrown as {@link FileAnalysisException}s. Config errors
+     * are ignored.
+     */
+    static GlobalAnalysisListener exceptionThrower() {
+        return new GlobalAnalysisListener() {
+            @Override
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
+                return new FileAnalysisListener() {
+                    @Override
+                    public void onRuleViolation(RuleViolation violation) {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onError(ProcessingError error) throws FileAnalysisException {
+                        Throwable cause = error.getError();
+                        if (cause instanceof FileAnalysisException) {
+                            throw (FileAnalysisException) cause;
+                        }
+                        throw new FileAnalysisException(cause);
+                    }
+                };
+            }
+
+            @Override
+            public void close() {
+                // nothing to do
+            }
+        };
     }
 
 

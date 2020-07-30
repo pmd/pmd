@@ -47,6 +47,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
+import net.sourceforge.pmd.processor.GlobalAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -289,19 +290,21 @@ public abstract class RuleTst {
                 });
             }
 
-            GlobalReportBuilder builder = new GlobalReportBuilder();
-
+            GlobalReportBuilder reportBuilder = new GlobalReportBuilder();
+            // Add a listener that throws when an error occurs:
+            //  this replaces ruleContext.setIgnoreExceptions(false)
+            GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder));
 
             AbstractPMDProcessor.runSingleFile(
                 listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
                 DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
-                builder,
+                listener,
                 config
             );
 
-            builder.close();
+            reportBuilder.close();
 
-            return builder.getReport();
+            return reportBuilder.getReport();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

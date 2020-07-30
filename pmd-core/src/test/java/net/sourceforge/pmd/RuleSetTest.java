@@ -38,7 +38,6 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.processor.FileAnalysisListener;
 
 public class RuleSetTest {
 
@@ -490,19 +489,6 @@ public class RuleSetTest {
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void ruleExceptionShouldBeThrownIfNotIgnored() {
-        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-            .addRule(new MockRule() {
-                @Override
-                public void apply(Node target, RuleContext ctx) {
-                    throw new RuntimeException("Test exception while applying rule");
-                }
-            })
-            .build();
-        RuleContext context = RuleContext.createThrowingExceptions(FileAnalysisListener.noop());
-        ruleset.apply(makeCompilationUnits(), context);
-    }
 
     @Test
     public void ruleExceptionShouldNotStopProcessingFile() throws Exception {

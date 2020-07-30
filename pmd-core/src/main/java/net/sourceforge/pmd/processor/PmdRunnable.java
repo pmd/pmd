@@ -102,15 +102,7 @@ class PmdRunnable implements Runnable {
                     } catch (Exception e) {
                         configuration.getAnalysisCache().analysisFailed(file);
                         ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
-
-                        if (ruleCtx.isIgnoreExceptions()) {
-                            LOG.log(Level.FINE, "Exception while processing file: " + file, e);
-                        } else {
-                            if (e instanceof FileAnalysisException) { // NOPMD AvoidInstanceofChecksInCatchClause
-                                throw (FileAnalysisException) e;
-                            }
-                            throw new FileAnalysisException(e);
-                        }
+                        LOG.log(Level.FINE, "Exception while processing file: " + file, e);
                     }
                 }
             }
