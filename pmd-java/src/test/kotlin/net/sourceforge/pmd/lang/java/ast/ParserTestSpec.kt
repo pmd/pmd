@@ -10,9 +10,13 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 import io.kotest.runner.junit.platform.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.Assertions
 import io.kotest.matchers.should as kotlintestShould
-
+import io.kotest.matchers.Matcher
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.ParseException
+import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
+import net.sourceforge.pmd.lang.ast.test.matchNode
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
  * containers that make it easier to browse in the IDE. Layout is group name,
@@ -148,16 +152,16 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                 }
             }
 
-            infix fun String.should(matcher: Matcher<String>) {
+            suspend infix fun String.should(matcher: Matcher<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
                 }
             }
 
-            infix fun String.shouldNot(matcher: Matcher<String>) =
+            suspend infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
 
-            fun inContext(nodeParsingCtx: NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
+            suspend fun inContext(nodeParsingCtx: NodeParsingCtx<*>, assertions: suspend ImplicitNodeParsingCtx.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
             }
 

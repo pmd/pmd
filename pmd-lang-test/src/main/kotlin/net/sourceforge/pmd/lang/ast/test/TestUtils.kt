@@ -8,6 +8,11 @@ import io.kotest.matchers.should
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
 import io.kotest.matchers.shouldBe as ktShouldBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.equalityMatcher
+import io.kotest.matchers.collections.haveSize
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 /**
  * Extension to add the name of a property to error messages.

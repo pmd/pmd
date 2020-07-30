@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.java.ast
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -236,7 +238,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseIn(nodeParsingCtx: NodeParsingCtx<*>) = object : Matcher<String> {
 
-        override fun test(value: String): Result {
+        override fun test(value: String): MatcherResult {
             val (pass, e) = try {
                 nodeParsingCtx.parseNode(value, this@ParserTestCtx)
                 Pair(true, null)
@@ -244,7 +246,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 Pair(false, e)
             }
 
-            return Result(pass,
+            return MatcherResult(pass,
                     "Expected '$value' to parse in $nodeParsingCtx, got $e",
                     "Expected '$value' not to parse in $nodeParsingCtx"
             )

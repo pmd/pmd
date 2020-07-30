@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -14,7 +14,6 @@ class ASTCatchStatementTest : ParserTestSpec({
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
         inContext(StatementParsingCtx) {
-
             "try { } catch (IOException | AssertionError e) { }" should throwParseException {
                 it.message.shouldContain("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly")
             }
