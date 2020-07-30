@@ -35,7 +35,7 @@ import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.GlobalReportBuilder;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -289,7 +289,7 @@ public abstract class RuleTst {
                 });
             }
 
-            GlobalReportBuilder reportBuilder = new GlobalReportBuilder();
+            GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
             // Add a listener that throws when an error occurs:
             //  this replaces ruleContext.setIgnoreExceptions(false)
             GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder));

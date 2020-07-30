@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -206,21 +205,32 @@ public class PMD {
 
         encourageToUseIncrementalAnalysis(configuration);
 
-        sortFiles(configuration, files);
+        files = sortFiles(configuration, files);
 
         // Make sure the cache is listening for analysis results
         listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
 
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
-        Exception ex;
+        Exception ex = null;
         try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
             processor.processFiles(rs, files, listener);
+        } catch (Exception e) {
+            ex = e;
         } finally {
+            configuration.getAnalysisCache().persist();
+
             // in case we analyzed files within Zip Files/Jars, we need to close them after
             // the analysis is finished
-            ex = FileUtil.closeAll(files);
-            configuration.getAnalysisCache().persist();
+            Exception closed = FileUtil.closeAll(files);
+
+            if (closed != null) {
+                if (ex != null) {
+                    ex.addSuppressed(closed);
+                } else {
+                    ex = closed;
+                }
+            }
         }
 
         if (ex != null) {
@@ -252,22 +262,24 @@ public class PMD {
     }
 
 
-    private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
+    private static List<DataSource> sortFiles(final PMDConfiguration configuration, List<DataSource> files) {
+        // the input collection may be unmodifiable
+        files = new ArrayList<>(files);
+
         if (configuration.isStressTest()) {
             // randomize processing order
             Collections.shuffle(files);
         } else {
             final boolean useShortNames = configuration.isReportShortNames();
             final String inputPaths = configuration.getInputPaths();
-            Collections.sort(files, new Comparator<DataSource>() {
-                @Override
-                public int compare(DataSource left, DataSource right) {
-                    String leftString = left.getNiceFileName(useShortNames, inputPaths);
-                    String rightString = right.getNiceFileName(useShortNames, inputPaths);
-                    return leftString.compareTo(rightString);
-                }
+            files.sort((left, right) -> {
+                String leftString = left.getNiceFileName(useShortNames, inputPaths);
+                String rightString = right.getNiceFileName(useShortNames, inputPaths);
+                return leftString.compareTo(rightString);
             });
         }
+
+        return files;
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {

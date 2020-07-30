@@ -209,7 +209,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         configuration.setDefaultLanguageVersion(defaultVersion)
         configuration.suppressMarker = params.parserOptions?.suppressMarker ?: PMD.SUPPRESS_MARKER
 
-        val reportBuilder = Report.GlobalReportBuilder()
+        val reportBuilder = Report.GlobalReportBuilderListener()
         val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
 
         AbstractPMDProcessor.runSingleFile(

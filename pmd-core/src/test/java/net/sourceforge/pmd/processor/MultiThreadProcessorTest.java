@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report.GlobalReportBuilder;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
@@ -41,7 +41,7 @@ public class MultiThreadProcessorTest {
 
         reportListener = new SimpleReportListener();
         listener = GlobalAnalysisListener.tee(listOf(
-            new GlobalReportBuilder(),
+            new GlobalReportBuilderListener(),
             reportListener
         ));
 

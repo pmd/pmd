@@ -283,10 +283,10 @@ public class Report {
     }
 
     /**
-     * A {@link GlobalAnalysisListener} that accumulates all files into a
-     * {@link Report}.
+     * A {@link GlobalAnalysisListener} that accumulates the events of
+     * all files into a {@link Report}.
      */
-    public static final class GlobalReportBuilder extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
+    public static final class GlobalReportBuilderListener extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
 
         private final Report report = new Report();
 

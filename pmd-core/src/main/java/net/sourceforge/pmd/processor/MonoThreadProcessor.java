@@ -4,7 +4,11 @@
 
 package net.sourceforge.pmd.processor;
 
+import java.util.List;
+
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -17,9 +21,15 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
     }
 
     @Override
-    protected void runAnalysis(PmdRunnable runnable) {
-        // single thread execution, run analysis on same thread
-        runnable.run();
+    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
+        // populating the initial value avoids copying the ruleset
+        ThreadLocal<RuleSets> tlocal = ThreadLocal.withInitial(() -> rulesets);
+        for (DataSource file : files) {
+            new PmdRunnable(file, listener, tlocal, configuration).run();
+        }
     }
 
+    public void close() {
+        // nothing to do
+    }
 }

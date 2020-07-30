@@ -12,12 +12,13 @@ import java.util.List;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.FileUtil;
 
 /**
- * A handler for analysis events. Instances are only used on a single
- * thread for their entire lifetime. So don't need to be synchronized
- * to access state they own.
+ * A handler for events occuring during analysis of a single file. Instances
+ * are only used on a single thread for their entire lifetime, so don't
+ * need to be synchronized to access state they own.
  *
  * <p>Listeners are assumed to be ready to receive events as soon as they
  * are constructed.
@@ -77,9 +78,20 @@ public interface FileAnalysisListener extends AutoCloseable {
      * @param listeners Listeners
      *
      * @return A new listener
+     *
+     * @throws IllegalArgumentException If the parameter is empty
+     * @throws NullPointerException     If the parameter or any of its elements is null
      */
     @SuppressWarnings("PMD.CloseResource")
     static FileAnalysisListener tee(Collection<? extends FileAnalysisListener> listeners) {
+        AssertionUtil.requireParamNotNull("Listeners", listeners);
+        AssertionUtil.requireNotEmpty("Listeners", listeners);
+        AssertionUtil.requireContainsNoNullValue("Listeners", listeners);
+
+        if (listeners.size() == 1) {
+            return listeners.iterator().next();
+        }
+
         List<FileAnalysisListener> list = Collections.unmodifiableList(new ArrayList<>(listeners));
         return new FileAnalysisListener() {
             @Override

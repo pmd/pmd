@@ -5,12 +5,30 @@
 package net.sourceforge.pmd.internal.util;
 
 
+import java.util.Collection;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
 
     private AssertionUtil() {
         // utility class
+    }
+
+    /** @throws NullPointerException if $name */
+    public static void requireContainsNoNullValue(String name, Collection<?> c) {
+        for (Object o : c) {
+            if (o == null) {
+                throw new IllegalArgumentException(name + " contains null elements");
+            }
+        }
+    }
+
+    /** @throws NullPointerException if empty */
+    public static void requireNotEmpty(String name, Collection<?> c) {
+        if (c.isEmpty()) {
+            throw new IllegalArgumentException(name + " is empty");
+        }
     }
 
     public static int requireOver1(String name, final int value) {
