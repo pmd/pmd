@@ -30,16 +30,18 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
             if (hasEqualsMethodCallChainedAtPosition(expr, chainedMethodCallIndex)
                     || isArgumentOfEqualsMethodCall(expr)) {
                 addViolation(data, expr);
+                return data;
             }
         }
         return super.visit(expr, data);
     }
 
     private int getCaseChangingMethodCallIndex(ASTPrimaryExpression expr) {
-        List<JavaNode> exprNodes = expr.findChildrenOfType(JavaNode.class);
-        for (int callArgsIndex = 1; callArgsIndex < exprNodes.size(); callArgsIndex++) {
+        for (int callArgsIndex = 1; callArgsIndex < expr.getNumChildren(); callArgsIndex++) {
+            JavaNode methodCallArgs = expr.getChild(callArgsIndex);
             int callIndex = callArgsIndex - 1;
-            if (isCaseChangingMethodCall(exprNodes.get(callIndex), exprNodes.get(callArgsIndex))) {
+            JavaNode methodCall = expr.getChild(callIndex);
+            if (isCaseChangingMethodCall(methodCall, methodCallArgs)) {
                 return callIndex;
             }
         }
@@ -49,8 +51,7 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     private boolean isCaseChangingMethodCall(JavaNode methodCall, JavaNode methodCallArgs) {
         String methodName = getCalledMethodName(methodCall);
         int methodArgsCount = getCalledMethodArgsCount(methodCallArgs);
-        return methodName != null
-                && isNameOfCaseChangingMethod(methodName) && methodArgsCount == 0;
+        return isNameOfCaseChangingMethod(methodName) && methodArgsCount == 0;
     }
 
     private String getCalledMethodName(JavaNode methodCall) {
@@ -62,9 +63,11 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     }
 
     private boolean isNameOfCaseChangingMethod(String methodName) {
-        for (String caseChangingMethod : CASE_CHANGING_METHODS) {
-            if (methodName.endsWith(caseChangingMethod)) {
-                return true;
+        if (methodName != null) {
+            for (String caseChangingMethod : CASE_CHANGING_METHODS) {
+                if (methodName.endsWith(caseChangingMethod)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -73,7 +76,9 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     private boolean hasEqualsMethodCallChainedAtPosition(ASTPrimaryExpression expr, int pos) {
         int argsPos = pos + 1;
         if (hasNodeAtPosition(expr, argsPos)) {
-            return isEqualsMethodCall(expr.getChild(pos), expr.getChild(argsPos));
+            JavaNode chainedMethodCall = expr.getChild(pos);
+            JavaNode chainedMethodCallArgs = expr.getChild(argsPos);
+            return isEqualsMethodCall(chainedMethodCall, chainedMethodCallArgs);
         }
         return false;
     }
@@ -101,14 +106,12 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     }
 
     private boolean isEqualsMethodCall(JavaNode methodCall, JavaNode methodCallArgs) {
-        String methodName = methodCall.getImage();
         int methodArgsCount = getCalledMethodArgsCount(methodCallArgs);
-        return methodName != null
-                && EQUALITY_METHODS.contains(methodName) && methodArgsCount == 1;
+        return EQUALITY_METHODS.contains(methodCall.getImage()) && methodArgsCount == 1;
     }
 
-    private int getCalledMethodArgsCount(JavaNode methodCall) {
-        ASTArguments args = methodCall.getFirstDescendantOfType(ASTArguments.class);
+    private int getCalledMethodArgsCount(JavaNode methodCallArgs) {
+        ASTArguments args = methodCallArgs.getFirstDescendantOfType(ASTArguments.class);
         return args != null ? args.size() : -1;
     }
 }

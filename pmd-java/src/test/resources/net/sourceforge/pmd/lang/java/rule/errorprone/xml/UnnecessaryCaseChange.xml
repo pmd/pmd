@@ -54,7 +54,7 @@ public class Foo {
 
     <test-code>
         <description>failure case with toLowerCase().equals()</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Object visit(ASTFieldDeclaration node, Object data) {
