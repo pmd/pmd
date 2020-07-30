@@ -46,7 +46,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.processor.PmdRunnable;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -292,12 +292,12 @@ public abstract class RuleTst {
             GlobalReportBuilder builder = new GlobalReportBuilder();
 
 
-            new PmdRunnable(
+            AbstractPMDProcessor.runSingleFile(
+                listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
                 DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
                 builder,
-                listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
                 config
-            ).run();
+            );
 
             builder.close();
 

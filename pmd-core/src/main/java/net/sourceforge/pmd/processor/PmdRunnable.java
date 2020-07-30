@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PmdRunnable implements Runnable {
+class PmdRunnable implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
 

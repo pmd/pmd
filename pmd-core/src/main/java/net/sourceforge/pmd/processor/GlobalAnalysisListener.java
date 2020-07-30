@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.processor;
 
 import java.util.ArrayList;
@@ -30,6 +26,9 @@ public interface GlobalAnalysisListener extends AutoCloseable {
     /**
      * Start the analysis of the given file. The analysis stops
      * when the {@link FileAnalysisListener#close()} method is called.
+     *
+     * <p>This routine may be called from several threads at once and
+     * needs to be thread-safe.
      *
      * @param file File to be processed
      *

@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.processor;
 
 import java.util.ArrayList;
@@ -18,7 +14,12 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
 
 /**
- * A handler for analysis events. This must be thread safe.
+ * A handler for analysis events. Instances are only used on a single
+ * thread for their entire lifetime. So don't need to be synchronized
+ * to access state they own.
+ *
+ * <p>Listeners are assumed to be ready to receive events as soon as they
+ * are constructed.
  */
 public interface FileAnalysisListener extends AutoCloseable {
 
@@ -45,6 +46,15 @@ public interface FileAnalysisListener extends AutoCloseable {
     }
 
 
+    /**
+     * Signals the end of the analysis: no further calls will be made
+     * to this listener. This is run in the thread the listener has
+     * been used in. This means, if this routine merges some state
+     * into some global state of the {@link GlobalAnalysisListener),
+     * then that must be synchronized.
+     *
+     * @throws Exception If an exception occurs, eg IOException when writing to a renderer
+     */
     @Override
     default void close() throws Exception {
         // by default do nothing

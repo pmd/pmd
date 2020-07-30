@@ -204,9 +204,14 @@ public interface Renderer extends PropertySource {
 
         return new GlobalAnalysisListener() {
 
+            // guard for the close routine
+            final Object reportMergeLock = new Object();
+
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
-                Renderer.this.startFileAnalysis(file);
+                Renderer renderer = Renderer.this;
+
+                renderer.startFileAnalysis(file); // this routine is thread-safe by contract
                 return new FileAnalysisListener() {
                     final ReportBuilderListener reportBuilder = new ReportBuilderListener();
 
@@ -228,8 +233,11 @@ public interface Renderer extends PropertySource {
                     @Override
                     public void close() throws Exception {
                         reportBuilder.close();
-                        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                            renderFileReport(reportBuilder.getReport());
+                        synchronized (reportMergeLock) {
+                            // TODO renderFileReport should be thread-safe instead
+                            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                                renderer.renderFileReport(reportBuilder.getReport());
+                            }
                         }
                     }
                 };

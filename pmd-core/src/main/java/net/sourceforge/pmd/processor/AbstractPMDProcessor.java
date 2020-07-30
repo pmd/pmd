@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -24,12 +25,12 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
     }
 
     @SuppressWarnings("PMD.CloseResource")
-    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener ctx) {
+    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
         // the data sources must only be closed after the threads are finished
         // this is done manually without a try-with-resources
         try {
             for (final DataSource dataSource : files) {
-                runAnalysis(new PmdRunnable(dataSource, ctx, rulesets, configuration));
+                runAnalysis(new PmdRunnable(dataSource, listener, rulesets, configuration));
             }
         } finally {
             // in case we analyzed files within Zip Files/Jars, we need to close them after
@@ -57,5 +58,10 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
     public static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
         return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration)
                                               : new MonoThreadProcessor(configuration);
+    }
+
+
+    public static void runSingleFile(List<RuleSet> ruleSets, DataSource file, GlobalAnalysisListener listener, PMDConfiguration configuration) {
+        new PmdRunnable(file, listener, ruleSets, configuration).run();
     }
 }

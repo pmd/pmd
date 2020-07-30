@@ -308,6 +308,11 @@ public class Report {
             done = true;
         }
 
+        @Override
+        public void onConfigError(ConfigurationError error) {
+            report.addConfigError(error);
+        }
+
         /**
          * Returns the final report.
          *

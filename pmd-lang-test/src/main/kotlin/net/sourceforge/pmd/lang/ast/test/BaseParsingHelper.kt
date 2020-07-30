@@ -3,14 +3,16 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.*
+import net.sourceforge.pmd.PMDConfiguration
+import net.sourceforge.pmd.Report
+import net.sourceforge.pmd.Rule
+import net.sourceforge.pmd.RulesetsFactoryUtils
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
-import net.sourceforge.pmd.processor.PmdRunnable
+import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
-import java.io.StringReader
 import java.nio.charset.StandardCharsets
 
 /**
@@ -202,12 +204,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         val reportBuilder = Report.GlobalReportBuilder()
 
-        PmdRunnable(
+        AbstractPMDProcessor.runSingleFile(
+                listOf(rules),
                 DataSource.forString(code, "test.${getVersion(null).language.extensions[0]}"),
                 reportBuilder,
-                listOf(rules),
                 configuration
-        ).run()
+        )
 
         reportBuilder.close()
 
