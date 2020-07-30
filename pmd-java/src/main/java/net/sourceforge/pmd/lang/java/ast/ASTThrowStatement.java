@@ -50,7 +50,7 @@ public final class ASTThrowStatement extends AbstractStatement implements ASTSwi
      *             It will be removed with PMD 7.
      */
     @Deprecated
-    public final String getFirstClassOrInterfaceTypeImage() {
+    public String getFirstClassOrInterfaceTypeImage() {
         final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         return t == null ? null : t.getImage();
     }
