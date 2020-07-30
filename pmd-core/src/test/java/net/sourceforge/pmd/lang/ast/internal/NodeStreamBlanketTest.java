@@ -47,7 +47,9 @@ public class NodeStreamBlanketTest<T extends Node> {
                     node(
                         node(),
                         nodeB(
-                            node()
+                            node(
+                                nodeB()
+                            )
                         ),
                         node(),
                         nodeB()
@@ -132,7 +134,8 @@ public class NodeStreamBlanketTest<T extends Node> {
         assertImplication(
             stream,
             prop("count() > 1", it -> it.count() > 1),
-            prop("drop(2).toList() == toList().tail().tail()", it -> it.drop(2).toList().equals(tail(tail(it.toList()))))
+            prop("drop(2).toList() == toList().tail().tail()", it -> it.drop(2).toList().equals(tail(tail(it.toList())))),
+            prop("drop(1).drop(1) == drop(2)", it -> it.drop(1).drop(1).toList().equals(it.drop(2).toList()))
         );
     }
 
