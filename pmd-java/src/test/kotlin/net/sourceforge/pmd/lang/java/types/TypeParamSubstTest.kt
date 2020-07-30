@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.typeresolution.testdata.GenericFbound
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MutualTypeRecursion
 /**
  * @author Clément Fournier
  */
-class TypeParamSubstTest : AbstractFunSpec({
+class TypeParamSubstTest : FunSpec({
 
     with(TypeDslOf(testTypeSystem)) {
 

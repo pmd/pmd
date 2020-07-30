@@ -5,12 +5,14 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.inspectors.forNone
-import io.kotlintest.properties.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forNone
+import io.kotest.matchers.shouldBe
+import io.kotest.property.Exhaustive
+import io.kotest.property.exhaustive.ints
+import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.*
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
 import kotlin.test.assertEquals
@@ -18,7 +20,7 @@ import kotlin.test.assertEquals
 /**
  * @author Clément Fournier
  */
-class SubtypingTest : AbstractFunSpec({
+class SubtypingTest : FunSpec({
 
     val ts = testTypeSystem
     with(TypeDslOf(ts)) {
@@ -57,7 +59,7 @@ class SubtypingTest : AbstractFunSpec({
             }
 
             test("Test reference arrays subtype Object[]") {
-                forAll(gen, RangeGen(min = 1, max = 5)) { t, i ->
+                forAll(gen, Exhaustive.ints(1..5)) { t, i ->
                     val arrayType = ts.arrayType(t, i)
                     arrayType shouldBeSubtypeOf `t_Array{Object}`
                     arrayType shouldBeSubtypeOf ts.OBJECT

@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 
 /**
  * @author Clément Fournier
  */
-class GraphTest : AbstractFunSpec({
+class GraphTest : FunSpec({
 
     test("Test unique graph") {
 

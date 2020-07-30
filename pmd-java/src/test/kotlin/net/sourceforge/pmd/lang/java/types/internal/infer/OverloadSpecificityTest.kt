@@ -5,14 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JMethodSig
 import net.sourceforge.pmd.lang.java.types.TypeOps
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.*
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shadows
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
 

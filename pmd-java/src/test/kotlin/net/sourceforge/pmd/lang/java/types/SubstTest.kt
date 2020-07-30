@@ -6,10 +6,10 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.matchers.contain
-import io.kotlintest.matchers.maps.shouldContainExactly
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+import io.kotest.matchers.maps.contain
+import io.kotest.matchers.maps.shouldContainExactly
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
@@ -99,9 +99,9 @@ class SubstTest : ProcessorTestSpec({
 
             val composed = sub1.andThen(sub2)
 
-            composed.getMap() should contain<SubstVar, JTypeMirror>(a, Iterable::class[Collection::class[c]])
+            composed.map should contain<SubstVar, JTypeMirror>(a, Iterable::class[Collection::class[c]])
 
-            composed.getMap().shouldContainExactly(mapOf<SubstVar, JTypeMirror>(
+            composed.map.shouldContainExactly(mapOf<SubstVar, JTypeMirror>(
                     a to Iterable::class[Collection::class[c]],
                     b to `t_Coll{C}`
             ))

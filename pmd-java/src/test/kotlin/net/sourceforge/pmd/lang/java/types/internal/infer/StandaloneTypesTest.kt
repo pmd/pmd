@@ -5,27 +5,25 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
+import io.kotest.property.arbitrary.filterNot
+import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
-import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
-import net.sourceforge.pmd.lang.java.types.testdata.Overloads
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
+import net.sourceforge.pmd.lang.java.types.RefTypeGen
+import net.sourceforge.pmd.lang.java.types.shouldBeSubtypeOf
+import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class StandaloneTypesTest : ProcessorTestSpec({
-
-
-    val arrayComponentSubjects = RefTypeGen.constants() + PrimitiveGen.constants()
-
 
     parserTest("Test array clone") {
 
         inContext(ExpressionParsingCtx) {
-            arrayComponentSubjects.forEach { t ->
+            RefTypeGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }.checkAll { t ->
 
                 "new $t[0].clone()" should parseAs {
                     methodCall("clone") {
@@ -49,7 +47,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            arrayComponentSubjects.forEach { t ->
+            RefTypeGen.checkAll { t ->
 
                 "new $t[0].length" should parseAs {
                     fieldAccess("length") {

@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.haveSize
-import io.kotlintest.matchers.withClue
-import io.kotest.properties.Gen
 import io.kotest.matchers.should
+import io.kotest.property.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
@@ -32,8 +32,8 @@ fun <T, K> List<T>.groupByUnique(keySelector: (T) -> K): Map<K, T> =
         }
 
 
-fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
-    random().forEach {
+suspend fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
+    checkAll {
         withClue("For $it:") {
             val (t, r) = test(it)
             if (t != r && r == t || t == r && r != t) {
@@ -46,17 +46,20 @@ fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
 }
 
 /** Generator of test instances. */
-object TestClassesGen : Gen<Class<*>> {
-    override fun constants(): Iterable<Class<*>> = emptyList()
-
-    override fun random(seed: Long?): Sequence<Class<*>> =
-            sequenceOf(
-                    java.lang.Object::class.java,
+object TestClassesGen : Arb<Class<*>>() {
+    override fun edgecases(): List<Class<*>> =
+            listOf(java.lang.Object::class.java,
                     IntArray::class.java,
                     Cloneable::class.java,
                     Integer.TYPE,
-                    Array<String>::class.java) +
-                    getClassesInPackage(javaClass.`package`.name + ".internal.testdata").asSequence()
+                    Array<String>::class.java)
+
+    override fun values(rs: RandomSource): Sequence<Sample<Class<*>>> {
+        val someClasses = getClassesInPackage(javaClass.`package`.name + ".internal.testdata").asSequence()
+
+        return someClasses.map { Sample(it) }
+    }
+
 
     /**
      * Scans all classes accessible from the context class loader which belong to the given package and subpackages.

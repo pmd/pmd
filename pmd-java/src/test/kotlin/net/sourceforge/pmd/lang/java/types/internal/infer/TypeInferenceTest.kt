@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -380,6 +380,8 @@ class TypeInferenceTest : ProcessorTestSpec({
     parserTest("Test method reference overload resolution") {
 
         // FIXME lub(StringBuilder, String, Integer) is apparently Serializable on JDK 8 and the $serialLub below on JDK 11
+        //  On Java 13 we get
+        //      java.io.Serializable & java.lang.Comparable<? extends ...> & java.lang.constant.Constable & java.lang.constant.ConstantDesc
 
         asIfIn(TypeInferenceTestCases::class.java)
         val stringBuilder = "$jlang.StringBuilder"

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.asm
 
-import io.kotlintest.matchers.withClue
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.assertions.withClue
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.asm.TypeParamsParser.BaseTypeParamsBuilder
 import net.sourceforge.pmd.lang.java.types.*
@@ -38,7 +38,7 @@ fun TypeSystem.shouldParseType(scope: LexicalScope, sig: String, t: TypeDslOf.()
     parsed shouldBe TypeDslOf(this).t()
 }
 
-class SigParserTest : AbstractFunSpec({
+class SigParserTest : FunSpec({
 
     test("Test type sig parsing with type vars") {
 

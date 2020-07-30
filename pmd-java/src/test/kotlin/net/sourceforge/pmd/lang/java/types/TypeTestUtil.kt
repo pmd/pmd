@@ -6,31 +6,18 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import com.github.oowekyala.treeutils.DoublyLinkedTreeLikeAdapter
-import com.github.oowekyala.treeutils.ext
-import com.github.oowekyala.treeutils.printers.SimpleTreePrinter
-import io.kotlintest.properties.Gen
+import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
+import io.kotest.property.RandomSource
+import io.kotest.property.Sample
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.asm.AsmSymbolResolver
-import java.lang.Comparable
-import java.util.Collection
-import kotlin.Any
-import kotlin.Boolean
-import kotlin.Enum
-import kotlin.Int
-import kotlin.Pair
 import kotlin.String
-import kotlin.Suppress
-import kotlin.Unit
-import kotlin.also
-import kotlin.apply
-import kotlin.assert
 import kotlin.reflect.KClass
 import kotlin.streams.toList
-import kotlin.with
 
 
 fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
@@ -48,30 +35,18 @@ typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
 fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.toList()
 
-class RangeGen(private val min: Int = 0, private val max: Int) : Gen<Int> {
-    private val cons = listOf(min, max)
-
-    override fun constants(): Iterable<Int> = cons
-
-    override fun random(): Sequence<Int> = generateSequence(min) {
-        val n = it + 1
-        if (n < max) n
-        else null
-    }
-}
-
-object PrimitiveGen : Gen<JPrimitiveType> {
-    override fun constants(): Iterable<JPrimitiveType> = testTypeSystem.allPrimitives
-    override fun random(): Sequence<JPrimitiveType> = emptySequence()
+object PrimitiveGen : Exhaustive<JPrimitiveType>() {
+    override val values: List<JPrimitiveType>
+        get() = testTypeSystem.allPrimitives.toList()
 }
 
 
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
-class TypeGen(override val ts: TypeSystem) : Gen<JTypeMirror>, TypeDslMixin {
+class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
-    override fun constants(): Iterable<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
+    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
 
-    override fun random(): Sequence<JTypeMirror> = pool.asSequence()
+    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = pool.asSequence().map { Sample(it) }
 
     val t_String: JClassType                        get() = java.lang.String::class.decl
     val t_Integer: JClassType                       get() = java.lang.Integer::class.decl
@@ -110,26 +85,27 @@ class TypeGen(override val ts: TypeSystem) : Gen<JTypeMirror>, TypeDslMixin {
     }
 
     // Object[]
-    val `t_Array{Object}`: JTypeMirror              get() = testTypeSystem.OBJECT.toArray(1)
+    val `t_Array{Object}`: JTypeMirror get() = testTypeSystem.OBJECT.toArray(1)
 
 
     // Raw Enum
-    val t_Enum: JTypeMirror                         get() = Enum::class.raw
-    val t_JPrimitiveType: JTypeMirror               get() = JPrimitiveType::class.decl
-    val `t_Enum{JPrimitiveType}`: JTypeMirror       get() = Enum::class[JPrimitiveType::class.decl]
-    val `t_Collection{T}`: JTypeMirror              get() = Collection::class.decl
-    val `t_Collection{String}`: JTypeMirror         get() = Collection::class[t_String]
-    val `t_Collection{Integer}`: JTypeMirror        get() = Collection::class[t_Integer]
-    val `t_Iterable{Integer}`: JTypeMirror          get() = java.lang.Iterable::class[t_Integer]
-    val t_Iterable: JTypeMirror                     get() = java.lang.Iterable::class.raw
+    val t_Enum: JTypeMirror get() = java.lang.Enum::class.raw
+    val t_JPrimitiveType: JTypeMirror get() = JPrimitiveType::class.decl
+    val `t_Enum{JPrimitiveType}`: JTypeMirror get() = java.lang.Enum::class[JPrimitiveType::class.decl]
+    val `t_Collection{T}`: JTypeMirror get() = java.util.Collection::class.decl
+    val `t_Collection{String}`: JTypeMirror get() = java.util.Collection::class[t_String]
+    val `t_Collection{Integer}`: JTypeMirror get() = java.util.Collection::class[t_Integer]
+    val `t_Iterable{Integer}`: JTypeMirror get() = java.lang.Iterable::class[t_Integer]
+    val t_Iterable: JTypeMirror get() = java.lang.Iterable::class.raw
 
     /** raw Comparable */
-    val t_Comparable: JClassType                    get() = Comparable::class.raw
+    val t_Comparable: JClassType get() = java.lang.Comparable::class.raw
 
     /**
      *     Number & Comparable<? extends (Number & Comparable<?>)>
      */
-    val `t_lub(Double, Integer)`: JTypeMirror get() =
+    val `t_lub(Double, Integer)`: JTypeMirror
+        get() =
             t_Number * t_Comparable[`?` extends (t_Number * t_Comparable[`?`])]
 
 

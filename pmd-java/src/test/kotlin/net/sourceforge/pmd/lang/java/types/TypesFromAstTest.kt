@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec

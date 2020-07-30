@@ -2,6 +2,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
@@ -23,7 +24,7 @@ class ReflectedClassSymbolTests : WordSpec({
         }
 
         "reflect its type parameters correctly" {
-            TestClassesGen.random().forEach { clazz ->
+            TestClassesGen.checkAll { clazz ->
                 val classSym = classSym(clazz)!!
                 classSym.typeParameters.map { it!!.name } shouldBe clazz.typeParameters.toList().map { it.name }
                 classSym.typeParameters.forEach {

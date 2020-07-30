@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.asm
 
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.shouldBe
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
 import javasymbols.testdata.impls.GenericClass
@@ -18,7 +18,7 @@ import org.objectweb.asm.Opcodes
 /**
  * @author Clément Fournier
  */
-class AsmLoaderTest : AbstractFunSpec({
+class AsmLoaderTest : FunSpec({
 
 
     // TODO tests:

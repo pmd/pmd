@@ -5,17 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**
  * @author Clément Fournier
  */
-class BoxingTest : AbstractFunSpec({
+class BoxingTest : FunSpec({
 
     test("Test boxing is dual of unboxing") {
 
@@ -32,8 +33,8 @@ class BoxingTest : AbstractFunSpec({
 
     test("Test boxing reference type is identity conversion") {
 
-        RefTypeGen.forAllEqual {
-            Pair(it, it.box())
+        RefTypeGen.forAll {
+            it == it.box()
         }
 
         RefTypeGen.forAllEqual {

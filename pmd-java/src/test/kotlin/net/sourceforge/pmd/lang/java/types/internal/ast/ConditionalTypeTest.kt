@@ -4,14 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.ast
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.java.types.*
 
 /**
  * @author Clément Fournier
  */
-class ConditionalTypeTest : AbstractFunSpec() {
+class ConditionalTypeTest : FunSpec({
+
+
+}) {
 
     private val tested = mutableMapOf<TypePair, JTypeMirror>()
 
@@ -36,48 +40,50 @@ class ConditionalTypeTest : AbstractFunSpec() {
         val ts = testTypeSystem
         val prims = ts.allPrimitives
 
-        prims.forEach {
-            test(it, it, it)
-            test(it.box(), it, it)
-            test(it, it.box(), it)
-            test(it.box(), it.box(), it.box())
+        context("Tests for conditional expressions") {
+            // we need a suspend fun
 
-            test(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box()))
-            test(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE))
-            test(it.box(), ts.NULL_TYPE, it.box())
-        }
+            prims.forEach {
+                test(it, it, it)
+                test(it.box(), it, it)
+                test(it, it.box(), it)
+                test(it.box(), it.box(), it.box())
+
+                test(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box()))
+                test(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE))
+                test(it.box(), ts.NULL_TYPE, it.box())
+            }
+
+            RefTypeGen.checkAll {
+                test(it, it, it)
+                test(ts.NULL_TYPE, it, it)
+                test(it, ts.NULL_TYPE, it)
+            }
+
+            val shortOnes =
+                    listOf(ts.BYTE to ts.SHORT, ts.SHORT to ts.BYTE)
+                            .flatMap { (a, b) ->
+                                listOf(a to b, a.box() to b, a to b.box())
+                            }
 
 
+            shortOnes.forEach { (a, b) -> test(a, b, ts.SHORT) }
 
-        (RefTypeGen.constants() + RefTypeGen.random()).forEach {
-            test(it, it, it)
-            test(ts.NULL_TYPE, it, it)
-            test(it, ts.NULL_TYPE, it)
-        }
+            val allPrims = (prims.map { it.box() } + prims)
 
-        val shortOnes =
-                listOf(ts.BYTE to ts.SHORT, ts.SHORT to ts.BYTE)
-                        .flatMap { (a, b) ->
-                            listOf(a to b, a.box() to b, a to b.box())
-                        }
+            val bnpOnes = allPrims.zip(allPrims)
+                    .filter { it !in shortOnes }
+                    .filter { (a, b) -> a != b }
+                    .filter { (a, b) -> a.isNumeric && b.isNumeric }
 
+            bnpOnes.forEach { (a, b) ->
+                test(a, b, bnp(a, b))
+            }
 
-        shortOnes.forEach { (a, b) -> test(a, b, ts.SHORT) }
-
-        val allPrims = (prims.map { it.box() } + prims)
-
-        val bnpOnes = allPrims.zip(allPrims)
-                .filter { it !in shortOnes }
-                .filter { (a, b) -> a != b }
-                .filter { (a, b) -> a.isNumeric && b.isNumeric }
-
-        bnpOnes.forEach { (a, b) ->
-            test(a, b, bnp(a, b))
-        }
-
-        (allPrims - ts.BOOLEAN - ts.BOOLEAN.box()).forEach {
-            test(it, ts.BOOLEAN, ts.lub(it.box(), ts.BOOLEAN.box()))
-            test(ts.BOOLEAN, it, ts.lub(it.box(), ts.BOOLEAN.box()))
+            (allPrims - ts.BOOLEAN - ts.BOOLEAN.box()).forEach {
+                test(it, ts.BOOLEAN, ts.lub(it.box(), ts.BOOLEAN.box()))
+                test(ts.BOOLEAN, it, ts.lub(it.box(), ts.BOOLEAN.box()))
+            }
         }
     }
 

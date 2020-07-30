@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.apache.commons.lang3.reflect.TypeLiteral
 
 /**
  * @author Clément Fournier
  */
-class TypeFactoryTest : AbstractFunSpec({
+class TypeFactoryTest : FunSpec({
 
     val ts = testTypeSystem
 

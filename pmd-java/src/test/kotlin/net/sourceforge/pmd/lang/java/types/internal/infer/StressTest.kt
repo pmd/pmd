@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.java.ast.*

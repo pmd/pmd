@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.asm
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
-import javasymbols.testdata.impls.GenericClass
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.types.testTypeSystem
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
-class NamesTest : AbstractFunSpec({
+class NamesTest : FunSpec({
 
     test("Test inner class names") {
 

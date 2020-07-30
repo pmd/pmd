@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotlintest.properties.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 import java.io.Serializable
 
 /**
  * @author Clément Fournier
  */
-class LubTest : AbstractFunSpec({
+class LubTest : FunSpec({
 
     // TODO rewrite to use JDK-independent testdata classes
 
@@ -105,9 +105,8 @@ class LubTest : AbstractFunSpec({
 
             test("Test lub of one type") {
 
-                forAll(RefTypeGen) { ref ->
+                RefTypeGen.checkAll { ref ->
                     lub(ref) shouldBe ref
-                    true
                 }
 
             }
