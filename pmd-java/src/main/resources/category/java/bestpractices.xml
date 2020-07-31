@@ -219,7 +219,7 @@ Reassigning exception variables caught in a catch statement should be avoided be
 1) If it is needed, multi catch can be easily added and code will still compile
 2) Following the principle of least surprise we want to make sure that a variable caught in a catch statement is always the one thrown in a try block
         </description>
-        <priority>2</priority>
+        <priority>3</priority>
         <example><![CDATA[
 public class Foo {
     public void foo() {

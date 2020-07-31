@@ -19,6 +19,9 @@ This is a {{ site.pmd.release_type }} release.
 *   The new Java rule {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`) finds assignments
     to variables, that are never used and are useless. The new rule is supposed to entirely replace
     {% rule "java/errorprone/DataflowAnomalyAnalysis" %}.
+*   The new Java rule {% rule "java/bestpractices/AvoidReassigningCatchVariables" %} (`java-bestpractices`) finds
+    cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
+    further evolution of the code like multi-catch.
 
 ### Fixed Issues
 *   apex
@@ -30,6 +33,8 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#710](https://github.com/pmd/pmd/issues/710): \[core] Review used dependencies
     *   [#2594](https://github.com/pmd/pmd/issues/2594): \[core] Update exec-maven-plugin and align it in all project
+*   java-bestpractices
+    *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
 *   java-design
     *   [#2174](https://github.com/pmd/pmd/issues/2174): \[java] LawOfDemeter: False positive with 'this' pointer
     *   [#2189](https://github.com/pmd/pmd/issues/2189): \[java] LawOfDemeter: False positive when casting to derived class
@@ -60,6 +65,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2621](https://github.com/pmd/pmd/pull/2621): \[visualforce] add new safe resource for VfUnescapeEl - [Peter Chittum](https://github.com/pchittum)
 *   [#2640](https://github.com/pmd/pmd/pull/2640): \[java] NullPointerException in rule ProperCloneImplementation - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2643](https://github.com/pmd/pmd/pull/2643): \[java] AvoidCallingFinalize detects some false positives (2578) - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2682](https://github.com/pmd/pmd/pull/2682): \[java] New Rule: AvoidReassigningCatchVariables - [Mykhailo Palahuta](https://github.com/Drofff)
 
 {% endtocmaker %}
 
