@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
 *   java-bestpractices
     *   [#2668](https://github.com/pmd/pmd/issues/2668): \[java] UnusedAssignment false positives
+*   java-errorprone
+    *   [#2439](https://github.com/pmd/pmd/issues/2439): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)
 *   java-performance
     *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
 
@@ -41,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2678](https://github.com/pmd/pmd/pull/2678): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - [Mykhailo Palahuta](https://github.com/Drofff)
 
 
 {% endtocmaker %}
