@@ -1411,6 +1411,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables"><code class="highlighter-rouge">AvoidReassigningCatchVariables</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) finds
+cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
+further evolution of the code like multi-catch.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1422,7 +1430,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2471">#2471</a>: [java] New Rule: AvoidReassigningCatchVariables</li>
       <li><a href="https://github.com/pmd/pmd/issues/2668">#2668</a>: [java] UnusedAssignment false positives</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2431">#2431</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2439">#2439</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)</li>
     </ul>
   </li>
   <li>java-performance
@@ -1454,6 +1469,9 @@ reported as a forward compatibility warning.</li>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2682">#2682</a>: [java] New Rule: AvoidReassigningCatchVariables - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
 </ul>
 
 
@@ -1472,7 +1490,7 @@ reported as a forward compatibility warning.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 30, 2020 <br />
+ Site last generated: Jul 31, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

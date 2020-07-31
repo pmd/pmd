@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1628,6 +1628,44 @@ Creating a new instance is easier than synchronizing access to a shared instance
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/AvoidPrintStackTrace"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidreassigningcatchvariables">AvoidReassigningCatchVariables</h2>
+
+<p><strong>Since:</strong> PMD 6.27.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reassigning exception variables caught in a catch statement should be avoided because of:</p>
+
+<p>1) If it is needed, multi catch can be easily added and code will still compile.</p>
+
+<p>2) Following the principle of least surprise we want to make sure that a variable caught in a catch statement
+is always the one thrown in a try block.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningCatchVariablesRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningCatchVariablesRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// do something</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">NullPointerException</span><span class="o">();</span> <span class="c1">// not recommended</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// do something</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">MyException</span> <span class="o">|</span> <span class="nc">ServerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuntimeException</span><span class="o">();</span> <span class="c1">// won't compile</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/AvoidReassigningCatchVariables"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="avoidreassigningloopvariables">AvoidReassigningLoopVariables</h2>
@@ -3663,7 +3701,7 @@ a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 30, 2020 <br />
+ Site last generated: Jul 31, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
