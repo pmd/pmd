@@ -335,10 +335,14 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         // We need type resolution to make sure there is a
                         // conflicting method
                         if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
+                            try {
+                                for (final Method m : importDeclaration.getType().getMethods()) {
+                                    if (m.getName().equals(methodCalled)) {
+                                        return true;
+                                    }
                                 }
+                            } catch (LinkageError ignored) {
+                                // TODO : This is an incomplete classpath, report the missing class
                             }
                         }
                     } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {

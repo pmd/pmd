@@ -74,12 +74,10 @@ public class ImportWrapper {
             }
             return names;
         } catch (LinkageError e) {
-            String filename = ctx != null ? String.valueOf(ctx.getSourceCodeFile()) : "n/a";
-
             if (ctx != null) {
-                ctx.getReport().addError(new ProcessingError(e, filename));
+                ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
             } else {
-                LOG.log(Level.WARNING, "Error while processing file " + filename, e);
+                LOG.log(Level.WARNING, "Error while processing imports", e);
             }
             return Collections.emptySet();
         }

@@ -69,11 +69,15 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                 } else {
                     Class<?> importClass = node.getClassTypeResolver().loadClassOrNull(thisImportOnDemand.getName());
                     if (importClass != null) {
-                        for (Method m : importClass.getMethods()) {
-                            if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
-                                // static method in another imported class
-                                return true;
+                        try {
+                            for (Method m : importClass.getMethods()) {
+                                if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
+                                    // static method in another imported class
+                                    return true;
+                                }
                             }
+                        } catch (LinkageError ignored) {
+                            // TODO : This is an incomplete classpath, report the missing class
                         }
                     }
                 }
