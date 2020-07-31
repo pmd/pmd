@@ -34,6 +34,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2174](https://github.com/pmd/pmd/issues/2174): \[java] LawOfDemeter: False positive with 'this' pointer
     *   [#2189](https://github.com/pmd/pmd/issues/2189): \[java] LawOfDemeter: False positive when casting to derived class
 *   java-errorprone
+    *   [#2431](https://github.com/pmd/pmd/issues/2431): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message
     *   [#2578](https://github.com/pmd/pmd/issues/2578): \[java] AvoidCallingFinalize detects some false positives
     *   [#2634](https://github.com/pmd/pmd/issues/2634): \[java] NullPointerException in rule ProperCloneImplementation
 *   java-performance
@@ -60,6 +61,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2621](https://github.com/pmd/pmd/pull/2621): \[visualforce] add new safe resource for VfUnescapeEl - [Peter Chittum](https://github.com/pchittum)
 *   [#2640](https://github.com/pmd/pmd/pull/2640): \[java] NullPointerException in rule ProperCloneImplementation - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2643](https://github.com/pmd/pmd/pull/2643): \[java] AvoidCallingFinalize detects some false positives (2578) - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2679](https://github.com/pmd/pmd/pull/2679): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - [Mykhailo Palahuta](https://github.com/Drofff)
 
 {% endtocmaker %}
 
