@@ -19,10 +19,9 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Builds symbols. This is owned by a {@link TypeSystem}, which is
- * tasked with creating it itself.
- *
- * @see TypeSystem#newScope()
+ * tasked with creating it itself. This is internal API.
  */
+@InternalApi
 public final class SymbolFactory {
 
     private final Map<String, UnresolvedClassImpl> unresolved;
@@ -33,7 +32,6 @@ public final class SymbolFactory {
      * from the constructor of {@link TypeSystem} (throws an {@link AssertionError}
      * otherwise), and is internal.
      */
-    @InternalApi
     public SymbolFactory(TypeSystem typeSystem) {
         this.ts = typeSystem;
         this.unresolved = new ConcurrentHashMap<>();

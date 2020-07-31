@@ -57,7 +57,7 @@ public final class TypeSystem {
      *
      * <p>This implementation uses this as the type of the 'null' literal.
      */
-    public final JTypeMirror NULL_TYPE = new NullType();
+    public final JTypeMirror NULL_TYPE = new NullType(this);
 
 
     // primitives
@@ -211,50 +211,6 @@ public final class TypeSystem {
         this.sharedTypes = Collections.unmodifiableMap(new HashMap<>(shared));
 
         UNBOUNDED_WILD = new WildcardTypeImpl(this, true, OBJECT);
-    }
-
-    @SuppressWarnings("IncompleteCopyConstructor")
-    private TypeSystem(TypeSystem other) {
-        // create a new symbol factory, with an independent cache.
-        this.symbolFactory = new SymbolFactory(this);
-
-        this.resolver = other.resolver;
-        this.sharedTypes = other.sharedTypes;
-
-        this.OBJECT = other.OBJECT;
-        this.BOOLEAN = other.BOOLEAN;
-        this.CHAR = other.CHAR;
-        this.BYTE = other.BYTE;
-        this.SHORT = other.SHORT;
-        this.INT = other.INT;
-        this.LONG = other.LONG;
-        this.FLOAT = other.FLOAT;
-        this.DOUBLE = other.DOUBLE;
-        this.NO_TYPE = other.NO_TYPE;
-        this.allPrimitives = other.allPrimitives;
-        this.primitivesByKind = other.primitivesByKind;
-
-        this.UNRESOLVED_TYPE = other.UNRESOLVED_TYPE;
-        this.UNBOUNDED_WILD = other.UNBOUNDED_WILD;
-        this.CLONEABLE = other.CLONEABLE;
-        this.SERIALIZABLE = other.SERIALIZABLE;
-        this.BOXED_VOID = other.BOXED_VOID;
-    }
-
-    /**
-     * Returns a new, distinct type system, which caches symbols independently
-     * of this one. Constants such as {@link #INT} or {@link #OBJECT} are
-     * shared between this type system and all the sub-systems it spawns.
-     *
-     * <p>This provides a simple mechanism to localize cached symbols.
-     * Each file gets its own "scope", which, when garbage-collected,
-     * reclaims all symbols cached for the file. This also avoids concurrency
-     * issues.
-     *
-     * @return A new type system, based on this one.
-     */
-    public TypeSystem newScope() {
-        return new TypeSystem(this);
     }
 
     /**
@@ -707,7 +663,12 @@ public final class TypeSystem {
         return new TypeVarImpl(this, symbol);
     }
 
-    private class NullType implements JTypeMirror {
+    private static final class NullType implements JTypeMirror {
+        private final TypeSystem ts;
+
+        public NullType(TypeSystem ts) {
+            this.ts = ts;
+        }
 
         @Override
         public JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
@@ -716,7 +677,7 @@ public final class TypeSystem {
 
         @Override
         public TypeSystem getTypeSystem() {
-            return TypeSystem.this;
+            return ts;
         }
 
         @Override
