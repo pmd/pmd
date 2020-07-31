@@ -20,10 +20,12 @@ import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
+    val arrayComponentGen = RefTypeGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }
+
     parserTest("Test array clone") {
 
         inContext(ExpressionParsingCtx) {
-            RefTypeGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }.checkAll { t ->
+            arrayComponentGen.checkAll { t ->
 
                 "new $t[0].clone()" should parseAs {
                     methodCall("clone") {
@@ -47,7 +49,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            RefTypeGen.checkAll { t ->
+            arrayComponentGen.checkAll { t ->
 
                 "new $t[0].length" should parseAs {
                     fieldAccess("length") {
