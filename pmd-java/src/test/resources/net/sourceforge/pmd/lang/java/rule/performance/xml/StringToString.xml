@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>local var</description>
@@ -138,6 +138,85 @@ public class Foo {
         String abc = "abc";
         log(abc::toString); // fails rule
         log(() -> abc); // passes rule
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2530 toString on String value returned from a method should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public String foo() {
+        return "Test String";
+    }
+
+    public int bar() {
+        String test = this.foo().toString();
+        return test.length();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), anonymous class method false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer value() {
+        return 0;
+    }
+
+    public String bar() {
+        Object obj = new Object() {
+            public String value() {
+                return "0";
+            }
+        };
+        return value().toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), method overloading false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String value(String str) {
+        return str.trim();
+    }
+
+    public Integer value(Integer num) {
+        return num + 1;
+    }
+
+    public void bar() {
+        String str = value(5).toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), object false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String value() {
+        return "test";
+    }
+
+    public void bar() {
+        Person p = new Person();
+        int val = p.value();
+        if (val == 0) {
+            throw new RuntimeException();
+        }
     }
 }
         ]]></code>
