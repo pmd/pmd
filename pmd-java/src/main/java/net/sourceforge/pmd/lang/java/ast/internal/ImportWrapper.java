@@ -39,15 +39,9 @@ public class ImportWrapper {
         this.node = node;
         this.isStaticDemand = isStaticDemand;
 
-        if (node != null && node.getType() != null) {
+        if (this.isStaticDemand && node != null && node.getType() != null) {
             Class<?> type = node.getType();
-            for (Method m : type.getMethods()) {
-                allDemands.add(m.getName());
-            }
-            for (Field f : type.getFields()) {
-                allDemands.add(f.getName());
-            }
-            // also consider static fields, that are not public
+            // consider static fields, public and non-public
             for (Field f : type.getDeclaredFields()) {
                 if (Modifier.isStatic(f.getModifiers())) {
                     allDemands.add(f.getName());
