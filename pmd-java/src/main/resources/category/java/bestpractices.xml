@@ -212,6 +212,7 @@ class Foo {
     </rule>
 
     <rule name="AvoidReassigningCatchVariables"
+          language="java"
           since="6.27.0"
           message="Avoid reassigning caught exception ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningCatchVariablesRule"
