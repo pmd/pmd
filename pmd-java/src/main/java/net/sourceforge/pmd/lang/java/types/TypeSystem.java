@@ -57,33 +57,7 @@ public final class TypeSystem {
      *
      * <p>This implementation uses this as the type of the 'null' literal.
      */
-    public final JTypeMirror NULL_TYPE = new JTypeMirror() {
-
-        @Override
-        public JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
-            return this;
-        }
-
-        @Override
-        public TypeSystem getTypeSystem() {
-            return TypeSystem.this;
-        }
-
-        @Override
-        public @Nullable JClassSymbol getSymbol() {
-            return null;
-        }
-
-        @Override
-        public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
-            return visitor.visitNullType(this, p);
-        }
-
-        @Override
-        public String toString() {
-            return "null";
-        }
-    };
+    public final JTypeMirror NULL_TYPE = new NullType();
 
 
     // primitives
@@ -203,21 +177,11 @@ public final class TypeSystem {
         primitivesByKind.put(PrimitiveTypeKind.DOUBLE, DOUBLE);
 
         JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("/*unresolved*/", 0);
-        UNRESOLVED_TYPE = new SentinelType(this, "/*unresolved*/") {
-            @Override
-            public JTypeDeclSymbol getSymbol() {
-                return unresolvedTypeSym;
-            }
-        };
+        UNRESOLVED_TYPE = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
 
         JClassSymbol primitiveVoidSym = ReflectedSymbols.getClassSymbol(symbolFactory, void.class);
         assert primitiveVoidSym != null : "void";
-        NO_TYPE = new SentinelType(this, "void") {
-            @Override
-            public JTypeDeclSymbol getSymbol() {
-                return primitiveVoidSym;
-            }
-        };
+        NO_TYPE = new SentinelType(this, "void", primitiveVoidSym);
 
         // reuse instances for common types
 
@@ -736,4 +700,31 @@ public final class TypeSystem {
         return new TypeVarImpl(this, symbol);
     }
 
+    private class NullType implements JTypeMirror {
+
+        @Override
+        public JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+            return this;
+        }
+
+        @Override
+        public TypeSystem getTypeSystem() {
+            return TypeSystem.this;
+        }
+
+        @Override
+        public @Nullable JClassSymbol getSymbol() {
+            return null;
+        }
+
+        @Override
+        public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
+            return visitor.visitNullType(this, p);
+        }
+
+        @Override
+        public String toString() {
+            return "null";
+        }
+    }
 }

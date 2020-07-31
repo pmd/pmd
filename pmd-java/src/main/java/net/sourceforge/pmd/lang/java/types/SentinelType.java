@@ -9,19 +9,36 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 /**
  * A "type" that exists outside of the main type hierarchy. This is only
  * used to have some sentinel values, to eg represent failure or errors.
  */
-class SentinelType implements JTypeMirror {
+final class SentinelType implements JTypeMirror {
 
     private final TypeSystem ts;
     private final String name;
+    private final JTypeDeclSymbol symbol;
 
     SentinelType(TypeSystem ts, String name) {
         this.ts = ts;
         this.name = name;
+        this.symbol = null;
+    }
+
+    SentinelType(TypeSystem ts, String name, JTypeDeclSymbol symbol) {
+        this.ts = ts;
+        this.name = name;
+        this.symbol = symbol;
+    }
+
+    @Nullable
+    @Override
+    public JTypeDeclSymbol getSymbol() {
+        return symbol;
     }
 
     @Override
