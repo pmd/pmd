@@ -39,6 +39,7 @@ String t = Integer.toString(456);   // preferred approach
     </rule>
 
     <rule name="AppendCharacterWithChar"
+          language="java"
           since="3.5"
           message="Avoid appending characters as strings in StringBuffer.append."
           class="net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule"
@@ -246,6 +247,7 @@ that one covers both.
     </rule>
 
     <rule name="AvoidInstantiatingObjectsInLoops"
+          language="java"
           since="2.2"
           message="Avoid instantiating new objects inside loops"
           class="net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule"
@@ -315,6 +317,7 @@ public class UsingShort {
     </rule>
 
     <rule name="BigIntegerInstantiation"
+          language="java"
           since="3.9"
           message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
@@ -336,6 +339,7 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
     </rule>
 
     <rule name="BooleanInstantiation"
+          language="java"
           since="1.2"
           message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
           class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
@@ -413,6 +417,7 @@ buf.append("Hello").append(foo).append("World"); // good
     </rule>
 
     <rule name="ConsecutiveLiteralAppends"
+          language="java"
           since="3.5"
           message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literals. Use a single append with a single combined String."
           class="net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule"
@@ -439,8 +444,9 @@ buf.append("1m");           // good
     </rule>
 
     <rule name="InefficientEmptyStringCheck"
+          language="java"
           since="3.6"
-	  message="String.trim().length() == 0 / String.trim().isEmpty() is an inefficient way to validate a blank String."
+	        message="String.trim().length() == 0 / String.trim().isEmpty() is an inefficient way to validate a blank String."
           class="net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#inefficientemptystringcheck">
         <description>
@@ -481,6 +487,7 @@ public void bar(String string) {
     </rule>
 
     <rule name="InefficientStringBuffering"
+          language="java"
           since="3.4"
           message="Avoid concatenating nonliterals in a StringBuffer/StringBuilder constructor or append()."
           class="net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule"
@@ -503,6 +510,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
     </rule>
 
     <rule name="InsufficientStringBufferDeclaration"
+          language="java"
           since="3.6"
           message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
           class="net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule"
@@ -759,6 +767,7 @@ public class Foo {
     </rule>
 
     <rule name="StringInstantiation"
+          language="java"
           since="1.0"
           message="Avoid instantiating String objects; this is usually unnecessary."
           class="net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule"
@@ -775,6 +784,7 @@ private String bar = new String("bar"); // just do a String bar = "bar";
     </rule>
 
     <rule name="StringToString"
+          language="java"
           since="1.0"
           message="Avoid calling toString() on String objects; this is unnecessary."
           class="net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule"
@@ -837,6 +847,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryWrapperObjectCreation"
+          language="java"
           since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule"
@@ -976,6 +987,7 @@ public class Test {
     </rule>
 
     <rule name="UseIndexOfChar"
+          language="java"
           since="3.5"
           message="String.indexOf(char) is faster than String.indexOf(String)."
           class="net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule"
@@ -1054,6 +1066,7 @@ public class FileStuff {
     </rule>
 
     <rule name="UselessStringValueOf"
+          language="java"
           since="3.8"
           message="No need to call String.valueOf to append to a string."
           class="net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule"
@@ -1075,6 +1088,7 @@ public String convert(int i) {
     </rule>
 
     <rule name="UseStringBufferForStringAppends"
+          language="java"
           since="3.1"
           message="Prefer StringBuilder (non-synchronized) or StringBuffer (synchronized) over += for concatenating strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule"
@@ -1102,6 +1116,7 @@ public class Foo {
     </rule>
 
     <rule name="UseStringBufferLength"
+          language="java"
           since="3.4"
           message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
           class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule"

@@ -142,12 +142,18 @@ public final class StreamImpl {
     static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, ? extends T> target) {
         if (node == null) {
             return empty();
-        } else if (node.getParent() == null) {
-            T apply = target.apply(node);
-            return apply != null ? singleton(apply) : empty();
         }
-        return target == Filtermap.NODE_IDENTITY ? (NodeStream<T>) new AncestorOrSelfStream(node)
-                                                 : new FilteredAncestorOrSelfStream<>(node, target);
+
+        if (target == Filtermap.NODE_IDENTITY) {
+            return (NodeStream<T>) new AncestorOrSelfStream(node);
+        }
+
+        T first = TraversalUtils.getFirstParentOrSelfMatching(node, target);
+        if (first == null) {
+            return empty();
+        }
+
+        return new FilteredAncestorOrSelfStream<>(first, target);
     }
 
     public static NodeStream<Node> ancestors(@NonNull Node node) {

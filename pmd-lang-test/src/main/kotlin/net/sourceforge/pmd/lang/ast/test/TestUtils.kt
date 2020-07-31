@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import io.kotlintest.Matcher
-import io.kotlintest.equalityMatcher
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.should
-import java.util.stream.Stream
+import io.kotest.matchers.should
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
+import io.kotest.matchers.shouldBe as ktShouldBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.equalityMatcher
+import io.kotest.matchers.collections.haveSize
+import java.util.stream.Stream
 import kotlin.streams.toList
 
 /**
@@ -57,7 +58,7 @@ private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N,
  * have to use the name of the getter instead of that of the generated
  * property (with the get prefix).
  *
- * If this conflicts with [io.kotlintest.shouldBe], use the equivalent [shouldEqual]
+ * If this conflicts with [io.kotest.matchers.shouldBe], use the equivalent [shouldEqual]
  *
  */
 infix fun <N, V : N> KCallable<N>.shouldBe(expected: V?) = this.shouldEqual(expected)
