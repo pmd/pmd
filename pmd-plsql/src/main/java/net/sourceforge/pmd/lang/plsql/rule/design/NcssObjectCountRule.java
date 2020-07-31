@@ -20,6 +20,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  *
  * @author Stuart Turton
  */
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class NcssObjectCountRule extends AbstractNcssCountRule {
     private static final String CLASS_NAME = NcssObjectCountRule.class.getName();
     private static final Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName());

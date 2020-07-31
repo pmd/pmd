@@ -50,7 +50,7 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
             }
         }
 
-        return node.childrenAccept(this, data);
+        return super.visit(node, data);
     }
 
     @Override

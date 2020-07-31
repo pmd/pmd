@@ -65,7 +65,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
                 addViolation(data, n);
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
                 addViolation(data, n);
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private void bumpCounterFor(PLSQLNode clazz) {

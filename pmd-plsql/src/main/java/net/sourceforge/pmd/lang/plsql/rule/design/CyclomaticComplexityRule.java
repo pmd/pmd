@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
@@ -204,14 +203,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visit(ASTConditionalOrExpression node, Object data) {
-        return data;
-    }
-
-    @Override
     public Object visit(ASTPackageSpecification node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTPackageSpecification)");
         // Treat Package Specification like an Interface
+        super.visit(node, data);
         LOGGER.exiting(CLASS_NAME, "visit(ASTPackageSpecification)");
         return data;
     }
@@ -220,6 +215,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     public Object visit(ASTTypeSpecification node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTTypeSpecification)");
         // Treat Type Specification like an Interface
+        super.visit(node, data);
         LOGGER.exiting(CLASS_NAME, "visit(ASTTypeSpecification)");
         return data;
     }
