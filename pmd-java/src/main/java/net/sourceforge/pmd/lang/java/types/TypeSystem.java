@@ -397,6 +397,13 @@ public final class TypeSystem {
         throw new AssertionError("Uncategorized type symbol " + symbol.getClass() + ": " + symbol);
     }
 
+    JClassType forceErase(JClassType t) {
+        JClassType erasure = t.getErasure();
+        if (erasure == t)
+            return new ErasedClassType(this, t.getSymbol());
+        return erasure;
+    }
+
     /**
      * Like {@link #typeOf(JTypeDeclSymbol, boolean)}, defaulting the
      * erased parameter to true. If the symbol is not generic,

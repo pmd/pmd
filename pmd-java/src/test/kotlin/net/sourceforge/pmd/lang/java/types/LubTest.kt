@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
 import java.io.Serializable
 
 /**
@@ -23,34 +25,26 @@ class LubTest : FunSpec({
 
             test("Test generic supertype set") {
 
-                `t_ArrayList{Integer}`.superTypeSet shouldBe setOf(
-                        `t_ArrayList{Integer}`,
-                        `t_AbstractList{Integer}`,
-                        `t_AbstractCollection{Integer}`,
-                        ts.OBJECT,
-                        `t_List{Integer}`,
-                        `t_Collection{Integer}`,
-                        `t_Iterable{Integer}`,
-                        java.util.RandomAccess::class.decl,
-                        ts.CLONEABLE,
-                        ts.SERIALIZABLE
+                GenericSub::class[int.box()].superTypeSet shouldBe setOf(
+                        GenericSub::class[int.box()],
+                        GenericSuper::class[int.box()],
+                        I3::class.decl,
+                        I2::class[I1::class.decl],
+                        I1::class.decl,
+                        ts.OBJECT
                 )
 
             }
 
             test("Test raw generic supertype set erased") {
 
-                t_ArrayList.superTypeSet shouldBe setOf(
-                        t_ArrayList,
-                        t_AbstractList,
-                        t_AbstractCollection,
-                        ts.OBJECT,
-                        t_List,
-                        t_Collection,
-                        t_Iterable,
-                        ts.erasedType(ts.getClassSymbol(java.util.RandomAccess::class.java)),
-                        ts.CLONEABLE,
-                        ts.SERIALIZABLE
+                GenericSub::class.raw.superTypeSet shouldBe setOf(
+                        GenericSub::class.raw,
+                        GenericSuper::class.raw,
+                        ts.forceErase(I3::class.decl),
+                        I2::class.raw,
+                        ts.forceErase(I1::class.decl),
+                        ts.OBJECT
                 )
 
             }
@@ -86,21 +80,20 @@ class LubTest : FunSpec({
 
             test("Test lub with related type arguments") {
 
-                lub(`t_List{Integer}`, `t_List{Number}`) shouldBe `t_List{? extends Number}`
-                lub(`t_List{Integer}`, `t_List{? extends Number}`) shouldBe `t_List{? extends Number}`
+                lub(GenericSub::class[t_Integer], GenericSub::class[t_Number]) shouldBe GenericSub::class[`?` extends t_Number]
+                lub(GenericSub::class[t_Integer], GenericSub::class[`?` extends t_Number]) shouldBe GenericSub::class[`?` extends t_Number]
             }
 
             test("Test lub with identical type arguments") {
 
-                lub(`t_ArrayList{Integer}`, `t_LinkedList{Integer}`) shouldBe (`t_AbstractList{Integer}` * ts.CLONEABLE * ts.SERIALIZABLE)
+                lub(GenericSub::class[t_Integer], GenericSub2::class[t_Integer]) shouldBe (GenericSuper::class[t_Integer] * I2::class[`?`])
             }
 
             test("Test simple lub") {
 
-                lub(java.lang.String::class.decl,
-                        java.lang.Integer::class.decl) shouldBe (
-                        ts.SERIALIZABLE * comparableOf(`?` extends (ts.SERIALIZABLE * comparableOf(`?`)))
-                        )
+                lub(Sub1::class.decl, Sub2::class.decl) shouldBe (
+                        I1::class.decl * comparableOf(`?` extends (I1::class.decl * comparableOf(`?`)))
+                )
             }
 
             test("Test lub of one type") {
@@ -113,16 +106,14 @@ class LubTest : FunSpec({
 
             test("Test lub with interface intersection") {
 
-                // this example recurses into lub(Comparable<String>, Comparable<Number>), at which point
-                // we ask lcta(String, Number) again, meaning it's a good test for recursion breaking
+                // this example recurses into lub(Comparable<Sub1>, Comparable<Sub2>), at which point
+                // we ask lcta(Sub1, Sub2) again, meaning it's a good test for recursion breaking
 
-                lub(`t_List{Integer}`, `t_List{Number}`) shouldBe `t_List{? extends Number}`
+                // List<? extends I1 & Comparable<?>>
 
-                // List<? extends Serializable & Comparable<?>>
+                val result = List::class[`?` extends (I1::class.decl * comparableOf(`?`))]
 
-                val result = List::class[`?` extends (Serializable::class.decl * java.lang.Comparable::class[`?`])]
-
-                lub(`t_List{String}`, `t_List{Integer}`) shouldBe result
+                lub(t_List[Sub1::class.decl], t_List[Sub2::class.decl]) shouldBe result
 
             }
         }

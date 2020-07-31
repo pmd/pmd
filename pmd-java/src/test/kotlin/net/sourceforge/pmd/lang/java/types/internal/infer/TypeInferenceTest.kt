@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.typeresolution.testdata.LocalGenericClass
 import java.util.*
@@ -65,8 +66,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test method invoc lub of params") {
 
-        asIfIn(LocalGenericClass::class.java)
-
         val call = parseExpr<ASTMethodCall>("$jutil.Arrays.asList(1, 2.0)")
 
         val arraysClass = with(call.typeDsl) { Arrays::class.decl }
@@ -76,9 +75,12 @@ class TypeInferenceTest : ProcessorTestSpec({
         call.computeInferenceResult().also {
             it.isVarargs shouldBe true
             val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
+                // we can't hardcode the lub result because it is JDK specific
+                val `t_lub(Double, Integer)` = ts.lub(double.box(), int.box())
+
                 Pair(
-                        gen.`t_lub(Double, Integer)`,
-                        gen.t_List.parameterize(gen.`t_lub(Double, Integer)`)
+                        `t_lub(Double, Integer)`,
+                        gen.t_List[`t_lub(Double, Integer)`]
                 )
             }
 
@@ -397,7 +399,10 @@ class TypeInferenceTest : ProcessorTestSpec({
                 methodCall("reduce") {
 
 
-                    val serialLub = "java.io.Serializable & $jlang.Comparable<? extends java.io.Serializable & $jlang.Comparable<?>>"
+                    // we can't hardcode the lub because it is jdk specific
+                    val serialLub = with (it.typeDsl) {
+                        ts.lub(gen.t_String, gen.t_Integer)
+                    }
 
                     it.typeMirror.toString() shouldBe stringBuilder
                     it.methodType.toString() shouldBe "$jutil.stream.Stream<$serialLub>.<U> reduce($stringBuilder, $juf.BiFunction<$stringBuilder, ? super $serialLub, $stringBuilder>, $juf.BinaryOperator<$stringBuilder>) -> $stringBuilder"
