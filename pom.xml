@@ -346,9 +346,10 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <sourceDirectories>
+                            <!-- this sets only src/main/java and ignores e.g. target/generated-sources/javacc -->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                        <resourceIncludes>**/*.properties,**/*.less,**/*.kt</resourceIncludes>
                     </configuration>
                 </plugin>
                 <plugin>
