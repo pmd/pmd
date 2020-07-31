@@ -9,7 +9,7 @@ import java.lang.ref.SoftReference;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-class SoftClassReference {
+final class SoftClassReference {
 
     private final Loader loader;
     private final String internalName;
@@ -24,6 +24,14 @@ class SoftClassReference {
         this.observedArity = observedArity;
     }
 
+    SoftClassReference(AsmSymbolResolver resolver, ClassStub stub, String internalName) {
+        this.resolver = resolver;
+        this.loader = stub.getLoader();
+        this.internalName = internalName;
+        this.observedArity = 0;
+        this.ref = new SoftReference<>(stub);
+    }
+
     @SuppressWarnings("PMD.AssignmentInOperand")
     @NonNull ClassStub get() {
         ClassStub c;
@@ -32,5 +40,10 @@ class SoftClassReference {
             ref = new SoftReference<>(c);
         }
         return c;
+    }
+
+    @Override
+    public String toString() {
+        return internalName + " " + loader;
     }
 }

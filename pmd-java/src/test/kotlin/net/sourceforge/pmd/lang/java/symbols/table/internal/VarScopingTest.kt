@@ -23,7 +23,7 @@ class VarScopingTest : ProcessorTestSpec({
 
             // TODO test with static import, currently there are no "unresolved field" symbols
 
-            class Outer extends Sup {
+            class Outer<T> extends Sup {
                 private T f;
 
                 {

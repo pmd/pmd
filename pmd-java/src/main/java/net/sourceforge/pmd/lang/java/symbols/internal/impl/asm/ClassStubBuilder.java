@@ -16,11 +16,13 @@ class ClassStubBuilder extends ClassVisitor {
 
     private final ClassStub myStub;
     private final String myInternalName;
+    private final AsmSymbolResolver resolver;
 
-    ClassStubBuilder(ClassStub stub) {
+    ClassStubBuilder(ClassStub stub, AsmSymbolResolver resolver) {
         super(AsmSymbolResolver.ASM_API_V);
         this.myStub = stub;
         this.myInternalName = stub.getInternalName();
+        this.resolver = resolver;
     }
 
     @Override
@@ -50,6 +52,7 @@ class ClassStubBuilder extends ClassVisitor {
                                              innerInternalName,
                                              new NoUrlLoader(myStub.getResolver(), innerInternalName),
                                              ClassStub.UNKNOWN_ARITY);
+            resolver.registerKnown(innerInternalName, member);
             member.setModifiers(access, false);
             myStub.addMemberClass(member);
         } else if (myInternalName.equals(innerInternalName) && outerName != null) {

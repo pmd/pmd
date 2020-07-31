@@ -9,9 +9,8 @@ import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.property.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.SymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
-import net.sourceforge.pmd.lang.java.symbols.table.internal.HeaderScopesTest
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import java.io.File
 import java.io.IOException
@@ -21,7 +20,7 @@ import java.util.*
 
 
 val testSymFactory: SymbolFactory = testTypeSystem.symbols()
-val testSymResolver = ClasspathSymbolResolver(HeaderScopesTest::class.java.classLoader, testSymFactory)
+val testSymResolver: SymbolResolver = testTypeSystem.bootstrapResolver()
 
 fun classSym(klass: Class<*>?) = testTypeSystem.getClassSymbol(klass)
 

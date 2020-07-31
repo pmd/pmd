@@ -14,6 +14,7 @@ import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import org.objectweb.asm.Opcodes
+import kotlin.test.assertSame
 
 /**
  * @author Clément Fournier
@@ -96,5 +97,15 @@ class AsmLoaderTest : FunSpec({
         val inner = symLoader.resolveClassFromBinaryName("$outerName\$ProtectedStatic")!!
 
         inner.modifiers shouldBe (Opcodes.ACC_PROTECTED or Opcodes.ACC_STATIC)
+    }
+
+    test("Canonical name") {
+
+        val outerName = Statics::class.java.name
+
+        val inner = symLoader.resolveClassFromCanonicalName("$outerName.ProtectedStatic")!!
+        val second = symLoader.resolveClassFromBinaryName("$outerName\$ProtectedStatic")!!
+
+        assertSame(inner, second)
     }
 })

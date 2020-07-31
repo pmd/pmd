@@ -68,7 +68,6 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.TypesFromAst;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;

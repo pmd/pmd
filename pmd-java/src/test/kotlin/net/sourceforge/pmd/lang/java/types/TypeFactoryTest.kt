@@ -76,6 +76,6 @@ private class Foo<T>
  * Note: [T] must not contain type variables.
  */
 private inline fun <reified T> mirrorOf(): JTypeMirror =
-        TypesFromReflection.fromReflect(testTypeSystem, object : TypeLiteral<T>() {}.type, LexicalScope.EMPTY, Substitution.EMPTY)
+        TypesFromReflection.fromReflect(testTypeSystem, object : TypeLiteral<T>() {}.type, LexicalScope.EMPTY, Substitution.EMPTY)!!
 
 

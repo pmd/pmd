@@ -32,7 +32,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.asm.AsmSymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectedSymbols;
+import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
+import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 
@@ -44,6 +45,12 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
  *
  * <p>Some special types are presented as constant fields, eg {@link #OBJECT}
  * or {@link #NULL_TYPE}. These are always comparable by reference.
+ *
+ * <p>The lifetime of a type system is the analysis: it is shared by
+ * all compilation units.
+ * TODO this is hacked together by comparing the ClassLoader, but this
+ *  should be in the language instance
+ *
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeSystem {
@@ -180,8 +187,7 @@ public final class TypeSystem {
         JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("/*unresolved*/", 0);
         UNRESOLVED_TYPE = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
 
-        JClassSymbol primitiveVoidSym = ReflectedSymbols.getClassSymbol(symbolFactory, void.class);
-        assert primitiveVoidSym != null : "void";
+        JClassSymbol primitiveVoidSym = new VoidSymbol(this);
         NO_TYPE = new SentinelType(this, "void", primitiveVoidSym);
 
         // reuse instances for common types
@@ -249,7 +255,7 @@ public final class TypeSystem {
 
     @NonNull
     private JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
-        return new JPrimitiveType(this, kind, new PrimitiveSymbol(this, kind), getBootStrapSymbol(box));
+        return new JPrimitiveType(this, kind, new RealPrimitiveSymbol(this, kind), getBootStrapSymbol(box));
     }
 
 
@@ -257,8 +263,8 @@ public final class TypeSystem {
 
     /**
      * Returns the class symbol for the given reflected class. This asks
-     * the classloader of this type system, but never returns null. Returns
-     * null if the parameter is null.
+     * the classloader of this type system. Returns null if the parameter
+     * is null, or the class is not available in the analysis classpath.
      *
      * @param clazz Class
      */
@@ -276,11 +282,7 @@ public final class TypeSystem {
             return symbols().makeArraySymbol(getClassSymbol(clazz.getComponentType()));
         }
 
-        JClassSymbol classLoaderPreferred = resolver.resolveClassFromBinaryName(clazz.getName());
-        if (classLoaderPreferred != null) {
-            return classLoaderPreferred;
-        }
-        return ReflectedSymbols.getClassSymbol(symbols(), clazz);
+        return resolver.resolveClassFromBinaryName(clazz.getName());
     }
 
     /**

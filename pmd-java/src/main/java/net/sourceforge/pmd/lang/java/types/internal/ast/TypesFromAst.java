@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.types;
+package net.sourceforge.pmd.lang.java.types.internal.ast;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -27,13 +26,16 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Builds type mirrors from AST nodes.
  */
-@InternalApi
-public final class TypesFromAst {
+final class TypesFromAst {
 
     private TypesFromAst() {
         // utility class

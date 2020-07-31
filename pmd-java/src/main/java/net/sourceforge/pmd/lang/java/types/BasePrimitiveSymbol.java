@@ -22,28 +22,71 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
-final class PrimitiveSymbol implements JClassSymbol {
+abstract class BasePrimitiveSymbol implements JClassSymbol {
+
     private final TypeSystem ts;
-    private final PrimitiveTypeKind kind;
 
-    PrimitiveSymbol(TypeSystem ts, PrimitiveTypeKind kind) {
+    BasePrimitiveSymbol(TypeSystem ts) {
         this.ts = ts;
-        this.kind = kind;
     }
 
-    @Override
-    public @NonNull String getBinaryName() {
-        return kind.getSimpleName();
+    static final class VoidSymbol extends BasePrimitiveSymbol {
+
+        VoidSymbol(TypeSystem ts) {
+            super(ts);
+        }
+
+        @Override
+        public @NonNull String getBinaryName() {
+            return "void";
+        }
+
+        @Override
+        public String getCanonicalName() {
+            return "void";
+        }
+
+        @Override
+        public @NonNull String getSimpleName() {
+            return "void";
+        }
+
+        @Override
+        public Class<?> getJvmRepr() {
+            return void.class;
+        }
     }
 
-    @Override
-    public @Nullable String getCanonicalName() {
-        return kind.getSimpleName();
-    }
 
-    @Override
-    public @NonNull String getSimpleName() {
-        return kind.getSimpleName();
+    static final class RealPrimitiveSymbol extends BasePrimitiveSymbol {
+
+        private final PrimitiveTypeKind kind;
+
+        RealPrimitiveSymbol(TypeSystem ts, PrimitiveTypeKind kind) {
+            super(ts);
+            this.kind = kind;
+        }
+
+        @Override
+        public @NonNull String getBinaryName() {
+            return kind.getSimpleName();
+        }
+
+        @Override
+        public @Nullable String getCanonicalName() {
+            return kind.getSimpleName();
+        }
+
+        @Override
+        public @NonNull String getSimpleName() {
+            return kind.getSimpleName();
+        }
+
+
+        @Override
+        public @Nullable Class<?> getJvmRepr() {
+            return kind.jvmRepr();
+        }
     }
 
     @Override
@@ -134,11 +177,6 @@ final class PrimitiveSymbol implements JClassSymbol {
     @Override
     public boolean isAnonymousClass() {
         return false;
-    }
-
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return kind.jvmRepr();
     }
 
     @Override

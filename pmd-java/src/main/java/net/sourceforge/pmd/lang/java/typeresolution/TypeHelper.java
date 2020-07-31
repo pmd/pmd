@@ -51,7 +51,7 @@ public final class TypeHelper {
         // utility class
     }
 
-    public static boolean symbolEquals(JTypeMirror type, Class<?> someClass) {
+    public static boolean symbolEquals(Class<?> someClass, JTypeMirror type) {
         Objects.requireNonNull(someClass);
         Objects.requireNonNull(type);
         JTypeDeclSymbol symbol = type.getSymbol();

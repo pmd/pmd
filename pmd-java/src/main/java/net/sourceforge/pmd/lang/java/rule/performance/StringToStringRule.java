@@ -19,7 +19,7 @@ public class StringToStringRule extends AbstractJavaRule {
             ASTExpression qualifier = node.getQualifier();
             if (qualifier != null
                     && !(qualifier instanceof ASTTypeExpression)
-                    && TypeHelper.symbolEquals(qualifier.getTypeMirror(), String.class)) {
+                    && TypeHelper.symbolEquals(String.class, qualifier.getTypeMirror())) {
                 addViolation(data, node);
             }
         }

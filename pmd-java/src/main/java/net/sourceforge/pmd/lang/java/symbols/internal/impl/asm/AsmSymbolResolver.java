@@ -99,6 +99,12 @@ public class AsmSymbolResolver implements SymbolResolver {
         return resolveFromInternalNameCannotFail(internalName, 0);
     }
 
+    // this is for inner + parent classes
+    void registerKnown(@NonNull String internalName, ClassStub innerClass) {
+        SoftClassReference softRef = new SoftClassReference(this, innerClass, internalName);
+        knownStubs.put(internalName, softRef);
+    }
+
     @NonNull JClassSymbol resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         assert internalName != null : "Null name";
         return knownStubs.computeIfAbsent(internalName, iname -> {

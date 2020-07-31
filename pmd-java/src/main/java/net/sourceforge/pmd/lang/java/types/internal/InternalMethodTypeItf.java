@@ -14,8 +14,7 @@ import net.sourceforge.pmd.lang.java.types.SubstVar;
 
 /**
  * Internal API of {@link JMethodSig}. These methods are internal to
- * the inference framework, technically they could be removed entirely
- * if there was a standard factory for {@link JMethodSig}.
+ * the inference framework.
  */
 public interface InternalMethodTypeItf {
 

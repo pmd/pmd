@@ -41,6 +41,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     private final AsmSymbolResolver resolver;
     private final String internalName;
+    private final Loader loader;
 
     private Names names;        // lazy (doesn't need parsing)
 
@@ -63,6 +64,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
     ClassStub(AsmSymbolResolver resolver, String internalName, @NonNull Loader loader, int observedArity) {
         this.resolver = resolver;
         this.internalName = internalName;
+        this.loader = loader;
 
         this.parseLock = new ParseLock() {
             @Override
@@ -70,7 +72,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 try (InputStream instream = loader.getInputStream()) {
                     if (instream != null) {
                         ClassReader classReader = new ClassReader(instream);
-                        ClassStubBuilder builder = new ClassStubBuilder(ClassStub.this);
+                        ClassStubBuilder builder = new ClassStubBuilder(ClassStub.this, resolver);
                         classReader.accept(builder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
                         return true;
                     } else {
@@ -100,6 +102,10 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 return signature != null && enclosingInfo != null;
             }
         };
+    }
+
+    Loader getLoader() {
+        return loader;
     }
 
     @Override
