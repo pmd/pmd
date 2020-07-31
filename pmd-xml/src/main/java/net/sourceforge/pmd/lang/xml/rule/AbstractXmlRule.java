@@ -23,6 +23,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  * {@link #visit(XmlNode, RuleContext)} and can call <code>super</code> to visit
  * children.
  */
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
     public static final BooleanProperty COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
