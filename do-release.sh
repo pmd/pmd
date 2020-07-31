@@ -228,6 +228,8 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Wait until the new version is synced to maven central and appears in as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
 echo "*   Send out an announcement mail to the mailing list:"
 echo
