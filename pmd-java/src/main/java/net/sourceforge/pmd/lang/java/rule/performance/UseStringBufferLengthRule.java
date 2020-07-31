@@ -56,6 +56,8 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTName decl, Object data) {
+        super.visit(decl, data);
+
         if (!decl.getImage().endsWith("toString")) {
             return data;
         }

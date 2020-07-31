@@ -32,31 +32,38 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        return init(node, data);
+        preVisit();
+        super.visit(node, data);
+        postVisit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        return init(node, data);
+        preVisit();
+        super.visit(node, data);
+        postVisit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-        return init(node, data);
+        preVisit();
+        super.visit(node, data);
+        postVisit(node, data);
+        return data;
     }
 
-    private Object init(JavaNode node, Object data) {
+    private void preVisit() {
         stack.push(count);
         count = NumericConstants.ZERO;
+    }
 
-        node.childrenAccept(this, data);
-
+    private void postVisit(JavaNode node, Object data) {
         if (count > 1) {
             addViolation(data, node);
         }
         count = stack.pop();
-
-        return data;
     }
 
     @Override

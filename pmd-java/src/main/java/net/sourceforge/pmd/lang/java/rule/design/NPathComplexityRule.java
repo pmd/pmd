@@ -53,8 +53,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         reportLevel = getReportLevel();
 
-        super.visit(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
 
@@ -72,7 +71,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (!JavaOperationMetricKey.NPATH.supports(node)) {
-            return data;
+            return super.visit(node, data);
         }
 
         int npath = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NPATH, node);
@@ -83,7 +82,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
                                                    String.valueOf(reportLevel)});
         }
 
-        return data;
+        return super.visit(node, data);
     }
 }
 

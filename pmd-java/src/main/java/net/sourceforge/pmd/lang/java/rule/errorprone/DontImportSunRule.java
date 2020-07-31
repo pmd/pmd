@@ -9,6 +9,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DontImportSunRule extends AbstractJavaRule {
 
+    public DontImportSunRule() {
+        addRuleChainVisit(ASTImportDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         String img = node.getChild(0).getImage();

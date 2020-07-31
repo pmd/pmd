@@ -83,6 +83,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTMethodDeclaration node, final Object data) {
+        super.visit(node, data);
+
         // Is this a clone method?
         final ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
         if (!isCloneMethod(methodDeclarator)) {

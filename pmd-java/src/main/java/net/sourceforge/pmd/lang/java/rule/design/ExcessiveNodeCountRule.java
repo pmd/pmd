@@ -20,7 +20,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  *
  * <p>All others will return 0 (or the sum of counted nodes underneath.)</p>
  */
-
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class ExcessiveNodeCountRule extends AbstractStatisticalJavaRule {
     private Class<?> nodeClass;
 

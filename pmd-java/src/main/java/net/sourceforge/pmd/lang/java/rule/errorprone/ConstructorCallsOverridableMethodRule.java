@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
@@ -623,6 +622,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private EvalPackage getCurrentEvalPackage() {
+        if (evalPackages.isEmpty()) {
+            return NULL_EVAL_PACKAGE;
+        }
         return evalPackages.get(evalPackages.size() - 1);
     }
 
@@ -641,20 +643,20 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         evalPackages.clear();
     }
 
-    /**
-     * This check must be evaluated independently for each class. Inner classes
-     * get their own EvalPackage in order to perform independent evaluation.
-     */
-    private Object visitClassDec(ASTClassOrInterfaceDeclaration node, Object data) {
+    private void prepareCurrentEvalPackage(ASTClassOrInterfaceDeclaration node) {
         String className = node.getImage();
-        if (!node.isFinal()) {
+        if (!node.isFinal() && !node.isInterface()) {
             putEvalPackage(new EvalPackage(className));
         } else {
             putEvalPackage(NULL_EVAL_PACKAGE);
         }
-        // store any errors caught from other passes.
-        super.visit(node, data);
+    }
 
+    /**
+     * This check must be evaluated independently for each class. Inner classes
+     * get their own EvalPackage in order to perform independent evaluation.
+     */
+    private void checkClassDec(Object data) {
         // skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             // evaluate danger of all methods in class, this method will return
@@ -704,9 +706,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 }
             }
         }
-        // finished evaluating this class, move up a level
-        removeCurrentEvalPackage();
-        return data;
     }
 
     /**
@@ -854,29 +853,17 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
-        // just skip Enums
-        return data;
-    }
-
     /**
      * This check must be evaluated independently for each class. Inner classes
      * get their own EvalPackage in order to perform independent evaluation.
      */
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (!node.isInterface()) {
-            return visitClassDec(node, data);
-        } else {
-            putEvalPackage(NULL_EVAL_PACKAGE);
-            // interface may have inner
-            // classes, possible? if not just
-            // skip whole interface
-            Object o = super.visit(node, data);
-            removeCurrentEvalPackage();
-            return o;
-        }
+        prepareCurrentEvalPackage(node);
+        super.visit(node, data);
+        checkClassDec(data);
+        removeCurrentEvalPackage();
+        return data;
     }
 
     /**

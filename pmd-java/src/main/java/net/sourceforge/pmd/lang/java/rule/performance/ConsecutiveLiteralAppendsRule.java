@@ -91,6 +91,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     public ConsecutiveLiteralAppendsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
     @Override

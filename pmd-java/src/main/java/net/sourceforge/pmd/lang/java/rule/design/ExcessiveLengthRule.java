@@ -33,6 +33,6 @@ public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
             addDataPoint(point);
         }
 
-        return node.childrenAccept(this, data);
+        return super.visit(node, data);
     }
 }

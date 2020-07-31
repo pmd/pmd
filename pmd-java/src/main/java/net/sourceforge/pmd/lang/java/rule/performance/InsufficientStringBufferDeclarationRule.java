@@ -53,6 +53,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     // as specified in StringBuffer and StringBuilder
     public static final int DEFAULT_BUFFER_SIZE = 16;
 
+    public InsufficientStringBufferDeclarationRule() {
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
+    }
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.getNameDeclaration() == null
