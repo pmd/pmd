@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * Wraps a {@link ASTPattern} node but presents the interface of {@link ASTExpression}.
@@ -57,12 +54,4 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode implements 
         return false;
     }
 
-    @Override
-    public @Nullable JavaTypeDefinition getTypeDefinition() {
-        ASTPattern pattern = getPattern();
-        if (pattern instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeDefinition();
-        }
-        return null;
-    }
 }

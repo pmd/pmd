@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
@@ -188,8 +187,7 @@ public final class JavaAstProcessor {
                                           LanguageVersion languageVersion,
                                           SemanticChecksLogger logger) {
 
-        ClassLoader cloaderImpl = PMDASMClassLoader.getInstance(classLoader);
-        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(cloaderImpl, TypeSystem::new);
+        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
         return new JavaAstProcessor(
             typeSystem,
             typeSystem.bootstrapResolver(),

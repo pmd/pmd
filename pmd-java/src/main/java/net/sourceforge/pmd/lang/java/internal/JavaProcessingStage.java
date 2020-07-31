@@ -59,7 +59,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             // removed because of incompatibilities with current AST
-            //            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
 

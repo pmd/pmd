@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 
@@ -19,17 +17,10 @@ import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
  */
 abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
-    private JavaTypeDefinition typeDefinition;
     protected JTypeMirror typeMirror;
 
     AbstractJavaTypeNode(int i) {
         super(i);
-    }
-
-    @Override
-    @Nullable
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
     }
 
     @Override
@@ -53,10 +44,6 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
 
     void setTypeMirror(JTypeMirror mirror) {
         typeMirror = mirror;
-    }
-
-    void setTypeDefinition(@Nullable JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
     }
 
 

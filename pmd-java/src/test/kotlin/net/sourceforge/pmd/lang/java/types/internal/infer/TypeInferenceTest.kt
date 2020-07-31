@@ -16,9 +16,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
-import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.typeresolution.testdata.LocalGenericClass
 import java.util.*
 import java.util.function.Supplier
 
@@ -45,8 +43,6 @@ class TypeInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test method invoc resolution") {
-
-        asIfIn(LocalGenericClass::class.java)
 
         val call = parseExpr<ASTMethodCall>("$jutil.Arrays.asList(\"a\")")
 

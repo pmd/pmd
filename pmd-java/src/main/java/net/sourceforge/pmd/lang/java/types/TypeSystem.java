@@ -284,6 +284,36 @@ public final class TypeSystem {
     }
 
     /**
+     * Returns a symbol for the binary name. Returns null if the name is
+     * null or the symbol is not found on the classpath. The class must
+     * not be an array.
+     *
+     * @param binaryName Binary name
+     *
+     * @return A symbol, or null
+     *
+     * @throws IllegalArgumentException If the
+     */
+    public @Nullable JClassSymbol getClassSymbol(String binaryName) {
+        if (binaryName == null) {
+            return null;
+        }
+        if ("void".equals(binaryName)) {
+            return (JClassSymbol) NO_TYPE.getSymbol();
+        }
+        PrimitiveTypeKind kind = PrimitiveTypeKind.fromName(binaryName);
+        if (kind != null) { // void
+            return getPrimitive(kind).getSymbol();
+        }
+
+        if (!AssertionUtil.isValidJavaPackageName(binaryName)) {
+            throw new IllegalArgumentException("Not a binary name '" + binaryName + "'");
+        }
+
+        return resolver.resolveClassFromBinaryName(binaryName);
+    }
+
+    /**
      * Returns a type mirror for the given symbol. If the symbol declares
      * type parameters, then the resulting type is raw (differs from the
      * behaviour of {@link #declaration(JClassSymbol)}), meaning all its

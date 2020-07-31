@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
-    private ClassTypeResolver classTypeResolver;
     private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
@@ -87,7 +86,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     @InternalApi
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
-        return classTypeResolver;
+        return new ClassTypeResolver();
     }
 
     @Override
@@ -96,12 +95,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return symbolTable;
     }
 
-
-    @InternalApi
-    @Deprecated
-    public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
-        this.classTypeResolver = classTypeResolver;
-    }
 
     @Override
     public TypeSystem getTypeSystem() {

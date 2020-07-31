@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -175,12 +174,6 @@ public final class InternalApiBridge {
 
     public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
-    }
-
-    public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
-        if (node instanceof AbstractJavaTypeNode) {
-            ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
-        }
     }
 
 }

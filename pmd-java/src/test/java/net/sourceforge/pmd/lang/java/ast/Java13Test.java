@@ -7,13 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-@Ignore("those tests depend on type resolution")
 public class Java13Test {
 
 

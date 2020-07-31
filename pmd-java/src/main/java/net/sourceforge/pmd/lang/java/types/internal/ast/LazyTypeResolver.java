@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
@@ -45,6 +46,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -98,10 +100,6 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         return ts.NO_TYPE;
     }
 
-    @Override
-    public JTypeMirror visit(ASTPatternExpression node, Void data) {
-        return ts.NO_TYPE;
-    }
 
     @Override
     public JTypeMirror visit(ASTVariableDeclarator node, Void data) {
@@ -336,6 +334,15 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         default:
             throw new IllegalStateException("Unknown operator for " + node);
         }
+    }
+
+    @Override
+    public JTypeMirror visit(ASTPatternExpression node, Void data) {
+        ASTPattern pattern = node.getPattern();
+        if (pattern instanceof ASTTypeTestPattern) {
+            return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeMirror();
+        }
+        return ts.NO_TYPE;
     }
 
     @Override

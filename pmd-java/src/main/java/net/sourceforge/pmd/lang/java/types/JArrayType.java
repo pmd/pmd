@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * An array type (1 dimension). Multi-level arrays have an array type
@@ -29,11 +28,28 @@ public interface JArrayType extends JTypeMirror {
     JArrayType getErasure();
 
 
-    /** Returns the component type of the array, as described on {@link JavaTypeDefinition#getComponentType()}. */
+
+    /**
+     * Gets the component type of this array. This is the same type as
+     * the array, stripped of a single array dimensions, e.g. the component
+     * type of {@code int[][][]} is {@code int[][]}.
+     *
+     * @return The component type of this array type
+     *
+     * @see #getElementType()
+     */
     JTypeMirror getComponentType();
 
 
-    /** Returns the element type of the array, as described on {@link JavaTypeDefinition#getElementType()}. */
+    /**
+     * Gets the element type of this array. This is the same type as
+     * the array, stripped of all array dimensions, e.g. the element
+     * type of {@code int[][][]} is {@code int}.
+     *
+     * @return The element type of this array type
+     *
+     * @see #getComponentType()
+     */
     default JTypeMirror getElementType() {
         JTypeMirror c = this;
         while (c instanceof JArrayType) {

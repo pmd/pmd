@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -63,20 +62,6 @@ public interface TypeNode extends JavaNode {
         JTypeDeclSymbol symbol = tm.getSymbol();
         return symbol == null ? null : symbol.getJvmRepr();
     }
-
-
-    /**
-     * Get the TypeDefinition associated with this node. The Class object
-     * contained in the TypeDefinition will always be equal to that which
-     * is returned by <code>getType()</code>.
-     *
-     * @return The TypeDefinition, may return <code>null</code>
-     *
-     * @deprecated This is not implemented anymore, always returns null
-     */
-    @Nullable
-    @Deprecated
-    JavaTypeDefinition getTypeDefinition();
 
 
 }

@@ -21,6 +21,10 @@ public final class AssertionUtil {
         return PACKAGE_PATTERN.matcher(name).matches();
     }
 
+    public static boolean isJavaBinaryName(CharSequence name) {
+        return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
+    }
+
     /**
      * Returns true if the charsequence is a valid java identifier.
      *

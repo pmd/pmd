@@ -19,6 +19,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 /**
  * Keeps track of the types encountered in a ASTCompilationUnit
  */
+@Deprecated
 public class TypeSet {
 
     private final PMDASMClassLoader pmdClassLoader;

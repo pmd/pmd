@@ -89,12 +89,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 return false;
             }
 
-            // if we could resolve the first one, assume we could resolve the second
-            if (myTypeNode.getTypeDefinition() != null
-                && !myTypeNode.getTypeDefinition().equals(otherTypeNode.getTypeDefinition())) {
-                return false;
-            }
-
             // fallback on simple comparison of type images
             // this can be fooled by one method using "String"
             // and the other method using "java.lang.String"

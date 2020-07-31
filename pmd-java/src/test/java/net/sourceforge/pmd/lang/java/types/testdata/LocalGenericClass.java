@@ -1,10 +1,14 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.typeresolution.testdata;
+package net.sourceforge.pmd.lang.java.types.testdata;
 
 public class LocalGenericClass {
+
+    private LocalGenericClass() {
+
+    }
 
     public static <T> void localClassInGeneric() {
         class MyLocalClass implements MyCombiner<T, Optional<T>, MyLocalClass> {
