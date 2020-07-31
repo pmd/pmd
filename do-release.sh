@@ -122,7 +122,9 @@ echo "Press enter to continue..."
 read
 
 # install bundles needed for rendering release notes
-bundle install --with=release_notes_preprocessing --path vendor/bundle
+bundle config set --local path vendor/bundle
+bundle config set --local with release_notes_preprocessing
+bundle install
 
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
