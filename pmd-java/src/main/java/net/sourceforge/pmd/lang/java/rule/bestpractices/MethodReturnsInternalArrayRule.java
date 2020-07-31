@@ -35,7 +35,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            return data;
+            return super.visit(node, data);
         }
         return super.visit(node, data);
     }
@@ -43,7 +43,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (!method.getResultType().returnsArray() || method.isPrivate()) {
-            return data;
+            return super.visit(method, data);
         }
         List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class);
         ASTAnyTypeDeclaration td = method.getFirstParentOfType(ASTAnyTypeDeclaration.class);
@@ -80,7 +80,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
                 }
             }
         }
-        return data;
+        return super.visit(method, data);
     }
 
     private boolean hasClone(ASTReturnStatement ret, String varName) {

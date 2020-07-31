@@ -10,9 +10,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class DontImportJavaLangRule extends AbstractJavaRule {
     private static final String IMPORT_JAVA_LANG = "java.lang";
 
+    public DontImportJavaLangRule() {
+        addRuleChainVisit(ASTImportDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-
         if (node.isStatic()) {
             return data;
         }

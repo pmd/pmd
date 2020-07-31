@@ -17,6 +17,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 @Deprecated
 public class SymbolTableTestRule extends AbstractJavaRule {
 
+    public SymbolTableTestRule() {
+        addRuleChainVisit(ASTFieldDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (ASTVariableDeclaratorId declaration : node.findDescendantsOfType(ASTVariableDeclaratorId.class)) {

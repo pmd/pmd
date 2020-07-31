@@ -112,7 +112,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (!checkMembers) {
-            return data;
+            return super.visit(node, data);
         }
         boolean isStatic = node.isStatic();
         boolean isFinal = node.isFinal();
@@ -125,26 +125,28 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
             isStatic = true;
             isFinal = true;
         }
-        return checkVariableDeclarators(node.isStatic() ? staticPrefixes : memberPrefixes,
+        checkVariableDeclarators(node.isStatic() ? staticPrefixes : memberPrefixes,
                 isStatic ? staticSuffixes : memberSuffixes, node, isStatic, isFinal, data);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         if (!checkLocals) {
-            return data;
+            return super.visit(node, data);
         }
-        return checkVariableDeclarators(localPrefixes, localSuffixes, node, false, node.isFinal(), data);
+        checkVariableDeclarators(localPrefixes, localSuffixes, node, false, node.isFinal(), data);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFormalParameters node, Object data) {
         if (!checkParameters) {
-            return data;
+            return super.visit(node, data);
         }
         ASTMethodDeclaration methodDeclaration = node.getFirstParentOfType(ASTMethodDeclaration.class);
         if (!checkNativeMethodParameters && methodDeclaration.isNative()) {
-            return data;
+            return super.visit(node, data);
         }
 
         for (ASTFormalParameter formalParameter : node.findChildrenOfType(ASTFormalParameter.class)) {
@@ -154,10 +156,10 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
                         variableDeclaratorId, data);
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
-    private Object checkVariableDeclarators(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
+    private void checkVariableDeclarators(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
             boolean isFinal, Object data) {
         for (ASTVariableDeclarator variableDeclarator : root.findChildrenOfType(ASTVariableDeclarator.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclarator
@@ -165,10 +167,9 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
                 checkVariableDeclaratorId(prefixes, suffixes, isStatic, isFinal, variableDeclaratorId, data);
             }
         }
-        return data;
     }
 
-    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, boolean isStatic,
+    private void checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, boolean isStatic,
             boolean isFinal, ASTVariableDeclaratorId variableDeclaratorId, Object data) {
 
         // Get the variable name
@@ -176,7 +177,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
         // Skip serialVersionUID
         if ("serialVersionUID".equals(varName)) {
-            return data;
+            return;
         }
 
         // Static finals should be uppercase
@@ -186,7 +187,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
                         "Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
                         new Object[] { varName });
             }
-            return data;
+            return;
         } else if (!isFinal) {
             String normalizedVarName = normalizeVariableName(varName, prefixes, suffixes);
 
@@ -201,7 +202,6 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
                         new Object[] { varName });
             }
         }
-        return data;
     }
 
     private String normalizeVariableName(String varName, List<String> prefixes, List<String> suffixes) {

@@ -13,22 +13,22 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnnecessaryReturnRule extends AbstractJavaRule {
 
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-
-        if (node.getResultType().isVoid()) {
-            super.visit(node, data);
-        }
-        return data;
+    public UnnecessaryReturnRule() {
+        addRuleChainVisit(ASTReturnStatement.class);
     }
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        if (node.getParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement
-                && node.getNthParent(3) instanceof ASTBlock && node.getNthParent(4) instanceof ASTMethodDeclaration) {
+        if (node.getNumChildren() == 0 && isDirectMethodStatement(node)) {
             addViolation(data, node);
         }
         return data;
     }
 
+    private boolean isDirectMethodStatement(ASTReturnStatement node) {
+        return node.getParent() instanceof ASTStatement
+                && node.getNthParent(2) instanceof ASTBlockStatement
+                && node.getNthParent(3) instanceof ASTBlock
+                && node.getNthParent(4) instanceof ASTMethodDeclaration;
+    }
 }

@@ -131,7 +131,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
                 imports.add(new ImportWrapper(importedType.getImage(), className, node));
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -143,11 +143,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTName node, Object data) {
         check(node);
-        return data;
+        return super.visit(node, data);
     }
 
     protected void check(Node node) {
-        if (imports.isEmpty()) {
+        if (imports.isEmpty() || node.getParent() instanceof ASTImportDeclaration) {
             return;
         }
         ImportWrapper candidate = getImportWrapper(node);

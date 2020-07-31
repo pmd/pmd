@@ -29,10 +29,10 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         if (node.isFinal()) {
-            return data;
+            return super.visit(node, data);
         }
         if (getProperty(IGNORE_FOR_EACH) && node.getParent() instanceof ASTForStatement) {
-            return data;
+            return super.visit(node, data);
         }
         Scope s = node.getScope();
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = s.getDeclarations(VariableNameDeclaration.class);
@@ -45,7 +45,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
                 addViolation(data, var.getAccessNodeParent(), var.getImage());
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
 }

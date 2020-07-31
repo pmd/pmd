@@ -33,7 +33,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            return data;
+            return super.visit(node, data);
         }
         return super.visit(node, data);
     }
@@ -52,7 +52,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 }
             }
         }
-        return data;
+        return super.visit(method, data);
     }
 
     private boolean containsExpectOrAssert(Node n,

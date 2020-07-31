@@ -41,18 +41,18 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         check(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
-            return data;
+            return super.visit(node, data);
         }
         if (!node.isNative() && !node.isAbstract() && !isSerializationMethod(node) && !hasOverrideAnnotation(node)) {
             check(node, data);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private boolean isSerializationMethod(ASTMethodDeclaration node) {
