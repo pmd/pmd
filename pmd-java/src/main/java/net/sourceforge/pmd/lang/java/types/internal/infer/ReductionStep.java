@@ -61,19 +61,19 @@ enum ReductionStep {
     CAPTURED(BoundKind.UPPER) {
         @Override
         public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
-            return t.isCaptured() &&
-                inferenceContext.areAllGround(union(t.getBounds(BoundKind.LOWER), t.getBounds(BoundKind.UPPER)));
+            return t.isCaptured()
+                && inferenceContext.areAllGround(union(t.getBounds(BoundKind.LOWER), t.getBounds(BoundKind.UPPER)));
         }
 
         @Override
         JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
-            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty() ?
-                                UPPER.solve(uv, infCtx) :
-                                infCtx.ts.OBJECT;
+            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty()
+                                ? UPPER.solve(uv, infCtx)
+                                : infCtx.ts.OBJECT;
 
-            JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty() ?
-                                LOWER.solve(uv, infCtx) :
-                                infCtx.ts.NULL_TYPE;
+            JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty()
+                                ? LOWER.solve(uv, infCtx)
+                                : infCtx.ts.NULL_TYPE;
 
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }

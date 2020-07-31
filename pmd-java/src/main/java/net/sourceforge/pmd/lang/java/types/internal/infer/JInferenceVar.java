@@ -34,7 +34,7 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
 
     private static final String[] NAMES = {
         "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν",
-        "ξ", "ο", "π", "ρ", "σ", "ς", "τ", "υ", "φ", "χ", "ψ", "ω"
+        "ξ", "ο", "π", "ρ", "σ", "ς", "τ", "υ", "φ", "χ", "ψ", "ω",
     };
 
     private final InferenceContext ctx;

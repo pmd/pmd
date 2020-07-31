@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl;
 class FakeTypeSymbol extends UnresolvedClassImpl {
 
 
-    public FakeTypeSymbol(SymbolFactory core, String name) {
+    FakeTypeSymbol(SymbolFactory core, String name) {
         super(core, null, name);
     }
 

@@ -80,7 +80,7 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             for (BoundKind k : boundsToCheck()) {
                 for (JTypeMirror b : ivar.getBounds(k)) {
-                    if (!checkBound(b, k, ctx)) {
+                    if (!checkBound(b, k)) {
                         throw ResolutionFailedException.incompatibleBound(ivar, myKind, myBound, k, b);
                     }
                 }
@@ -90,7 +90,7 @@ abstract class IncorporationAction {
         /**
          * Check compatibility between this bound and another.
          */
-        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind, InferenceContext ctx) {
+        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind) {
             // myKind != EQ => otherKind != myKind
 
             int compare = myKind.compareTo(otherKind);
@@ -152,7 +152,7 @@ abstract class IncorporationAction {
 
         @Override
         public void apply(InferenceContext ctx) {
-            if (inst!=null) {
+            if (inst != null) {
                 for (JInferenceVar freeVar : ctx.getFreeVars()) {
                     freeVar.substBounds(it -> isInstanceOfThisVar(it) ? inst : it);
                 }
@@ -162,7 +162,7 @@ abstract class IncorporationAction {
         }
 
         private boolean isInstanceOfThisVar(JTypeMirror it) {
-            return it == ivar
+            return it == ivar // NOPMD CompareObjectsWithEquals
                 || it instanceof JInferenceVar && ((JInferenceVar) it).getDelegate() == ivar;
         }
 

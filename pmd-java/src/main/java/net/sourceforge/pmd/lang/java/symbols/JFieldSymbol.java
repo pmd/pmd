@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.symbols;
 import java.lang.reflect.Modifier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a field declaration.
@@ -26,6 +27,14 @@ public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol 
         return Modifier.isFinal(getModifiers());
     }
 
+
+    /**
+     * Returns the compile-time value of this field if this is a compile-time constant.
+     * Otherwise returns null.
+     */
+    default @Nullable Object getConstValue() {
+        return null;
+    }
 
     @Override
     @NonNull JClassSymbol getEnclosingClass();

@@ -14,4 +14,6 @@
               checks="HideUtilityClassConstructor" />
     <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
               checks="OneTopLevelClass" />
+    <suppress files="src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]types[\\/]TypeSystem\.java"
+              checks="MemberName" />
 </suppressions>

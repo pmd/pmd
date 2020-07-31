@@ -51,7 +51,7 @@ class Graph<T> {
 
         vertices.add(start);
         vertices.add(end);
-        if (start == end) {
+        if (start == end) { // NOPMD CompareObjectsWithEquals
             // no self loop allowed (for tarjan), and besides an
             // inference variable depending on itself is trivial
             return;
@@ -140,7 +140,7 @@ class Graph<T> {
                 w.onStack = false;
                 // merge w into v
                 v.absorb(w);
-            } while (w != v);
+            } while (w != v); // NOPMD CompareObjectsWithEquals
         }
     }
 

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -56,7 +55,7 @@ final class ArrayTypeImpl implements JArrayType {
     @Override
     public JArrayType getErasure() {
         JTypeMirror erasedComp = component.getErasure();
-        return erasedComp == component ? this : new ArrayTypeImpl(ts, erasedComp);
+        return erasedComp == component ? this : new ArrayTypeImpl(ts, erasedComp); // NOPMD CompareObjectsWithEquals
     }
 
     @Override

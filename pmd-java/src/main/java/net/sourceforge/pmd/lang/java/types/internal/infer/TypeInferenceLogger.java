@@ -26,17 +26,24 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * A strategy to log the execution traces of {@link Infer}.
  */
+@SuppressWarnings("PMD.UncommentedEmptyMethodBody")
 public interface TypeInferenceLogger {
 
     // computeCompileTimeDecl
 
 
     default void noApplicableCandidates(MethodCallSite site) { }
+
     default void noCompileTimeDeclaration(MethodCallSite site) { }
+
     default void startInference(JMethodSig sig, MethodCallSite site, MethodResolutionPhase phase) { }
+
     default void endInference(@Nullable JMethodSig result) { }
+
     default void fallBackCompileTimeDecl(JMethodSig ctdecl, MethodCallSite site) { }
+
     default void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) { }
+
     default void ambiguityError(MethodCallSite site, JMethodSig m1, JMethodSig m2) { }
 
     // instantiateImpl
@@ -45,12 +52,17 @@ public interface TypeInferenceLogger {
     default void ctxInitialization(InferenceContext ctx, JMethodSig sig) { }
 
     default void startArgsChecks() { }
+
     default void startArg(int i, ExprMirror expr, JTypeMirror formal) { }
+
     default void skipArgAsNonPertinent(int i, ExprMirror expr) { }
+
     default void endArg() { }
+
     default void endArgsChecks() { }
 
     default void startReturnChecks() { }
+
     default void endReturnChecks() { }
 
     default void propagateAndAbort(InferenceContext context, InferenceContext parent) { }
@@ -59,7 +71,9 @@ public interface TypeInferenceLogger {
 
 
     default void boundAdded(InferenceContext ctx, JInferenceVar var, BoundKind kind, JTypeMirror bound) { }
+
     default void ivarMerged(InferenceContext ctx, JInferenceVar var, JInferenceVar delegate) { }
+
     default void ivarInstantiated(InferenceContext ctx, JInferenceVar var, JTypeMirror inst) { }
 
 
@@ -78,14 +92,14 @@ public interface TypeInferenceLogger {
 
 
     static TypeInferenceLogger logGloballyDisabled() {
-        ResolutionFailedException.NOLOG = true;
+        ResolutionFailedException.noLog = true;
         return SimpleLogger.NOOP;
     }
 
 
     class SimpleLogger implements TypeInferenceLogger {
 
-        static final TypeInferenceLogger NOOP = new TypeInferenceLogger() {};
+        static final TypeInferenceLogger NOOP = new TypeInferenceLogger() { };
 
 
         private final PrintStream out;
@@ -155,7 +169,8 @@ public interface TypeInferenceLogger {
             println("");
             printExpr(site.getExpr());
             if (site.getExpr() instanceof CtorInvocationMirror) {
-                println("[WARNING] No potentially applicable constructors in " + ((CtorInvocationMirror) site.getExpr()).getNewType());
+                println("[WARNING] No potentially applicable constructors in "
+                            + ((CtorInvocationMirror) site.getExpr()).getNewType());
             } else {
                 println("[WARNING] No potentially applicable methods in " + receiver);
             }
@@ -205,7 +220,8 @@ public interface TypeInferenceLogger {
 
         private String fileLocation(ExprMirror mirror) {
             JavaNode node = mirror.getLocation();
-            return TypeResTestRule.filename.get() + ":" + node.getBeginLine() + " :" + node.getBeginColumn() + ".." + node.getEndLine() + ":"+ node.getEndColumn();
+            return TypeResTestRule.FILENAME.get() + ":" + node.getBeginLine() + " :" + node.getBeginColumn() + ".."
+                + node.getEndLine() + ":" + node.getEndColumn();
         }
 
         @NonNull
@@ -247,7 +263,7 @@ public interface TypeInferenceLogger {
         public void endInference(@Nullable JMethodSig result) {
             rollback();
             println(result != null ? "Success: " + color(ppMethod(result), ANSI_RED)
-                                      : "FAILED! SAD!");
+                                   : "FAILED! SAD!");
         }
 
         @Override
@@ -274,7 +290,8 @@ public interface TypeInferenceLogger {
 
         @Override
         public void propagateAndAbort(InferenceContext context, InferenceContext parent) {
-            println("Ctx " + parent.getId() + " adopts " + color(context.getFreeVars(), ANSI_BLUE) + " from ctx " + context.getId());
+            println("Ctx " + parent.getId() + " adopts " + color(context.getFreeVars(), ANSI_BLUE) + " from ctx "
+                        + context.getId());
         }
 
         @Override

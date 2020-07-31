@@ -391,7 +391,7 @@ final class ExprOps {
 
             @Override
             public void setInferredType(JTypeMirror mirror) {
-
+                // todo is this useful for method refs?
             }
 
             @Override
@@ -454,7 +454,7 @@ final class ExprOps {
 
     static JMethodSig adaptGetClass(JMethodSig sig, JTypeMirror erasedReceiverType) {
         TypeSystem ts = sig.getTypeSystem();
-        if (sig.getName().equals("getClass") && sig.getDeclaringType().equals(ts.OBJECT)) {
+        if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
             if (erasedReceiverType != null) {
                 return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts));
             }

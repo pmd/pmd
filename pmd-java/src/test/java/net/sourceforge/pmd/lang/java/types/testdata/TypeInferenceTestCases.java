@@ -13,6 +13,9 @@ import java.util.function.Supplier;
 
 public class TypeInferenceTestCases {
 
+    private TypeInferenceTestCases() {
+    }
+
     public static <T, L extends List<T>> L appendL(List<? extends T> in, L top) {
         top.addAll(in);
         // this is just to add imports

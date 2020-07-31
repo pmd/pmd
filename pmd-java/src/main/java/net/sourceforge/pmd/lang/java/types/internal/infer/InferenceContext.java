@@ -31,11 +31,11 @@ import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.CheckBound;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateAllBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.SubstituteInst;
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
 
 /**
@@ -342,7 +342,6 @@ final class InferenceContext {
 
             if (hook.doApplyToInstVar || hook.ivar.getInst() == null) {
                 hook.apply(this);
-                logCurrentState(hook);
             }
 
             hook = incorporationActions.pollFirst();
@@ -404,10 +403,6 @@ final class InferenceContext {
 
     public boolean isEmpty() {
         return inferenceVars.isEmpty();
-    }
-
-    private void logCurrentState(IncorporationAction hook) {
-        // System.out.println("--After " + hook + "\n" + this);
     }
 
     @Override

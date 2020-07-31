@@ -14,9 +14,15 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.util.StringUtil;
 
+/**
+ * @deprecated This is just a toy rule that counts the proportion of resolved types in a codebase,
+ *     not meant as a real rule
+ */
+@Deprecated
+@SuppressWarnings("PMD")
 public class TypeResTestRule extends AbstractJavaRule {
 
-    public static final ThreadLocal<String> filename =
+    public static final ThreadLocal<String> FILENAME =
         ThreadLocal.withInitial(() -> "/*unknown*/");
 
     private static class State {
@@ -33,9 +39,6 @@ public class TypeResTestRule extends AbstractJavaRule {
             double rate = numResolved / (double) (numUnresolved + numResolved);
             System.out.println("Resolved " + Math.floor(10000 * rate) / 100 + "%");
             System.out.println("Errors\t" + numerrors);
-//            System.out.println("CL cache size\t" + ClasspathSymbolResolver.cacheSize);
-//            System.out.println("CL stream found\t" + ClasspathSymbolResolver.streamFound);
-//            System.out.println("CL class found\t" + ClasspathSymbolResolver.classFound);
         }
 
         int absorb(State other) {
@@ -63,7 +66,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        filename.set(((RuleContext) data).getSourceCodeFile().toString());
+        FILENAME.set(((RuleContext) data).getSourceCodeFile().toString());
         for (JavaNode descendant : node.descendants()) {
             visit(descendant, data);
         }

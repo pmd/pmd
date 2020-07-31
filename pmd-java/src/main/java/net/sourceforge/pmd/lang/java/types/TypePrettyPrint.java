@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.util.OptionalBool.*;
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -68,9 +70,6 @@ public final class TypePrettyPrint {
     private static class PrettyPrintVisitor implements JTypeVisitor<Void, TypePrettyPrinter> {
 
         static final PrettyPrintVisitor INSTANCE = new PrettyPrintVisitor();
-
-        private PrettyPrintVisitor() {
-        }
 
         @Override
         public Void visit(JTypeMirror t, TypePrettyPrinter sb) {

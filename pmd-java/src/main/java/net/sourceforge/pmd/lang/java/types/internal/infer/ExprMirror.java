@@ -281,9 +281,7 @@ public interface ExprMirror {
 
             @Override
             public String toString() {
-                return "CtDecl[phase=" + resolvePhase +
-                    ", method=" + methodType +
-                    ']';
+                return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';
             }
 
             public static MethodCtDecl unresolved(TypeSystem ts) {

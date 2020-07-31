@@ -105,11 +105,6 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public void setInferredType(JTypeMirror mirror) {
-            super.setInferredType(mirror);
-        }
-
-        @Override
         public JClassType getNewType() {
             JClassType encl = getEnclosingType();
             return myNode.isThis()

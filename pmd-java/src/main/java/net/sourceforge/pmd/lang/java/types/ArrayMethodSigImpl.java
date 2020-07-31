@@ -49,7 +49,7 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public JMethodSig getErasure() {
         JArrayType erasedOwner = owner.getErasure();
-        return erasedOwner == owner ? this : new ArrayMethodSigImpl(erasedOwner, symbol);
+        return erasedOwner == owner ? this : new ArrayMethodSigImpl(erasedOwner, symbol); // NOPMD CompareObjectsWithEquals
     }
 
     @Override

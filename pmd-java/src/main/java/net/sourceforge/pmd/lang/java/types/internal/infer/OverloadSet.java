@@ -43,6 +43,8 @@ final class OverloadSet {
                 case UNKNOWN:
                     // neither sig is more specific
                     break;
+                default:
+                    throw new AssertionError();
                 }
             }
         }

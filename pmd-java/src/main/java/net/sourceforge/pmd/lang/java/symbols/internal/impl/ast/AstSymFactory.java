@@ -18,7 +18,7 @@ final class AstSymFactory {
 
     private final TypeSystem ts;
 
-    public AstSymFactory(TypeSystem ts) {
+    AstSymFactory(TypeSystem ts) {
         this.ts = ts;
     }
 

@@ -41,7 +41,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     private final AsmSymbolResolver resolver;
     private final String internalName;
-    private final int observedArity;
 
     private Names names;        // lazy (doesn't need parsing)
 
@@ -64,7 +63,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
     ClassStub(AsmSymbolResolver resolver, String internalName, @NonNull Loader loader, int observedArity) {
         this.resolver = resolver;
         this.internalName = internalName;
-        this.observedArity = observedArity;
 
         this.parseLock = new ParseLock() {
             @Override
@@ -127,18 +125,18 @@ final class ClassStub implements JClassSymbol, AsmStub {
             Here is the diff (+ lines (resp. - lines) are only available
             in InnerClasses (resp. ClassInfo), the rest are available in both)
 
-            ACC_PUBLIC 	    0x0001 	Declared public; may be accessed from outside its package.
-         +  ACC_PRIVATE 	0x0002 	Marked private in source.
-         +  ACC_PROTECTED 	0x0004 	Marked protected in source.
-         +  ACC_STATIC 	    0x0008 	Marked or implicitly static in source.
-            ACC_FINAL 	    0x0010 	Declared final; no subclasses allowed.
-         -  ACC_SUPER 	    0x0020 	Treat superclass methods specially when invoked by the invokespecial instruction.
-            ACC_INTERFACE 	0x0200 	Is an interface, not a class.
-            ACC_ABSTRACT 	0x0400 	Declared abstract; must not be instantiated.
-            ACC_SYNTHETIC 	0x1000 	Declared synthetic; not present in the source code.
-            ACC_ANNOTATION 	0x2000 	Declared as an annotation type.
-            ACC_ENUM 	    0x4000  Declared as an enum type.
-         -  ACC_MODULE	    0x8000 	Is a module, not a class or interface.
+            ACC_PUBLIC      0x0001  Declared public; may be accessed from outside its package.
+         +  ACC_PRIVATE     0x0002  Marked private in source.
+         +  ACC_PROTECTED   0x0004  Marked protected in source.
+         +  ACC_STATIC      0x0008  Marked or implicitly static in source.
+            ACC_FINAL       0x0010  Declared final; no subclasses allowed.
+         -  ACC_SUPER       0x0020  Treat superclass methods specially when invoked by the invokespecial instruction.
+            ACC_INTERFACE   0x0200  Is an interface, not a class.
+            ACC_ABSTRACT    0x0400  Declared abstract; must not be instantiated.
+            ACC_SYNTHETIC   0x1000  Declared synthetic; not present in the source code.
+            ACC_ANNOTATION  0x2000  Declared as an annotation type.
+            ACC_ENUM        0x4000  Declared as an enum type.
+         -  ACC_MODULE      0x8000  Is a module, not a class or interface.
 
             If this stub is a nested class, then we don't have all its
             modifiers just with the ClassInfo, the actual source-declared
@@ -407,7 +405,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     @Override
     public boolean isAnonymousClass() {
-        return getSimpleName().equals("");
+        return getSimpleName().isEmpty();
     }
 
     // </editor-fold>
@@ -420,7 +418,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
         final String packageName;
         final String simpleName;
 
-        public Names(String internalName) {
+        Names(String internalName) {
             int packageEnd = Integer.max(0, internalName.lastIndexOf('/'));
 
             binaryName = internalName.replace('/', '.');

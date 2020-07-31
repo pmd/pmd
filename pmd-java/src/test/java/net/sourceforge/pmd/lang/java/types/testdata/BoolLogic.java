@@ -6,9 +6,13 @@ package net.sourceforge.pmd.lang.java.types.testdata;
 
 public class BoolLogic {
 
-    static False FALSE() {return new False() {}; }
+    static False FALSE() { // SUPPRESS CHECKSTYLE NOW
+        return new False() { };
+    }
 
-    static True TRUE() {return new True() {}; }
+    static True TRUE() { // SUPPRESS CHECKSTYLE NOW
+        return new True() { };
+    }
 
     static False and(False a, False b) {
         return a;
@@ -42,9 +46,12 @@ public class BoolLogic {
         return a;
     }
 
-    interface Bool {}
+    interface Bool { }
 
-    interface False extends Bool {}
+    interface False extends Bool { }
 
-    interface True extends Bool {}
+    interface True extends Bool { }
+
+    private BoolLogic() {
+    }
 }

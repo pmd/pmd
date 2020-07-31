@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
  * <p>Some special types are presented as constant fields, eg {@link #OBJECT}
  * or {@link #NULL_TYPE}. These are always comparable by reference.
  */
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeSystem {
 
     /** Top type of the reference type system. */
@@ -353,10 +354,12 @@ public final class TypeSystem {
         throw new AssertionError("Uncategorized type symbol " + symbol.getClass() + ": " + symbol);
     }
 
+    // test only for now
     JClassType forceErase(JClassType t) {
         JClassType erasure = t.getErasure();
-        if (erasure == t)
+        if (erasure == t) {
             return new ErasedClassType(this, t.getSymbol());
+        }
         return erasure;
     }
 
@@ -572,7 +575,7 @@ public final class TypeSystem {
 
         JTypeMirror ck = OBJECT; // Ck is a class type
 
-        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext(); ) {
+        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext();) {
             JTypeMirror ci = iterator.next();
 
             if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
@@ -641,7 +644,7 @@ public final class TypeSystem {
     private boolean isPossiblyAnInterface(JTypeMirror ci) {
         return ci.isInterface()
             || ci instanceof JInferenceVar
-            || (ci.getSymbol() != null && ci.getSymbol().isUnresolved());
+            || ci.getSymbol() != null && ci.getSymbol().isUnresolved();
     }
 
     // package-private
@@ -666,7 +669,7 @@ public final class TypeSystem {
     private static final class NullType implements JTypeMirror {
         private final TypeSystem ts;
 
-        public NullType(TypeSystem ts) {
+        NullType(TypeSystem ts) {
             this.ts = ts;
         }
 

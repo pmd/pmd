@@ -131,7 +131,7 @@ public final class JPrimitiveType implements JTypeMirror {
         }
 
         public Class<?> jvmRepr() {
-            return jvm  ;
+            return jvm;
         }
 
         /**

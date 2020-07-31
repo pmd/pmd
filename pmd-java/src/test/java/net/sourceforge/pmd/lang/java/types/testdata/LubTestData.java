@@ -8,16 +8,16 @@ public class LubTestData {
 
 
     public interface I1 {
-
     }
 
     public interface I2<T> extends I1 {
-
     }
 
-    public interface I3 {}
+    public interface I3 {
+    }
 
-    public interface I4 {}
+    public interface I4 {
+    }
 
 
     public static class Sub1 implements Comparable<Sub1>, I1, I3 {
@@ -38,15 +38,12 @@ public class LubTestData {
 
 
     public static class GenericSuper<T> implements I3 {
-
     }
 
     public static class GenericSub<T> extends GenericSuper<T> implements I2<I1> {
-
     }
 
     public static class GenericSub2<T> extends GenericSuper<T> implements I2<I3>, I4 {
-
     }
 
 

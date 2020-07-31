@@ -107,8 +107,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     public List<JTypeMirror> getFormalParameters() {
         if (formals == null) {
             if (owner.isRaw()) {
-                formals = map(symbol.getFormalParameterTypes(EMPTY),
-                              m -> ClassTypeImpl.eraseToRaw(m, getTypeParamSubst()));
+                formals = map(symbol.getFormalParameterTypes(EMPTY), m -> ClassTypeImpl.eraseToRaw(m, getTypeParamSubst()));
             } else {
                 formals = symbol.getFormalParameterTypes(getTypeParamSubst());
             }
@@ -129,8 +128,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     public List<JTypeMirror> getThrownExceptions() {
         if (thrown == null) {
             if (owner.isRaw()) {
-                thrown = map(symbol.getThrownExceptionTypes(EMPTY),
-                             m -> ClassTypeImpl.eraseToRaw(m, getTypeParamSubst()));
+                thrown = map(symbol.getThrownExceptionTypes(EMPTY), m -> ClassTypeImpl.eraseToRaw(m, getTypeParamSubst()));
             } else {
                 thrown = symbol.getThrownExceptionTypes(getTypeParamSubst());
             }

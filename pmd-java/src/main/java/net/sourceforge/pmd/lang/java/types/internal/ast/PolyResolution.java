@@ -82,7 +82,7 @@ final class PolyResolution {
             // - a CastExpression -> cast context
             JavaNode ctx = contextOf(e, false);
 
-            if (ctx != e && ctx instanceof InvocationNode) {
+            if (ctx != e && ctx instanceof InvocationNode) { // NOPMD CompareObjectsWithEquals
                 // an outer invocation ctx
                 if (ctx instanceof ASTExpression) {
                     // method call or regular constructor call
@@ -93,7 +93,7 @@ final class PolyResolution {
                 } else {
                     return inferInvocation((InvocationNode) ctx, e, null);
                 }
-            } else if (ctx == e) {
+            } else if (ctx == e) { // NOPMD CompareObjectsWithEquals
                 // no surrounding context
                 if (ctx instanceof InvocationNode) {
                     JTypeMirror targetType = null;

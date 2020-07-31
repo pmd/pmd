@@ -51,7 +51,7 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
      * @param newArity New number of type parameters
      */
     void setTypeParameterCount(int newArity) {
-
+        // overridden in FlexibleUnresolvedClassImpl
     }
 
     @Override

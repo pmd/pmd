@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
-class TypeParamsParser {
+final class TypeParamsParser {
 
     private TypeParamsParser() {
 
@@ -123,7 +123,7 @@ class TypeParamsParser {
         private final GenericSigBase<?> sig;
         private final List<JTypeVar> ownTypeParams = new ArrayList<>(1);
 
-        public TypeParametersBuilder(GenericSigBase<?> sig, String descriptor) {
+        TypeParametersBuilder(GenericSigBase<?> sig, String descriptor) {
             super(descriptor);
             this.sig = sig;
             assert hasTypeParams(descriptor) : "No type parameters in this signature";

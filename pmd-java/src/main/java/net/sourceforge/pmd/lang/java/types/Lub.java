@@ -25,8 +25,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 final class Lub {
 
-   private Lub() {
-   }
+    private Lub() {
+    }
 
     static JTypeMirror lub(TypeSystem ts, Collection<? extends JTypeMirror> us) {
         return new LubJudge(ts).lub(us);
@@ -87,7 +87,7 @@ final class Lub {
     private static Set<JTypeMirror> erasedSuperTypes(Set<JTypeMirror> stui) {
         LinkedHashSet<JTypeMirror> erased = new LinkedHashSet<>();
         for (JTypeMirror it : stui) {
-            JTypeMirror t = (it instanceof JTypeVar) ? it : it.getErasure();
+            JTypeMirror t = it instanceof JTypeVar ? it : it.getErasure();
             erased.add(t);
         }
         return erased;
@@ -97,10 +97,10 @@ final class Lub {
 
         // this is what this class is about: caching lubs, so that we
         // don't get an infinitely recursive type.
-        private final HashSet<TypePair> lubCache = new HashSet<>();
+        private final Set<TypePair> lubCache = new HashSet<>();
         private final TypeSystem ts;
 
-        public LubJudge(TypeSystem ts) {
+        LubJudge(TypeSystem ts) {
             this.ts = ts;
         }
 
@@ -284,8 +284,8 @@ final class Lub {
                 return false;
             }
             TypePair pair = (TypePair) o;
-            return Objects.equals(left, pair.left) &&
-                Objects.equals(right, pair.right);
+            return Objects.equals(left, pair.left)
+                && Objects.equals(right, pair.right);
         }
 
         @Override

@@ -23,8 +23,11 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 /**
  * Implementation of the signature parser.
  */
-class TypeSigParser {
+final class TypeSigParser {
 
+    private TypeSigParser() {
+        // utility class
+    }
 
     static int classHeader(final int start, TypeScanner b) {
         int cur = classType(start, b); // superclass

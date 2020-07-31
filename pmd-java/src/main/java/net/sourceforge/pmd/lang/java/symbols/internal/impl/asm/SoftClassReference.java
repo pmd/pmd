@@ -24,9 +24,10 @@ class SoftClassReference {
         this.observedArity = observedArity;
     }
 
+    @SuppressWarnings("PMD.AssignmentInOperand")
     @NonNull ClassStub get() {
         ClassStub c;
-        if (ref == null || (c = ref.get()) == null) {
+        if (ref == null || (c = ref.get()) == null) { // SUPPRESS CHECKSTYLE NOW
             c = new ClassStub(resolver, internalName, loader, observedArity);
             ref = new SoftReference<>(c);
         }

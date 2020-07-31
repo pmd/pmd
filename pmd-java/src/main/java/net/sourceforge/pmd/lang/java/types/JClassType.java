@@ -65,7 +65,7 @@ public interface JClassType extends JTypeMirror {
             return this;
         }
         List<JTypeMirror> newArgs = TypeOps.subst(targs, fun);
-        if (newArgs == targs && encl == getEnclosingType()) {
+        if (newArgs == targs && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
         return encl != null ? encl.selectInner(getSymbol(), newArgs)

@@ -23,9 +23,9 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * @see JClassSymbol#isUnresolved()
  */
-class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
+final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
 
-private static final int UNKNOWN_ARITY = 0;
+    private static final int UNKNOWN_ARITY = 0;
 
     private int arity = UNKNOWN_ARITY;
     private List<JTypeVar> tparams = Collections.emptyList();

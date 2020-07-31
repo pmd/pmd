@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.UniqueGraph;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.Vertex;
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 
 /**
  * Strategy to walk the set of remaining free variables. Interdependent

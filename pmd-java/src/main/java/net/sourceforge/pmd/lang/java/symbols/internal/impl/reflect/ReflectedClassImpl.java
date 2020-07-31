@@ -67,9 +67,8 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
                 || enclosing != null && myClass.getEnclosingClass() != null
                 && myClass.getEnclosingClass().getName().equals(enclosing.getBinaryName())
                 : "Wrong enclosing class " + enclosing + " for " + myClass + ", expecting " + myClass.getEnclosingClass();
-        } catch (AssertionError e) {
+        } catch (AssertionError ignored) {
             // sometimes this fails, but the Class instance is wrong
-            // e.printStackTrace();
         }
     }
 
@@ -272,7 +271,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
-    @SuppressWarnings( {"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<JClassType> getSuperInterfaceTypes(Substitution substitution) {
         return (List<JClassType>) (List) TypesFromReflection.fromReflect(getTypeSystem(), getLexicalScope(), substitution, myClass.getGenericInterfaces());
     }

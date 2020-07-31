@@ -17,7 +17,7 @@ class ClassStubBuilder extends ClassVisitor {
     private final ClassStub myStub;
     private final String myInternalName;
 
-    public ClassStubBuilder(ClassStub stub) {
+    ClassStubBuilder(ClassStub stub) {
         super(AsmSymbolResolver.ASM_API_V);
         this.myStub = stub;
         this.myInternalName = stub.getInternalName();
@@ -64,7 +64,7 @@ class ClassStubBuilder extends ClassVisitor {
         if ("<clinit>".equals(name)) {
             return null;
         } else if ("<init>".equals(name)) {
-            myStub.addCtor(new ExecutableStub.CtorStub(myStub, name, access, descriptor, signature, exceptions));
+            myStub.addCtor(new ExecutableStub.CtorStub(myStub, access, descriptor, signature, exceptions));
         } else {
             myStub.addMethod(new ExecutableStub.MethodStub(myStub, name, access, descriptor, signature, exceptions));
         }

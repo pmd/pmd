@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprCheckHelper.ExprChecker;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -41,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 
 /**
  * Main entry point for type inference.
@@ -51,12 +51,13 @@ public final class Infer {
     private final OverloadComparator overloadComparator;
 
     @SuppressWarnings("PMD.FieldNamingConventions")
-    private final TypeInferenceLogger LOG; // just easier to read I think
+    private final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
-    private final boolean isJava8; // TODO
+    private final boolean isJava8; // NOPMD this is unused but may be used later
     private final TypeSystem ts;
 
-    private final MethodCtDecl UNRESOLVED_CTDECL;
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    private final MethodCtDecl UNRESOLVED_CTDECL; // SUPPRESS CHECKSTYLE same
 
     /**
      * Creates a new instance.
@@ -235,7 +236,7 @@ public final class Infer {
     @NonNull
     public MethodCtDecl determineInvocationType(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == UNRESOLVED_CTDECL) {
+        if (ctdecl == UNRESOLVED_CTDECL) { // NOPMD CompareObjectsWithEquals
             return ctdecl;
         }
 
@@ -605,7 +606,7 @@ public final class Infer {
 
             for (JTypeMirror aLowerBound : alpha.getBounds(BoundKind.LOWER)) {
                 for (JTypeMirror anotherLowerBound : alpha.getBounds(BoundKind.LOWER)) {
-                    if (aLowerBound != anotherLowerBound
+                    if (aLowerBound != anotherLowerBound // NOPMD CompareObjectsWithEquals
                         && infCtx.isGround(aLowerBound)
                         && infCtx.isGround(anotherLowerBound)
                         && commonSuperWithDiffParameterization(aLowerBound, anotherLowerBound)) {
@@ -768,8 +769,7 @@ public final class Infer {
     static void checkConvertibleOrDefer(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType, ExprMirror arg, MethodResolutionPhase phase) {
         if (!infCtx.isGround(formalType) || !infCtx.isGround(exprType)) {
             // defer the check
-            infCtx.addInstantiationListener(setOf(formalType, exprType),
-                                            solvedCtx -> checkConvertibleOrDefer(solvedCtx, exprType, formalType, arg, phase));
+            infCtx.addInstantiationListener(setOf(formalType, exprType), solvedCtx -> checkConvertibleOrDefer(solvedCtx, exprType, formalType, arg, phase));
         }
 
         JTypeMirror groundE = infCtx.ground(exprType);

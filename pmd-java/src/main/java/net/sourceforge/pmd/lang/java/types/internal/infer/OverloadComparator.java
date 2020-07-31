@@ -23,12 +23,12 @@ import net.sourceforge.pmd.util.OptionalBool;
 final class OverloadComparator {
 
     private final Infer infer;
-    private final TypeInferenceLogger LOG;
+    private final TypeInferenceLogger log;
 
 
     OverloadComparator(Infer infer) {
         this.infer = infer;
-        this.LOG = infer.getLogger();
+        this.log = infer.getLogger();
     }
 
 
@@ -66,7 +66,7 @@ final class OverloadComparator {
 
             OptionalBool result = shouldTakePrecedence(m1, m2, site.getExpr().getEnclosingType());
             if (result == UNKNOWN) {
-                LOG.ambiguityError(site, m1, m2);
+                log.ambiguityError(site, m1, m2);
                 // todo if a third method comes in that is more specific
                 //  than all ambiguous methods, then the ambiguity is lifted
                 return true;
@@ -248,6 +248,7 @@ final class OverloadComparator {
         return true;
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isTypeMoreSpecificForArg(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
         // A type S is more specific than a type T for any expression if S <: T (§4.10).
         return si.isSubtypeOf(ti, true); // TODO checks for lambdas/method refs are much more complicated

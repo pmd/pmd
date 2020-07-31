@@ -9,5 +9,7 @@ public class SomeConstants {
     public static short aShort = 1;
     public static byte aByte = 1;
 
+    private SomeConstants() {
+    }
 
 }

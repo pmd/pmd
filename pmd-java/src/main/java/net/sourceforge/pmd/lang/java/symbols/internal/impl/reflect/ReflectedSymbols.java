@@ -24,6 +24,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public final class ReflectedSymbols {
 
+    private ReflectedSymbols() {
+        // utility class
+    }
+
     @Nullable
     public static JClassSymbol getClassSymbol(SymbolFactory f, @Nullable Class<?> klass) {
         if (klass == null) {

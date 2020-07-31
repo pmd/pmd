@@ -20,11 +20,11 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKin
  * is wasteful and unnecessary. There is one exception instance per thread
  * and the {@link ResolutionFailure} is set on it before it's thrown.
  */
-class ResolutionFailedException extends RuntimeException {
+final class ResolutionFailedException extends RuntimeException {
 
     private static final ThreadLocal<ResolutionFailedException> SHARED = ThreadLocal.withInitial(ResolutionFailedException::new);
     private static final boolean SHARE_EXCEPTION = true;
-    static boolean NOLOG = false;
+    static boolean noLog = false;
 
     private ResolutionFailure failure;
 
@@ -51,25 +51,25 @@ class ResolutionFailedException extends RuntimeException {
 
     static ResolutionFailedException incompatibleBound(JInferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
         // in javac it's "no instance of type variables exist ..."
-        return getShared(NOLOG ? UNKNOWN : new ResolutionFailure(
+        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
             null,
             "Incompatible bounds: " + k1.format(ivar, b1) + " and " + k2.format(ivar, b2)
         ));
     }
 
     static ResolutionFailedException incompatibleBound(JTypeMirror actual, JTypeMirror formal, JavaNode explicitTarg) {
-        return getShared(NOLOG ? UNKNOWN : new ResolutionFailure(
+        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
             explicitTarg,
             "Incompatible bounds: " + actual + " does not conform to " + formal
         ));
     }
 
     static ResolutionFailedException incompatibleTypeParamCount(ExprMirror site, JMethodSig m, int found, int required) {
-        return getShared(NOLOG ? UNKNOWN : new ResolutionFailure(site.getLocation(), "Wrong number of type arguments"));
+        return getShared(noLog ? UNKNOWN : new ResolutionFailure(site.getLocation(), "Wrong number of type arguments"));
     }
 
     static ResolutionFailedException incompatibleFormal(ExprMirror arg, JTypeMirror found, JTypeMirror required) {
-        return getShared(NOLOG ? UNKNOWN : new ResolutionFailure(
+        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
             // this constructor is pretty expensive due to the pretty printing when log is enabled
             arg.getLocation(),
             "Incompatible formals: " + found + " is not convertible to " + required
@@ -78,24 +78,24 @@ class ResolutionFailedException extends RuntimeException {
 
     static ResolutionFailedException incompatibleReturn(ExprMirror expr, JTypeMirror found, JTypeMirror required) {
         // in javac it's "no instance of type variables exist ..."
-        return getShared(NOLOG ? UNKNOWN : new ResolutionFailure(
+        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
             expr.getLocation(),
             "Incompatible return type: " + found + " is not convertible to " + required
         ));
     }
 
     static ResolutionFailedException unsolvableDependency() {
-        return getShared(NOLOG ? UNKNOWN
+        return getShared(noLog ? UNKNOWN
                                : new ResolutionFailure(null, "Unsolvable inference variable dependency"));
     }
 
     static ResolutionFailedException incompatibleArity(int found, int required, JavaNode location) {
-        return getShared(NOLOG ? UNKNOWN
+        return getShared(noLog ? UNKNOWN
                                : new ResolutionFailure(location, "Incompatible arity: " + found + " != " + required));
     }
 
     static ResolutionFailedException noCtDeclaration(JMethodSig fun, MethodRefMirror mref) {
-        return getShared(NOLOG ? UNKNOWN
+        return getShared(noLog ? UNKNOWN
                                : new ResolutionFailure(mref.getLocation(),
                                                        "No compile time declaration found conforming to: " + fun));
     }

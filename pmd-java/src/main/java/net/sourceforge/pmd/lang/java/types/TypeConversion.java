@@ -180,7 +180,7 @@ public final class TypeConversion {
         List<JTypeMirror> typeArgs = type.getTypeArgs();
         List<JTypeVar> typeParams = type.getFormalTypeParams();
 
-        assert typeParams.size() == typeArgs.size() : "Type is not well formed " + type  + " (expects " + typeParams.size() + " params)";
+        assert typeParams.size() == typeArgs.size() : "Type is not well formed " + type + " (expects " + typeParams.size() + " params)";
 
         // This is the algorithm described at https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.10
 

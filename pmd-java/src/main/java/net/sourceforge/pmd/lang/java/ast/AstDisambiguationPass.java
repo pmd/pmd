@@ -28,8 +28,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
@@ -328,7 +328,7 @@ final class AstDisambiguationPass {
                             JClassSymbol ref = ctx.findTypeMember(lhsTypeMirror.getSymbol(), type.getSimpleName(), type);
                             if (ref != null) {
                                 type.setSymbol(ref);
-                            }// else fallthrough
+                            } // else fallthrough
                         }
                     }
                 }

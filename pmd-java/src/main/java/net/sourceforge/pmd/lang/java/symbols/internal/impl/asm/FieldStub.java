@@ -29,6 +29,12 @@ class FieldStub extends MemberStubBase implements JFieldSymbol {
         this.constValue = constValue;
     }
 
+    @Nullable
+    @Override
+    public Object getConstValue() {
+        return constValue;
+    }
+
     @Override
     public boolean isEnumConstant() {
         return (getModifiers() & Opcodes.ACC_ENUM) != 0;

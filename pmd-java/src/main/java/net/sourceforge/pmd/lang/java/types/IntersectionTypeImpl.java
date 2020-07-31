@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 class IntersectionTypeImpl implements JIntersectionType {
@@ -99,7 +101,7 @@ class IntersectionTypeImpl implements JIntersectionType {
             List<JClassType> superItfs = new ArrayList<>();
 
             for (JTypeMirror comp : components) {
-                if (comp == superClass) {
+                if (comp == superClass) { // NOPMD CompareObjectsWithEquals
                     continue;
                 }
                 if (comp instanceof JClassType) {
@@ -110,6 +112,7 @@ class IntersectionTypeImpl implements JIntersectionType {
                     superItfs.add((JClassType) comp);
                 } else if (comp instanceof JTypeVar) {
                     // TODO, should generate an interface which has all the members of Ti
+                    throw new NotImplementedException("TODO");
                 }
             }
             JClassSymbol sym = ts.symbols().fakeIntersectionSymbol("", superClass, Collections.unmodifiableList(superItfs));

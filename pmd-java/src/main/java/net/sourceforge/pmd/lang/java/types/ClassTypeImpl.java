@@ -164,7 +164,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    @SuppressWarnings( {"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<JTypeMirror> getTypeArgs() {
         return isGenericTypeDeclaration() ? (List) getFormalTypeParams() : typeArgs;
     }
@@ -195,7 +195,7 @@ class ClassTypeImpl implements JClassType {
         if (typeArgs.size() != expected && !typeArgs.isEmpty()) {
             throw invalidTypeArgs(symbol, typeArgs);
         } else if (expected == 0) {
-            return this;// non-generic
+            return this; // non-generic
         }
         return new ClassTypeImpl(ts, symbol, new ArrayList<>(typeArgs), false);
     }

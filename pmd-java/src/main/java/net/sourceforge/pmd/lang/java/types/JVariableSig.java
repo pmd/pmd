@@ -107,8 +107,8 @@ public final class JVariableSig {
             return false;
         }
         JVariableSig that = (JVariableSig) o;
-        return Objects.equals(sym, that.sym) &&
-            Objects.equals(declarator, that.declarator);
+        return Objects.equals(sym, that.sym)
+            && Objects.equals(declarator, that.declarator);
     }
 
     @Override

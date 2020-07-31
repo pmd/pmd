@@ -123,7 +123,7 @@ public final class JavaResolvers {
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
                 return StreamUtils.toList(
                     t.streamMethods(
-                        it -> (onlyInherited == (it.getEnclosingClass() != t.getSymbol()))
+                        it -> onlyInherited == (it.getEnclosingClass() != t.getSymbol())
                             && it.getSimpleName().equals(simpleName)
                             && isAccessibleIn(nestRoot, it, true)
                     )
@@ -186,11 +186,10 @@ public final class JavaResolvers {
         }
     }
 
-    private static <S extends JAccessibleElementSymbol>
-    PSet<String> processDeclarations(ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                                     PSet<String> hidden,
-                                     Predicate<? super S> isAccessible,
-                                     List<? extends S> syms) {
+    private static <S extends JAccessibleElementSymbol> PSet<String> processDeclarations(ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+                                                                                         PSet<String> hidden,
+                                                                                         Predicate<? super S> isAccessible,
+                                                                                         List<? extends S> syms) {
         for (S inner : syms) {
             String simpleName = inner.getSimpleName();
             if (hidden.contains(simpleName)) {
@@ -290,13 +289,12 @@ public final class JavaResolvers {
         return sub != null && sub.getTypeSystem().typeOf(sub, true).getAsSuper(sup) != null;
     }
 
-    private static <S extends JAccessibleElementSymbol>
-    void walkForSingleName(JClassType t,
-                           Predicate<? super S> isAccessible,
-                           String name,
-                           BiFunction<? super JClassSymbol, String, ? extends S> getter,
-                           ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                           final PSet<String> hidden) {
+    private static <S extends JAccessibleElementSymbol> void walkForSingleName(JClassType t,
+                                                                               Predicate<? super S> isAccessible,
+                                                                               String name,
+                                                                               BiFunction<? super JClassSymbol, String, ? extends S> getter,
+                                                                               ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+                                                                               final PSet<String> hidden) {
 
         PSet<String> hiddenInSup = processDeclarations(builder, hidden, isAccessible, listOfNotNull(getter.apply(t.getSymbol(), name)));
 

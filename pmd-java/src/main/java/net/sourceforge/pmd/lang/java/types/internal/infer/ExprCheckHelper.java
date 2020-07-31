@@ -323,6 +323,7 @@ final class ExprCheckHelper {
 
     // functionalItf    = T
     // groundTargetType = T'
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isLambdaCongruent(@NonNull JClassType functionalItf,
                                       @NonNull JClassType groundTargetType,
                                       JMethodSig groundFun,

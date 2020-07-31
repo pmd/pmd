@@ -12,6 +12,8 @@ import java.util.List;
 
 public class Overloads {
 
+    private Overloads() {
+    }
 
     public static void ambig(String s1, String s2, CharSequence... args) {
 

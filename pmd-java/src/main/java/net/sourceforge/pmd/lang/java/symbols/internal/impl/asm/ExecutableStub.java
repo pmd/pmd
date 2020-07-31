@@ -179,13 +179,13 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     static class CtorStub extends ExecutableStub implements JConstructorSymbol {
 
         protected CtorStub(ClassStub owner,
-                           String simpleName, // <init>
                            int accessFlags,
                            String descriptor,
                            @Nullable String signature,
                            @Nullable String[] exceptions) {
             super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions);
         }
+
         @Override
         public String toString() {
             return SymbolToStrings.ASM.toString(this);

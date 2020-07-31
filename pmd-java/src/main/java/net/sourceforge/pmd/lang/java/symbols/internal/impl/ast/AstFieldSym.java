@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -28,6 +30,15 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
     @Override
     public int getModifiers() {
         return JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
+    }
+
+    @Override
+    public @Nullable Object getConstValue() {
+        if (node.hasModifiers(JModifier.STATIC, JModifier.FINAL)) {
+            ASTExpression init = node.getInitializer();
+            return init == null ? null : init.getConstValue();
+        }
+        return null;
     }
 
     @Override

@@ -17,12 +17,12 @@ import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 
-class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
+final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
 
     private final TypeSystem ts;
     private final JExecutableSymbol sym;
 
-    public UnresolvedMethodSig(TypeSystem ts) {
+    UnresolvedMethodSig(TypeSystem ts) {
         this.ts = ts;
         sym = new UnresolvedMethodSym(ts);
     }
@@ -111,7 +111,9 @@ class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
 
         private final TypeSystem ts;
 
-        public UnresolvedMethodSym(TypeSystem ts) {this.ts = ts;}
+        UnresolvedMethodSym(TypeSystem ts) {
+            this.ts = ts;
+        }
 
         @Override
         public TypeSystem getTypeSystem() {

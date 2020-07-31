@@ -195,7 +195,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
 
-        LazyMethodType(ExecutableStub ctx, @Nullable String genericSig, @NonNull String descriptor, @Nullable String[] exceptions) {
+        LazyMethodType(ExecutableStub ctx, @Nullable String genericSig, @NonNull String descriptor, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions) {
             super(ctx);
             this.signature = genericSig != null ? genericSig : descriptor;
         }

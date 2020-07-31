@@ -67,7 +67,7 @@ public class AsmSymbolResolver implements SymbolResolver {
             return new SoftClassReference(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
         });
 
-        return found == failed ? null : found.get();
+        return found == failed ? null : found.get(); // NOPMD CompareObjectsWithEquals
     }
 
     SignatureParser getSigParser() {

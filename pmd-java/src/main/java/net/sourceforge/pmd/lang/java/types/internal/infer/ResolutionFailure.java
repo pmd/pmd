@@ -26,8 +26,7 @@ public class ResolutionFailure {
     private MethodResolutionPhase phase;
     private final String reason;
 
-    private @Nullable
-    final JavaNode location;
+    private final @Nullable JavaNode location;
 
 
     ResolutionFailure(@Nullable JavaNode location, String reason) {
@@ -77,13 +76,13 @@ public class ResolutionFailure {
 
     @Override
     public String toString() {
-        return "ResolutionFailure{" +
-            "failedMethod=" + failedMethod +
-            ", callSite=" + callSite +
-            ", phase=" + phase +
-            ", reason='" + reason + '\'' +
-            ", location=" + location +
-            '}';
+        return "ResolutionFailure{"
+            + "failedMethod=" + failedMethod
+            + ", callSite=" + callSite
+            + ", phase=" + phase
+            + ", reason='" + reason + '\''
+            + ", location=" + location
+            + '}';
     }
 
 }
