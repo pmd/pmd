@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -307,17 +308,37 @@ final class AstDisambiguationPass {
                 assert lhsSym != null : "Unresolved LHS for " + type;
                 checkParentIsMember(ctx, lhsType, type);
             } else {
-                JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
-                if (sym == null) {
-                    processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
-                    sym = setArity(type, processor, type.getSimpleName());
-                } else {
-                    if (sym.isUnresolved()) {
-                        sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
+                if (type.getParent() instanceof ASTConstructorCall) {
+                    @Nullable ASTExpression ctorLhs = ((ASTConstructorCall) type.getParent()).getQualifier();
+                    if (ctorLhs != null) {
+                        // then give precedence to members of the lhs type
+                        // This triggers early evaluation of the qualifier
+                        // Let's hope the source is well-formed (eg, no forward references)
+                        // FIXME this fails if SymbolTableResolver is
+                        //  asking for early disambiguation (eg, a qualified ctor call for an anonymous class)
+                        //  This may be fixed if SymbolTableResolver disambiguates every type it finds
+                        JTypeMirror lhsTypeMirror = ctorLhs.getTypeMirror();
+                        if (lhsTypeMirror instanceof JClassType) {
+                            JClassSymbol ref = ctx.findTypeMember(lhsTypeMirror.getSymbol(), type.getSimpleName(), type);
+                            if (ref != null) {
+                                type.setSymbol(ref);
+                            }// else fallthrough
+                        }
                     }
                 }
-                type.setSymbol(sym);
 
+                if (type.getReferencedSym() == null) {
+                    JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
+                    if (sym == null) {
+                        processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
+                        sym = setArity(type, processor, type.getSimpleName());
+                    } else {
+                        if (sym.isUnresolved()) {
+                            sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
+                        }
+                    }
+                    type.setSymbol(sym);
+                }
             }
 
             assert type.getReferencedSym() != null : "Null symbol for " + type;

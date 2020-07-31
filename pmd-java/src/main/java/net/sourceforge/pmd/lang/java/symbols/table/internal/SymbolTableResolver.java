@@ -314,9 +314,6 @@ public final class SymbolTableResolver {
         }
 
 
-        // TODO constructors of inner classes push a scope that depends on type resolution of the qualifier
-        // Eg `foo.new Bar()` doesn't require an import for Bar
-
         @Override
         public Void visit(ASTTryStatement node, Void data) {
 
@@ -332,7 +329,7 @@ public final class SymbolTableResolver {
                 visitBlockLike(union);
 
                 for (Node child : node.getBody().asStream().followingSiblings()) {
-                    ((JavaNode) child).acceptVisitor(this, data);
+                    child.acceptVisitor(this, data);
                 }
             } else {
                 super.visit(node, data);

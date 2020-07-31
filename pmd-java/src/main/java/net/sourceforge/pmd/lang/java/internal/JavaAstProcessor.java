@@ -118,6 +118,13 @@ public final class JavaAstProcessor {
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
+        // We set the type resolver before symbol table resolution
+        // This is whacky, but there is a corner case with inner class creation expression (`foo.new Inner()`)
+        // whereby the symbol to which `Inner` resolves depends on type resolution of `foo` (of the whole LHS).
+
+        // This is handled by adding in the disambiguation pass. Because the
+        // SymbolTableResolver may request early disambiguation of some nodes,
+        // type resolution must be ready to fire before table resolution starts
         LazyTypeResolver typeResolver = new LazyTypeResolver(this, TYPE_INFERENCE_LOGGER);
         InternalApiBridge.setTypeResolver(acu, typeResolver);
 
