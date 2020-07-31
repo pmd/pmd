@@ -8,10 +8,15 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
@@ -19,40 +24,64 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
  * Helper class to analyze {@link ASTImportDeclaration}s.
  */
 public class ImportWrapper {
-    private ASTImportDeclaration node;
-    private String name;
-    private String fullname;
-    private boolean isStaticDemand;
-    private Set<String> allDemands = new HashSet<>();
+    private static final Logger LOG = Logger.getLogger(ImportWrapper.class.getName());
+
+    private final ASTImportDeclaration node;
+    private final String name;
+    private final String fullname;
+    private final boolean isStaticDemand;
+    private final Set<String> allStaticDemands;
 
     public ImportWrapper(String fullname, String name) {
         this(fullname, name, null);
     }
 
     public ImportWrapper(String fullname, String name, ASTImportDeclaration node) {
-        this(fullname, name, node, false);
+        this(fullname, name, node, false, null);
     }
 
-    public ImportWrapper(String fullname, String name, ASTImportDeclaration node, boolean isStaticDemand) {
+    public ImportWrapper(String fullname, String name, ASTImportDeclaration node, boolean isStaticDemand, RuleContext ctx) {
         this.fullname = fullname;
         this.name = name;
         this.node = node;
         this.isStaticDemand = isStaticDemand;
+        this.allStaticDemands = collectStaticFieldsAndMethods(node, ctx);
 
-        if (this.isStaticDemand && node != null && node.getType() != null) {
+    }
+
+    /**
+     * @param node
+     */
+    private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node, RuleContext ctx) {
+        if (!this.isStaticDemand || node == null || node.getType() == null) {
+            return Collections.emptySet();
+        }
+
+        try {
+            Set<String> names = new HashSet<>();
             Class<?> type = node.getType();
             // consider static fields, public and non-public
             for (Field f : type.getDeclaredFields()) {
                 if (Modifier.isStatic(f.getModifiers())) {
-                    allDemands.add(f.getName());
+                    names.add(f.getName());
                 }
             }
             // and methods, too
             for (Method m : type.getDeclaredMethods()) {
                 if (Modifier.isStatic(m.getModifiers())) {
-                    allDemands.add(m.getName());
+                    names.add(m.getName());
                 }
             }
+            return names;
+        } catch (LinkageError e) {
+            String filename = ctx != null ? String.valueOf(ctx.getSourceCodeFile()) : "n/a";
+
+            if (ctx != null) {
+                ctx.getReport().addError(new ProcessingError(e, filename));
+            } else {
+                LOG.log(Level.WARNING, "Error while processing file " + filename, e);
+            }
+            return Collections.emptySet();
         }
     }
 
@@ -80,7 +109,7 @@ public class ImportWrapper {
 
     public boolean matches(ImportWrapper i) {
         if (isStaticDemand) {
-            if (allDemands.contains(i.fullname)) {
+            if (allStaticDemands.contains(i.fullname)) {
                 return true;
             }
         }

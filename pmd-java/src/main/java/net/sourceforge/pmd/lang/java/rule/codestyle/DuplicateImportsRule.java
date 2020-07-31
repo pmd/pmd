@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
@@ -87,7 +88,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(),
-                node, node.isStatic() && node.isImportOnDemand());
+                node, node.isStatic() && node.isImportOnDemand(), (RuleContext) data);
 
         // blahhhh... this really wants to be ASTImportDeclaration to be
         // polymorphic...
