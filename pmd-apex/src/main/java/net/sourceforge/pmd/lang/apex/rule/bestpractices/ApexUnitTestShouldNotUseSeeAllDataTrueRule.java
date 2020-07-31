@@ -28,17 +28,21 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
 
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
+        super.visit(node, data);
+
         // @isTest(seeAllData) was introduced in v24, and was set to false by default
         if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
             return data;
         }
 
         checkForSeeAllData(node, data);
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
+        super.visit(node, data);
+
         if (!isTestMethodOrClass(node)) {
             return data;
         }

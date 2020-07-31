@@ -89,6 +89,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public final Object visit(ASTMethod node, Object data) {
+        super.visit(node, data);
 
         if (ApexOperationMetricKey.CYCLO.supports(node)) {
             int cyclo = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.CYCLO, node);

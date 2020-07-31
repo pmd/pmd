@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
-import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Apex supported non existent annotations for legacy reasons.
@@ -24,46 +21,25 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  * @author a.subramanian
  */
 public class AvoidNonExistentAnnotationsRule extends AbstractApexRule {
-    @Override
-    public Object visit(final ASTUserClass node, final Object data) {
-        checkForNonExistentAnnotation(node, node.getModifiers(), data);
-        return super.visit(node, data);
+
+    public AvoidNonExistentAnnotationsRule() {
+        addRuleChainVisit(ASTAnnotation.class);
     }
 
     @Override
-    public Object visit(final ASTUserInterface node, final Object data) {
-        checkForNonExistentAnnotation(node, node.getModifiers(), data);
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(final ASTUserEnum node, final Object data) {
-        checkForNonExistentAnnotation(node, node.getModifiers(), data);
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(final ASTMethod node, final Object data) {
-        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
-    }
-
-    @Override
-    public Object visit(final ASTProperty node, final Object data) {
-        // may have nested methods, don't visit children
-        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
-    }
-
-    @Override
-    public Object visit(final ASTField node, final Object data) {
-        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
-    }
-
-    private Object checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
-        for (ASTAnnotation annotation : modifierNode.findChildrenOfType(ASTAnnotation.class)) {
-            if (!annotation.isResolved()) {
-                addViolationWithMessage(data, node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
-            }
+    public Object visit(ASTAnnotation node, Object data) {
+        if (!node.isResolved() && notSyntheticPropertyMethod(node) && notSyntheticFieldNode(node)) {
+            addViolationWithMessage(data, node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
         }
         return data;
+    }
+
+    private boolean notSyntheticPropertyMethod(ASTAnnotation annotation) {
+        Node node = annotation.getNthParent(2);
+        return !(node instanceof ASTMethod) || !StringUtils.startsWith(node.getImage(), "__sfdc_");
+    }
+
+    private boolean notSyntheticFieldNode(ASTAnnotation annotation) {
+        return !(annotation.getNthParent(2) instanceof ASTFieldDeclarationStatements);
     }
 }

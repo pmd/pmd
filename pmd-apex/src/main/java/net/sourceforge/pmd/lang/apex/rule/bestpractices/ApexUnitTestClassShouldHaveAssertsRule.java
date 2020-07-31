@@ -34,6 +34,8 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
 
     @Override
     public Object visit(ASTMethod node, Object data) {
+        super.visit(node, data);
+
         if (!isTestMethodOrClass(node)) {
             return data;
         }

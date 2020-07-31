@@ -147,6 +147,7 @@ public class Foo {
     <test-code>
         <description>URL parameter passed to a function without being escaped</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {

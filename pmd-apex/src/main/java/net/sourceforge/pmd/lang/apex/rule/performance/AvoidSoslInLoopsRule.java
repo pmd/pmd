@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidSoslInLoopsRule extends AbstractApexRule {
 
     public AvoidSoslInLoopsRule() {
+        addRuleChainVisit(ASTSoslExpression.class);
         setProperty(CODECLIMATE_CATEGORIES, "Performance");
         // Note: Often more complicated as just moving the SOSL a few lines.
         // Involves Maps...

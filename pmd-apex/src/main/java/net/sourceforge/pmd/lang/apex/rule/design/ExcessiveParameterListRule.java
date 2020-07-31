@@ -24,6 +24,7 @@ public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
 
     @Override
     public Object visit(ASTParameter node, Object data) {
+        super.visit(node, data);
         return NumericConstants.ONE;
     }
 }

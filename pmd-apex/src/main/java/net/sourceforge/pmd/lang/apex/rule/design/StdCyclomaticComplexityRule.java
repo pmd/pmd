@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRa
 
 import java.util.Stack;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -18,8 +17,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -123,18 +120,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserInterface node, Object data) {
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUserEnum node, Object data) {
-        return data;
-    }
-
-    @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getImage().matches("<clinit>|<init>|clone")) {
+        if (!entryStack.isEmpty() && !node.getImage().matches("<clinit>|<init>|clone")) {
             entryStack.push(new Entry());
             super.visit(node, data);
             Entry methodEntry = entryStack.pop();
@@ -202,11 +189,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     public Object visit(ASTTernaryExpression node, Object data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTBooleanExpression node, Object data) {
         return data;
     }
 }
