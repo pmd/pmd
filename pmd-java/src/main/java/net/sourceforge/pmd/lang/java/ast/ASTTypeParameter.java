@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
@@ -64,6 +66,10 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
         return (TypeParamOwnerNode) getParent().getParent();
     }
 
+    @Override
+    public @NonNull JTypeVar getTypeMirror() {
+        return (JTypeVar) super.getTypeMirror();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

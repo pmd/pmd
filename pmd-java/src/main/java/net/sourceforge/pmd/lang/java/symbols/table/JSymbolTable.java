@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.symbols.table;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
  * A symbol table for a particular region of a Java program. Keeps track of the types,
@@ -26,14 +26,14 @@ public interface JSymbolTable {
      * The chain of tables tracking variable names that are in scope here
      * (fields, locals, formals, etc).
      */
-    ShadowChain<JVariableSymbol, ScopeInfo> variables();
+    ShadowChain<JVariableSig, ScopeInfo> variables();
 
 
     /**
      * The chain of tables tracking type names that are in scope here
      * (classes, type params, but not eg primitive types).
      */
-    ShadowChain<JTypeDeclSymbol, ScopeInfo> types();
+    ShadowChain<JTypeMirror, ScopeInfo> types();
 
 
     /**

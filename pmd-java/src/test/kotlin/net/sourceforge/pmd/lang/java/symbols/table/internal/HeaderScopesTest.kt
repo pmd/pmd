@@ -26,6 +26,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JTypeMirror
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -44,23 +46,23 @@ class HeaderScopesTest : ProcessorTestSpec({
 
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
-    fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s)!!.symbol.shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s).map { it.symbol as JMethodSymbol }
 
-    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
-        resolveFirst(simpleName).shouldBeA<JClassSymbol> {
-            it::getBinaryName shouldBe qualName
-            it::getSimpleName shouldBe simpleName
+    fun ShadowChain<JTypeMirror, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
+        resolveFirst(simpleName).shouldBeA<JClassType> {
+            it.symbol::getBinaryName shouldBe qualName
+            it.symbol::getSimpleName shouldBe simpleName
         }
     }
 
-    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
+    fun ShadowChain<JTypeMirror, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
         return sequence {
             val iter = iterateResults(simpleName)
             while (iter.hasNext()) {
                 iter.next()
-                val sym = iter.results.single().shouldBeA<JClassSymbol>()
-                yield(iter.scopeTag to sym.binaryName)
+                val t = iter.results.single().shouldBeA<JClassType>()
+                yield(iter.scopeTag to t.symbol.binaryName)
             }
         }.toList()
     }

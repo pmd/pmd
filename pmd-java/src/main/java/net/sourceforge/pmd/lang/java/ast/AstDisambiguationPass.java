@@ -25,12 +25,13 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -146,21 +147,28 @@ final class AstDisambiguationPass {
 
         @Nullable
         JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
-            return classSym instanceof JClassSymbol
-                   ? JavaResolvers.getMemberFieldResolver((JClassType) classSym.getTypeSystem().typeOf(classSym, false), packageName, enclosingClass, name).resolveFirst(name)
-                   : null;
+            if (classSym instanceof JClassSymbol) {
+                JClassType t = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
+                FieldSig field = JavaResolvers.getMemberFieldResolver(t, packageName, enclosingClass, name).resolveFirst(name);
+                if (field != null) {
+                    return field.getSymbol();
+                }
+            }
+            return null;
         }
 
         @Nullable
         JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
             if (classSym instanceof JClassSymbol) {
-                @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassType) classSym.getTypeSystem().typeOf(classSym, false), packageName, enclosingClass, name).resolveHere(name);
-                return maybeAmbiguityError(name, errorLocation, found);
+                JClassType c = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
+                @NonNull List<JClassType> found = JavaResolvers.getMemberClassResolver(c, packageName, enclosingClass, name).resolveHere(name);
+                JClassType result = maybeAmbiguityError(name, errorLocation, found);
+                return result == null ? null : result.getSymbol();
             }
             return null;
         }
 
-        <T extends JTypeDeclSymbol> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
+        <T extends JTypeMirror> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
             if (found.isEmpty()) {
                 return null;
             } else if (found.size() > 1) {
@@ -173,8 +181,8 @@ final class AstDisambiguationPass {
                     errorLocation,
                     AMBIGUOUS_NAME_REFERENCE,
                     name,
-                    canonicalNameOf(found.get(0)),
-                    canonicalNameOf(found.get(1))
+                    canonicalNameOf(found.get(0).getSymbol()),
+                    canonicalNameOf(found.get(1).getSymbol())
                 );
                 // fallthrough and use the first one anyway
             }
@@ -408,7 +416,7 @@ final class AstDisambiguationPass {
 
             if (!isPackageOrTypeOnly) {
                 // first test if the leftmost segment is an expression
-                JVariableSymbol varResult = symTable.variables().resolveFirst(firstIdent.getImage());
+                JVariableSig varResult = symTable.variables().resolveFirst(firstIdent.getImage());
 
                 if (varResult != null) {
                     return resolveExpr(null, firstIdent, tokens, ctx);
@@ -428,7 +436,8 @@ final class AstDisambiguationPass {
         }
 
         private static JTypeDeclSymbol resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
-            return ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
+            JTypeMirror result = ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
+            return result == null ? null : result.getSymbol();
         }
 
 

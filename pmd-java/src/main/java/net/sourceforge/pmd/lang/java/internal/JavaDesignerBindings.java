@@ -28,8 +28,8 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.RelatedNodesSelector;
 
@@ -104,12 +104,12 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         return n -> {
             if (n instanceof ASTVariableAccess) {
                 // poor man's reference search
-                JVariableSymbol var = ((JavaNode) n).getSymbolTable()
-                                                    .variables()
-                                                    .resolveFirst(n.getImage());
+                JVariableSig var = ((JavaNode) n).getSymbolTable()
+                                                 .variables()
+                                                 .resolveFirst(n.getImage());
                 if (var != null) {
                     return n.getRoot().descendants(ASTVariableDeclaratorId.class)
-                            .filter(it -> it.getSymbol().equals(var))
+                            .filter(it -> it.getSymbol().equals(var.getSymbol()))
                             .toList(it -> it);
                 }
             }

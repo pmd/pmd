@@ -66,7 +66,7 @@ public abstract class ShadowChainBuilder<S, I> {
         return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, symbols.build());
     }
 
-    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         if (isPrunable(parent, shadowBarrier, resolver.isDefinitelyEmpty())) {
             return parent;
         }
@@ -88,7 +88,7 @@ public abstract class ShadowChainBuilder<S, I> {
     // resolver itself (the chain node will cache the results of the
     // parents too)
 
-    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag);
     }
 
@@ -148,6 +148,10 @@ public abstract class ShadowChainBuilder<S, I> {
 
         public ResolverBuilder() {
             this.myBuilder = newMapBuilder();
+        }
+
+        public String getSimpleName(S sym) {
+            return ShadowChainBuilder.this.getSimpleName(sym);
         }
 
         public ResolverBuilder append(S sym) {

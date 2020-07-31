@@ -12,6 +12,9 @@ import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JVariableSig
 
 class MemberInheritanceTest : ParserTestSpec({
 
@@ -133,11 +136,11 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("E", supe)
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("E", supe)
         }
 
         doTest("All member types should be inherited transitively") {
@@ -158,7 +161,7 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideSup, insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
@@ -169,6 +172,8 @@ class MemberInheritanceTest : ParserTestSpec({
             insideSup.symbolTable.shouldResolveTypeTo("K", supk)
         }
     }
+
+    fun ShadowChain<JVariableSig, *>.resolveSyms(name: String) = resolve(name).map { it.symbol }
 
     parserTest("Ambiguity handling when inheriting members from several unrelated interfaces") {
 
@@ -193,7 +198,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -206,7 +211,7 @@ class Impl implements I1, I2 {
             }
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // ambiguous
 
             }
@@ -230,7 +235,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -244,7 +249,7 @@ class Impl implements I1, I2 {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // ambiguous
 
             }
@@ -268,7 +273,7 @@ class Impl implements I2 { // <- difference here
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -282,7 +287,7 @@ class Impl implements I2 { // <- difference here
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol) // unambiguous
 
             }
@@ -308,7 +313,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -320,7 +325,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol, i1a.symbol) // ambiguous
 
             }
@@ -346,7 +351,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -358,7 +363,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol, i1a.symbol) // unambiguous
 
             }
@@ -384,7 +389,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -396,7 +401,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol) // unambiguous
 
             }
@@ -423,7 +428,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -435,7 +440,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol) // unambiguous
 
             }
@@ -467,7 +472,7 @@ class Impl extends Sup  {
 
         """)
 
-            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -479,7 +484,7 @@ class Impl extends Sup  {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(supA.symbol) // unambiguous
 
             }
@@ -512,7 +517,7 @@ class Impl extends Sup {
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -524,7 +529,7 @@ class Impl extends Sup {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // unambiguous
 
             }

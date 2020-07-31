@@ -18,14 +18,15 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     private final boolean shadowBarrier;
     private final I scopeTag;
 
+    @SuppressWarnings("unchecked") // NameResolver is covariant in S
     ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent,
                         boolean shadowBarrier,
                         I scopeTag,
-                        NameResolver<S> resolver) {
+                        NameResolver<? extends S> resolver) {
         this.parent = parent;
         this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
-        this.resolver = resolver;
+        this.resolver = (NameResolver<S>) resolver;
     }
 
     @Override

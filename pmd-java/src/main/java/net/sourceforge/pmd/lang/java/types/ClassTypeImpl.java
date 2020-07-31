@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.StreamUtils.streamOf;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -22,6 +23,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class ClassTypeImpl implements JClassType {
 
@@ -134,7 +138,7 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs) {
-        return new ClassTypeImpl(ts, this, symbol, targs, false);
+        return new ClassTypeImpl(ts, this, symbol, targs, this.isDecl);
     }
 
     @Override
@@ -226,28 +230,48 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public @Nullable JVariableSig getField(String name) {
-        @Nullable JFieldSymbol declaredField = symbol.getDeclaredField(name);
+    public List<FieldSig> getDeclaredFields() {
+        return CollectionUtil.map(symbol.getDeclaredFields(), it -> JVariableSig.forField(this, it));
+    }
+
+    @Override
+    public List<JClassType> getDeclaredClasses() {
+        return CollectionUtil.map(symbol.getDeclaredClasses(), this::getDeclaredClass);
+    }
+
+    private JClassType getDeclaredClass(JClassSymbol inner) {
+        if (Modifier.isStatic(inner.getModifiers())) {
+            return new ClassTypeImpl(ts, null, inner, Collections.emptyList(), true);
+        } else {
+            return selectInner(inner, Collections.emptyList());
+        }
+    }
+
+    @Override
+    public @Nullable FieldSig getField(String name) {
+        return JavaResolvers.getMemberFieldResolver(this, symbol.getPackageName(), symbol, name).resolveFirst(name);
+    }
+
+    @Override
+    public @Nullable FieldSig getDeclaredField(String simpleName) {
+        @Nullable JFieldSymbol declaredField = symbol.getDeclaredField(simpleName);
         if (declaredField != null) {
             return JVariableSig.forField(this, declaredField);
         }
+        return null;
+    }
 
-        if (getSuperClass() != null) {
-            JVariableSig fieldType = getSuperClass().getField(name);
-            if (fieldType != null) {
-                return fieldType;
-            }
-        }
-
-        // TODO there may be several fields by that name, an ambiguity error
-        for (JClassType it : getSuperInterfaces()) {
-            JVariableSig field = it.getField(name);
-            if (field != null) {
-                return field;
+    @Override
+    public @Nullable JClassType getDeclaredClass(String simpleName) {
+        JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
+        if (declaredClass != null) {
+            if (Modifier.isStatic(declaredClass.getModifiers())) {
+                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), true);
+            } else {
+                return selectInner(declaredClass, Collections.emptyList());
             }
         }
         return null;
-
     }
 
     @Override

@@ -24,7 +24,7 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
 
     protected CachingShadowChainNode(@NonNull ShadowChainNode<S, I> parent,
                                      Map<String, List<S>> known,
-                                     NameResolver<S> resolver,
+                                     NameResolver<? extends S> resolver,
                                      boolean shadowBarrier,
                                      I scopeTag) {
         super(parent, shadowBarrier, scopeTag, resolver);

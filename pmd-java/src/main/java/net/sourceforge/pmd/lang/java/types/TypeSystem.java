@@ -27,6 +27,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -478,6 +481,18 @@ public final class TypeSystem {
     public JMethodSig sigOf(JExecutableSymbol methodSym, Substitution subst) {
         JClassType klass = (JClassType) declaration(methodSym.getEnclosingClass());
         return new ClassMethodSigImpl(klass.subst(subst), methodSym);
+    }
+
+    public JVariableSig sigOf(JTypeMirror decl, JFieldSymbol fieldSym) {
+        return JVariableSig.forField(decl, fieldSym);
+    }
+
+    public JVariableSig sigOf(JClassType decl, JLocalVariableSymbol fieldSym) {
+        return JVariableSig.forLocal(decl, fieldSym);
+    }
+
+    public JVariableSig sigOf(JClassType decl, JFormalParamSymbol fieldSym) {
+        return JVariableSig.forLocal(decl, fieldSym);
     }
 
     /**

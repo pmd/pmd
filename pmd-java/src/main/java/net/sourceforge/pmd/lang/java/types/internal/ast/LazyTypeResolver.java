@@ -57,8 +57,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -405,20 +403,11 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
 
     @Override
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
-        @Nullable JVariableSymbol result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
+        @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
         if (result == null) {
             return null;
         }
-        Substitution subst = Substitution.EMPTY;
-        if (result instanceof JFieldSymbol) {
-            // TODO asOuterSuper is not terribly efficient,
-            //  esp. since resolveValueName already recurses into supertypes
-            JClassType declarator = TypeOps.asOuterSuper(node.getEnclosingType().getTypeMirror(), ((JFieldSymbol) result).getEnclosingClass());
-            if (declarator != null) {
-                subst = declarator.getTypeParamSubst();
-            }
-        }
-        return result.getTypeMirror(subst);
+        return result.getTypeMirror();
     }
 
     @Override

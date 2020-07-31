@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,8 +24,6 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
@@ -33,6 +32,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleN
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.util.StreamUtils;
 
 public final class JavaResolvers {
@@ -72,19 +74,19 @@ public final class JavaResolvers {
     }
 
     @NonNull
-    static NameResolver<JTypeDeclSymbol> importedOnDemand(Set<String> lazyImportedPackagesAndTypes,
-                                                          final SymbolResolver symResolver,
-                                                          final String thisPackage) {
-        return new SingleNameResolver<JTypeDeclSymbol>() {
+    static NameResolver<JTypeMirror> importedOnDemand(Set<String> lazyImportedPackagesAndTypes,
+                                                      final SymbolResolver symResolver,
+                                                      final String thisPackage) {
+        return new SingleNameResolver<JTypeMirror>() {
             @Nullable
             @Override
-            public JTypeDeclSymbol resolveFirst(String simpleName) {
+            public JTypeMirror resolveFirst(String simpleName) {
                 for (String pack : lazyImportedPackagesAndTypes) {
                     // here 'pack' may be a package or a type name, so we must resolve by canonical name
                     String name = prependPackageName(pack, simpleName);
                     JClassSymbol sym = symResolver.resolveClassFromCanonicalName(name);
                     if (sym != null && canBeImportedIn(thisPackage, sym)) {
-                        return sym;
+                        return sym.getTypeSystem().typeOf(sym, false);
                     }
                 }
                 return null;
@@ -98,12 +100,16 @@ public final class JavaResolvers {
     }
 
     @NonNull
-    static NameResolver<JTypeDeclSymbol> packageResolver(SymbolResolver symResolver, String packageName) {
-        return new SingleNameResolver<JTypeDeclSymbol>() {
+    static NameResolver<JTypeMirror> packageResolver(SymbolResolver symResolver, String packageName) {
+        return new SingleNameResolver<JTypeMirror>() {
             @Nullable
             @Override
-            public JTypeDeclSymbol resolveFirst(String simpleName) {
-                return symResolver.resolveClassFromBinaryName(prependPackageName(packageName, simpleName));
+            public JTypeMirror resolveFirst(String simpleName) {
+                JClassSymbol sym = symResolver.resolveClassFromBinaryName(prependPackageName(packageName, simpleName));
+                if (sym != null) {
+                    return sym.getTypeSystem().typeOf(sym, false);
+                }
+                return null;
             }
 
             @Override
@@ -145,14 +151,17 @@ public final class JavaResolvers {
      * overloads). But also, usually a subset of methods is used in a subclass,
      * and it's ok performance-wise to process them on-demand.
      */
-    static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inheritedMembersResolvers(JClassType t) {
+    static Pair<NameResolver<JTypeMirror>, NameResolver<JVariableSig>> inheritedMembersResolvers(JClassType t) {
         JClassSymbol nestRoot = t.getSymbol().getNestRoot();
 
-        ShadowChainBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
-        ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+        ShadowChainBuilder<JVariableSig, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
+        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+
+        Predicate<JVariableSig> isFieldAccessible = s -> isAccessibleIn(nestRoot, (JFieldSymbol) s.getSymbol(), true);
+        Predicate<JClassType> isTypeAccessible = s -> isAccessibleIn(nestRoot, s.getSymbol(), true);
 
         for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
-            walkSelf(next, s -> isAccessibleIn(nestRoot, s, true), fields, types, HashTreePSet.empty(), HashTreePSet.empty());
+            walkSelf(next, isFieldAccessible, isTypeAccessible, fields, types, HashTreePSet.empty(), HashTreePSet.empty());
         }
 
         // Note that if T is an interface, Object won't have been visited
@@ -163,9 +172,10 @@ public final class JavaResolvers {
     }
 
     private static void walkSelf(JClassType t,
-                                 Predicate<? super JAccessibleElementSymbol> isAccessible,
-                                 ShadowChainBuilder<JVariableSymbol, ?>.ResolverBuilder fields,
-                                 ShadowChainBuilder<JTypeDeclSymbol, ?>.ResolverBuilder types,
+                                 Predicate<? super JVariableSig> isFieldAccessible,
+                                 Predicate<? super JClassType> isTypeAccessible,
+                                 ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder fields,
+                                 ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder types,
                                  // persistent because may change in every path of the recursion
                                  final PSet<String> hiddenFields,
                                  final PSet<String> hiddenTypes) {
@@ -177,21 +187,23 @@ public final class JavaResolvers {
         // Profiling shows that this doesn't occur very often, and adding
         // a recursion guard is counter-productive performance-wise
 
-        PSet<String> hiddenTypesInSup = processDeclarations(types, hiddenTypes, isAccessible, t.getSymbol().getDeclaredClasses());
-        PSet<String> hiddenFieldsInSup = processDeclarations(fields, hiddenFields, isAccessible, t.getSymbol().getDeclaredFields());
+        PSet<String> hiddenTypesInSup = processDeclarations(types, hiddenTypes, isTypeAccessible, t.getDeclaredClasses());
+        PSet<String> hiddenFieldsInSup = processDeclarations(fields, hiddenFields, isFieldAccessible, t.getDeclaredFields());
 
         // depth first
         for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
-            walkSelf(next, isAccessible, fields, types, hiddenFieldsInSup, hiddenTypesInSup);
+            walkSelf(next, isFieldAccessible, isTypeAccessible, fields, types, hiddenFieldsInSup, hiddenTypesInSup);
         }
     }
 
-    private static <S extends JAccessibleElementSymbol> PSet<String> processDeclarations(ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                                                                                         PSet<String> hidden,
-                                                                                         Predicate<? super S> isAccessible,
-                                                                                         List<? extends S> syms) {
+    private static <S> PSet<String> processDeclarations(
+        ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+        PSet<String> hidden,
+        Predicate<? super S> isAccessible,
+        List<? extends S> syms
+    ) {
         for (S inner : syms) {
-            String simpleName = inner.getSimpleName();
+            String simpleName = builder.getSimpleName(inner);
             if (hidden.contains(simpleName)) {
                 continue;
             }
@@ -240,8 +252,6 @@ public final class JavaResolvers {
         }
     }
 
-    private static final ShadowChainBuilder<JClassSymbol, ScopeInfo> CLASSES = new SymbolChainBuilder<>();
-    private static final ShadowChainBuilder<JFieldSymbol, ScopeInfo> FIELDS = new SymbolChainBuilder<>();
 
     /**
      * Produce a name resolver that resolves member classes with the
@@ -253,30 +263,35 @@ public final class JavaResolvers {
      * @param access Context of where the declaration is referenced
      * @param name   Name of the class to find
      */
-    public static NameResolver<JClassSymbol> getMemberClassResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, accessPackageName, JClassSymbol::getDeclaredClass, name, CLASSES);
+    public static NameResolver<JClassType> getMemberClassResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, access, accessPackageName, JClassType::getDeclaredClass, name, JClassType::getSymbol, SymTableFactory.TYPES);
     }
 
-    public static NameResolver<JFieldSymbol> getMemberFieldResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, accessPackageName, JClassSymbol::getDeclaredField, name, FIELDS);
+    public static NameResolver<FieldSig> getMemberFieldResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, access, accessPackageName, JClassType::getDeclaredField, name, FieldSig::getSymbol, SymTableFactory.VARS);
     }
 
-    private static <S extends JAccessibleElementSymbol> NameResolver<S> getNamedMemberResolver(JClassType c,
-                                                                                               @Nullable JClassSymbol access,
-                                                                                               @NonNull String accessPackageName,
-                                                                                               BiFunction<? super JClassSymbol, String, ? extends S> getter,
-                                                                                               String name,
-                                                                                               ShadowChainBuilder<S, ?> classes) {
-        S found = getter.apply(c.getSymbol(), name);
+    private static <S> NameResolver<S> getNamedMemberResolver(JClassType c,
+                                                              @Nullable JClassSymbol access,
+                                                              @NonNull String accessPackageName,
+                                                              BiFunction<? super JClassType, String, ? extends S> getter,
+                                                              String name,
+                                                              Function<? super S, ? extends JAccessibleElementSymbol> symbolGetter,
+                                                              ShadowChainBuilder<? super S, ?> classes) {
+        S found = getter.apply(c, name);
         if (found != null) {
             // fast path, doesn't need to check accessibility, etc
             return CoreResolvers.singleton(name, found);
         }
 
         JClassSymbol nestRoot = access == null ? null : access.getNestRoot();
-        Predicate<S> isAccessible = s -> isAccessibleIn(nestRoot, accessPackageName, s, isSubtype(access, s.getEnclosingClass()));
+        Predicate<S> isAccessible = s -> {
+            JAccessibleElementSymbol sym = symbolGetter.apply(s);
+            return isAccessibleIn(nestRoot, accessPackageName, sym, isSubtype(access, sym.getEnclosingClass()));
+        };
 
-        ShadowChainBuilder<S, ?>.ResolverBuilder builder = classes.new ResolverBuilder();
+        @SuppressWarnings("unchecked")
+        ShadowChainBuilder<S, ?>.ResolverBuilder builder = (ShadowChainBuilder<S, ?>.ResolverBuilder) classes.new ResolverBuilder();
 
         for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(c)) {
             walkForSingleName(next, isAccessible, name, getter, builder, HashTreePSet.empty());
@@ -289,14 +304,14 @@ public final class JavaResolvers {
         return sub != null && sub.getTypeSystem().typeOf(sub, true).getAsSuper(sup) != null;
     }
 
-    private static <S extends JAccessibleElementSymbol> void walkForSingleName(JClassType t,
-                                                                               Predicate<? super S> isAccessible,
-                                                                               String name,
-                                                                               BiFunction<? super JClassSymbol, String, ? extends S> getter,
-                                                                               ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                                                                               final PSet<String> hidden) {
+    private static <S> void walkForSingleName(JClassType t,
+                                              Predicate<? super S> isAccessible,
+                                              String name,
+                                              BiFunction<? super JClassType, String, ? extends S> getter,
+                                              ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+                                              final PSet<String> hidden) {
 
-        PSet<String> hiddenInSup = processDeclarations(builder, hidden, isAccessible, listOfNotNull(getter.apply(t.getSymbol(), name)));
+        PSet<String> hiddenInSup = processDeclarations(builder, hidden, isAccessible, listOfNotNull(getter.apply(t, name)));
 
         if (!hiddenInSup.isEmpty()) {
             // found it in this branch

@@ -43,9 +43,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  *
  * <p>This interface plays a similar role to {@link JMethodSig}. It is
  * the type of search results of a {@link JSymbolTable}, see
- * {@link JSymbolTable#resolveValueName(String)}.
+ * {@link JSymbolTable#variables()}.
  */
-public final class JVariableSig {
+public class JVariableSig {
 
     private final JVariableSymbol sym;
     private final JTypeMirror declarator;
@@ -80,7 +80,6 @@ public final class JVariableSig {
      * Returns the type given to the symbol in the particular scope this
      * signature is valid in.
      */
-
     public JTypeMirror getTypeMirror() {
         Substitution subst = declarator instanceof JClassType
                              ? ((JClassType) declarator).getTypeParamSubst()
@@ -90,8 +89,8 @@ public final class JVariableSig {
                                   : sym.getTypeMirror(subst);
     }
 
-    static JVariableSig forField(JTypeMirror declarator, JFieldSymbol sym) {
-        return new JVariableSig(declarator, sym);
+    static JVariableSig.FieldSig forField(JTypeMirror declarator, JFieldSymbol sym) {
+        return new JVariableSig.FieldSig(declarator, sym);
     }
 
     static JVariableSig forLocal(JClassType declarator, JVariableSymbol sym) {
@@ -103,7 +102,7 @@ public final class JVariableSig {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof JVariableSig)) {
+        if (!(o instanceof JVariableSig) || o.getClass() != this.getClass()) {
             return false;
         }
         JVariableSig that = (JVariableSig) o;
@@ -115,4 +114,21 @@ public final class JVariableSig {
     public int hashCode() {
         return Objects.hash(sym, declarator);
     }
+
+
+    /**
+     * A field signature.
+     */
+    public static final class FieldSig extends JVariableSig {
+
+        FieldSig(JTypeMirror declarator, JFieldSymbol sym) {
+            super(declarator, sym);
+        }
+
+        @Override
+        public JFieldSymbol getSymbol() {
+            return (JFieldSymbol) super.sym;
+        }
+    }
+
 }

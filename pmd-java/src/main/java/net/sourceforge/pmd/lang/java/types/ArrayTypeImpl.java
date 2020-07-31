@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -24,8 +26,6 @@ final class ArrayTypeImpl implements JArrayType {
     private final JTypeMirror component;
     private final TypeSystem ts;
     private JClassSymbol symbol;
-
-    private JVariableSig lengthField;
 
     ArrayTypeImpl(TypeSystem ts, JTypeMirror component) {
         assert component != null : "Expected non-null component";
@@ -86,12 +86,9 @@ final class ArrayTypeImpl implements JArrayType {
     }
 
     @Override
-    public @Nullable JVariableSig getField(String name) {
+    public @Nullable FieldSig getField(String name) {
         if ("length".equals(name)) {
-            if (lengthField == null) {
-                lengthField = JVariableSig.forField(this, getSymbol().getDeclaredField("length"));
-            }
-            return lengthField;
+            return JVariableSig.forField(this, getSymbol().getDeclaredField("length"));
         }
         return null;
     }

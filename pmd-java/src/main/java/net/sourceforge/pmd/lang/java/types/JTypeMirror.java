@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -305,7 +307,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * @param name Name of the field
      */
     @Nullable
-    default JVariableSig getField(String name) {
+    default FieldSig getField(String name) {
         return null;
     }
 

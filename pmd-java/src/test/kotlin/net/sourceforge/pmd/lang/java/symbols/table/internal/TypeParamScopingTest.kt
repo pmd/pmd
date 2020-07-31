@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JTypeVar
 
 class TypeParamScopingTest : ParserTestSpec({
 
@@ -48,24 +50,24 @@ class TypeParamScopingTest : ParserTestSpec({
 
         doTest("Inside Foo: T is Foo#T") {
 
-            insideFoo.symbolTable.shouldResolveTypeTo("T", fooT.symbol)
+            insideFoo.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
         }
 
         doTest("Inside Inner: T is Foo#T") {
 
-            insideInner.symbolTable.shouldResolveTypeTo("T", fooT.symbol)
+            insideInner.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
         }
 
         doTest("Inside Inner2: T is Inner2#T, shadowed") {
 
-            insideInner2.symbolTable.shouldResolveTypeTo("T", inner2T.symbol)
+            insideInner2.symbolTable.shouldResolveTypeTo("T", inner2T.typeMirror)
         }
 
         doTest("Inside Other: T is imported, type params are not in scope") {
 
-            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("T").let {
-                it::getCanonicalName shouldBe "somewhere.T"
-                it::isUnresolved shouldBe true
+            insideOther.symbolTable.shouldResolveTypeTo<JClassType>("T").let {
+                it.symbol::getCanonicalName shouldBe "somewhere.T"
+                it.symbol::isUnresolved shouldBe true
             }
         }
 
@@ -86,7 +88,7 @@ class TypeParamScopingTest : ParserTestSpec({
             val (t, x) = acu.descendants(ASTTypeParameter::class.java).toList()
 
             t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
-                it.symbolTable.shouldResolveTypeTo("X", x.symbol)
+                it.symbolTable.shouldResolveTypeTo<JTypeVar>("X", x.typeMirror)
             }
         }
 
@@ -103,7 +105,7 @@ class TypeParamScopingTest : ParserTestSpec({
             val (x, t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
             t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
-                it.symbolTable.shouldResolveTypeTo("X", x.symbol)
+                it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
             }
         }
 
@@ -120,7 +122,7 @@ class TypeParamScopingTest : ParserTestSpec({
             val (t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
             t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
-                it.symbolTable.shouldResolveTypeTo("T", t.symbol)
+                it.symbolTable.shouldResolveTypeTo("T", t.typeMirror)
             }
         }
 
@@ -167,7 +169,7 @@ class TypeParamScopingTest : ParserTestSpec({
         doTest("TParams of class are in scope inside method tparam declaration") {
 
             t2.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
-                it.symbolTable.shouldResolveTypeTo("X", x.symbol)
+                it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
             }
 
         }
@@ -176,15 +178,15 @@ class TypeParamScopingTest : ParserTestSpec({
 
             pt.symbolTable shouldBe px.symbolTable
 
-            pt.symbolTable.shouldResolveTypeTo("T", t2.symbol)
-            px.symbolTable.shouldResolveTypeTo("X", x.symbol)
+            pt.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
+            px.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
         }
 
         doTest("TParams of method are in scope in method body") {
 
             for (node in listOf(vt, vx)) {
-                node.symbolTable.shouldResolveTypeTo("T", t2.symbol)
-                node.symbolTable.shouldResolveTypeTo("X", x.symbol)
+                node.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
+                node.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
             }
         }
 
@@ -192,12 +194,12 @@ class TypeParamScopingTest : ParserTestSpec({
 
             val annot = acu.descendants(ASTAnnotation::class.java).first()!!
 
-            annot.symbolTable.shouldResolveTypeTo("Y", annotY.symbol) // not the Y of the method
+            annot.symbolTable.shouldResolveTypeTo("Y", annotY.typeMirror) // not the Y of the method
             annot.symbol.shouldBeSameInstanceAs(annotY.symbol)
         }
 
         doTest("Local class shadows type param") {
-            vx2.symbolTable.shouldResolveTypeTo("X", localX.symbol)
+            vx2.symbolTable.shouldResolveTypeTo("X", localX.typeMirror)
         }
 
     }
@@ -226,11 +228,11 @@ class TypeParamScopingTest : ParserTestSpec({
                 acu.descendants(ASTFormalParameter::class.java).toList()
 
         doTest("Inside Foo: T is Foo#T") {
-            insideFoo.symbolTable.shouldResolveTypeTo("T", tparam.symbol!!)
+            insideFoo.symbolTable.shouldResolveTypeTo("T", tparam)
         }
 
         doTest("Inside Foo.T: T is Foo.T") {
-            insideT.symbolTable.shouldResolveTypeTo("T", innerTClass.symbol)
+            insideT.symbolTable.shouldResolveTypeTo("T", innerTClass.typeMirror)
         }
     }
 

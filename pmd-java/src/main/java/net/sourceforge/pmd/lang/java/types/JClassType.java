@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -43,10 +46,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
  * </ul>
  */
 public interface JClassType extends JTypeMirror {
-
-    // FIXME does the equals method heed all this? test that
-    //  also rewrite the doc above
-
 
     @Override
     @NonNull
@@ -173,8 +172,8 @@ public interface JClassType extends JTypeMirror {
      * @param symbol Symbol for the inner type
      * @param targs  Type arguments of the inner type. If that is an empty
      *               list, and the given symbol is generic, then the inner
-     *               type will be raw. In which case it's an error if this
-     *               type is generic and is not raw
+     *               type will be raw, or a generic type declaration,
+     *               depending on whether this type is erased or not.
      *
      * @return A type for the inner type
      *
@@ -190,6 +189,23 @@ public interface JClassType extends JTypeMirror {
      */
     JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs);
 
+
+    default List<JClassType> getDeclaredClasses() {
+        return Collections.emptyList();
+    }
+
+
+    default List<FieldSig> getDeclaredFields() {
+        return Collections.emptyList();
+    }
+
+    default @Nullable FieldSig getDeclaredField(String simpleName) {
+        return null;
+    }
+
+    default @Nullable JClassType getDeclaredClass(String simpleName) {
+        return null;
+    }
 
     /**
      * Returns the generic superclass type. Returns null if this is
