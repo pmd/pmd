@@ -122,7 +122,7 @@ public final class JavaAstProcessor {
         // This is whacky, but there is a corner case with inner class creation expression (`foo.new Inner()`)
         // whereby the symbol to which `Inner` resolves depends on type resolution of `foo` (of the whole LHS).
 
-        // This is handled by adding in the disambiguation pass. Because the
+        // This is handled in the disambiguation pass. Because the
         // SymbolTableResolver may request early disambiguation of some nodes,
         // type resolution must be ready to fire before table resolution starts
         LazyTypeResolver typeResolver = new LazyTypeResolver(this, TYPE_INFERENCE_LOGGER);

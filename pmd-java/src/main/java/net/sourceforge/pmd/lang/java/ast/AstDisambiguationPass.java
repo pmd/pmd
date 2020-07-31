@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticCheck
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_MEMBER;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -163,6 +164,11 @@ final class AstDisambiguationPass {
             if (found.isEmpty()) {
                 return null;
             } else if (found.size() > 1) {
+                // FIXME when type is reachable through several paths, there may be duplicates!
+                HashSet<? extends T> distinct = new HashSet<>(found);
+                if (distinct.size() == 1) {
+                    return distinct.iterator().next();
+                }
                 processor.getLogger().error(
                     errorLocation,
                     AMBIGUOUS_NAME_REFERENCE,
