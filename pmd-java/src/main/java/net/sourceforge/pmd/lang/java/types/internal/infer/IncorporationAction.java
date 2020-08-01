@@ -81,7 +81,7 @@ abstract class IncorporationAction {
             for (BoundKind k : boundsToCheck()) {
                 for (JTypeMirror b : ivar.getBounds(k)) {
                     if (!checkBound(b, k)) {
-                        throw ResolutionFailedException.incompatibleBound(ivar, myKind, myBound, k, b);
+                        throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, k, b);
                     }
                 }
             }

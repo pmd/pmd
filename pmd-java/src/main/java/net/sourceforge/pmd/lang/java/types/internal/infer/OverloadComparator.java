@@ -208,7 +208,7 @@ final class OverloadComparator {
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(ctx.toClassType(ti));
             if (fun == null) {
                 // not a functional interface
-                Infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase);
+                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase);
             }
 
             // todo special conditions for lambdas/ mrefs
@@ -217,7 +217,7 @@ final class OverloadComparator {
 
         if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
             // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            Infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase);
+            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase);
         }
 
         ctx.solve();         // throws ResolutionFailedException

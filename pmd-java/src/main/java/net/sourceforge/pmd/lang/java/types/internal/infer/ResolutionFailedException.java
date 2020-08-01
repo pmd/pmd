@@ -24,7 +24,6 @@ final class ResolutionFailedException extends RuntimeException {
 
     private static final ThreadLocal<ResolutionFailedException> SHARED = ThreadLocal.withInitial(ResolutionFailedException::new);
     private static final boolean SHARE_EXCEPTION = true;
-    static boolean noLog = false;
 
     private ResolutionFailure failure;
 
@@ -49,55 +48,60 @@ final class ResolutionFailedException extends RuntimeException {
         return "ResolutionFailedException:failure=" + failure;
     }
 
-    static ResolutionFailedException incompatibleBound(JInferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
+    // If the logger is noop we don't even create the failure.
+    // These failures are extremely frequent (and normal), and type pretty-printing is expensive
+
+    static ResolutionFailedException incompatibleBound(TypeInferenceLogger logger, JInferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
         // in javac it's "no instance of type variables exist ..."
-        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             null,
             "Incompatible bounds: " + k1.format(ivar, b1) + " and " + k2.format(ivar, b2)
         ));
     }
 
-    static ResolutionFailedException incompatibleBound(JTypeMirror actual, JTypeMirror formal, JavaNode explicitTarg) {
-        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
+    static ResolutionFailedException incompatibleBound(TypeInferenceLogger logger, JTypeMirror actual, JTypeMirror formal, JavaNode explicitTarg) {
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             explicitTarg,
             "Incompatible bounds: " + actual + " does not conform to " + formal
         ));
     }
 
-    static ResolutionFailedException incompatibleTypeParamCount(ExprMirror site, JMethodSig m, int found, int required) {
-        return getShared(noLog ? UNKNOWN : new ResolutionFailure(site.getLocation(), "Wrong number of type arguments"));
+    static ResolutionFailedException incompatibleTypeParamCount(TypeInferenceLogger logger, ExprMirror site, JMethodSig m, int found, int required) {
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(site.getLocation(), "Wrong number of type arguments"));
     }
 
-    static ResolutionFailedException incompatibleFormal(ExprMirror arg, JTypeMirror found, JTypeMirror required) {
-        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
+    static ResolutionFailedException incompatibleFormal(TypeInferenceLogger logger, ExprMirror arg, JTypeMirror found, JTypeMirror required) {
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             // this constructor is pretty expensive due to the pretty printing when log is enabled
             arg.getLocation(),
             "Incompatible formals: " + found + " is not convertible to " + required
         ));
     }
 
-    static ResolutionFailedException incompatibleReturn(ExprMirror expr, JTypeMirror found, JTypeMirror required) {
+    static ResolutionFailedException incompatibleReturn(TypeInferenceLogger logger, ExprMirror expr, JTypeMirror found, JTypeMirror required) {
         // in javac it's "no instance of type variables exist ..."
-        return getShared(noLog ? UNKNOWN : new ResolutionFailure(
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             expr.getLocation(),
             "Incompatible return type: " + found + " is not convertible to " + required
         ));
     }
 
-    static ResolutionFailedException unsolvableDependency() {
-        return getShared(noLog ? UNKNOWN
-                               : new ResolutionFailure(null, "Unsolvable inference variable dependency"));
+    static ResolutionFailedException unsolvableDependency(TypeInferenceLogger logger) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(null,
+                                                                 "Unsolvable inference variable dependency"));
     }
 
-    static ResolutionFailedException incompatibleArity(int found, int required, JavaNode location) {
-        return getShared(noLog ? UNKNOWN
-                               : new ResolutionFailure(location, "Incompatible arity: " + found + " != " + required));
+    static ResolutionFailedException incompatibleArity(TypeInferenceLogger logger, int found, int required, JavaNode location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location,
+                                                                 "Incompatible arity: " + found + " != " + required));
     }
 
-    static ResolutionFailedException noCtDeclaration(JMethodSig fun, MethodRefMirror mref) {
-        return getShared(noLog ? UNKNOWN
-                               : new ResolutionFailure(mref.getLocation(),
-                                                       "No compile time declaration found conforming to: " + fun));
+    static ResolutionFailedException noCtDeclaration(TypeInferenceLogger logger, JMethodSig fun, MethodRefMirror mref) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(mref.getLocation(),
+                                                                 "No compile time declaration found conforming to: " + fun));
     }
 
 

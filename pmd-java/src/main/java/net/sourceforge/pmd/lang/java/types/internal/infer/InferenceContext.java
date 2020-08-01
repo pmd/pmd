@@ -54,7 +54,7 @@ final class InferenceContext {
     private final Set<JInferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
-    private final TypeInferenceLogger logger;
+    final TypeInferenceLogger logger;
 
     private Substitution mapping = Substitution.EMPTY;
     @Nullable

@@ -90,16 +90,23 @@ public interface TypeInferenceLogger {
      */
     default void logResolutionFail(ResolutionFailure exception) { }
 
+    default boolean isNoop() {
+        return false;
+    }
 
-    static TypeInferenceLogger logGloballyDisabled() {
-        ResolutionFailedException.noLog = true;
+    static TypeInferenceLogger noop() {
         return SimpleLogger.NOOP;
     }
 
 
     class SimpleLogger implements TypeInferenceLogger {
 
-        static final TypeInferenceLogger NOOP = new TypeInferenceLogger() { };
+        static final TypeInferenceLogger NOOP = new TypeInferenceLogger() {
+            @Override
+            public boolean isNoop() {
+                return true;
+            }
+        };
 
 
         private final PrintStream out;
@@ -237,7 +244,7 @@ public interface TypeInferenceLogger {
     class VerboseLogger extends SimpleLogger {
 
 
-        private Stack<Integer> marks = new Stack<>();
+        private final Stack<Integer> marks = new Stack<>();
 
         public VerboseLogger(PrintStream out) {
             super(out);

@@ -214,7 +214,7 @@ final class ExprCheckHelper {
 
         // If there is no compile-time declaration for the method reference, the constraint reduces to false.
         if (ctdecl == null) {
-            throw ResolutionFailedException.noCtDeclaration(fun, mref);
+            throw ResolutionFailedException.noCtDeclaration(infer.LOG, fun, mref);
         }
 
         // Otherwise, there is a compile-time declaration, and: (let R be the result of the function type)
@@ -237,7 +237,7 @@ final class ExprCheckHelper {
                 // be bound by an out-of-scope type variable. Since instantiating an inference
                 // variable with an out-of-scope type variable is nonsensical, we prefer to
                 // avoid the situation by giving up immediately whenever the possibility arises.
-                throw ResolutionFailedException.unsolvableDependency();
+                throw ResolutionFailedException.unsolvableDependency(infer.LOG);
             } else {
                 // JLS:
                 // If R does not mention one of the type parameters of the function type, then the
@@ -253,7 +253,7 @@ final class ExprCheckHelper {
             // type of the invocation type (§15.12.2.6) of the compile-time declaration. If R' is void,
             // the constraint reduces to false; otherwise, the constraint reduces to ‹R' → R›.
             if (ctdecl.getReturnType() == ts.NO_TYPE) {
-                throw ResolutionFailedException.incompatibleReturn(mref, ctdecl.getReturnType(), r);
+                throw ResolutionFailedException.incompatibleReturn(infer.LOG, mref, ctdecl.getReturnType(), r);
             } else {
                 checker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
                 completeMethodRefInference(mref, nonWildcard, fun, ctdecl, false);

@@ -11,8 +11,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -41,12 +39,21 @@ public final class JavaAstProcessor {
     private static final Logger DEFAULT_LOG = Logger.getLogger(JavaAstProcessor.class.getName());
 
     private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
-    private static final TypeInferenceLogger TYPE_INFERENCE_LOGGER;
+    private static final Level INFERENCE_LOG_LEVEL;
+
 
     static {
-        TYPE_INFERENCE_LOGGER = getTypeInferenceLogger();
+        Level level;
+        try {
+            level = Level.parse(System.getenv("PMD_DEBUG_LEVEL"));
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+            level = Level.OFF;
+        }
+        INFERENCE_LOG_LEVEL = level;
     }
 
+
+    private final TypeInferenceLogger typeInferenceLogger;
     private final SemanticChecksLogger logger;
     private final LanguageVersion languageVersion;
     private final TypeSystem typeSystem;
@@ -64,6 +71,14 @@ public final class JavaAstProcessor {
         this.languageVersion = languageVersion;
 
         this.typeSystem = typeSystem;
+
+        if (INFERENCE_LOG_LEVEL == Level.FINEST) {
+            this.typeInferenceLogger = new VerboseLogger(System.err);
+        } else if (INFERENCE_LOG_LEVEL == Level.FINE) {
+            this.typeInferenceLogger = new SimpleLogger(System.err);
+        } else {
+            this.typeInferenceLogger = TypeInferenceLogger.noop();
+        }
     }
 
     public JClassSymbol makeUnresolvedReference(String canonicalName) {
@@ -124,29 +139,11 @@ public final class JavaAstProcessor {
         // This is handled in the disambiguation pass. Because the
         // SymbolTableResolver may request early disambiguation of some nodes,
         // type resolution must be ready to fire before table resolution starts
-        LazyTypeResolver typeResolver = new LazyTypeResolver(this, TYPE_INFERENCE_LOGGER);
+        LazyTypeResolver typeResolver = new LazyTypeResolver(this, typeInferenceLogger);
         InternalApiBridge.setTypeResolver(acu, typeResolver);
 
         bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("3. AST disambiguation", () -> InternalApiBridge.disambig(this, acu));
-    }
-
-    @NonNull
-    private static TypeInferenceLogger getTypeInferenceLogger() {
-        // todo This is not mature, just used for
-        Level level;
-        try {
-            level = Level.parse(System.getenv("PMD_DEBUG_LEVEL"));
-        } catch (IllegalArgumentException | NullPointerException ignored) {
-            return TypeInferenceLogger.logGloballyDisabled();
-        }
-        if (level == Level.FINE) {
-            return new SimpleLogger(System.err);
-        } else if (level == Level.FINEST) {
-            return new VerboseLogger(System.err);
-        } else {
-            return TypeInferenceLogger.logGloballyDisabled();
-        }
     }
 
     public TypeSystem getTypeSystem() {

@@ -51,7 +51,7 @@ public final class Infer {
     private final OverloadComparator overloadComparator;
 
     @SuppressWarnings("PMD.FieldNamingConventions")
-    private final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
+    final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
     private final boolean isJava8; // NOPMD this is unused but may be used later
     private final TypeSystem ts;
@@ -414,7 +414,7 @@ public final class Infer {
 
             if (tparams.size() != explicitTargs.size()) {
                 // normally checked by isPotentiallyApplicable
-                throw ResolutionFailedException.incompatibleTypeParamCount(site.getExpr(), m, explicitTargs.size(), tparams.size());
+                throw ResolutionFailedException.incompatibleTypeParamCount(LOG, site.getExpr(), m, explicitTargs.size(), tparams.size());
             }
 
             for (int i = 0; i < tparams.size(); i++) {
@@ -424,7 +424,7 @@ public final class Infer {
                 for (JTypeMirror bound : bounds) {
                     JTypeMirror sub = bound.subst(Substitution.mapping(tparams, explicitTargs));
                     if (!explicit.isSubtypeOf(sub, true)) {
-                        throw ResolutionFailedException.incompatibleBound(explicit, sub, expr.getExplicitTargLoc(i));
+                        throw ResolutionFailedException.incompatibleBound(LOG, explicit, sub, expr.getExplicitTargLoc(i));
                     }
                 }
             }
@@ -555,7 +555,7 @@ public final class Infer {
         }
 
         if (!isConvertible(mapped, outerInfCtx.mapToIVars(actualRes), true)) {
-            throw ResolutionFailedException.incompatibleReturn(site.getExpr(), mapped, actualRes);
+            throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), mapped, actualRes);
         }
 
         return resultType; // return to preserve the capture
@@ -686,7 +686,7 @@ public final class Infer {
         boolean varargsRequired = phase.requiresVarargs();
 
         if (!varargsRequired && m.getArity() != expr.getArgumentCount()) {
-            throw ResolutionFailedException.incompatibleArity(expr.getArgumentCount(), m.getArity(), expr.getLocation());
+            throw ResolutionFailedException.incompatibleArity(LOG, expr.getArgumentCount(), m.getArity(), expr.getLocation());
         }
 
         List<JTypeMirror> fs = m.getFormalParameters();
@@ -710,7 +710,7 @@ public final class Infer {
                 if (!phase.canBox()) {
                     // these are cases where applicability is impossible (in strict ctx)
                     if (stdType != null && stdType.isPrimitive() != fi.isPrimitive()) {
-                        throw ResolutionFailedException.incompatibleFormal(ei, stdType, fi);
+                        throw ResolutionFailedException.incompatibleFormal(LOG, ei, stdType, fi);
                     }
                 }
 
@@ -766,7 +766,7 @@ public final class Infer {
      *
      * <p>This method is called back to by {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
-    static void checkConvertibleOrDefer(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType, ExprMirror arg, MethodResolutionPhase phase) {
+    void checkConvertibleOrDefer(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType, ExprMirror arg, MethodResolutionPhase phase) {
         if (!infCtx.isGround(formalType) || !infCtx.isGround(exprType)) {
             // defer the check
             infCtx.addInstantiationListener(setOf(formalType, exprType), solvedCtx -> checkConvertibleOrDefer(solvedCtx, exprType, formalType, arg, phase));
@@ -784,7 +784,7 @@ public final class Infer {
         // If they are ground, then they must conform to each other else
         // the exception stops the resolution process.
         if (!isConvertible(groundE, groundF, phase.canBox())) {
-            throw ResolutionFailedException.incompatibleFormal(arg, groundE, groundF);
+            throw ResolutionFailedException.incompatibleFormal(LOG, arg, groundE, groundF);
         }
 
     }

@@ -94,13 +94,6 @@ public interface JTypeMirror extends JTypeVisitable {
      * </ol>
      * </blockquote>
      *
-     * <p>For non-generic class types, the erasure is not necessarily
-     * the type itself. It's a special kind of "erased" class type,
-     * where all supertypes are erased. So for example the erasure of
-     * the {@link String} class implements the erasure of {@code Comparable<String>},
-     * ie {@code Comparable}. This makes it so that <i>all members of an
-     * erased type are also erased</i>.
-     *
      * <p>The JVM representation of a type is in general the symbol
      * of its erasure. So to get a {@link Class} instance for the runtime
      * representation of a type, you should do {@code t.getErasure().getSymbol().getJvmRepr()}.

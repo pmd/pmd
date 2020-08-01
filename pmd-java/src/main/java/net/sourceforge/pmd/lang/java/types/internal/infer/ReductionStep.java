@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static net.sourceforge.pmd.util.CollectionUtil.union;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -38,8 +37,7 @@ enum ReductionStep {
     LOWER(BoundKind.LOWER) {
         @Override
         JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
-            //note: lobounds should have at least one element
-            return uv.getTypeSystem().lub(filterBounds(uv, infCtx));
+            return infCtx.ts.lub(filterBounds(uv, infCtx));
         }
     },
 
@@ -50,7 +48,6 @@ enum ReductionStep {
     UPPER(BoundKind.UPPER) {
         @Override
         JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
-            //note: hibounds should have at least one element
             return infCtx.ts.glb(filterBounds(uv, infCtx));
         }
     },
@@ -62,7 +59,8 @@ enum ReductionStep {
         @Override
         public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
             return t.isCaptured()
-                && inferenceContext.areAllGround(union(t.getBounds(BoundKind.LOWER), t.getBounds(BoundKind.UPPER)));
+                && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
+                && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
         }
 
         @Override

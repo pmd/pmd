@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -69,7 +70,7 @@ public final class JPrimitiveType implements JTypeMirror {
 
     @Override
     public boolean isPrimitive(PrimitiveTypeKind kind) {
-        return this.kind == kind;
+        return this.kind == Objects.requireNonNull(kind, "null kind");
     }
 
     @Override

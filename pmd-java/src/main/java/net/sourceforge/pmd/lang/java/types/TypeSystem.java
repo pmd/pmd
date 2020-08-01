@@ -570,8 +570,8 @@ public final class TypeSystem {
      *
      * @throws NullPointerException if kind is null
      */
-    @NonNull
-    public JPrimitiveType getPrimitive(@NonNull PrimitiveTypeKind kind) {
+    public @NonNull JPrimitiveType getPrimitive(@NonNull PrimitiveTypeKind kind) {
+        AssertionUtil.requireParamNotNull("kind", kind);
         return primitivesByKind.get(kind);
     }
 
