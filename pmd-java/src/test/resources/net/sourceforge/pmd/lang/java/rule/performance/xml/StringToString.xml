@@ -221,4 +221,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>external class as a method parameter NullPointerException test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.springframework.context.MessageSourceResolvable;
+public class Foo {
+    public String getData(MessageSourceResolvable msr) {
+        return "MSR: " + msr.toString();
+    }
+
+    public void bar() {
+        String s = getData(new MessageSourceResolvable()).toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
