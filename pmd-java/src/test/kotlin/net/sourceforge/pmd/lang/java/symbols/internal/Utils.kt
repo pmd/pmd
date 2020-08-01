@@ -10,7 +10,6 @@ import io.kotest.matchers.should
 import io.kotest.property.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import java.io.File
 import java.io.IOException

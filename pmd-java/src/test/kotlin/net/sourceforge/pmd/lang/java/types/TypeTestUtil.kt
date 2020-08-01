@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.asm.AsmSymbolResolver
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import kotlin.String
 import kotlin.reflect.KClass
 import kotlin.streams.toList

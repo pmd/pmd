@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass
 import net.sourceforge.pmd.lang.java.symbols.table.internal.testProcessor
 
 /**
