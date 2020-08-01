@@ -321,7 +321,10 @@ public class StringToStringRule extends AbstractJavaRule {
 
     private String getReturnTypeName(ASTMethodDeclaration method) {
         ASTType returnType = method.getResultType().getFirstDescendantOfType(ASTType.class);
-        Class<?> type = returnType.getType();
-        return type != null ? type.getSimpleName() : returnType.getTypeImage();
+        if (returnType != null) {
+            Class<?> type = returnType.getType();
+            return type != null ? type.getSimpleName() : returnType.getTypeImage();
+        }
+        return null;
     }
 }
