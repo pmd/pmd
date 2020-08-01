@@ -358,6 +358,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.19.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${pmd.plugin.version}</version>
                     <executions>
@@ -652,7 +657,7 @@
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>1.72</version>
+                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -699,7 +704,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.6</version>
+                <version>1.3</version> <!-- 1.3 is still compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -1064,10 +1069,6 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
-        <module>pmd-scala</module> <!-- deprecated -->
-        <module>pmd-scala-modules/pmd-scala-common</module>
-        <module>pmd-scala-modules/pmd-scala_2.13</module>
-        <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>
@@ -1080,5 +1081,9 @@
         <module>pmd-java8</module>
         <module>pmd-doc</module>
         <module>pmd-lang-test</module>
+        <module>pmd-scala</module> <!-- deprecated -->
+        <module>pmd-scala-modules/pmd-scala-common</module>
+        <module>pmd-scala-modules/pmd-scala_2.13</module>
+        <module>pmd-scala-modules/pmd-scala_2.12</module>
     </modules>
 </project>

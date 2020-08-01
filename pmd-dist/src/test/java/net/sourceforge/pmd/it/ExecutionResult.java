@@ -43,6 +43,15 @@ public class ExecutionResult {
     }
 
     /**
+     * Asserts that the command exited with the expected exit code. Any output is ignored.
+     *
+     * @param expectedExitCode the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
+     */
+    public void assertExecutionResult(int expectedExitCode) {
+        assertExecutionResult(expectedExitCode, null);
+    }
+
+    /**
      * Asserts that the command exited with the expected exit code and that the given expected
      * output is contained in the actual command output.
      *
@@ -69,7 +78,7 @@ public class ExecutionResult {
             if (!output.contains(expectedOutput)) {
                 fail("Expected output '" + expectedOutput + "' not present.\nComplete result:\n\n" + this);
             }
-        } else {
+        } else if (expectedOutput != null && expectedOutput.isEmpty()) {
             assertTrue("The output should have been empty.\nComplete result:\n\n" + this, output.isEmpty());
         }
         if (expectedReport != null && !expectedReport.isEmpty()) {

@@ -59,9 +59,8 @@ public class TreeExportCli {
 
     public static void main(String[] args) throws IOException {
         TreeExportCli cli = new TreeExportCli();
-        JCommander jcommander = JCommander.newBuilder()
-                                          .addObject(cli)
-                                          .build();
+        JCommander jcommander = new JCommander(cli);
+
         try {
             jcommander.parse(args);
         } catch (ParameterException e) {

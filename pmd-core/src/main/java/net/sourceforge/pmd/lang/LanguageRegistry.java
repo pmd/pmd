@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,7 @@ public final class LanguageRegistry {
             try {
                 Language language = iterator.next();
                 languagesList.add(language);
-            } catch (UnsupportedClassVersionError e) {
+            } catch (ServiceConfigurationError | UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for PMD: " + e.toString());
