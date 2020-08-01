@@ -31,7 +31,6 @@ class ASTMethodCallTest : ParserTestSpec({
 
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "foo"
-                        it::getImage shouldBe "foo"
 
                         it::getQualifier shouldBe null
 
@@ -46,7 +45,7 @@ class ASTMethodCallTest : ParserTestSpec({
                 methodCall("baz") {
 
                     it::getQualifier shouldBe child<ASTAmbiguousName> {
-                        it::getImage shouldBe "foo.bar"
+                        it::getName shouldBe "foo.bar"
                     }
 
                     it::getArguments shouldBe argList {}

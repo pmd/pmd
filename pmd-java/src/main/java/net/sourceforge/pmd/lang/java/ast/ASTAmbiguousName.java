@@ -76,12 +76,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     }
 
     @Override
-    @Deprecated
-    public String getImage() {
-        return null;
-    }
-
-    @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
@@ -151,7 +145,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
                                                             BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
-        String image = getImage();
+        String image = getName();
 
         int lastDotIdx = image.lastIndexOf('.');
 
@@ -199,7 +193,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         shrinkOneSegment(
             simpleName -> {
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                parent.setImage(simpleName.getImage());
+                parent.setImage(simpleName.getFirstToken().getImage());
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
             },

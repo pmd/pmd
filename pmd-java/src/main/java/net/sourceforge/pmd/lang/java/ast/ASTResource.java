@@ -67,7 +67,7 @@ public final class ASTResource extends AbstractJavaNode {
             }
             return builder.toString();
         } else {
-            return asLocalVariableDeclaration().iterator().next().getVariableName();
+            return asLocalVariableDeclaration().iterator().next().getName();
         }
     }
 

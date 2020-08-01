@@ -24,7 +24,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssi
      */
     ASTVariableAccess(ASTAmbiguousName name) {
         super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
-        setImage(name.getImage());
+        setImage(name.getFirstToken().getImage());
     }
 
     ASTVariableAccess(JavaccToken identifier) {

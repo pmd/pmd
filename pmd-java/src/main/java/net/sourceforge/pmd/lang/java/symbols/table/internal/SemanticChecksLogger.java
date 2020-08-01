@@ -58,7 +58,7 @@ public interface SemanticChecksLogger {
      * about it at all, classpath is incomplete or code is incorrect.
      * Eg {@code package.that.doesnt.exist.Type}
      */
-    String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
+    String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as {1}";
 
     String AMBIGUOUS_NAME_REFERENCE = "Reference ''{0}'' is ambiguous, both {1} and {2} match";
 

@@ -41,7 +41,7 @@ public final class ASTMethodCall extends AbstractJavaExpr
 
         // we need to set the name.
 
-        if (getImage() != null || getChild(0) instanceof ASTSuperExpression) {
+        if (getMethodName() != null || getChild(0) instanceof ASTSuperExpression) {
             return;
         }
 
@@ -53,7 +53,7 @@ public final class ASTMethodCall extends AbstractJavaExpr
 
         fstChild.shrinkOrDeleteInParentSetImage();
 
-        assert getImage() != null;
+        assert getMethodName() != null;
 
     }
 
@@ -61,7 +61,13 @@ public final class ASTMethodCall extends AbstractJavaExpr
      * Returns the name of the called method.
      */
     public String getMethodName() {
-        return getImage();
+        return super.getImage();
+    }
+
+    @Override
+    @Deprecated
+    public String getImage() {
+        return null;
     }
 
     @Override
