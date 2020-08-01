@@ -54,7 +54,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
     ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.simpleName = simpleName.getName();
+        this.simpleName = simpleName.getFirstToken().getImage();
 
         assertSimpleNameOk();
     }

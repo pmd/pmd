@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -191,7 +192,12 @@ public interface JTypeMirror extends JTypeVisitable {
 
     /** Returns true if this type is a {@linkplain JPrimitiveType primitive type}. */
     default boolean isPrimitive() {
-        return this instanceof JPrimitiveType;
+        return false; // overridden in JPrimitiveType
+    }
+
+    /** Returns true if this type is the primitive type of the given kind in its type system. */
+    default boolean isPrimitive(PrimitiveTypeKind kind) {
+        return false; // overridden in JPrimitiveType
     }
 
 
@@ -301,13 +307,12 @@ public interface JTypeMirror extends JTypeVisitable {
 
 
     /**
-     * Returns the type of the field with the given name, possibly inherited
-     * from a supertype. May return {@link TypeSystem#UNRESOLVED_TYPE}.
+     * Returns the signature of the field with the given name, possibly
+     * inherited from a supertype. May return {@link TypeSystem#UNRESOLVED_TYPE}.
      *
      * @param name Name of the field
      */
-    @Nullable
-    default FieldSig getField(String name) {
+    default @Nullable FieldSig getField(String name) {
         return null;
     }
 

@@ -32,9 +32,6 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     private List<JTypeMirror> formals;
     private List<JTypeMirror> thrown;
 
-    // TODO bounds of the type params of a method need to be substituted
-    //  with the lexical subst of the owner
-
     ClassMethodSigImpl(@NonNull JClassType owner, @NonNull JExecutableSymbol symbol) {
         this(owner, symbol, null, null, null, null);
     }
@@ -54,6 +51,9 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         this.tparams = tparams;
     }
 
+
+    // bounds of the type params of a method need to be substituted
+    // with the lexical subst of the owner
     static List<JTypeVar> realTypeParams(JClassType owner, List<JTypeVar> baseTypeParams) {
         assert baseTypeParams != null && owner != null : "Null params in " + owner + ", " + baseTypeParams;
         return TypeOps.substInBoundsOnly(baseTypeParams, owner.getTypeParamSubst());

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.util.CollectionUtil.map;
-import static net.sourceforge.pmd.util.StreamUtils.streamOf;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -285,10 +284,9 @@ class ClassTypeImpl implements JClassType {
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return TypeOps.getSuperTypeStream(this, Interfaces.INCLUDE)
-                      .flatMap(sup ->
-                                   streamOf(sup.getSymbol().getDeclaredMethods())
-                                       .filter(prefilter)
-                                       .map(m -> new ClassMethodSigImpl(sup, m))
+                      .flatMap(sup -> sup.getSymbol().getDeclaredMethods().stream()
+                                         .filter(prefilter)
+                                         .map(m -> new ClassMethodSigImpl(sup, m))
                       );
     }
 

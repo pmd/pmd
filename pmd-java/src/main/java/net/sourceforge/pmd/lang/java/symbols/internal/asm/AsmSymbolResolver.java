@@ -25,8 +25,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public class AsmSymbolResolver implements SymbolResolver {
     /*
         TODO
-         - expose constant values for compile-time constants (in JFieldSymbol)
-             - used to finish implementing ASTExpression::getConstValue
          - expose enum constant names
              - eg used in ASTSwitchLike::isExhaustiveEnumSwitch
      */

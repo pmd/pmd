@@ -12,12 +12,19 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * Common interface for symbols wrapping a class file "stub".
+ * The class is parsed with ASM, only the signature information
+ * is retained, hence the name stub.
+ */
 interface AsmStub {
 
 
+    /** Resolver that produced this instance. The resolver is global. */
     AsmSymbolResolver getResolver();
 
 
+    /** Object that can parse type signatures (necessary for eg field types). */
     default SignatureParser sigParser() {
         return getResolver().getSigParser();
     }

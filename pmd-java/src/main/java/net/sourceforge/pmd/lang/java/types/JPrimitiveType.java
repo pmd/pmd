@@ -66,6 +66,17 @@ public final class JPrimitiveType implements JTypeMirror {
         return kind != PrimitiveTypeKind.BOOLEAN;
     }
 
+
+    @Override
+    public boolean isPrimitive(PrimitiveTypeKind kind) {
+        return this.kind == kind;
+    }
+
+    @Override
+    public boolean isPrimitive() {
+        return true;
+    }
+
     @Override
     public boolean isSubtypeOf(JTypeMirror other, boolean unchecked) {
         return getSuperTypeSet().contains(other);

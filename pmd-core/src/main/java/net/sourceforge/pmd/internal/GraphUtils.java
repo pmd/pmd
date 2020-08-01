@@ -24,10 +24,10 @@ public final class GraphUtils {
 
 
     /**
-     * Generate a DOT graph for a graph.
+     * Generate a DOT representation for a graph.
      *
      * @param vertices     Set of vertices
-     * @param successorFun Function fetching direct successors
+     * @param successorFun Function fetching successors
      * @param colorFun     Color of vertex box
      * @param labelFun     Vertex label
      * @param <V>          Type of vertex, must be usable as map key (equals/hash)

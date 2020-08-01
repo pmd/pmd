@@ -117,8 +117,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             return new LazyClassSignature(ctx, sig, OBJECT_SIG, null);
         }
 
-        @NonNull
-        private static String sigWithNTypeParams(int observedArity) {
+        private static @NonNull String sigWithNTypeParams(int observedArity) {
             assert observedArity >= 0;
 
             // use constants for common values

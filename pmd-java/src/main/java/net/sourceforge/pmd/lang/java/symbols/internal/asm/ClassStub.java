@@ -378,7 +378,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
         return (getModifiers() & Opcodes.ACC_ABSTRACT) != 0;
     }
 
-
     @Override
     public boolean isEnum() {
         return (getModifiers() & Opcodes.ACC_ENUM) != 0;
@@ -401,12 +400,13 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     @Override
     public boolean isRecord() {
-        return false; // TODO
+        JClassSymbol sup = getSuperclass();
+        return sup != null && "java.lang.Record".equals(sup.getBinaryName());
     }
 
     @Override
     public boolean isLocalClass() {
-        return false; // TODO
+        return false; // local classes are not reachable, technically someone can try to fetch them
     }
 
     @Override

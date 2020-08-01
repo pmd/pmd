@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTResultType extends AbstractJavaNode {
+public final class ASTResultType extends AbstractJavaTypeNode {
 
     ASTResultType(int id) {
         super(id);
@@ -33,8 +33,7 @@ public final class ASTResultType extends AbstractJavaNode {
     /**
      * Returns the enclosed type node, or an null if this is void.
      */
-    @Nullable
-    public ASTType getTypeNode() {
+    public @Nullable ASTType getTypeNode() {
         return isVoid() ? null : (ASTType) getChild(0);
     }
 

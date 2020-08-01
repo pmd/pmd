@@ -14,9 +14,12 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -422,6 +425,10 @@ public final class IteratorUtil {
                 li.remove();
             }
         };
+    }
+
+    public static <T> Stream<T> toStream(Iterator<? extends T> iter) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
     }
 
     public abstract static class AbstractIterator<T> implements Iterator<T> {

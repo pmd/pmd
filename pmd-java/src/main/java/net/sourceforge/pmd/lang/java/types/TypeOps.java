@@ -30,13 +30,13 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.util.OptionalBool;
-import net.sourceforge.pmd.util.StreamUtils;
 
 /**
  * Common operations on types.
@@ -260,7 +260,7 @@ public final class TypeOps {
      * @param interfacesBehavior Whether to include interfaces or not
      */
     public static Stream<JClassType> getSuperTypeStream(@NonNull JClassType t, Interfaces interfacesBehavior) {
-        return StreamUtils.streamOf(getSuperTypesIterator(t, interfacesBehavior));
+        return IteratorUtil.toStream(getSuperTypesIterator(t, interfacesBehavior));
     }
 
     public static Iterable<JClassType> iterateSuperTypes(@NonNull JClassType t, Interfaces interfacesBehavior) {
@@ -1409,7 +1409,7 @@ public final class TypeOps {
 
         @Override
         public JTypeMirror visitTypeVar(JTypeVar t, JClassSymbol target) {
-            // TODO infinite recursion
+            // caution, infinite recursion
             return t.getUpperBound().acceptVisitor(this, target);
         }
 

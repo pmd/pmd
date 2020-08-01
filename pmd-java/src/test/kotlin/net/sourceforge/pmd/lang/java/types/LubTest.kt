@@ -16,8 +16,6 @@ import java.io.Serializable
  */
 class LubTest : FunSpec({
 
-    // TODO rewrite to use JDK-independent testdata classes
-
     with(TypeDslOf(testTypeSystem)) { // import construction DSL
         with(gen) { // import constants
 

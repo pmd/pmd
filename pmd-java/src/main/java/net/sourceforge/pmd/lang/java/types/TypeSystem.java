@@ -376,7 +376,7 @@ public final class TypeSystem {
                 // type in the j.l.reflect API, so the component is
                 // also raw
                 // fixme this is wrong:
-                //  genArr = ts.array(tvar, 1);
+                //  var genArr = ts.array(tvar, 1);
                 //  ts.typeOf(genArr.symbol(), false) != genArr
                 JTypeMirror component = rawType(classSym.getArrayComponent());
                 return arrayType(component, 1);

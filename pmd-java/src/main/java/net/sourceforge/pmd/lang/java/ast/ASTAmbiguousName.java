@@ -71,8 +71,14 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     }
 
 
-    public String getName() {
-        return getImage();
+    String getName() {
+        return super.getImage();
+    }
+
+    @Override
+    @Deprecated
+    public String getImage() {
+        return null;
     }
 
     @Override

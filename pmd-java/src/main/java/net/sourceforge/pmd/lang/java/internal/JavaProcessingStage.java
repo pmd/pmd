@@ -53,16 +53,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     },
 
     /**
-     * Type resolution, depends on QName resolution.
-     */
-    TYPE_RESOLUTION("Type resolution", JAVA_PROCESSING) {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            // removed because of incompatibilities with current AST
-        }
-    },
-
-    /**
      * Data flow analysis.
      */
     DFA("Data flow analysis") {

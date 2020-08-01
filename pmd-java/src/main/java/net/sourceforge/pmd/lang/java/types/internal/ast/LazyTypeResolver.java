@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -103,12 +104,15 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
     }
 
+    @Override
+    public JTypeMirror visit(ASTResultType node, Void data) {
+        return node.isVoid() ? ts.NO_TYPE : node.getTypeNode().getTypeMirror();
+    }
 
     @Override
     public JTypeMirror visit(ASTFormalParameter node, Void data) {
         return node.getVarId().getTypeMirror();
     }
-
 
 
     @Override

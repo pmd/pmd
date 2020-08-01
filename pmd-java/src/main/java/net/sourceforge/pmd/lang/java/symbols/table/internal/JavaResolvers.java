@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.util.StreamUtils;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
 
@@ -127,13 +127,11 @@ public final class JavaResolvers {
         return new NameResolver<JMethodSig>() {
             @Override
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
-                return StreamUtils.toList(
-                    t.streamMethods(
-                        it -> onlyInherited == (it.getEnclosingClass() != t.getSymbol())
-                            && it.getSimpleName().equals(simpleName)
-                            && isAccessibleIn(nestRoot, it, true)
-                    )
-                );
+                return t.streamMethods(
+                    it -> onlyInherited == (it.getEnclosingClass() != t.getSymbol())
+                        && it.getSimpleName().equals(simpleName)
+                        && isAccessibleIn(nestRoot, it, true)
+                ).collect(CollectionUtil.toUnmodifiableList());
             }
 
             @Override

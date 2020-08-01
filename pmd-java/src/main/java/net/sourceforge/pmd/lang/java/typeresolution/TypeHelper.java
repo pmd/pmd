@@ -13,6 +13,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -26,7 +28,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader.ClassLoaderWrapper;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 public final class TypeHelper {
 
@@ -51,11 +52,25 @@ public final class TypeHelper {
         // utility class
     }
 
-    public static boolean symbolEquals(Class<?> someClass, JTypeMirror type) {
+    /**
+     * Returns true if the type of the given type node has the same symbol
+     * as the given class. This ignores type parameters and such. It is not
+     * equivalent to a subtyping check, unless {@code someClass} is final.
+     * Returns false if the node is null.
+     *
+     * @param someClass A class
+     * @param node      A node
+     *
+     * @throws NullPointerException If the class is null
+     */
+    public static boolean symbolEquals(@NonNull Class<?> someClass, @Nullable TypeNode node) {
         Objects.requireNonNull(someClass);
-        Objects.requireNonNull(type);
-        JTypeDeclSymbol symbol = type.getSymbol();
-        return symbol != null && symbol.equals(type.getTypeSystem().getClassSymbol(someClass));
+        if (node == null) {
+            return false;
+        }
+
+        JTypeDeclSymbol symbol = node.getTypeMirror().getSymbol();
+        return symbol != null && symbol.equals(node.getTypeSystem().getClassSymbol(someClass));
     }
 
     /**

@@ -96,7 +96,7 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
 
     @Override
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
-        // FIXME recursively bound type vars will throw this into an infinite cycle
+        // recursively bound type vars will throw this into an infinite cycle
         //  eg <T extends X, X extends T>
         //  this is a compile-time error though
         return getUpperBound().streamMethods(prefilter);

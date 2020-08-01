@@ -133,6 +133,7 @@ public final class JavaAstProcessor {
 
     @NonNull
     private static TypeInferenceLogger getTypeInferenceLogger() {
+        // todo This is not mature, just used for
         Level level;
         try {
             level = Level.parse(System.getenv("PMD_DEBUG_LEVEL"));

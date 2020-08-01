@@ -90,7 +90,8 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             InvocationNode invoc = (InvocationNode) node;
             return listOf(
                 new AdditionalInfo("Type: " + invoc.getTypeMirror()),
-                new AdditionalInfo("Function: " + invoc.getMethodType())
+                new AdditionalInfo("Function: " + invoc.getMethodType()),
+                new AdditionalInfo("VarargsCall: " + invoc.isVarargsCall())
             );
         } else if (node instanceof TypeNode) {
             JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
