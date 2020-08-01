@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
@@ -53,11 +52,7 @@ class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements 
 
     @Override
     public String getMethodName() {
-        if (myNode.isConstructorReference()) {
-            return JConstructorSymbol.CTOR_NAME;
-        } else {
-            return myNode.getMethodName();
-        }
+        return myNode.getMethodName();
     }
 
     @Override

@@ -533,8 +533,7 @@ fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<
 
 fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTTypeExpression>) =
         child<ASTMethodReference> {
-            it::getMethodName shouldBe null
-            it::getImage shouldBe "new"
+            it::getMethodName shouldBe "new"
             it::isConstructorReference shouldBe true
             it::getQualifier shouldBe assertions()
         }

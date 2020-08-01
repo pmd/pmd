@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -88,12 +89,11 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
 
 
     /**
-     * Returns the method name, or an empty optional if this is a
-     * {@linkplain #isConstructorReference() constructor reference}.
+     * Returns the method name, or {@link JConstructorSymbol#CTOR_NAME "new"}
+     * if this is a {@linkplain #isConstructorReference() constructor reference}.
      */
-    @Nullable
-    public String getMethodName() {
-        return isConstructorReference() ? null : getImage();
+    public @NonNull String getMethodName() {
+        return getImage();
     }
 
 
