@@ -12,6 +12,9 @@ import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.List;
+import java.util.stream.Collector;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -20,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
 
-final class OverloadComparator {
+public final class OverloadComparator {
 
     private final Infer infer;
     private final TypeInferenceLogger log;
@@ -65,7 +68,7 @@ final class OverloadComparator {
             return m1OverM2;
         } else if (areOverrideEquivalent(m1, m2)) {
 
-            OptionalBool result = shouldTakePrecedence(m1, m2, site.getExpr().getEnclosingType());
+            OptionalBool result = shouldTakePrecedence(m1, m2, site.getExpr().getReceiverType());
             if (result == UNKNOWN) {
                 log.ambiguityError(site, m1, m2);
                 // todo if a third method comes in that is more specific
@@ -89,7 +92,7 @@ final class OverloadComparator {
      *
      * <p>If m1 and m2 are equal, returns the first one by convention.
      */
-    static OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2, JClassType site) {
+    static OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2, JTypeMirror commonSubtype) {
         // select
         // 1. the non-bridge
         // 2. the one that overrides the other
@@ -97,17 +100,12 @@ final class OverloadComparator {
 
         if (m1.isBridge() != m2.isBridge()) {
             return definitely(!m1.isBridge());
-        } else if (overrides(m1, m2, site)) {
+        } else if (overrides(m1, m2, commonSubtype)) {
             return YES;
-        } else if (overrides(m2, m1, site)) {
+        } else if (overrides(m2, m1, commonSubtype)) {
             return NO;
         } else if (m1.isAbstract() != m2.isAbstract()) {
             return definitely(!m1.isAbstract());
-        }
-
-        OptionalBool shadows = shadows(m1, m2, site);
-        if (shadows.isKnown()) {
-            return shadows;
         } else if (m1.isAbstract() && m2.isAbstract()) { // last ditch effort
             // both are unrelated abstract, inherited into 'site'
             // their signature would be merged into the site
@@ -255,4 +253,25 @@ final class OverloadComparator {
         return si.isSubtypeOf(ti, true); // TODO checks for lambdas/method refs are much more complicated
     }
 
+    /**
+     * Returns a collector that can apply to a stream of method signatures,
+     * and that collects them into a set of method, where none override one another.
+     * Do not use this in a parallel stream. Do not use this to collect constructors.
+     * Do not use this if your stream contains methods that have different names.
+     *
+     * @param commonSubtype Site where the signatures are observed. The owner of every method
+     *                      in the stream must be a supertype of this type
+     *
+     * @return A collector
+     */
+    public static Collector<JMethodSig, ?, List<JMethodSig>> collectMostSpecific(JTypeMirror commonSubtype) {
+        return Collector.of(
+            OverloadSet::new,
+            (set, sig) -> set.add(sig, commonSubtype),
+            (left, right) -> {
+                throw new NotImplementedException("Cannot use this in a parallel stream");
+            },
+            OverloadSet::getOverloads
+        );
+    }
 }

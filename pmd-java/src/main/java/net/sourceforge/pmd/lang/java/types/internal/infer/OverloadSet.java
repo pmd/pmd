@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Tracks a set of overloads, automatically pruning override-equivalent
@@ -25,7 +25,7 @@ final class OverloadSet {
     private final List<JMethodSig> overloads = new ArrayList<>();
     private String name;
 
-    void add(JMethodSig sig, JClassType site) {
+    void add(JMethodSig sig, JTypeMirror commonSubtype) {
         if (name == null) {
             name = sig.getName();
         }
@@ -37,7 +37,7 @@ final class OverloadSet {
             JMethodSig existing = iterator.next();
 
             if (areOverrideEquivalent(existing, sig)) {
-                switch (shouldTakePrecedence(existing, sig, site)) {
+                switch (shouldTakePrecedence(existing, sig, commonSubtype)) {
                 case YES:
                     // new sig is less specific than an existing one, don't add it
                     return;

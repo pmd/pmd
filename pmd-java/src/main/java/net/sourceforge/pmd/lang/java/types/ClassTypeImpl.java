@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -283,11 +283,13 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
-        return TypeOps.getSuperTypeStream(this, Interfaces.INCLUDE)
-                      .flatMap(sup -> sup.getSymbol().getDeclaredMethods().stream()
-                                         .filter(prefilter)
-                                         .map(m -> new ClassMethodSigImpl(sup, m))
-                      );
+
+        return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF
+                                   .stream(this)
+                                   .flatMap(sup -> sup.getSymbol().getDeclaredMethods().stream()
+                                                      .filter(prefilter)
+                                                      .map(m -> new ClassMethodSigImpl(sup, m))
+                                   );
     }
 
     public int getModifiers() {

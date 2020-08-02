@@ -20,7 +20,11 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.WITH_PROCESSING
+import org.apache.commons.io.output.TeeOutputStream
 import java.beans.PropertyDescriptor
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 
 /**
  * Represents the different Java language versions.
@@ -194,8 +198,13 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         return logger
     }
 
-    fun logTypeInference(verbose: Boolean = false) {
-        parser = parser.withProcessing(true).logTypeInference(verbose)
+    /** Returns a function that can retrieve the log*/
+    fun logTypeInference(verbose: Boolean = false): () -> String {
+        val output = ByteArrayOutputStream()
+        val teed = TeeOutputStream(System.err, output)
+        val printStream = PrintStream(teed, /*autoflush:*/true)
+        parser = parser.withProcessing(true).logTypeInference(verbose, printStream)
+        return { output.toString(StandardCharsets.UTF_8) }
     }
 
     var fullSource: String? = null

@@ -233,7 +233,7 @@ final class ExprOps {
             String name = mref.getMethodName();
             JClassType enclosing = mref.getEnclosingType();
             accessible = typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(name, enclosing.getSymbol()))
-                                     .collect(Infer.collectMostSpecific(enclosing));
+                                     .collect(OverloadComparator.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {

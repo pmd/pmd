@@ -5,14 +5,15 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
-import io.kotest.matchers.collections.*
-import io.kotest.matchers.should
+import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
+import net.sourceforge.pmd.lang.ast.test.component8
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
@@ -71,7 +72,8 @@ class MemberInheritanceTest : ParserTestSpec({
 
             class Sup {
                 void f(int i) {}
-                void g() {} // different name, so also in scope in Inner
+                void g() {}
+                static void k() {}
             }
 
             class Sup2 {
@@ -85,7 +87,9 @@ class MemberInheritanceTest : ParserTestSpec({
                 void f() {}
                 // different name, so also in scope in Inner
                 // notice this one *overrides* Sup#g(), yet is still here
-                void g() {} 
+                void g() {}
+                // this one *hides* Sup#k()
+                static void k() {}
 
                 class Inner extends Sup2 {
                     void f() {} // shadows both
@@ -93,7 +97,7 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-        val (supF, supG, sup2F, outerF, outerG, innerF) =
+        val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
                 acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
 
         val (sup, _, outer, inner) =
@@ -115,6 +119,19 @@ class MemberInheritanceTest : ParserTestSpec({
             // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer are in scope)
             // But Outer#f() is shadowed by Inner#f()
             inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
+        }
+
+        doTest("Inside Inner: Sup#k() is shadowed by Outer#k()") {
+            inner.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: Sup#k() is shadowed by Outer#k()") {
+            outer.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: g() is overridden, the superclass implementation is not in scope") {
+            // only Outer#g() overrides its parent
+            outer.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
         }
 
         doTest("If there is no shadowing then declarations of outer classes are in scope (g methods)") {

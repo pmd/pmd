@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 /**
  * Strategies to enumerate a type hierarchy.
  */
-enum SuperTypesEnumerator {
+public enum SuperTypesEnumerator {
     JUST_SELF {
         @Override
         public Iterator<JClassType> iterator(JClassType t) {

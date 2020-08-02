@@ -249,4 +249,121 @@ class Scratch {
         }
     }
 
+    parserTest("Test override from outside class") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+class Sup { 
+    void m() {}
+}
+
+class Sub extends Sup { 
+    @Override
+    void m() {}
+}
+
+class F {
+    {
+        Sub s = new Sub();
+        s.m(); // should be Sub::m, no ambiguity
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        call.methodType.symbol shouldBe subM.symbol
+        assert(logGetter().isEmpty())
+    }
+
+    parserTest("Test hidden method from outside class") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+class Sup { 
+    static void m() {}
+}
+
+class Sub extends Sup { 
+    static void m() {}
+}
+
+class F {
+    {
+        Sub.m(); // should be Sub::m, no ambiguity
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        call.methodType.symbol shouldBe subM.symbol
+        assert(logGetter().isEmpty())
+    }
+
+    parserTest("Test hidden method inside class") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+
+class Sup {
+    static void m() {}
+}
+
+class Sub extends Sup {
+    static void m() {}
+    {
+        Sub.m(); // should be Sub::m, no ambiguity
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        call.methodType.symbol shouldBe subM.symbol
+        assert(logGetter().isEmpty())
+    }
+
+    parserTest("Test hidden method inside hiding method") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+
+class Sup {
+    static void m() {}
+}
+
+class Sub extends Sup {
+    static void m() {
+        Sup.m();
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (supM, _) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        call.methodType.symbol shouldBe supM.symbol
+        assert(logGetter().isEmpty())
+    }
+
 })

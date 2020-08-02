@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +22,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ClassUtils.Interfaces;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion;
@@ -249,81 +244,6 @@ public final class TypeOps {
         t.acceptVisitor(SuperTypesVisitor.INSTANCE, result);
         assert !result.isEmpty() : "Empty supertype set for " + t;
         return result;
-    }
-
-    /**
-     * Returns a stream of all supertypes of the given type.
-     * The first element of the returned stream is the given type t,
-     * so the stream is never empty.
-     *
-     * @param t                  Type to search
-     * @param interfacesBehavior Whether to include interfaces or not
-     */
-    public static Stream<JClassType> getSuperTypeStream(@NonNull JClassType t, Interfaces interfacesBehavior) {
-        return IteratorUtil.toStream(getSuperTypesIterator(t, interfacesBehavior));
-    }
-
-    public static Iterable<JClassType> iterateSuperTypes(@NonNull JClassType t, Interfaces interfacesBehavior) {
-        return () -> getSuperTypesIterator(t, interfacesBehavior);
-    }
-
-    public static Iterator<JClassType> getSuperTypesIterator(@NonNull JClassType t, Interfaces interfacesBehavior) {
-        final MutableObject<JClassType> next = new MutableObject<>(t);
-        final Iterator<JClassType> classes = new Iterator<JClassType>() {
-
-            @Override
-            public boolean hasNext() {
-                return next.getValue() != null;
-            }
-
-            @Override
-            public JClassType next() {
-                final JClassType result = next.getValue();
-                next.setValue(result.getSuperClass());
-                return result;
-            }
-
-        };
-
-        if (interfacesBehavior != Interfaces.INCLUDE) {
-            return classes;
-        }
-
-        final Set<JClassType> seenInterfaces = new HashSet<>();
-
-        return new Iterator<JClassType>() {
-            Iterator<JClassType> interfaces = Collections.emptyIterator();
-
-            @Override
-            public boolean hasNext() {
-                return interfaces.hasNext() || classes.hasNext();
-            }
-
-            @Override
-            public JClassType next() {
-                if (interfaces.hasNext()) {
-                    final JClassType nextInterface = interfaces.next();
-                    seenInterfaces.add(nextInterface);
-                    return nextInterface;
-                }
-                final JClassType nextSuperclass = classes.next();
-                final Set<JClassType> currentInterfaces = new LinkedHashSet<>();
-                walkInterfaces(currentInterfaces, nextSuperclass);
-                interfaces = currentInterfaces.iterator();
-                return nextSuperclass;
-            }
-
-            private void walkInterfaces(final Set<JClassType> addTo, final JClassType c) {
-                for (final JClassType iface : c.getSuperInterfaces()) {
-                    if (!seenInterfaces.contains(iface)) {
-                        addTo.add(iface);
-                    }
-                    walkInterfaces(addTo, iface);
-                }
-            }
-
-        };
-
     }
 
     private static final class SuperTypesVisitor implements JTypeVisitor<Void, Set<JTypeMirror>> {
@@ -1066,7 +986,7 @@ public final class TypeOps {
             return false;
         }
 
-        return isSameType(m1, m2) || haveSameSignature(m1, m2.getErasure());
+        return haveSameSignature(m1, m2) || haveSameSignature(m1, m2.getErasure());
     }
 
     /**

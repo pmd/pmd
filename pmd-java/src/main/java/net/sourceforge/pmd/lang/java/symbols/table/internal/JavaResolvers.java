@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
@@ -133,7 +133,7 @@ public final class JavaResolvers {
                 return t.streamMethods(
                     it -> it.getSimpleName().equals(simpleName)
                         && isAccessibleIn(nestRoot, it, true)
-                ).collect(Infer.collectMostSpecific(t));
+                ).collect(OverloadComparator.collectMostSpecific(t));
             }
 
             @Override

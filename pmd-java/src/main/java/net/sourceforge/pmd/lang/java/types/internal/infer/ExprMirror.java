@@ -219,6 +219,15 @@ public interface ExprMirror {
 
 
         /**
+         * Returns the erased receiver type. This is only used for method
+         * invocations.
+         */
+        default @Nullable JTypeMirror getReceiverType() {
+            return null;
+        }
+
+
+        /**
          * Returns the explicit type arguments, eg in {@code Arrays.<String>asList("q")},
          * or {@code new <String> Foo("q")}. If none are mentioned, returns an empty list.
          */

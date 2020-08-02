@@ -7,10 +7,9 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAnyTvar;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -22,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 
@@ -57,32 +57,30 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
             return myNode.getSymbolTable().methods().resolve(getName());
         } else {
             JTypeMirror lhsType = TypeConversion.capture(lhs.getTypeMirror());
-            List<JMethodSig> result = new ArrayList<>();
             boolean staticOnly = lhs instanceof ASTTypeExpression;
 
-            getMethodsOf(lhsType, getName(), staticOnly, result);
-
-            if (lhsType.isInterface()) {
-                // then it's missing the methods from Object
-                getMethodsOf(myNode.getTypeSystem().OBJECT, getName(), staticOnly, result);
-            }
-            return result;
+            return getMethodsOf(lhsType, getName(), staticOnly);
         }
     }
 
     @Override
     public JTypeMirror getErasedReceiverType() {
+        return getReceiverType().getErasure();
+    }
+
+    @Override
+    public @NonNull JTypeMirror getReceiverType() {
         ASTExpression qualifier = myNode.getQualifier();
         if (qualifier != null) {
-            return qualifier.getTypeMirror().getErasure();
+            return qualifier.getTypeMirror();
         } else {
-            return myNode.getEnclosingType().getTypeMirror().getErasure();
+            return myNode.getEnclosingType().getTypeMirror();
         }
     }
 
-    private void getMethodsOf(JTypeMirror type, String name, boolean staticOnly, List<JMethodSig> list) {
-        type.streamMethods(it -> it.getSimpleName().equals(name) && (!staticOnly || Modifier.isStatic(it.getModifiers())))
-            .collect(Collectors.toCollection(() -> list));
+    private List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly) {
+        return type.streamMethods(it -> it.getSimpleName().equals(name) && (!staticOnly || Modifier.isStatic(it.getModifiers())))
+                   .collect(OverloadComparator.collectMostSpecific(type));
     }
 
     @Override

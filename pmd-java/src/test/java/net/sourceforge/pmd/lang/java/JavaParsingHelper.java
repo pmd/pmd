@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,8 +57,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         return new JavaParsingHelper(this.getParams(), logger, typeInfLogger);
     }
 
-    public JavaParsingHelper logTypeInference(boolean verbose) {
-        TypeInferenceLogger typeInfLogger = verbose ? new VerboseLogger(System.err) : new SimpleLogger(System.err);
+    public JavaParsingHelper logTypeInference(boolean verbose, PrintStream out) {
+        TypeInferenceLogger typeInfLogger = verbose ? new VerboseLogger(out) : new SimpleLogger(out);
         return new JavaParsingHelper(this.getParams(), this.semanticLogger, typeInfLogger);
     }
 
