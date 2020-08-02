@@ -28,6 +28,7 @@ This is a {{ site.pmd.release_type }} release.
 - {% jdoc xml::lang.xml.rule.XmlXpathRule %}
 - Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
 - {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
+- {% jdoc javascript::lang.ecmascript.rule.EcmascriptXPathRule %}
 
 ### External Contributions
 
