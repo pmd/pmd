@@ -18,6 +18,7 @@ public final class AssertionUtil {
     }
 
     public static boolean isValidJavaPackageName(CharSequence name) {
+        requireParamNotNull("name", name);
         return PACKAGE_PATTERN.matcher(name).matches();
     }
 

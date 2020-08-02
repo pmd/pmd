@@ -23,10 +23,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
@@ -174,6 +172,13 @@ final class AstDisambiguationPass {
                 return result == null ? null : result.getSymbol();
             }
             return null;
+        }
+
+        FieldSig makeUnresolvedField(JTypeDeclSymbol owner, String simpleName) {
+            if (owner instanceof JClassSymbol) {
+                return processor.makeUnresolvedField((JClassSymbol) owner, simpleName);
+            }
+            return processor.makeUnresolvedField(null, simpleName);
         }
 
         <T extends JTypeMirror> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
@@ -554,8 +559,9 @@ final class AstDisambiguationPass {
 
             // todo report on the specific token failing
             ctx.reportUnresolvedMember(ambig, Fallback.FIELD_ACCESS, nextSimpleName, sym);
+            FieldSig fallbackField = ctx.makeUnresolvedField(sym, nextSimpleName);
             ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-            return resolveExpr(typeExpr, nextIdent, remaining, ctx); // this will chain for the rest of the name
+            return resolveExpr(typeExpr, fallbackField, nextIdent, remaining, ctx); // this will chain for the rest of the name
         }
 
         /**

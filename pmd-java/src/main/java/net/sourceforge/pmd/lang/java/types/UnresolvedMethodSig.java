@@ -126,6 +126,11 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
         }
 
         @Override
+        public boolean isUnresolved() {
+            return true;
+        }
+
+        @Override
         public TypeSystem getTypeSystem() {
             return ts;
         }

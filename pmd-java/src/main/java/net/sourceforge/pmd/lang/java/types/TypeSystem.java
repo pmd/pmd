@@ -97,7 +97,8 @@ public final class TypeSystem {
 
     /**
      * A constant to represent an unresolved type. This means, that resolution
-     * was attempted but failed and shouldn't be tried again.
+     * was attempted but failed and shouldn't be tried again. The symbol
+     * is a {@link JClassSymbol}.
      */
     public final JTypeMirror UNRESOLVED_TYPE;
 
@@ -504,7 +505,7 @@ public final class TypeSystem {
         return new ClassMethodSigImpl(klass.subst(subst), methodSym);
     }
 
-    public JVariableSig sigOf(JTypeMirror decl, JFieldSymbol fieldSym) {
+    public JVariableSig.FieldSig sigOf(JTypeMirror decl, JFieldSymbol fieldSym) {
         return JVariableSig.forField(decl, fieldSym);
     }
 

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
@@ -43,6 +44,42 @@ public interface JElementSymbol {
      * superclass.
      */
     TypeSystem getTypeSystem();
+
+
+    /**
+     * Returns true if this symbol is a placeholder, created to fill-in
+     * an unresolved reference. Depending on the type of this symbol,
+     * this may be:
+     * <ul>
+     * <li>An unresolved class (more details on {@link JTypeDeclSymbol#isUnresolved()})
+     * <li>An unresolved field
+     * <li>An unresolved method or constructor. Note that we cheat and
+     * represent them only with the constant {@link TypeSystem#UNRESOLVED_METHOD TypeSystem.UNRESOLVED_METHOD.getSymbol()},
+     * which may not match its usage site in either name, formal parameters,
+     * location, etc.
+     * </ul>
+     *
+     * <p>We try to recover some information about the missing
+     * symbol from the references we found, currently this includes
+     * only the number of type parameters of an unresolved class.
+     *
+     * <p>Rules should care about unresolved symbols to avoid false
+     * positives or logic errors. The equivalent for {@linkplain JTypeMirror types}
+     * is {@link TypeSystem#UNRESOLVED_TYPE}.
+     *
+     * <p>The following symbols are never unresolved, because they are
+     * lexically scoped:
+     * <ul>
+     * <li>{@linkplain JTypeParameterSymbol type parameters}
+     * <li>{@linkplain JLocalVariableSymbol local variables}
+     * <li>{@linkplain JFormalParamSymbol formal parameters}
+     * <li>local classes, anonymous classes
+     * </ul>
+     */
+    default boolean isUnresolved() {
+        return false;
+    }
+
 
     /**
      * Returns the node that declares this symbol. Eg for {@link JMethodSymbol},
