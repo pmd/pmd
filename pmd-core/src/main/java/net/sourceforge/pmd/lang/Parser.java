@@ -16,9 +16,13 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface Parser {
+
     /**
      * Get the ParserOptions used by this Parser.
+     *
+     * @deprecated Parser options should be a parameter to {@link #parse(String, Reader)}
      */
+    @Deprecated
     ParserOptions getParserOptions();
 
     /**

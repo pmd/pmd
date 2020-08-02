@@ -44,9 +44,16 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
-##### For removal
-
 *   {% jdoc !!pmd-java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
+*   {% jdoc !!core::Rule#getParserOptions() %}
+*   {% jdoc !!core::lang.Parser#getParserOptions() %}
+*   {% jdoc !!core::lang.AbstractParser %}
+*   {% jdoc apex::lang.apex.ApexParserOptions %}
+*   {% jdoc xml::lang.xml.XmlParserOptions %}
+*   {% jdoc xml::lang.xml.rule.XmlXpathRule %}
+*   Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+*   {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
+*   {% jdoc javascript::lang.ecmascript.rule.EcmascriptXPathRule %}
 
 ### External Contributions
 
