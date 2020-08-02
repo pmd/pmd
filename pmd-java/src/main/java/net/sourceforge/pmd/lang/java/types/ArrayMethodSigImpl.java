@@ -123,7 +123,7 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public JMethodSig originalMethod()   {
+    public JMethodSig originalMethod() {
         return new ArrayMethodSigImpl(owner, symbol);
     }
 

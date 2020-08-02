@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestSpec.GroupTestCtx.VersionedTe
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.noop
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
@@ -30,7 +31,7 @@ class TypeInferenceTest : ProcessorTestSpec({
     val jlang = "java.lang"
 
     fun ASTMethodCall.computeInferenceResult(): JMethodSig {
-        val testInfer = Infer(typeSystem, 8, VerboseLogger(System.err))
+        val testInfer = Infer(typeSystem, 8, TypeInferenceLogger.noop())
         val mirrorFactory = JavaExprMirrors(testInfer)
 
         val mirror = mirrorFactory.getMirror(this) as ExprMirror.InvocationMirror

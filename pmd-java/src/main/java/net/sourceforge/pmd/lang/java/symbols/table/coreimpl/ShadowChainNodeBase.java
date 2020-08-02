@@ -20,8 +20,7 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     private final boolean shadowBarrier;
     private final I scopeTag;
 
-    @SuppressWarnings("unchecked")
-        // NameResolver is covariant in S
+    @SuppressWarnings("unchecked") // NameResolver is covariant in S
     ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent,
                         boolean shadowBarrier,
                         I scopeTag,
@@ -34,7 +33,7 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
         this.merger = merger;
     }
 
-    public ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+    ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         this(parent, shadowBarrier, scopeTag, resolver, defaultMerger());
     }
 
