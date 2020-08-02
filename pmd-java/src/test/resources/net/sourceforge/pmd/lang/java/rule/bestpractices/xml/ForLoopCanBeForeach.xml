@@ -8,6 +8,7 @@
         <description>Positive with list</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class MyClass {
     void loop(List<String> l) {
         for (int i = 0; i < l.size(); i++) {
@@ -22,6 +23,7 @@ public class MyClass {
         <description>Positive with lower or equal</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
     void loop(List<String> lo) {
         for (int i = 0; i <= lo.size() - 1; i++) {
@@ -36,6 +38,7 @@ public class Foo {
         <description>Usage of index var outside get</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class MyClass {
     void loop(List<String> l) {
         for (int i = 0; i < l.size(); i++) {
@@ -50,6 +53,7 @@ public class MyClass {
         <description>Subclass of List</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class MyClass {
     void loop(ArrayList<String> l) {
         for (int i = 0; i < l.size(); i++) {
@@ -64,6 +68,7 @@ public class MyClass {
         <description>Get called on another list</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class MyClass {
     void loop(List<String> l) {
         List<String> l2 = new ArrayList<>(l);
@@ -79,6 +84,7 @@ public class MyClass {
         <description>Backwards iteration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class MyClass {
     void loop(List<String> l) {
         for (int i = l.size() - 1; i > 0; i-= 1) {
@@ -93,6 +99,7 @@ public class MyClass {
         <description>Index var initialized outside for init</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class MyClass {
     void loop(List<String> l) {
         int i = 0;
@@ -136,12 +143,12 @@ class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
-class Foo {
+class DataFlowNode {
     void loop() {
         Iterable<DataFlowNode> path = null;
         for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
             DataFlowNode inode = i.next();
-            if (inode.getVariableAccess() == null) {
+            if (inode == null) {
                 continue;
             }
         }
@@ -154,10 +161,11 @@ class Foo {
         <description>Index var starts after zero</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class MyClass {
-    void loop(List<String> l) {
+    void loop(List<String> filters, StringBuilder builder) {
         for (int i = 1; i < filters.size(); i++) {
-            builder.append(' ').append(getOperator()).append(' ');
+            builder.append(' ');
             builder.append(filters.get(i));
         }
     }
@@ -169,16 +177,14 @@ public class MyClass {
         <description>Prefix increment should work</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-class AbstractApexNode {
+class Node {
     Node[] children;
 
-    public Object childrenAccept(ApexParserVisitor visitor, Object data) {
+    public Object childrenAccept(Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                @SuppressWarnings("unchecked")
-                // we know that the children here are all ApexNodes
-                ApexNode<T> apexNode = (ApexNode<T>) children[i];
-                apexNode.jjtAccept(visitor, data);
+                Node apexNode = (Node) children[i];
+                System.out.println(apexNode);
             }
         }
         return data;
@@ -223,18 +229,20 @@ class StringPropertyTest {
     </test-code>
 
     <test-code>
-        <description>Consider iterators only if safe</description>
-        <expected-problems>0</expected-problems>
+        <description>Consider iterators even if collection modified</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
-class Foo {
+class DataFlowNode {
     void loop() {
         Iterable<DataFlowNode> path = null;
 
         for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+            // throws ConcurrentModificationException if it were a foreach
+            // actually would throw ConcurrentModificationException anyway with fail-fast iterators
             DataFlowNode inode = i.next();
-            path.remove(inode); // throws ConcurrentModificationException if it were a foreach
-            if (inode.getVariableAccess() == null) {
+            path.remove(inode);
+            if (inode == null) {
                 continue;
             }
         }
@@ -248,11 +256,29 @@ class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
-class Foo {
+class DataFlowNode {
     void loop() {
         for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
             DataFlowNode inode = i.next();
-            if (inode.getVariableAccess() == null) {
+            if (inode == null) {
+                continue;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not report iterator loop if we don't know type of iterable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+class DataFlowNode {
+    void loop(List<DataFlowNode> path) { // not java.util.List
+        for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+            DataFlowNode inode = i.next();
+            if (inode == null) {
                 continue;
             }
         }
@@ -263,7 +289,7 @@ class Foo {
 
     <test-code>
         <description>Iterating on this object NPE, refs #800</description>
-        <expected-problems>0</expected-problems> <!-- FIXME should be 1 -->
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
 
@@ -289,7 +315,7 @@ class Foo<T> implements Iterable<T> {
         <code><![CDATA[
 import java.util.Iterator;
 class Foo {
-    void loop() {
+    <E> void loop() {
         Iterable<E> it;
         Iterable<E> other;
         for (Iterator<E> iterator = it.iterator(), otherIterator = other.iterator(); iterator.hasNext();) {
@@ -306,18 +332,13 @@ class Foo {
         <description>NPE when for init is there, but not a local var declaration, refs #884</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+public class ASTTryStatement {
 
-    @Override
-    public Object visit(ASTThrowStatement node, Object data) {
-        ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
-        if (parent == null) {
-            return data;
-        }
+    public Object visit(ASTTryStatement parent, Object data) {
         for (parent = parent.getFirstParentOfType(ASTTryStatement.class); parent != null; parent = parent
                 .getFirstParentOfType(ASTTryStatement.class)) {
 
-            List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
+            List<ASTTryStatement> list = parent.findDescendantsOfType(ASTTryStatement.class);
             // ...
         }
         return data;
@@ -340,6 +361,25 @@ public class Test {
         this.hashes = new int[stringList.size()];
         for (int i = 0; i < stringList.size(); i++) {
             this.hashes[i] = stringList.get(i).hashCode();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Loop on same field of different objects</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+public class Test {
+
+    final int hashes[] = new int[6];
+
+    public void foo(Test other) {
+        for (int i = 0; i < hashes.length; i++) {
+            if (this.hashes[i] == other.hashes[i])
+                throw new IllegalStateException();
         }
     }
 }
