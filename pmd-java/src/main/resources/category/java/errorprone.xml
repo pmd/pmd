@@ -1153,7 +1153,7 @@ From those informations there can be found various problems.
 1. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
 2. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
 
-This rule is deprecated. Use UnusedAssignment in category bestpractices instead.
+This rule is deprecated. Use {% rule "java/bestpractices/UnusedAssignment" %} in category bestpractices instead.
         </description>
         <priority>5</priority>
         <example>
