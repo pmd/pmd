@@ -36,7 +36,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     JAVA_PROCESSING("Java processing") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            JavaAstProcessor.create(configuration.getTypeResolutionClassLoader(), configuration.getLanguageVersion(), JavaAstProcessor.defaultLogger())
+            JavaAstProcessor.create(configuration.getTypeResolutionClassLoader(), configuration.getLanguageVersion(), JavaAstProcessor.defaultLogger(), JavaAstProcessor.defaultTypeInfLogger())
                             .process((ASTCompilationUnit) rootNode);
         }
     },

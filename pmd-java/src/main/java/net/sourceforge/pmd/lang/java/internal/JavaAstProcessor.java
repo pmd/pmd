@@ -64,20 +64,24 @@ public final class JavaAstProcessor {
     private JavaAstProcessor(TypeSystem typeSystem,
                              SymbolResolver symResolver,
                              SemanticChecksLogger logger,
+                             TypeInferenceLogger typeInfLogger,
                              LanguageVersion languageVersion) {
 
         this.symResolver = symResolver;
         this.logger = logger;
+        this.typeInferenceLogger = typeInfLogger;
         this.languageVersion = languageVersion;
 
         this.typeSystem = typeSystem;
+    }
 
+    static TypeInferenceLogger defaultTypeInfLogger() {
         if (INFERENCE_LOG_LEVEL == Level.FINEST) {
-            this.typeInferenceLogger = new VerboseLogger(System.err);
+            return new VerboseLogger(System.err);
         } else if (INFERENCE_LOG_LEVEL == Level.FINE) {
-            this.typeInferenceLogger = new SimpleLogger(System.err);
+            return new SimpleLogger(System.err);
         } else {
-            this.typeInferenceLogger = TypeInferenceLogger.noop();
+            return TypeInferenceLogger.noop();
         }
     }
 
@@ -177,19 +181,22 @@ public final class JavaAstProcessor {
             typeSystem,
             symResolver,
             logger,
+            defaultTypeInfLogger(),
             languageVersion
         );
     }
 
     public static JavaAstProcessor create(ClassLoader classLoader,
                                           LanguageVersion languageVersion,
-                                          SemanticChecksLogger logger) {
+                                          SemanticChecksLogger logger,
+                                          TypeInferenceLogger typeInfLogger) {
 
         TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
         return new JavaAstProcessor(
             typeSystem,
             typeSystem.bootstrapResolver(),
             logger,
+            typeInfLogger,
             languageVersion
         );
     }

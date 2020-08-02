@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymResolver
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.types.JTypeMirror
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 internal fun testProcessor(jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =

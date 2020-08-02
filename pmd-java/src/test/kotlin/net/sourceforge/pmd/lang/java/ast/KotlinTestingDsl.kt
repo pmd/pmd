@@ -194,6 +194,10 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         return logger
     }
 
+    fun logTypeInference(verbose: Boolean = false) {
+        parser = parser.withProcessing(true).logTypeInference(verbose)
+    }
+
     var fullSource: String? = null
 
     /** Imports to add to the top of the parsing contexts. */
