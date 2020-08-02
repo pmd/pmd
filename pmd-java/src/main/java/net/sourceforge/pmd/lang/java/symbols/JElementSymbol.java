@@ -5,8 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
@@ -39,6 +43,15 @@ public interface JElementSymbol {
      * superclass.
      */
     TypeSystem getTypeSystem();
+
+    /**
+     * Returns the node that declares this symbol. Eg for {@link JMethodSymbol},
+     * it's an {@link ASTMethodDeclaration}. Will only return non-null
+     * if the symbol is declared in the file currently being analysed.
+     */
+    default @Nullable JavaNode tryGetNode() {
+        return null;
+    }
 
     /**
      * Two symbols representing the same program element should be equal.
