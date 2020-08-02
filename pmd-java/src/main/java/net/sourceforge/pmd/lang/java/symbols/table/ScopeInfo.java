@@ -19,6 +19,8 @@ public enum ScopeInfo {
     ENCLOSING_TYPE_MEMBER,
     /** Inherited by some enclosing class. */
     INHERITED,
+    /** This merges {@link #ENCLOSING_TYPE_MEMBER} and {@link #INHERITED}. */
+    METHOD_MEMBER,
     /** A type parameter of some enclosing class. */
     TYPE_PARAM,
     /** Local var, including lambda parameters and catch parameters. */

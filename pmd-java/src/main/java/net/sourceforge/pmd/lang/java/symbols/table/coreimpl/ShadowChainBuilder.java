@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.Builder;
@@ -89,7 +90,11 @@ public abstract class ShadowChainBuilder<S, I> {
     // parents too)
 
     public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
-        return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag);
+        return augmentWithCache(parent, shadowBarrier, scopeTag, resolver, ShadowChainNodeBase.defaultMerger());
+    }
+
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver, BinaryOperator<List<S>> merger) {
+        return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag, merger);
     }
 
     public ShadowChainNode<S, I> shadowWithCache(ShadowChainNode<S, I> parent,
@@ -100,7 +105,7 @@ public abstract class ShadowChainBuilder<S, I> {
                                                  // is why this parameter is defaulted.
                                                  Map<String, List<S>> cacheMap,
                                                  NameResolver<S> resolver) {
-        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag);
+        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag, ShadowChainNodeBase.defaultMerger());
     }
 
 

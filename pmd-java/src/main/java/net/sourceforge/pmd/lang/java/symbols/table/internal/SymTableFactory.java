@@ -354,12 +354,7 @@ final class SymTableFactory {
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(t.getDeclaredFields()));
 
         ShadowChainNode<JMethodSig, ScopeInfo> methods = methodNode(parent);
-        // notice this is a shadow barrier
-        methods = METHODS.augmentWithCache(methods, true, ScopeInfo.INHERITED, JavaResolvers.methodResolver(t, true));
-        // and not this one
-        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.ENCLOSING_TYPE_MEMBER, JavaResolvers.methodResolver(t, false));
-        // This means their results will be merged.
-        // They're only split to give a different, more specific scope tag
+        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.methodResolver(t), JavaResolvers.methodMerger());
 
         return buildTable(parent, fields, methods, types);
     }

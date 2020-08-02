@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
+import java.util.function.BinaryOperator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -14,19 +15,27 @@ import net.sourceforge.pmd.util.OptionalBool;
 class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
 
     protected final NameResolver<S> resolver;
+    private final BinaryOperator<List<S>> merger;
     protected final @NonNull ShadowChainNode<S, I> parent;
     private final boolean shadowBarrier;
     private final I scopeTag;
 
-    @SuppressWarnings("unchecked") // NameResolver is covariant in S
+    @SuppressWarnings("unchecked")
+        // NameResolver is covariant in S
     ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent,
                         boolean shadowBarrier,
                         I scopeTag,
-                        NameResolver<? extends S> resolver) {
+                        NameResolver<? extends S> resolver,
+                        BinaryOperator<List<S>> merger) {
         this.parent = parent;
         this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
         this.resolver = (NameResolver<S>) resolver;
+        this.merger = merger;
+    }
+
+    public ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+        this(parent, shadowBarrier, scopeTag, resolver, defaultMerger());
     }
 
     @Override
@@ -81,7 +90,7 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
             // A successful search ends on the first node that is a
             // shadow barrier, inclusive
             // A failed search continues regardless
-            return CollectionUtil.concatView(res, getParent().asChain().resolve(name));
+            return merger.apply(res, getParent().asChain().resolve(name));
         }
         return res;
     }
@@ -102,4 +111,7 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
         return scopeTag + "  " + resolver.toString();
     }
 
+    static <S> BinaryOperator<List<S>> defaultMerger() {
+        return CollectionUtil::concatView;
+    }
 }

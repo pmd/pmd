@@ -46,6 +46,8 @@ public interface ShadowChain<S, I> {
      * mean there is ambiguity. For methods, ambiguity may be resolved through
      * overload resolution, for other kinds of symbols, it causes an error.
      *
+     * <p>The ordering in the list is defined to be innermost first.
+     *
      * @param name Simple name of the symbols to find
      *
      * @return A list of symbols

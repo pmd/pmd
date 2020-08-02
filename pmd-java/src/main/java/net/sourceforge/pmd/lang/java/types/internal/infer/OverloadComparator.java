@@ -35,7 +35,8 @@ final class OverloadComparator {
     /**
      * Returns the most specific method of the two methods for the
      * given invocation expression, given both are applicable to the
-     * site.
+     * site AND given that the currentBest may be shadowing/overriding/hiding
+     * the candidate if they are override-equivalent.
      *
      * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5
      */

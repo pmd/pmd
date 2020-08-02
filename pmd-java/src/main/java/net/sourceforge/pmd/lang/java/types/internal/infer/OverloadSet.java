@@ -9,10 +9,9 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -24,9 +23,15 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 final class OverloadSet {
 
     private final List<JMethodSig> overloads = new ArrayList<>();
-
+    private String name;
 
     void add(JMethodSig sig, JClassType site) {
+        if (name == null) {
+            name = sig.getName();
+        }
+        assert sig.getName().equals(name) : "Not the right name!";
+        assert !sig.isConstructor() : "Constructors they cannot override each other";
+
         ListIterator<JMethodSig> iterator = overloads.listIterator();
         while (iterator.hasNext()) {
             JMethodSig existing = iterator.next();
@@ -52,10 +57,7 @@ final class OverloadSet {
     }
 
     public List<JMethodSig> getOverloads() {
-        return overloads;
+        return Collections.unmodifiableList(overloads);
     }
 
-    public @Nullable JMethodSig getAsSingle() {
-        return overloads.size() == 1 ? overloads.get(0) : null;
-    }
 }

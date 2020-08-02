@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.*
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
@@ -17,6 +18,50 @@ import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
 
 class MemberInheritanceTest : ParserTestSpec({
+
+    parserTest("Test problem with values scope in enum") {
+        inContext(ExpressionParsingCtx) {
+
+            val acu = parser.withProcessing().parse(
+                    """
+                        package coco;
+
+                        import static coco.Opcode.Set.*;
+
+                        import coco.Opcode.Set;
+
+                        public enum Opcode {;
+
+                            static {
+                                // Both Set.values() and Opcode.values() are in scope,
+                                Set s =  STANDARD;
+                                for (coco.Opcode o: values()) {
+                                    
+                                }
+                            }
+
+                            public enum Set { STANDARD, PICOJAVA }
+                        }
+
+                    """.trimIndent())
+
+            val (outer, inner) = acu.descendants(ASTEnumDeclaration::class.java).toList { it.symbol }
+
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+            call.shouldMatchN {
+                methodCall("values") {
+
+                    it.symbolTable.methods().resolve("values").shouldBeSingleton {
+                        it.symbol.enclosingClass shouldBe outer
+                    }
+
+                    argList(0) {}
+                }
+            }
+
+        }
+    }
 
 
     parserTest("Comb rule: methods of an inner type shadow methods of the enclosing ones") {
@@ -49,28 +94,32 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (supF, supG, sup2F, outerF, outerG, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList()
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+        val (sup, _, outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
 
         doTest("Inside Sup: Sup#f(int) is in scope") {
 
-            supF.symbolTable.methods().resolve("f").let {
+            sup.symbolTable.methods().resolve("f").let {
                 it.shouldHaveSize(1)
-                it[0] shouldBe supF.sig
+                it[0] shouldBe supF
             }
         }
 
         doTest("Inside Outer: both Sup#f(int) and Outer#f() are in scope") {
-            outerF.symbolTable.methods().resolve("f").shouldContainExactlyInAnyOrder(supF.sig, outerF.sig)
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, supF)
         }
 
-        doTest("Inside Inner: neither Sup#f(int) nor Outer#f() are in scope") {
-            // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("f").shouldContainExactlyInAnyOrder(sup2F.sig, innerF.sig)
+        doTest("Inside Inner: Outer#f() is shadowed") {
+            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer are in scope)
+            // But Outer#f() is shadowed by Inner#f()
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
         }
 
         doTest("If there is no shadowing then declarations of outer classes are in scope (g methods)") {
-            // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("g").shouldContainExactlyInAnyOrder(supG.sig, outerG.sig)
+            // only Outer#g() overrides its parent
+            inner.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
         }
     }
 

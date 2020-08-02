@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collector;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -885,6 +887,27 @@ public final class Infer {
         }
 
         return true;
+    }
+
+
+    /**
+     * Returns a collector that can apply to a stream of method signatures,
+     * and that collects them into a set of method, where none override one another.
+     * Do not use this in a parallel stream. Do not use this to collect constructors.
+     *
+     * @param site Site where the signatures are observed
+     *
+     * @return A collector
+     */
+    public static Collector<JMethodSig, ?, List<JMethodSig>> collectMostSpecific(JClassType site) {
+        return Collector.of(
+            OverloadSet::new,
+            (set, sig) -> set.add(sig, site),
+            (left, right) -> {
+                throw new NotImplementedException("Cannot use this in a parallel stream");
+            },
+            OverloadSet::getOverloads
+        );
     }
 
 }

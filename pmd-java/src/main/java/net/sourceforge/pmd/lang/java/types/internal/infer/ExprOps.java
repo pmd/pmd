@@ -230,12 +230,10 @@ final class ExprOps {
         } else {
             JTypeMirror typeToSearch = mref.getTypeToSearch();
 
-            OverloadSet overloads = new OverloadSet();
             String name = mref.getMethodName();
             JClassType enclosing = mref.getEnclosingType();
-            typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(name, enclosing.getSymbol()))
-                        .forEach(it -> overloads.add(it, enclosing));
-            accessible = overloads.getOverloads();
+            accessible = typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(name, enclosing.getSymbol()))
+                                     .collect(Infer.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {

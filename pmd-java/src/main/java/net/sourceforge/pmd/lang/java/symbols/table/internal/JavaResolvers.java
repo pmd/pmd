@@ -8,9 +8,13 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnu
 import static net.sourceforge.pmd.util.CollectionUtil.listOfNotNull;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -35,6 +39,8 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
@@ -119,24 +125,62 @@ public final class JavaResolvers {
         };
     }
 
-    // todo using two separate resolvers for inherited + declared here
-    //  is artificial and only done to get the ScopeInfo right. Would
-    //  be better to do a single traversal.
-    static NameResolver<JMethodSig> methodResolver(JClassType t, boolean onlyInherited) {
+    static NameResolver<JMethodSig> methodResolver(JClassType t) {
         JClassSymbol nestRoot = t.getSymbol().getNestRoot();
         return new NameResolver<JMethodSig>() {
             @Override
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
                 return t.streamMethods(
-                    it -> onlyInherited == (it.getEnclosingClass() != t.getSymbol())
-                        && it.getSimpleName().equals(simpleName)
+                    it -> it.getSimpleName().equals(simpleName)
                         && isAccessibleIn(nestRoot, it, true)
-                ).collect(CollectionUtil.toUnmodifiableList());
+                ).collect(Infer.collectMostSpecific(t));
             }
 
             @Override
             public String toString() {
                 return "methods of " + t;
+            }
+        };
+    }
+
+    static BinaryOperator<List<JMethodSig>> methodMerger() {
+        return (myResult, otherResult) -> {
+            if (otherResult.isEmpty()) {
+                return myResult;
+            }
+
+            // For both the input lists, their elements are pairwise non-equivalent.
+            // If any element of myResult is override-equivalent to
+            // another in otherResult, then we must exclude the otherResult
+
+            BitSet isShadowed = new BitSet(otherResult.size());
+
+            for (JMethodSig m1 : myResult) {
+                int i = 0;
+                for (JMethodSig m2 : otherResult) {
+                    boolean isAlreadyShadowed = isShadowed.get(i);
+                    if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)) {
+                        isShadowed.set(i); // we'll remove it later
+                    }
+                    i++;
+                }
+            }
+
+            if (isShadowed.isEmpty()) {
+                return CollectionUtil.concatView(myResult, otherResult);
+            } else {
+                List<JMethodSig> result = new ArrayList<>(myResult.size() + otherResult.size() - 1);
+                result.addAll(myResult);
+
+                int last = 0;
+                for (int i = isShadowed.nextSetBit(0); i >= 0; i = isShadowed.nextSetBit(i + 1)) {
+                    result.addAll(otherResult.subList(last, i));
+                    last = i + 1;
+                }
+                if (last != otherResult.size()) {
+                    result.addAll(otherResult.subList(last, otherResult.size()));
+                }
+                return Collections.unmodifiableList(result);
             }
         };
     }

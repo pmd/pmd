@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -26,8 +27,9 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
                                      Map<String, List<S>> known,
                                      NameResolver<? extends S> resolver,
                                      boolean shadowBarrier,
-                                     I scopeTag) {
-        super(parent, shadowBarrier, scopeTag, resolver);
+                                     I scopeTag,
+                                     BinaryOperator<List<S>> merger) {
+        super(parent, shadowBarrier, scopeTag, resolver, merger);
         this.cache = known;
     }
 
