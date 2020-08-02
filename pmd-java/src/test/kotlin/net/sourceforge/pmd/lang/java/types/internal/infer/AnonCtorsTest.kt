@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.typeDsl
 
 /**
  * @author Clément Fournier
@@ -14,7 +15,63 @@ import net.sourceforge.pmd.lang.java.ast.*
 class AnonCtorsTest : ProcessorTestSpec({
 
 
-    // TODO generic anon class ctors
+    parserTest("Diamond anonymous class constructor") {
+        inContext(ExpressionParsingCtx) {
+
+            logTypeInference(verbose = true)
+
+            val acu = parser.parse(
+                    """
+            class Scratch {
+            
+                interface Gen<T> { T get(); }
+            
+                static <T> T useGen(Gen<? extends T> gen) {
+                    return gen.get();
+                }
+            
+                {
+                 Integer result2 = useGen(new Gen<>() { public Integer get() { return 1; } });
+                }
+            }
+            """)
+
+            val (scratch, gen, anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+
+            val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
+
+            call.shouldMatchN {
+                methodCall("useGen") {
+
+                    it.methodType.formalParameters.shouldBe(listOf(with(it.typeDsl) {
+                        gen[`?` extends int.box()] // Gen<? extends Integer>
+                    }))
+
+                    argList {
+                        constructorCall {
+                            classType("Gen") {
+                                it::getReferencedSym shouldBe gen
+                                diamond()
+                            }
+
+                            argList(0)
+
+                            it.methodType.apply {
+                                symbol shouldBe call.typeSystem.OBJECT.symbol.constructors[0]
+                                returnType shouldBe with(it.typeDsl) {
+                                    gen[int.box()] // Gen<Integer>
+                                }
+                            }
+
+                            child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                                it.typeMirror shouldBe it.typeSystem.declaration(anon)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     parserTest("Test anonymous interface constructor") {
         inContext(ExpressionParsingCtx) {
@@ -110,4 +167,6 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
         }
     }
+
+
 })

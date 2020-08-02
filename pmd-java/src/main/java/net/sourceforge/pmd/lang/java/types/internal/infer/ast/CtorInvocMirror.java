@@ -59,13 +59,17 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     @Override
     public JClassType getNewType() {
-        JTypeMirror typeMirror = myNode.getTypeNode().getTypeMirror();
-        return typeMirror instanceof JClassType ? (JClassType) typeMirror : null;
+        return (JClassType) myNode.getTypeNode().getTypeMirror();
     }
 
     @Override
     public boolean isDiamond() {
         return myNode.isDiamond();
+    }
+
+    @Override
+    public boolean isAnonymous() {
+        return myNode.isAnonymousClass();
     }
 
     static class EnumCtorInvocMirror extends BaseInvocMirror<ASTEnumConstant> implements CtorInvocationMirror {
@@ -83,6 +87,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         @Override
         public JClassType getNewType() {
             return getEnclosingType();
+        }
+
+        @Override
+        public boolean isAnonymous() {
+            return myNode.isAnonymousClass();
         }
 
         @Override
@@ -111,6 +120,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                    ? encl
                    // this may cause NPE, but only if a super ctor call occurs in class Object
                    : encl.getSuperClass().getGenericTypeDeclaration();
+        }
+
+        @Override
+        public boolean isAnonymous() {
+            return false;
         }
 
         @Override

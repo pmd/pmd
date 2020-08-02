@@ -23,6 +23,8 @@ import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
 
+    private final JMethodSig adaptedMethod;
+
     private final JClassType owner;
     // either method or constructor
     private final JExecutableSymbol symbol;
@@ -33,16 +35,19 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     private List<JTypeMirror> thrown;
 
     ClassMethodSigImpl(@NonNull JClassType owner, @NonNull JExecutableSymbol symbol) {
-        this(owner, symbol, null, null, null, null);
+        this(owner, symbol, null, null, null, null, null);
     }
 
 
     private ClassMethodSigImpl(@NonNull JClassType owner,
                                @NonNull JExecutableSymbol symbol,
+                               JMethodSig adapted,
                                @Nullable List<JTypeVar> tparams,
                                @Nullable JTypeMirror resultType,
                                @Nullable List<JTypeMirror> formals,
                                @Nullable List<JTypeMirror> thrown) {
+
+        this.adaptedMethod = adapted == null ? this : adapted;
         this.owner = owner;
         this.symbol = symbol;
         this.resultType = resultType;
@@ -79,6 +84,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         return new ClassMethodSigImpl(
             owner.getErasure(),
             symbol,
+            null,
             Collections.emptyList(),
             getReturnType().getErasure(),
             TypeOps.erase(getFormalParameters()),
@@ -149,12 +155,12 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public JMethodSig withReturnType(JTypeMirror returnType) {
         // share formals & thrown to avoid recomputing
-        return new ClassMethodSigImpl(owner, symbol, getTypeParameters(), returnType, formals, thrown);
+        return new ClassMethodSigImpl(owner, symbol, adaptedMethod, getTypeParameters(), returnType, formals, thrown);
     }
 
     @Override
     public JMethodSig withTypeParams(List<JTypeVar> tparams) {
-        return new ClassMethodSigImpl(owner, symbol, tparams, null, null, null);
+        return new ClassMethodSigImpl(owner, symbol, adaptedMethod, tparams, null, null, null);
     }
 
     @Override
@@ -165,11 +171,17 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         return new ClassMethodSigImpl(
             owner,
             symbol,
+            adaptedMethod,
             tparams, // don't substitute type parameters
             TypeOps.subst(getReturnType(), fun),
             TypeOps.subst(getFormalParameters(), fun),
             TypeOps.subst(getThrownExceptions(), fun)
         );
+    }
+
+    @Override
+    public JMethodSig markAsAdapted() {
+        return new ClassMethodSigImpl(owner, symbol, null, tparams, resultType, formals, thrown);
     }
 
     @Override
@@ -180,7 +192,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         //            return lists.stream().reduce((p, q) -> p.size() >= q.size() ? p : q).orElse(empty);
         //        }
         if (newOwner instanceof JClassType && Objects.equals(newOwner.getSymbol(), this.owner.getSymbol())) {
-            return new ClassMethodSigImpl((JClassType) newOwner, symbol, tparams, resultType, formals, thrown);
+            return new ClassMethodSigImpl((JClassType) newOwner, symbol, adaptedMethod, tparams, resultType, formals, thrown);
         } else {
             throw new IllegalArgumentException(newOwner + " cannot be the owner of " + this);
         }
@@ -191,6 +203,10 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         return new ClassMethodSigImpl(owner, symbol);
     }
 
+    @Override
+    public JMethodSig adaptedMethod() {
+        return adaptedMethod == null ? originalMethod() : adaptedMethod;
+    }
 
     private Substitution getTypeParamSubst() {
         return owner.getTypeParamSubst();

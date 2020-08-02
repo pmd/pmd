@@ -233,8 +233,7 @@ public final class Infer {
      * return type, to help inference. This should be non-null if we're
      * in an invocation or assignment context, otherwise can be left blank.
      */
-    @NonNull
-    public MethodCtDecl determineInvocationType(MethodCallSite site) {
+    public @NonNull MethodCtDecl determineInvocationType(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
         if (ctdecl == UNRESOLVED_CTDECL) { // NOPMD CompareObjectsWithEquals
             return ctdecl;
@@ -250,6 +249,7 @@ public final class Infer {
         if (isReturnTypeFinished(m)) {
             assert assertReturnIsGround(m);
 
+            // todo this appears duplicated
             m = ExprOps.adaptGetClass(m, site.getExpr().getErasedReceiverType());
 
             LOG.skipInstantiation(m, site);
@@ -265,14 +265,14 @@ public final class Infer {
         // arguments that are not pertinent to applicability (lambdas)
         // to instantiate all tvars
 
-        JMethodSig inst = logInference(site, ctdecl.getResolvePhase().asInvoc(), ctdecl.getMethodType().internalApi().originalMethod());
+        JMethodSig inst = logInference(site, ctdecl.getResolvePhase().asInvoc(), ctdecl.getMethodType().internalApi().adaptedMethod());
         return inst == null ? UNRESOLVED_CTDECL : new MethodCtDecl(inst, ctdecl.getResolvePhase());
     }
 
     private boolean isReturnTypeFinished(JMethodSig m) {
         return !isAdaptedConsType(m)
             // this means that the invocation type cannot be affected by context type
-            && !TypeOps.mentionsAnyTvar(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters());
+            && !TypeOps.mentionsAnyTvar(m.internalApi().adaptedMethod().getReturnType(), m.getTypeParameters());
     }
 
     private boolean isAdaptedConsType(JMethodSig m) {
@@ -339,7 +339,7 @@ public final class Infer {
         CtorInvocationMirror expr = (CtorInvocationMirror) site.getExpr();
 
         JMethodSig adapted = expr.isDiamond() || expr.getNewType().isParameterizedType()
-                             ? adaptGenericConstructor(cons)
+                             ? adaptGenericConstructor(cons, expr.getNewType())
                              : cons;
 
         return instantiateMethod(adapted, site, phase);
@@ -361,7 +361,7 @@ public final class Infer {
      *
      * the return type being that of the created instance.
      */
-    private static JMethodSig adaptGenericConstructor(JMethodSig cons) {
+    private static JMethodSig adaptGenericConstructor(JMethodSig cons, JClassType newType) {
         assert cons.isConstructor() : cons + " should be a constructor";
 
         if (cons.getDeclaringType().isArray()) {
@@ -369,11 +369,10 @@ public final class Infer {
             return cons;
         }
 
-        JClassType declaringType = (JClassType) cons.getDeclaringType();
-
-        if (declaringType.getFormalTypeParams().isEmpty()) {
+        if (newType.getFormalTypeParams().isEmpty()) {
             // non-generic type
-            return cons;
+            // replace the return type so that anonymous class ctors
+            return cons.internalApi().withReturnType(newType).internalApi().markAsAdapted();
         }
 
         // else transform the constructor to add the type parameters
@@ -381,13 +380,13 @@ public final class Infer {
 
         List<JTypeVar> tparams = cons.getTypeParameters();
         if (tparams.isEmpty()) {
-            tparams = declaringType.getFormalTypeParams();
+            tparams = newType.getFormalTypeParams();
         } else {
             tparams = new ArrayList<>(tparams);
-            tparams.addAll(declaringType.getFormalTypeParams());
+            tparams.addAll(newType.getFormalTypeParams());
         }
 
-        return cons.internalApi().withTypeParams(tparams);
+        return cons.internalApi().withTypeParams(tparams).internalApi().withReturnType(newType).internalApi().markAsAdapted();
     }
 
     /**

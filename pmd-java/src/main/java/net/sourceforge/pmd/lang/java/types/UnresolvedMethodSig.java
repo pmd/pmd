@@ -78,6 +78,16 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
+    public JMethodSig markAsAdapted() {
+        return this;
+    }
+
+    @Override
+    public JMethodSig adaptedMethod() {
+        return this;
+    }
+
+    @Override
     public JMethodSig withTypeParams(List<JTypeVar> tparams) {
         return this;
     }

@@ -25,6 +25,8 @@ public interface InternalMethodTypeItf {
     JMethodSig withReturnType(JTypeMirror returnType);
 
 
+    JMethodSig markAsAdapted();
+
     /**
      * Returns a new method type with the given type parameters. Nothing
      * is done to the other types presented by this object.
@@ -39,7 +41,8 @@ public interface InternalMethodTypeItf {
      */
     JMethodSig withOwner(JTypeMirror newOwner);
 
-
     JMethodSig originalMethod();
+
+    JMethodSig adaptedMethod();
 
 }

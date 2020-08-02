@@ -118,8 +118,18 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public JMethodSig originalMethod() {
+    public JMethodSig markAsAdapted() {
+        return this;
+    }
+
+    @Override
+    public JMethodSig originalMethod()   {
         return new ArrayMethodSigImpl(owner, symbol);
+    }
+
+    @Override
+    public JMethodSig adaptedMethod() {
+        return originalMethod();
     }
 
     @Override

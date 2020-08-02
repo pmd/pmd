@@ -320,6 +320,7 @@ public interface ExprMirror {
          */
         JClassType getNewType();
 
+        boolean isAnonymous();
 
         /**
          * Return true if this is a diamond constructor call. In that
