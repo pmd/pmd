@@ -2808,6 +2808,8 @@ private method bar() that calls a public method buz(), this denotes a problem.</
 
 <h2 id="dataflowanomalyanalysis">DataflowAnomalyAnalysis</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.9</p>
 
 <p><strong>Priority:</strong> Low (5)</p>
@@ -2819,6 +2821,8 @@ From those informations there can be found various problems.</p>
   <li>DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.</li>
   <li>DD - Anomaly: A recently defined variable is redefined. This is ominous but don’t have to be a bug.</li>
 </ol>
+
+<p>This rule is deprecated. Use <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="highlighter-rouge">UnusedAssignment</code></a> in category bestpractices instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/DataflowAnomalyAnalysisRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule</a></p>
 
@@ -5170,7 +5174,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 31, 2020 <br />
+ Site last generated: Aug 2, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

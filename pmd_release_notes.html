@@ -1419,6 +1419,14 @@ cases where the variable of the caught exception is reassigned. This practice is
 further evolution of the code like multi-catch.</li>
 </ul>
 
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="highlighter-rouge">java-errorprone</code>)
+is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="highlighter-rouge">UnusedAssignment</code></a> (<code class="highlighter-rouge">java-bestpractices</code>),
+which was introduced in PMD 6.26.0.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1459,10 +1467,29 @@ reported as a forward compatibility warning.</li>
 
 <h4 id="deprecated-api">Deprecated API</h4>
 
-<h5 id="for-removal">For removal</h5>
-
 <ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#getParserOptions()"><code>Rule#getParserOptions</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/Parser.html#getParserOptions()"><code>Parser#getParserOptions</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/AbstractParser.html#"><code>net.sourceforge.pmd.lang.AbstractParser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#removeAttribute(java.lang.String)"><code>RuleContext#removeAttribute</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#getAttribute(java.lang.String)"><code>RuleContext#getAttribute</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#setAttribute(java.lang.String,java.lang.Object)"><code>RuleContext#setAttribute</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ApexParserOptions.html#"><code>ApexParserOptions</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThrowStatement.html#getFirstClassOrInterfaceTypeImage()"><code>ASTThrowStatement#getFirstClassOrInterfaceTypeImage</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/EcmascriptParserOptions.html#"><code>EcmascriptParserOptions</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/rule/EcmascriptXPathRule.html#"><code>EcmascriptXPathRule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/XmlParserOptions.html#"><code>XmlParserOptions</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/XmlXpathRule.html#"><code>XmlXpathRule</code></a></li>
+  <li>Properties of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></li>
+  <li>The dataflow codebase is deprecated for removal in PMD 7. This
+includes all code in the following packages, and their subpackages:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.dfa</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.java.dfa</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.dfa</code></a></li>
+      <li>and the class <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLDataFlowHandler.html#"><code>PLSQLDataFlowHandler</code></a></li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1490,7 +1517,7 @@ reported as a forward compatibility warning.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 31, 2020 <br />
+ Site last generated: Aug 2, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
