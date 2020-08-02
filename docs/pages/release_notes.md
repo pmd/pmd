@@ -20,6 +20,12 @@ This is a {{ site.pmd.release_type }} release.
     cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
     further evolution of the code like multi-catch.
 
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)
+    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
+    which was introduced in PMD 6.26.0.
+
 ### Fixed Issues
 
 *   core
@@ -57,6 +63,12 @@ This is a {{ site.pmd.release_type }} release.
 *   {% jdoc xml::lang.xml.XmlParserOptions %}
 *   {% jdoc xml::lang.xml.rule.XmlXpathRule %}
 *   Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+*   The dataflow codebase is deprecated for removal in PMD 7. This
+    includes all code in the following packages, and their subpackages:
+    *   {% jdoc_package plsql::lang.plsql.dfa %}
+    *   {% jdoc_package java::lang.java.dfa %}
+    *   {% jdoc_package core::lang.dfa %}
+    *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
 
 ### External Contributions
 

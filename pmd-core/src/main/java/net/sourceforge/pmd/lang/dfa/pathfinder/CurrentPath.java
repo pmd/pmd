@@ -11,6 +11,11 @@ import java.util.List;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
+/**
+ *
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class CurrentPath implements Iterable<DataFlowNode> {
 
     private final List<DataFlowNode> list;
