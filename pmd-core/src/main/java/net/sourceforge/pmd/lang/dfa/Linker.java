@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author raik Links data flow nodes to each other.
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class Linker {
     private static final Logger LOGGER = Logger.getLogger(Linker.class.getName());
     private static final String CLASS_NAME = Linker.class.getCanonicalName();

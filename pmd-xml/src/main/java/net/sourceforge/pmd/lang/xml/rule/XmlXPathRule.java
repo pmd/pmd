@@ -11,14 +11,25 @@ import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+/**
+ * @deprecated Parser options are deprecated, use {@link XPathRule} directly
+ */
+@Deprecated
 public class XmlXPathRule extends XPathRule {
 
+    @Deprecated
     public static final PropertyDescriptor<Boolean> COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> EXPAND_ENTITY_REFERENCES_DESCRIPTOR = XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> IGNORING_COMMENTS_DESCRIPTOR = XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> NAMESPACE_AWARE_DESCRIPTOR = XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> VALIDATING_DESCRIPTOR = XmlParserOptions.VALIDATING_DESCRIPTOR;
+    @Deprecated
     public static final PropertyDescriptor<Boolean> XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public XmlXPathRule() {

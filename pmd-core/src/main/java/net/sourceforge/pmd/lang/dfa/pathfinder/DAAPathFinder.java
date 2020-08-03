@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.dfa.NodeType;
  *
  * @author raik
  * @since Created on 09.08.2004
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
 
