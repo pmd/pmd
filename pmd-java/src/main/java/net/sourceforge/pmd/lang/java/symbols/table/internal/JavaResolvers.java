@@ -125,20 +125,47 @@ public final class JavaResolvers {
         };
     }
 
-    static NameResolver<JMethodSig> methodResolver(JClassType t) {
+    /** All methods in a type, taking care of hiding/overriding. */
+    static NameResolver<JMethodSig> subtypeMethodResolver(JClassType t) {
         JClassSymbol nestRoot = t.getSymbol().getNestRoot();
         return new NameResolver<JMethodSig>() {
             @Override
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
                 return t.streamMethods(
                     it -> it.getSimpleName().equals(simpleName)
-                        && isAccessibleIn(nestRoot, it, true)
-                ).collect(OverloadComparator.collectMostSpecific(t));
+                        && isAccessibleIn(nestRoot, it, true) // fetch protected methods
+                ).collect(OverloadComparator.collectMostSpecific(t)); // remove overridden, hidden methods
             }
 
             @Override
             public String toString() {
                 return "methods of " + t;
+            }
+        };
+    }
+
+    /** Static methods with a given name. */
+    static NameResolver<JMethodSig> staticImportMethodResolver(JClassType container, @NonNull String accessPackageName, String simpleName) {
+        assert simpleName != null;
+        assert accessPackageName != null;
+        return new NameResolver<JMethodSig>() {
+            @Override
+            public @NonNull List<JMethodSig> resolveHere(String simpleName) {
+                return container.streamMethods(
+                    it -> Modifier.isStatic(it.getModifiers())
+                        && it.getSimpleName().equals(simpleName)
+                        // Technically, importing a static protected method may be valid
+                        // inside some of the classes in the compilation unit. This test
+                        // makes it not in scope in those classes. But it's also visible
+                        // from the subclass as an "inherited" member, so is in scope in
+                        // the relevant contexts.
+                        && isAccessibleIn(null, accessPackageName, it, false)
+                ).collect(OverloadComparator.collectMostSpecific(container)); // remove overridden, hidden methods
+            }
+
+            @Override
+            public String toString() {
+                return "static methods w/ name " + simpleName + " of " + container;
             }
         };
     }

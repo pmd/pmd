@@ -5,10 +5,15 @@
 package javasymbols.testdata.deep;
 
 import static javasymbols.testdata.StaticNameCollision.Ola;
+import static javasymbols.testdata.Statics.oha;
 
 
 public class StaticCollisionImport {
 
     Ola o;
+
+    static {
+        oha();
+    }
 
 }

@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
 import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -250,14 +251,13 @@ final class SymTableFactory {
 
         ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
         ShadowChainBuilder<JVariableSig, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
-        ShadowChainBuilder<JMethodSig, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
-
-        fillSingleImports(singleImports, importedTypes, importedFields, importedMethods);
+        List<NameResolver<? extends JMethodSig>> importedStaticMethods = new ArrayList<>();
+        fillSingleImports(singleImports, importedTypes, importedFields, importedStaticMethods);
 
         return buildTable(
             parent,
             VARS.shadow(varNode(parent), ScopeInfo.SINGLE_IMPORT, importedFields.build()),
-            METHODS.shadow(methodNode(parent), ScopeInfo.SINGLE_IMPORT, importedMethods.build()),
+            METHODS.shadow(methodNode(parent), ScopeInfo.SINGLE_IMPORT, NameResolver.composite(importedStaticMethods)),
             TYPES.shadow(typeNode(parent), ScopeInfo.SINGLE_IMPORT, importedTypes.build())
         );
 
@@ -267,7 +267,8 @@ final class SymTableFactory {
     private void fillSingleImports(Iterable<ASTImportDeclaration> singleImports,
                                    ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder importedTypes,
                                    ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder importedFields,
-                                   ShadowChainBuilder<JMethodSig, ?>.ResolverBuilder importedMethods) {
+                                   List<NameResolver<? extends JMethodSig>> importedStaticMethods) {
+
         for (ASTImportDeclaration anImport : singleImports) {
             if (anImport.isImportOnDemand()) {
                 throw new IllegalArgumentException(anImport.toString());
@@ -281,7 +282,6 @@ final class SymTableFactory {
                 // types, fields or methods having the same name
 
                 int idx = name.lastIndexOf('.');
-                assert idx > 0;
                 String className = name.substring(0, idx);
 
                 JClassSymbol containerClass = loadClassReportFailure(anImport, className);
@@ -293,23 +293,17 @@ final class SymTableFactory {
                     continue;
                 }
 
-                JClassType containerType = (JClassType) containerClass.getTypeSystem().typeOf(containerClass, false);
+                JClassType containerType = (JClassType) containerClass.getTypeSystem().declaration(containerClass);
 
-                containerType.streamMethods(
-                    it -> Modifier.isStatic(it.getModifiers())
-                        && it.getSimpleName().equals(simpleName)
-                        && canBeImported(it)
-                ).forEach(importedMethods::append);
+                importedStaticMethods.add(JavaResolvers.staticImportMethodResolver(containerType, thisPackage, simpleName));
 
-                FieldSig f = containerType.getField(simpleName);
-                if (f != null && Modifier.isStatic(f.getSymbol().getModifiers())) {
-                    importedFields.append(f);
-                }
+                JavaResolvers.getMemberFieldResolver(containerType, thisPackage, null, simpleName)
+                             .resolveHere(simpleName)
+                             .forEach(importedFields::appendWithoutDuplicate);
 
-                JClassType c = containerType.getDeclaredClass(simpleName);
-                if (c != null && Modifier.isStatic(c.getSymbol().getModifiers()) && canBeImported(c.getSymbol())) {
-                    importedTypes.append(c);
-                }
+                JavaResolvers.getMemberClassResolver(containerType, thisPackage, null, simpleName)
+                             .resolveHere(simpleName)
+                             .forEach(importedTypes::appendWithoutDuplicate);
 
             } else {
                 // Single-Type-Import Declaration
@@ -354,7 +348,7 @@ final class SymTableFactory {
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(t.getDeclaredFields()));
 
         ShadowChainNode<JMethodSig, ScopeInfo> methods = methodNode(parent);
-        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.methodResolver(t), JavaResolvers.methodMerger());
+        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.subtypeMethodResolver(t), JavaResolvers.methodMerger());
 
         return buildTable(parent, fields, methods, types);
     }

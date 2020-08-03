@@ -13,6 +13,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
+import javasymbols.testdata.StaticsSuper
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
@@ -215,6 +216,18 @@ class HeaderScopesTest : ProcessorTestSpec({
             it.resolveField("Ola") shouldBe classSym(StaticNameCollision::class.java)!!.getDeclaredField("Ola")!!
             it.resolveMethods("Ola").shouldContainExactly(classSym(StaticNameCollision::class.java)!!.getDeclaredMethods("Ola").toList())
             it.types().shouldResolveToClass("Ola", "javasymbols.testdata.StaticNameCollision\$Ola")
+        }
+    }
+
+    parserTest("$staticSingleMemberImports should import inherited members") {
+
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
+        // import javasymbols.testdata.Statics.*;
+
+        acu.symbolTable.let {
+            it.resolveField("oha") shouldBe classSym(StaticsSuper::class.java)!!.getDeclaredField("oha")!!
+            it.resolveMethods("oha").shouldContainExactly(classSym(StaticsSuper::class.java)!!.getDeclaredMethods("oha").toList())
+            it.types().shouldResolveToClass("oha", "javasymbols.testdata.StaticsSuper\$oha")
         }
     }
 
