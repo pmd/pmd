@@ -111,6 +111,15 @@
     </properties>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -346,9 +355,10 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <sourceDirectories>
+                            <!-- this sets only src/main/java and ignores e.g. target/generated-sources/javacc -->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                        <resourceIncludes>**/*.properties,**/*.less,**/*.kt</resourceIncludes>
                     </configuration>
                 </plugin>
                 <plugin>

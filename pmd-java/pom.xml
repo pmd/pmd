@@ -14,18 +14,22 @@
     <build>
         <testResources>
             <testResource>
-                <directory>${basedir}/src/test/resources</directory>
+                <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>${basedir}/src/test/java</directory>
+                <directory>${project.basedir}/src/test/java</directory>
                 <includes>
                     <include>**/testdata/*.java</include>
                 </includes>
             </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
         </testResources>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
