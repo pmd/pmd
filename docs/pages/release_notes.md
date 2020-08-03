@@ -30,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   core
     *   [#724](https://github.com/pmd/pmd/issues/724): \[core] Avoid parsing rulesets multiple times
+    *   [#1962](https://github.com/pmd/pmd/issues/1962): \[core] Simplify Report API
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
