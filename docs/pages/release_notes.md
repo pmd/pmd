@@ -63,7 +63,7 @@ This is a {{ site.pmd.release_type }} release.
 *   {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
 *   {% jdoc javascript::lang.ecmascript.rule.EcmascriptXPathRule %}
 *   {% jdoc xml::lang.xml.XmlParserOptions %}
-*   {% jdoc xml::lang.xml.rule.XmlXpathRule %}
+*   {% jdoc xml::lang.xml.rule.XmlXPathRule %}
 *   Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
 
 *   {% jdoc !!core::Report.ReadableDuration %}
