@@ -810,7 +810,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 JavaNode rhs = node.getChild(2);
                 result = acceptOpt(rhs, result);
 
-                ASTVariableDeclaratorId lhsVar = getVarFromExpression(node.getChild(0), true);
+                ASTVariableDeclaratorId lhsVar = getVarFromExpression(node.getChild(0), true, result);
                 if (lhsVar != null) {
                     // in that case lhs is a normal variable (array access not supported)
 
@@ -845,7 +845,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
-            ASTVariableDeclaratorId var = getVarFromExpression(unary.getChild(0), true);
+            ASTVariableDeclaratorId var = getVarFromExpression(unary.getChild(0), true, data);
             if (var != null) {
                 data.use(var);
                 data.assign(var, unary);
@@ -859,7 +859,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public Object visit(ASTPrimaryExpression node, Object data) {
             SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
 
-            ASTVariableDeclaratorId var = getVarFromExpression(node, false);
+            ASTVariableDeclaratorId var = getVarFromExpression(node, false, state);
             if (var != null) {
                 state.use(var);
             }
@@ -869,7 +869,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         /**
          * Get the variable accessed from a primary.
          */
-        private ASTVariableDeclaratorId getVarFromExpression(JavaNode primary, boolean inLhs) {
+        private ASTVariableDeclaratorId getVarFromExpression(JavaNode primary, boolean inLhs, SpanInfo state) {
 
             if (primary instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
@@ -877,13 +877,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                 //   this.x = 2;
                 if (prefix.usesThisModifier() && this.enclosingClassScope != null) {
-                    if (primary.getNumChildren() < 2 || primary.getNumChildren() > 2 && inLhs) {
+                    int numChildren = primary.getNumChildren();
+                    if (numChildren < 2 || numChildren > 2 && inLhs) {
+                        if (numChildren == 3 || numChildren == 1) {
+                            // method call on this, or just bare `this` reference
+                            state.recordThisLeak(true, enclosingClassScope);
+                        }
                         return null;
                     }
 
                     ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
                     if (suffix.getImage() == null) {
-                        // catches arrays and such
+                        return null;
+                    } else if (primary.getNumChildren() > 2 && ((ASTPrimarySuffix) primary.getChild(2)).isArguments()) {
+                        //     this.foo()
+                        // first suffix is the name, second is the arguments
+                        state.recordThisLeak(true, enclosingClassScope);
                         return null;
                     }
 
@@ -1000,7 +1009,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-
         private static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
                                                 SpanInfo beforeLocal,
                                                 ClassScope scope) {
@@ -1045,12 +1053,19 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             // assignments that reach the end of any constructor must
             // be considered used
-            for (VariableNameDeclaration field : visitor.enclosingClassScope.getVariableDeclarations().keySet()) {
-                ASTVariableDeclaratorId var = (ASTVariableDeclaratorId) field.getNode();
+            useAllSelfFields(staticInit, ctorEndState, visitor.enclosingClassScope);
+        }
+
+        static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, ClassScope classScope) {
+            for (VariableNameDeclaration field : classScope.getVariableDeclarations().keySet()) {
+                ASTVariableDeclaratorId var = field.getDeclaratorId();
                 if (field.getAccessNodeParent().isStatic()) {
-                    staticInit.use(var);
+                    if (staticState != null) {
+                        staticState.use(var);
+                    }
+                } else {
+                    instanceState.use(var);
                 }
-                ctorEndState.use(var);
             }
         }
     }
@@ -1185,6 +1200,33 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         void deleteVar(ASTVariableDeclaratorId var) {
             symtable.remove(var);
+        }
+
+        /**
+         * Record a leak of the `this` reference in a ctor (including field initializers).
+         *
+         * <p>This means, all defs reaching this point, for all fields
+         * of `this`, may be used in the expression. We assume that the
+         * ctor finishes its execution atomically, that is, following
+         * definitions are not observable at an arbitrary point (that
+         * would be too conservative).
+         *
+         * <p>Constructs that are considered to leak the `this` reference
+         * (only processed if they occur in a ctor):
+         * - using `this` as a method/ctor argument
+         * - using `this` as the receiver of a method/ctor invocation
+         *
+         * <p>Because `this` may be aliased (eg in a field, a local var,
+         * inside an anon class or capturing lambda, etc), any method
+         * call, on any receiver, may actually observe field definitions
+         * of `this`. So the analysis may show some false positives, which
+         * hopefully should be rare enough.
+         */
+        public void recordThisLeak(boolean thisIsLeaking, ClassScope enclosingClassScope) {
+            if (thisIsLeaking && enclosingClassScope != null) {
+                // all reaching defs to fields until now may be observed
+                ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassScope);
+            }
         }
 
         // Forks duplicate this context, to preserve the reaching defs

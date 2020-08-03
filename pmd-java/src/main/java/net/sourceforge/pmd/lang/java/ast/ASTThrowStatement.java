@@ -37,7 +37,10 @@ public class ASTThrowStatement extends AbstractJavaNode {
      *
      * @return the image of the first ASTClassOrInterfaceType node found or
      *     <code>null</code>
+     * @deprecated This method is too specific and doesn't support all cases.
+     *             It will be removed with PMD 7.
      */
+    @Deprecated
     public final String getFirstClassOrInterfaceTypeImage() {
         final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         return t == null ? null : t.getImage();

@@ -15,7 +15,9 @@ bash .travis/install-openjdk.sh $OPENJDK_VERSION
 
 if travis_isLinux; then
     gem install bundler
-    bundle install --with=release_notes_preprocessing --path=vendor/bundle
+    bundle config set --local path vendor/bundle
+    bundle config set --local with release_notes_preprocessing
+    bundle install
 else
     log_info "Not setting up ruby for ${TRAVIS_OS_NAME}."
     exit 0

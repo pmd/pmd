@@ -33,6 +33,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
     </rule>
 
     <rule name="NoInlineStyleInformation"
+          language="jsp"
           since="3.6"
           message="Avoid having style information in JSP files."
           class="net.sourceforge.pmd.lang.jsp.rule.design.NoInlineStyleInformationRule"
