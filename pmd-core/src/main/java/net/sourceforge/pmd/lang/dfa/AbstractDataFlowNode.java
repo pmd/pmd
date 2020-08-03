@@ -17,7 +17,9 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * Each data flow contains a set of DataFlowNodes.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     static final SimpleDataKey<DataFlowNode> DATAFLOW_KEY = DataMap.simpleDataKey("dataflow.cache");

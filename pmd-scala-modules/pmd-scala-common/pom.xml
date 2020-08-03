@@ -28,6 +28,10 @@
             <testResource>
                 <directory>../pmd-scala-common/src/test/resources</directory>
             </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>../pmd-scala-common/src/test/kotlin</directory>
+            </testResource>
         </testResources>
 
         <pluginManagement>

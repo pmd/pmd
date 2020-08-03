@@ -15,48 +15,53 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+/**
+ * @deprecated Parser options will be removed with 7.0, these options
+ *             will assume their default values then.
+ */
+@Deprecated
 public class XmlParserOptions extends ParserOptions {
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
     public static final PropertyDescriptor<Boolean> COALESCING_DESCRIPTOR =
         PropertyFactory.booleanProperty("coalescing")
-                       .desc("Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.")
+                       .desc("deprecated!Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.")
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> EXPAND_ENTITY_REFERENCES_DESCRIPTOR =
         PropertyFactory.booleanProperty("expandEntityReferences")
-                       .desc("Specifies that the XML parser expand entity reference nodes.")
+                       .desc("deprecated!Specifies that the XML parser expand entity reference nodes.")
                        .defaultValue(true)
                        .build();
     public static final PropertyDescriptor<Boolean> IGNORING_COMMENTS_DESCRIPTOR =
         PropertyFactory.booleanProperty("ignoringComments")
-                       .desc("Specifies that the XML parser ignore comments.")
+                       .desc("deprecated!Specifies that the XML parser ignore comments.")
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR =
         PropertyFactory.booleanProperty("ignoringElementContentWhitespace")
-                       .desc("Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.")
+                       .desc("deprecated!Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.")
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> NAMESPACE_AWARE_DESCRIPTOR =
         PropertyFactory.booleanProperty("namespaceAware")
-                       .desc("Specifies that the XML parser will provide support for XML namespaces.")
+                       .desc("deprecated!Specifies that the XML parser will provide support for XML namespaces.")
                        .defaultValue(true)
                        .build();
     public static final PropertyDescriptor<Boolean> VALIDATING_DESCRIPTOR =
         PropertyFactory.booleanProperty("validating")
-                       .desc("Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.")
+                       .desc("deprecated!Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.")
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> XINCLUDE_AWARE_DESCRIPTOR =
         PropertyFactory.booleanProperty("xincludeAware")
-                       .desc("Specifies that the XML parser will process XInclude markup.")
+                       .desc("deprecated!Specifies that the XML parser will process XInclude markup.")
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> LOOKUP_DESCRIPTOR_DTD =
         PropertyFactory.booleanProperty("xincludeAware")
-                       .desc("Specifies whether XML parser will attempt to lookup the DTD.")
+                       .desc("deprecated!Specifies whether XML parser will attempt to lookup the DTD.")
                        .defaultValue(false)
                        .build();
 

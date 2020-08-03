@@ -31,6 +31,6 @@ public class ReportTest extends RuleTst {
         runTestFromString(code, rule, rpt,
                 LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 }

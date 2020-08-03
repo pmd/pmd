@@ -25,10 +25,17 @@ This is a {{ site.pmd.release_type }} release.
     cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
     further evolution of the code like multi-catch.
 
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)
+    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
+    which was introduced in PMD 6.26.0.
+
 ### Fixed Issues
 
 *   core
     *   [#724](https://github.com/pmd/pmd/issues/724): \[core] Avoid parsing rulesets multiple times
+    *   [#1962](https://github.com/pmd/pmd/issues/1962): \[core] Simplify Report API
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
@@ -36,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#2431](https://github.com/pmd/pmd/issues/2431): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message
     *   [#2439](https://github.com/pmd/pmd/issues/2439): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)
+    *   [#2647](https://github.com/pmd/pmd/issues/2647): \[java] Deprecate rule DataFlowAnomalyAnalysis
 *   java-performance
     *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
 
@@ -49,15 +57,32 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
-##### For removal
+*   {% jdoc !!core::Rule#getParserOptions() %}
+*   {% jdoc !!core::lang.Parser#getParserOptions() %}
+*   {% jdoc !!core::lang.AbstractParser %}
+*   {% jdoc !!core::RuleContext#removeAttribute(java.lang.String) %}
+*   {% jdoc !!core::RuleContext#getAttribute(java.lang.String) %}
+*   {% jdoc !!core::RuleContext#setAttribute(java.lang.String, java.lang.Object) %}
+*   {% jdoc apex::lang.apex.ApexParserOptions %}
+*   {% jdoc !!java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
+*   {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
+*   {% jdoc javascript::lang.ecmascript.rule.EcmascriptXPathRule %}
+*   {% jdoc xml::lang.xml.XmlParserOptions %}
+*   {% jdoc xml::lang.xml.rule.XmlXPathRule %}
+*   Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
 
-*   {% jdoc !!pmd-java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
-
-*   Many methods of {% jdoc !!core::Report %}. They are replaced by accessors
-that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
-(and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
-replaced by {% jdoc !a!core::Report#getViolations() %}.
 *   {% jdoc !!core::Report.ReadableDuration %}
+*   Many methods of {% jdoc !!core::Report %}. They are replaced by accessors
+  that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
+  (and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
+  replaced by {% jdoc !a!core::Report#getViolations() %}.
+
+*   The dataflow codebase is deprecated for removal in PMD 7. This
+    includes all code in the following packages, and their subpackages:
+    *   {% jdoc_package plsql::lang.plsql.dfa %}
+    *   {% jdoc_package java::lang.java.dfa %}
+    *   {% jdoc_package core::lang.dfa %}
+    *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
 
 ### External Contributions
 

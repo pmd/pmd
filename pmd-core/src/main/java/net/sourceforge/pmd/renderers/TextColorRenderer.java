@@ -169,7 +169,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             writer.write(buf.toString());
         }
 
-        for (ConfigurationError error : report.getConfigErrors()) {
+        for (ConfigurationError error : report.getConfigurationErrors()) {
             buf.setLength(0);
             numberOfErrors++;
             buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold

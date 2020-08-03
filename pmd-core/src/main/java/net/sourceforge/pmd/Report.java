@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -237,15 +237,17 @@ public class Report {
     /**
      * Returns an unmodifiable list of violations that were suppressed.
      */
-    public List<SuppressedViolation> getSuppressedRuleViolations() {
+    public final List<SuppressedViolation> getSuppressedViolations() {
         return Collections.unmodifiableList(suppressedRuleViolations);
     }
 
     /**
      * Returns an unmodifiable list of violations that have been
      * recorded until now. None of those violations were suppressed.
+     *
+     * <p>The violations list is sorted with {@link RuleViolationComparator#INSTANCE}.
      */
-    public List<RuleViolation> getViolations() {
+    public final List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);
     }
 
@@ -254,7 +256,7 @@ public class Report {
      * Returns an unmodifiable list of processing errors that have been
      * recorded until now.
      */
-    public List<ProcessingError> getProcessingErrors() {
+    public final List<ProcessingError> getProcessingErrors() {
         return Collections.unmodifiableList(errors);
     }
 
@@ -263,7 +265,7 @@ public class Report {
      * Returns an unmodifiable list of configuration errors that have
      * been recorded until now.
      */
-    public List<ConfigurationError> getConfigErrors() {
+    public final List<ConfigurationError> getConfigurationErrors() {
         return Collections.unmodifiableList(configErrors);
     }
 

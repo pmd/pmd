@@ -33,7 +33,7 @@ public class ReportTest extends RuleTst {
         rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, ".*No Foo.*");
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ReportTest extends RuleTst {
         rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@SimpleName = 'Foo']");
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ReportTest extends RuleTst {
         runTestFromString(TEST2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ReportTest extends RuleTst {
         runTestFromString(TEST2_FULL, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ReportTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedViolations().size());
     }
 
     private static final String TEST1 = "public class Foo {}" + PMD.EOL;

@@ -149,7 +149,7 @@ public class SuppressWarningsTest extends RuleTst {
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
         assertEquals(0, rpt.getViolations().size());
 
-        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();
+        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedViolations();
         assertEquals(1, suppressions.size());
     }
 
@@ -160,7 +160,7 @@ public class SuppressWarningsTest extends RuleTst {
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
         assertEquals(0, rpt.getViolations().size());
 
-        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();
+        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedViolations();
         assertEquals(1, suppressions.size());
         Report.SuppressedViolation suppression = suppressions.get(0);
 

@@ -1,3 +1,6 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*

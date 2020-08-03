@@ -44,7 +44,7 @@ public class ExcludeLinesTest extends RuleTst {
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
         assertTrue(r.getViolations().isEmpty());
-        assertEquals(r.getSuppressedRuleViolations().size(), 1);
+        assertEquals(r.getSuppressedViolations().size(), 1);
     }
 
     private static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int x; //NOPMD "

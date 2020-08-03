@@ -65,10 +65,10 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
         errors.addAll(report.getProcessingErrors());
 
-        configErrors.addAll(report.getConfigErrors());
+        configErrors.addAll(report.getConfigurationErrors());
 
         if (showSuppressedViolations) {
-            suppressed.addAll(report.getSuppressedRuleViolations());
+            suppressed.addAll(report.getSuppressedViolations());
         }
     }
 
