@@ -377,7 +377,7 @@ public class Test {
 
     <test-code>
         <description>#947 CloseResource rule fails if field is marked with annotation</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -543,7 +543,7 @@ public class Bar {
 
     <test-code>
         <description>#1375 CloseResource not detected properly - ok</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -567,7 +567,7 @@ public class Foo {
 
     <test-code>
         <description>#1375 CloseResource not detected properly - false negative</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -1260,30 +1260,6 @@ public class CloseResourceStatementFP {
     </test-code>
 
     <test-code>
-        <description>False-negative if only byte array is passed in as method parameter</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
-        <code><![CDATA[
-import java.io.*;
-
-public class CloseResourceFN {
-    public Object deserialize(byte[] bytes) {
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            return ois.readObject();
-        }
-        catch (IOException ex) {
-            throw new IllegalArgumentException("Failed to deserialize object", ex);
-        }
-        catch (ClassNotFoundException ex) {
-            throw new IllegalStateException("Failed to deserialize object type", ex);
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>NullPointerException if type of method parameter is not known</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -1320,7 +1296,10 @@ public class Foo {
     <test-code>
         <description>wrapped ByteArrayInputStream false-negative test</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>'bos' is not closed within a finally block, thus might not be closed at all in case of exceptions</message>
+        </expected-messages>
         <code><![CDATA[
 import java.io.*;
 public class Foo {
@@ -1329,6 +1308,47 @@ public class Foo {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
         int c = ois.read();
         bos.close();
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>lambda doesn't close resource false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+    public Runnable bar() {
+        InputStream is = new FileInputStream("text.txt");
+        return () -> {
+            try {
+                int d = is.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>don't wrap try-with-resource variable test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>it is recommended to wrap resource in try-with-resource declaration directly</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+    public void bar() {
+        try (InputStream is = new FileInputStream("text.txt")) {
+            ObjectInputStream ois = new ObjectInputStream(is);
+            int d = ois.read();
+        }
     }
 }
         ]]></code>
