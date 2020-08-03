@@ -228,6 +228,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * @see Rule#setPriority(RulePriority)
      */
     @Override
+    @Deprecated
     public ParserOptions getParserOptions() {
         return new ParserOptions();
     }
