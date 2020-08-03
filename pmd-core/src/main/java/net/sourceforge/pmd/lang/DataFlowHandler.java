@@ -6,16 +6,14 @@ package net.sourceforge.pmd.lang;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 
 /**
- * @deprecated This is internal API
+ * @deprecated See {@link DataFlowNode}
  */
 @Deprecated
-@InternalApi
 public interface DataFlowHandler {
 
     DataFlowHandler DUMMY = new DataFlowHandler() {

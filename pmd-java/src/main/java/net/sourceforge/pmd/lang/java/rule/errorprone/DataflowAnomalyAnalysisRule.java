@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -31,7 +32,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  *
  * @author raik
  * @author Sven Jacob
+ *
+ * @deprecated Replaced by {@link UnusedAssignmentRule}
  */
+@Deprecated
 public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Executable {
     private static final PropertyDescriptor<Integer> MAX_PATH_DESCRIPTOR
             = PropertyFactory.intProperty("maxPaths")
