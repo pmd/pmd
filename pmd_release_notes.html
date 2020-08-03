@@ -1433,6 +1433,7 @@ which was introduced in PMD 6.26.0.</li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/724">#724</a>: [core] Avoid parsing rulesets multiple times</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1962">#1962</a>: [core] Simplify Report API</li>
       <li><a href="https://github.com/pmd/pmd/issues/2653">#2653</a>: [lang-test] Upgrade kotlintest to Kotest</li>
     </ul>
   </li>
@@ -1480,8 +1481,17 @@ reported as a forward compatibility warning.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/EcmascriptParserOptions.html#"><code>EcmascriptParserOptions</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/rule/EcmascriptXPathRule.html#"><code>EcmascriptXPathRule</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/XmlParserOptions.html#"><code>XmlParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/XmlXpathRule.html#"><code>XmlXpathRule</code></a></li>
-  <li>Properties of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/XmlXPathRule.html#"><code>XmlXPathRule</code></a></li>
+  <li>
+    <p>Properties of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></p>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.ReadableDuration.html#"><code>net.sourceforge.pmd.Report.ReadableDuration</code></a></li>
+  <li>
+    <p>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>net.sourceforge.pmd.Report</code></a>. They are replaced by accessors
+  that produce a List. For example, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#iterator()"><code>iterator()</code></a> 
+  (and implementing Iterable) and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#isEmpty()"><code>isEmpty()</code></a> are both
+  replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#getViolations()"><code>getViolations()</code></a>.</p>
+  </li>
   <li>The dataflow codebase is deprecated for removal in PMD 7. This
 includes all code in the following packages, and their subpackages:
     <ul>
@@ -1518,7 +1528,7 @@ includes all code in the following packages, and their subpackages:
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 2, 2020 <br />
+ Site last generated: Aug 3, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
