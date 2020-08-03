@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -316,6 +316,16 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     /**
+     * Returns the suppressed violations.
+     *
+     * @deprecated Use {@link #getSuppressedViolations()} (be aware, that that method returns an unmodifiable list)
+     */
+    @Deprecated
+    public List<SuppressedViolation> getSuppressedRuleViolations() {
+        return suppressedRuleViolations;
+    }
+
+    /**
      * Adds a new rule violation to the report and notify the listeners.
      *
      * @param violation
@@ -427,6 +437,9 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     /**
+     * Checks whether there are no violations and no processing errors.
+     * That means, that PMD analysis yielded nothing to worry about.
+     *
      * @deprecated Use {@link #getViolations()} or {@link #getProcessingErrors()}
      */
     @Deprecated
@@ -453,11 +466,11 @@ public class Report implements Iterable<RuleViolation> {
      * @return <code>true</code> if there were any configuration errors,
      *         <code>false</code> otherwise
      *
-     * @deprecated Use {@link #getConfigErrors()}.isEmpty()
+     * @deprecated Use {@link #getConfigurationErrors()}.isEmpty()
      */
     @Deprecated
     public boolean hasConfigErrors() {
-        return !getConfigErrors().isEmpty();
+        return !getConfigurationErrors().isEmpty();
     }
 
     /**
@@ -466,7 +479,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return <code>true</code> if no violations have been reported,
      *         <code>false</code> otherwise
      *
-     * @deprecated The {@link ReportTree} is deprecated
+     * @deprecated The {@link ReportTree} is deprecated, use {@link #getViolations()}.isEmpty() instead.
      */
     @Deprecated
     public boolean treeIsEmpty() {
@@ -498,15 +511,17 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Returns an unmodifiable list of violations that were suppressed.
      */
-    public List<SuppressedViolation> getSuppressedRuleViolations() {
+    public final List<SuppressedViolation> getSuppressedViolations() {
         return Collections.unmodifiableList(suppressedRuleViolations);
     }
 
     /**
      * Returns an unmodifiable list of violations that have been
      * recorded until now. None of those violations were suppressed.
+     *
+     * <p>The violations list is sorted with {@link RuleViolationComparator#INSTANCE}.
      */
-    public List<RuleViolation> getViolations() {
+    public final List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);
     }
 
@@ -515,7 +530,7 @@ public class Report implements Iterable<RuleViolation> {
      * Returns an unmodifiable list of processing errors that have been
      * recorded until now.
      */
-    public List<ProcessingError> getProcessingErrors() {
+    public final List<ProcessingError> getProcessingErrors() {
         return Collections.unmodifiableList(errors);
     }
 
@@ -524,7 +539,7 @@ public class Report implements Iterable<RuleViolation> {
      * Returns an unmodifiable list of configuration errors that have
      * been recorded until now.
      */
-    public List<ConfigurationError> getConfigErrors() {
+    public final List<ConfigurationError> getConfigurationErrors() {
         return Collections.unmodifiableList(configErrors);
     }
 
@@ -545,11 +560,11 @@ public class Report implements Iterable<RuleViolation> {
      * Returns an iterator of the reported configuration errors.
      *
      * @return the iterator
-     * @deprecated Use {@link #getConfigErrors()}
+     * @deprecated Use {@link #getConfigurationErrors()}
      */
     @Deprecated
     public Iterator<ConfigurationError> configErrors() {
-        return getConfigErrors().iterator();
+        return getConfigurationErrors().iterator();
     }
 
     /**
