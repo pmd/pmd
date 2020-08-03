@@ -5,9 +5,15 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  * Renderer to a summarized HTML format.
@@ -59,8 +65,8 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         writer.write("<center><h2>Summary</h2></center>" + PMD.EOL);
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL);
         writer.write("<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL);
-        Map<String, Integer> summary = report.getSummary();
-        for (Map.Entry<String, Integer> entry : summary.entrySet()) {
+        Map<String, MutableInt> summary = getSummary(report);
+        for (Entry<String, MutableInt> entry : summary.entrySet()) {
             String ruleName = entry.getKey();
             writer.write("<tr><td>");
             writer.write(ruleName);
@@ -70,4 +76,19 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         }
         writer.write("</table>" + PMD.EOL);
     }
+
+    private static Map<String, MutableInt> getSummary(Report report) {
+        Map<String, MutableInt> summary = new HashMap<>();
+        for (RuleViolation rv : report.getViolations()) {
+            String name = rv.getRule().getName();
+            MutableInt count = summary.get(name);
+            if (count == null) {
+                count = new MutableInt(0);
+                summary.put(name, count);
+            }
+            count.increment();
+        }
+        return summary;
+    }
+
 }

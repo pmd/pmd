@@ -13,6 +13,10 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 
+/**
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class PLSQLDataFlowNode extends AbstractDataFlowNode {
 
     public PLSQLDataFlowNode(List<DataFlowNode> dataFlow, Node node) {

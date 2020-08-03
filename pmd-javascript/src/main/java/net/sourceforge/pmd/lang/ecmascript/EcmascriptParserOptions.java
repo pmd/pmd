@@ -16,7 +16,10 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-
+/**
+ * @deprecated Will be removed in 7.0 TODO refactor this into language versions?
+ */
+@Deprecated
 public class EcmascriptParserOptions extends ParserOptions {
 
     public enum Version {

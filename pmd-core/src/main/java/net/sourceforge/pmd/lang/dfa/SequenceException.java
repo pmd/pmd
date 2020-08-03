@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.dfa;
 
 /**
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class SequenceException extends Exception {
     private static final long serialVersionUID = -3271242247181888687L;
 

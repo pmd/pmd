@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.Linker;
 import net.sourceforge.pmd.lang.dfa.LinkerException;
 import net.sourceforge.pmd.lang.dfa.NodeType;
@@ -53,7 +54,9 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
  * to link the nodes.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
 
