@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 
 /**
@@ -30,7 +31,7 @@ public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral 
      * Gets the char value of this literal.
      */
     @Override
-    public Character getConstValue() {
+    public @NonNull Character getConstValue() {
         String image = getImage();
         String woDelims = image.substring(1, image.length() - 1);
         return StringEscapeUtils.unescapeJava(woDelims).charAt(0);

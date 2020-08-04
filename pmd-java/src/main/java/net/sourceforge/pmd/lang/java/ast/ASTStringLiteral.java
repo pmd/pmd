@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a string literal. The image of this node is the literal as it appeared
@@ -48,7 +50,12 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
 
     /** Returns the value without delimiters and unescaped. */
     @Override
-    public String getConstValue() {
+    public @NonNull String getConstValue() {
+        return (String) super.getConstValue(); // value is cached
+    }
+
+    @Override
+    protected @Nullable Object buildConstValue() {
         if (isTextBlock()) {
             return determineTextBlockContent(getImage());
         } else {
