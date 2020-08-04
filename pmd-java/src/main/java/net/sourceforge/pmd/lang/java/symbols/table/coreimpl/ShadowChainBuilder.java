@@ -174,6 +174,11 @@ public abstract class ShadowChainBuilder<S, I> {
             return this;
         }
 
+        public ResolverBuilder absorb(ShadowChainBuilder<S, ?>.ResolverBuilder other) {
+            myBuilder.absorb(other.myBuilder);
+            return this;
+        }
+
         public Map<String, List<S>> getMutableMap() {
             return myBuilder.getMutableMap();
         }

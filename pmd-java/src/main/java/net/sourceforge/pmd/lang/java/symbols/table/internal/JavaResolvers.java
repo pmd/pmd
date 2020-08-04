@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.DIRECT_STRICT_SUPERTYPES;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.JUST_SELF;
 import static net.sourceforge.pmd.util.CollectionUtil.listOfNotNull;
 
 import java.lang.reflect.Modifier;
@@ -26,10 +27,10 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
@@ -68,15 +69,7 @@ public final class JavaResolvers {
      * when in the subclass. Usages outside of the subclass would have made the compilation fail.
      */
     static boolean canBeImportedIn(String thisPackage, JAccessibleElementSymbol member) {
-        int modifiers = member.getModifiers();
-        if (Modifier.isPublic(modifiers)) {
-            return true;
-        } else if (Modifier.isPrivate(modifiers)) {
-            return false;
-        } else {
-            // then it's package private, or protected
-            return thisPackage.equals(member.getPackageName());
-        }
+        return isAccessibleIn(null, thisPackage, member, false);
     }
 
     @NonNull
@@ -145,12 +138,15 @@ public final class JavaResolvers {
     }
 
     /** Static methods with a given name. */
-    static NameResolver<JMethodSig> staticImportMethodResolver(JClassType container, @NonNull String accessPackageName, String simpleName) {
-        assert simpleName != null;
+    static NameResolver<JMethodSig> staticImportMethodResolver(JClassType container, @NonNull String accessPackageName, String importedSimpleName) {
+        assert importedSimpleName != null;
         assert accessPackageName != null;
         return new NameResolver<JMethodSig>() {
             @Override
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
+                if (!simpleName.equals(importedSimpleName)) {
+                    return Collections.emptyList();
+                }
                 return container.streamMethods(
                     it -> Modifier.isStatic(it.getModifiers())
                         && it.getSimpleName().equals(simpleName)
@@ -159,13 +155,32 @@ public final class JavaResolvers {
                         // makes it not in scope in those classes. But it's also visible
                         // from the subclass as an "inherited" member, so is in scope in
                         // the relevant contexts.
-                        && isAccessibleIn(null, accessPackageName, it, false)
+                        && canBeImportedIn(accessPackageName, it)
                 ).collect(OverloadComparator.collectMostSpecific(container)); // remove overridden, hidden methods
             }
 
             @Override
             public String toString() {
-                return "static methods w/ name " + simpleName + " of " + container;
+                return "static methods w/ name " + importedSimpleName + " of " + container;
+            }
+        };
+    }
+
+    static NameResolver<JMethodSig> staticImportOnDemandMethodResolver(JClassType container, @NonNull String accessPackageName) {
+        assert accessPackageName != null;
+        return new NameResolver<JMethodSig>() {
+            @Override
+            public @NonNull List<JMethodSig> resolveHere(String simpleName) {
+                return container.streamMethods(
+                    it -> Modifier.isStatic(it.getModifiers())
+                        && it.getSimpleName().equals(simpleName)
+                        && canBeImportedIn(accessPackageName, it)
+                ).collect(OverloadComparator.collectMostSpecific(container)); // remove overridden, hidden methods
+            }
+
+            @Override
+            public String toString() {
+                return "all static methods of " + container;
             }
         };
     }
@@ -221,23 +236,43 @@ public final class JavaResolvers {
      * and it's ok performance-wise to process them on-demand.
      */
     static Pair<NameResolver<JTypeMirror>, NameResolver<JVariableSig>> inheritedMembersResolvers(JClassType t) {
-        JClassSymbol nestRoot = t.getSymbol().getNestRoot();
+        Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> builders =
+            hidingWalkResolvers(t, t, t.getSymbol().getPackageName(), true, /* onlyStatic: */false, DIRECT_STRICT_SUPERTYPES);
+        return Pair.of(builders.getLeft().build(), builders.getRight().build());
+    }
 
-        ShadowChainBuilder<JVariableSig, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
-        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+    static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder,
+                ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> importOnDemandMembersResolvers(JClassType t, @NonNull String accessPackageName) {
+        return hidingWalkResolvers(t, null, accessPackageName, false,/* onlyStatic: */ true, JUST_SELF /* include self members */);
+    }
 
-        Predicate<JVariableSig> isFieldAccessible = s -> isAccessibleIn(nestRoot, (JFieldSymbol) s.getSymbol(), true);
-        Predicate<JClassType> isTypeAccessible = s -> isAccessibleIn(nestRoot, s.getSymbol(), true);
+    private static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> hidingWalkResolvers(JClassType t,
+                                                                                                   @Nullable JClassType accessType,
+                                                                                                   @NonNull String accessPackageName,
+                                                                                                   boolean accessIsSubtypeOfOwner,
+                                                                                                   boolean onlyStatic,
+                                                                                                   SuperTypesEnumerator enumerator) {
+        JClassSymbol nestRoot = accessType == null ? null : accessType.getSymbol().getNestRoot();
 
-        for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
+        ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
+        ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+
+        Predicate<JVariableSig> isFieldAccessible =
+            s -> filterStatic(onlyStatic, s.getSymbol())
+                && isAccessibleIn(nestRoot, accessPackageName, (JFieldSymbol) s.getSymbol(), accessIsSubtypeOfOwner);
+        Predicate<JClassType> isTypeAccessible =
+            s -> filterStatic(onlyStatic, s.getSymbol())
+                && isAccessibleIn(nestRoot, accessPackageName, s.getSymbol(), accessIsSubtypeOfOwner);
+
+        for (JClassType next : enumerator.iterable(t)) {
             walkSelf(next, isFieldAccessible, isTypeAccessible, fields, types, HashTreePSet.empty(), HashTreePSet.empty());
         }
 
-        // Note that if T is an interface, Object won't have been visited
-        // This is fine for now because Object has no fields or nested types
-        // in any known version of the JDK
+        return Pair.of(types, fields);
+    }
 
-        return Pair.of(types.build(), fields.build());
+    private static boolean filterStatic(boolean onlyStatic, JElementSymbol symbol) {
+        return !onlyStatic || Modifier.isStatic(((JAccessibleElementSymbol) symbol).getModifiers());
     }
 
     private static void walkSelf(JClassType t,

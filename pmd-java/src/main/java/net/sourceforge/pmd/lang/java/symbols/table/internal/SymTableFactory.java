@@ -8,9 +8,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackageName;
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.FORMAL_PARAM;
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
-import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -32,12 +30,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -51,6 +47,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 final class SymTableFactory {
 
@@ -125,15 +122,6 @@ final class SymTableFactory {
                              : found;
     }
 
-    boolean canBeImported(JAccessibleElementSymbol member) {
-        return JavaResolvers.canBeImportedIn(thisPackage, member);
-    }
-
-    @NonNull
-    private JMethodSig sigOf(JMethodSymbol m) {
-        return processor.getTypeSystem().sigOf(m);
-    }
-
     // </editor-fold>
 
     @NonNull
@@ -167,14 +155,17 @@ final class SymTableFactory {
 
         ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
         ShadowChainBuilder<JVariableSig, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
-        ShadowChainBuilder<JMethodSig, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
+        List<JClassType> importedMethodContainers = new ArrayList<>();
 
         Set<String> lazyImportedPackagesAndTypes = new LinkedHashSet<>();
 
-        fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethods, lazyImportedPackagesAndTypes);
+        fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethodContainers, lazyImportedPackagesAndTypes);
+
+        NameResolver<JMethodSig> methodResolver =
+            NameResolver.composite(CollectionUtil.map(importedMethodContainers, c -> JavaResolvers.staticImportOnDemandMethodResolver(c, thisPackage)));
 
         ShadowChainNode<JVariableSig, ScopeInfo> vars = VARS.shadow(varNode(parent), ScopeInfo.IMPORT_ON_DEMAND, importedFields);
-        ShadowChainNode<JMethodSig, ScopeInfo> methods = METHODS.shadow(methodNode(parent), ScopeInfo.IMPORT_ON_DEMAND, importedMethods);
+        ShadowChainNode<JMethodSig, ScopeInfo> methods = METHODS.shadow(methodNode(parent), ScopeInfo.IMPORT_ON_DEMAND, methodResolver);
         ShadowChainNode<JTypeMirror, ScopeInfo> types;
         if (lazyImportedPackagesAndTypes.isEmpty()) {
             // then we don't need to use the lazy impl
@@ -197,7 +188,7 @@ final class SymTableFactory {
     private void fillImportOnDemands(Iterable<ASTImportDeclaration> importsOnDemand,
                                      ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder importedTypes,
                                      ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder importedFields,
-                                     ShadowChainBuilder<JMethodSig, ?>.ResolverBuilder importedMethods,
+                                     List<JClassType> importedMethodContainers,
                                      Set<String> importedPackagesAndTypes) {
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
@@ -214,23 +205,13 @@ final class SymTableFactory {
 
                     JClassType containerType = (JClassType) containerClass.getTypeSystem().typeOf(containerClass, false);
 
-                    for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
-                        if (Modifier.isStatic(m.getModifiers()) && canBeImported(m)) {
-                            importedMethods.append(sigOf(m));
-                        }
-                    }
+                    Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> pair =
+                        JavaResolvers.importOnDemandMembersResolvers(containerType, thisPackage);
 
-                    for (FieldSig f : containerType.getDeclaredFields()) {
-                        if (Modifier.isStatic(f.getSymbol().getModifiers()) && canBeImported(f.getSymbol())) {
-                            importedFields.append(f);
-                        }
-                    }
+                    importedTypes.absorb(pair.getLeft());
+                    importedFields.absorb(pair.getRight());
 
-                    for (JClassType t : containerType.getDeclaredClasses()) {
-                        if (Modifier.isStatic(t.getSymbol().getModifiers()) && canBeImported(t.getSymbol())) {
-                            importedTypes.append(t);
-                        }
-                    }
+                    importedMethodContainers.add(containerType);
                 }
 
                 // can't be resolved sorry

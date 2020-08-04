@@ -150,9 +150,6 @@ class MostlySingularMultimap<K, V> {
             checkKeyValue(key, v);
 
             getMapInternal().compute(key, (k, oldV) -> {
-                if (oldV != null && isSingular) {
-                    isSingular = false;
-                }
                 return appendSingle(oldV, v, noDuplicate);
             });
         }
@@ -180,6 +177,41 @@ class MostlySingularMultimap<K, V> {
             return this;
         }
 
+        // no duplicates
+        public Builder<K, V> absorb(Builder<K, V> other) {
+            ensureOpen();
+            other.ensureOpen();
+
+            if (this.map == null) {
+                this.map = other.map;
+                this.isSingular = other.isSingular;
+            } else {
+                // isSingular may be changed in the loop by appendSingle
+                this.isSingular &= other.isSingular;
+
+                for (Entry<K, Object> otherEntry : other.getMapInternal().entrySet()) {
+                    K key = otherEntry.getKey();
+                    Object otherV = otherEntry.getValue();
+                    map.compute(key, (k, myV) -> {
+                        if (myV == null) {
+                            return otherV;
+                        } else if (otherV instanceof VList) {
+                            Object newV = myV;
+                            for (V v : (VList<V>) otherV) {
+                                newV = appendSingle(newV, v, true);
+                            }
+                            return newV;
+                        } else {
+                            return appendSingle(myV, (V) otherV, true);
+                        }
+                    });
+                }
+            }
+
+            other.consume();
+            return this;
+        }
+
         private Object appendSingle(@Nullable Object vs, V v, boolean noDuplicate) {
             if (vs == null) {
                 return v;
@@ -194,6 +226,7 @@ class MostlySingularMultimap<K, V> {
                     return vs;
                 }
                 VList<V> vs2 = new VList<>(2);
+                isSingular = false;
                 vs2.add((V) vs);
                 vs2.add(v);
                 return vs2;

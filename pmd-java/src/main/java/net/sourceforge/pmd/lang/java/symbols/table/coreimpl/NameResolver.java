@@ -66,6 +66,9 @@ public interface NameResolver<S> {
     String toString();
 
     static <T> NameResolver<T> composite(List<? extends NameResolver<? extends T>> resolvers) {
+        if (resolvers.isEmpty()) {
+            return CoreResolvers.emptyResolver();
+        }
         return new NameResolver<T>() {
             @Override
             public @NonNull List<T> resolveHere(String simpleName) {
