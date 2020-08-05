@@ -226,9 +226,9 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         inContext(TypeBodyParsingCtx) {
 
             """
-		WebSocketReceivePublisher() {
-			super(AbstractListenerWebSocketSession.this.getLogPrefix());
-		}
+        WebSocketReceivePublisher() {
+            super(AbstractListenerWebSocketSession.this.getLogPrefix());
+        }
         """ should parseAs {
                 constructorDecl {
 

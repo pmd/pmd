@@ -243,7 +243,7 @@ public final class JavaResolvers {
 
     static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder,
                 ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> importOnDemandMembersResolvers(JClassType t, @NonNull String accessPackageName) {
-        return hidingWalkResolvers(t, null, accessPackageName, false,/* onlyStatic: */ true, JUST_SELF /* include self members */);
+        return hidingWalkResolvers(t, null, accessPackageName, false, /* onlyStatic: */ true, JUST_SELF /* include self members */);
     }
 
     private static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> hidingWalkResolvers(JClassType t,
