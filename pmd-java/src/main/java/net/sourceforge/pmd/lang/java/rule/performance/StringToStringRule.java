@@ -14,14 +14,14 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -49,7 +49,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
  *        public void foo() {
  *            String s = new A().str().toString(); // not detected because str() is from another class
  *            s = getString().toString(); // detected
- *            s = getData(new FileInputStream()).toString(); // not detected because of argument type
+ *            s = getData(new FileInputStream()).toString(); // detected because of argument type
  *            s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
  *        }
  *        public String getString() {
@@ -69,21 +69,20 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
  */
 public class StringToStringRule extends AbstractJavaRule {
 
-    private static final Map<String, String> PRIMITIVE_TO_WRAPPER_MAP;
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_MAP;
 
     private final Set<ASTMethodDeclaration> declaredMethods = new HashSet<>();
-    private final Map<String, String> declaredVariables = new HashMap<>();
 
     static {
-        Map<String, String> primitiveToWrapper = new HashMap<>();
-        primitiveToWrapper.put("byte", "Byte");
-        primitiveToWrapper.put("short", "Short");
-        primitiveToWrapper.put("char", "Character");
-        primitiveToWrapper.put("int", "Integer");
-        primitiveToWrapper.put("long", "Long");
-        primitiveToWrapper.put("float", "Float");
-        primitiveToWrapper.put("double", "Double");
-        primitiveToWrapper.put("boolean", "Boolean");
+        Map<Class<?>, Class<?>> primitiveToWrapper = new HashMap<>();
+        primitiveToWrapper.put(Byte.TYPE, Byte.class);
+        primitiveToWrapper.put(Short.TYPE, Short.class);
+        primitiveToWrapper.put(Character.TYPE, Character.class);
+        primitiveToWrapper.put(Integer.TYPE, Integer.class);
+        primitiveToWrapper.put(Long.TYPE, Long.class);
+        primitiveToWrapper.put(Float.TYPE, Float.class);
+        primitiveToWrapper.put(Double.TYPE, Double.class);
+        primitiveToWrapper.put(Boolean.TYPE, Boolean.class);
         PRIMITIVE_TO_WRAPPER_MAP = primitiveToWrapper;
     }
 
@@ -98,21 +97,11 @@ public class StringToStringRule extends AbstractJavaRule {
     private void clearStateIfNewClass(ASTClassOrInterfaceBody body) {
         if (isBodyOfOuterClass(body)) {
             declaredMethods.clear();
-            declaredVariables.clear();
         }
     }
 
     private boolean isBodyOfOuterClass(ASTClassOrInterfaceBody body) {
         return body.getFirstParentOfType(ASTClassOrInterfaceBody.class) == null;
-    }
-
-    @Override
-    public Object visit(ASTVariableDeclarator var, Object data) {
-        String varTypeName = getSimpleNameOfType(var);
-        if (varTypeName != null) {
-            declaredVariables.put(var.getName(), varTypeName);
-        }
-        return super.visit(var, data);
     }
 
     @Override
@@ -238,77 +227,32 @@ public class StringToStringRule extends AbstractJavaRule {
 
     private boolean argsMatchMethodParamsByType(ASTArgumentList argsList, ASTFormalParameters methodParams) {
         for (int paramIndex = 0; paramIndex < methodParams.size(); paramIndex++) {
-            JavaNode methodParam = methodParams.getChild(paramIndex);
-            String methodParamTypeName = typeNameOfNode(methodParam);
-            JavaNode arg = argsList.getChild(paramIndex);
-            String argTypeName = getArgumentTypeName(arg);
-            if (simpleNamesAreNotOfSameType(methodParamTypeName, argTypeName)) {
+            ASTFormalParameter methodParam = (ASTFormalParameter) methodParams.getChild(paramIndex);
+            Class<?> typeOfParam = methodParam.getType();
+            ASTExpression arg = (ASTExpression) argsList.getChild(paramIndex);
+            if (typeOfParam != null
+                    && !TypeHelper.isA(arg, typeOfParam)
+                    && !isPrimitiveWrapperMatch(arg, typeOfParam)) {
                 return false;
             }
         }
         return true;
     }
 
-    private String getArgumentTypeName(JavaNode arg) {
-        String argTypeName = typeNameOfNode(arg);
-        if (argTypeName == null) {
-            argTypeName = typeNameOfCalledVariable(arg);
-            return argTypeName != null ? argTypeName
-                    : typeNameOfCalledMethod(arg);
+    private boolean isPrimitiveWrapperMatch(TypeNode arg, Class<?> typeOfParam) {
+        if (arg.getType() == null) {
+            return false;
         }
-        return argTypeName;
+        Class<?> argType = toWrapperClassIfPrimitive(arg.getType());
+        Class<?> paramType = toWrapperClassIfPrimitive(typeOfParam);
+        return paramType.isAssignableFrom(argType);
     }
 
-    private String typeNameOfNode(JavaNode node) {
-        TypeNode typeNode = (TypeNode) node;
-        return getSimpleNameOfType(typeNode);
-    }
-
-    private String getSimpleNameOfType(TypeNode typeNode) {
-        Class<?> type = typeNode.getType();
-        if (type == null) {
-            ASTClassOrInterfaceType cioType = typeNode.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-            return cioType != null ? cioType.getImage() : null;
+    private Class<?> toWrapperClassIfPrimitive(Class<?> type) {
+        if (PRIMITIVE_TO_WRAPPER_MAP.containsKey(type)) {
+            return PRIMITIVE_TO_WRAPPER_MAP.get(type);
         }
-        return type.getSimpleName();
-    }
-
-    private String typeNameOfCalledVariable(JavaNode varCall) {
-        ASTName calledVarName = varCall.getFirstDescendantOfType(ASTName.class);
-        return calledVarName != null ? declaredVariables.get(calledVarName.getImage()) : null;
-    }
-
-    private String typeNameOfCalledMethod(JavaNode methodCallExpr) {
-        ASTPrimaryExpression primaryExpr = methodCallExpr.getFirstDescendantOfType(ASTPrimaryExpression.class);
-        if (isMethodCall(primaryExpr)) {
-            JavaNode methodCall = primaryExpr.getChild(0);
-            JavaNode methodCallArgs = primaryExpr.getChild(1);
-            return getCalledMethodReturnTypeName(methodCall, methodCallArgs);
-        }
-        return null;
-    }
-
-    private boolean isMethodCall(ASTPrimaryExpression primaryExpression) {
-        return primaryExpression != null && primaryExpression.getNumChildren() == 2;
-    }
-
-    private boolean simpleNamesAreNotOfSameType(String sn0, String sn1) {
-        return !simpleNamesAreOfSameType(sn0, sn1);
-    }
-
-    private boolean simpleNamesAreOfSameType(String sn0, String sn1) {
-        if (sn0 != null && sn1 != null) {
-            String wrappedSN0 = toWrapperNameIfPrimitive(sn0);
-            String wrappedSN1 = toWrapperNameIfPrimitive(sn1);
-            return wrappedSN0.equals(wrappedSN1);
-        }
-        return false;
-    }
-
-    private String toWrapperNameIfPrimitive(String simpleName) {
-        return PRIMITIVE_TO_WRAPPER_MAP.containsKey(simpleName)
-                ? PRIMITIVE_TO_WRAPPER_MAP.get(simpleName)
-                : simpleName;
+        return type;
     }
 
     private String getFirstMethodReturnTypeNameIfPresent(List<ASTMethodDeclaration> methods) {
