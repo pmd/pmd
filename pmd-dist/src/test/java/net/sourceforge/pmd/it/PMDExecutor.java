@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -103,15 +104,19 @@ public class PMDExecutor {
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
     public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+        return runPMDRules(tempDir, sourceDirectory, ruleset, FORMATTER);
+    }
+
+    public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
         Path reportFile = Files.createTempFile("pmd-it-report", "txt");
         reportFile.toFile().deleteOnExit();
 
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         }
     }
 
@@ -128,5 +133,9 @@ public class PMDExecutor {
         } else {
             return runPMDUnix(tempDir, null, arguments);
         }
+    }
+
+    public static boolean isJava7Test() {
+        return StringUtils.equals(System.getenv("JAVA_HOME"), System.getProperty("java7.home"));
     }
 }
