@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 public final class LanguageFactory {
@@ -40,7 +41,7 @@ public final class LanguageFactory {
             try {
                 Language language = iterator.next();
                 languagesList.add(language);
-            } catch (UnsupportedClassVersionError e) {
+            } catch (ServiceConfigurationError | UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for CPD: " + e.toString());

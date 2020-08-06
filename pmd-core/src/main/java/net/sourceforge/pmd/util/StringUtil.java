@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -220,7 +219,9 @@ public final class StringUtil {
      * @param src
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     * @deprecated for removal. Use {@link StringEscapeUtils#escapeXml10(String)} instead.
+     * @deprecated for removal. Use Java's XML implementations, that do the escaping,
+     *             use {@link #removedInvalidXml10Characters(String)} for fixing invalid characters in XML 1.0
+     *             documents or use {@code StringEscapeUtils#escapeXml10(String)} from apache commons-text instead.
      */
     @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
