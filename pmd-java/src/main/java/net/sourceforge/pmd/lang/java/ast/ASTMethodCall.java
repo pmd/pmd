@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
@@ -20,7 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner {
+public final class ASTMethodCall extends AbstractJavaExpr
+    implements ASTPrimaryExpression,
+               QualifiableExpression {
 
     ASTMethodCall(int id) {
         super(id);

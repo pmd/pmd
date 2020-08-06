@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedAssignableExpr;
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
  * A field access expression.
@@ -19,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedAssignableExpr, QualifierOwner {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedAssignableExpr, QualifiableExpression {
 
     ASTFieldAccess(int id) {
         super(id);
