@@ -11,7 +11,7 @@ VERSION=$(get_pom_version)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 if travis_isLinux; then
-    MVN_BUILD_FLAGS="-B -V  -Djava7.home=${HOME}/oraclejdk7"
+    MVN_BUILD_FLAGS="-B -V  -Djava8.home=${HOME}/openjdk8"
 else
     MVN_BUILD_FLAGS="-B -V"
 fi

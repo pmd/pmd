@@ -25,14 +25,8 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final String SUPPORTED_LANGUAGES_PMD;
 
     static {
-        // note: apex and scala require java8
-        if (PMDExecutor.isJava7Test()) {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, vf, xml]";
-            SUPPORTED_LANGUAGES_PMD = "ecmascript, java, jsp, modelica, plsql, pom, vf, vm, wsdl, xml, xsl";
-        } else {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
-            SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
-        }
+        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
     }
 
     @Test

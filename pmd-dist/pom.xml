@@ -259,11 +259,10 @@
 
     <profiles>
         <profile>
-        <profile>
-            <id>jdk7-compat-it</id>
+            <id>jdk8-compat-it</id>
             <activation>
                 <property>
-                    <name>java7.home</name>
+                    <name>java8.home</name>
                 </property>
             </activation>
             <build>
@@ -273,15 +272,15 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>jdk7-compat-it</id>
+                                <id>jdk8-compat-it</id>
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
                                     <environmentVariables>
-                                        <JAVA_HOME>${java7.home}</JAVA_HOME>
-                                        <PATH>${java7.home}/bin:${env.PATH}</PATH>
+                                        <JAVA_HOME>${java8.home}</JAVA_HOME>
+                                        <PATH>${java8.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>

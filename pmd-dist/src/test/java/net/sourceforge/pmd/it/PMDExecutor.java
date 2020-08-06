@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -133,9 +132,5 @@ public class PMDExecutor {
         } else {
             return runPMDUnix(tempDir, null, arguments);
         }
-    }
-
-    public static boolean isJava7Test() {
-        return StringUtils.equals(System.getenv("JAVA_HOME"), System.getProperty("java7.home"));
     }
 }
