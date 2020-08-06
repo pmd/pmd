@@ -517,6 +517,46 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test for var inference projection") {
+
+        asIfIn(TypeInferenceTestCases::class.java)
+
+        inContext(TypeBodyParsingCtx) {
+            """
+            static <T> void take5(Iterable<? extends T> iter) {
+                for (var entry : iter) { } // entry is projected to `T`, not `? extends T`
+            }
+        """.trimIndent() should parseAs {
+                methodDecl {
+                    modifiers()
+                    val tparams = typeParamList(1)
+                    val tvar = tparams.getChild(0)!!.typeMirror
+
+                    voidResult()
+                    formalsList(1)
+                    block {
+                        foreachLoop {
+                            localVarDecl {
+                                localVarModifiers {  }
+                                child<ASTVariableDeclarator> {
+                                    variableId("entry") {
+                                        it.typeMirror shouldBe tvar // not ? extends T
+                                    }
+                                }
+                            }
+                            variableAccess("iter") {
+                                it.typeMirror shouldBe with(it.typeDsl) {
+                                    gen.t_Iterable[`?` extends tvar]
+                                }
+                            }
+                            block {}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     parserTest("Test void compatible lambda") {
 
         asIfIn(TypeInferenceTestCases::class.java)

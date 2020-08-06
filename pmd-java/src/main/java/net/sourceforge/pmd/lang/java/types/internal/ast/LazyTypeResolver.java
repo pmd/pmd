@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.binaryNumericPromotion;
+import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.unaryNumericPromotion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -148,13 +149,18 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
             // for (var k : map.keySet())
 
             JTypeMirror iterableType = ((ASTForeachStatement) node.ancestors().get(2)).getIterableExpr().getTypeMirror();
+            iterableType = capture(iterableType);
 
             if (iterableType instanceof JArrayType) {
-                return ((JArrayType) iterableType).getComponentType();
+                return ((JArrayType) iterableType).getComponentType(); // component type is necessarily a type
             } else {
                 JTypeMirror asSuper = iterableType.getAsSuper(ts.getClassSymbol(Iterable.class));
                 if (asSuper instanceof JClassType) {
-                    return asSuper.isRaw() ? ts.OBJECT : ((JClassType) asSuper).getTypeArgs().get(0);
+                    if (asSuper.isRaw()) {
+                        return ts.OBJECT;
+                    }
+                    JTypeMirror componentType = ((JClassType) asSuper).getTypeArgs().get(0);
+                    return TypeOps.projectUpwards(componentType);
                 } else {
                     return ts.ERROR_TYPE;
                 }
@@ -163,6 +169,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         } else if (isTypeInferred && node.isLambdaParameter()) {
             ASTLambdaParameter param = (ASTLambdaParameter) node.getParent();
             ASTLambdaExpression lambda = (ASTLambdaExpression) node.getNthParent(3);
+            // force resolution of the enclosing lambda
             JMethodSig mirror = lambda.getFunctionalMethod();
             if (mirror == null || mirror == ts.UNRESOLVED_METHOD) {
                 return ts.UNRESOLVED_TYPE;
