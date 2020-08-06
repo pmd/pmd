@@ -1312,11 +1312,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
-            SpanInfo forked = new SpanInfo(parent, this.global, reaching);
-            if (parent != null && !parent.myCatches.isEmpty()) {
-                forked.myCatches = new ArrayList<>(parent.myCatches);
-            }
-            return forked;
+            return new SpanInfo(parent, this.global, reaching);
         }
 
         /** Abrupt completion for return, continue, break. */
