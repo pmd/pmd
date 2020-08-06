@@ -95,6 +95,11 @@
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -200,8 +205,18 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-scala_2.13</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-swift</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ui</artifactId>
+            <version>${pmd-designer.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
@@ -244,28 +259,6 @@
 
     <profiles>
         <profile>
-            <id>jdk8-modules</id>
-            <activation>
-                <jdk>[1.8,</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-apex</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-scala_2.13</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-ui</artifactId>
-                    <version>${pmd-designer.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
         <profile>
             <id>jdk7-compat-it</id>
             <activation>
