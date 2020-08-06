@@ -268,10 +268,17 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return isGetterCall(call) || isSetterCall(call);
+    }
+
+    private static boolean isSetterCall(ASTMethodCall call) {
+        return call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
+    public static boolean isGetterCall(ASTMethodCall call) {
         return call.getArguments().size() == 0
             && (startsWithCamelCaseWord(call.getMethodName(), "get")
-            || startsWithCamelCaseWord(call.getMethodName(), "is"))
-            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+            || startsWithCamelCaseWord(call.getMethodName(), "is"));
     }
 
 
@@ -613,6 +620,10 @@ public final class JavaRuleUtil {
             return symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
         }
         return false;
+    }
+
+    public static boolean isUnqualifiedThis(ASTExpression e) {
+        return e instanceof ASTThisExpression && ((ASTThisExpression) e).getQualifier() == null;
     }
 
     /**

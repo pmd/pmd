@@ -8,8 +8,10 @@
         <description>should be &amp;&amp;</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+
 public class Foo {
-    List bar(List list) {
+    Object buz;
+    Object bar(Object list) {
         if (list != null || !list.equals(buz)) {
             return list;
         }
@@ -23,7 +25,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    List bar(List list) {
+    Object buz;
+    Object bar(Object list) {
         if (list != null && !list.equals(buz)) {
             return list;
         }
@@ -36,8 +39,9 @@ public class Foo {
         <description>should be &amp;&amp;, but now with a longer expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-class Foo {
-    void bar() {
+class Books {
+    String getJane() { return null; }
+    void bar(Books books) {
         if (books.getJane()!= null || !books.getJane().equals("")) { }
     }
 }
@@ -49,7 +53,8 @@ class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    List bar(List list) {
+    Object buz;
+    Object bar(Object list) {
         if (list == null && list.equals(buz)) {
             return list;
         }
@@ -63,11 +68,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    List bar(List list) {
+    Object buz;
+    Object bar(Object list) {
         if (list == null || list.equals(buz)) {
             return list;
         }
-        }
+    }
 }
         ]]></code>
     </test-code>
@@ -77,7 +83,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    String[] books;
+    void bar(int index) {
         if (index >= 0 && books[index] == null) { }
     }
 }
@@ -88,8 +95,11 @@ public class Foo {
         <description>Different method is Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+public class Book {
+    Book[] books;
+    String getJane() { return null; }
+    String getEyre() { return null; }
+    void bar(int i) {
         if (books[i].getJane() == null &&
             books[i].getEyre() == null) { }
     }
@@ -101,8 +111,10 @@ public class Foo {
         <description>Using a shorter expression with the same variable in the second check should not crash the test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+public class Book {
+    Book[] books;
+    String getJane() { return null; }
+    void bar(String eyre) {
         if (books.getJane() == null &&
             books == eyre) { }
     }
@@ -115,7 +127,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(String str) {
         if (str == null && str.length() == 0) { }
     }
 }
@@ -127,7 +139,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(String[] p) {
         if (p.length > 1 && p[0] == null) { }
     }
 }
@@ -139,7 +151,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    String getJane() { return null; }
+    void bar(Foo[] p) {
         if (p[0] == null && p[1].getJane()) { }
     }
 }
@@ -150,8 +163,10 @@ public class Foo {
         <description>Assignments in checks are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+public class Book {
+    Book[] books;
+    Book[] getBook(int i) {return books;}
+    void bar(int janeEyre) {
         if (books == null &&
             (books = getBook(janeEyre)) == null) { }
     }
@@ -159,27 +174,29 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <!-- A rare edge case that is technically a false positive,
-    although the code is senseless. Will not fix. -->
-<!--<test-code>
+    <test-code>
         <description>Useless code, but it will not throw a NullPointerException</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+public class Family {
+    String plain, bold;
+    void bar(Family family) {
         if (family.plain == null && family.bold == null &&
            family.plain == null && family.bold == null) { }
     }
 }
         ]]></code>
-    </test-code> -->
+    </test-code>
 
     <test-code>
         <description>Similar method calls with different arguments are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+import my.Jane;
+import my.Eyre;
+public class Library {
+    String[] getBook(Class<?> i) {return null;}
+    void bar(Library library) {
         if (library.getBooks(Jane.class) != null ||
             library.getBooks(Eyre.class) != null) { }
     }
