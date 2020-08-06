@@ -1001,7 +1001,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (ASTAnyTypeBodyDeclaration decl : declarations) {
                 JavaNode d = decl.getDeclarationNode();
                 if (d instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    if (!((ASTMethodDeclaration) d).isAbstract()) {
+                        ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    }
                 } else if (d instanceof ASTAnyTypeDeclaration) {
                     JavaNode body = d.getChild(d.getNumChildren() - 1);
                     visitTypeBody(body, data.forkEmptyNonLocal());
