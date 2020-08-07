@@ -15,7 +15,7 @@ public final class ASTArrayLiteral extends AbstractEcmascriptNode<ArrayLiteral>
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
