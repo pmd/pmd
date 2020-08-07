@@ -120,15 +120,15 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         int endcolumn;
         if (numNls == 0) {
             // single line token
-            endline = this.getBeginLine();
+            endline = bline;
             int length = 1 + token.getStopIndex() - token.getStartIndex();
             endcolumn = token.getCharPositionInLine() + length + 1;
         } else if (lastOffset < image.length()) {
-            endline = this.getBeginLine() + numNls;
+            endline = bline + numNls;
             endcolumn = image.length() - lastOffset + 1;
         } else {
             // ends with a newline, the newline is considered part of the previous line
-            endline = this.getBeginLine() + numNls - 1;
+            endline = bline + numNls - 1;
             endcolumn = lastLineLen + 1;
         }
 
