@@ -30,8 +30,8 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaN
         super.setImage(image);
     }
 
-    @Override
-    public abstract Object jjtAccept(ModelicaParserVisitor visitor, Object data);
+
+    protected abstract <P, R> R acceptModelicaVisitor(ModelicaVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
     public String getXPathNodeName() {

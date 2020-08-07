@@ -500,6 +500,15 @@ public interface" />
             <replacefilter token="default R visit${node-name}(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }"
                            value="default R visit${node-name}(${node-name} node, P data) { return visitNode(node, data); }" />
         </replace>
+
+        <replace>
+            <replacefilter token="public Object jjtAccept(${lang-name}ParserVisitor visitor, Object data)"
+                           value="@Override protected &lt;P, R> R accept${lang-name}Visitor(${lang-name}Visitor&lt;? super P, ? extends R> visitor, P data)" />
+
+            <fileset dir="${target-package-dir}">
+                <include name="${ast-prefix}*" />
+            </fileset>
+        </replace>
     </target>
 
 </project>
