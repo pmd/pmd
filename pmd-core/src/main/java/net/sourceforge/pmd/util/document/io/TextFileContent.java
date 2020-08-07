@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.util.document.io;
 
 import java.util.regex.Matcher;
@@ -10,7 +14,7 @@ import net.sourceforge.pmd.util.document.Chars;
 /**
  * Content of a text file.
  */
-public class TextFileContent {
+public final class TextFileContent {
 
     /**
      * The normalized line ending used to replace platform-specific

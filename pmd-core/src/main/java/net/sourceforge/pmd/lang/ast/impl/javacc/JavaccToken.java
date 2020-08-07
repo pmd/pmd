@@ -50,7 +50,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     private final CharSequence image;
     private final int startOffset;
     private final int endOffset;
-    private FileLocation location;
 
     /**
      * A reference to the next regular (non-special) token from the input
@@ -85,8 +84,8 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken(String image) {
         this.kind = IMPLICIT_TOKEN;
         this.image = image;
-        this.startOffset = this.endOffset = 0;
-        this.location = FileLocation.UNDEFINED;
+        this.startOffset = 0;
+        this.endOffset = 0;
         this.document = null;
     }
 
@@ -158,14 +157,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
 
     @Override
     public FileLocation getReportLocation() {
-        if (location == null) {
-            // todo it's not useful to cache this. This is only done
-            //  because existing APIs use getBeginLine/End/etc and so
-            //  would compute the location 4 times - not practical until
-            //  we migrate them
-            location = document.getTextDocument().toLocation(getRegion());
-        }
-        return location;
+        return document.getTextDocument().toLocation(getRegion());
     }
 
     @Override

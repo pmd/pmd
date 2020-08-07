@@ -29,9 +29,6 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     private String text;
 
-    private int endline;
-    private int endcolumn;
-
     /**
      * Constructor
      *

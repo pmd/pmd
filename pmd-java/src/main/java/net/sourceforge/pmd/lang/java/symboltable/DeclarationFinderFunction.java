@@ -38,7 +38,7 @@ public class DeclarationFinderFunction implements Predicate<NameDeclaration> {
 
     private boolean isDeclaredBefore(NameDeclaration nameDeclaration) {
         if (nameDeclaration.getNode() != null && occurrence.getLocation() != null) {
-            return nameDeclaration.getNode().getBeginLine() <= occurrence.getLocation().getBeginLine();
+            return nameDeclaration.getNode().compareLocation(occurrence.getLocation()) <= 0;
         }
 
         return true;

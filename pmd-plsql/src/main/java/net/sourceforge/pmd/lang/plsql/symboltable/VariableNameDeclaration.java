@@ -24,8 +24,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
             return node.getScope().getEnclosingScope(ClassScope.class);
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("This Node does not have an enclosing Class: " + node.getBeginLine() + "/"
-                        + node.getBeginColumn() + " => " + this.getImage());
+                LOGGER.finest("This Node does not have an enclosing Class: " + node.getReportLocation().startPosToString() + " => " + this.getImage());
             }
             return null; // @TODO SRT a cop-out
         }

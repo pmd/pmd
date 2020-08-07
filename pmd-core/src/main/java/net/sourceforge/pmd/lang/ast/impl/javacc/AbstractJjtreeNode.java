@@ -161,6 +161,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
      */
     @Override
     public String toString() {
-        return "[" + getXPathNodeName() + ":" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
+        FileLocation loc = getReportLocation();
+        return "[" + getXPathNodeName() + ":" + loc.getBeginLine() + ":" + loc.getBeginColumn() + "]" + getText();
     }
 }

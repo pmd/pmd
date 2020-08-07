@@ -90,6 +90,9 @@ public final class FileLocation {
         return endColumn;
     }
 
+    /**
+     * Formats the start position as e.g. {@code "line 1, column 2"}.
+     */
     public String startPosToString() {
         return "line " + getBeginLine() + ", column " + getBeginColumn();
     }

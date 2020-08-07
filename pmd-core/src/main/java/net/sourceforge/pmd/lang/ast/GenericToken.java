@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.Reportable;
 
 /**
@@ -41,56 +40,6 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      * last token of token sequences that have been fully lexed.
      */
     boolean isEof();
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
-     */
-    @Override
-    FileLocation getReportLocation();
-
-    // TODO remove those methods, use getReportLocation
-
-    /**
-     * Gets the line where the token's region begins
-     *
-     * @return a non-negative integer containing the begin line
-     */
-    default int getBeginLine() {
-        return getReportLocation().getBeginLine();
-    }
-
-
-    /**
-     * Gets the line where the token's region ends
-     *
-     * @return a non-negative integer containing the end line
-     */
-    default int getEndLine() {
-        return getReportLocation().getEndLine();
-    }
-
-
-    /**
-     * Gets the column offset from the start of the begin line where the token's region begins
-     *
-     * @return a non-negative integer containing the begin column
-     */
-    default int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
-    }
-
-
-    /**
-     * Gets the column offset from the start of the end line where the token's region ends
-     *
-     * @return a non-negative integer containing the begin column
-     */
-    default int getEndColumn() {
-        return getReportLocation().getEndColumn();
-    }
-
 
     /**
      * Returns true if this token is implicit, ie was inserted artificially
