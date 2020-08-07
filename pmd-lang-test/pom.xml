@@ -18,6 +18,15 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/main/kotlin</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <!-- The kotlin plugin has to run before the java plugin-->
             <plugin>
@@ -105,13 +114,14 @@
              of the pmd-lang-test module
         -->
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-assertions</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <!-- Contains stuff like FunSpec, etc -->
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
 

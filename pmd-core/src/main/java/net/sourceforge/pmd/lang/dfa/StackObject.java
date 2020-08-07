@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.dfa;
 
+/**
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class StackObject {
 
     private NodeType type;

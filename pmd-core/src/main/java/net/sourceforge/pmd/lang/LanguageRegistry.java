@@ -35,6 +35,7 @@ public final class LanguageRegistry {
         // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
         Iterator<Language> iterator = languageLoader.iterator();
+
         while (true) {
             // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
             // it's more robust that way

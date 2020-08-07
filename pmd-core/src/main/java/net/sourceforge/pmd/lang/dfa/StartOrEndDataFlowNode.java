@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.List;
 
+/**
+ *
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class StartOrEndDataFlowNode extends AbstractDataFlowNode {
 
     private boolean isStartNode;

@@ -53,7 +53,7 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
     public Object visit(ASTImportDeclaration decl, Object data) {
         // If the import actually import a Boolean class that overrides
         // java.lang.Boolean
-        if (decl.getImportedName().endsWith("Boolean") && !decl.getImportedName().equals("java.lang")) {
+        if (decl.getImportedName().endsWith("Boolean") && !"java.lang".equals(decl.getImportedName())) {
             customBoolean = true;
         }
         return super.visit(decl, data);

@@ -167,7 +167,11 @@ public class RuleContext {
      *                <code>null</code>
      * @return <code>true</code> if the attribute was set, <code>false</code>
      *         otherwise.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public boolean setAttribute(String name, Object value) {
         if (name == null) {
             throw new IllegalArgumentException("Parameter 'name' cannot be null.");
@@ -194,7 +198,11 @@ public class RuleContext {
      *            The attribute name.
      * @return The current attribute value, or <code>null</code> if the
      *         attribute does not exist.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public Object getAttribute(String name) {
         return this.attributes.get(name);
     }
@@ -215,7 +223,11 @@ public class RuleContext {
      *            The attribute name.
      * @return The current attribute value, or <code>null</code> if the
      *         attribute does not exist.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public Object removeAttribute(String name) {
         return this.attributes.remove(name);
     }

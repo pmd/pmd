@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-06-27T09:31:26Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-07-25T11:45:36Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -85,8 +85,8 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.3.0</kotlin.version>
-        <kotlintest.version>3.1.8</kotlintest.version>
+        <kotlin.version>1.3.72</kotlin.version>
+        <kotest.version>4.1.2</kotest.version>
         <dokka.version>0.10.1</dokka.version>
 
 
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>7</pmd.build-tools.version>
+        <pmd.build-tools.version>8-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.24.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -117,6 +117,15 @@
     </properties>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -279,9 +288,9 @@
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
-                            <groupId>io.kotlintest</groupId>
-                            <artifactId>kotlintest-runner-junit5</artifactId>
-                            <version>${kotlintest.version}</version>
+                            <groupId>io.kotest</groupId>
+                            <artifactId>kotest-runner-junit5-jvm</artifactId>
+                            <version>${kotest.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -356,15 +365,21 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <sourceDirectories>
+                            <!-- this sets only src/main/java and ignores e.g. target/generated-sources/javacc -->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                        <resourceIncludes>**/*.properties,**/*.less,**/*.kt</resourceIncludes>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.0.0-M2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.19.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -400,12 +415,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.25.0</version>
+                            <version>6.26.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -662,7 +677,7 @@
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>1.72</version>
+                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -709,7 +724,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.6</version>
+                <version>1.3</version> <!-- 1.3 is still compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -753,7 +768,8 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <!-- using 29.0-android flavor instead of 29.0-jre, so that we are compatible with java7 -->
+                <version>29.0-android</version>
                 <scope>test</scope>
             </dependency>
 
@@ -836,22 +852,21 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test</artifactId>
-                <version>${kotlin.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>io.kotlintest</groupId>
-                <artifactId>kotlintest-assertions</artifactId>
-                <version>${kotlintest.version}</version>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-runner-junit5-jvm</artifactId>
+                <version>${kotest.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>io.kotlintest</groupId>
-                <artifactId>kotlintest-core</artifactId>
-                <version>${kotlintest.version}</version>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-core-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-property-jvm</artifactId>
+                <version>${kotest.version}</version>
                 <scope>test</scope>
             </dependency>
 

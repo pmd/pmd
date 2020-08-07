@@ -104,6 +104,9 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public @Nullable T get(int n) {
+        if (n == 0) {
+            return first();
+        }
         return IteratorUtil.getNth(iterator(), n);
     }
 

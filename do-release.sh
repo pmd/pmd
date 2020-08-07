@@ -122,7 +122,9 @@ echo "Press enter to continue..."
 read
 
 # install bundles needed for rendering release notes
-bundle install --with=release_notes_preprocessing --path vendor/bundle
+bundle config set --local path vendor/bundle
+bundle config set --local with release_notes_preprocessing
+bundle install
 
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
@@ -226,6 +228,8 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Wait until the new version is synced to maven central and appears in as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
 echo "*   Send out an announcement mail to the mailing list:"
 echo

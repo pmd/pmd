@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -18,12 +16,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class AvoidCatchingThrowableRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
-        ASTType type = node.getFirstDescendantOfType(ASTType.class);
-        ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (name.hasImageEqualTo("Throwable")) {
-            addViolation(data, name);
+    public Object visit(ASTCatchStatement catchStatement, Object data) {
+        for (Class<? extends Exception> caughtException : catchStatement.getCaughtExceptionTypes()) {
+            if (Throwable.class.equals(caughtException)) {
+                addViolation(data, catchStatement);
+            }
         }
-        return super.visit(node, data);
+        return super.visit(catchStatement, data);
     }
 }

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.cpd.test
 
-import io.kotlintest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
 import net.sourceforge.pmd.cpd.SourceCode
 import net.sourceforge.pmd.cpd.TokenEntry
 import net.sourceforge.pmd.cpd.Tokenizer
