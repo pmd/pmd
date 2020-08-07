@@ -67,7 +67,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         anticipatedLength += getConstructorAppendsLength(node);
 
-        List<NameOccurrence> usage = node.getUsages();
+        List<NameOccurrence> usage = node.oldGetUsages();
         Map<Node, Map<Node, Integer>> blocks = new HashMap<>();
         for (NameOccurrence no : usage) {
             JavaNameOccurrence jno = (JavaNameOccurrence) no;

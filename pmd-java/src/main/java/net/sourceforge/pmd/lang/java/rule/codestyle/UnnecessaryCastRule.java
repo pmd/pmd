@@ -90,7 +90,7 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
             return;
         }
         ASTVariableDeclaratorId decl = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        List<NameOccurrence> usages = decl.getUsages();
+        List<NameOccurrence> usages = decl.oldGetUsages();
         for (NameOccurrence no : usages) {
             ASTCastExpression castExpression = findCastExpression(no.getLocation());
             if (castExpression != null) {

@@ -24,7 +24,7 @@ public class CheckSkipResultRule extends AbstractJavaRule {
         if (!TypeTestUtil.isA(InputStream.class, node.getTypeNode())) {
             return data;
         }
-        for (NameOccurrence occ : node.getUsages()) {
+        for (NameOccurrence occ : node.oldGetUsages()) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();
             if (qualifier != null && "skip".equals(qualifier.getImage())) {

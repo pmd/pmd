@@ -69,7 +69,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
             return data;
         }
 
-        List<NameOccurrence> declars = node.getUsages();
+        List<NameOccurrence> declars = node.oldGetUsages();
         for (NameOccurrence occ : declars) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (!isTargetMethod(jocc)) {

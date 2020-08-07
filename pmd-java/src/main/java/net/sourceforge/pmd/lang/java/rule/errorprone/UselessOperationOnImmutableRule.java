@@ -70,7 +70,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
         String variableName = var.getImage();
-        for (NameOccurrence no : var.getUsages()) {
+        for (NameOccurrence no : var.oldGetUsages()) {
             // FIXME - getUsages will return everything with the same name as
             // the variable,
             // see JUnit test, case 6. Changing to Node below, revisit when

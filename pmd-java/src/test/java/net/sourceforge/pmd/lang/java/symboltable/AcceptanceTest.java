@@ -88,8 +88,8 @@ public class AcceptanceTest extends BaseNonParserTest {
         ASTVariableDeclaratorId declaration = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
         assertEquals(3, declaration.getBeginLine());
         assertEquals("bbbbbbbbbb", declaration.getImage());
-        assertEquals(1, declaration.getUsages().size());
-        NameOccurrence no = declaration.getUsages().get(0);
+        assertEquals(1, declaration.oldGetUsages().size());
+        NameOccurrence no = declaration.oldGetUsages().get(0);
         Node location = no.getLocation();
         assertEquals(6, location.getBeginLine());
         // System.out.println("variable " + declaration.getImage() + " is used
@@ -124,7 +124,7 @@ public class AcceptanceTest extends BaseNonParserTest {
         ASTCompilationUnit acu = parseCode(NameOccurrencesTest.TEST_ENUM);
 
         ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
-        List<NameOccurrence> usages = vdi.getUsages();
+        List<NameOccurrence> usages = vdi.oldGetUsages();
         assertEquals(2, usages.size());
         assertEquals(5, usages.get(0).getLocation().getBeginLine());
         assertEquals(9, usages.get(1).getLocation().getBeginLine());
@@ -135,7 +135,7 @@ public class AcceptanceTest extends BaseNonParserTest {
         ASTCompilationUnit acu = parseCode(TEST_INNER_CLASS);
         ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(1) // get inner class
                 .getFirstDescendantOfType(ASTVariableDeclaratorId.class); // get first declaration
-        List<NameOccurrence> usages = vdi.getUsages();
+        List<NameOccurrence> usages = vdi.oldGetUsages();
         assertEquals(2, usages.size());
         assertEquals(5, usages.get(0).getLocation().getBeginLine());
         assertEquals(10, usages.get(1).getLocation().getBeginLine());

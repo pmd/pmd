@@ -23,7 +23,7 @@ public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
     public Object visit(ASTCatchClause catchStatement, Object data) {
         ASTVariableDeclaratorId caughtExceptionId = catchStatement.getParameter().getVarId();
         String caughtExceptionVar = caughtExceptionId.getName();
-        for (NameOccurrence usage : caughtExceptionId.getUsages()) {
+        for (NameOccurrence usage : caughtExceptionId.oldGetUsages()) {
             JavaNode operation = getOperationOfUsage(usage);
             if (isAssignment(operation)) {
                 String assignedVar = getAssignedVariableName(operation);

@@ -70,7 +70,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                 return data;
             }
         }
-        for (NameOccurrence occ : var.getUsages()) {
+        for (NameOccurrence occ : var.oldGetUsages()) {
             Node n = occ.getLocation();
             // ignore usages, that don't call a method.
             if (!n.getImage().contains(".")) {

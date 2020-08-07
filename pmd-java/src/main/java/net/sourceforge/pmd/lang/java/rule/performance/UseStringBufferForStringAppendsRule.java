@@ -46,7 +46,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         // Remember how often we the variable has been used
         int usageCounter = 0;
 
-        for (NameOccurrence no : node.getUsages()) {
+        for (NameOccurrence no : node.oldGetUsages()) {
             Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {

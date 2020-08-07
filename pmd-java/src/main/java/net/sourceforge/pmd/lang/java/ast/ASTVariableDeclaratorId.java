@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -12,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -33,7 +36,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
  * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
- * the method {@link #getUsages()}.
+ * the method {@link #oldGetUsages ()}.
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
@@ -50,6 +53,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
 
     private VariableNameDeclaration nameDeclaration;
+
+    private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
     ASTVariableDeclaratorId(int id) {
         super(id);
@@ -73,8 +78,28 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         nameDeclaration = decl;
     }
 
-    public List<NameOccurrence> getUsages() {
+    /**
+     * @deprecated transitional, use {@link #getUsages()}
+     */
+    @Deprecated
+    public List<NameOccurrence> oldGetUsages() {
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+    }
+
+    /**
+     * Returns an unmodifiable list of the usages of this variable that
+     * are made in this file. Note that for a record component, this returns
+     * usages both for the formal parameter symbol and its field counterpart.
+     */
+    public List<ASTNamedReferenceExpr> getUsages() {
+        return usages;
+    }
+
+    void addUsage(ASTNamedReferenceExpr usage) {
+        if (usages.isEmpty()) {
+            usages = new ArrayList<>(4); //make modifiable
+        }
+        usages.add(usage);
     }
 
     /**
@@ -113,7 +138,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     /**
      * @deprecated Use {@link #getName()}
-     * @return
      */
     @Override
     @DeprecatedAttribute(replaceWith = "@Name")

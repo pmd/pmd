@@ -99,7 +99,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
             return data;
         }
 
-        for (NameOccurrence occ : node.getUsages()) {
+        for (NameOccurrence occ : node.oldGetUsages()) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (isNotedMethod(jocc.getNameForWhichThisIsAQualifier())) {
                 Node parent = jocc.getLocation().getParent().getParent();
