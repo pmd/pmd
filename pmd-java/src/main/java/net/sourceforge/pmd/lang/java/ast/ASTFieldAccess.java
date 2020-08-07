@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
@@ -16,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedAssignableExpr, QualifierOwner {
 
     ASTFieldAccess(int id) {
         super(id);
@@ -42,8 +45,14 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
     }
 
 
-    /** Returns the name of the field. */
-    public String getFieldName() {
+    @Override
+    public @NonNull ASTExpression getQualifier() {
+        return (ASTExpression) getChild(0);
+    }
+
+
+    @Override
+    public String getName() {
         return getImage();
     }
 

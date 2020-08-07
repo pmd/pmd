@@ -66,8 +66,7 @@ final class InternalInterfaces {
          * This may be a {@link ASTTypeExpression type expression}, or
          * an {@link ASTAmbiguousName ambiguous name}.
          */
-        @Nullable
-        default ASTExpression getQualifier() {
+        default @Nullable ASTExpression getQualifier() {
             return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
         }
     }
