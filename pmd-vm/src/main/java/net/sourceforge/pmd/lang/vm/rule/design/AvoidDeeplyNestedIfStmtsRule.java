@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTprocess;
-import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
+import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -38,22 +38,28 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        return handleIf(node, data);
+        preVisit();
+        super.visit(node, data);
+        postVisit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTElseIfStatement node, Object data) {
-        return handleIf(node, data);
+        preVisit();
+        super.visit(node, data);
+        postVisit(node, data);
+        return data;
     }
 
-    private Object handleIf(AbstractVmNode node, Object data) {
+    private void preVisit() {
         depth++;
-        super.visit(node, data);
+    }
+
+    private void postVisit(VmNode node, Object data) {
         if (depth == depthLimit) {
             addViolation(data, node);
         }
         depth--;
-        return data;
     }
-
 }

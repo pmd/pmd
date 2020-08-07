@@ -27,6 +27,7 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
 
     public AvoidUsingOctalValuesRule() {
         definePropertyDescriptor(STRICT_METHODS_DESCRIPTOR);
+        addRuleChainVisit(ASTLiteral.class);
     }
 
     @Override

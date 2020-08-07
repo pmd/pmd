@@ -104,7 +104,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                 singleTypeImports.add(wrapper);
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
 }

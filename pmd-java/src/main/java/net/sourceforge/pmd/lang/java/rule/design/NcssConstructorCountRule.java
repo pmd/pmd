@@ -27,6 +27,7 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+        super.visit(node, data);
         return NumericConstants.ONE;
     }
 

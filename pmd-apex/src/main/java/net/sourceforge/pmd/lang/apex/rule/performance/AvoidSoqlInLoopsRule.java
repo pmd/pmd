@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
     public AvoidSoqlInLoopsRule() {
+        addRuleChainVisit(ASTSoqlExpression.class);
         setProperty(CODECLIMATE_CATEGORIES, "Performance");
         // Note: Often more complicated as just moving the SOQL a few lines.
         // Involves Maps...

@@ -84,6 +84,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
     @Override
     public final Object visit(ASTMethod node, Object data) {
+        super.visit(node, data);
 
         if (ApexOperationMetricKey.COGNITIVE.supports(node)) {
             int cognitive = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.COGNITIVE, node);

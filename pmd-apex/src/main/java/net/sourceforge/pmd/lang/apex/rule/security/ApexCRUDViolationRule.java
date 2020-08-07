@@ -116,38 +116,38 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
         collectCRUDMethodLevelChecks(node);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTDmlInsertStatement node, Object data) {
         checkForCRUD(node, data, IS_CREATEABLE);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTDmlDeleteStatement node, Object data) {
         checkForCRUD(node, data, IS_DELETABLE);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTDmlUpdateStatement node, Object data) {
         checkForCRUD(node, data, IS_UPDATEABLE);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTDmlUpsertStatement node, Object data) {
         checkForCRUD(node, data, IS_CREATEABLE);
         checkForCRUD(node, data, IS_UPDATEABLE);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTDmlMergeStatement node, Object data) {
         checkForCRUD(node, data, IS_MERGEABLE);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkForAccessibility(soql, data);
         }
 
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -170,8 +170,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkForAccessibility(soql, data);
         }
 
-        return data;
-
+        return super.visit(node, data);
     }
 
     @Override
@@ -197,8 +196,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkForAccessibility(soql, data);
         }
 
-        return data;
-
+        return super.visit(node, data);
     }
 
     @Override
@@ -208,7 +206,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkForAccessibility(soql, data);
         }
 
-        return data;
+        return super.visit(node, data);
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
@@ -242,8 +240,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             addVariableToMapping(Helper.getFQVariableName(field), fieldType);
         }
 
-        return data;
-
+        return super.visit(node, data);
     }
 
     private void collectCRUDMethodLevelChecks(final ASTMethodCallExpression node) {

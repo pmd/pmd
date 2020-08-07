@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
  * using the DOM. Subclasses should override the DOM appropriate method and can
  * call <code>super</code> to visit children.
  */
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class AbstractDomXmlRule extends AbstractXmlRule {
 
     @Override

@@ -40,7 +40,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     private final Set<String> whiteListedVariables = new HashSet<>();
 
     public ApexDangerousMethodsRule() {
-        super.addRuleChainVisit(ASTUserClass.class);
+        addRuleChainVisit(ASTUserClass.class);
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

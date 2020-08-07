@@ -48,6 +48,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
         definePropertyDescriptor(ignoreEnumDeclarations);
         definePropertyDescriptor(ignoreAnonymousClassDeclarations);
         definePropertyDescriptor(ignoreInterfaceDeclarations);
+        addRuleChainVisit(ASTFieldDeclaration.class);
     }
 
     @Override

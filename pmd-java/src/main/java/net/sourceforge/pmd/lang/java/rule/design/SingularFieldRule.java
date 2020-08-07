@@ -174,7 +174,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                 }
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private boolean isInAssignment(Node potentialStatement) {

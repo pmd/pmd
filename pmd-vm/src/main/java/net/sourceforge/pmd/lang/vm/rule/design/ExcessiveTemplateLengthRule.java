@@ -17,6 +17,6 @@ public class ExcessiveTemplateLengthRule extends AbstractStatisticalVmRule {
         point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
         point.setMessage(getMessage());
         addDataPoint(point);
-        return node.childrenAccept(this, data);
+        return super.visit(node, data);
     }
 }

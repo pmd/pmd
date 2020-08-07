@@ -37,6 +37,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      */
     @Override
     public Object visit(ASTMethodDeclarator node, Object data) {
+        super.visit(node, data);
         return this.getTallyOnAccessType((AccessNode) node.getParent());
     }
 
@@ -46,6 +47,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      */
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        super.visit(node, data);
         if (node.isFinal() && node.isStatic()) {
             return NumericConstants.ZERO;
         }

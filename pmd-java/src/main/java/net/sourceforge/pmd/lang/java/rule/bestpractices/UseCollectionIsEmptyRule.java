@@ -74,7 +74,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
             Node expr = node.getParent().getParent();
             checkNodeAndReport(data, node, expr);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private boolean isSizeMethodCall(ASTPrimarySuffix primarySuffix) {

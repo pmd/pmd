@@ -114,8 +114,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
 
 
-        super.visit(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
 
@@ -165,7 +164,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
                                                        "" + cyclo, });
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
 }

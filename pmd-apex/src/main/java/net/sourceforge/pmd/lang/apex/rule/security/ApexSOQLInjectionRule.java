@@ -51,6 +51,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
 
     public ApexSOQLInjectionRule() {
+        addRuleChainVisit(ASTUserClass.class);
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

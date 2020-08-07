@@ -24,6 +24,8 @@ public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractAp
 
     @Override
     public Object visit(final ASTMethod node, final Object data) {
+        super.visit(node, data);
+
         // test methods should have @isTest annotation.
         if (isTestMethodOrClass(node)) {
             return data;

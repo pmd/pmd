@@ -15,7 +15,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isAbstract() || node.isInterface() || node.isNested()) {
-            return data;
+            return super.visit(node, data);
         }
 
         List<ASTMethodDeclaration> m = node.findDescendantsOfType(ASTMethodDeclaration.class);
@@ -34,6 +34,6 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
             addViolation(data, node);
         }
 
-        return data;
+        return super.visit(node, data);
     }
 }

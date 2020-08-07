@@ -34,7 +34,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     private final Set<String> listOfAuthorizationVariables = new HashSet<>();
 
     public ApexSuggestUsingNamedCredRule() {
-        super.addRuleChainVisit(ASTUserClass.class);
+        addRuleChainVisit(ASTUserClass.class);
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

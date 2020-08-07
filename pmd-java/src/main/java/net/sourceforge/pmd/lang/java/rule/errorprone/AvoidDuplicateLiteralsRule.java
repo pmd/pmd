@@ -184,6 +184,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLiteral node, Object data) {
+        super.visit(node, data);
+
         if (!node.isStringLiteral()) {
             return data;
         }

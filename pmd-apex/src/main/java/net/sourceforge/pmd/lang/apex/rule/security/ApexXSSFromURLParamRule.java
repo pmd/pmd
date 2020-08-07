@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  * @author sergey.gorbaty
  *
  */
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] URL_PARAMETER_METHOD = new String[] { "ApexPages", "currentPage", "getParameters",
         "get", };

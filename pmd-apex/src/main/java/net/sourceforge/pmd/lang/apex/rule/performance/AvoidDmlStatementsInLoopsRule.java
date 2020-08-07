@@ -33,7 +33,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         if (insideLoop(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private boolean insideLoop(AbstractNode node) {

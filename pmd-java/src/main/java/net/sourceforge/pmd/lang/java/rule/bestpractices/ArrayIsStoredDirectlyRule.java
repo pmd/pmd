@@ -47,7 +47,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            return data;
+            return super.visit(node, data);
         }
         return super.visit(node, data);
     }
@@ -55,7 +55,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
-            return data;
+            return super.visit(node, data);
         }
 
         ASTFormalParameter[] arrs = getArrays(node.getFormalParameters());
@@ -63,19 +63,19 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         // variable
         List<ASTBlockStatement> bs = node.findDescendantsOfType(ASTBlockStatement.class);
         checkAll(data, arrs, bs);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
-            return data;
+            return super.visit(node, data);
         }
 
         final ASTFormalParameters params = node.getFirstDescendantOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
         checkAll(data, arrs, node.findDescendantsOfType(ASTBlockStatement.class));
-        return data;
+        return super.visit(node, data);
     }
 
     private void checkAll(Object context, ASTFormalParameter[] arrs, List<ASTBlockStatement> bs) {

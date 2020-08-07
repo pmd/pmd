@@ -25,6 +25,6 @@ public class ExcessiveLengthRule extends AbstractStatisticalApexRule {
             addDataPoint(point);
         }
 
-        return node.childrenAccept(this, data);
+        return super.visit(node, data);
     }
 }

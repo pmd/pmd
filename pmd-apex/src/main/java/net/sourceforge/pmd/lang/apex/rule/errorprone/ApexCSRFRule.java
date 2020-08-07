@@ -41,7 +41,7 @@ public class ApexCSRFRule extends AbstractApexRule {
         if (!Helper.isTestMethodOrClass(node)) {
             checkForCSRF(node, data);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ApexCSRFRule extends AbstractApexRule {
         if (node.getParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
             addViolation(data, node);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private void checkForCSRF(ASTMethod node, Object data) {

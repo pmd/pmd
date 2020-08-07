@@ -66,7 +66,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
         if (nameNode == null || nameNode instanceof ASTPrimitiveType
                 || node.getNameDeclaration() == null
                 || !appliesToClassName(node.getNameDeclaration().getTypeImage())) {
-            return data;
+            return super.visit(node, data);
         }
 
         List<NameOccurrence> declars = node.getUsages();
@@ -78,7 +78,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
             Node expr = jocc.getLocation().getParent().getParent().getParent();
             checkNodeAndReport(data, jocc.getLocation(), expr);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     /**

@@ -59,7 +59,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
                 boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
                 if (inAnnotation || isJUnitMethod) {
                     List<Node> found = new ArrayList<>();
-                    found.addAll((List<Node>) visit((ASTMethodDeclaration) child, data));
+                    found.addAll(analyzeMethod((ASTMethodDeclaration) child));
                     for (Node name : found) {
                         addViolation(data, name);
                     }
@@ -71,8 +71,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    private List<Node> analyzeMethod(ASTMethodDeclaration node) {
         List<ASTTryStatement> catches = node.findDescendantsOfType(ASTTryStatement.class);
         List<Node> found = new ArrayList<>();
         if (catches.isEmpty()) {

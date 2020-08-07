@@ -37,10 +37,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     private String currentPackage;
 
     public UnnecessaryFullyQualifiedNameRule() {
-        super.addRuleChainVisit(ASTPackageDeclaration.class);
-        super.addRuleChainVisit(ASTImportDeclaration.class);
-        super.addRuleChainVisit(ASTClassOrInterfaceType.class);
-        super.addRuleChainVisit(ASTName.class);
+        addRuleChainVisit(ASTPackageDeclaration.class);
+        addRuleChainVisit(ASTImportDeclaration.class);
+        addRuleChainVisit(ASTClassOrInterfaceType.class);
+        addRuleChainVisit(ASTName.class);
     }
 
     @Override

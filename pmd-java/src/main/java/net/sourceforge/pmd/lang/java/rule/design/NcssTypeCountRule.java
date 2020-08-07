@@ -21,6 +21,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Jason Bennett
  */
 @Deprecated
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class NcssTypeCountRule extends AbstractNcssCountRule {
 
     /**

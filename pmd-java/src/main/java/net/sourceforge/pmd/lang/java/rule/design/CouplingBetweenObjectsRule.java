@@ -54,7 +54,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        Object returnObj = cu.childrenAccept(this, data);
+        Object returnObj = super.visit(cu, data);
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
@@ -62,14 +62,6 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         }
 
         return returnObj;
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
     }
 
     @Override

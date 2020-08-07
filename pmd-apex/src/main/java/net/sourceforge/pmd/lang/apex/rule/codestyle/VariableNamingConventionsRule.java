@@ -138,6 +138,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTField node, Object data) {
+        super.visit(node, data);
+
         if (!checkMembers) {
             return data;
         }
@@ -150,6 +152,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
+        super.visit(node, data);
 
         if (!checkLocals) {
             return data;
@@ -161,6 +164,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTParameter node, Object data) {
+        super.visit(node, data);
+
         if (!checkParameters) {
             return data;
         }

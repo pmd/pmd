@@ -62,6 +62,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
+        super.visit(node, data);
 
         if (node.getNumChildren() > 3) {
             // Check last suffix

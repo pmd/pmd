@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 
     public AvoidGlobalModifierRule() {

@@ -28,6 +28,6 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
                     "''{0}'' should have 3 parameters.",
                     new Object[] { methodName });
         }
-        return data;
+        return super.visit(node, data);
     }
 }

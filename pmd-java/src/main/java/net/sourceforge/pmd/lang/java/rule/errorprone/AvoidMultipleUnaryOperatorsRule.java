@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class AvoidMultipleUnaryOperatorsRule extends AbstractJavaRule {
 
     public AvoidMultipleUnaryOperatorsRule() {
-        super.addRuleChainVisit(ASTUnaryExpression.class);
-        super.addRuleChainVisit(ASTUnaryExpressionNotPlusMinus.class);
+        addRuleChainVisit(ASTUnaryExpression.class);
+        addRuleChainVisit(ASTUnaryExpressionNotPlusMinus.class);
     }
 
     @Override

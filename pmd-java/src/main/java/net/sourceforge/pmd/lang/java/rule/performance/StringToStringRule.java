@@ -16,6 +16,10 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class StringToStringRule extends AbstractJavaRule {
 
+    public StringToStringRule() {
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
+    }
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.getNameDeclaration() == null

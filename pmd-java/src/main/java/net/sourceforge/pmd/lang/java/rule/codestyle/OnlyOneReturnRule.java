@@ -8,19 +8,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class OnlyOneReturnRule extends AbstractJavaRule {
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
+    public OnlyOneReturnRule() {
+        addRuleChainVisit(ASTMethodDeclaration.class);
     }
 
     @Override

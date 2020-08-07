@@ -166,6 +166,7 @@ import scala.meta.Type;
  * The default base implementation of a PMD Rule for Scala. Uses the Visitor
  * Pattern to traverse the AST.
  */
+@SuppressWarnings("PMD.AlwaysCallSuperWhenNotUsingRuleChain")
 public class ScalaRule extends AbstractRule implements ScalaParserVisitor<RuleContext, RuleContext> {
 
     /**

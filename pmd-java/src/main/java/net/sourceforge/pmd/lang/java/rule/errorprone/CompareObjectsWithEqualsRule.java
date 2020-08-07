@@ -17,6 +17,10 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
 
+    public CompareObjectsWithEqualsRule() {
+        addRuleChainVisit(ASTEqualityExpression.class);
+    }
+
     private boolean hasName(Node n) {
         return n.getNumChildren() > 0 && n.getChild(0) instanceof ASTName;
     }

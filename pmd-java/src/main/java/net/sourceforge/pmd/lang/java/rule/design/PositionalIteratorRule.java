@@ -12,7 +12,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
+// TODO: This rule is not referenced in any category and is missing test cases
 public class PositionalIteratorRule extends AbstractJavaRule {
+
+    public PositionalIteratorRule() {
+        addRuleChainVisit(ASTWhileStatement.class);
+    }
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
@@ -36,7 +41,7 @@ public class PositionalIteratorRule extends AbstractJavaRule {
 
             }
         }
-        return null;
+        return data;
     }
 
     private String getVariableName(String exprName) {

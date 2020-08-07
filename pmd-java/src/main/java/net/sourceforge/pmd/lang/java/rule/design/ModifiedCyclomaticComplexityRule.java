@@ -23,7 +23,7 @@ public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRul
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         entryStack.peek().bumpDecisionPoints();
-        visit((JavaNode) node, data);
+        super.visit((JavaNode) node, data);
         return data;
     }
 

@@ -48,7 +48,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            return data;
+            return super.visit(node, data);
         }
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
@@ -67,7 +67,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private Set<MethodNameDeclaration> findUnique(Map<MethodNameDeclaration, List<NameOccurrence>> methods) {
