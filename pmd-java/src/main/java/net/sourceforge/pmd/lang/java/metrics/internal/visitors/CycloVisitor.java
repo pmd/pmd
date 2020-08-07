@@ -93,7 +93,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             }
         }
 
-        return visit(node, data);
+        return visitJavaNode(node, data);
     }
 
 
