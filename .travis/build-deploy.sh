@@ -7,10 +7,14 @@ source .travis/github-releases-api.sh
 source .travis/sourceforge-api.sh
 source .travis/regression-tester.sh
 
-VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+VERSION=$(get_pom_version)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-MVN_BUILD_FLAGS="-B -V"
+if travis_isLinux; then
+    MVN_BUILD_FLAGS="-B -V  -Djava8.home=${HOME}/openjdk8"
+else
+    MVN_BUILD_FLAGS="-B -V"
+fi
 
 if travis_isOSX; then
 

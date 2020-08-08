@@ -27,4 +27,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>full class name false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+            Foo.class.isAssignableFrom(null);
+        } catch(java.lang.Throwable e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

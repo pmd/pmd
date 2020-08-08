@@ -97,4 +97,18 @@ trigger leadOwnerUpdate on Lead (after update) {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex #2626</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private String foo() {
+        String Bar;
+        bar = 'bar';
+        return bar;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

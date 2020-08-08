@@ -209,7 +209,6 @@ public final class CollectionUtil {
         return list;
     }
 
-
     /**
      * Returns true if the objects are array instances and each of their
      * elements compares via equals as well.

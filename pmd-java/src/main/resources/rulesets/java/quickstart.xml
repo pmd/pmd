@@ -10,6 +10,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters" /> -->
     <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
@@ -41,6 +42,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" /> -->
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <rule ref="category/java/bestpractices.xml/UnusedImports"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
@@ -119,7 +121,7 @@
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidRethrowingException" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" /> -->
-    <!-- <rule ref="category/java/design.xml/AvoidThrowingNullPointerException" /> -->
+    <!--<rule ref="category/java/design.xml/AvoidThrowingNullPointerException" />-->
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures" /> -->
     <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/>

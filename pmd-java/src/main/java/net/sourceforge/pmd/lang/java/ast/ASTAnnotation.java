@@ -26,7 +26,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 public class ASTAnnotation extends AbstractJavaTypeNode {
 
     private static final List<String> UNUSED_RULES
-        = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter");
+        = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter", "UnusedAssignment");
 
     private static final List<String> SERIAL_RULES = Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID");
 
@@ -97,14 +97,9 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
             || "java.lang.SuppressWarnings".equals(getAnnotationName());
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

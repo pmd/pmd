@@ -868,4 +868,23 @@ class InvalidLogMessageFormatTest {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2431 IndexOutOfBoundsException when only logging exception message</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+    public void bar() {
+        try {
+            new File("/text.txt");
+        } catch (Exception e) {
+            LOG.warn(e.getMessage());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

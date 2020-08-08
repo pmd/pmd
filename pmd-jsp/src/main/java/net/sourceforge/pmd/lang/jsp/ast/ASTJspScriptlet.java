@@ -11,7 +11,7 @@ public final class ASTJspScriptlet extends AbstractJspNode {
     }
 
     @Override
-    public Object jjtAccept(JspParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

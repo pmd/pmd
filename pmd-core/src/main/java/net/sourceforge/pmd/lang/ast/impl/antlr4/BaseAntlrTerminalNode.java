@@ -71,7 +71,7 @@ public abstract class BaseAntlrTerminalNode<N extends AntlrNode<N>>
         throw new IndexOutOfBoundsException("Index " + index + " for terminal node");
     }
 
-    protected static class AntlrTerminalPmdAdapter<N extends AntlrNode<N>> extends TerminalNodeImpl implements AntlrToPmdParseTreeAdapter<N> {
+    protected static class AntlrTerminalPmdAdapter<N extends AntlrNode<N>> extends TerminalNodeImpl implements BaseAntlrNode.AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrTerminalNode<N> pmdNode;
 

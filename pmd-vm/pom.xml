@@ -82,10 +82,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
@@ -107,11 +103,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-lang-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

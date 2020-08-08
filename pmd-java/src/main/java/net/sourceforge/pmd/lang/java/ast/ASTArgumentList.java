@@ -15,13 +15,8 @@ public class ASTArgumentList extends AbstractJavaNode {
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 
     /**
@@ -32,5 +27,4 @@ public class ASTArgumentList extends AbstractJavaNode {
     public int size() {
         return this.getNumChildren();
     }
-
 }

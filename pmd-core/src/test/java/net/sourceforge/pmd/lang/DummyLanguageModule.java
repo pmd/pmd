@@ -38,7 +38,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
-
         public Handler() {
             super(DummyAstStages.class);
         }

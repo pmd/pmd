@@ -4,11 +4,24 @@
 
 package net.sourceforge.pmd.renderers;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import javax.xml.XMLConstants;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.io.output.WriterOutputStream;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
@@ -28,7 +41,13 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
     public static final PropertyDescriptor<String> ENCODING =
         PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
-    private boolean useUTF8 = false;
+
+    private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
+    private static final String PMD_REPORT_NS_LOCATION = "http://pmd.sourceforge.net/report_2_0_0.xsd";
+    private static final String XSI_NS_PREFIX = "xsi";
+
+    private XMLStreamWriter xmlWriter;
+    private OutputStream stream;
 
     public XMLRenderer() {
         super(NAME, "XML format.");
@@ -48,137 +67,185 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
-        if ("utf-8".equalsIgnoreCase(encoding)) {
-            useUTF8 = true;
-        }
 
-        StringBuilder buf = new StringBuilder(500);
-        buf.append("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>").append(PMD.EOL);
-        createVersionAttr(buf);
-        createTimestampAttr(buf);
-        // FIXME: elapsed time not available until the end of the processing
-        // buf.append(createTimeElapsedAttr(report));
-        buf.append('>').append(PMD.EOL);
-        writer.write(buf.toString());
+        try {
+            xmlWriter.writeStartDocument(encoding, "1.0");
+            xmlWriter.writeCharacters(PMD.EOL);
+            xmlWriter.setDefaultNamespace(PMD_REPORT_NS_URI);
+            xmlWriter.writeStartElement(PMD_REPORT_NS_URI, "pmd");
+            xmlWriter.writeDefaultNamespace(PMD_REPORT_NS_URI);
+            xmlWriter.writeNamespace(XSI_NS_PREFIX, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+            xmlWriter.writeAttribute(XSI_NS_PREFIX, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation",
+                    PMD_REPORT_NS_URI + " " + PMD_REPORT_NS_LOCATION);
+            xmlWriter.writeAttribute("version", PMDVersion.VERSION);
+            xmlWriter.writeAttribute("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()));
+            // FIXME: elapsed time not available until the end of the processing
+            // xmlWriter.writeAttribute("time_elapsed", ...);
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        StringBuilder buf = new StringBuilder(500);
         String filename = null;
 
-        // rule violations
-        while (violations.hasNext()) {
-            buf.setLength(0);
-            RuleViolation rv = violations.next();
-            String nextFilename = determineFileName(rv.getFilename());
-            if (!nextFilename.equals(filename)) {
-                // New File
-                if (filename != null) {
-                    // Not first file ?
-                    buf.append("</file>").append(PMD.EOL);
+        try {
+            // rule violations
+            while (violations.hasNext()) {
+                RuleViolation rv = violations.next();
+                String nextFilename = determineFileName(rv.getFilename());
+                if (!nextFilename.equals(filename)) {
+                    // New File
+                    if (filename != null) {
+                        // Not first file ?
+                        xmlWriter.writeEndElement();
+                    }
+                    filename = nextFilename;
+                    xmlWriter.writeCharacters(PMD.EOL);
+                    xmlWriter.writeStartElement("file");
+                    xmlWriter.writeAttribute("name", filename);
+                    xmlWriter.writeCharacters(PMD.EOL);
                 }
-                filename = nextFilename;
-                buf.append("<file name=\"");
-                StringUtil.appendXmlEscaped(buf, filename, useUTF8);
-                buf.append("\">").append(PMD.EOL);
+
+                xmlWriter.writeStartElement("violation");
+                xmlWriter.writeAttribute("beginline", String.valueOf(rv.getBeginLine()));
+                xmlWriter.writeAttribute("endline", String.valueOf(rv.getEndLine()));
+                xmlWriter.writeAttribute("begincolumn", String.valueOf(rv.getBeginColumn()));
+                xmlWriter.writeAttribute("endcolumn", String.valueOf(rv.getEndColumn()));
+                xmlWriter.writeAttribute("rule", rv.getRule().getName());
+                xmlWriter.writeAttribute("ruleset", rv.getRule().getRuleSetName());
+                maybeAdd("package", rv.getPackageName());
+                maybeAdd("class", rv.getClassName());
+                maybeAdd("method", rv.getMethodName());
+                maybeAdd("variable", rv.getVariableName());
+                maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
+                xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeEndElement();
+                xmlWriter.writeCharacters(PMD.EOL);
             }
-
-            buf.append("<violation beginline=\"").append(rv.getBeginLine());
-            buf.append("\" endline=\"").append(rv.getEndLine());
-            buf.append("\" begincolumn=\"").append(rv.getBeginColumn());
-            buf.append("\" endcolumn=\"").append(rv.getEndColumn());
-            buf.append("\" rule=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getRule().getName(), useUTF8);
-            buf.append("\" ruleset=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName(), useUTF8);
-            buf.append('"');
-            maybeAdd("package", rv.getPackageName(), buf);
-            maybeAdd("class", rv.getClassName(), buf);
-            maybeAdd("method", rv.getMethodName(), buf);
-            maybeAdd("variable", rv.getVariableName(), buf);
-            maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl(), buf);
-            buf.append(" priority=\"");
-            buf.append(rv.getRule().getPriority().getPriority());
-            buf.append("\">").append(PMD.EOL);
-            StringUtil.appendXmlEscaped(buf, rv.getDescription(), useUTF8);
-
-            buf.append(PMD.EOL);
-            buf.append("</violation>");
-            buf.append(PMD.EOL);
-            writer.write(buf.toString());
-        }
-        if (filename != null) { // Not first file ?
-            writer.write("</file>");
-            writer.write(PMD.EOL);
+            if (filename != null) { // Not first file ?
+                xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
         }
     }
 
     @Override
     public void end() throws IOException {
-        StringBuilder buf = new StringBuilder(500);
-        // errors
-        for (Report.ProcessingError pe : errors) {
-            buf.setLength(0);
-            buf.append("<error ").append("filename=\"");
-            StringUtil.appendXmlEscaped(buf, determineFileName(pe.getFile()), useUTF8);
-            buf.append("\" msg=\"");
-            StringUtil.appendXmlEscaped(buf, pe.getMsg(), useUTF8);
-            buf.append("\">").append(PMD.EOL);
-            buf.append("<![CDATA[").append(pe.getDetail()).append("]]>").append(PMD.EOL);
-            buf.append("</error>").append(PMD.EOL);
-            writer.write(buf.toString());
-        }
-
-        // suppressed violations
-        if (showSuppressedViolations) {
-            for (Report.SuppressedViolation s : suppressed) {
-                buf.setLength(0);
-                buf.append("<suppressedviolation ").append("filename=\"");
-                StringUtil.appendXmlEscaped(buf, determineFileName(s.getRuleViolation().getFilename()), useUTF8);
-                buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, s.getSuppressor().getId().toLowerCase(Locale.ROOT), useUTF8);
-                buf.append("\" msg=\"");
-                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription(), useUTF8);
-                buf.append("\" usermsg=\"");
-                StringUtil.appendXmlEscaped(buf, s.getUserMessage() == null ? "" : s.getUserMessage(), useUTF8);
-                buf.append("\"/>").append(PMD.EOL);
-                writer.write(buf.toString());
+        try {
+            // errors
+            for (Report.ProcessingError pe : errors) {
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeStartElement("error");
+                xmlWriter.writeAttribute("filename", determineFileName(pe.getFile()));
+                xmlWriter.writeAttribute("msg", pe.getMsg());
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeCData(pe.getDetail());
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeEndElement();
             }
-        }
 
-        // config errors
-        for (final Report.ConfigurationError ce : configErrors) {
-            buf.setLength(0);
-            buf.append("<configerror ").append("rule=\"");
-            StringUtil.appendXmlEscaped(buf, ce.rule().getName(), useUTF8);
-            buf.append("\" msg=\"");
-            StringUtil.appendXmlEscaped(buf, ce.issue(), useUTF8);
-            buf.append("\"/>").append(PMD.EOL);
-            writer.write(buf.toString());
-        }
+            // suppressed violations
+            if (showSuppressedViolations) {
+                for (Report.SuppressedViolation s : suppressed) {
+                    xmlWriter.writeCharacters(PMD.EOL);
+                    xmlWriter.writeStartElement("suppressedviolation");
+                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFilename()));
+                    xmlWriter.writeAttribute("suppressiontype", s.getSuppressor().getId().toLowerCase(Locale.ROOT));
+                    xmlWriter.writeAttribute("msg", s.getRuleViolation().getDescription());
+                    xmlWriter.writeAttribute("usermsg", s.getUserMessage() == null ? "" : s.getUserMessage());
+                    xmlWriter.writeEndElement();
+                }
+            }
 
-        writer.write("</pmd>" + PMD.EOL);
+            // config errors
+            for (final Report.ConfigurationError ce : configErrors) {
+                xmlWriter.writeCharacters(PMD.EOL);
+                xmlWriter.writeEmptyElement("configerror");
+                xmlWriter.writeAttribute("rule", ce.rule().getName());
+                xmlWriter.writeAttribute("msg", ce.issue());
+            }
+            xmlWriter.writeCharacters(PMD.EOL);
+            xmlWriter.writeEndElement(); // </pmd>
+            xmlWriter.writeCharacters(PMD.EOL);
+            xmlWriter.flush();
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
+        }
     }
 
-    private void maybeAdd(String attr, String value, StringBuilder buf) {
+    private void maybeAdd(String attr, String value) throws XMLStreamException {
         if (value != null && value.length() > 0) {
-            buf.append(' ').append(attr).append("=\"");
-            StringUtil.appendXmlEscaped(buf, value, useUTF8);
-            buf.append('"');
+            xmlWriter.writeAttribute(attr, value);
         }
     }
 
-    private void createVersionAttr(StringBuilder buffer) {
-        buffer.append("<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"").append(PMD.EOL)
-            .append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"").append(PMD.EOL)
-            .append("    xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\"").append(PMD.EOL)
-            .append("    version=\"").append(PMDVersion.VERSION).append('"');
+    @Override
+    public void setReportFile(String reportFilename) {
+        String encoding = getProperty(ENCODING);
+
+        try {
+            this.stream = StringUtils.isBlank(reportFilename)
+                    ? System.out : Files.newOutputStream(new File(reportFilename).toPath());
+
+            XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+            this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
+            // for backwards compatibility, also provide a writer. Note: xmlWriter won't use that.
+            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+        } catch (IOException | XMLStreamException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    private void createTimestampAttr(StringBuilder buffer) {
-        buffer.append(" timestamp=\"").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()))
-                .append('"');
+    @Override
+    public void setWriter(final Writer writer) {
+        String encoding = getProperty(ENCODING);
+        // for backwards compatibility, create a OutputStream that writes to the writer.
+        this.stream = new WriterOutputStream(writer, encoding);
+
+        XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+        try {
+            this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
+            // for backwards compatibility, also provide a writer.
+            // Note: both XMLStreamWriter and this writer will write to this.stream
+            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+        } catch (XMLStreamException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static class WrappedOutputStreamWriter extends OutputStreamWriter {
+        private final XMLStreamWriter xmlWriter;
+
+        WrappedOutputStreamWriter(XMLStreamWriter xmlWriter, OutputStream out, String charset) throws UnsupportedEncodingException {
+            super(out, charset);
+            this.xmlWriter = xmlWriter;
+        }
+
+        @Override
+        public void flush() throws IOException {
+            try {
+                xmlWriter.flush();
+            } catch (XMLStreamException e) {
+                throw new IOException(e);
+            }
+            super.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                xmlWriter.close();
+            } catch (XMLStreamException e) {
+                throw new IOException(e);
+            }
+            super.close();
+        }
     }
 
     // FIXME: elapsed time not available until the end of the processing

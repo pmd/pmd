@@ -102,7 +102,7 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
         // default does nothing
     }
 
-    protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext implements RuleNode, AntlrToPmdParseTreeAdapter<N> {
+    protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext implements RuleNode, BaseAntlrNode.AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrInnerNode<N> pmdNode;
 

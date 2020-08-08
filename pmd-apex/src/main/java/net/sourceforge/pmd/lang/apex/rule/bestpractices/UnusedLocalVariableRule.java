@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
@@ -46,7 +47,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
                 continue;
             }
 
-            if (usage.hasImageEqualTo(variableName)) {
+            if (StringUtils.equalsIgnoreCase(variableName, usage.getImage())) {
                 return data;
             }
         }

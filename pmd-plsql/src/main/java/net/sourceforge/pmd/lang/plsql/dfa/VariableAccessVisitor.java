@@ -34,7 +34,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * type of access of a variable.
  *
  * @author raik, Sven Jacob
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 
     public void compute(ASTMethodDeclaration node) {

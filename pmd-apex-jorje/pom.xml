@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <apex.jorje.version>2019-11-07-964d4a</apex.jorje.version>
+    <apex.jorje.version>2020-06-04-ba31c0</apex.jorje.version>
   </properties>
 
   <build>
@@ -53,12 +53,12 @@
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.1.7</version>
+        <version>1.2.3</version>
     </dependency>
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>1.1.7</version>
+        <version>1.2.3</version>
     </dependency>
     <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -78,7 +78,6 @@
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>26.0-jre</version>
     </dependency>
     <dependency>
         <groupId>com.google.j2objc</groupId>
@@ -88,7 +87,6 @@
     <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr-runtime</artifactId>
-        <version>3.5.2</version>
     </dependency>
     <dependency>
         <groupId>org.antlr</groupId>
@@ -118,7 +116,7 @@
     <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.17</version>
+        <version>1.26</version>
     </dependency>
     <dependency>
         <groupId>aopalliance</groupId>

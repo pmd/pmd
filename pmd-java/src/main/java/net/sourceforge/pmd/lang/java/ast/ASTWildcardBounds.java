@@ -29,7 +29,7 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
      * in {@code <? extends Integer>}.
      */
     public boolean isUpperBound() {
-        return getFirstToken().getImage().equals("extends");
+        return "extends".equals(getFirstToken().getImage());
     }
 
 
@@ -52,13 +52,7 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

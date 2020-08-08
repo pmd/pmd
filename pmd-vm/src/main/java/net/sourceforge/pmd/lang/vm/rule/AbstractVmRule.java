@@ -19,7 +19,6 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
         super.setLanguage(LanguageRegistry.getLanguage(VmLanguageModule.NAME));
     }
 
-
     @Override
     public void apply(Node target, RuleContext ctx) {
         ((VmNode) target).jjtAccept(this, ctx);

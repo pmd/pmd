@@ -8,7 +8,7 @@ source .travis/sourceforge-api.sh
 source .travis/pmd-code-api.sh
 
 function main() {
-    VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+    VERSION=$(get_pom_version)
     log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
 
     #
@@ -88,6 +88,7 @@ function generate_jekyll_doc() {
 
     echo -e "\n\n"
     log_info "Building documentation using jekyll..."
+    bundle config set --local path vendor/bundle
     bundle install
     bundle exec jekyll build
 

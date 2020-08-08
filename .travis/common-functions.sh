@@ -53,3 +53,7 @@ function travis_isWindows() {
         return 1
     fi
 }
+
+function get_pom_version() {
+    echo $(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
+}

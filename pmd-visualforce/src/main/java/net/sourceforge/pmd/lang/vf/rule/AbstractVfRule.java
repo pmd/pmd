@@ -19,7 +19,6 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
         super.setLanguage(LanguageRegistry.getLanguage(VfLanguageModule.NAME));
     }
 
-
     @Override
     public void apply(Node target, RuleContext ctx) {
         ((VfNode) target).jjtAccept(this, ctx);

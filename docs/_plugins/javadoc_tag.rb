@@ -36,6 +36,7 @@ require_relative 'jdoc_namespace_tag'
 #   * The (erased) types of method arguments must be fully qualified. This is the same
 #     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
 #     complete and copy-paste. Namespaces also can be used for method arguments if they're from PMD.
+#   * Use the name <init> to reference a constructor
 #
 #
 # * Defining custom namespaces
@@ -90,13 +91,15 @@ require_relative 'jdoc_namespace_tag'
 #   - Include spaces in any part of the reference
 #   - Use double or single quotes around the arguments
 #   - Use the "#" suffix to reference a nested type, instead, use a dot "." and reference it like a normal type name
+#   - Use `[]` instead of `...` for vararg parameters
+#   - Use the type name instead of `<init>` for a constructor
 #
 #
 class JavadocTag < Liquid::Tag
 
   QNAME_NO_NAMESPACE_REGEX = /((?:\w+\.)*\w+)/
 
-  ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*')
+  ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*(...)?')
   ARGUMENTS_REGEX = Regexp.new('\(\)|\((' + ARG_REGEX.source + "(?:,(?:" + ARG_REGEX.source + "))*" + ')\)')
 
 
@@ -174,9 +177,12 @@ class JavadocTag < Liquid::Tag
   def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref, resolved_type)
 
     # method or field
-    if member_suffix && Regexp.new('(\w+)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
+    if member_suffix && Regexp.new('(\w+|<init>)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
 
       suffix = $1 # method or field name
+      if suffix == '<init>'
+        suffix = '&lt;init&gt;'
+      end
 
       if opts.show_args? && $2 && !$2.empty? # is method
 

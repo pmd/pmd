@@ -10,6 +10,7 @@ Rules that help you discover design issues.
     </description>
 
     <rule name="AvoidDeeplyNestedIfStmts"
+          language="apex"
           since="5.5.0"
           message="Deeply nested if..then statements are hard to read"
           class="net.sourceforge.pmd.lang.apex.rule.design.AvoidDeeplyNestedIfStmtsRule"
@@ -36,6 +37,7 @@ public class Foo {
     </rule>
 
     <rule name="CyclomaticComplexity"
+          language="apex"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="6.0.0"
           class="net.sourceforge.pmd.lang.apex.rule.design.CyclomaticComplexityRule"
@@ -87,6 +89,7 @@ public class Complicated {
     </rule>
 
     <rule name="CognitiveComplexity"
+          language="apex"
           message="The {0} ''{1}'' has a{2} cognitive complexity of {3}."
           since="6.22.0"
           class="net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule"
@@ -149,6 +152,7 @@ public class Foo {
     </rule>
 
     <rule name="ExcessiveClassLength"
+          language="apex"
           since="5.5.0"
           message="Avoid really long classes."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
@@ -180,6 +184,7 @@ public class Foo {
     </rule>
 
     <rule name="ExcessiveParameterList"
+          language="apex"
           since="5.5.0"
           message="Avoid long parameter lists."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveParameterListRule"
@@ -204,6 +209,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     </rule>
 
     <rule name="ExcessivePublicCount"
+          language="apex"
           since="5.5.0"
           message="This class has a bunch of public methods and attributes"
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
@@ -233,6 +239,7 @@ public class Foo {
     </rule>
 
     <rule name="NcssConstructorCount"
+          language="apex"
           since="5.5.0"
           message="The constructor has an NCSS line count of {0}"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule"
@@ -261,6 +268,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="NcssMethodCount"
+          language="apex"
           since="5.5.0"
           message="The method ''{0}()'' has an NCSS line count of {1}"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
@@ -288,6 +296,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="NcssTypeCount"
+          language="apex"
           since="5.5.0"
           message="The type has an NCSS line count of {0}"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule"
@@ -317,6 +326,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="StdCyclomaticComplexity"
+          language="apex"
           since="5.5.0"
           message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
           class="net.sourceforge.pmd.lang.apex.rule.design.StdCyclomaticComplexityRule"
@@ -371,6 +381,7 @@ public class Foo {
     </rule>
 
     <rule name="TooManyFields"
+          language="apex"
           since="5.5.0"
           message="Too many fields"
           class="net.sourceforge.pmd.lang.apex.rule.design.TooManyFieldsRule"

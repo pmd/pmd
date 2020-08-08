@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.dfa.pathfinder;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
+/**
+ *
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class PathElement {
 
     public int currentChild;

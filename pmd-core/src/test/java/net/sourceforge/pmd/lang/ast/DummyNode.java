@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
