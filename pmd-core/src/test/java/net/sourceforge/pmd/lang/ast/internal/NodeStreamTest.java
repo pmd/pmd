@@ -124,6 +124,7 @@ public class NodeStreamTest {
     public void testDescendantOrSelfStream() {
         assertThat(pathsOf(tree1.descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "0110", "012", "013", "1"));
         assertThat(pathsOf(NodeStream.of(tree1).descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "0110", "012", "013", "1"));
+        assertThat(pathsOf(followPath(tree1, "0110").descendantsOrSelf()), contains("0110")); // with a leaf node
     }
 
     @Test

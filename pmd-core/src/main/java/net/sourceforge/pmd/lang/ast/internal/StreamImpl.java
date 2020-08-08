@@ -38,7 +38,7 @@ public final class StreamImpl {
         // utility class
     }
 
-    public static <T extends Node> NodeStream<T> singleton(@NonNull T node) {
+    public static <T extends Node> DescendantNodeStream<T> singleton(@NonNull T node) {
         return new SingletonNodeStream<>(node);
     }
 
@@ -88,7 +88,7 @@ public final class StreamImpl {
     }
 
     public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
+        return node.getNumChildren() == 0 ? singleton(node) : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {

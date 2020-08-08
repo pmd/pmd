@@ -103,15 +103,19 @@ public class PMDExecutor {
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
     public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+        return runPMDRules(tempDir, sourceDirectory, ruleset, FORMATTER);
+    }
+
+    public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
         Path reportFile = Files.createTempFile("pmd-it-report", "txt");
         reportFile.toFile().deleteOnExit();
 
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         }
     }
 
