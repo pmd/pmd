@@ -25,12 +25,6 @@ This is a {{ site.pmd.release_type }} release.
     cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
     further evolution of the code like multi-catch.
 
-#### Deprecated Rules
-
-*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)
-    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
-    which was introduced in PMD 6.26.0.
-
 ### Fixed Issues
 
 *   core
