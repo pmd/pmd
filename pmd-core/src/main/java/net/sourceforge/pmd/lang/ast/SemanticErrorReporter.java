@@ -12,6 +12,7 @@ import java.text.MessageFormat;
  */
 public interface SemanticErrorReporter {
     // TODO use resource bundle keys instead of string messages.
+    // TODO do a real implementation, not just a noop
 
 
     /**

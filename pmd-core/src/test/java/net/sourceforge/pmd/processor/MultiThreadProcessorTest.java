@@ -21,6 +21,8 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class MultiThreadProcessorTest {

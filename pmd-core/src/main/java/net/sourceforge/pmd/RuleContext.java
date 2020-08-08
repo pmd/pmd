@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
-import net.sourceforge.pmd.processor.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -26,6 +26,8 @@ import net.sourceforge.pmd.processor.FileAnalysisListener;
  * the {@link ViolationSuppressor}s for the language.
  */
 public final class RuleContext {
+    // todo move to package reporting
+
     // Rule contexts do not need to be thread-safe, within PmdRunnable
     // they are stack-local
 

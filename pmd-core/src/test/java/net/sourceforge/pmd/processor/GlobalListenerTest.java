@@ -30,7 +30,8 @@ import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.processor.GlobalAnalysisListener.ViolationCounterListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class GlobalListenerTest {

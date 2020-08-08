@@ -23,6 +23,8 @@ import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 class PmdRunnable implements Runnable {
@@ -131,7 +133,7 @@ class PmdRunnable implements Runnable {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.noop(),
+            SemanticErrorReporter.noop(), // TODO
             configuration.getSuppressMarker()
         );
 

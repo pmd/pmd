@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  * <p>Implementations should be internal. Only the interface should be exposed.
  */
 public class DefaultRuleViolationFactory implements RuleViolationFactory {
+    // todo move to package reporting
 
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
     private Set<ViolationSuppressor> allSuppressors;

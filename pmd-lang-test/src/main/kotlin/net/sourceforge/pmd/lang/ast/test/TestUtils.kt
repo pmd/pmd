@@ -9,9 +9,7 @@ import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import net.sourceforge.pmd.Report
-import net.sourceforge.pmd.RuleContext
 import net.sourceforge.pmd.RuleViolation
-import java.util.function.Consumer
 import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible

@@ -7,7 +7,7 @@ import net.sourceforge.pmd.*
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
-import net.sourceforge.pmd.processor.GlobalAnalysisListener
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.InputStream

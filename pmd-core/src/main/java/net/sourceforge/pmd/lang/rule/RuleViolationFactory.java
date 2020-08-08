@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * There is no need to have language-specific violation classes.
  */
 public interface RuleViolationFactory {
+    // todo move to package reporting
 
 
     RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage);

@@ -15,6 +15,7 @@ package net.sourceforge.pmd;
  * @see Rule
  */
 public interface RuleViolation {
+    // todo move to package reporting
 
     /**
      * Get the Rule which identified this violation.

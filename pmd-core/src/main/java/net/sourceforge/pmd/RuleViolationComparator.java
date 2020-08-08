@@ -19,6 +19,7 @@ import java.util.Comparator;
  * </ol>
  */
 public final class RuleViolationComparator implements Comparator<RuleViolation> {
+    // todo remove, use a static comparator constant in RuleViolation
 
     public static final RuleViolationComparator INSTANCE = new RuleViolationComparator();
 

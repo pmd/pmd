@@ -33,7 +33,7 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.processor.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**

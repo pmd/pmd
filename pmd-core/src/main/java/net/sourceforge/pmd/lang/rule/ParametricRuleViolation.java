@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {
+    // todo move to package reporting
 
     protected final Rule rule;
     protected final String description;

@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
