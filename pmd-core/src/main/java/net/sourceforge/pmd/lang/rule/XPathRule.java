@@ -58,13 +58,25 @@ public final class XPathRule extends AbstractRule {
                        .build();
 
     /**
-     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetSelector()}.
+     * This is initialized only once when calling {@link #apply(Node, RuleContext)} or {@link #getTargetSelector()}.
      */
     private SaxonXPathRuleQuery xpathRuleQuery;
 
 
     // this is shared with rules forked by deepCopy, used by the XPathRuleQuery
     private DeprecatedAttrLogger attrLogger = DeprecatedAttrLogger.create(this);
+
+
+    /**
+     * @deprecated This is now only used by the ruleset loader. When
+     *     we have syntactic sugar for XPath rules in the XML, we won't
+     *     need this anymore.
+     */
+    @Deprecated
+    public XPathRule() {
+        definePropertyDescriptor(XPATH_DESCRIPTOR);
+        definePropertyDescriptor(VERSION_DESCRIPTOR);
+    }
 
     /**
      * Make a new XPath rule with the given version + expression
@@ -75,14 +87,13 @@ public final class XPathRule extends AbstractRule {
      * @throws NullPointerException If any of the arguments is null
      */
     public XPathRule(XPathVersion version, String expression) {
-        definePropertyDescriptor(XPATH_DESCRIPTOR);
-        definePropertyDescriptor(VERSION_DESCRIPTOR);
+        this();
 
         Objects.requireNonNull(version, "XPath version is null");
         Objects.requireNonNull(expression, "XPath expression is null");
 
-        setXPath(expression);
-        setVersion(version.getXmlName());
+        setProperty(XPathRule.XPATH_DESCRIPTOR, expression);
+        setProperty(XPathRule.VERSION_DESCRIPTOR, XPathVersion.ofId(version.getXmlName()));
     }
 
 
@@ -108,48 +119,16 @@ public final class XPathRule extends AbstractRule {
         return getProperty(XPATH_DESCRIPTOR);
     }
 
-    /**
-     * @deprecated Use the constructor {@link #XPathRule(XPathVersion, String)},
-     *     don't set the expression after the fact.
-     */
-    @Deprecated
-    public void setXPath(final String xPath) {
-        setProperty(XPathRule.XPATH_DESCRIPTOR, xPath);
-    }
-
-    /**
-     * @deprecated Use the constructor {@link #XPathRule(XPathVersion, String)},
-     *     don't set the version after the fact.
-     */
-    @Deprecated
-    public void setVersion(final String version) {
-        setProperty(XPathRule.VERSION_DESCRIPTOR, XPathVersion.ofId(version));
-    }
-
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        evaluate(target, ctx);
-    }
-
-
-    /**
-     * Evaluate the XPath query with the AST node. All matches are reported as violations.
-     *
-     * @param node The Node that to be checked.
-     * @param data The RuleContext.
-     *
-     * @deprecated Use {@link #apply(Node, RuleContext)}
-     */
-    @Deprecated
-    public void evaluate(final Node node, final RuleContext data) {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
         }
 
-        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node);
+        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(target);
         for (Node nodeWithViolation : nodesWithViolation) {
-            addViolation(data, nodeWithViolation, nodeWithViolation.getImage());
+            addViolation(ctx, nodeWithViolation, nodeWithViolation.getImage());
         }
     }
 
