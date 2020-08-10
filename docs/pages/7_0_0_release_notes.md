@@ -40,6 +40,10 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
+#### XPath 3.1 support
+
+Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to XPath 2.0.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:
@@ -72,6 +76,11 @@ The following previously deprecated rules have been finally removed:
   have been removed from the PMD distribution. Please use the newer rule designer with `run.sh designer`.
   The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and `java.net.sourceforge.pmd.util.designer` have
   all been removed.
+
+* All API related to XPath support has been moved to the package {% jdoc_package core::lang.rule.xpath %}.
+  This includes API that was previously dispersed over `net.sourceforge.pmd.lang`, `net.sourceforge.pmd.lang.ast.xpath`,
+  `net.sourceforge.pmd.lang.rule.xpath`, `net.sourceforge.pmd.lang.rule`, and various language-specific packages 
+  (which were made internal).
 
 #### Metrics framework
 
