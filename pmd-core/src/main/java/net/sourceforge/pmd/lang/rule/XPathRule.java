@@ -30,7 +30,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
  */
-public class XPathRule extends AbstractRule {
+public final class XPathRule extends AbstractRule {
 
     private static final Logger LOG = Logger.getLogger(XPathRule.class.getName());
 
