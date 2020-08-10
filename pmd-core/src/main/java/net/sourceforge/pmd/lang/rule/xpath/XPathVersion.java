@@ -26,7 +26,13 @@ public enum XPathVersion {
     @Deprecated
     XPATH_1_0_COMPATIBILITY("1.0 compatibility"),
 
-    /** XPath 2.0. */
+    /**
+     * XPath 2.0.
+     *
+     * @deprecated Technically still supported, use 3.1 instead. There
+     *     are no known incompatibilities.
+     */
+    @Deprecated
     XPATH_2_0("2.0"),
     /** XPath 3.1. */
     XPATH_3_1("3.1");

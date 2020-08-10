@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -49,6 +50,7 @@ public class XPathRule extends AbstractRule {
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
+    @DeprecatedUntil700
     public static final PropertyDescriptor<XPathVersion> VERSION_DESCRIPTOR =
         PropertyFactory.enumProperty("version", getXPathVersions())
                        .desc("XPath specification version")
@@ -72,17 +74,6 @@ public class XPathRule extends AbstractRule {
     public XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
         definePropertyDescriptor(VERSION_DESCRIPTOR);
-    }
-
-
-    /**
-     * Creates a new XPathRule and associates the XPath query.
-     *
-     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
-     */
-    public XPathRule(final String xPath) {
-        this();
-        setXPath(xPath);
     }
 
 
