@@ -179,7 +179,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
           since="6.18.0"
           language="apex"
           message="Calls to System.debug should specify a logging level."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
        <description>
 The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
