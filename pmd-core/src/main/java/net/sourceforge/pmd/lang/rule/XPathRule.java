@@ -67,17 +67,6 @@ public class XPathRule extends AbstractRule {
     private DeprecatedAttrLogger attrLogger = DeprecatedAttrLogger.create(this);
 
     /**
-     * Creates a new XPathRule without the corresponding XPath query.
-     *
-     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
-     */
-    public XPathRule() {
-        definePropertyDescriptor(XPATH_DESCRIPTOR);
-        definePropertyDescriptor(VERSION_DESCRIPTOR);
-    }
-
-
-    /**
      * Make a new XPath rule with the given version + expression
      *
      * @param version    Version of the XPath language
@@ -86,9 +75,12 @@ public class XPathRule extends AbstractRule {
      * @throws NullPointerException If any of the arguments is null
      */
     public XPathRule(XPathVersion version, String expression) {
-        this();
+        definePropertyDescriptor(XPATH_DESCRIPTOR);
+        definePropertyDescriptor(VERSION_DESCRIPTOR);
+
         Objects.requireNonNull(version, "XPath version is null");
         Objects.requireNonNull(expression, "XPath expression is null");
+
         setXPath(expression);
         setVersion(version.getXmlName());
     }
