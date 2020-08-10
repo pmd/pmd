@@ -321,6 +321,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         // following deals with control flow structures
 
+        @Override
         protected SpanInfo visitChildren(Node node, SpanInfo data) {
             for (Node child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
