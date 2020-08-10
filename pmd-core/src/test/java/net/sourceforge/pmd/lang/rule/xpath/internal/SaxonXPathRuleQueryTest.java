@@ -56,6 +56,34 @@ public class SaxonXPathRuleQueryTest {
     //    }
 
     @Test
+    public void testHigherOrderFuns() { // XPath 3.1
+        DummyRoot tree = tree(() -> root(
+            node()
+        ));
+
+        tree.setImage("[oha]");
+
+        assertQuery(1, "//dummyRootNode["
+            + "(@Image => substring-after('[') => substring-before(']')) "
+            //                --------------------    ---------------------
+            //                       Those are higher order functions,
+            //                the arrow operator applies it to the left expression
+            + "! . = 'oha']", tree);
+        //     ^ This is the mapping operator, it applies a function on
+        //     the right to every element of the sequence on the left
+
+        // Together this says,
+
+        // for r in dummyRootNode:
+        //    tmp = atomize(r/@Image)
+        //    tmp = substring-after('[', tmp)
+        //    tmp = substring-before(']', tmp)
+        //    if tmp == 'oha':
+        //      yield r
+
+    }
+
+    @Test
     public void testListProperty() {
         RootNode dummy = new DummyNodeWithListAndEnum();
 
@@ -263,7 +291,7 @@ public class SaxonXPathRuleQueryTest {
     private static void assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
         SaxonXPathRuleQuery query = createQuery(xpath, descriptors);
         List<Node> result = query.evaluate(node);
-        assertEquals(resultSize, result.size());
+        assertEquals("Wrong number of matched nodes", resultSize, result.size());
     }
 
     private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?>... descriptors) {
@@ -276,7 +304,7 @@ public class SaxonXPathRuleQueryTest {
 
         return new SaxonXPathRuleQuery(
             xpath,
-            XPathVersion.XPATH_2_0,
+            XPathVersion.DEFAULT,
             props,
             XPathHandler.getHandlerForFunctionDefs(imageIsFunction()),
             DeprecatedAttrLogger.noop()

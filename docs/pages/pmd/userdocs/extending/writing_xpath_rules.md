@@ -23,9 +23,10 @@ also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_your
 
 PMD uses XPath 3.1 for its XPath rules since PMD 7. Before then, the default version was XPath 1.0, with opt-in support for XPath 2.0.
 
+See [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
+
 The property `version` of XPathRule is deprecated and will be removed.
 
-<!-- TODO is this DeprecatedUntil700 -->
 
 ## DOM representation of ASTs
 

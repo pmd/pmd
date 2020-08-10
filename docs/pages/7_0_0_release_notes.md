@@ -42,7 +42,9 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 
 #### XPath 3.1 support
 
-Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to XPath 2.0.
+Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to XPath 2.0. Notable changes:
+ * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
+ * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
 #### Removed Rules
 
