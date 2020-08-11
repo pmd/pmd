@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TypeInferenceTestCases {
 
@@ -20,6 +22,7 @@ public class TypeInferenceTestCases {
         top.addAll(in);
         // this is just to add imports
         new ArrayList<>(Arrays.asList(3, 3));
+        Stream.of(2).collect(Collectors.toList());
         new LinkedList<>();
         return top;
     }
