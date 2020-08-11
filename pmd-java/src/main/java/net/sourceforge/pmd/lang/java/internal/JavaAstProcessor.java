@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
@@ -60,6 +61,8 @@ public final class JavaAstProcessor {
 
     private SymbolResolver symResolver;
 
+    private final UnresolvedClassStore unresolvedTypes;
+
 
     private JavaAstProcessor(TypeSystem typeSystem,
                              SymbolResolver symResolver,
@@ -73,6 +76,7 @@ public final class JavaAstProcessor {
         this.languageVersion = languageVersion;
 
         this.typeSystem = typeSystem;
+        unresolvedTypes = new UnresolvedClassStore(typeSystem.symbols());
     }
 
     static TypeInferenceLogger defaultTypeInfLogger() {
@@ -97,7 +101,7 @@ public final class JavaAstProcessor {
     }
 
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
-        return typeSystem.symbols().makeUnresolvedReference(canonicalName, typeArity);
+        return unresolvedTypes.makeUnresolvedReference(canonicalName, typeArity);
     }
 
     public SymbolResolver getSymResolver() {
