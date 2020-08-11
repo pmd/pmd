@@ -6,6 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -50,10 +51,12 @@ fun JMethodSig.shouldMatchMethod(
         withFormals: List<JTypeMirror>,
         returning: JTypeMirror = this.typeSystem.NO_TYPE
 ): JMethodSig {
-    this::getName shouldBe named
-    this::getDeclaringType shouldBe declaredIn
-    this::getFormalParameters shouldBe withFormals
-    this::getReturnType shouldBe returning
+    assertSoftly {
+        this::getName shouldBe named
+        this::getDeclaringType shouldBe declaredIn
+        this::getFormalParameters shouldBe withFormals
+        this::getReturnType shouldBe returning
+    }
     return this
 }
 

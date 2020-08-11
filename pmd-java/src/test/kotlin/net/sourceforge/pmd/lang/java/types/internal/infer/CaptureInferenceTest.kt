@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -35,14 +36,15 @@ class CaptureInferenceTest : ProcessorTestSpec({
             """)
                     .descendants(ASTMethodCall::class.java).get(1)!!
 
-            normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
-            normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
+            assertSoftly {
+                normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
+                normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
 
-            val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
+                val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
 
-            // we still get a type
-            normalizer.normalizeCaptures(setCall.methodType.toString()) shouldBe "java.util.List<capture#2 of ?>.set(int, capture#2 of ?) -> capture#2 of ?"
-
+                // we still get a type
+                normalizer.normalizeCaptures(setCall.methodType.toString()) shouldBe "java.util.List<capture#2 of ?>.set(int, capture#2 of ?) -> capture#2 of ?"
+            }
         }
     }
 

@@ -18,7 +18,7 @@ public class TypeInferenceTestCases {
     private TypeInferenceTestCases() {
     }
 
-    public static <T, L extends List<T>> L appendL(List<? extends T> in, L top) {
+    public static <K, L extends List<K>> L appendL(List<? extends K> in, L top) {
         top.addAll(in);
         // this is just to add imports
         new ArrayList<>(Arrays.asList(3, 3));

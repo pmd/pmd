@@ -387,8 +387,6 @@ public final class TypeOps {
     private static JTypeMirror upperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             return upperBound(((JWildcardType) type).asUpperBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return upperBound(((JTypeVar) type).getUpperBound());
         }
         return type;
     }
@@ -396,8 +394,24 @@ public final class TypeOps {
     private static JTypeMirror lowerBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             return lowerBound(((JWildcardType) type).asLowerBound());
+        }
+        return type;
+    }
+
+    private static JTypeMirror upperBoundRec(JTypeMirror type) {
+        if (type instanceof JWildcardType) {
+            return upperBoundRec(((JWildcardType) type).asUpperBound());
         } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return lowerBound(((JTypeVar) type).getLowerBound());
+            return upperBoundRec(((JTypeVar) type).getUpperBound());
+        }
+        return type;
+    }
+
+    private static JTypeMirror lowerBoundRec(JTypeMirror type) {
+        if (type instanceof JWildcardType) {
+            return lowerBoundRec(((JWildcardType) type).asLowerBound());
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+            return lowerBoundRec(((JTypeVar) type).getLowerBound());
         }
         return type;
     }
@@ -445,11 +459,11 @@ public final class TypeOps {
             return true;
         }
 
-        if (t instanceof JWildcardType && s instanceof JTypeVar) {
-            if (((JTypeVar) s).isCaptureOf((JWildcardType) t)) {
-                return true;
-            }
-        }
+        //        if (t instanceof JWildcardType && s instanceof JTypeVar) {
+        //            if (((JTypeVar) s).isCaptureOf((JWildcardType) t)) {
+        //                return true;
+        //            }
+        //        }
 
         if (t instanceof JWildcardType) {
             JWildcardType tw = (JWildcardType) t;
@@ -485,7 +499,7 @@ public final class TypeOps {
         @Override
         public Boolean visitTypeVar(JTypeVar t, JTypeMirror s) {
             if (isTypeRange(s)) {
-                return t.isSubtypeOf(lowerBound(s), unchecked);
+                return t.isSubtypeOf(lowerBoundRec(s), unchecked);
             }
             return t.getUpperBound().isSubtypeOf(s, unchecked);
         }
@@ -535,7 +549,7 @@ public final class TypeOps {
             }
 
             if (isTypeRange(s)) {
-                return t.isSubtypeOf(lowerBound(s), unchecked);
+                return t.isSubtypeOf(lowerBoundRec(s), unchecked);
             }
 
             if (!(s instanceof JClassType)) {

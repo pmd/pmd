@@ -787,7 +787,12 @@ public final class Infer {
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
     static boolean isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
-        if (canBox && exprType.isPrimitive() != formalType.isPrimitive()) {
+        if (exprType == formalType) {
+            // fast path
+            return true;
+        }
+
+        if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
             // then boxing conversions may be useful
             return exprType.box().isSubtypeOf(formalType.box(), true)
                 || exprType.unbox().isSubtypeOf(formalType.unbox(), true);

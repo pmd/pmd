@@ -6,6 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
@@ -33,46 +34,46 @@ class TypeInferenceTest : ProcessorTestSpec({
     val justream = "$jutil.stream"
     val jlang = "java.lang"
 
-    fun ASTMethodCall.computeInferenceResult(): JMethodSig {
-        val testInfer = Infer(typeSystem, 8, TypeInferenceLogger.noop())
-        val mirrorFactory = JavaExprMirrors(testInfer)
-
-        val mirror = mirrorFactory.getMirror(this) as ExprMirror.InvocationMirror
-
-        mirror.enclosingType shouldNotBe null
-
-        val site = testInfer.newCallSite(mirror, null)
-
-        return testInfer.determineInvocationTypeResult(site)
-    }
-
     parserTest("Test method invoc resolution") {
 
-        val call = parseExpr<ASTMethodCall>("$jutil.Arrays.asList(\"a\")")
+        importedTypes += Arrays::class.java
 
-        val arraysClass = with(call.typeDsl) { Arrays::class.decl }
-        val asList = arraysClass.getMethodsByName("asList")[0]
+        inContext(ExpressionParsingCtx) {
 
-        call.computeInferenceResult().also {
-            it::getName shouldBe "asList"
-            it::isVarargs shouldBe true
-            it.formalParameters[0].shouldBeA<JArrayType> {
-                it.componentType shouldBe with(call.typeDsl) { String::class.decl }
+            "Arrays.asList(\"a\")" should parseAs {
+
+                methodCall("asList") {
+                    val arraysClass = with(it.typeDsl) { java.util.Arrays::class.decl }
+                    val asList = arraysClass.getMethodsByName("asList")[0]
+
+                    it.methodType.also {
+                        it::getName shouldBe "asList"
+                        it::isVarargs shouldBe true
+                        it.formalParameters[0].shouldBeA<JArrayType> {
+                            it.componentType shouldBe it.typeSystem.STRING
+                        }
+                        it::getReturnType shouldBe TypeGen(it.typeSystem).`t_List{String}`
+                        it::getTypeParameters shouldBe asList.typeParameters // not substituted
+                    }
+
+                    it::getQualifier shouldBe unspecifiedChild()
+                    argList(1)
+                }
             }
-            it::getReturnType shouldBe TypeGen(call.typeSystem).`t_List{String}`
-            it::getTypeParameters shouldBe asList.typeParameters // not substituted
         }
     }
 
     parserTest("Test method invoc lub of params") {
 
-        val call = parseExpr<ASTMethodCall>("$jutil.Arrays.asList(1, 2.0)")
+        importedTypes += Arrays::class.java
+
+        val call = parseExpr<ASTMethodCall>("Arrays.asList(1, 2.0)")
 
         val arraysClass = with(call.typeDsl) { Arrays::class.decl }
         val asList = arraysClass.getMethodsByName("asList")[0]
 
 
-        call.computeInferenceResult().also {
+        call.methodType.also {
             it.isVarargs shouldBe true
             val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
                 // we can't hardcode the lub result because it is JDK specific
@@ -93,22 +94,27 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test method invoc resolution, nested invocation exprs") {
+    parserTest("f:Test method invoc resolution, nested invocation exprs") {
 
+        logTypeInference(true)
         asIfIn(TypeInferenceTestCases::class.java)
 
         //  defined as
-        //  public static <T, L extends List<T>> L appendL(List<? extends T> in, L top)
+        //  public static <K, L extends List<K>> L appendL(List<? extends K> in, L top)
 
-        val call = parseExpr<ASTMethodCall>("appendL($jutil.Arrays.asList(\"a\"), new $jutil.ArrayList<>())")
-        call.computeInferenceResult().also {
+        val call = parseExpr<ASTMethodCall>("appendL(Arrays.asList(\"a\"), new ArrayList<>())")
+        call.methodType.also {
             it.name shouldBe "appendL"
             with(call.typeDsl) {
 
-                it.formalParameters[0] shouldBe gen.`t_List{? extends String}`
-                it.formalParameters[1] shouldBe gen.`t_ArrayList{String}`
-                it.isVarargs shouldBe false
-                it.returnType shouldBe gen.`t_ArrayList{String}`
+                assertSoftly {
+
+                    it.formalParameters[0] shouldBe gen.`t_List{? extends String}`
+                    it.formalParameters[1] shouldBe gen.`t_ArrayList{String}`
+                    it.isVarargs shouldBe false
+                    it.returnType shouldBe gen.`t_ArrayList{String}`
+
+                }
             }
         }
     }
@@ -122,7 +128,7 @@ class TypeInferenceTest : ProcessorTestSpec({
 
         val call = parseExpr<ASTMethodCall>("makeThree(() -> \"foo\")")
 
-        call.computeInferenceResult().also {
+        call.methodType.also {
             it.name shouldBe "makeThree"
             with(call.typeDsl) {
                 it.formalParameters[0] shouldBe Supplier::class[gen.t_String]
@@ -133,9 +139,9 @@ class TypeInferenceTest : ProcessorTestSpec({
 
 
     val stream =
-            """$jutil.stream.Stream.of("a", "b")
-                                   .map(it -> it.isEmpty())
-                                   .collect($jutil.stream.Collectors.toList())
+            """Stream.of("a", "b")
+                     .map(it -> it.isEmpty())
+                     .collect(Collectors.toList())
                 """.trimIndent()
 
     val streamSpec: NodeSpec<ASTMethodCall> = {
@@ -149,7 +155,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                 it::getMethodName shouldBe "of"
                 it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] } // Stream<String>
                 it::getQualifier shouldBe typeExpr {
-                    qualClassType("$jutil.stream.Stream")
+                    classType("Stream")
                 }
 
                 it::getArguments shouldBe child {
