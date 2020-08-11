@@ -247,11 +247,10 @@ public final class Infer {
         if (isReturnTypeFinished(m) && site.getExpectedType() == null) {
             assert assertReturnIsGround(m);
 
-            LOG.skipInstantiation(m, site);
             expr.setInferredType(m.getReturnType());
 
-            // fixme the type of subexpressions might not have been set
-            if (false && site.areAllArgsRelevantToApplicability()) {
+            if (site.areAllArgsRelevantToApplicability()) {
+                LOG.skipInstantiation(m, site);
                 // then all have been inferred
                 return ctdecl;
             }
