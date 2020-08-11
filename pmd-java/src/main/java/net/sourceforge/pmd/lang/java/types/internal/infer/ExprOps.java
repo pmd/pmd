@@ -448,7 +448,7 @@ final class ExprOps {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
             if (erasedReceiverType != null) {
-                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts));
+                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts)).internalApi().markAsAdapted();
             }
         }
         return sig;

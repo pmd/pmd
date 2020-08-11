@@ -6,11 +6,13 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
@@ -59,6 +61,14 @@ fun JTypeVar.withNewBounds(upper: JTypeMirror? = null, lower:JTypeMirror? = null
     this.cloneWithBounds(upper ?: this.upperBound, lower ?: this.lowerBound)
 }
 
+fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =
+    this.shouldBeA<JTypeVar> {
+        it.isCaptured shouldBe true
+        if (wild.isLowerBound)
+            it.lowerBound shouldBe wild.asLowerBound()
+        else
+            it.upperBound shouldBe wild.asUpperBound()
+    }
 
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
 class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
@@ -125,6 +135,7 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
     /** raw Comparable */
     val t_Comparable: JClassType get() = java.lang.Comparable::class.raw
+    val t_Comparator: JClassType get() = java.util.Comparator::class.raw
 
     val t_EnumSet: JClassType get() = java.util.EnumSet::class.raw
 

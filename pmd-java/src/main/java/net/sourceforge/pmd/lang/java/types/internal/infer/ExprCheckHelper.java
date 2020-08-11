@@ -97,11 +97,11 @@ final class ExprCheckHelper {
             // now if the return type of the arg is polymorphic and unsolved,
             // there are some additional bounds on our own infCtx
 
-            // FIXME if the argument is not compatible we'll fail resolution
-            //  altogether, though if we're in invocation phase we should
-            //  preserve the CT-decl
 
             checker.checkExprConstraint(infCtx, mostSpecific.getReturnType(), targetType);
+
+            // fixme this fails to set the inferred type of arguments
+            //  if we skip invocation on the outer expr
             if (phase.isInvocation()) {
                 infCtx.addInstantiationListener(
                     infCtx.freeVarsIn(mostSpecific.getReturnType()),

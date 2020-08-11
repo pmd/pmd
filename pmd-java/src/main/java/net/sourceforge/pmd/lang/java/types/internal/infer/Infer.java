@@ -247,13 +247,11 @@ public final class Infer {
         if (isReturnTypeFinished(m)) {
             assert assertReturnIsGround(m);
 
-            // todo this appears duplicated
-            m = ExprOps.adaptGetClass(m, site.getExpr().getErasedReceiverType());
-
             LOG.skipInstantiation(m, site);
             expr.setInferredType(m.getReturnType());
 
-            if (site.areAllArgsRelevantToApplicability()) {
+            // fixme the type of subexpressions might not have been set
+            if (false && site.areAllArgsRelevantToApplicability()) {
                 // then all have been inferred
                 return ctdecl;
             }

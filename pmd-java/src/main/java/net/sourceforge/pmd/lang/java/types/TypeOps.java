@@ -382,25 +382,20 @@ public final class TypeOps {
 
     private static JTypeMirror upperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return upperBound(((JWildcardType) type).asUpperBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return upperBound(((JTypeVar) type).getUpperBound());
+            return ((JWildcardType) type).asUpperBound();
         }
         return type;
     }
 
     private static JTypeMirror lowerBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return lowerBound(((JWildcardType) type).asLowerBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return lowerBound(((JTypeVar) type).getLowerBound());
+            return ((JWildcardType) type).asLowerBound();
         }
         return type;
     }
 
     private static boolean isTypeRange(JTypeMirror s) {
-        return s instanceof JWildcardType
-            || s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
+        return s instanceof JWildcardType;
     }
 
 

@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.inspectors.forExactly
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.lang.java.types.typeDsl
+import java.util.function.ToIntFunction
 
 /**
  * @author Clément Fournier
@@ -77,6 +81,75 @@ class CaptureInferenceTest : ProcessorTestSpec({
                 argList {
                     variableAccess("t") {
                         it.typeMirror shouldBe tVar
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("Test method ref on captured thing") {
+
+        logTypeInference(verbose = true)
+
+        val acu = parser.parse("""
+           import java.util.List;
+           import java.util.ArrayList;
+           import java.util.Comparator;
+
+           class Scratch {
+               private List<? extends String> sortIt(final List<? extends String> stats) {
+                    final List<? extends String> statList = new ArrayList<>(stats);
+                    statList.sort(Comparator.comparingInt(Object::hashCode));
+                    return statList;
+               }
+           }
+
+        """.trimIndent())
+
+        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        call.shouldMatchN {
+            methodCall("sort") {
+                it::getTypeMirror shouldBe with(it.typeDsl) { ts.NO_TYPE }
+
+                variableAccess("statList") {}
+                argList {
+                    var capture: JTypeVar? = null
+                    methodCall("comparingInt") {
+                        with (it.typeDsl) {
+                            // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
+                            val ret = it.typeMirror.shouldBeA<JClassType> {
+                                it.symbol shouldBe gen.t_Comparator.symbol
+                                it.typeArgs.shouldBeSingleton {
+                                    capture = it.shouldBeCaptureOf(`?` extends gen.t_String)
+                                }
+                            }
+
+                            it.methodType.shouldMatchMethod(
+                                    named = "comparingInt",
+                                    declaredIn = gen.t_Comparator,
+                                    withFormals = listOf(ToIntFunction::class[`?` `super` capture!!]),
+                                    returning = ret
+                            )
+                        }
+
+
+                        typeExpr {
+                            classType("Comparator")
+                        }
+
+                        argList {
+                            methodRef("hashCode") {
+                                typeExpr {
+                                    classType("Object")
+                                }
+
+                                with(it.typeDsl) {
+                                    it.referencedMethod shouldBe ts.OBJECT.getMethodsByName("hashCode").single()
+                                    it.typeMirror shouldBe ToIntFunction::class[capture!!]
+                                }
+                            }
+                        }
                     }
                 }
             }
