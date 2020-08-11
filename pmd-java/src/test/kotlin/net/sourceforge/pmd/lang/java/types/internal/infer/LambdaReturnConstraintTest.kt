@@ -9,8 +9,11 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.STRING
+import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.withNewBounds
 
 class LambdaReturnConstraintTest : ProcessorTestSpec({
 
@@ -37,13 +40,13 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror.toString() shouldBe "java.util.List<java.lang.Integer>"
+                it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
 
                 it::getQualifier shouldBe methodCall("peek") {
-                    it.typeMirror.toString() shouldBe "java.util.stream.Stream<java.lang.Integer>"
+                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror.toString() shouldBe "java.util.stream.Stream<java.lang.Integer>"
+                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -96,13 +99,13 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror.toString() shouldBe "java.util.List</*unresolved*/>"
+                it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[ts.UNRESOLVED_TYPE] } // List</*unresolved*/>
 
                 it::getQualifier shouldBe methodCall("map") {
-                    it.typeMirror.toString() shouldBe "java.util.stream.Stream</*unresolved*/>"
+                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[ts.UNRESOLVED_TYPE] } // Stream</*unresolved*/>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror.toString() shouldBe "java.util.stream.Stream<java.lang.Integer>"
+                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -132,8 +135,6 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
         }
     }
 
-    val serialFun = "java.util.function.Function<java.lang.String, java.lang.Integer> & java.io.Serializable"
-
     parserTest("Test functional interface induced by intersection") {
 
         val acu = parser.parse("""
@@ -153,20 +154,27 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
             }
         """)
 
+        val (t_Scratch) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
         val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
         fCall.shouldMatchN {
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
-                it.methodType.toString() shouldBe "Scratch.<T extends $serialFun> f($serialFun) -> $serialFun"
+
+                with (it.typeDsl) {
+                    // Function<String, Integer> & java.io.Serializable
+                    val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
+
+                    it.methodType.shouldMatchMethod(named = "f", declaredIn = t_Scratch, withFormals = listOf(serialFun), returning = serialFun)
+                }
 
                 argList {
                     exprLambda {
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe with(it.typeDsl) { String::class.decl }
+                                it.typeMirror shouldBe it.typeSystem.STRING
                             }
                             argList(0)
                         }
@@ -197,22 +205,27 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
             }
         """)
 
+        val (t_Scratch) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
         val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
-
-        val boundOfF = "java.util.function.Function<java.lang.String, R> & java.io.Serializable"
 
         fCall.shouldMatchN {
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
-                it.methodType.toString() shouldBe "Scratch.<R, T extends $boundOfF> f($serialFun) -> $serialFun"
+
+                with (it.typeDsl) {
+                    // Function<String, Integer> & java.io.Serializable
+                    val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
+
+                    it.methodType.shouldMatchMethod(named = "f", declaredIn = t_Scratch, withFormals = listOf(serialFun), returning = serialFun)
+                }
 
                 argList {
                     exprLambda {
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe with(it.typeDsl) { String::class.decl }
+                                it.typeMirror shouldBe it.typeSystem.STRING
                             }
                             argList(0)
                         }

@@ -128,7 +128,7 @@ class PolyResolutionTest : ProcessorTestSpec({
                             }
                             child<ASTConditionalExpression> {
 
-                                it.typeMirror.toString() shouldBe "java.lang.Object"
+                                it.typeMirror shouldBe it.typeSystem.OBJECT
 
                                 infixExpr(BinaryOp.GT) {
                                     methodCall("length") {

@@ -9,16 +9,14 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.JTypeMirror
-import net.sourceforge.pmd.lang.java.types.TypeDslOf
-import net.sourceforge.pmd.lang.java.types.testTypeSystem
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
-import net.sourceforge.pmd.lang.java.types.typeDsl
 
+@Suppress("LocalVariableName")
 class OverloadResolutionTest : ProcessorTestSpec({
 
-    val t_SomeEnum = "net.sourceforge.pmd.lang.java.types.testdata.SomeEnum"
-    val t_Overloads = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
+    val t_SomeEnum_name = "net.sourceforge.pmd.lang.java.types.testdata.SomeEnum"
+    val t_Overloads_name = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
 
 
 
@@ -85,10 +83,18 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            "of($t_SomeEnum.FOO)" should parseAs {
+            "of($t_SomeEnum_name.FOO)" should parseAs {
                 methodCall("of") {
-                    it.methodType.toString() shouldBe "$t_Overloads.<E extends java.lang.Enum<E>> of($t_SomeEnum) -> java.util.EnumSet<$t_SomeEnum>"
-                    it.typeMirror.toString() shouldBe "java.util.EnumSet<$t_SomeEnum>"
+                    with (it.typeDsl) {
+                        val t_SomeEnum = typeOf(t_SomeEnum_name)
+                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it.methodType.shouldMatchMethod(
+                                named = "of",
+                                declaredIn = typeOf(t_Overloads_name),
+                                withFormals = listOf(t_SomeEnum),
+                                returning = gen.t_EnumSet[t_SomeEnum]
+                        )
+                    }
 
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
@@ -105,8 +111,17 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
             "of(DoesntExist.FOO)" should parseAs {
                 methodCall("of") {
-                    it.methodType.toString() shouldBe "$t_Overloads.<E extends java.lang.Enum<E>> of(/*unresolved*/) -> java.util.EnumSet</*unresolved*/>"
-                    it.typeMirror.toString() shouldBe "java.util.EnumSet</*unresolved*/>"
+                    with (it.typeDsl) {
+                        // EnumSet</*unresolved*/>
+                        it::getTypeMirror shouldBe gen.t_EnumSet[ts.UNRESOLVED_TYPE]
+                        // Overloads::of(/*unresolved*/) -> java.util.EnumSet</*unresolved*/>
+                        it.methodType.shouldMatchMethod(
+                                named = "of",
+                                declaredIn = typeOf(t_Overloads_name),
+                                withFormals = listOf(ts.UNRESOLVED_TYPE),
+                                returning = gen.t_EnumSet[ts.UNRESOLVED_TYPE]
+                        )
+                    }
 
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
@@ -121,10 +136,18 @@ class OverloadResolutionTest : ProcessorTestSpec({
         asIfIn(Overloads::class.java)
 
         inContext(ExpressionParsingCtx) {
-            "of($t_SomeEnum.FOO, $t_SomeEnum.BAR)" should parseAs {
+            "of($t_SomeEnum_name.FOO, $t_SomeEnum_name.BAR)" should parseAs {
                 methodCall("of") {
-                    it.typeMirror.toString() shouldBe "java.util.EnumSet<$t_SomeEnum>"
-                    it.methodType.toString() shouldBe "$t_Overloads.<E extends java.lang.Enum<E>> of($t_SomeEnum, $t_SomeEnum) -> java.util.EnumSet<$t_SomeEnum>"
+                    with (it.typeDsl) {
+                        val t_SomeEnum = typeOf(t_SomeEnum_name)
+                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it.methodType.shouldMatchMethod(
+                                named = "of",
+                                declaredIn = typeOf(t_Overloads_name),
+                                withFormals = listOf(t_SomeEnum, t_SomeEnum),
+                                returning = gen.t_EnumSet[t_SomeEnum]
+                        )
+                    }
 
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
@@ -139,10 +162,21 @@ class OverloadResolutionTest : ProcessorTestSpec({
         asIfIn(Overloads::class.java)
 
         inContext(ExpressionParsingCtx) {
-            "of($t_SomeEnum.FOO, $t_SomeEnum.BAR,  $t_SomeEnum.BAR)" should parseAs {
+            "of($t_SomeEnum_name.FOO, $t_SomeEnum_name.BAR,  $t_SomeEnum_name.BAR)" should parseAs {
                 methodCall("of") {
-                    it.typeMirror.toString() shouldBe "java.util.EnumSet<$t_SomeEnum>"
-                    it.methodType.toString() shouldBe "$t_Overloads.<E extends java.lang.Enum<E>> of($t_SomeEnum, $t_SomeEnum...) -> java.util.EnumSet<$t_SomeEnum>"
+                    with (it.typeDsl) {
+                        val t_SomeEnum = typeOf(t_SomeEnum_name)
+                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+
+                        it::isVarargsCall shouldBe true
+                        // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
+                        it.methodType.shouldMatchMethod(
+                                named = "of",
+                                declaredIn = typeOf(t_Overloads_name),
+                                withFormals = listOf(t_SomeEnum, t_SomeEnum.toArray()),
+                                returning = gen.t_EnumSet[t_SomeEnum]
+                        )
+                    }
 
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
@@ -160,28 +194,43 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            "of($t_SomeEnum.FOO, new $t_SomeEnum[]{$t_SomeEnum.BAR,  $t_SomeEnum.BAR})" should parseAs {
+            "of($t_SomeEnum_name.FOO, new $t_SomeEnum_name[]{$t_SomeEnum_name.BAR,  $t_SomeEnum_name.BAR})" should parseAs {
                 methodCall("of") {
-                    it.typeMirror.toString() shouldBe "java.util.EnumSet<$t_SomeEnum>"
-                    it.methodType.toString() shouldBe "$t_Overloads.<E extends java.lang.Enum<E>> of($t_SomeEnum, $t_SomeEnum...) -> java.util.EnumSet<$t_SomeEnum>"
+                    // SomeEnum
+                    val t_SomeEnum = with(it.typeDsl) { typeOf(t_SomeEnum_name) }
+                    // SomeEnum[]
+                    val t_SomeEnumArray = with(it.typeDsl) { t_SomeEnum.toArray() }
+
+                    with (it.typeDsl) {
+                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+
+                        it::isVarargsCall shouldBe false // selected in strict phase
+                        // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
+                        it.methodType.shouldMatchMethod(
+                                named = "of",
+                                declaredIn = typeOf(t_Overloads_name),
+                                withFormals = listOf(t_SomeEnum, t_SomeEnumArray),
+                                returning = gen.t_EnumSet[t_SomeEnum]
+                        )
+                    }
 
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
                         child<ASTArrayAllocation> {
-                            it.typeMirror.toString() shouldBe "$t_SomeEnum[]"
+                            it::getTypeMirror shouldBe t_SomeEnumArray
                             unspecifiedChild()
                             child<ASTArrayInitializer> {
-                                it.typeMirror.toString() shouldBe "$t_SomeEnum[]"
+                                it::getTypeMirror shouldBe t_SomeEnumArray
                                 fieldAccess("BAR") {
-                                    it.typeMirror.toString() shouldBe t_SomeEnum
+                                    it::getTypeMirror shouldBe t_SomeEnum
                                     typeExpr {
-                                        qualClassType(t_SomeEnum)
+                                        qualClassType(t_SomeEnum_name)
                                     }
                                 }
                                 fieldAccess("BAR") {
-                                    it.typeMirror.toString() shouldBe t_SomeEnum
+                                    it::getTypeMirror shouldBe t_SomeEnum
                                     typeExpr {
-                                        qualClassType(t_SomeEnum)
+                                        qualClassType(t_SomeEnum_name)
                                     }
                                 }
                             }
@@ -213,7 +262,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         call.shouldMatchN {
             methodCall("foo") {
-                it::getTypeMirror shouldBe with (it.typeDsl) { ts.INT }
+                it::getTypeMirror shouldBe it.typeSystem.INT
                 it.methodType.symbol shouldBe fooClass.symbol
 
                 argList {

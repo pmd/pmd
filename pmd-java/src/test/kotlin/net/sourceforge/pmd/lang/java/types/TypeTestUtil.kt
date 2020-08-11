@@ -10,6 +10,7 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
@@ -41,6 +42,23 @@ object PrimitiveGen : Exhaustive<JPrimitiveType>() {
         get() = testTypeSystem.allPrimitives.toList()
 }
 
+fun JMethodSig.shouldMatchMethod(
+        named: String,
+        declaredIn: JTypeMirror,
+        withFormals: List<JTypeMirror>,
+        returning: JTypeMirror = this.typeSystem.NO_TYPE
+): JMethodSig {
+    this::getName shouldBe named
+    this::getDeclaringType shouldBe declaredIn
+    this::getFormalParameters shouldBe withFormals
+    this::getReturnType shouldBe returning
+    return this
+}
+
+fun JTypeVar.withNewBounds(upper: JTypeMirror? = null, lower:JTypeMirror? = null) {
+    this.cloneWithBounds(upper ?: this.upperBound, lower ?: this.lowerBound)
+}
+
 
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
 class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
@@ -50,6 +68,8 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
     override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = pool.asSequence().map { Sample(it) }
 
     val t_String: JClassType                        get() = java.lang.String::class.decl
+    val t_StringBuilder: JClassType                 get() = java.lang.StringBuilder::class.decl
+    val t_CharSequence: JClassType                  get() = java.lang.CharSequence::class.decl
     val t_Integer: JClassType                       get() = java.lang.Integer::class.decl
     val t_Number: JClassType                        get() = java.lang.Number::class.decl
 
@@ -63,6 +83,7 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
     val `t_List{String}`: JClassType                get() = java.util.List::class[t_String]
     val `t_List{? extends String}`: JClassType      get() = java.util.List::class[`?` extends t_String]
     val `t_ArrayList{String}`: JClassType           get() = java.util.ArrayList::class[t_String]
+    val `t_LinkedList{String}`: JClassType          get() = java.util.LinkedList::class[t_String]
 
     val `t_ArrayList{Integer}`: JClassType          get() = java.util.ArrayList::class[t_Integer]
     val `t_LinkedList{Integer}`: JClassType         get() = java.util.LinkedList::class[t_Integer]
@@ -80,6 +101,9 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
     // Enum<E>
     val `t_Enum{E}`: JClassType                     get() = java.lang.Enum::class.decl
+
+    val t_Stream: JClassType                        get() = java.util.stream.Stream::class.raw
+    val t_Function: JClassType                      get() = java.util.function.Function::class.raw
 
     init {
         assert(`t_Enum{E}`.isGenericTypeDeclaration)
@@ -102,12 +126,7 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
     /** raw Comparable */
     val t_Comparable: JClassType get() = java.lang.Comparable::class.raw
 
-    /**
-     *     Number & Comparable<? extends (Number & Comparable<?>)>
-     */
-    val `t_lub(Double, Integer)`: JTypeMirror
-        get() =
-            t_Number * t_Comparable[`?` extends (t_Number * t_Comparable[`?`])]
+    val t_EnumSet: JClassType get() = java.util.EnumSet::class.raw
 
 
     fun comparableOf(mirror: JTypeMirror): JClassType = Comparable::class[mirror]
@@ -228,6 +247,8 @@ interface TypeDslMixin {
     // to represent parameterization:
     //  t[s] === t<s>
     //  List::class[String::class] === List<String>
+
+    fun typeOf(binaryName: String): JClassType = ts.declaration(ts.getClassSymbol(binaryName)!!) as JClassType
 
     operator fun JClassSymbol.get(vararg t: JTypeMirror): JClassType = (ts.declaration(this) as JClassType).withTypeArguments(t.toList())
     operator fun JTypeMirror.get(vararg t: JTypeMirror): JClassType = (this as JClassType).withTypeArguments(t.toList())

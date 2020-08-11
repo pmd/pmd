@@ -39,13 +39,13 @@ class SubstTest : ProcessorTestSpec({
 
 
         val fieldT = typeDecl.descendants(ASTClassOrInterfaceType::class.java).drop(2).firstOrThrow()
+        
+        val map = Map::class
 
         // assert the form of the type
         fieldT.typeMirror shouldBe with (typeDsl) {
-            Map::class[Map::class[k, f], Map::class[f, c]]
+            map[map[k, f], map[f, c]]
         }
-
-        fieldT.typeMirror.toString() shouldBe "java.util.Map<java.util.Map<K, F>, java.util.Map<F, C>>"
 
         val `List{F}` = with (typeDsl) { List::class[f] }
 
@@ -60,9 +60,9 @@ class SubstTest : ProcessorTestSpec({
 
         val subbed = TypeOps.subst(fieldT.typeMirror, subst)
 
-        subbed.toString() shouldBe "java.util.Map<java.util.Map<java.util.List<F>, K>, java.util.Map<K, C>>"
-
-
+        subbed shouldBe with (typeDsl) {
+            map[map[`List{F}`, k], map[k, c]]
+        }
     }
 
     fun subOf(vararg pairs: Pair<SubstVar, JTypeMirror>) =

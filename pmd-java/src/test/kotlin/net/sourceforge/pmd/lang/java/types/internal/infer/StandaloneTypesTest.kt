@@ -12,11 +12,8 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
-import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
-import net.sourceforge.pmd.lang.java.types.RefTypeGen
-import net.sourceforge.pmd.lang.java.types.shouldBeSubtypeOf
-import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
@@ -29,15 +26,16 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
                 "new $t[0].clone()" should parseAs {
                     methodCall("clone") {
-                        it.methodType.toString() shouldBe "$t[].clone() -> $t[]"
-                        it.typeMirror.toString() shouldBe "$t[]"
+                        with (it.typeDsl) {
+                            val tArray = t.toArray()
+                            it.methodType.shouldMatchMethod(named = "clone", declaredIn = tArray, withFormals = emptyList(), returning = tArray)
+                            it.typeMirror shouldBe tArray
 
-                        it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                            it.typeMirror.toString() shouldBe "$t[]"
-                        }
+                            it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
+                                it.typeMirror shouldBe tArray
+                            }
 
-                        it::getArguments shouldBe child {
-
+                            it::getArguments shouldBe argList(0)
                         }
                     }
                 }
@@ -53,10 +51,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
                 "new $t[0].length" should parseAs {
                     fieldAccess("length") {
-                        it.typeMirror.toString() shouldBe "int"
+                        it.typeMirror shouldBe it.typeSystem.INT
 
                         it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                            it.typeMirror.toString() shouldBe "$t[]"
+                            it.typeMirror shouldBe it.typeSystem.arrayType(t, 1) // t[]
                         }
                     }
                 }

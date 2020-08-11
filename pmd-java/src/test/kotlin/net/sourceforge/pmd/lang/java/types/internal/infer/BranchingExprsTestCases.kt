@@ -7,12 +7,16 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.lang.java.types.typeDsl
 
 
 class BranchingExprsTestCases : ProcessorTestSpec({
+
+    fun TypeSystem.stringSupplier() : JTypeMirror = with (TypeDslOf(this)) {
+        java.util.function.Supplier::class[gen.t_String]
+    }
 
     parserTest("Test ternary lets context flow") {
 
@@ -27,12 +31,12 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         child<ASTConditionalExpression> {
                             boolean(true)
                             child<ASTLambdaExpression> {
-                                it.typeMirror.toString() shouldBe "java.util.function.Supplier<java.lang.String>"
+                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"foo\"")
                             }
                             child<ASTLambdaExpression> {
-                                it.typeMirror.toString() shouldBe "java.util.function.Supplier<java.lang.String>"
+                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"bar\"")
                             }
@@ -55,7 +59,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                 methodCall("makeThree") {
                     argList {
                         child<ASTConditionalExpression> {
-                            it.typeMirror.toString() shouldBe "java.util.function.Supplier<java.lang.String>"
+                            it.typeMirror shouldBe it.typeSystem.stringSupplier()
 
                             boolean(true)
                             child<ASTLambdaExpression> {
@@ -86,8 +90,12 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
 
+                        val lubOfBothLists = with (it.typeDsl) {
+                            ts.lub(gen.`t_ArrayList{String}`, gen.`t_LinkedList{String}`)
+                        }
+
                         child<ASTConditionalExpression> {
-                            it.typeMirror.toString() shouldBe "java.util.AbstractList<java.lang.String> & java.lang.Cloneable & java.io.Serializable"
+                            it.typeMirror shouldBe lubOfBothLists
                             boolean(true)
                             child<ASTConstructorCall>(ignoreChildren = true) {}
                             child<ASTConstructorCall>(ignoreChildren = true) {}

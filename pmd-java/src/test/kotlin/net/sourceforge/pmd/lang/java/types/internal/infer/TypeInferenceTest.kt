@@ -2,6 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+@file:Suppress("LocalVariableName")
+
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
@@ -14,12 +16,13 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec.GroupTestCtx.VersionedTestCtx
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.noop
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
+import java.util.function.BiFunction
+import java.util.function.BinaryOperator
 import java.util.function.Supplier
+import java.util.stream.Stream
 
 /**
  */
@@ -136,14 +139,17 @@ class TypeInferenceTest : ProcessorTestSpec({
                 """.trimIndent()
 
     val streamSpec: NodeSpec<ASTMethodCall> = {
+
+        val streamSym = it.typeSystem.getClassSymbol(Stream::class.java)!!
+
         it::getMethodName shouldBe "collect"
-        it.typeMirror.toString() shouldBe "$jutil.List<$jlang.Boolean>"
+        it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] } // List<Boolean>
         it::getQualifier shouldBe child<ASTMethodCall> {
             it::getMethodName shouldBe "map"
-            it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$jlang.Boolean>"
+            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[boolean.box()] } // Stream<Boolean>
             it::getQualifier shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "of"
-                it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$jlang.String>"
+                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] } // Stream<String>
                 it::getQualifier shouldBe typeExpr {
                     qualClassType("$jutil.stream.Stream")
                 }
@@ -161,19 +167,28 @@ class TypeInferenceTest : ProcessorTestSpec({
             it::getArguments shouldBe child {
                 child<ASTLambdaExpression> {
 
-                    it.typeMirror.toString() shouldBe "$juf.Function<$jlang.String, $jlang.Boolean>"
-                    it.functionalMethod.toString() shouldBe "$juf.Function<$jlang.String, $jlang.Boolean>.apply($jlang.String) -> $jlang.Boolean"
+                    val `t_Function{String, Boolean}` = with(it.typeDsl) { gen.t_Function[gen.t_String, boolean.box()] }
+
+                    it.typeMirror shouldBe `t_Function{String, Boolean}`
+                    with(it.typeDsl) {
+                        it.functionalMethod.shouldMatchMethod(
+                                named = "apply",
+                                declaredIn = `t_Function{String, Boolean}`,
+                                withFormals = listOf(gen.t_String),
+                                returning = boolean.box()
+                        )
+                    }
 
                     child<ASTLambdaParameterList> {
                         child<ASTLambdaParameter> {
-                            localVarModifiers {  }
+                            localVarModifiers { }
                             variableId("it")
                         }
                     }
                     it::getExpression shouldBe child<ASTMethodCall> {
                         it::getTypeMirror shouldBe it.typeSystem.BOOLEAN
                         it::getQualifier shouldBe variableAccess("it") {
-                            it.typeMirror.toString() shouldBe "$jlang.String"
+                            it.typeMirror shouldBe it.typeSystem.STRING
                         }
                         it::getArguments shouldBe child {}
                     }
@@ -208,7 +223,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                     it::isTypeInferred shouldBe true
                     varDeclarator {
                         variableId("foo") {
-                            it.typeMirror.toString() shouldBe "$jutil.List<$jlang.Boolean>"
+                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] }
                         }
 
                         child(nodeSpec = streamSpec)
@@ -232,13 +247,13 @@ class TypeInferenceTest : ProcessorTestSpec({
 
             chain should parseAs {
                 methodCall("collect") {
-                    it.typeMirror.toString() shouldBe "$jutil.List<$jlang.Boolean>"
+                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] }
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "map"
-                        it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$jlang.Boolean>"
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[boolean.box()] }
                         it::getQualifier shouldBe child<ASTMethodCall> {
                             it::getMethodName shouldBe "of"
-                            it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$jlang.String>"
+                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
                             it::getQualifier shouldBe typeExpr {
                                 qualClassType("$jutil.stream.Stream")
                             }
@@ -251,9 +266,15 @@ class TypeInferenceTest : ProcessorTestSpec({
                         it::getArguments shouldBe child {
 
                             methodRef("isEmpty") {
-                                it.typeMirror.toString() shouldBe "$juf.Function<$jlang.String, $jlang.Boolean>"
-                                it.referencedMethod.toString() shouldBe "$jlang.String.isEmpty() -> boolean"
-                                it.functionalMethod.toString() shouldBe "$juf.Function<$jlang.String, $jlang.Boolean>.apply($jlang.String) -> $jlang.Boolean"
+
+                                with(it.typeDsl) {
+                                    val `t_Function{String, Boolean}` = gen.t_Function[gen.t_String, boolean.box()]
+
+                                    it.typeMirror shouldBe `t_Function{String, Boolean}`
+                                    it.referencedMethod.shouldMatchMethod(named = "isEmpty", declaredIn = gen.t_String, withFormals = emptyList(), returning = boolean)
+                                    // Function<String, Boolean>.apply(String) -> Boolean
+                                    it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{String, Boolean}`, withFormals = listOf(gen.t_String), returning = boolean.box())
+                                }
 
                                 typeExpr {
                                     qualClassType("$jlang.String")
@@ -283,13 +304,13 @@ class TypeInferenceTest : ProcessorTestSpec({
             chain should parseAs {
                 methodCall("collect") {
                     it::getMethodName shouldBe "collect"
-                    it.typeMirror.toString() shouldBe "$jutil.List<int[]>"
+                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[int.toArray() ]} // List<int[]>
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "map"
-                        it.typeMirror.toString() shouldBe "$jutil.stream.Stream<int[]>"
+                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.toArray() ]} // Stream<int[]>
                         it::getQualifier shouldBe child<ASTMethodCall> {
                             it::getMethodName shouldBe "of"
-                            it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$jlang.Integer>"
+                            it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()]} // Stream<Integer>
                             it::getQualifier shouldBe typeExpr {
                                 qualClassType("$jutil.stream.Stream")
                             }
@@ -302,10 +323,15 @@ class TypeInferenceTest : ProcessorTestSpec({
 
                         it::getArguments shouldBe child {
 
+                            // Function<Integer, int[]>
+                            val `t_Function{Integer, Array{int}}` = with(it.typeDsl) { gen.t_Function[int.box(), int.toArray()] }
+
                             constructorRef {
-                                it.typeMirror.toString() shouldBe "$juf.Function<$jlang.Integer, int[]>"
-                                it.referencedMethod.toString() shouldBe "int[].new(int) -> int[]"
-                                it.functionalMethod.toString() shouldBe "$juf.Function<$jlang.Integer, int[]>.apply($jlang.Integer) -> int[]"
+                                it.typeMirror shouldBe `t_Function{Integer, Array{int}}`
+                                with(it.typeDsl) {
+                                    it.referencedMethod.shouldMatchMethod(named = "new", declaredIn = int.toArray(), /* int[]*/ withFormals = listOf(int), returning = int.toArray())
+                                    it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{Integer, Array{int}}`, withFormals = listOf(int.box()), returning = int.toArray())
+                                }
 
                                 typeExpr {
                                     arrayType {
@@ -338,11 +364,12 @@ class TypeInferenceTest : ProcessorTestSpec({
             chain should parseAs {
                 methodCall("map") {
 
-                    it.typeMirror.toString() shouldBe "$jutil.stream.Stream<int[]>"
+                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.toArray()] }
 
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "of"
-                        it.typeMirror.toString() shouldBe "$jutil.stream.Stream<int[]>"
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.toArray()] }
+
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("$jutil.stream.Stream")
                         }
@@ -359,9 +386,15 @@ class TypeInferenceTest : ProcessorTestSpec({
                     it::getArguments shouldBe argList {
 
                         methodRef("clone") {
-                            it.typeMirror.toString() shouldBe "$juf.Function<int[], int[]>"
-                            it.referencedMethod.toString() shouldBe "int[].clone() -> int[]"
-                            it.functionalMethod.toString() shouldBe "$juf.Function<int[], int[]>.apply(int[]) -> int[]"
+
+                            with(it.typeDsl) {
+                                // Function<int[], int[]>
+                                val `t_Function{Array{int}, Array{int}}` = gen.t_Function[int.toArray(), int.toArray()]
+
+                                it.typeMirror shouldBe `t_Function{Array{int}, Array{int}}`
+                                it.referencedMethod.shouldMatchMethod(named = "clone", declaredIn = int.toArray(), withFormals = emptyList(), returning = int.toArray())
+                                it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{Array{int}, Array{int}}`, withFormals = listOf(int.toArray()), returning = int.toArray())
+                            }
 
                             typeExpr {
                                 arrayType {
@@ -377,10 +410,6 @@ class TypeInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test method reference overload resolution") {
-
-        // FIXME lub(StringBuilder, String, Integer) is apparently Serializable on JDK 8 and the $serialLub below on JDK 11
-        //  On Java 13 we get
-        //      java.io.Serializable & java.lang.Comparable<? extends ...> & java.lang.constant.Constable & java.lang.constant.ConstantDesc
 
         asIfIn(TypeInferenceTestCases::class.java)
         val stringBuilder = "$jlang.StringBuilder"
@@ -401,13 +430,28 @@ class TypeInferenceTest : ProcessorTestSpec({
                         ts.lub(gen.t_String, gen.t_Integer)
                     }
 
-                    it.typeMirror.toString() shouldBe stringBuilder
-                    it.methodType.toString() shouldBe "$jutil.stream.Stream<$serialLub>.<U> reduce($stringBuilder, $juf.BiFunction<$stringBuilder, ? super $serialLub, $stringBuilder>, $juf.BinaryOperator<$stringBuilder>) -> $stringBuilder"
+                    val t_BiFunction = with (it.typeDsl) { ts.getClassSymbol(BiFunction::class.java)!! }
+                    val t_BinaryOperator = with (it.typeDsl) { ts.getClassSymbol(BinaryOperator::class.java)!! }
+                    val t_Sb = with (it.typeDsl) { gen.t_StringBuilder }
 
+                    with (it.typeDsl) {
+
+                        it.typeMirror shouldBe t_Sb
+                        it.methodType.shouldMatchMethod(
+                                named = "reduce",
+                                declaredIn = gen.t_Stream[serialLub],
+                                withFormals = listOf(
+                                        t_Sb,
+                                        t_BiFunction[t_Sb, `?` `super` serialLub, t_Sb],
+                                        t_BinaryOperator[t_Sb]
+                                ),
+                                returning = t_Sb
+                        )
+                    }
 
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "of"
-                        it.typeMirror.toString() shouldBe "$jutil.stream.Stream<$serialLub>"
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[serialLub] }
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("$jutil.stream.Stream")
                         }
@@ -422,9 +466,13 @@ class TypeInferenceTest : ProcessorTestSpec({
                         }
 
                         methodRef("append") {
-                            it.typeMirror.toString() shouldBe "$juf.BiFunction<$stringBuilder, $serialLub, $stringBuilder>"
-                            it.referencedMethod.toString() shouldBe "$stringBuilder.append($jlang.Object) -> $stringBuilder"
-                            it.functionalMethod.toString() shouldBe "$juf.BiFunction<$stringBuilder, $serialLub, $stringBuilder>.apply($stringBuilder, $serialLub) -> $stringBuilder"
+                            with (it.typeDsl) {
+                                val myBifunction = t_BiFunction[t_Sb, serialLub, t_Sb]
+
+                                it.typeMirror shouldBe myBifunction
+                                it.referencedMethod.shouldMatchMethod(named = "append", declaredIn = t_Sb, withFormals = listOf(ts.OBJECT), returning = t_Sb)
+                                it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = myBifunction, withFormals = listOf(t_Sb, serialLub), returning = t_Sb)
+                            }
 
                             typeExpr {
                                 qualClassType(stringBuilder)
@@ -432,14 +480,16 @@ class TypeInferenceTest : ProcessorTestSpec({
                         }
 
                         methodRef("append") {
-                            it.typeMirror.toString() shouldBe "$juf.BinaryOperator<$stringBuilder>"
-                            // TODO this test is failing because most specific candidate inference is not implemented
-                            //  whether it passes now is JDK-specific because it depends on ordering of candidates
-                            //  (fails on JDK > 8, passes on 8)
-                            // notice it's more specific than the first append
-                            it.referencedMethod.toString() shouldBe "$stringBuilder.append($jlang.CharSequence) -> $stringBuilder"
-                            // notice the owner of the function is BiFunction and not BinaryOperator. It's inherited by BinaryOperator
-                            it.functionalMethod.toString() shouldBe "$juf.BiFunction<$stringBuilder, $stringBuilder, $stringBuilder>.apply($stringBuilder, $stringBuilder) -> $stringBuilder"
+
+                            with (it.typeDsl) {
+                                val myBifunction = t_BiFunction[t_Sb, t_Sb, t_Sb]
+
+                                it.typeMirror shouldBe t_BinaryOperator[t_Sb]
+                                // notice it's more specific than the first append (CharSequence formal)
+                                it.referencedMethod.shouldMatchMethod(named = "append", declaredIn = t_Sb, withFormals = listOf(gen.t_CharSequence), returning = t_Sb)
+                                // notice the owner of the function is BiFunction and not BinaryOperator. It's inherited by BinaryOperator
+                                it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = myBifunction, withFormals = listOf(t_Sb, t_Sb), returning = t_Sb)
+                            }
 
                             typeExpr {
                                 qualClassType(stringBuilder)
@@ -572,7 +622,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                         child<ASTConditionalExpression> {
                             unspecifiedChildren(2)
                             exprLambda {
-                                it.typeMirror.toString() shouldBe "$jlang.Runnable"
+                                it.typeMirror shouldBe with(it.typeDsl) { java.lang.Runnable::class.decl }
 
                                 lambdaFormals(0)
                                 methodCall("id")

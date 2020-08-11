@@ -8,18 +8,19 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.JClassType
-import net.sourceforge.pmd.lang.java.types.JMethodSig
-import net.sourceforge.pmd.lang.java.types.TypeOps
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shadows
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
 
-class OverloadSpecificityTest : ProcessorTestSpec({
+private val OverloadsQname = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
 
-    val t_Overloads = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
+private val TypeGen.t_Overloads : JClassType
+    get() = ts.declaration(ts.getClassSymbol(OverloadsQname)!!) as JClassType
+
+class OverloadSpecificityTest : ProcessorTestSpec({
 
     parserTest("Test strict overload") {
 
@@ -29,8 +30,16 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 
             "ambig(\"a\", \"b\")" should parseAs {
                 methodCall("ambig") {
-                    it.methodType.toString() shouldBe "$t_Overloads.ambig(java.lang.String, java.lang.String, java.lang.CharSequence...) -> void"
-                    it.typeMirror.toString() shouldBe "void"
+                    with (it.typeDsl) {
+                        it.methodType.shouldMatchMethod(
+                                named = "ambig",
+                                declaredIn = gen.t_Overloads,
+                                withFormals = listOf(gen.t_String, gen.t_String, gen.t_CharSequence.toArray()),
+                                returning = ts.NO_TYPE
+                        )
+
+                        it.typeMirror shouldBe ts.NO_TYPE
+                    }
 
                     it::getArguments shouldBe child {
                         stringLit("\"a\"")
@@ -49,9 +58,18 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 
             "genericOf(new String[] {\"\"})" should parseAs {
                 methodCall("genericOf") {
-                    it.methodType.toString() shouldBe "$t_Overloads.<T> genericOf(java.lang.String...) -> java.util.List<java.lang.String>"
-                    it.typeMirror.toString() shouldBe "java.util.List<java.lang.String>"
-                    it.isVarargsCall shouldBe false // selected in strict phase
+                    with (it.typeDsl) {
+                        it.methodType.shouldMatchMethod(
+                                named = "genericOf",
+                                declaredIn = gen.t_Overloads,
+                                withFormals = listOf(gen.t_String.toArray()),
+                                returning = gen.t_List[gen.t_String]
+                        )
+
+                        // List<String>
+                        it.typeMirror shouldBe gen.t_List[gen.t_String]
+                        it.isVarargsCall shouldBe false // selected in strict phase
+                    }
 
                     it::getArguments shouldBe child {
                         arrayAlloc()
