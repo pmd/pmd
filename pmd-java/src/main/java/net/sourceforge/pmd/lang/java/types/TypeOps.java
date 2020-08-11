@@ -382,20 +382,25 @@ public final class TypeOps {
 
     private static JTypeMirror upperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return ((JWildcardType) type).asUpperBound();
+            return upperBound(((JWildcardType) type).asUpperBound());
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+            return upperBound(((JTypeVar) type).getUpperBound());
         }
         return type;
     }
 
     private static JTypeMirror lowerBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return ((JWildcardType) type).asLowerBound();
+            return lowerBound(((JWildcardType) type).asLowerBound());
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+            return lowerBound(((JTypeVar) type).getLowerBound());
         }
         return type;
     }
 
     private static boolean isTypeRange(JTypeMirror s) {
-        return s instanceof JWildcardType;
+        return s instanceof JWildcardType
+            || s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
     }
 
 
@@ -1071,6 +1076,10 @@ public final class TypeOps {
      * final it is overridden - whether this is a compile error or not
      * is another matter.
      *
+     * <p>Like {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)},
+     * this does not check the static modifier, and tests for hiding
+     * if the method is static.
+     *
      * @param m         Method to test
      * @param declaring Symbol of the declaring type of m
      * @param origin    Site of the potential override
@@ -1081,7 +1090,7 @@ public final class TypeOps {
         // JLS 8.4.6.1
         switch (m.getModifiers() & accessFlags) {
         case Modifier.PUBLIC:
-            return !declaring.isInterface() || !m.isStatic();
+            return true;
         case Modifier.PROTECTED:
             return !origin.isInterface();
         case 0:

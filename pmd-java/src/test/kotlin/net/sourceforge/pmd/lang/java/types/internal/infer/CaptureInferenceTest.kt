@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
