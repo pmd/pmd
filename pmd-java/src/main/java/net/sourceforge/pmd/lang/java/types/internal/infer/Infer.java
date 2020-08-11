@@ -41,6 +41,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Main entry point for type inference.
@@ -134,8 +135,7 @@ public final class Infer {
         }
     }
 
-    @NonNull
-    public MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
+    public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
         if (site.getExpr().getMethodType() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
             site.getExpr().setMethodType(ctdecl); // cache it for later
@@ -150,8 +150,7 @@ public final class Infer {
      * <p>The returned method type may be null, in which case no method is
      * applicable (compile-time error).
      */
-    @NonNull
-    private MethodCtDecl computeCompileTimeDecl(MethodCallSite site) {
+    private @NonNull MethodCtDecl computeCompileTimeDecl(MethodCallSite site) {
 
         /*
          *  The process starts with a set of candidates and refines it
@@ -206,8 +205,7 @@ public final class Infer {
         return UNRESOLVED_CTDECL;
     }
 
-    @Nullable
-    private JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
+    private @Nullable JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
         LOG.startInference(m, site, phase);
         @Nullable JMethodSig candidate = instantiateMethodOrCtor(site, phase, m);
         LOG.endInference(candidate);
@@ -369,24 +367,22 @@ public final class Infer {
             return cons;
         }
 
-        if (newType.getFormalTypeParams().isEmpty()) {
+        // replace the return type so that anonymous class ctors return the supertype
+        JMethodSig adaptedSig = cons.internalApi().withReturnType(newType).internalApi().markAsAdapted();
+
+        List<JTypeVar> newTypeFormals = newType.getFormalTypeParams();
+        if (newTypeFormals.isEmpty()) {
             // non-generic type
-            // replace the return type so that anonymous class ctors
-            return cons.internalApi().withReturnType(newType).internalApi().markAsAdapted();
-        }
-
-        // else transform the constructor to add the type parameters
-        // of the constructed type
-
-        List<JTypeVar> tparams = cons.getTypeParameters();
-        if (tparams.isEmpty()) {
-            tparams = newType.getFormalTypeParams();
+            return adaptedSig;
         } else {
-            tparams = new ArrayList<>(tparams);
-            tparams.addAll(newType.getFormalTypeParams());
-        }
+            // else transform the constructor to add the type parameters
+            // of the constructed type
+            List<JTypeVar> tparams = CollectionUtil.concatView(cons.getTypeParameters(), newTypeFormals);
 
-        return cons.internalApi().withTypeParams(tparams).internalApi().withReturnType(newType).internalApi().markAsAdapted();
+            // type parameters are not part of the adapted signature, so that when we reset
+            // the signature for invocation inference, we don't duplicate new type parameters
+            return adaptedSig.internalApi().withTypeParams(tparams);
+        }
     }
 
     /**
