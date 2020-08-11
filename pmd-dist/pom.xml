@@ -80,9 +80,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
                 <executions>
                     <execution>
+                        <id>failsafe-default</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -93,6 +93,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
@@ -210,6 +215,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ui</artifactId>
+            <version>${pmd-designer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-vm</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -249,22 +259,35 @@
 
     <profiles>
         <profile>
-            <id>jdk8-modules</id>
+            <id>jdk8-compat-it</id>
             <activation>
-                <jdk>[1.8,</jdk>
+                <property>
+                    <name>java8.home</name>
+                </property>
             </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-apex</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-ui</artifactId>
-                    <version>${pmd-designer.version}</version>
-                </dependency>
-            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk8-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java8.home}</JAVA_HOME>
+                                        <PATH>${java8.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

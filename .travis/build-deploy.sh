@@ -10,7 +10,11 @@ source .travis/regression-tester.sh
 VERSION=$(get_pom_version)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-MVN_BUILD_FLAGS="-B -V"
+if travis_isLinux; then
+    MVN_BUILD_FLAGS="-B -V  -Djava8.home=${HOME}/openjdk8"
+else
+    MVN_BUILD_FLAGS="-B -V"
+fi
 
 if travis_isOSX; then
 

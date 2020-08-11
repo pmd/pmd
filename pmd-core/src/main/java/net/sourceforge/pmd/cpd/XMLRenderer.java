@@ -18,7 +18,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -145,7 +144,10 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
             // the code snippet has normalized line endings
             String platformSpecific = codeSnippet.replace("\n", System.lineSeparator());
             Element codefragment = doc.createElement("codefragment");
-            codefragment.appendChild(doc.createCDATASection(StringEscapeUtils.escapeXml10(platformSpecific)));
+            // only remove invalid characters, escaping is not necessary in CDATA.
+            // if the string contains the end marker of a CDATA section, then the DOM impl will
+            // create two cdata sections automatically.
+            codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
             duplication.appendChild(codefragment);
         }
         return duplication;

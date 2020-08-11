@@ -19,6 +19,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 
 /**
  * Optimised node stream implementation for a single element. Streams
@@ -32,11 +33,12 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * <p>This ensures that short pipelines like {@code node.descendants().first()}
  * are as efficient as the pre 7.0.0 methods.
  */
-final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> {
+final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> implements DescendantNodeStream<T> {
 
     private final T node;
 
     SingletonNodeStream(@NonNull T node) {
+        assert node != null : "null node!";
         this.node = node;
     }
 
@@ -206,5 +208,10 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     @Override
     public NodeStream<Node> precedingSiblings() {
         return StreamImpl.precedingSiblings(node);
+    }
+
+    @Override
+    public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
+        return this; // doesn't mean anything
     }
 }
