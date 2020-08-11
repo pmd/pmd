@@ -13,9 +13,11 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -116,8 +118,13 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
         @Override
         public Iterable<JMethodSig> getAccessibleCandidates() {
-            return myNode.isThis() ? getEnclosingType().getConstructors()
-                                   : filterAccessible(getNewType().getConstructors(), getEnclosingType().getSymbol());
+            if (myNode.isThis()) {
+                return getEnclosingType().getConstructors();
+            }
+            return IteratorUtil.mapIterator(
+                getNewType().getConstructors(),
+                iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers.isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true))
+            );
         }
 
         @Override

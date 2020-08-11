@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shadows
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
@@ -30,7 +29,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 
             "ambig(\"a\", \"b\")" should parseAs {
                 methodCall("ambig") {
-                    with (it.typeDsl) {
+                    with(it.typeDsl) {
                         it.methodType.shouldMatchMethod(
                                 named = "ambig",
                                 declaredIn = gen.t_Overloads,
@@ -86,7 +85,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 class Scratch {
     void m(Throwable t) { }
     
-    class Foo {
+    class Foo extends Scratch {
         void m(Throwable t) { }
     }
 }
@@ -111,27 +110,19 @@ class Other {
         val ctx = m2.declaringType as JClassType
 
         doTest("Scratch.Foo::m should hide Scratch::m") {
-            shadows(m2, m1, ctx) shouldBe OptionalBool.YES
+            shouldTakePrecedence(m2, m1, ctx) shouldBe OptionalBool.YES
         }
 
         doTest("Scratch::m should not hide Scratch.Foo::m") {
-            shadows(m1, m2, ctx) shouldBe OptionalBool.NO
-        }
-
-        doTest("A method should not hide itself") {
-            types.forEach { ctx ->
-                listOf(m1, m2, m3).forEach {
-                    shadows(it, it, ctx) shouldBe OptionalBool.UNKNOWN
-                }
-            }
+            shouldTakePrecedence(m1, m2, ctx) shouldBe OptionalBool.NO
         }
 
         doTest("Other::m should be unrelated to the other methods") {
             types.forEach { ctx ->
-                shadows(m1, m3, ctx) shouldBe OptionalBool.UNKNOWN
-                shadows(m2, m3, ctx) shouldBe OptionalBool.UNKNOWN
-                shadows(m3, m1, ctx) shouldBe OptionalBool.UNKNOWN
-                shadows(m3, m2, ctx) shouldBe OptionalBool.UNKNOWN
+                shouldTakePrecedence(m1, m3, ctx) shouldBe OptionalBool.UNKNOWN
+                shouldTakePrecedence(m2, m3, ctx) shouldBe OptionalBool.UNKNOWN
+                shouldTakePrecedence(m3, m1, ctx) shouldBe OptionalBool.UNKNOWN
+                shouldTakePrecedence(m3, m2, ctx) shouldBe OptionalBool.UNKNOWN
             }
         }
     }
@@ -231,6 +222,42 @@ class Scratch {
 
         doTest("Scratch::m should not override Other::m") {
             doesOverride(scratchM, otherM) shouldBe false
+        }
+    }
+
+
+
+    parserTest("Private method shadowed in inner class") {
+        val acu = parser.parse(
+                """
+class Scratch {
+   private void m(Throwable t) { } // private methods are not overridden
+
+   static class Inner extends Scratch {
+      private void m(Throwable t) { }
+   }
+}
+                """.trimIndent()
+        )
+
+        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+
+        assert(areOverrideEquivalent(scratchM, otherM)) {
+            "Precondition: override-equivalence"
+        }
+
+        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
+                TypeOps.overrides(m1, m2, otherM.declaringType)
+
+        doTest("Neither should override the other, they're private") {
+            doesOverride(otherM, scratchM) shouldBe false
+            doesOverride(scratchM, otherM) shouldBe false
+        }
+
+        doTest("But precedence should still be decided") {
+            shouldTakePrecedence(scratchM, otherM, otherM.declaringType) shouldBe OptionalBool.NO
+            shouldTakePrecedence(otherM, scratchM, otherM.declaringType) shouldBe OptionalBool.YES
         }
     }
 

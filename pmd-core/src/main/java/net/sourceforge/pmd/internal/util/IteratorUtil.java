@@ -171,6 +171,13 @@ public final class IteratorUtil {
         };
     }
 
+    /**
+     * Apply a transform on the iterator of an iterable.
+     */
+    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+        return () -> mapper.apply(iter.iterator());
+    }
+
     @SafeVarargs
     public static <T> Iterator<T> iterate(T... elements) {
         return Arrays.asList(elements).iterator();

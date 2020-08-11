@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collector;
 
@@ -104,7 +105,7 @@ public final class OverloadComparator {
             return YES;
         } else if (overrides(m2, m1, commonSubtype)) {
             return NO;
-        } else if (m1.isAbstract() != m2.isAbstract()) {
+        } else if (m1.isAbstract() ^ m2.isAbstract()) {
             return definitely(!m1.isAbstract());
         } else if (m1.isAbstract() && m2.isAbstract()) { // last ditch effort
             // both are unrelated abstract, inherited into 'site'
@@ -118,10 +119,16 @@ public final class OverloadComparator {
             return m1InClass && m2Class ? UNKNOWN : definitely(m1InClass);
         }
 
+        if (Modifier.isPrivate(m1.getModifiers() | m2.getModifiers())
+            && commonSubtype instanceof JClassType) {
+            // One of them is private, which means, they can't be overridden,
+            // so they failed the above test
+            // Maybe it's shadowing then
+            return shadows(m1, m2, (JClassType) commonSubtype);
+        }
+
         return UNKNOWN;
     }
-
-    // TODO test if doesOverride handles hiding between static methods properly
 
 
     /**

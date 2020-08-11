@@ -248,19 +248,25 @@ final class PolyResolution {
                 // TODO might log this
                 return ts.UNRESOLVED_TYPE;
             } else if (e instanceof ASTConditionalExpression || e instanceof ASTSwitchExpression) {
-                // target type
-                if (parentInvoc.isVarargsCall()) {
-                    JTypeMirror lastFormal = mt.getFormalParameters().get(mt.getArity() - 1);
-                    return ((JArrayType) lastFormal).getComponentType();
-                } else {
-                    return mt.getFormalParameters().get(e.getIndexInParent());
-                }
+                return nthVarargParam(parentInvoc, mt, e.getIndexInParent());
             }
         } else if (e.getParent() instanceof ASTConditionalExpression) {
             return fetchCascaded((TypeNode) e.getParent());
         }
 
         throw new IllegalStateException("Unknown poly? " + e);
+    }
+
+    private JTypeMirror nthVarargParam(InvocationNode parentInvoc, JMethodSig mt, int paramIdx) {
+        List<JTypeMirror> formals = mt.getFormalParameters();
+        if (parentInvoc.isVarargsCall() && paramIdx >= formals.size()) {
+            JTypeMirror lastFormal = formals.get(mt.getArity() - 1);
+            return ((JArrayType) lastFormal).getComponentType();
+        } else if (paramIdx > formals.size()) {
+            return ts.UNRESOLVED_TYPE;
+        } else {
+            return formals.get(paramIdx);
+        }
     }
 
     /**

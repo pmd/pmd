@@ -321,9 +321,17 @@ public final class JavaResolvers {
         return hidden;
     }
 
-    private static boolean isAccessibleIn(@NonNull JClassSymbol nestRoot,
-                                          JAccessibleElementSymbol sym,
-                                          boolean isOwnerASupertypeOfContext) {
+    /**
+     * A general-purpose accessibility check, which can be used if you
+     * know in advance whether the context is a supertype of the class
+     * (ie, whether the sym is accessible if "protected").
+     *
+     * @param nestRoot Root enclosing type for the context of the reference
+     * @param sym      Symbol to test
+     */
+    public static boolean isAccessibleIn(@NonNull JClassSymbol nestRoot,
+                                         JAccessibleElementSymbol sym,
+                                         boolean isOwnerASupertypeOfContext) {
         return isAccessibleIn(nestRoot, nestRoot.getPackageName(), sym, isOwnerASupertypeOfContext);
     }
 
@@ -334,7 +342,7 @@ public final class JavaResolvers {
      * albeit a bit low-level (but only needs subtyping to be computed once).
      */
     private static boolean isAccessibleIn(@Nullable JClassSymbol nestRoot,
-                                          String packageName,
+                                          @NonNull String packageName,
                                           JAccessibleElementSymbol sym,
                                           boolean isOwnerASupertypeOfContext) {
         int modifiers = sym.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);

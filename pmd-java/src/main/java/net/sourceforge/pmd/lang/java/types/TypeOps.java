@@ -125,6 +125,10 @@ public final class TypeOps {
         return () -> IteratorUtil.filter(visible.iterator(), it -> it.getSymbol().isAccessible(accessSite));
     }
 
+    public static Iterable<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite, boolean isOwnerASuperTypeOfAccessSite) {
+        return () -> IteratorUtil.filter(visible.iterator(), it -> it.getSymbol().isAccessible(accessSite));
+    }
+
     private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
         static final SameTypeVisitor INFERENCE = new SameTypeVisitor(true);
