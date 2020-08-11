@@ -149,7 +149,7 @@ final class InferenceContext {
         return true;
     }
 
-    Set<JInferenceVar> freeVarsIn(Set<? extends JTypeVisitable> types) {
+    Set<JInferenceVar> freeVarsIn(Iterable<? extends JTypeVisitable> types) {
         Set<JInferenceVar> vars = new LinkedHashSet<>();
         for (JInferenceVar ivar : freeVars) {
             for (JTypeVisitable t : types) {

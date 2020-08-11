@@ -260,9 +260,8 @@ final class ExprOps {
         JTypeMirror lhsIfType = mref.getLhsIfType();
         boolean acceptLowerArity = lhsIfType != null && lhsIfType.isClassOrInterface() && !mref.isConstructorRef();
 
-        // TODO asInstanceMethod doe
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
-        site1.setLogging(false);
+        site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
         JMethodSig m1 = infer.determineInvocationTypeResult(site1);
 
         if (acceptLowerArity) {

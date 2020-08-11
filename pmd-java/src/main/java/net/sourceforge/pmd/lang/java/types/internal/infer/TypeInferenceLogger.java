@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.io.PrintStream;
+import java.util.Iterator;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -181,6 +182,14 @@ public interface TypeInferenceLogger {
             } else {
                 println("[WARNING] No potentially applicable methods in " + receiver);
             }
+            Iterator<JMethodSig> iter = site.getExpr().getAccessibleCandidates().iterator();
+            if (iter.hasNext()) {
+                startSection("Accessible signatures:");
+                iter.forEachRemaining(it -> println(ppMethod(it)));
+                endSection("");
+            } else {
+                println("No accessible signatures");
+            }
         }
 
         @Override
@@ -202,8 +211,10 @@ public interface TypeInferenceLogger {
 
         @Override
         public void fallBackCompileTimeDecl(JMethodSig ctdecl, MethodCallSite site) {
-            println("[WARNING] Falling back on "
-                        + color(ctdecl, ANSI_BLUE)
+            if (!site.isLogEnabled()) {
+                return;
+            }
+            println("[WARNING] Falling back on " + color(ctdecl, ANSI_BLUE)
                         + " (this may cause future mistakes)");
         }
 

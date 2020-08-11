@@ -244,7 +244,7 @@ public final class Infer {
         JMethodSig m = ctdecl.getMethodType();
         InvocationMirror expr = site.getExpr();
 
-        if (isReturnTypeFinished(m)) {
+        if (isReturnTypeFinished(m) && site.getExpectedType() == null) {
             assert assertReturnIsGround(m);
 
             LOG.skipInstantiation(m, site);
@@ -268,7 +268,7 @@ public final class Infer {
     private boolean isReturnTypeFinished(JMethodSig m) {
         return !isAdaptedConsType(m)
             // this means that the invocation type cannot be affected by context type
-            && !TypeOps.mentionsAnyTvar(m.internalApi().adaptedMethod().getReturnType(), m.getTypeParameters());
+            && !TypeOps.mentionsAnyTvar(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters());
     }
 
     private boolean isAdaptedConsType(JMethodSig m) {

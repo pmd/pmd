@@ -193,7 +193,8 @@ final class ExprCheckHelper {
         } else {
             // Otherwise, the method reference is inexact, and:
 
-            // (If one or more of the function type's parameter types is not a proper type, the constraint reduces to false.)
+            // (If one or more of the function's formal parameter types
+            // is not a proper type, the constraint reduces to false.)
 
             // This is related to the input variable trickery used
             // to resolve input vars before resolving the constraint:
@@ -201,7 +202,7 @@ final class ExprCheckHelper {
 
             // here we defer the check until the variables are ground
             infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(fun),
+                infCtx.freeVarsIn(fun.getFormalParameters()),
                 solvedCtx -> solveCtdeclCompatibility(mref, nonWildcard, solvedCtx.ground(fun))
             );
         }

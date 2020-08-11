@@ -757,6 +757,61 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
+
+    parserTest("Test method ref in stream 2") {
+
+        logTypeInference(verbose = true)
+
+        val acu = parser.parse("""
+            import java.util.Optional;
+            import java.util.List;
+            import java.util.stream.Stream;
+            import java.util.Objects;
+
+            class Archive {
+
+                private static void loopChecks2(List<Archive> step, List<Archive> pred, List<Archive> fini) {
+                    Stream.of(step, pred, fini).flatMap(List::stream).filter(Objects::nonNull).anyMatch(it -> true);
+                }
+
+            }
+        """.trimIndent())
+
+
+        val t_Archive = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).firstOrThrow().typeMirror
+        val anyMatch = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        anyMatch.shouldMatchN {
+            methodCall("anyMatch") {
+                it::getTypeMirror shouldBe it.typeSystem.BOOLEAN
+
+                methodCall("filter") {
+
+                    it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[t_Archive] }
+
+                    methodCall("flatMap") {
+
+                        it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[t_Archive] }
+
+                        methodCall("of") {
+                            it::getQualifier shouldBe unspecifiedChild()
+
+                            it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
+
+                            argList(3)
+                        }
+
+                        argList(1)
+                    }
+
+                    argList(1)
+                }
+
+                argList(1)
+            }
+        }
+    }
+
     parserTest("Test type var bound substitution in inherited members") {
 
 
