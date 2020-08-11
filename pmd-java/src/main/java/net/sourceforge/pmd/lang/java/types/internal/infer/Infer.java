@@ -154,13 +154,13 @@ public final class Infer {
 
         /*
          *  The process starts with a set of candidates and refines it
-         *  iteratively. Applicability is the only one which needs
-         *  inference.
+         *  iteratively. Applicability/best applicability are the only
+         *  ones which needs inference.
          *
          *  visible ⊇ accessible ⊇ potentially applicable ⊇ applicable ⊇ best applicable
          */
         List<JMethodSig> potentiallyApplicable = new ArrayList<>();
-        for (JMethodSig it : site.getExpr().getVisibleCandidates()) {
+        for (JMethodSig it : site.getExpr().getAccessibleCandidates()) {
             if (isPotentiallyApplicable(it, site.getExpr())) {
                 potentiallyApplicable.add(it);
             }
@@ -806,19 +806,13 @@ public final class Infer {
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.1
      *
-     * <p>This tests arity, accessibility and
+     * <p>This assumes the name of the method matches the expression, and
+     * the method is accessible.
      *
      * @param m    Method to test
      * @param expr Invocation expression
      */
     private boolean isPotentiallyApplicable(JMethodSig m, InvocationMirror expr) {
-        if (!expr.getName().equals(m.getName())) {
-            return false;
-        }
-
-        if (!m.isAccessible(expr.getEnclosingType())) {
-            return false;
-        }
 
         if (m.isGeneric()
             && !expr.getExplicitTypeArguments().isEmpty()

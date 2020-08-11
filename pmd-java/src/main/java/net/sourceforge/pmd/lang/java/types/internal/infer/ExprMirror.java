@@ -193,18 +193,15 @@ public interface ExprMirror {
     interface InvocationMirror extends PolyExprMirror {
 
         /**
-         * Returns a stream of method types that contain the visible
-         * methods (or constructors) with *the same name* as this
-         * invocation (will not be checked later).
-         *
-         * <p>Accessibility of the method at the call site will be
-         * checked later.
+         * Enumerates *accessible* method (or ctor) signatures with
+         * *the same name* as this invocation. Name and accessibility
+         * will not be checked later.
          *
          * The details on how to determine this are here:
          *
          * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.1
          */
-        List<JMethodSig> getVisibleCandidates();
+        Iterable<JMethodSig> getAccessibleCandidates();
 
 
         /**
@@ -343,7 +340,7 @@ public interface ExprMirror {
          * then returns the constructors of class {@link Object}.
          */
         @Override
-        List<JMethodSig> getVisibleCandidates();
+        Iterable<JMethodSig> getAccessibleCandidates();
 
 
         /** Must return {@link JConstructorSymbol#CTOR_NAME}. */

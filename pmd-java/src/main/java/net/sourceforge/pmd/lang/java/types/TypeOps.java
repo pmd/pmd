@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion;
@@ -116,9 +117,12 @@ public final class TypeOps {
         return true;
     }
 
-    @NonNull
     public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
         return it -> it.getSimpleName().equals(name) && it.isAccessible(symbol);
+    }
+
+    public static Iterable<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
+        return () -> IteratorUtil.filter(visible.iterator(), it -> it.getSymbol().isAccessible(accessSite));
     }
 
     private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {

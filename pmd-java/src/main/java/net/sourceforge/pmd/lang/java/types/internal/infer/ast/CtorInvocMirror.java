@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TypeOps.filterAccessible;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -45,8 +47,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         return super.getEnclosingType();
     }
 
-    @Override
-    public List<JMethodSig> getVisibleCandidates() {
+    private List<JMethodSig> getVisibleCandidates() {
         JClassType newType = getNewType();
         if (newType == null) {
             return Collections.emptyList();
@@ -55,6 +56,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                                          : newType.getConstructors();
         }
         return newType.getConstructors();
+    }
+
+    @Override
+    public Iterable<JMethodSig> getAccessibleCandidates() {
+        return filterAccessible(getVisibleCandidates(), getEnclosingType().getSymbol());
     }
 
     @Override
@@ -80,7 +86,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public List<JMethodSig> getVisibleCandidates() {
+        public List<JMethodSig> getAccessibleCandidates() {
             return getNewType().getConstructors();
         }
 
@@ -109,8 +115,9 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public List<JMethodSig> getVisibleCandidates() {
-            return getNewType().getConstructors();
+        public Iterable<JMethodSig> getAccessibleCandidates() {
+            return myNode.isThis() ? getEnclosingType().getConstructors()
+                                   : filterAccessible(getNewType().getConstructors(), getEnclosingType().getSymbol());
         }
 
         @Override

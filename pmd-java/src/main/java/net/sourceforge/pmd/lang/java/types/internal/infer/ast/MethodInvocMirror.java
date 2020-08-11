@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -50,7 +51,7 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
     }
 
     @Override
-    public List<JMethodSig> getVisibleCandidates() {
+    public List<JMethodSig> getAccessibleCandidates() {
         TypeNode lhs = myNode.getQualifier();
         if (lhs == null) {
             // already filters accessibility
@@ -61,6 +62,15 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
 
             return getMethodsOf(lhsType, getName(), staticOnly);
         }
+    }
+
+    private List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly) {
+        JClassSymbol enclosingType = myNode.getEnclosingType().getSymbol();
+        return type.streamMethods(
+            it -> (!staticOnly || Modifier.isStatic(it.getModifiers()))
+                && it.getSimpleName().equals(name)
+                && it.isAccessible(enclosingType)
+        ).collect(OverloadComparator.collectMostSpecific(type));
     }
 
     @Override
@@ -76,11 +86,6 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
         } else {
             return myNode.getEnclosingType().getTypeMirror();
         }
-    }
-
-    private List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly) {
-        return type.streamMethods(it -> it.getSimpleName().equals(name) && (!staticOnly || Modifier.isStatic(it.getModifiers())))
-                   .collect(OverloadComparator.collectMostSpecific(type));
     }
 
     @Override

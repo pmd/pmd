@@ -207,33 +207,27 @@ final class ExprOps {
                 // must denote a type that is reifiable (§4.7), or a compile-time error occurs.
                 if (lhs.isReifiable()) {
                     JTypeDeclSymbol symbol = lhs.getSymbol();
-                    assert symbol instanceof JClassSymbol
-                        && ((JClassSymbol) symbol).isArray()
-                        : "Reifiable array should present a symbol! " + lhs;
+                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray() : "Reifiable array should present a symbol! " + lhs;
                     return lhs.getConstructors().get(0);
                 } else {
                     // todo compile time error
                     return null;
                 }
             } else {
-
                 if (lhs.isRaw() || !(lhs instanceof JClassType)) {
                     return null;
                 }
 
-                JClassType enclosing = (JClassType) lhs;
-
-                accessible = enclosing.getConstructors().stream()
-                                      .filter(it -> it.isAccessible(enclosing))
-                                      .collect(Collectors.toList());
+                accessible = lhs.getConstructors().stream()
+                                .filter(it -> it.isAccessible(mref.getEnclosingType()))
+                                .collect(Collectors.toList());
             }
         } else {
-            JTypeMirror typeToSearch = mref.getTypeToSearch();
-
-            String name = mref.getMethodName();
             JClassType enclosing = mref.getEnclosingType();
-            accessible = typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(name, enclosing.getSymbol()))
-                                     .collect(OverloadComparator.collectMostSpecific(enclosing));
+
+            accessible = mref.getTypeToSearch()
+                             .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
+                             .collect(OverloadComparator.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {
@@ -343,8 +337,8 @@ final class ExprOps {
             }
 
             @Override
-            public List<JMethodSig> getVisibleCandidates() {
-                return ExprOps.getCandidates(mref, asInstanceMethod, targetType);
+            public Iterable<JMethodSig> getAccessibleCandidates() {
+                return ExprOps.getAccessibleCandidates(mref, asInstanceMethod, targetType);
             }
 
             @Override
@@ -404,7 +398,7 @@ final class ExprOps {
         };
     }
 
-    private static List<JMethodSig> getCandidates(MethodRefMirror mref, boolean asInstanceMethod, JMethodSig targetType) {
+    private static Iterable<JMethodSig> getAccessibleCandidates(MethodRefMirror mref, boolean asInstanceMethod, JMethodSig targetType) {
         JMethodSig exactMethod = getExactMethod(mref);
         if (exactMethod != null) {
             return Collections.singletonList(exactMethod);
@@ -412,11 +406,11 @@ final class ExprOps {
             JTypeMirror typeToSearch = mref.getTypeToSearch();
             if (typeToSearch.isArray() && mref.isConstructorRef()) {
                 // ArrayType :: new
-                return Collections.singletonList(typeToSearch.getConstructors().get(0));
+                return typeToSearch.getConstructors();
             } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
                 // ClassType :: [TypeArguments] new
                 // TODO treatment of raw constructors is whacky
-                return typeToSearch.getConstructors();
+                return TypeOps.filterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
             }
 
             if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType && targetType.getArity() > 0) {
@@ -444,7 +438,7 @@ final class ExprOps {
             // super :: [TypeArguments] Identifier
             // TypeName.super :: [TypeArguments] Identifier
             // ReferenceType :: [TypeArguments] Identifier
-            return typeToSearch.streamMethods(s -> s.getSimpleName().equals(mref.getMethodName()))
+            return typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol()))
                                .collect(Collectors.toList());
         }
     }
