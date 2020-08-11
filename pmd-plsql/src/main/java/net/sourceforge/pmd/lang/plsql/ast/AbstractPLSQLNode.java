@@ -30,11 +30,6 @@ abstract class AbstractPLSQLNode extends AbstractJjtreeNode<AbstractPLSQLNode, P
         return value;
     }
 
-    @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
 
     @Override
     public String getXPathNodeName() {
