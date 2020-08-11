@@ -262,7 +262,7 @@ final class ExprOps {
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
-        JMethodSig m1 = infer.determineInvocationTypeResult(site1);
+        JMethodSig m1 = infer.determineInvocationType(site1).getMethodType();
 
         if (acceptLowerArity) {
             // then we need to perform two searches, one with arity n, looking for static methods,
@@ -270,7 +270,7 @@ final class ExprOps {
 
             MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
             site2.setLogging(false);
-            JMethodSig m2 = infer.determineInvocationTypeResult(site2);
+            JMethodSig m2 = infer.determineInvocationType(site2).getMethodType();
 
             //  If the first search produces a most specific method that is static,
             //  and the set of applicable methods produced by the second search

@@ -93,25 +93,22 @@ final class ExprCheckHelper {
             // in that case we need to infer that as well
             InvocationMirror invoc = (InvocationMirror) expr;
             MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
-            JMethodSig mostSpecific = infer.determineInvocationTypeResult(nestedSite);
+            MethodCtDecl argCtDecl = infer.determineInvocationType(nestedSite);
+            JMethodSig mostSpecific = argCtDecl.getMethodType();
             // now if the return type of the arg is polymorphic and unsolved,
             // there are some additional bounds on our own infCtx
 
 
             checker.checkExprConstraint(infCtx, mostSpecific.getReturnType(), targetType);
 
-            // fixme this fails to set the inferred type of arguments
-            //  if we skip invocation on the outer expr
-            if (phase.isInvocation()) {
-                infCtx.addInstantiationListener(
-                    infCtx.freeVarsIn(mostSpecific.getReturnType()),
-                    solved -> {
-                        JMethodSig ground = solved.ground(mostSpecific);
-                        invoc.setInferredType(ground.getReturnType());
-                        invoc.setMethodType(new MethodCtDecl(ground, phase));
-                    }
-                );
-            }
+            infCtx.addInstantiationListener(
+                infCtx.freeVarsIn(mostSpecific.getReturnType()),
+                solved -> {
+                    JMethodSig ground = solved.ground(mostSpecific);
+                    invoc.setInferredType(ground.getReturnType());
+                    invoc.setMethodType(new MethodCtDecl(ground, argCtDecl.getResolvePhase()));
+                }
+            );
             return true;
         } else if (expr instanceof BranchingMirror) {
             return ((BranchingMirror) expr).getBranches().allMatch(it -> isCompatible(targetType, it));

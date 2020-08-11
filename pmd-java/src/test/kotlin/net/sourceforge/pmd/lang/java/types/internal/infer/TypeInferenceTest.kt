@@ -94,7 +94,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("f:Test method invoc resolution, nested invocation exprs") {
+    parserTest("Test method invoc resolution, nested invocation exprs") {
 
         logTypeInference(true)
         asIfIn(TypeInferenceTestCases::class.java)

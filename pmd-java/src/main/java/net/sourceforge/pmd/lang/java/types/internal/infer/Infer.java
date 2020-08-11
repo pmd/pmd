@@ -212,10 +212,6 @@ public final class Infer {
         return candidate;
     }
 
-    JMethodSig determineInvocationTypeResult(MethodCallSite site) {
-        return determineInvocationType(site).getMethodType();
-    }
-
     /**
      * Determines the most specific applicable method for the given call site.
      *
@@ -472,7 +468,7 @@ public final class Infer {
                     LOG.propagateAndAbort(infCtx, site.getInferenceContext());
                     infCtx.duplicateInto(site.getInferenceContext());
                     // TODO there may be stuck terms
-                    return m;
+                    return infCtx.mapToIVars(m);
                 }
             }
 
