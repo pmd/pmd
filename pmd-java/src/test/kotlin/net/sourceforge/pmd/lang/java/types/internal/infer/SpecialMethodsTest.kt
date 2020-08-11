@@ -9,11 +9,12 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import java.util.*
 
 /**
  *
  */
-class GetClassTest : ProcessorTestSpec({
+class SpecialMethodsTest : ProcessorTestSpec({
 
     val jutil = "java.util"
     val juf = "$jutil.function"
@@ -88,12 +89,53 @@ class GetClassTest : ProcessorTestSpec({
             call.shouldMatchN {
                 methodCall("getClass") {
 
-                    it::getTypeMirror shouldBe with (it.typeDsl) {
+                    it::getTypeMirror shouldBe with(it.typeDsl) {
                         Class::class[`?` extends t_Scratch.erasure]
                     }
 
                     variableAccess("k")
                     argList {}
+                }
+            }
+        }
+    }
+
+    parserTest("Test enum methods") {
+
+
+        val acu = parser.parse("""
+            import java.util.Arrays;
+
+            enum Foo {
+                ;
+
+                {
+                    Arrays.stream(values());
+                }
+            }
+
+        """.trimIndent())
+
+        val t_Foo = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+
+        val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        streamCall.shouldMatchN {
+            methodCall("stream") {
+                it.typeMirror shouldBe with(it.typeDsl) {
+                    gen.t_Stream[t_Foo]
+                }
+
+                it::getQualifier shouldBe unspecifiedChild()
+
+                argList {
+                    methodCall("values") {
+                        it.typeMirror shouldBe with(it.typeDsl) {
+                            t_Foo.toArray()
+                        }
+
+                        argList(0)
+                    }
                 }
             }
         }

@@ -24,6 +24,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         asIfIn(TypeInferenceTestCases::class.java)
 
+        logTypeInference(true)
 
         inContext(TypeBodyParsingCtx) {
 
@@ -36,15 +37,14 @@ class CaptureInferenceTest : ProcessorTestSpec({
             """)
                     .descendants(ASTMethodCall::class.java).get(1)!!
 
-            assertSoftly {
-                normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
-                normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
 
-                val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
+            normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
+            normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
 
-                // we still get a type
-                normalizer.normalizeCaptures(setCall.methodType.toString()) shouldBe "java.util.List<capture#2 of ?>.set(int, capture#2 of ?) -> capture#2 of ?"
-            }
+            val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
+
+            // we still get a type
+            normalizer.normalizeCaptures(setCall.methodType.toString()) shouldBe "java.util.List<capture#2 of ?>.set(int, capture#2 of ?) -> capture#2 of ?"
         }
     }
 
@@ -90,8 +90,6 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
     parserTest("Test method ref on captured thing") {
 
-        logTypeInference(verbose = true)
-
         val acu = parser.parse("""
            import java.util.List;
            import java.util.ArrayList;
@@ -117,7 +115,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                 argList {
                     var capture: JTypeVar? = null
                     methodCall("comparingInt") {
-                        with (it.typeDsl) {
+                        with(it.typeDsl) {
                             // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
                             val ret = it.typeMirror.shouldBeA<JClassType> {
                                 it.symbol shouldBe gen.t_Comparator.symbol

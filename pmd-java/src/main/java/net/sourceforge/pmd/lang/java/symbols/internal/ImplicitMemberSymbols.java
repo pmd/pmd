@@ -59,7 +59,7 @@ public final class ImplicitMemberSymbols {
             enumSym,
             "values",
             Modifier.PUBLIC | Modifier.STATIC,
-            TypeSystem::declaration,
+            (ts, c) -> ts.arrayType(ts.declaration(c), 1),
             emptyList()
         );
     }
