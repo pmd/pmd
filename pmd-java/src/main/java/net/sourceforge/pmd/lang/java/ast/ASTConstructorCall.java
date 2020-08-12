@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwne
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**

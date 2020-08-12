@@ -25,6 +25,13 @@ import kotlin.String
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
+/*
+    Note: in parser tests, you can get a log for the inference by calling
+    logTypeInference(verbose = true/false)
+
+    Remember to getTypeMirror() / getMethodType() somewhere as the inference
+    is done lazily.
+ */
 
 fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
 val testTypeSystem: TypeSystem = newTypeSystem()
@@ -120,6 +127,8 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
     val t_Stream: JClassType                        get() = java.util.stream.Stream::class.raw
     val t_Function: JClassType                      get() = java.util.function.Function::class.raw
+    val t_Map: JClassType                           get() = java.util.Map::class.raw
+    val t_MapEntry: JClassType                      get() = java.util.Map.Entry::class.raw
 
     init {
         assert(`t_Enum{E}`.isGenericTypeDeclaration)

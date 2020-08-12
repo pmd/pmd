@@ -32,15 +32,15 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     @Override
     public List<JTypeMirror> getExplicitTypeArguments() {
-        return myNode.getExplicitTypeArgumentList()
-                     .stream()
-                     .map(TypeNode::getTypeMirror)
-                     .collect(Collectors.toList());
+        return ASTList.orEmptyStream(myNode.getExplicitTypeArguments())
+                      .toStream()
+                      .map(TypeNode::getTypeMirror)
+                      .collect(Collectors.toList());
     }
 
     @Override
     public JavaNode getExplicitTargLoc(int i) {
-        return myNode.getExplicitTypeArgumentList().get(i);
+        return ASTList.orEmptyStream(myNode.getExplicitTypeArguments()).get(i);
     }
 
     @Override

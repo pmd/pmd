@@ -57,10 +57,8 @@ public final class ASTMethodCall extends AbstractJavaExpr
 
     }
 
-    /**
-     * Returns the name of the called method.
-     */
-    public String getMethodName() {
+    @Override
+    public @NonNull String getMethodName() {
         return super.getImage();
     }
 

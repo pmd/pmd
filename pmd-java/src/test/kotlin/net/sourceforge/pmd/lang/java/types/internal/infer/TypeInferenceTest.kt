@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec.GroupTestCtx.VersionedTestCtx
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
@@ -478,7 +479,7 @@ class Scratch {
                 .firstOrThrow()
                 .shouldMatchN {
                     methodCall("of") {
-                        it.typeMirror shouldBe  with(it.typeDsl) { gen.`t_List{String}` }
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.`t_List{String}` }
                         argList {
                             methodCall("m") {
                                 it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
@@ -489,6 +490,76 @@ class Scratch {
                         }
                     }
                 }
+
+    }
+
+
+    parserTest("Constructor with inner class") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import java.util.Iterator;
+import java.util.Map;
+
+class MyMap<K, V> {
+
+
+    Iterator<K> descendingKeyIterator() {
+        return new KeyIter(lo(), hi());
+    }
+
+    Entry lo() {return null;}
+
+    Entry hi() {return null;}
+
+    class Entry implements Map.Entry<K,V> { }
+
+    class KeyIter implements Iterator<K> {
+
+        <E extends Map.Entry<? extends K, ? extends V>>
+
+        KeyIter(E lo, E hi) {}
+
+        @Override
+        public boolean hasNext() {return false;}
+
+        @Override
+        public K next() {return null;}
+    }
+}
+
+        """.trimIndent())
+
+        val (t_MyMap, t_MyMapEntry, t_KeyIter) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (kvar, vvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+
+        val ctorCall = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        ctorCall.shouldMatchN {
+            constructorCall {
+                val `t_MyMap{K,V}KeyIter`: JClassType
+                val `t_MyMap{K,V}Entry`: JClassType
+
+                with(it.typeDsl) {
+                    `t_MyMap{K,V}KeyIter` = t_MyMap[kvar, vvar].selectInner(t_KeyIter.symbol, emptyList())
+                    `t_MyMap{K,V}Entry` = t_MyMap[kvar, vvar].selectInner(t_MyMapEntry.symbol, emptyList())
+
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = `t_MyMap{K,V}KeyIter`,
+                            withFormals = listOf(`t_MyMap{K,V}Entry`, `t_MyMap{K,V}Entry`),
+                            returning = `t_MyMap{K,V}KeyIter`
+                    )
+                }
+
+                it::getTypeNode shouldBe classType("KeyIter") {
+                    it.typeMirror shouldBe `t_MyMap{K,V}KeyIter`
+                }
+
+                argList(2)
+            }
+        }
 
     }
 

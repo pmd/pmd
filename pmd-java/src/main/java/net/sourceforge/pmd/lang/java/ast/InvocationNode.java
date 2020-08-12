@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
@@ -45,18 +42,6 @@ public interface InvocationNode extends TypeNode {
 
 
     /**
-     * Returns the list of arguments passed to the invocation.
-     * If there are no type arguments, returns an empty list.
-     * This is never null and as such is safer than {@link #getArguments()}.
-     */
-    @NonNull
-    default List<ASTType> getExplicitTypeArgumentList() {
-        ASTTypeArguments args = getExplicitTypeArguments();
-        return args == null ? Collections.emptyList() : IteratorUtil.toList(args.iterator());
-    }
-
-
-    /**
      * Gets the type of the method or constructor that is called by
      * this expression, statement or declaration. This is a method
      * type whose type parameters have been instantiated by their
@@ -79,12 +64,18 @@ public interface InvocationNode extends TypeNode {
      * called method is varargs, and was overload-selected in the varargs
      * phase. For example:
      * <pre>{@code
-     * String[] arr = { "a", "b" };
-     *
-     * Arrays.asList("a", "b"); // this is a varargs call
-     * Arrays.asList(arr);      // this is not a varargs call
+     * Arrays.asList("a", "b");                     // this is a varargs call
+     * Arrays.asList(new String[] { "a", "b" });    // this is not a varargs call
      * }</pre>
      */
     boolean isVarargsCall();
+
+    /**
+     * Returns the name of the called method. If this is a constructor
+     * call, returns {@link JConstructorSymbol#CTOR_NAME}.
+     */
+    default @NonNull String getMethodName() {
+        return JConstructorSymbol.CTOR_NAME;
+    }
 
 }
