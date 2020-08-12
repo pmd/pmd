@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
+import kotlin.test.assertFalse
 
 private val OverloadsQname = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
 
@@ -222,6 +223,49 @@ class Scratch {
 
         doTest("Scratch::m should not override Other::m") {
             doesOverride(scratchM, otherM) shouldBe false
+        }
+    }
+
+
+    parserTest("Primitive signatures do not merge") {
+        val acu = parser.parse(
+                """
+class Scratch {
+   void m(long t) { }
+
+   static class Inner extends Scratch {
+      void m(int t) { }
+   }
+}
+                """.trimIndent()
+        )
+
+        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+
+        assertFalse("Methods are not override-equivalent") {
+            areOverrideEquivalent(scratchM, otherM)
+        }
+    }
+
+    parserTest("Primitive signatures do not merge 2") {
+        val acu = parser.parse(
+                """
+class Scratch {
+   void m(int t) { }
+
+   static class Inner extends Scratch {
+      void m(long t) { }
+   }
+}
+                """.trimIndent()
+        )
+
+        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+
+        assertFalse("Methods are not override-equivalent") {
+            areOverrideEquivalent(scratchM, otherM)
         }
     }
 
