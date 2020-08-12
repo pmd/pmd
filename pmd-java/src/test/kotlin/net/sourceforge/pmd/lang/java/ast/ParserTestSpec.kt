@@ -125,7 +125,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             context: TestContext,
             name: String,
             javaVersion: JavaVersion,
-            assertions: ParserTestCtx.() -> Unit) {
+            assertions: suspend ParserTestCtx.() -> Unit) {
 
         context.registerTestCase(
                 name = TestName(name),
@@ -163,7 +163,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
         inner class VersionedTestCtx(private val context: TestContext, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
-            suspend fun doTest(name: String, assertions: VersionedTestCtx.() -> Unit) {
+            suspend fun doTest(name: String, assertions: suspend VersionedTestCtx.() -> Unit) {
                 containedParserTestImpl(context, name, javaVersion = javaVersion) {
                     assertions()
                 }

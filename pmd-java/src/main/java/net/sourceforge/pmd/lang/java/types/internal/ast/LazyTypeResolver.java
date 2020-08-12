@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimensions;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
@@ -380,6 +381,11 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         } else {
             return node.isFloatLiteral() ? ts.FLOAT : ts.DOUBLE;
         }
+    }
+
+    @Override
+    public JTypeMirror visit(ASTBooleanLiteral node, Void data) {
+        return ts.BOOLEAN;
     }
 
     @Override

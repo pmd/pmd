@@ -167,6 +167,17 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test literals") {
+
+        inContext(ExpressionParsingCtx) {
+
+            doTest("Booleans") {
+                "true" should haveType { boolean }
+                "false" should haveType { boolean }
+            }
+        }
+    }
+
     parserTest("Test exception parameter") {
         inContext(StatementParsingCtx) {
             """
