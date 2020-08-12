@@ -192,15 +192,15 @@ final class InferenceContext {
 
     /**
      * Replace instantiated inference vars with their instantiation in the given type,
-     * or else replace them with their original type variable.
+     * or else replace them with a failed type.
      */
-    JMethodSig finalGround(JMethodSig t) {
+    static JMethodSig finalGround(JMethodSig t) {
         return t.subst(s -> {
             if (!(s instanceof JInferenceVar)) {
                 return s;
             } else {
                 JInferenceVar ivar = (JInferenceVar) s;
-                return ivar.getInst() != null ? ivar.getInst() : ivar.getBaseVar();
+                return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR_TYPE;
             }
         });
     }

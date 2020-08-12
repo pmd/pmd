@@ -312,10 +312,18 @@ public final class Infer {
             failure.addContext(m, site, phase);
             LOG.logResolutionFail(failure);
             // preserve method if we were in invocation
-            // TODO what if it's not ground?
-            return phase.isInvocation() ? failure.getFailedMethod()
-                                        : null;
+            return phase.isInvocation() ? deleteTypeParams(m) : null;
         }
+    }
+
+    // If the invocation fails, replace type parameters with a placeholder,
+    // to not hide a bad failure, while preserving the method if possible
+    private JMethodSig deleteTypeParams(JMethodSig m) {
+        if (!m.isGeneric()) {
+            return m;
+        }
+        List<JTypeVar> tparams = m.getTypeParameters();
+        return m.subst(Substitution.mapping(tparams, Collections.nCopies(tparams.size(), ts.ERROR_TYPE)));
     }
 
     private JMethodSig instantiateConstructor(JMethodSig cons,
@@ -471,7 +479,7 @@ public final class Infer {
             infCtx.solve();
 
             // instantiate vars and return
-            return infCtx.finalGround(infCtx.mapToIVars(m));
+            return InferenceContext.finalGround(infCtx.mapToIVars(m));
         } finally {
             infCtx.callListeners();
         }

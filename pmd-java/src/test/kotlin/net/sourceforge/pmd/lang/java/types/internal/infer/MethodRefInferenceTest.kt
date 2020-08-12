@@ -8,11 +8,8 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType
-import net.sourceforge.pmd.lang.java.types.lub
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.lang.java.types.typeDsl
 import java.util.function.BiFunction
 import java.util.function.BinaryOperator
 import java.util.function.Consumer
@@ -463,5 +460,75 @@ class MethodRefInferenceTest : ProcessorTestSpec({
     }
 
 
+    // disabled for now
+    parserTest("!Test inference var inst substitution in enclosing ctx") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.function.Function;
+
+abstract class NodeStream<T> implements Iterable<T> {
+
+    public <R> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
+        Function<? super T, Iterator<? extends R>> mapped = mapper.andThen(NodeStream::safeMap);
+        return mapIter(iter -> doFlatMap(iter, mapped));
+    }
+
+    private static <K> Iterator<? extends K> safeMap(NodeStream<? extends K> ns) {
+        return ns == null ? Collections.emptyIterator() : ns.iterator();
+    }
+
+    abstract <I, O> Iterator<O> doFlatMap(Iterator<? extends I> iter, Function<? super I, ? extends Iterator<? extends O>> f);
+
+    protected abstract <Q> NodeStream<Q> mapIter(Function<Iterator<T>, Iterator<Q>> fun);
+}
+
+        """.trimIndent())
+
+        val (t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (tvar, rvar, kvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+
+        acu.descendants(ASTMethodCall::class.java)
+                .firstOrThrow()
+                .shouldMatchN {
+                    methodCall("andThen") {
+                        val captureOfT: JTypeVar
+                        with(it.typeDsl) {
+                            captureOfT = captureMatcher(`?` `super` tvar)
+                            it.typeMirror shouldBe gen.t_Function[captureOfT, gen.t_Iterator[`?` extends rvar]]
+                        }
+
+                        it::getQualifier shouldBe unspecifiedChild()
+
+                        argList {
+                            methodRef("safeMap") {
+                                with(it.typeDsl) {
+//                                    val captureOfR: JTypeVar
+//                                    captureOfR = captureMatcher(`?` extends rvar)
+
+                                    // safeMap#K must have been instantiated to some variation of R
+                                    it.referencedMethod.shouldMatchMethod(
+                                            named = "safeMap",
+                                            declaredIn = t_NodeStream.erasure,
+                                            withFormals = listOf(t_NodeStream[`?` extends rvar]),
+                                            returning = gen.t_Iterator[`?` extends rvar]
+                                    )
+                                }
+
+                                it::getQualifier shouldBe unspecifiedChild()
+
+//                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+                                argList {
+                                    variableAccess("t")
+                                }
+                            }
+                        }
+                    }
+                }
+
+    }
 
 })

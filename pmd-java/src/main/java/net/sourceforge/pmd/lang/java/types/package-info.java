@@ -82,3 +82,15 @@ class Scratch extends Outer.Inner<String> {
 
 
  */
+
+/* TODO: an array initializer is an assignment context
+    -> see PolyResolution
+
+    class Scratch {
+
+        final Runnable r[] = {
+            () -> { } // is a Runnable
+        }
+
+    }
+ */

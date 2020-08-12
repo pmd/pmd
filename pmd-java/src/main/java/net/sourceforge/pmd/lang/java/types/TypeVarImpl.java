@@ -62,8 +62,7 @@ class TypeVarImpl implements FreshTypeVar {
     }
 
     @Override
-    @NonNull
-    public JTypeMirror getUpperBound() {
+    public @NonNull JTypeMirror getUpperBound() {
         if (upperBound == null) {
             upperBound = origin.computeUpperBound();
         }

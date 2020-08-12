@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -189,8 +190,7 @@ final class ExprOps {
         return cached;
     }
 
-    @Nullable
-    private static JMethodSig computeExactMethod(MethodRefMirror mref) {
+    private static @Nullable JMethodSig computeExactMethod(MethodRefMirror mref) {
 
 
         final @Nullable JTypeMirror lhs = mref.getLhsIfType();
@@ -232,7 +232,7 @@ final class ExprOps {
         if (accessible.size() == 1) {
             JMethodSig candidate = accessible.get(0);
             if (candidate.isVarargs()
-                || candidate.isGeneric() && mref.getExplicitTypeArguments() == null) {
+                || candidate.isGeneric() && mref.getExplicitTypeArguments().isEmpty()) {
                 return null;
             }
 
@@ -253,15 +253,21 @@ final class ExprOps {
         }
     }
 
+    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl, InferenceContext outerCtx) {
+        InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
+        wrapper.setMethodType(ctdecl);
+        MethodCallSite site = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), outerCtx);
+        return infer.determineInvocationType(site).getMethodType();
+    }
 
-    @Nullable
-    JMethodSig findRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
+    @Nullable MethodCtDecl findRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
         JTypeMirror lhsIfType = mref.getLhsIfType();
         boolean acceptLowerArity = lhsIfType != null && lhsIfType.isClassOrInterface() && !mref.isConstructorRef();
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
-        JMethodSig m1 = infer.determineInvocationType(site1).getMethodType();
+        MethodCtDecl ctd1 = infer.determineInvocationType(site1);
+        JMethodSig m1 = ctd1.getMethodType();
 
         if (acceptLowerArity) {
             // then we need to perform two searches, one with arity n, looking for static methods,
@@ -269,20 +275,21 @@ final class ExprOps {
 
             MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
             site2.setLogging(false);
-            JMethodSig m2 = infer.determineInvocationType(site2).getMethodType();
+            MethodCtDecl ctd2 = infer.determineInvocationType(site2);
+            JMethodSig m2 = ctd2.getMethodType();
 
             //  If the first search produces a most specific method that is static,
             //  and the set of applicable methods produced by the second search
             //  contains no non-static methods, then the compile-time declaration
             //  is the most specified method of the first search.
             if (m1 != ts.UNRESOLVED_METHOD && m1.isStatic() && (m2 == ts.UNRESOLVED_METHOD || !m2.isStatic())) {
-                return m1;
+                return ctd1;
             } else if (m2 != ts.UNRESOLVED_METHOD && !m2.isStatic() && (m1 == ts.UNRESOLVED_METHOD || !m1.isStatic())) {
                 // Otherwise, if the set of applicable methods produced by the
                 // first search contains no static methods, and the second search
                 // produces a most specific method that is non-static, then the
                 // compile-time declaration is the most specific method of the second search.
-                return m2;
+                return ctd2;
             }
 
             //  Otherwise, there is no compile-time declaration.
@@ -292,7 +299,7 @@ final class ExprOps {
             return null;
         } else {
             // Otherwise, the compile-time declaration is the most specific applicable method.
-            return m1;
+            return ctd1;
         }
     }
 

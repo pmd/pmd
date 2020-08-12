@@ -96,7 +96,7 @@ public interface ExprMirror {
 
 
         /** Returns the explicit type arguments (the ones to the right of the "::"). */
-        List<JTypeMirror> getExplicitTypeArguments();
+        @NonNull List<JTypeMirror> getExplicitTypeArguments();
 
 
         /**

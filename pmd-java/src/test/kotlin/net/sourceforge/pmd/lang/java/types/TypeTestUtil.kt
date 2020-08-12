@@ -139,6 +139,8 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
     val `t_Iterable{Integer}`: JTypeMirror get() = java.lang.Iterable::class[t_Integer]
     val t_Iterable: JTypeMirror get() = java.lang.Iterable::class.raw
 
+    val t_Iterator: JTypeMirror get() = java.util.Iterator::class.raw
+
     /** raw Comparable */
     val t_Comparable: JClassType get() = java.lang.Comparable::class.raw
     val t_Comparator: JClassType get() = java.util.Comparator::class.raw

@@ -118,6 +118,13 @@ final class ExprCheckHelper {
     }
 
     private boolean isMethodRefCompatible(@Nullable JClassType functionalItf, MethodRefMirror mref) {
+        // See JLS§18.2.1. Expression Compatibility Constraints
+
+        // A constraint formula of the form ‹MethodReference → T›,
+        // where T mentions at least one inference variable, is reduced as follows:
+
+        // If T is not a functional interface type, or if T is a functional interface
+        // type that does not have a function type (§9.9), the constraint reduces to false.
         if (functionalItf == null) {
             return false;
         }
@@ -208,16 +215,19 @@ final class ExprCheckHelper {
 
     private void solveCtdeclCompatibility(MethodRefMirror mref, JClassType nonWildcard, JMethodSig fun) {
         // Otherwise, a search for a compile-time declaration is performed, as specified in §15.13.1.
-        JMethodSig ctdecl = infer.exprOps.findRefCompileTimeDecl(mref, fun);
+        @Nullable MethodCtDecl ctdecl0 = infer.exprOps.findRefCompileTimeDecl(mref, fun);
 
         // If there is no compile-time declaration for the method reference, the constraint reduces to false.
-        if (ctdecl == null) {
+        if (ctdecl0 == null) {
             throw ResolutionFailedException.noCtDeclaration(infer.LOG, fun, mref);
         }
+
+        JMethodSig ctdecl = ctdecl0.getMethodType();
 
         // Otherwise, there is a compile-time declaration, and: (let R be the result of the function type)
         JTypeMirror r = fun.getReturnType();
         if (r == ts.NO_TYPE) {
+            // If R is void, the constraint reduces to true.
             return;
         }
 
@@ -226,7 +236,7 @@ final class ExprCheckHelper {
         // at least one of the method's type parameters, then:
         if (mref.getExplicitTypeArguments().isEmpty()
             && ctdecl.isGeneric()
-            && mentionsAnyTvar(ctdecl.getReturnType(), ctdecl.getTypeParameters())) {
+            && mentionsAnyTvar(ctdecl.internalApi().adaptedMethod().getReturnType(), ctdecl.getTypeParameters())) {
 
             // If R mentions one of the type parameters of the function type, the constraint reduces to false.
             if (mentionsAnyTvar(r, fun.getTypeParameters())) {
@@ -244,7 +254,10 @@ final class ExprCheckHelper {
                 // type, as defined in §18.5.2.1. B3 may contain new inference variables, as well
                 // as dependencies between these new variables and the inference variables in T.
 
-                // TODO
+                if (phase.isInvocation()) {
+                    JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, infCtx);
+                    completeMethodRefInference(mref, nonWildcard, fun, sig, false);
+                }
             }
         } else {
             // Otherwise, let R' be the result of applying capture conversion (§5.1.10) to the return

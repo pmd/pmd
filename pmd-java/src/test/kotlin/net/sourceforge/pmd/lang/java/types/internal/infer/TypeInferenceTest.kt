@@ -301,7 +301,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("f:Test for var inference projection") {
+    parserTest("Test for var inference projection") {
 
         asIfIn(TypeInferenceTestCases::class.java)
 

@@ -109,7 +109,7 @@ class TypeParamScopingTest : ParserTestSpec({
             }
         }
 
-        doTest("f:Bounded by itself") {
+        doTest("Bounded by itself") {
 
             val acu = parser.withProcessing().parse("""
 

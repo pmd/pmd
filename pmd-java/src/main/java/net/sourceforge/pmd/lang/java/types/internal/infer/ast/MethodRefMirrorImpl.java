@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
@@ -66,7 +67,7 @@ class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements 
     }
 
     @Override
-    public List<JTypeMirror> getExplicitTypeArguments() {
+    public @NonNull List<JTypeMirror> getExplicitTypeArguments() {
         return CollectionUtil.map(
             ASTList.orEmpty(myNode.getExplicitTypeArguments()),
             TypeNode::getTypeMirror
