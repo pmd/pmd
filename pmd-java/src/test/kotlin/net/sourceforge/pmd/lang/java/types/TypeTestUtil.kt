@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import kotlin.String
 import kotlin.reflect.KClass
@@ -320,3 +321,7 @@ fun ParserTestCtx.makeDummyTVars(vararg names: String): List<JTypeVar> {
             }.toList()
 
 }
+
+/** A type that binds to a capture variable for the given wildcard. */
+fun captureMatcher(wild: JWildcardType): JTypeVar =
+        CaptureMatcher(wild)

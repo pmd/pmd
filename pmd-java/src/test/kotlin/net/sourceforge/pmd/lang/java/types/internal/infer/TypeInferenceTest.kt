@@ -301,7 +301,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test for var inference projection") {
+    parserTest("f:Test for var inference projection") {
 
         asIfIn(TypeInferenceTestCases::class.java)
 
@@ -330,8 +330,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                             }
                             variableAccess("iter") {
                                 it.typeMirror shouldBe with(it.typeDsl) {
-                                    gen.t_Iterable[`?` extends tvar] // todo capture matcher
-                                    // gen.t_Iterable[captureMatcher(`?` extends tvar)]
+                                    gen.t_Iterable[captureMatcher(`?` extends tvar)]
                                 }
                             }
                             block {}

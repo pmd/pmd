@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotest.assertions.assertSoftly
-import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
@@ -27,8 +24,6 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         inContext(TypeBodyParsingCtx) {
 
-            val normalizer = CaptureNormalizer()
-
             val getCall = doParse("""
                 void something(List<?> l) {
                     l.set(1, l.get(0)); // captured, fails
@@ -41,12 +36,27 @@ class CaptureInferenceTest : ProcessorTestSpec({
             //  this is related to the commented out code in TypeOps#typeArgsContains
             //  I think current behavior is best for now
             // normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
-            normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
+            with (getCall.typeDsl) {
+                val capture1 = captureMatcher(`?`)
+                getCall.methodType.shouldMatchMethod(
+                        named = "get",
+                        declaredIn = gen.t_List[capture1],
+                        withFormals = listOf(int),
+                        returning = capture1
+                )
+            }
 
             val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
 
-            // we still get a type
-            normalizer.normalizeCaptures(setCall.methodType.toString()) shouldBe "java.util.List<capture#2 of ?>.set(int, capture#2 of ?) -> capture#2 of ?"
+            with (setCall.typeDsl) {
+                val capture2 = captureMatcher(`?`)
+                setCall.methodType.shouldMatchMethod(
+                        named = "set",
+                        declaredIn = gen.t_List[capture2],
+                        withFormals = listOf(int, capture2),
+                        returning = capture2
+                )
+            }
         }
     }
 
@@ -115,22 +125,20 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
                 variableAccess("statList") {}
                 argList {
-                    var capture: JTypeVar? = null
                     methodCall("comparingInt") {
+                        // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
+                        val captureOfString: JTypeVar
+
                         with(it.typeDsl) {
-                            // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
-                            val ret = it.typeMirror.shouldBeA<JClassType> {
-                                it.symbol shouldBe gen.t_Comparator.symbol
-                                it.typeArgs.shouldBeSingleton {
-                                    capture = it.shouldBeCaptureOf(`?` extends gen.t_String)
-                                }
-                            }
+                            captureOfString = captureMatcher(`?` extends gen.t_String)
+
+                            it.typeMirror shouldBe gen.t_Comparator[captureOfString]
 
                             it.methodType.shouldMatchMethod(
                                     named = "comparingInt",
                                     declaredIn = gen.t_Comparator,
-                                    withFormals = listOf(ToIntFunction::class[`?` `super` capture!!]),
-                                    returning = ret
+                                    withFormals = listOf(ToIntFunction::class[`?` `super` captureOfString]),
+                                    returning = gen.t_Comparator[captureOfString]
                             )
                         }
 
@@ -147,7 +155,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
                                 with(it.typeDsl) {
                                     it.referencedMethod shouldBe ts.OBJECT.getMethodsByName("hashCode").single()
-                                    it.typeMirror shouldBe ToIntFunction::class[capture!!]
+                                    it.typeMirror shouldBe ToIntFunction::class[captureOfString]
                                 }
                             }
                         }
@@ -202,9 +210,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                         argList {
                             variableAccess("c") {
                                 with (it.typeDsl) {
-                                    it.typeMirror.shouldBeA<JClassType>{
-                                        it.typeArgs[0].shouldBeCaptureOf(`?` extends tvar)
-                                    }
+                                    gen.t_Collection[captureMatcher(`?` extends tvar)]
                                 }
                             }
 
@@ -218,34 +224,5 @@ class CaptureInferenceTest : ProcessorTestSpec({
     }
 
 })
-
-/**
- * Captured variables have unique identifiers, that should
- * be normalized when writing tests.
- */
-class CaptureNormalizer {
-
-    var curNum = 0
-
-    val map = mutableMapOf<Int, String>()
-
-    val r = Regex("(?<=capture#)-?\\d+")
-
-    fun normalizeCaptures(s: String): String {
-
-        return r.replace(s) {
-            val num = it.value.toInt()
-
-            if (num in map) map[num]!!
-            else {
-                curNum++
-                map[num] = curNum.toString()
-                curNum.toString()
-            }
-        }
-
-    }
-
-}
 
 

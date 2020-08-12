@@ -160,7 +160,7 @@ class TypeVarImpl implements FreshTypeVar {
 
         @Override
         public boolean equals(Object o) {
-            return this == o;
+            return this == o || o instanceof CaptureMatcher && o.equals(this);
         }
 
         @Override

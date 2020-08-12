@@ -8,8 +8,11 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.captureMatcher
 import net.sourceforge.pmd.lang.java.types.typeDsl
 import java.util.*
+import java.util.function.Function
+import java.util.function.Supplier
 
 /**
  *
@@ -49,8 +52,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         val (k, k2, raw, call) = acu.descendants(ASTMethodCall::class.java).toList()
 
-        val normalizer = CaptureNormalizer()
-
         doTest("Test this::getClass") {
             k.shouldMatchN {
                 methodCall("sup") {
@@ -59,8 +60,9 @@ class SpecialMethodsTest : ProcessorTestSpec({
                         methodRef("getClass") {
                             thisExpr()
 
-                            normalizer.normalizeCaptures(it.typeMirror.toString())
-                                    .shouldBe("$juf.Supplier<$jlang.Class<capture#1 of ? extends ${t_Scratch.erasure}>>")
+                            it.typeMirror shouldBe with(it.typeDsl) {
+                                Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch.erasure)]]
+                            }
                         }
                     }
                 }
@@ -77,8 +79,12 @@ class SpecialMethodsTest : ProcessorTestSpec({
                                 classType("Scratch")
                             }
 
-                            normalizer.normalizeCaptures(it.typeMirror.toString())
-                                    .shouldBe("$juf.Function<capture#2 of ? extends Scratch, $jlang.Class<capture#2 of ? extends Scratch>>")
+
+                            it.typeMirror shouldBe with(it.typeDsl) {
+                                val capture = captureMatcher(`?` extends t_Scratch.erasure)
+                                // same capture in both params
+                                java.util.function.Function::class[capture, Class::class[capture]]
+                            }
                         }
                     }
                 }
