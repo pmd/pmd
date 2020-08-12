@@ -389,15 +389,6 @@ public final class TypeOps {
         return type;
     }
 
-    private static JTypeMirror upperBoundRec(JTypeMirror type) {
-        if (type instanceof JWildcardType) {
-            return upperBoundRec(((JWildcardType) type).asUpperBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return upperBoundRec(((JTypeVar) type).getUpperBound());
-        }
-        return type;
-    }
-
     private static JTypeMirror lowerBoundRec(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             return lowerBoundRec(((JWildcardType) type).asLowerBound());
@@ -414,7 +405,7 @@ public final class TypeOps {
 
 
     /**
-     * Returns true if S <= T, ie "T contains S".
+     * Returns true if {@code S <= T}, ie "T contains S".
      *
      * <p>T contains S if:
      *

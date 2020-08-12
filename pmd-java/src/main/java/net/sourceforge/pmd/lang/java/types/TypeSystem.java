@@ -593,7 +593,7 @@ public final class TypeSystem {
      * This is defined in JLS§5.1.10 (Capture Conversion):
      *
      * <blockquote>
-     * glb(V1,...,Vm) = V1 & ... & Vm
+     * glb(V1,...,Vm) = V1 &amp; ... &amp; Vm
      * glb(V) = V
      * </blockquote>
      *

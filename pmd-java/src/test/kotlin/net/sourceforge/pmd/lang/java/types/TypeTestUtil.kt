@@ -317,7 +317,7 @@ fun ParserTestCtx.makeDummyTVars(vararg names: String): List<JTypeVar> {
             .children(ASTTypeParameter::class.java)
             .toStream()
             .map {
-                it.typeMirror as JTypeVar
+                it.typeMirror
             }.toList()
 
 }

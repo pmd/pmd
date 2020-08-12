@@ -74,7 +74,7 @@ public final class TypeConversion {
      * <li>The operand of a unary plus operator + (§15.15.3)
      * <li>The operand of a unary minus operator - (§15.15.4)
      * <li>The operand of a bitwise complement operator ~ (§15.15.5)
-     * <li>Each operand, separately, of a shift operator <<, >>, or >>> (§15.19).
+     * <li>Each operand, separately, of a shift operator &lt;&lt;, &gt;&gt;, or &gt;&gt;&gt; (§15.19).
      * </ul>
      *
      * <p>Returns {@link TypeSystem#ERROR_TYPE} if the given type is
@@ -101,9 +101,9 @@ public final class TypeConversion {
      * <ul>
      * <li>The multiplicative operators *, /, and % (§15.17)
      * <li>The addition and subtraction operators for numeric types + and - (§15.18.2)
-     * <li>The numerical comparison operators <, <=, >, and >= (§15.20.1)
+     * <li>The numerical comparison operators &lt;, &lt;=, &gt;, and &gt;= (§15.20.1)
      * <li>The numerical equality operators == and != (§15.21.1)
-     * <li>The integer bitwise operators &, ^, and | (§15.22.1)
+     * <li>The integer bitwise operators &amp;, ^, and | (§15.22.1)
      * <li>In certain cases, the conditional operator ? : (§15.25)
      * </ul>
      * <p>Returns {@link TypeSystem#ERROR_TYPE} if either of the parameters

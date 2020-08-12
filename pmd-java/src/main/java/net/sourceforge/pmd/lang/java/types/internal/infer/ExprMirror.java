@@ -206,11 +206,10 @@ public interface ExprMirror {
 
         /**
          * Returns the erased receiver type. This is only used to adapt the
-         * {@link #getClass()} method, other types of invocations don't
+         * {@code Object::getClass} method, other types of invocations don't
          * need to implement this.
          */
-        @Nullable
-        default JTypeMirror getErasedReceiverType() {
+        default @Nullable JTypeMirror getErasedReceiverType() {
             return null;
         }
 

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAnyTvar;
 
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -16,14 +15,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 

@@ -44,7 +44,7 @@ public interface JElementSymbol {
      * Two symbols representing the same program element should be equal.
      * So eg two {@link JClassSymbol}, even if their implementation class
      * is different, should compare publicly observable properties (their
-     * binary name is enough). {@link #hashCode()} must of course be consistent
+     * binary name is enough). {@code hashCode} must of course be consistent
      * with this contract.
      *
      * <p>Symbols should only be compared using this method, never with {@code ==},

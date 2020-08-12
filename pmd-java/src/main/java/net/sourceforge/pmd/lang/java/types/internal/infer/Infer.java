@@ -778,7 +778,7 @@ public final class Infer {
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
     static boolean isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
-        if (exprType == formalType) {
+        if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
             // fast path
             return true;
         }

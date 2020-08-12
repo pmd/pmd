@@ -98,7 +98,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * <i>This excludes bridges and other synthetic methods.</i>
      *
      * <p>For an array type T[], to the difference of {@link Class},
-     * this method returns a one-element list with the {@link Cloneable#clone()}
+     * this method returns a one-element list with the {@link Object#clone()}
      * method, as if declared like so: {@code public final T[] clone() {...}}.
      *
      * @see Class#getDeclaredMethods()
