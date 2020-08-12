@@ -25,8 +25,6 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test inexact method ref of generic type") {
 
-        logTypeInference(verbose = true)
-
         val acu = parser.parse("""
             import java.util.Optional;
             import java.util.List;

@@ -96,7 +96,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test method invoc resolution, nested invocation exprs") {
 
-        logTypeInference(true)
         asIfIn(TypeInferenceTestCases::class.java)
 
         //  defined as
@@ -331,7 +330,8 @@ class TypeInferenceTest : ProcessorTestSpec({
                             }
                             variableAccess("iter") {
                                 it.typeMirror shouldBe with(it.typeDsl) {
-                                    gen.t_Iterable[`?` extends tvar]
+                                    gen.t_Iterable[`?` extends tvar] // todo capture matcher
+                                    // gen.t_Iterable[captureMatcher(`?` extends tvar)]
                                 }
                             }
                             block {}
@@ -453,8 +453,6 @@ class Scratch<O> {
 
 
     parserTest("Test inference var inst substitution in enclosing ctx") {
-
-        logTypeInference(verbose = true)
 
         val acu = parser.parse("""
 import java.util.ArrayList;
