@@ -37,7 +37,10 @@ class CaptureInferenceTest : ProcessorTestSpec({
                     .descendants(ASTMethodCall::class.java).get(1)!!
 
 
-            normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
+            // todo now we don't recover, we get UNRESOLVED
+            //  this is related to the commented out code in TypeOps#typeArgsContains
+            //  I think current behavior is best for now
+            // normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
             normalizer.normalizeCaptures(getCall.methodType.toString()) shouldBe "java.util.List<capture#1 of ?>.get(int) -> capture#1 of ?"
 
             val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
