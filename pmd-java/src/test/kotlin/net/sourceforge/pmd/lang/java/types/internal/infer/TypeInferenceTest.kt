@@ -452,6 +452,50 @@ class Scratch<O> {
     }
 
 
+    parserTest("Test inference var inst substitution in enclosing ctx") {
+
+        logTypeInference(verbose = true)
+
+        val acu = parser.parse("""
+import java.util.ArrayList;
+import java.util.List;
+
+class Scratch {
+
+    static <K> K m(List<? extends K> k) {
+        return null;
+    }
+
+    static <T> List<T> of(T k) {
+        return null;
+    }
+
+    {
+        List<String> t = new ArrayList<>();
+        Object res = of(m(t));
+    }
+}
+        """.trimIndent())
+
+        acu.descendants(ASTMethodCall::class.java)
+                .firstOrThrow()
+                .shouldMatchN {
+                    methodCall("of") {
+                        it.typeMirror shouldBe  with(it.typeDsl) { gen.`t_List{String}` }
+                        argList {
+                            methodCall("m") {
+                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+                                argList {
+                                    variableAccess("t")
+                                }
+                            }
+                        }
+                    }
+                }
+
+    }
+
+
 
 })
 

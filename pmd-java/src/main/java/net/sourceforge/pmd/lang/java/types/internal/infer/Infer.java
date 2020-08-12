@@ -582,8 +582,8 @@ public final class Infer {
         if (!t.isPrimitive() && isNotWilcardParameterized(t)) {
             // i) B2 contains a bound of one of the forms alpha = S or S <: alpha,
             //    where S is a wildcard-parameterized type, or
-            for (JTypeMirror b : alpha.getBounds(BoundKind.EQ_LOWER)) {
-                if (isNotWilcardParameterized(b)) {
+            for (JTypeMirror s : alpha.getBounds(BoundKind.EQ_LOWER)) {
+                if (!isNotWilcardParameterized(s)) {
                     return true;
                 }
             }

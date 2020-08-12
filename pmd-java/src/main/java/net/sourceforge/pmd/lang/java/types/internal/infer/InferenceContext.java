@@ -332,11 +332,6 @@ final class InferenceContext {
         //  * Javac uses one local queue per ivar, seems much more
         //    resilient
 
-        // TODO
-        //  Optimisation ?
-        //  * some incorporation actions are repeated. Javac uses a cache
-        //    of operations like S <: T.
-
         IncorporationAction hook = incorporationActions.pollFirst();
         while (hook != null) {
 

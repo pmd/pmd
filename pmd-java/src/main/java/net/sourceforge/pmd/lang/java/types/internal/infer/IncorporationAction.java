@@ -118,6 +118,8 @@ abstract class IncorporationAction {
         }
 
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
+            // todo don't cache inference vars
+            //    don't cache captures of the same wildcard separately
             Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(t, k -> new HashSet<>());
             if (supertypesOfT.contains(s)) {
                 return true;
