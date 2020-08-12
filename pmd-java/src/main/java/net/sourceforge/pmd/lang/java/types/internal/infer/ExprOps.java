@@ -275,7 +275,7 @@ final class ExprOps {
             //  and the set of applicable methods produced by the second search
             //  contains no non-static methods, then the compile-time declaration
             //  is the most specified method of the first search.
-            if (m1 != ts.UNRESOLVED_METHOD && m1.isStatic() && (m2 == ts.UNRESOLVED_METHOD || m2.isStatic())) {
+            if (m1 != ts.UNRESOLVED_METHOD && m1.isStatic() && (m2 == ts.UNRESOLVED_METHOD || !m2.isStatic())) {
                 return m1;
             } else if (m2 != ts.UNRESOLVED_METHOD && !m2.isStatic() && (m1 == ts.UNRESOLVED_METHOD || !m1.isStatic())) {
                 // Otherwise, if the set of applicable methods produced by the

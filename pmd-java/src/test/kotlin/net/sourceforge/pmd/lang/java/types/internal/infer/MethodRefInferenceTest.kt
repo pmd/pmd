@@ -428,6 +428,42 @@ class MethodRefInferenceTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test inexact method ref conflict between static and non-static") {
+
+        val acu = parser.parse("""
+            import java.util.stream.*;
+            class Archive {
+
+                private String getName(int[] certIds) {
+                    return IntStream.of(certIds)
+                            // both static Integer::toString(int) and non-static Integer::toString() are applicable
+                            .mapToObj(Integer::toString)
+                            .collect(Collectors.joining(", "));
+                }
+            }
+        """.trimIndent())
+
+        val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        collectCall.shouldMatchN {
+            methodCall("collect") {
+                with (it.typeDsl) {
+                    it.typeMirror shouldBe gen.t_String
+                }
+
+                methodCall("mapToObj") {
+                    with (it.typeDsl) {
+                        it.typeMirror shouldBe gen.t_Stream[gen.t_String]
+                    }
+
+                    unspecifiedChildren(2)
+                }
+
+                argList(1)
+            }
+        }
+    }
+
 
 
 })
