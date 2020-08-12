@@ -418,7 +418,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         if (result == null) {
             return null;
         }
-        return result.getTypeMirror();
+        return TypeConversion.capture(result.getTypeMirror());
     }
 
     @Override

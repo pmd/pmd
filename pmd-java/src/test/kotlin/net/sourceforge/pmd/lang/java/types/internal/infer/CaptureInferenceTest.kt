@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
+import java.util.*
 import java.util.function.ToIntFunction
 
 /**
@@ -23,8 +24,6 @@ class CaptureInferenceTest : ProcessorTestSpec({
     parserTest("Test capture incompatibility recovery") {
 
         asIfIn(TypeInferenceTestCases::class.java)
-
-        logTypeInference(true)
 
         inContext(TypeBodyParsingCtx) {
 
@@ -151,6 +150,45 @@ class CaptureInferenceTest : ProcessorTestSpec({
                         }
                     }
                 }
+            }
+        }
+    }
+
+    parserTest("Test independent captures merging") {
+
+        val acu = parser.parse("""
+           import java.util.*;
+
+           class Scratch {
+
+               private <T> Spliterator<T> spliterator0(Collection<? extends T> collection, int characteristics) {
+                   return null;
+               }
+
+               public static <T> Spliterator<T> spliterator(Collection<? extends T> c,
+                                                            int characteristics) {
+                   return spliterator0(Objects.requireNonNull(c), characteristics);
+               }
+           }
+
+        """.trimIndent())
+
+        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }.single()
+        val tvar = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }[1]
+        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        call.shouldMatchN {
+            methodCall("spliterator0") {
+                with (it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "spliterator0",
+                            declaredIn = t_Scratch,
+                            withFormals = listOf(gen.t_Collection[`?` extends tvar], int),
+                            returning = Spliterator::class[tvar]
+                    )
+                }
+
+                argList(2)
             }
         }
     }
