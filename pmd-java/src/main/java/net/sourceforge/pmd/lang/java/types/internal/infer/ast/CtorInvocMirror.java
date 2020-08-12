@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.filterAccessible;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.lazyFilterAccessible;
 
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +62,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     @Override
     public Iterable<JMethodSig> getAccessibleCandidates() {
-        return filterAccessible(getVisibleCandidates(), getEnclosingType().getSymbol());
+        return lazyFilterAccessible(getVisibleCandidates(), getEnclosingType().getSymbol());
     }
 
     @Override

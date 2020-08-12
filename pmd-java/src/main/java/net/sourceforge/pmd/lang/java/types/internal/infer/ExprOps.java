@@ -218,9 +218,8 @@ final class ExprOps {
                     return null;
                 }
 
-                accessible = lhs.getConstructors().stream()
-                                .filter(it -> it.isAccessible(mref.getEnclosingType()))
-                                .collect(Collectors.toList());
+                accessible = TypeOps.filterAccessible(lhs.getConstructors(),
+                                                      mref.getEnclosingType().getSymbol());
             }
         } else {
             JClassType enclosing = mref.getEnclosingType();
@@ -409,7 +408,7 @@ final class ExprOps {
             } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
                 // ClassType :: [TypeArguments] new
                 // TODO treatment of raw constructors is whacky
-                return TypeOps.filterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
+                return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
             }
 
             if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType && targetType.getArity() > 0) {

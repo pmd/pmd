@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -28,11 +29,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
-import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Common operations on types.
@@ -115,18 +118,6 @@ public final class TypeOps {
             }
         }
         return true;
-    }
-
-    public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
-        return it -> it.getSimpleName().equals(name) && it.isAccessible(symbol);
-    }
-
-    public static Iterable<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
-        return () -> IteratorUtil.filter(visible.iterator(), it -> it.getSymbol().isAccessible(accessSite));
-    }
-
-    public static Iterable<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite, boolean isOwnerASuperTypeOfAccessSite) {
-        return () -> IteratorUtil.filter(visible.iterator(), it -> it.getSymbol().isAccessible(accessSite));
     }
 
     private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
@@ -560,14 +551,6 @@ public final class TypeOps {
             }
 
             JClassType cs = (JClassType) s;
-
-            {
-                // we may shortcut this failure case early
-                if (t.getSymbol().fastIsSubClassOf(cs.getSymbol()) == OptionalBool.NO) {
-                    return false;
-                }
-                // otherwise getAsSuper will perform the subtyping check
-            }
 
             // most specific
             // if null then not a subtype
@@ -1552,5 +1535,58 @@ public final class TypeOps {
     }
 
     // </editor-fold>
+
+
+
+    public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
+        return it -> it.getSimpleName().equals(name) && isAccessible(it, symbol);
+    }
+
+    public static Iterable<JMethodSig> lazyFilterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
+        return () -> IteratorUtil.filter(visible.iterator(), it -> isAccessible(it.getSymbol(), accessSite));
+    }
+
+    public static List<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
+        return CollectionUtil.mapNotNull(visible, m -> isAccessible(m.getSymbol(), accessSite) ? m : null);
+    }
+
+
+    public static List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly, @NonNull JClassSymbol enclosing) {
+        return type.streamMethods(
+            it -> (!staticOnly || Modifier.isStatic(it.getModifiers()))
+                && it.getSimpleName().equals(name)
+                && isAccessible(it, enclosing)
+        ).collect(OverloadComparator.collectMostSpecific(type));
+    }
+
+    private static boolean isAccessible(JExecutableSymbol method, JClassSymbol ctx) {
+        Objects.requireNonNull(ctx, "Cannot check a null symbol");
+
+        int mods = method.getModifiers();
+        if (Modifier.isPublic(mods)) {
+            return true;
+        }
+
+        JClassSymbol owner = method.getEnclosingClass();
+
+        if (Modifier.isPrivate(mods)) {
+            return ctx.getNestRoot().equals(owner.getNestRoot());
+        } else if (owner instanceof JArrayType) {
+            return true;
+        }
+
+        return ctx.getPackageName().equals(owner.getPackageName())
+            // we can exclude interfaces because their members are all public
+            || Modifier.isProtected(mods) && isSubClassOfNoInterface(ctx, owner);
+    }
+
+    private static boolean isSubClassOfNoInterface(JClassSymbol sub, JClassSymbol symbol) {
+        if (symbol.equals(sub)) {
+            return true;
+        }
+
+        JClassSymbol superclass = sub.getSuperclass();
+        return superclass != null && isSubClassOfNoInterface(superclass, symbol);
+    }
 
 }

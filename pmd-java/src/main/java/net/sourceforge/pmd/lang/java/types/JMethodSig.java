@@ -123,11 +123,6 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
 
-    default boolean isAccessible(JClassType ctx) {
-        return getSymbol().isAccessible(ctx.getSymbol());
-    }
-
-
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitMethodType(this, p);

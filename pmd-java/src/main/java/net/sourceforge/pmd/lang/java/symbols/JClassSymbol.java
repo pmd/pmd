@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.symbols;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -18,7 +17,6 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.util.OptionalBool;
 
 
 /**
@@ -144,46 +142,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
             }
         }
         return null;
-    }
-
-
-    /**
-     * Checks if this symbol is a subtype of the other class.
-     * Meant to be a shortcut for subtyping checks if there is an efficient
-     * implementation available, eg {@link Class#isAssignableFrom(Class)}.
-     */
-    default OptionalBool fastIsSubClassOf(JClassSymbol symbol) {
-        return OptionalBool.UNKNOWN;
-    }
-
-
-    default boolean isSubClassOf(JClassSymbol symbol, Interfaces interfaceBehaviour) {
-        if (symbol.equals(this)) {
-            return true;
-        }
-
-        OptionalBool fast = fastIsSubClassOf(symbol);
-        if (fast.isKnown()) {
-            return fast.isTrue();
-        }
-
-        JClassSymbol superclass = getSuperclass();
-        if (superclass != null) {
-            if (superclass.isSubClassOf(symbol, interfaceBehaviour)) {
-                return true;
-            }
-        }
-
-        if (interfaceBehaviour == Interfaces.EXCLUDE) {
-            return false;
-        }
-
-        for (JClassSymbol itf : getSuperInterfaces()) {
-            if (itf.isSubClassOf(symbol, Interfaces.INCLUDE)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 

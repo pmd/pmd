@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
@@ -60,18 +61,10 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
             JTypeMirror lhsType = TypeConversion.capture(lhs.getTypeMirror());
             boolean staticOnly = lhs instanceof ASTTypeExpression;
 
-            return getMethodsOf(lhsType, getName(), staticOnly);
+            return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());
         }
     }
 
-    private List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly) {
-        JClassSymbol enclosingType = myNode.getEnclosingType().getSymbol();
-        return type.streamMethods(
-            it -> (!staticOnly || Modifier.isStatic(it.getModifiers()))
-                && it.getSimpleName().equals(name)
-                && it.isAccessible(enclosingType)
-        ).collect(OverloadComparator.collectMostSpecific(type));
-    }
 
     @Override
     public JTypeMirror getErasedReceiverType() {
