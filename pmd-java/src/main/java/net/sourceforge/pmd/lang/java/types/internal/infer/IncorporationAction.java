@@ -12,7 +12,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 
 /**
@@ -118,9 +121,12 @@ abstract class IncorporationAction {
         }
 
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
-            // todo don't cache inference vars
-            //    don't cache captures of the same wildcard separately
-            Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(t, k -> new HashSet<>());
+            JTypeMirror key = cacheKey(t);
+            if (key == null) { // don't cache result
+                return t.isSubtypeOf(s, true);
+            }
+
+            Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
             if (supertypesOfT.contains(s)) {
                 return true;
             } else if (t.isSubtypeOf(s, true)) {
@@ -128,6 +134,19 @@ abstract class IncorporationAction {
                 return true;
             }
             return false;
+        }
+
+        private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
+            if (t instanceof JInferenceVar) {
+                return null; // don't cache inference vars
+            } else if (t instanceof JTypeVar) {
+                JTypeVar tvar = (JTypeVar) t;
+                if (tvar.isCaptured()) {
+                    // don't cache captures of the same wildcard separately
+                    return tvar.getCapturedOrigin();
+                }
+            }
+            return t;
         }
 
 

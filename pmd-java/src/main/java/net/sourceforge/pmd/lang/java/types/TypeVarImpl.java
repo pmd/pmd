@@ -92,6 +92,11 @@ class TypeVarImpl implements FreshTypeVar {
     }
 
     @Override
+    public @Nullable JWildcardType getCapturedOrigin() {
+        return null;
+    }
+
+    @Override
     public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
         return new TypeVarImpl(ts, upper, lower, origin);
     }
@@ -171,6 +176,11 @@ class TypeVarImpl implements FreshTypeVar {
         @Override
         public boolean isCaptureOf(JWildcardType wildcard) {
             return this.wildcard == wildcard;
+        }
+
+        @Override
+        public @Nullable JWildcardType getCapturedOrigin() {
+            return wildcard;
         }
 
         @Override

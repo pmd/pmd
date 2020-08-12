@@ -79,6 +79,12 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
      */
     boolean isCaptureOf(JWildcardType wildcard);
 
+    /**
+     * Returns the original wildcard, if this is a capture variable.
+     * Otherwise returns null.
+     */
+    @Nullable JWildcardType getCapturedOrigin();
+
 
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {

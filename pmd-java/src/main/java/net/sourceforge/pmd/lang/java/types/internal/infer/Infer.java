@@ -78,11 +78,6 @@ public final class Infer {
         this.overloadComparator = new OverloadComparator(this);
     }
 
-    // test only
-    OverloadComparator getOverloadComparator() {
-        return overloadComparator;
-    }
-
     public TypeSystem getTypeSystem() {
         return ts;
     }

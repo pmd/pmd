@@ -992,9 +992,27 @@ public final class TypeOps {
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2
      */
     public static boolean areOverrideEquivalent(JMethodSig m1, JMethodSig m2) {
-        return haveSameSignature(m1, m2)
-            || haveSameSignature(m1, m2.getErasure())
-            || haveSameSignature(m1.getErasure(), m2);
+        // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
+        // methods from overload candidates before overload resolution.
+        // Any optimization makes a big impact.
+        if (m1.getArity() != m2.getArity()) {
+            return false; // easy case
+        } else if (m1 == m2) {
+            return true;
+        }
+        // Two methods can only have the same signature if they have the same type parameters
+        // But a generic method is allowed to override a non-generic one, and vice versa
+        // So we first project both methods into a form that has the same number of type parameters
+        boolean m1Gen = m1.isGeneric();
+        boolean m2Gen = m2.isGeneric();
+        if (m1Gen ^ m2Gen) {
+            if (m1Gen) {
+                m1 = m1.getErasure();
+            } else {
+                m2 = m2.getErasure();
+            }
+        }
+        return haveSameSignature(m1, m2);
     }
 
     /**
@@ -1004,11 +1022,19 @@ public final class TypeOps {
      */
     private static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
         // prune easy cases
-        if (!m1.getName().equals(m2.getName()) || m1.getArity() != m2.getArity()) {
+        if (m1.getArity() != m2.getArity() || !m1.getName().equals(m2.getName())) {
             return false;
         }
-
-        return haveSameSignature(m1, m2) || haveSameSignature(m1, m2.getErasure());
+        boolean m1Gen = m1.isGeneric();
+        boolean m2Gen = m2.isGeneric();
+        if (m1Gen ^ m2Gen) {
+            if (m1Gen) {
+                return false; // this test is assymetric
+            } else {
+                m2 = m2.getErasure();
+            }
+        }
+        return haveSameSignature(m1, m2);
     }
 
     /**
@@ -1030,7 +1056,7 @@ public final class TypeOps {
 
         return areSameTypes(m1.getFormalParameters(),
                             m2.getFormalParameters(),
-                            mapping(m2.getTypeParameters(), m1.getTypeParameters()));
+                            Substitution.mapping(m2.getTypeParameters(), m1.getTypeParameters()));
     }
 
     /**
