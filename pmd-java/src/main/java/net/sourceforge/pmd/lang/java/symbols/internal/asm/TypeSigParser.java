@@ -209,7 +209,7 @@ final class TypeSigParser {
     private static int arrayType(final int start, TypeScanner b) {
         int cur = b.consumeChar(start, '[', "array type");
         cur = typeSignature(cur, b);
-        b.push(b.ts.arrayType(b.pop(), 1));
+        b.push(b.ts.arrayType(b.pop()));
         return cur;
     }
 

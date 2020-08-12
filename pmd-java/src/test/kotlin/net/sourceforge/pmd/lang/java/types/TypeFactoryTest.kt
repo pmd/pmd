@@ -30,7 +30,7 @@ class TypeFactoryTest : FunSpec({
 
     test("Test toString") {
 
-        ts.arrayType(ts.INT, 1).apply {
+        ts.arrayType(ts.INT).apply {
             toString() shouldBe "int[]"
         }
 

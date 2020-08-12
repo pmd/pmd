@@ -158,7 +158,7 @@ public final class TypesFromReflection {
                 return null;
             }
 
-            return ts.arrayType(comp, 1);
+            return ts.arrayType(comp);
         }
 
         throw new IllegalStateException("Illegal type " + reflected.getClass() + " " + reflected.getTypeName());

@@ -115,7 +115,7 @@ public final class TypeSystem {
      * A constant to represent a typing error. This would have been
      * reported by a compiler.
      */
-    public final JTypeMirror ERROR_TYPE = new SentinelType(this, "/*error*/");
+    public final JTypeMirror ERROR_TYPE;
 
     /*
      * Common, non-special types.
@@ -190,6 +190,9 @@ public final class TypeSystem {
         JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("/*unresolved*/", 0);
         UNRESOLVED_TYPE = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
 
+        JClassSymbol errorTypeSym = symbolFactory.makeUnresolvedReference("/*error*/", 0);
+        ERROR_TYPE = new SentinelType(this, "/*error*/", errorTypeSym);
+
         JClassSymbol primitiveVoidSym = new VoidSymbol(this);
         NO_TYPE = new SentinelType(this, "void", primitiveVoidSym);
 
@@ -210,6 +213,7 @@ public final class TypeSystem {
 
         shared.put(primitiveVoidSym, NO_TYPE);
         shared.put(unresolvedTypeSym, UNRESOLVED_TYPE);
+        shared.put(errorTypeSym, ERROR_TYPE);
 
         for (JPrimitiveType prim : allPrimitives) {
             // primitives have a special implementation for their box
@@ -379,7 +383,7 @@ public final class TypeSystem {
                 //  var genArr = ts.array(tvar, 1);
                 //  ts.typeOf(genArr.symbol(), false) != genArr
                 JTypeMirror component = rawType(classSym.getArrayComponent());
-                return arrayType(component, 1);
+                return arrayType(component);
             } else {
                 return new ClassTypeImpl(this, classSym, emptyList(), !isErased);
             }
@@ -440,7 +444,6 @@ public final class TypeSystem {
      * arrayType(T, 1)          = T[]
      * arrayType(T, 3)          = T[][][]
      * arrayType(T[], 2)        = T[][][]
-     * arrayType(ERROR_TYPE, _) = ERROR_TYPE
      * }</pre>
      *
      * @param element       Element type
@@ -455,15 +458,9 @@ public final class TypeSystem {
      */
     public JTypeMirror arrayType(@NonNull JTypeMirror element, int numDimensions) {
         AssertionUtil.requireNonNegative("numDimensions", numDimensions);
-        AssertionUtil.requireParamNotNull("elementType", element);
+        checkArrayElement(element); // note we throw even if numDimensions == 0
 
-        if (element instanceof JWildcardType
-            || element == NULL_TYPE
-            || element == NO_TYPE) {
-            throw new IllegalArgumentException("The type < " + element + " > is not a valid array element type ");
-        }
-
-        if (numDimensions == 0 || element == ERROR_TYPE) {
+        if (numDimensions == 0) {
             return element;
         }
 
@@ -472,6 +469,33 @@ public final class TypeSystem {
             res = new ArrayTypeImpl(this, res);
         }
         return res;
+    }
+
+    /**
+     * Like {@link #arrayType(JTypeMirror, int)}, with one dimension.
+     *
+     * @param component Component type
+     *
+     * @return An array type
+     *
+     * @throws IllegalArgumentException If the element type is a {@link JWildcardType},
+     *                                  the null type, or {@link #NO_TYPE void}.
+     * @throws NullPointerException     If the element type is null
+     */
+    public JArrayType arrayType(@NonNull JTypeMirror component) {
+        checkArrayElement(component);
+        return new ArrayTypeImpl(this, component);
+    }
+
+
+    private void checkArrayElement(@NonNull JTypeMirror element) {
+        AssertionUtil.requireParamNotNull("elementType", element);
+
+        if (element instanceof JWildcardType
+            || element == NULL_TYPE
+            || element == NO_TYPE) {
+            throw new IllegalArgumentException("The type < " + element + " > is not a valid array element type");
+        }
     }
 
     public JMethodSig sigOf(JExecutableSymbol methodSym) {
@@ -524,7 +548,6 @@ public final class TypeSystem {
      * wildcard(true, T)      = ? extends T
      * wildcard(false, T)     = ? super T
      * wildcard(true, OBJECT) = ?
-     * wildcard(_, ERROR_TYPE) = ERROR_TYPE
      *
      * }</pre>
      *
@@ -541,9 +564,6 @@ public final class TypeSystem {
      */
     public JTypeMirror wildcard(boolean isUpperBound, @NonNull JTypeMirror bound) {
         Objects.requireNonNull(bound, "Argument shouldn't be null");
-        if (bound == ERROR_TYPE) {
-            return bound;
-        }
         if (bound.isPrimitive() || bound instanceof JWildcardType) {
             throw new IllegalArgumentException("<" + bound + "> cannot be a wildcard bound");
         }

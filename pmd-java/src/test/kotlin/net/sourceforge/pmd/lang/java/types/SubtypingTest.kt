@@ -42,7 +42,7 @@ class SubtypingTest : FunSpec({
             test("Test primitive arrays are unrelated") {
 
                 val unArrays = ts.allPrimitives.map {
-                    ts.arrayType(it, 1)
+                    ts.arrayType(it)
                 }
 
                 unArrays.forEach { arr ->

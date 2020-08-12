@@ -77,6 +77,6 @@ public interface JArrayType extends JTypeMirror {
     @Override
     default JArrayType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newComp = getComponentType().subst(subst);
-        return newComp == getComponentType() ? this : (JArrayType) getTypeSystem().arrayType(newComp, 1);
+        return newComp == getComponentType() ? this : getTypeSystem().arrayType(newComp);
     }
 }

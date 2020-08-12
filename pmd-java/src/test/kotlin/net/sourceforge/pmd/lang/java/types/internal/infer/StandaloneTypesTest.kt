@@ -54,7 +54,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         it.typeMirror shouldBe it.typeSystem.INT
 
                         it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                            it.typeMirror shouldBe it.typeSystem.arrayType(t, 1) // t[]
+                            it.typeMirror shouldBe it.typeSystem.arrayType(t) // t[]
                         }
                     }
                 }

@@ -322,7 +322,7 @@ public final class TypeOps {
             TypeSystem ts = t.getTypeSystem();
 
             for (JTypeMirror componentSuper : t.getComponentType().getSuperTypeSet()) {
-                result.add(ts.arrayType(componentSuper, 1));
+                result.add(ts.arrayType(componentSuper));
             }
             result.add(ts.CLONEABLE);
             result.add(ts.SERIALIZABLE);
@@ -873,7 +873,7 @@ public final class TypeOps {
             return comp2 == NO_DOWN_PROJECTION
                    ? NO_DOWN_PROJECTION
                    : comp2 == t.getComponentType()
-                     ? t : t.getTypeSystem().arrayType(comp2, 1);
+                     ? t : t.getTypeSystem().arrayType(comp2);
         }
 
         @Override
