@@ -39,8 +39,7 @@ final class ArrayTypeImpl implements JArrayType {
     }
 
     @Override
-    @NonNull
-    public JClassSymbol getSymbol() {
+    public @NonNull JClassSymbol getSymbol() {
         if (symbol == null) {
             JTypeDeclSymbol comp = getComponentType().getSymbol();
             if (comp == null) {

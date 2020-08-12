@@ -84,7 +84,7 @@ class Scratch extends Outer.Inner<String> {
  */
 
 /* TODO: an array initializer is an assignment context
-    -> see PolyResolution
+    -> see PolyResolution to fix it
 
     class Scratch {
 
@@ -93,4 +93,79 @@ class Scratch extends Outer.Inner<String> {
         }
 
     }
+ */
+
+/* TODO: bug with visibility and override
+
+At:   /home/clifrr/Bureau/jdk13-src/java.base/java/util/Date.java:1174 :30..1174:71
+Expr: ((ZoneInfo)tz).getOffsets(fastTime, null)
+[WARNING] Ambiguity error: both methods are maximally specific
+    sun.util.calendar.ZoneInfo.getOffsets(long, int[]) -> int
+    java.util.TimeZone.getOffsets(long, int[]) -> int
+
+
+package java.util;
+
+public class TimeZone implements Serializable, Cloneable {
+
+
+    // package visibility
+    int getOffsets(long date, int[] offsets) {
+        int rawoffset = getRawOffset();
+        int dstoffset = 0;
+        if (inDaylightTime(new Date(date))) {
+            dstoffset = getDSTSavings();
+        }
+        if (offsets != null) {
+            offsets[0] = rawoffset;
+            offsets[1] = dstoffset;
+        }
+        return rawoffset + dstoffset;
+    }
+
+}
+
+
+package sun.util.calendar;
+
+public class ZoneInfo extends TimeZone {
+    // doesn't override, because the super method is not accessible
+    public int getOffsets(long utc, int[] offsets) {
+        return 0;
+    }
+}
+
+package java.util;
+
+public class Date {
+    {
+        TimeZone tz = TimeZone.getDefaultRef();
+        if (tz instanceof ZoneInfo) {
+            // the one of ZoneInfo is selected
+            zoneOffset = ((ZoneInfo)tz).getOffsets(fastTime, null);
+        }
+    }
+}
+
+ */
+
+/* TODO: bug with glb in ReductionStep#UPPER
+
+In: /home/clifrr/Bureau/jdk13-src/java.base/java/util/stream/Collectors.java:1070:16
+java.lang.IllegalArgumentException: Bad intersection, unrelated class types capture#510 of ? super T and capture#420 of ? super T in [java.lang.Object, capture#420 of ? super T, capture#510 of ? super T]
+	at net.sourceforge.pmd.lang.java.types.TypeSystem.glb(TypeSystem.java:663)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.ReductionStep$3.solve(ReductionStep.java:51)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solveBasic(InferenceContext.java:389)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solve(InferenceContext.java:367)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solve(InferenceContext.java:347)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.instantiateImpl(Infer.java:479)
+
+
+	public static <T, K, A, D>
+    Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
+                                          Collector<? super T, A, D> downstream) {
+        return Collectors.groupingBy(classifier, HashMap::new, downstream);
+    }
+
+
  */
