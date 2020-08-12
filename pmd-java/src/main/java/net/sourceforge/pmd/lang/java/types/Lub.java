@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.typeArgContains;
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +16,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.ConsPStack;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+import org.pcollections.PStack;
+
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Helper class for {@link TypeOps}.
@@ -66,8 +77,7 @@ final class Lub {
      *
      * @return null if G is not a generic type, otherwise Relevant(G)
      */
-    @Nullable
-    static List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
+    static @Nullable List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
         if (!g.isRaw()) {
             return null;
         }
@@ -298,4 +308,129 @@ final class Lub {
             return "Pair(" + left + " - " + right + ")";
         }
     }
+
+
+    static JTypeMirror glb(TypeSystem ts, Collection<? extends JTypeMirror> types) {
+        if (types.isEmpty()) {
+            throw new IllegalArgumentException("Cannot compute GLB of empty set");
+        }
+
+
+        ArrayList<JTypeMirror> list = new ArrayList<>(types.size());
+
+        for (JTypeMirror type : types) {
+            // flatten intersections: (A & (B & C)) => (A & B & C)
+            if (type instanceof JIntersectionType) {
+                list.addAll(((JIntersectionType) type).getComponents());
+            } else {
+                list.add(type);
+            }
+        }
+
+
+        JTypeMirror ck = ts.OBJECT; // Ck is a class type
+
+        OptionalBool retryWithCaptureBounds = NO;
+        PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
+        PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
+        JTypeMirror lastBadClass = null;
+        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext(); ) {
+            JTypeMirror ci = iterator.next();
+
+            if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
+                throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
+            }
+
+            if (!isPossiblyAnInterface(ci)) {
+                // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
+                // Ci is not unresolved
+
+                if (ci.isSubtypeOf(ck)) {
+                    ck = ci; // Ci is more specific than Ck
+                    iterator.remove(); // remove bound
+                } else if (ck.isSubtypeOf(ci)) {
+                    // then our Ck is already more specific than Ci
+                    iterator.remove();
+                } else {
+                    JTypeMirror lower = cvarLowerBound(ci);
+                    if (lower != ci && lower != ts.NULL_TYPE) {
+                        cvarLowers = cvarLowers.plus(lower);
+                        cvarsToRemove = cvarsToRemove.plus(ci);
+                        retryWithCaptureBounds = YES;
+                    } else {
+                        retryWithCaptureBounds = retryWithCaptureBounds == YES ? YES
+                                                                               : UNKNOWN;
+                    }
+                    lastBadClass = ci;
+                }
+            } else if (!(ci instanceof JInferenceVar) && ck.isSubtypeOf(ci)) {
+                // then our Ck is already more specific than Ci
+                iterator.remove();
+            }
+        }
+
+        switch (retryWithCaptureBounds) {
+        case YES:
+            list.removeAll(cvarsToRemove);
+            list.addAll(cvarLowers);
+            return glb(ts, list);
+        case NO:
+            break;
+        case UNKNOWN:
+            throw new IllegalArgumentException("Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
+        }
+
+        if (list.isEmpty()) {
+            return ck;
+        }
+
+        if (ck != ts.OBJECT) {
+            // readd ck as first component
+            list.add(0, ck);
+        }
+
+        if (list.size() == 1) {
+            return list.get(0);
+        }
+
+        if (ck instanceof JTypeVar) {
+            return new IntersectionTypeImpl(ts, list);
+        }
+
+        // We assume there cannot be an array type here. Why?
+        // In well-formed java programs an array type in a GLB can only occur in the following situation
+        //
+        // class C<T extends B1 & .. & Bn>      // nota: the Bi cannot be array types
+        //
+        // Somewhere: C<? extends Arr[]>
+
+        // And capture would merge the bounds of the wildcard and of the tvar
+        // into Arr[] & B1 & .. & Bn
+        // Now the C<? ...> would only typecheck if Arr[] <: Bi forall i
+        // (Note that this means, that Bi in { Serializable, Cloneable, Object })
+
+        // This means, that the loop above would find Ck = Arr[], and delete all Bi, since Ck <: Bi
+        // So in the end, we would return Arr[] alone, not create an intersection
+        // TODO this is order dependent: Arr[] & Serializable is ok, but Serializable & Arr[] is not
+        //   Possibly use TypeOps::mostSpecific to merge them
+        assert ck instanceof JClassType : "Weird intersection involving multiple array types? " + list;
+
+        return new IntersectionTypeImpl.MinimalIntersection(ts, (JClassType) ck, list);
+    }
+
+
+    private static boolean isPossiblyAnInterface(JTypeMirror ci) {
+        return ci.isInterface()
+            || ci instanceof JInferenceVar
+            || ci.getSymbol() != null && ci.getSymbol().isUnresolved();
+    }
+
+    private static JTypeMirror cvarLowerBound(JTypeMirror t) {
+        if (t instanceof JTypeVar && ((JTypeVar) t).isCaptured()) {
+            return ((JTypeVar) t).getLowerBound();
+        }
+        return t;
+    }
+
+
 }

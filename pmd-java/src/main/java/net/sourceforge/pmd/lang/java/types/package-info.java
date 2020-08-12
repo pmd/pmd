@@ -148,24 +148,3 @@ public class Date {
 }
 
  */
-
-/* TODO: bug with glb in ReductionStep#UPPER
-
-In: /home/clifrr/Bureau/jdk13-src/java.base/java/util/stream/Collectors.java:1070:16
-java.lang.IllegalArgumentException: Bad intersection, unrelated class types capture#510 of ? super T and capture#420 of ? super T in [java.lang.Object, capture#420 of ? super T, capture#510 of ? super T]
-	at net.sourceforge.pmd.lang.java.types.TypeSystem.glb(TypeSystem.java:663)
-	at net.sourceforge.pmd.lang.java.types.internal.infer.ReductionStep$3.solve(ReductionStep.java:51)
-	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solveBasic(InferenceContext.java:389)
-	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solve(InferenceContext.java:367)
-	at net.sourceforge.pmd.lang.java.types.internal.infer.InferenceContext.solve(InferenceContext.java:347)
-	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.instantiateImpl(Infer.java:479)
-
-
-	public static <T, K, A, D>
-    Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
-                                          Collector<? super T, A, D> downstream) {
-        return Collectors.groupingBy(classifier, HashMap::new, downstream);
-    }
-
-
- */

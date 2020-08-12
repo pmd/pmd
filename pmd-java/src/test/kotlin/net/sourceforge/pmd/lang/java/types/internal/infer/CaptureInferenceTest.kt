@@ -11,7 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
+import java.util.function.Supplier
 import java.util.function.ToIntFunction
+import java.util.stream.Collector
+import java.util.stream.Collectors
 
 /**
  * @author Clément Fournier
@@ -209,7 +212,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
                         argList {
                             variableAccess("c") {
-                                with (it.typeDsl) {
+                                with(it.typeDsl) {
                                     gen.t_Collection[captureMatcher(`?` extends tvar)]
                                 }
                             }
@@ -218,6 +221,75 @@ class CaptureInferenceTest : ProcessorTestSpec({
                     }
 
                     variableAccess("characteristics")
+                }
+            }
+        }
+    }
+
+
+    parserTest("Problem with GLB of several capture variables") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+            import java.util.HashMap;
+            import java.util.Map;
+            import java.util.function.Function;
+            import java.util.stream.Collector;
+            import java.util.stream.Collectors;
+
+            class Scratch {
+
+                public static <T, K, A, D>
+                Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
+                                                      Collector<? super T, A, D> downstream) {
+                    return Collectors.groupingBy(classifier, HashMap::new, downstream);
+                }
+            }
+
+
+        """.trimIndent())
+
+        /* Signature of the other groupingBy:
+
+        public static <T, K, D, A, M extends Map<K, D>>
+
+            Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
+                                          Supplier<M> mapFactory,
+                                          Collector<? super T, A, D> downstream)
+         */
+
+        val (tvar, kvar, avar, dvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        call.shouldMatchN {
+            methodCall("groupingBy") {
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "groupingBy",
+                            declaredIn = Collectors::class.raw,
+                            withFormals = listOf(
+                                    gen.t_Function[`?` `super` tvar, `?` extends kvar],
+                                    Supplier::class[gen.t_Map[kvar, dvar]],
+                                    Collector::class[`?` `super` tvar, avar, dvar]
+                            ),
+                            returning =  Collector::class[tvar, `?`, gen.t_Map[kvar, dvar]]
+                    )
+                }
+
+                it::getQualifier shouldBe unspecifiedChild()
+
+                argList {
+                    variableAccess("classifier")
+
+                    constructorRef {
+                        // HMM this should be HashMap<K, D>
+                        typeExpr {
+                            classType("HashMap")
+                        }
+                    }
+
+                    variableAccess("downstream")
                 }
             }
         }
