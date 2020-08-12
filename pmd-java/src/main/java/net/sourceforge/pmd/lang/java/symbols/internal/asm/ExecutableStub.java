@@ -37,10 +37,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
                              int accessFlags,
                              String descriptor,
                              @Nullable String signature,
-                             @Nullable String[] exceptions) {
+                             @Nullable String[] exceptions,
+                             boolean skipFirstParam) {
         super(owner, simpleName, accessFlags);
         this.descriptor = descriptor;
-        this.type = new LazyMethodType(this, signature, descriptor, exceptions);
+        this.type = new LazyMethodType(this, descriptor, signature, exceptions, skipFirstParam);
     }
 
     boolean matches(String name, String descriptor) {
@@ -146,7 +147,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
                              String descriptor,
                              @Nullable String signature,
                              @Nullable String[] exceptions) {
-            super(owner, simpleName, accessFlags, descriptor, signature, exceptions);
+            super(owner, simpleName, accessFlags, descriptor, signature, exceptions, false);
         }
 
         @Override
@@ -182,8 +183,9 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
                            int accessFlags,
                            String descriptor,
                            @Nullable String signature,
-                           @Nullable String[] exceptions) {
-            super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions);
+                           @Nullable String[] exceptions,
+                           boolean isInnerNonStaticClass) {
+            super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions, isInnerNonStaticClass);
         }
 
         @Override

@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
@@ -97,6 +99,19 @@ class AsmLoaderTest : FunSpec({
         val inner = symLoader.resolveClassFromBinaryName("$outerName\$ProtectedStatic")!!
 
         inner.modifiers shouldBe (Opcodes.ACC_PROTECTED or Opcodes.ACC_STATIC)
+    }
+
+    test("Inner class constructors reflect no parameter for the enclosing instance") {
+
+        val outerName = NestedClasses::class.java.name
+
+        val inner = symLoader.resolveClassFromBinaryName("$outerName\$Inner")!!
+
+        inner.modifiers shouldBe Opcodes.ACC_PUBLIC
+
+        inner.constructors.shouldBeSingleton {
+            it.formalParameters.shouldHaveSize(0) // even if there's a synthetic parameter
+        }
     }
 
     test("Canonical name") {

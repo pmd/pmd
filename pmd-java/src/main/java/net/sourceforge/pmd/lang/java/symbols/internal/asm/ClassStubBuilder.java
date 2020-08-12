@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.NoUrlLoader;
 
@@ -17,6 +18,8 @@ class ClassStubBuilder extends ClassVisitor {
     private final ClassStub myStub;
     private final String myInternalName;
     private final AsmSymbolResolver resolver;
+
+    private boolean isInnerNonStaticClass = false;
 
     ClassStubBuilder(ClassStub stub, AsmSymbolResolver resolver) {
         super(AsmSymbolResolver.ASM_API_V);
@@ -33,6 +36,7 @@ class ClassStubBuilder extends ClassVisitor {
 
     @Override
     public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
+        isInnerNonStaticClass = true;
         // only for enclosing method
         myStub.setOuterClass(ownerInternalName, methodName, methodDescriptor);
     }
@@ -46,8 +50,7 @@ class ClassStubBuilder extends ClassVisitor {
 
     @Override
     public void visitInnerClass(String innerInternalName, @Nullable String outerName, @Nullable String innerSimpleName, int access) {
-        if (myInternalName.equals(outerName)
-            && innerSimpleName != null) { // not anonymous TODO local?
+        if (myInternalName.equals(outerName) && innerSimpleName != null) { // not anonymous
             ClassStub member = new ClassStub(myStub.getResolver(),
                                              innerInternalName,
                                              new NoUrlLoader(myStub.getResolver(), innerInternalName),
@@ -59,6 +62,7 @@ class ClassStubBuilder extends ClassVisitor {
             // then it's specifying the enclosing class
             myStub.setModifiers(access, false);
             myStub.setOuterClass(outerName, null, null);
+            isInnerNonStaticClass = (Opcodes.ACC_STATIC & access) == 0;
         }
     }
 
@@ -67,7 +71,7 @@ class ClassStubBuilder extends ClassVisitor {
         if ("<clinit>".equals(name)) {
             return null;
         } else if ("<init>".equals(name)) {
-            myStub.addCtor(new ExecutableStub.CtorStub(myStub, access, descriptor, signature, exceptions));
+            myStub.addCtor(new ExecutableStub.CtorStub(myStub, access, descriptor, signature, exceptions, isInnerNonStaticClass));
         } else {
             myStub.addMethod(new ExecutableStub.MethodStub(myStub, name, access, descriptor, signature, exceptions));
         }

@@ -24,7 +24,12 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParameterOwnerSymbol {
 
 
-    /** Returns the formal parameters this executable declares. */
+    /**
+     * Returns the formal parameters this executable declares. These are
+     * only non-synthetic parameters. For example, a constructor for an
+     * inner non-static class will not reflect a parameter for the enclosing
+     * instance.
+     */
     List<JFormalParamSymbol> getFormalParameters();
 
 

@@ -194,8 +194,12 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
 
-        LazyMethodType(ExecutableStub ctx, @Nullable String genericSig, @NonNull String descriptor, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions) {
+        /** Used for constructors of inner non-static classes. */
+        private final boolean skipFirstParam;
+
+        LazyMethodType(ExecutableStub ctx, @NonNull String descriptor, @Nullable String genericSig, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions, boolean skipFirstParam) {
             super(ctx);
+            this.skipFirstParam = skipFirstParam;
             this.signature = genericSig != null ? genericSig : descriptor;
         }
 
@@ -211,7 +215,8 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         void setParameterTypes(List<JTypeMirror> params) {
             Validate.validState(parameterTypes == null);
-            parameterTypes = params;
+            parameterTypes = skipFirstParam ? params.subList(1, params.size())
+                                            : params;
         }
 
         void setExceptionTypes(List<JTypeMirror> exs) {
