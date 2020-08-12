@@ -65,6 +65,13 @@ public interface NameResolver<S> {
     @Override
     String toString();
 
+    /**
+     * Returns a resolver that concatenates the results of every resolver
+     * in the given list.
+     *
+     * @param resolvers Resolvers
+     * @param <T>       Type of symbol
+     */
     static <T> NameResolver<T> composite(List<? extends NameResolver<? extends T>> resolvers) {
         if (resolvers.isEmpty()) {
             return CoreResolvers.emptyResolver();
@@ -72,14 +79,14 @@ public interface NameResolver<S> {
         return new NameResolver<T>() {
             @Override
             public @NonNull List<T> resolveHere(String simpleName) {
+                List<T> result = Collections.emptyList();
                 for (NameResolver<? extends T> r : resolvers) {
-                    @SuppressWarnings("unchecked") // list is unmodifiable
-                    List<T> ts = (List<T>) r.resolveHere(simpleName);
+                    List<? extends T> ts = r.resolveHere(simpleName);
                     if (!ts.isEmpty()) {
-                        return ts;
+                        result = CollectionUtil.concatView(result, ts);
                     }
                 }
-                return Collections.emptyList();
+                return result;
             }
 
             @Override

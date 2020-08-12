@@ -48,14 +48,16 @@ object PrimitiveGen : Exhaustive<JPrimitiveType>() {
 fun JMethodSig.shouldMatchMethod(
         named: String,
         declaredIn: JTypeMirror,
-        withFormals: List<JTypeMirror>,
-        returning: JTypeMirror = this.typeSystem.NO_TYPE
+        withFormals: List<JTypeMirror>? = null,
+        returning: JTypeMirror? = null
 ): JMethodSig {
     assertSoftly {
         this::getName shouldBe named
         this::getDeclaringType shouldBe declaredIn
-        this::getFormalParameters shouldBe withFormals
-        this::getReturnType shouldBe returning
+        if (withFormals != null)
+            this::getFormalParameters shouldBe withFormals
+        if (returning != null)
+            this::getReturnType shouldBe returning
     }
     return this
 }

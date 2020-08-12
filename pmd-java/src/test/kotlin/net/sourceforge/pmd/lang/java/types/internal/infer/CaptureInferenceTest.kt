@@ -188,7 +188,28 @@ class CaptureInferenceTest : ProcessorTestSpec({
                     )
                 }
 
-                argList(2)
+                argList {
+                    methodCall("requireNonNull") {
+                        with (it.typeDsl) {
+                            it.methodType.shouldMatchMethod(named = "requireNonNull", declaredIn = Objects::class.raw)
+                        }
+
+                        it::getQualifier shouldBe unspecifiedChild()
+
+                        argList {
+                            variableAccess("c") {
+                                with (it.typeDsl) {
+                                    it.typeMirror.shouldBeA<JClassType>{
+                                        it.typeArgs[0].shouldBeCaptureOf(`?` extends tvar)
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    variableAccess("characteristics")
+                }
             }
         }
     }

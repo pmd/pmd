@@ -455,4 +455,35 @@ class Sub extends Sup {
         assert(logGetter().isEmpty())
     }
 
+    parserTest("Test distinct primitive overloads from import") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+import static java.lang.Integer.reverseBytes; // (int) -> int
+import static java.lang.Long.reverseBytes; // (long) -> long
+
+class Scratch {
+    {
+        reverseBytes(0L);
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        with(call.typeDsl) {
+            call.methodType.shouldMatchMethod(
+                    named = "reverseBytes",
+                    declaredIn = long.box(),
+                    withFormals = listOf(long),
+                    returning = long
+            )
+        }
+        assert(logGetter().isEmpty())
+    }
+
 })
