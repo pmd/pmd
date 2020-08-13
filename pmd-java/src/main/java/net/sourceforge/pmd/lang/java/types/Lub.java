@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Helper class for {@link TypeOps}.
+ * Helper class for {@link TypeSystem#lub(Collection)} and {@link TypeSystem#glb(Collection)}.
  */
 final class Lub {
 
