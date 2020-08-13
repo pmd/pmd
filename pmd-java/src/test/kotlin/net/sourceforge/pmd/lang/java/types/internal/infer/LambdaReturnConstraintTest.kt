@@ -235,7 +235,7 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test lambda with field access in return expression") {
+    parserTest("!Test lambda with field access in return expression (inner ctor call)") {
         val acu = parser.parse("""
             import java.util.function.Function;
 
@@ -271,6 +271,56 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
                         fieldAccess("i") {
                             it.typeMirror shouldBe it.typeSystem.INT
                             constructorCall {
+                                variableAccess("s") {
+                                    it.typeMirror shouldBe t_Scratch
+                                }
+                                argList(0)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("!Test lambda with field access in return expression (method call)") {
+        val acu = parser.parse("""
+            import java.util.function.Function;
+
+            class Scratch {
+
+                static class WithField {
+                    int i;
+                }
+
+                WithField fetch() { return new WithField(); }
+
+                static void foo(Function<Scratch, Integer> f) { }
+
+                void main(String[] args) {
+                    // Symbol resolution for .i must not fail, even though its
+                    // LHS depends on the lambda parameter, and it is a return 
+                    // expression of the lambda, so is used by compatibility check
+
+                    foo(s -> s.fetch().i);
+                }
+            }
+        """)
+
+        val (t_Scratch, t_WithField) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (fetch, foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
+
+        fooCall.shouldMatchN {
+            methodCall("foo") {
+                it.methodType.symbol shouldBe foo.symbol
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
+
+                        fieldAccess("i") {
+                            it.typeMirror shouldBe it.typeSystem.INT
+                            methodCall("fetch") {
                                 variableAccess("s") {
                                     it.typeMirror shouldBe t_Scratch
                                 }

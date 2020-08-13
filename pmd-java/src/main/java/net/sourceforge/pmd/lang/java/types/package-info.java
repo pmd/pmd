@@ -148,3 +148,8 @@ public class Date {
 }
 
  */
+
+/* TODO lambda bug, needs major rehaul to make typeres strict
+
+    See ignored ("!") tests in LambdaReturnConstraintTest
+ */
