@@ -1,4 +1,7 @@
 /**
+ * Remove support for Java 13 preview language features
+ * Andreas Dangel 08/2020
+ *====================================================================
  * Add support for record types introduced as a preview language
  * feature with Java 14. See JEP 359.
  * Andreas Dangel 02/2020
@@ -418,8 +421,8 @@ public class JavaParser {
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java >= 14");
     }
   }
   /**
@@ -432,30 +435,26 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
 
-  private boolean isJava13PreviewOr14() {
-      return jdkVersion >= 14 || jdkVersion >= 13 && preview;
-  }
-
   private void checkForSwitchRules() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Switch rules in switch statements are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Switch rules in switch statements are only supported with Java >= 14");
     }
   }
   private void checkForSwitchExpression() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Switch expressions are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Switch expressions are only supported with Java >= 14");
     }
   }
 
   private void checkForYieldStatement() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Yield statements are only supported with Java 13 Preview or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Yield statements are only supported with Java >= 14");
     }
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion != 13 && jdkVersion != 14 || !preview) {
-      throwParseException("Text block literals are only supported with Java 13 Preview or Java 14 Preview");
+    if (jdkVersion != 14 || !preview) {
+      throwParseException("Text block literals are only supported with Java 14 Preview");
     }
   }
 
@@ -509,7 +508,7 @@ public class JavaParser {
   private boolean inSwitchExprBlock = false;
 
   private boolean isYieldStart() {
-    return inSwitchExprBlock && isJava13PreviewOr14()
+    return inSwitchExprBlock && jdkVersion >= 14
     && isKeyword("yield")
     && mayStartExprAfterYield(2);
   }
