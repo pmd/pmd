@@ -1414,8 +1414,8 @@ latest available version, have a look at the official <a href="https://maven.apa
 
 <p>As of March 2020, the current plugin version is <strong>3.13.0</strong>.</p>
 
-<p>The version of the plugin should be specified in <code class="highlighter-rouge">&lt;build&gt;&lt;pluginManagement/&gt;&lt;/build&gt;</code> and if using the project
-report additionally in <code class="highlighter-rouge">&lt;reporting&gt;&lt;plugins/&gt;&lt;/reporting&gt;</code> elements. Here’s an example for the pluginManagement
+<p>The version of the plugin should be specified in <code class="language-plaintext highlighter-rouge">&lt;build&gt;&lt;pluginManagement/&gt;&lt;/build&gt;</code> and if using the project
+report additionally in <code class="language-plaintext highlighter-rouge">&lt;reporting&gt;&lt;plugins/&gt;&lt;/reporting&gt;</code> elements. Here’s an example for the pluginManagement
 section:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;build&gt;</span>
@@ -1462,7 +1462,7 @@ the reports element in your pom.xml:</p>
 
 <p>To run PMD on a Maven project without adding it as a report, simply run</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn pmd:pmd
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn pmd:pmd
 </code></pre></div></div>
 
 <p>The PMD plugin writes the report in XML which will then be formatted into more readable HTML.</p>
@@ -1470,7 +1470,7 @@ the reports element in your pom.xml:</p>
 <h4 id="integrated-into-the-build-process">Integrated into the build process</h4>
 
 <p>You can also run PMD automatically when building your project. You even let the build fail, if
-PMD finds some violations. Therefore the <code class="highlighter-rouge">check</code> goal is used:</p>
+PMD finds some violations. Therefore the <code class="language-plaintext highlighter-rouge">check</code> goal is used:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;project&gt;</span>
   ...
@@ -1500,8 +1500,8 @@ PMD finds some violations. Therefore the <code class="highlighter-rouge">check</
 <span class="nt">&lt;/project&gt;</span>
 </code></pre></div></div>
 
-<p>This will run PMD automatically during the <code class="highlighter-rouge">verify</code> phase of the build. You can additionally run CPD, if
-you add <code class="highlighter-rouge">cpd-check</code> as a goal.</p>
+<p>This will run PMD automatically during the <code class="language-plaintext highlighter-rouge">verify</code> phase of the build. You can additionally run CPD, if
+you add <code class="language-plaintext highlighter-rouge">cpd-check</code> as a goal.</p>
 
 <h3 id="customization">Customization</h3>
 
@@ -1641,7 +1641,7 @@ Also, the bug tracker for this plugin is <a href="https://issues.apache.org/jira
 <p>To include the PMD report in the project reports section add the following line under
 the reports element in your project.xml:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;report&gt;maven-pmd-plugin&lt;/report&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;report&gt;maven-pmd-plugin&lt;/report&gt;
 </code></pre></div></div>
 
 <p>This will add an entry to the ‘project reports’ section with the PMD report.</p>
@@ -1650,7 +1650,7 @@ the reports element in your project.xml:</p>
 
 <p>To run PMD on a Maven project without adding it as a report, simply run</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven pmd xdoc
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven pmd xdoc
 </code></pre></div></div>
 
 <p>The PMD plugin writes the report in XML which will then be formatted into more readable HTML.</p>
@@ -1670,7 +1670,7 @@ writing a ruleset can be found <a href="pmd_userdocs_making_rulesets.html">here<
 <p>Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
 the previous paragraph. Add the following property to your project now:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven.pmd.rulesetfiles = ${basedir}/pmd.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven.pmd.rulesetfiles = ${basedir}/pmd.xml
 </code></pre></div></div>
 
 <h3 id="reference-1">Reference</h3>
@@ -1705,7 +1705,7 @@ the previous paragraph. Add the following property to your project now:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> March 2020<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> March 2020<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

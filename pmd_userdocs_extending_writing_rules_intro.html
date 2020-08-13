@@ -1490,13 +1490,13 @@ your rule does. I’d advise to keep to XPath unless you have no other choice.</
 <h2 id="xml-rule-definition">XML rule definition</h2>
 
 <p>New rules must be declared in a ruleset before they’re referenced. This is the
-case for both XPath and Java rules. To do this, the <code class="highlighter-rouge">rule</code> element is used, but
-instead of mentioning the <code class="highlighter-rouge">ref</code> attribute, it mentions the <code class="highlighter-rouge">class</code> attribute,
+case for both XPath and Java rules. To do this, the <code class="language-plaintext highlighter-rouge">rule</code> element is used, but
+instead of mentioning the <code class="language-plaintext highlighter-rouge">ref</code> attribute, it mentions the <code class="language-plaintext highlighter-rouge">class</code> attribute,
 with the implementation class of your rule.</p>
 
 <ul>
   <li><strong>For Java rules:</strong> this is the class extending AbstractRule (transitively)</li>
-  <li><strong>For XPath rules:</strong> this is <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.XPathRule</code></li>
+  <li><strong>For XPath rules:</strong> this is <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.XPathRule</code></li>
 </ul>
 
 <p>Example:</p>
@@ -1512,10 +1512,10 @@ with the implementation class of your rule.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> In PMD 7, the <code class="highlighter-rouge">language</code> attribute will be required on all <code class="highlighter-rouge">rule</code>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> In PMD 7, the <code class="language-plaintext highlighter-rouge">language</code> attribute will be required on all <code class="language-plaintext highlighter-rouge">rule</code>
     elements that declare a new rule. Some base rule classes set the language implicitly in their
     constructor, and so this is not required in all cases for the rule to work. But this
-    behavior will be discontinued in PMD 7, so missing <code class="highlighter-rouge">language</code> attributes are
+    behavior will be discontinued in PMD 7, so missing <code class="language-plaintext highlighter-rouge">language</code> attributes are
     reported beginning with PMD 6.27.0 as a forward compatibility warning.</div>
 
 <h2 id="resource-index">Resource index</h2>
@@ -1572,7 +1572,7 @@ your rule</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1601,7 +1601,7 @@ Also EJB’s might be moved between machines in a cluster and only managed resou
 An optimizing JRE may assign a reference to the baz variable before it calls the constructor of the object the
 reference points to.</p>
 
-<p>Note: With Java 5, you can make Double checked locking work, if you declare the variable to be <code class="highlighter-rouge">volatile</code>.</p>
+<p>Note: With Java 5, you can make Double checked locking work, if you declare the variable to be <code class="language-plaintext highlighter-rouge">volatile</code>.</p>
 
 <p>For more details refer to: <a href="http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html">http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html</a>
 or <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html</a></p>
@@ -1642,7 +1642,7 @@ Other possible fixes are to synchronize the entire method or to use an
 <a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">initialize-on-demand holder class</a>.</p>
 
 <p>Refrain from using the double-checked locking pattern. The Java Memory Model doesn’t
-guarantee it to work unless the variable is declared as <code class="highlighter-rouge">volatile</code>, adding an uneeded
+guarantee it to work unless the variable is declared as <code class="language-plaintext highlighter-rouge">volatile</code>, adding an uneeded
 performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">Reference</a></p>
 
 <p>See Effective Java, item 48.</p>
@@ -1714,7 +1714,7 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 for each thread. If multiple threads must access a static formatter, the formatter must be
 synchronized on block level.</p>
 
-<p>This rule has been deprecated in favor of the rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
+<p>This rule has been deprecated in favor of the rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticDateFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule</a></p>
 
@@ -1772,7 +1772,7 @@ synchronized on block level.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Instances of <code class="highlighter-rouge">java.text.Format</code> are generally not synchronized.
+<p>Instances of <code class="language-plaintext highlighter-rouge">java.text.Format</code> are generally not synchronized.
 Sun recommends using separate format instances for each thread.
 If multiple threads must access a static formatter, the formatter must be
 synchronized on block level.</p>
@@ -1911,7 +1911,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

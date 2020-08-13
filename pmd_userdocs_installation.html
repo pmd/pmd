@@ -1428,38 +1428,38 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>PMD is distributed as a zip archive, which includes both <a href="#running-pmd-via-command-line">PMD</a> and <a href="pmd_userdocs_cpd.html">CPD</a>. 
 You can download the latest binary distribution from <a href="https://github.com/pmd/pmd/releases">the github releases page</a>.</p>
 
-<p>Unzip it into any directory, optionally add the <code class="highlighter-rouge">bin</code> subdirectory in your <code class="highlighter-rouge">PATH</code>, and you’re good to go!</p>
+<p>Unzip it into any directory, optionally add the <code class="language-plaintext highlighter-rouge">bin</code> subdirectory in your <code class="language-plaintext highlighter-rouge">PATH</code>, and you’re good to go!</p>
 
 <h2 id="running-pmd-via-command-line">Running PMD via command line</h2>
 
 <div class="bs-callout bs-callout-primary">PMD comes with several command line utilities, like CPD, the rule designer or PMD itself.
-            On Unix, you can run any of them using the script <code class="highlighter-rouge">run.sh</code>, located inside the <code class="highlighter-rouge">bin/</code>
+            On Unix, you can run any of them using the script <code class="language-plaintext highlighter-rouge">run.sh</code>, located inside the <code class="language-plaintext highlighter-rouge">bin/</code>
             directory of the PMD distribution. The first argument is the name of the utility you want
-            to execute (‘pmd’, ‘designer’, …), e.g. PMD is launched via <code class="highlighter-rouge">run.sh pmd</code>. The rest of
+            to execute (‘pmd’, ‘designer’, …), e.g. PMD is launched via <code class="language-plaintext highlighter-rouge">run.sh pmd</code>. The rest of
             the arguments are specific to the utility used.<br /><br />
-            On Windows, each utility has its own startup script, e.g. <code class="highlighter-rouge">pmd.bat</code>, <code class="highlighter-rouge">cpd.bat</code>.</div>
+            On Windows, each utility has its own startup script, e.g. <code class="language-plaintext highlighter-rouge">pmd.bat</code>, <code class="language-plaintext highlighter-rouge">cpd.bat</code>.</div>
 
-<p>The PMD command (<code class="highlighter-rouge">pmd.bat</code> or <code class="highlighter-rouge">run.sh pmd</code>) requires two options:</p>
+<p>The PMD command (<code class="language-plaintext highlighter-rouge">pmd.bat</code> or <code class="language-plaintext highlighter-rouge">run.sh pmd</code>) requires two options:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">-d &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
+  <li><code class="language-plaintext highlighter-rouge">-d &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources.</li>
-  <li><code class="highlighter-rouge">-R &lt;path&gt;</code>: the ruleset file you want to use. PMD uses xml configuration files, called <em>rulesets</em>, which specify 
+  <li><code class="language-plaintext highlighter-rouge">-R &lt;path&gt;</code>: the ruleset file you want to use. PMD uses xml configuration files, called <em>rulesets</em>, which specify 
 which rules to execute on your sources. You can also run a single rule by referencing it using its <em>category</em> and
 name (more details <a href="pmd_userdocs_making_rulesets.html#referencing-a-single-rule">here</a>). For example, you can check for unnecessary
-modifiers on Java sources with <code class="highlighter-rouge">-R category/java/codestyle.xml/UnnecessaryModifier</code>.</li>
+modifiers on Java sources with <code class="language-plaintext highlighter-rouge">-R category/java/codestyle.xml/UnnecessaryModifier</code>.</li>
 </ul>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> At the moment the formerly provided rulesets (eg <code class="highlighter-rouge">rulesets/java/basic.xml</code>) are deprecated,
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> At the moment the formerly provided rulesets (eg <code class="language-plaintext highlighter-rouge">rulesets/java/basic.xml</code>) are deprecated,
    though you can still use them. PMD includes a quickstart ruleset for some languages (currently, Java)
-   as base configurations, which you can reference as e.g. <code class="highlighter-rouge">rulesets/java/quickstart.xml</code>. You’re strongly
+   as base configurations, which you can reference as e.g. <code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>. You’re strongly
    encouraged to <a href="pmd_userdocs_making_rulesets.html">create your own ruleset</a> from the start though.</div>
 
 <p>Additionally, the following options, are specified most of the time even though they’re not required:</p>
 <ul>
-  <li><code class="highlighter-rouge">-f &lt;format&gt;</code>: report format. PMD supports many report formats out of the box. You may want to start with the basic
-<code class="highlighter-rouge">text</code> format (default) or <code class="highlighter-rouge">xml</code> format. The supported formats are <a href="pmd_userdocs_cli_reference.html#available-report-formats">documented here</a>.</li>
-  <li><code class="highlighter-rouge">-auxclasspath &lt;classpath&gt;</code>: class path containing the compiled class files of the analysed Java sources, if any.
+  <li><code class="language-plaintext highlighter-rouge">-f &lt;format&gt;</code>: report format. PMD supports many report formats out of the box. You may want to start with the basic
+<code class="language-plaintext highlighter-rouge">text</code> format (default) or <code class="language-plaintext highlighter-rouge">xml</code> format. The supported formats are <a href="pmd_userdocs_cli_reference.html#available-report-formats">documented here</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">-auxclasspath &lt;classpath&gt;</code>: class path containing the compiled class files of the analysed Java sources, if any.
 Setting this up correctly allows PMD to do much deeper analysis using reflection. Some rules, such as <a href="pmd_rules_java_bestpractices.html#missingoverride">MissingOverride</a>,
 require it to function properly.</li>
 </ul>
@@ -1468,7 +1468,7 @@ require it to function properly.</li>
 
 <h3 id="sample-usage">Sample usage</h3>
 
-<p>The following shows a sample run of PMD with the <code class="highlighter-rouge">text</code> format:</p>
+<p>The following shows a sample run of PMD with the <code class="language-plaintext highlighter-rouge">text</code> format:</p>
 
 <div class="text-left">
   <ul class="nav nav-tabs" role="tablist">
@@ -1505,13 +1505,13 @@ require it to function properly.</li>
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
             For the full list, see <a href="pmd_userdocs_cpd.html#supported-languages">Supported Languages</a>.</div>
 
-<p>Like for PMD, CPD is started on Unix by <code class="highlighter-rouge">run.sh cpd</code> and on Windows by <code class="highlighter-rouge">cpd.bat</code>.</p>
+<p>Like for PMD, CPD is started on Unix by <code class="language-plaintext highlighter-rouge">run.sh cpd</code> and on Windows by <code class="language-plaintext highlighter-rouge">cpd.bat</code>.</p>
 
 <p>There are two required parameters:</p>
 <ul>
-  <li><code class="highlighter-rouge">--files &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a
+  <li><code class="language-plaintext highlighter-rouge">--files &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a
 directory or a jar or zip file containing the sources.</li>
-  <li><code class="highlighter-rouge">--minimum-tokens &lt;number&gt;</code>: the minimum token length which should be reported as a duplicate.</li>
+  <li><code class="language-plaintext highlighter-rouge">--minimum-tokens &lt;number&gt;</code>: the minimum token length which should be reported as a duplicate.</li>
 </ul>
 
 <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> CPD’s command-line reference, Ant task usage, and many examples are documented in the
@@ -1519,7 +1519,7 @@ directory or a jar or zip file containing the sources.</li>
 
 <h3 id="sample-usage-1">Sample usage</h3>
 
-<p>The following shows a sample run of CPD with the <code class="highlighter-rouge">text</code> format:</p>
+<p>The following shows a sample run of CPD with the <code class="language-plaintext highlighter-rouge">text</code> format:</p>
 
 <div class="text-left">
   <ul class="nav nav-tabs" role="tablist">
@@ -1590,7 +1590,7 @@ directory or a jar or zip file containing the sources.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

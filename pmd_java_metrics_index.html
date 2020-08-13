@@ -1428,7 +1428,7 @@ concrete operations.</p>
 
 <h3 id="description-1">Description</h3>
 <p>This counts the number of other classes a given class or operation relies on.
-Classes from the package <code class="highlighter-rouge">java.lang</code> are ignored by default (can be changed via options).
+Classes from the package <code class="language-plaintext highlighter-rouge">java.lang</code> are ignored by default (can be changed via options).
 Also primitives are not included into the count.</p>
 
 <h3 id="code-example">Code example</h3>
@@ -1458,7 +1458,7 @@ Also primitives are not included into the count.</p>
 <h3 id="options">Options</h3>
 
 <ul>
-  <li>Option <code class="highlighter-rouge">includeJavaLang</code>: Also include classes from the package <code class="highlighter-rouge">java.lang</code></li>
+  <li>Option <code class="language-plaintext highlighter-rouge">includeJavaLang</code>: Also include classes from the package <code class="language-plaintext highlighter-rouge">java.lang</code></li>
 </ul>
 
 <h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
@@ -1468,9 +1468,9 @@ Also primitives are not included into the count.</p>
 <h3 id="description-2">Description</h3>
 
 <p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
-Formally, given that the control flow graph of the block has <code class="highlighter-rouge">n</code> vertices, <code class="highlighter-rouge">e</code> 
-edges and <code class="highlighter-rouge">p</code> connected components, the cyclomatic complexity of the block is 
-given by <code class="highlighter-rouge">CYCLO = e - n + 2p</code> [<a href="#McCabe76">McCabe76</a>]. In practice it can be 
+Formally, given that the control flow graph of the block has <code class="language-plaintext highlighter-rouge">n</code> vertices, <code class="language-plaintext highlighter-rouge">e</code> 
+edges and <code class="language-plaintext highlighter-rouge">p</code> connected components, the cyclomatic complexity of the block is 
+given by <code class="language-plaintext highlighter-rouge">CYCLO = e - n + 2p</code> [<a href="#McCabe76">McCabe76</a>]. In practice it can be 
 calculated by counting control flow statements following the standard rules given 
 below.</p>
 
@@ -1478,13 +1478,13 @@ below.</p>
 
 <ul>
   <li>Methods have a base complexity of 1.</li>
-  <li>+1 for every control flow statement (<code class="highlighter-rouge">if</code>, <code class="highlighter-rouge">case</code>, <code class="highlighter-rouge">catch</code>, <code class="highlighter-rouge">throw</code>, <code class="highlighter-rouge">do</code>, 
-<code class="highlighter-rouge">while</code>, <code class="highlighter-rouge">for</code>, <code class="highlighter-rouge">break</code>, <code class="highlighter-rouge">continue</code>) and conditional expression (<code class="highlighter-rouge">?:</code>) 
+  <li>+1 for every control flow statement (<code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">case</code>, <code class="language-plaintext highlighter-rouge">catch</code>, <code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">do</code>, 
+<code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">break</code>, <code class="language-plaintext highlighter-rouge">continue</code>) and conditional expression (<code class="language-plaintext highlighter-rouge">?:</code>) 
 [<a href="#Sonarqube">Sonarqube</a>]. Notice switch cases count as one, but not the 
 switch itself: the point is that a switch should have the same complexity 
-value as the equivalent series of <code class="highlighter-rouge">if</code> statements.</li>
-  <li><code class="highlighter-rouge">else</code>, <code class="highlighter-rouge">finally</code> and <code class="highlighter-rouge">default</code> don’t count;</li>
-  <li>+1 for every boolean operator (<code class="highlighter-rouge">&amp;&amp;</code>, <code class="highlighter-rouge">||</code>) in the guard condition of a control 
+value as the equivalent series of <code class="language-plaintext highlighter-rouge">if</code> statements.</li>
+  <li><code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">finally</code> and <code class="language-plaintext highlighter-rouge">default</code> don’t count;</li>
+  <li>+1 for every boolean operator (<code class="language-plaintext highlighter-rouge">&amp;&amp;</code>, <code class="language-plaintext highlighter-rouge">||</code>) in the guard condition of a control 
 flow statement. That’s because Java has short-circuit evaluation semantics for 
 boolean operators, which makes every boolean operator kind of a control flow 
 statement in itself.</li>
@@ -1520,13 +1520,13 @@ statement in itself.</li>
 <h3 id="options-1">Options</h3>
 
 <ul>
-  <li>Option <code class="highlighter-rouge">CycloVersion#IGNORE_BOOLEAN_PATHS</code>: Boolean operators are not counted,
-nor are empty fall-through cases in <code class="highlighter-rouge">switch</code> statements. You can use this 
-option to get results similar to those of the old <code class="highlighter-rouge">StdCyclomaticComplexityRule</code>, 
+  <li>Option <code class="language-plaintext highlighter-rouge">CycloVersion#IGNORE_BOOLEAN_PATHS</code>: Boolean operators are not counted,
+nor are empty fall-through cases in <code class="language-plaintext highlighter-rouge">switch</code> statements. You can use this 
+option to get results similar to those of the old <code class="language-plaintext highlighter-rouge">StdCyclomaticComplexityRule</code>, 
 which is to be replaced.</li>
-  <li>Option <code class="highlighter-rouge">CycloVersion#CONSIDER_ASSERTS</code>: Assert statements are counted as if 
-they were <code class="highlighter-rouge">if (..) throw new AssertionError(..)</code>. Compatible with 
-<code class="highlighter-rouge">IGNORE_BOOLEAN_PATHS</code>.</li>
+  <li>Option <code class="language-plaintext highlighter-rouge">CycloVersion#CONSIDER_ASSERTS</code>: Assert statements are counted as if 
+they were <code class="language-plaintext highlighter-rouge">if (..) throw new AssertionError(..)</code>. Compatible with 
+<code class="language-plaintext highlighter-rouge">IGNORE_BOOLEAN_PATHS</code>.</li>
 </ul>
 
 <h2 id="lines-of-code-loc">Lines of Code (LoC)</h2>
@@ -1548,18 +1548,18 @@ the source. This metric doesn’t discount comments or blank lines. See also
 <p>Number of statements in a class or operation. That’s roughly equivalent to 
 counting the number of semicolons and opening braces in the program. Comments 
 and blank lines are ignored, and statements spread on multiple lines count as 
-only one (e.g. <code class="highlighter-rouge">int\n a;</code> counts a single statement).</p>
+only one (e.g. <code class="language-plaintext highlighter-rouge">int\n a;</code> counts a single statement).</p>
 
 <p>The standard version of the metric is based off JavaNCSS’s version<br />
 [<a href="#JavaNcss">JavaNcss</a>]:</p>
 
 <ul>
-  <li>+1 for any of the following statements: <code class="highlighter-rouge">if</code>, <code class="highlighter-rouge">else</code>, <code class="highlighter-rouge">while</code>, <code class="highlighter-rouge">do</code>, <code class="highlighter-rouge">for</code>, 
-<code class="highlighter-rouge">switch</code>, <code class="highlighter-rouge">break</code>, <code class="highlighter-rouge">continue</code>, <code class="highlighter-rouge">return</code>, <code class="highlighter-rouge">throw</code>, <code class="highlighter-rouge">synchronized</code>, <code class="highlighter-rouge">catch</code>, 
-<code class="highlighter-rouge">finally</code>.</li>
-  <li>+1 for each assignment, variable declaration (except <code class="highlighter-rouge">for</code> loop initializers) 
+  <li>+1 for any of the following statements: <code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">do</code>, <code class="language-plaintext highlighter-rouge">for</code>, 
+<code class="language-plaintext highlighter-rouge">switch</code>, <code class="language-plaintext highlighter-rouge">break</code>, <code class="language-plaintext highlighter-rouge">continue</code>, <code class="language-plaintext highlighter-rouge">return</code>, <code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">synchronized</code>, <code class="language-plaintext highlighter-rouge">catch</code>, 
+<code class="language-plaintext highlighter-rouge">finally</code>.</li>
+  <li>+1 for each assignment, variable declaration (except <code class="language-plaintext highlighter-rouge">for</code> loop initializers) 
 or statement expression. We count variables  declared on the same line (e.g. 
-<code class="highlighter-rouge">int a, b, c;</code>) as a single statement.</li>
+<code class="language-plaintext highlighter-rouge">int a, b, c;</code>) as a single statement.</li>
   <li>Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, 
 interface, enum, annotation), and method and field declarations 
 [<a href="#Sonarqube">Sonarqube</a>].</li>
@@ -1567,7 +1567,7 @@ interface, enum, annotation), and method and field declarations
 and import declarations as statements. This makes it easier to compare nested 
 classes to outer classes. Besides, it makes for class metric results that 
 actually represent the size of the class and not of the file. If you don’t 
-like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code> option.</li>
+like that behaviour, use the <code class="language-plaintext highlighter-rouge">COUNT_IMPORTS</code> option.</li>
 </ul>
 
 <h3 id="code-example-1">Code example</h3>
@@ -1601,7 +1601,7 @@ like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code
 <h3 id="options-2">Options</h3>
 
 <ul>
-  <li>Option <code class="highlighter-rouge">NcssVersion#COUNT_IMPORTS</code>: Import and package statements are counted 
+  <li>Option <code class="language-plaintext highlighter-rouge">NcssVersion#COUNT_IMPORTS</code>: Import and package statements are counted 
 as well. This version fully complies with JavaNCSS.</li>
 </ul>
 
@@ -1619,7 +1619,7 @@ computed as simply as Cyclo. With NPath, two decision points appearing sequentia
 have their complexity multiplied.</p>
 
 <p>The fact that NPath multiplies the complexity of statements makes it grow 
-exponentially: 10 <code class="highlighter-rouge">if</code> - <code class="highlighter-rouge">else</code> statements in a row would give an NPath of 1024, 
+exponentially: 10 <code class="language-plaintext highlighter-rouge">if</code> - <code class="language-plaintext highlighter-rouge">else</code> statements in a row would give an NPath of 1024, 
 while Cyclo would evaluate to 20. Methods with an NPath complexity over 200 are 
 generally considered too complex.</p>
 
@@ -1629,21 +1629,21 @@ generally considered too complex.</p>
   <li>The complexity of a block is the product of the NPath complexity of its 
 statements, calculated as follows:
     <ul>
-      <li>The complexity of <code class="highlighter-rouge">for</code>, <code class="highlighter-rouge">do</code> and <code class="highlighter-rouge">while</code> statements is 1, plus the 
+      <li>The complexity of <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">do</code> and <code class="language-plaintext highlighter-rouge">while</code> statements is 1, plus the 
 complexity of the block, plus the complexity of the guard condition.</li>
-      <li>The complexity of a cascading <code class="highlighter-rouge">if</code> statement (<code class="highlighter-rouge">if .. else if ..</code>) is the 
-number of <code class="highlighter-rouge">if</code> statements in the chain, plus the complexity of their guard 
-condition, plus the complexity of the unguarded <code class="highlighter-rouge">else</code> block (or 1 if there 
+      <li>The complexity of a cascading <code class="language-plaintext highlighter-rouge">if</code> statement (<code class="language-plaintext highlighter-rouge">if .. else if ..</code>) is the 
+number of <code class="language-plaintext highlighter-rouge">if</code> statements in the chain, plus the complexity of their guard 
+condition, plus the complexity of the unguarded <code class="language-plaintext highlighter-rouge">else</code> block (or 1 if there 
 is none).</li>
-      <li>The complexity of a <code class="highlighter-rouge">switch</code> statement is the number of cases, plus the 
-complexity of each <code class="highlighter-rouge">case</code> block. It’s equivalent to the complexity of the 
-equivalent cascade of <code class="highlighter-rouge">if</code> statements.</li>
-      <li>The complexity of a ternary expression (<code class="highlighter-rouge">?:</code>) is the complexity of the guard
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">switch</code> statement is the number of cases, plus the 
+complexity of each <code class="language-plaintext highlighter-rouge">case</code> block. It’s equivalent to the complexity of the 
+equivalent cascade of <code class="language-plaintext highlighter-rouge">if</code> statements.</li>
+      <li>The complexity of a ternary expression (<code class="language-plaintext highlighter-rouge">?:</code>) is the complexity of the guard
 condition, plus the complexity of both expressions. It’s equivalent to the 
-complexity of the equivalent <code class="highlighter-rouge">if .. else</code> construct.</li>
-      <li>The complexity of a <code class="highlighter-rouge">try .. catch</code> statement is the complexity of the <code class="highlighter-rouge">try</code> 
+complexity of the equivalent <code class="language-plaintext highlighter-rouge">if .. else</code> construct.</li>
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">try .. catch</code> statement is the complexity of the <code class="language-plaintext highlighter-rouge">try</code> 
 block, plus the complexity of each catch block.</li>
-      <li>The complexity of a <code class="highlighter-rouge">return</code> statement is the complexity of the expression 
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">return</code> statement is the complexity of the expression 
 (or 1 if there is none).</li>
       <li>All other statements have a complexity of 1 and are discarded from the product.</li>
     </ul>
@@ -1675,7 +1675,7 @@ block, plus the complexity of each catch block.</li>
 </code></pre></div></div>
 <p>After block 0, the control flow can either execute block 1 or 2 before jumping 
 to block 3. From block three, the control flow will again have the choice 
-between blocks 4 and 5 before jumping to block 6. The first <code class="highlighter-rouge">if</code> offers 2 
+between blocks 4 and 5 before jumping to block 6. The first <code class="language-plaintext highlighter-rouge">if</code> offers 2 
 choices, the second offers 3, so the cyclomatic complexity of this method is 
 2 + 3 = 5. NPath, however, sees 2 * 3 = 6 full paths from the beginning to the end.</p>
 
@@ -1775,7 +1775,7 @@ In Proceedings ACM Symposium on Software Reusability, 1995.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

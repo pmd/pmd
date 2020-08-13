@@ -1442,7 +1442,7 @@ to explore the AST.</p>
 
 <p>When a rule is applied to a file, it’s handed the root of the AST and told
 to traverse all the tree to look for violations. Each rule defines a specific
-<code class="highlighter-rouge">visit</code> method for each type of node for of the language, which
+<code class="language-plaintext highlighter-rouge">visit</code> method for each type of node for of the language, which
 by default just visits the children.</p>
 
 <p>So the following rule would traverse the whole tree and do nothing:</p>
@@ -1454,12 +1454,12 @@ by default just visits the children.</p>
 
 <p>Generally, a rule wants to check for only some node types. In our XPath example
 in <a href="pmd_userdocs_extending_your_first_rule.html">Your First Rule</a>,
-we wanted to check for some <code class="highlighter-rouge">VariableDeclaratorId</code> nodes. That’s the XPath name,
+we wanted to check for some <code class="language-plaintext highlighter-rouge">VariableDeclaratorId</code> nodes. That’s the XPath name,
 but in Java, you’ll get access to the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>
 full API.</p>
 
 <p>If you want to check for some specific node types, you can override the
-corresponding <code class="highlighter-rouge">visit</code> method:</p>
+corresponding <code class="language-plaintext highlighter-rouge">visit</code> method:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyRule</span> <span class="kd">extends</span> <span class="nc">AbstractJavaRule</span> <span class="o">{</span>
 
@@ -1481,7 +1481,7 @@ corresponding <code class="highlighter-rouge">visit</code> method:</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">super.visit(node, data)</code> call is super common in rule implementations,
+<p>The <code class="language-plaintext highlighter-rouge">super.visit(node, data)</code> call is super common in rule implementations,
 because it makes the traversal continue by visiting all the descendants of the
 current node.</p>
 
@@ -1489,8 +1489,8 @@ current node.</p>
 
 <p>Sometimes you have checked all you needed and you’re sure that the descendants
 of a node may not contain violations. In that case, you can avoid calling the
-<code class="highlighter-rouge">super</code> implementation and the traversal will not continue further down. This
-means that your callbacks (<code class="highlighter-rouge">visit</code> implementations) won’t be called on the rest
+<code class="language-plaintext highlighter-rouge">super</code> implementation and the traversal will not continue further down. This
+means that your callbacks (<code class="language-plaintext highlighter-rouge">visit</code> implementations) won’t be called on the rest
 of the subtree. The siblings of the current node may be visited
 recursively nevertheless.</p>
 
@@ -1506,7 +1506,7 @@ passed the nodes it is interested in. To use the rulechain correctly:</p>
   <li>Your rule must register those node types by calling <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#addRuleChainVisit(java.lang.Class)"><code>addRuleChainVisit</code></a>
 in its constructor.</li>
   <li>Your visit methods <strong>must not recurse!</strong> In effect, you should call never
-call <code class="highlighter-rouge">super.visit</code> in the methods.</li>
+call <code class="language-plaintext highlighter-rouge">super.visit</code> in the methods.</li>
 </ul>
 
 <h3 id="execution-across-files-thread-safety-and-statefulness">Execution across files, thread-safety and statefulness</h3>
@@ -1523,7 +1523,7 @@ and the rule instance is reused. If you rely on a proper initialization of insta
 properties, you can do the initialization e.g. in the visit-method of the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#"><code>ASTCompilationUnit</code></a>
 node - which is visited first and only once per file. However, this
 solution would only work for rules written for the Java language. A language
-independent way is to override the method <code class="highlighter-rouge">start</code> of the rule.
+independent way is to override the method <code class="language-plaintext highlighter-rouge">start</code> of the rule.
 The start method is called exactly once per file.</p>
 
 <!-- We don't support language-independent rules anyway... -->
@@ -1590,7 +1590,7 @@ the file</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1503,8 +1503,8 @@ Otherwise, the other suppression methods are explained in the following sections
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>You can use whatever text string you want to suppress warnings, by using the <code class="highlighter-rouge">-suppressmarker</code> CLI option.
-For example, here’s how to use <code class="highlighter-rouge">TURN_OFF_WARNINGS</code> as the suppressor:</p>
+<p>You can use whatever text string you want to suppress warnings, by using the <code class="language-plaintext highlighter-rouge">-suppressmarker</code> CLI option.
+For example, here’s how to use <code class="language-plaintext highlighter-rouge">TURN_OFF_WARNINGS</code> as the suppressor:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">java</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
@@ -1518,8 +1518,8 @@ For example, here’s how to use <code class="highlighter-rouge">TURN_OFF_WARNIN
 <span class="nc">UnusedLocalVariable</span> <span class="n">rule</span> <span class="n">violation</span> <span class="n">suppressed</span> <span class="n">by</span> <span class="c1">//NOPMD in /home/tom/pmd/pmd/bin/Foo.java</span>
 </code></pre></div></div>
 <p>Note that PMD expects the //NOPMD marker to be on the same line as the violation. So, for
-example, if you want to suppress an “empty <code class="highlighter-rouge">if</code> statement” warning, you’ll need to place it on
-the line containing the <code class="highlighter-rouge">if</code> keyword, e.g.:</p>
+example, if you want to suppress an “empty <code class="language-plaintext highlighter-rouge">if</code> statement” warning, you’ll need to place it on
+the line containing the <code class="language-plaintext highlighter-rouge">if</code> keyword, e.g.:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="o">~/</span><span class="n">tmp</span><span class="o">/</span><span class="nc">Foo</span><span class="o">.</span><span class="na">java</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
@@ -1552,7 +1552,7 @@ that are defined on every rule. Depending on what you’re after, you can suppre
 violations for <strong>specific messages</strong> using regular expressions, or <strong>specific nodes</strong>
 using an XPath expression.</p>
 
-<h3 id="the-property-violationsuppressregex">The property <code class="highlighter-rouge">violationSuppressRegex</code></h3>
+<h3 id="the-property-violationsuppressregex">The property <code class="language-plaintext highlighter-rouge">violationSuppressRegex</code></h3>
 
 <p>This property defines a regular expression to match against the
 message of the violation.  If the regular expression matches,
@@ -1577,7 +1577,7 @@ Java class java.util.regex.Pattern.</p>
 Some rules always report the same message, in which case this property is
 of no use.</p>
 
-<h3 id="the-property-violationsuppressxpath">The property <code class="highlighter-rouge">violationSuppressXPath</code></h3>
+<h3 id="the-property-violationsuppressxpath">The property <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code></h3>
 
 <p>This property defines an XPath query to be executed <em>using the
 violation node as the context node</em>.  If the XPath query matches anything,
@@ -1597,19 +1597,19 @@ features. This will be updated with PMD 7.0.0.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Note the use of <code class="highlighter-rouge">.</code> to refer to the context node. Using <code class="highlighter-rouge">//</code> at the start of the
+<p>Note the use of <code class="language-plaintext highlighter-rouge">.</code> to refer to the context node. Using <code class="language-plaintext highlighter-rouge">//</code> at the start of the
 expression should be avoided, as it would test all nodes in the file, and suppress
 more violations than expected.</p>
 
-<p>Another example, to suppress violations occurring in classes whose name contains <code class="highlighter-rouge">Bean</code>:</p>
+<p>Another example, to suppress violations occurring in classes whose name contains <code class="language-plaintext highlighter-rouge">Bean</code>:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">"./ancestor::ClassOrInterfaceDeclaration[contains(@Image, 'Bean')]"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p>You can also use regex for string comparison. The next example suppresses violations in classes ending with <code class="highlighter-rouge">Bean</code>:</p>
+<p>You can also use regex for string comparison. The next example suppresses violations in classes ending with <code class="language-plaintext highlighter-rouge">Bean</code>:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">"./ancestor::ClassOrInterfaceDeclaration[matches(@Image, '^.*Bean$')]"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p>Note here the usage of the <code class="highlighter-rouge">./ancestor::</code> axis instead of <code class="highlighter-rouge">//</code>. The latter would match
+<p>Note here the usage of the <code class="language-plaintext highlighter-rouge">./ancestor::</code> axis instead of <code class="language-plaintext highlighter-rouge">//</code>. The latter would match
 any ClassOrInterfaceDeclaration in the file, while the former matches only class
 declaration nodes that <em>enclose the violation node</em>, which is usually what you’d want.</p>
 
@@ -1641,7 +1641,7 @@ violations you wish to suppress.  XPath queries are explained in
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

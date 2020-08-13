@@ -1510,7 +1510,7 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p>Problem: A Calendar is a heavyweight object and expensive to create.</p>
 
-<p>Solution: Use <code class="highlighter-rouge">new Date()</code>, Java 8+ <code class="highlighter-rouge">java.time.LocalDateTime.now()</code> or <code class="highlighter-rouge">ZonedDateTime.now()</code>.</p>
+<p>Solution: Use <code class="language-plaintext highlighter-rouge">new Date()</code>, Java 8+ <code class="language-plaintext highlighter-rouge">java.time.LocalDateTime.now()</code> or <code class="language-plaintext highlighter-rouge">ZonedDateTime.now()</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Calendar.getInstance'</span><span class="p">)]]</span><span class="w"> </span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">last</span><span class="p">()</span><span class="o">-</span><span class="m">1</span><span class="p">][</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'getTime'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'getTimeInMillis'</span><span class="p">]]</span><span class="w">
@@ -1580,15 +1580,15 @@ See <a href="https://bugs.openjdk.java.net/browse/JDK-8080225">JDK-8080225</a> f
 again causing garbage collection issues while finalizer methods are called.</p>
 
 <ul>
-  <li>Use <code class="highlighter-rouge">Files.newInputStream(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileInputStream(fileName)</code>.</li>
-  <li>Use <code class="highlighter-rouge">Files.newOutputStream(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileOutputStream(fileName)</code>.</li>
-  <li>Use <code class="highlighter-rouge">Files.newBufferedReader(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileReader(fileName)</code>.</li>
-  <li>Use <code class="highlighter-rouge">Files.newBufferedWriter(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileWriter(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newInputStream(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileInputStream(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newOutputStream(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileOutputStream(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newBufferedReader(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileReader(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newBufferedWriter(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileWriter(fileName)</code>.</li>
 </ul>
 
-<p>Please note, that the <code class="highlighter-rouge">java.nio</code> API does not throw a <code class="highlighter-rouge">FileNotFoundException</code> anymore, instead
-it throws a <code class="highlighter-rouge">NoSuchFileException</code>. If your code dealt explicitly with a <code class="highlighter-rouge">FileNotFoundException</code>,
-then this needs to be adjusted. Both exceptions are subclasses of <code class="highlighter-rouge">IOException</code>, so catching
+<p>Please note, that the <code class="language-plaintext highlighter-rouge">java.nio</code> API does not throw a <code class="language-plaintext highlighter-rouge">FileNotFoundException</code> anymore, instead
+it throws a <code class="language-plaintext highlighter-rouge">NoSuchFileException</code>. If your code dealt explicitly with a <code class="language-plaintext highlighter-rouge">FileNotFoundException</code>,
+then this needs to be adjusted. Both exceptions are subclasses of <code class="language-plaintext highlighter-rouge">IOException</code>, so catching
 that one covers both.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -2005,7 +2005,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.</p>
 
 <p><strong>Minimum Language Version:</strong> Java 1.6</p>
 
-<p>Calls to a collection’s <code class="highlighter-rouge">toArray(E[])</code> method should specify a target array of zero size. This allows the JVM
+<p>Calls to a collection’s <code class="language-plaintext highlighter-rouge">toArray(E[])</code> method should specify a target array of zero size. This allows the JVM
 to optimize the memory allocation and copying as much as possible.</p>
 
 <p>Previous versions of this rule (pre PMD 6.0.0) suggested the opposite, but current JVM implementations
@@ -2014,8 +2014,8 @@ reflection is nowadays as fast as the direct allocation.</p>
 
 <p>See also <a href="https://shipilev.net/blog/2016/arrays-wisdom-ancients/">Arrays of Wisdom of the Ancients</a></p>
 
-<p>Note: If you don’t need an array of the correct type, then the simple <code class="highlighter-rouge">toArray()</code> method without an array
-is faster, but returns only an array of type <code class="highlighter-rouge">Object[]</code>.</p>
+<p>Note: If you don’t need an array of the correct type, then the simple <code class="language-plaintext highlighter-rouge">toArray()</code> method without an array
+is faster, but returns only an array of type <code class="language-plaintext highlighter-rouge">Object[]</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
@@ -2550,7 +2550,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

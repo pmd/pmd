@@ -1676,19 +1676,19 @@ is always the one thrown in a try block.</p>
 
 <p>Reassigning loop variables can lead to hard-to-find bugs. Prevent or limit how these variables can be changed.</p>
 
-<p>In foreach-loops, configured by the <code class="highlighter-rouge">foreachReassign</code> property:</p>
+<p>In foreach-loops, configured by the <code class="language-plaintext highlighter-rouge">foreachReassign</code> property:</p>
 <ul>
-  <li><code class="highlighter-rouge">deny</code>: Report any reassignment of the loop variable in the loop body. <em>This is the default.</em></li>
-  <li><code class="highlighter-rouge">allow</code>: Don’t check the loop variable.</li>
-  <li><code class="highlighter-rouge">firstOnly</code>: Report any reassignments of the loop variable, except as the first statement in the loop body.
+  <li><code class="language-plaintext highlighter-rouge">deny</code>: Report any reassignment of the loop variable in the loop body. <em>This is the default.</em></li>
+  <li><code class="language-plaintext highlighter-rouge">allow</code>: Don’t check the loop variable.</li>
+  <li><code class="language-plaintext highlighter-rouge">firstOnly</code>: Report any reassignments of the loop variable, except as the first statement in the loop body.
           <em>This is useful if some kind of normalization or clean-up of the value before using is permitted, but any other change of the variable is not.</em></li>
 </ul>
 
-<p>In for-loops, configured by the <code class="highlighter-rouge">forReassign</code> property:</p>
+<p>In for-loops, configured by the <code class="language-plaintext highlighter-rouge">forReassign</code> property:</p>
 <ul>
-  <li><code class="highlighter-rouge">deny</code>: Report any reassignment of the control variable in the loop body. <em>This is the default.</em></li>
-  <li><code class="highlighter-rouge">allow</code>: Don’t check the control variable.</li>
-  <li><code class="highlighter-rouge">skip</code>: Report any reassignments of the control variable, except conditional increments/decrements (<code class="highlighter-rouge">++</code>, <code class="highlighter-rouge">--</code>, <code class="highlighter-rouge">+=</code>, <code class="highlighter-rouge">-=</code>).
+  <li><code class="language-plaintext highlighter-rouge">deny</code>: Report any reassignment of the control variable in the loop body. <em>This is the default.</em></li>
+  <li><code class="language-plaintext highlighter-rouge">allow</code>: Don’t check the control variable.</li>
+  <li><code class="language-plaintext highlighter-rouge">skip</code>: Report any reassignments of the control variable, except conditional increments/decrements (<code class="language-plaintext highlighter-rouge">++</code>, <code class="language-plaintext highlighter-rouge">--</code>, <code class="language-plaintext highlighter-rouge">+=</code>, <code class="language-plaintext highlighter-rouge">-=</code>).
           <em>This prevents accidental reassignments or unconditional increments of the control variable.</em></li>
 </ul>
 
@@ -2724,7 +2724,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 <p>Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.</p>
 
-<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisonsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInCaseInsensitiveComparisonsRule</a></p>
 
@@ -2752,7 +2752,7 @@ can be avoided, they will just return false.</p>
 <p>Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.</p>
 
-<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/PositionLiteralsFirstInComparisonsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInComparisonsRule</a></p>
 
@@ -2965,15 +2965,15 @@ or goes out of scope. Unused assignments are those for which</p>
 the variable.</li>
 </ol>
 
-<p>The rule doesn’t consider assignments to fields except for those of <code class="highlighter-rouge">this</code> in a constructor,
+<p>The rule doesn’t consider assignments to fields except for those of <code class="language-plaintext highlighter-rouge">this</code> in a constructor,
 or static fields of the current class in static initializers.</p>
 
-<p>The rule may be suppressed with the standard <code class="highlighter-rouge">@SuppressWarnings("unused")</code> tag.</p>
+<p>The rule may be suppressed with the standard <code class="language-plaintext highlighter-rouge">@SuppressWarnings("unused")</code> tag.</p>
 
-<p>The rule subsumes <a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="highlighter-rouge">UnusedLocalVariable</code></a>, and <a href="pmd_rules_java_bestpractices.html#unusedformalparameter"><code class="highlighter-rouge">UnusedFormalParameter</code></a>.
+<p>The rule subsumes <a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="language-plaintext highlighter-rouge">UnusedLocalVariable</code></a>, and <a href="pmd_rules_java_bestpractices.html#unusedformalparameter"><code class="language-plaintext highlighter-rouge">UnusedFormalParameter</code></a>.
 Those violations are filtered
 out by default, in case you already have enabled those rules, but may be enabled with the property
-<code class="highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="highlighter-rouge">ignored</code> are filtered out, as
+<code class="language-plaintext highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> are filtered out, as
 is standard practice for exceptions.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedAssignmentRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule</a></p>
@@ -3109,7 +3109,7 @@ is standard practice for exceptions.</p>
 <p>Avoid passing parameters to methods or constructors without actually referencing them in the method body.
 Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
-<code class="highlighter-rouge">checkAll</code> property to <code class="highlighter-rouge">true</code>.</p>
+<code class="language-plaintext highlighter-rouge">checkAll</code> property to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedFormalParameterRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule</a></p>
 
@@ -3526,8 +3526,8 @@ Comparing the value of size() to 0 does not convey intent as well as the isEmpty
 
 <p>Java 7 introduced the try-with-resources statement. This statement ensures that each resource is closed at the end
 of the statement. It avoids the need of explicitly closing the resources in a finally block. Additionally exceptions
-are better handled: If an exception occurred both in the <code class="highlighter-rouge">try</code> block and <code class="highlighter-rouge">finally</code> block, then the exception from
-the try block was suppressed. With the <code class="highlighter-rouge">try</code>-with-resources statement, the exception thrown from the try-block is
+are better handled: If an exception occurred both in the <code class="language-plaintext highlighter-rouge">try</code> block and <code class="language-plaintext highlighter-rouge">finally</code> block, then the exception from
+the try block was suppressed. With the <code class="language-plaintext highlighter-rouge">try</code>-with-resources statement, the exception thrown from the try-block is
 preserved.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3656,13 +3656,13 @@ having to deal with the creation of an array.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p><code class="highlighter-rouge">do {} while (true);</code> requires reading the end of the statement before it is
-apparent that it loops forever, whereas <code class="highlighter-rouge">while (true) {}</code> is easier to understand.</p>
+<p><code class="language-plaintext highlighter-rouge">do {} while (true);</code> requires reading the end of the statement before it is
+apparent that it loops forever, whereas <code class="language-plaintext highlighter-rouge">while (true) {}</code> is easier to understand.</p>
 
-<p><code class="highlighter-rouge">do {} while (false);</code> is redundant, and if an inner variable scope is required,
-a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
+<p><code class="language-plaintext highlighter-rouge">do {} while (false);</code> is redundant, and if an inner variable scope is required,
+a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficient.</p>
 
-<p><code class="highlighter-rouge">while (false) {}</code> will never execute the block and can be removed in its entirety.</p>
+<p><code class="language-plaintext highlighter-rouge">while (false) {}</code> will never execute the block and can be removed in its entirety.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">DoStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">]</span><span class="w"> </span><span class="p">|</span><span class="w">
@@ -3701,7 +3701,7 @@ a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

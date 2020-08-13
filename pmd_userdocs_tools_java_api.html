@@ -1415,7 +1415,7 @@ as described here.</p>
 <h2 id="dependencies">Dependencies</h2>
 
 <p>You’ll need to add the dependency to the language, you want to analyze. For Java, it will be
-<code class="highlighter-rouge">net.sourceforge.pmd:pmd-java</code>. If you use Maven, you can add a new (compile time) dependency like this:</p>
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-java</code>. If you use Maven, you can add a new (compile time) dependency like this:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
@@ -1424,14 +1424,14 @@ as described here.</p>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
 
-<p>Note: You’ll need to select a specific version. This is done in the example via the property <code class="highlighter-rouge">pmdVersion</code>.</p>
+<p>Note: You’ll need to select a specific version. This is done in the example via the property <code class="language-plaintext highlighter-rouge">pmdVersion</code>.</p>
 
-<p>This will transitively pull in the artifact <code class="highlighter-rouge">pmd-core</code> which contains the API.</p>
+<p>This will transitively pull in the artifact <code class="language-plaintext highlighter-rouge">pmd-core</code> which contains the API.</p>
 
 <h2 id="command-line-interface">Command line interface</h2>
 
 <p>The easiest way is to call PMD with the same interface as from command line. The main class is
-<code class="highlighter-rouge">net.sourceforge.pmd.PMD</code>:</p>
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMD</code>:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMD</span><span class="o">;</span>
 
@@ -1478,7 +1478,7 @@ You can also provide your own listeners and renderers.</p>
 
 <ol>
   <li>
-    <p>First we create a <code class="highlighter-rouge">PMDConfiguration</code>. This is currently the only way to specify a ruleset:</p>
+    <p>First we create a <code class="language-plaintext highlighter-rouge">PMDConfiguration</code>. This is currently the only way to specify a ruleset:</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
 <span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
@@ -1488,7 +1488,7 @@ You can also provide your own listeners and renderers.</p>
   <li>
     <p>In order to support type resolution, PMD needs to have access to the compiled classes and dependencies
 as well. This is called “auxclasspath” and is also configured here.
-Note: you can specify multiple class paths separated by <code class="highlighter-rouge">:</code> on Unix-systems or <code class="highlighter-rouge">;</code> under Windows.</p>
+Note: you can specify multiple class paths separated by <code class="language-plaintext highlighter-rouge">:</code> on Unix-systems or <code class="language-plaintext highlighter-rouge">;</code> under Windows.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">configuration</span><span class="o">.</span><span class="na">prependClasspath</span><span class="o">(</span><span class="s">"/home/workspace/target/classes:/home/.m2/repository/my/dependency.jar"</span><span class="o">);</span>
 </code></pre></div>    </div>
@@ -1501,15 +1501,15 @@ account:</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>PMD operates on a list of <code class="highlighter-rouge">DataSource</code>. You can assemble a own list of <code class="highlighter-rouge">FileDataSource</code>, e.g.</p>
+    <p>PMD operates on a list of <code class="language-plaintext highlighter-rouge">DataSource</code>. You can assemble a own list of <code class="language-plaintext highlighter-rouge">FileDataSource</code>, e.g.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="nc">FileDataSource</span><span class="o">(</span><span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"/path/to/src/MyClass.java"</span><span class="o">)));</span>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>For reporting, you can use a built-in renderer, e.g. <code class="highlighter-rouge">XMLRenderer</code>. Note, that you must manually initialize
-the renderer by setting a suitable <code class="highlighter-rouge">Writer</code> and calling <code class="highlighter-rouge">start()</code>. After the PMD run, you need to call
-<code class="highlighter-rouge">end()</code> and <code class="highlighter-rouge">flush()</code>. Then your writer should have received all output.</p>
+    <p>For reporting, you can use a built-in renderer, e.g. <code class="language-plaintext highlighter-rouge">XMLRenderer</code>. Note, that you must manually initialize
+the renderer by setting a suitable <code class="language-plaintext highlighter-rouge">Writer</code> and calling <code class="language-plaintext highlighter-rouge">start()</code>. After the PMD run, you need to call
+<code class="language-plaintext highlighter-rouge">end()</code> and <code class="language-plaintext highlighter-rouge">flush()</code>. Then your writer should have received all output.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringWriter</span> <span class="n">rendererOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringWriter</span><span class="o">();</span>
 <span class="nc">Renderer</span> <span class="n">xmlRenderer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">XMLRenderer</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
@@ -1518,7 +1518,7 @@ the renderer by setting a suitable <code class="highlighter-rouge">Writer</code>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Create a <code class="highlighter-rouge">RuleContext</code>. This is the context instance, that is available then in the rule implementations.
+    <p>Create a <code class="language-plaintext highlighter-rouge">RuleContext</code>. This is the context instance, that is available then in the rule implementations.
 Note: when running in multi-threaded mode (which is the default), the rule context instance is cloned for
 each thread.</p>
 
@@ -1528,7 +1528,7 @@ each thread.</p>
   <li>
     <p>Optionally register a report listener. This allows you to react immediately on found violations. You could also
 use such a listener to implement your own renderer. The listener must implement the interface
-<code class="highlighter-rouge">ThreadSafeReportListener</code> and can be registered via <code class="highlighter-rouge">ctx.getReport().addListener(...)</code>.</p>
+<code class="language-plaintext highlighter-rouge">ThreadSafeReportListener</code> and can be registered via <code class="language-plaintext highlighter-rouge">ctx.getReport().addListener(...)</code>.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ctx</span><span class="o">.</span><span class="na">getReport</span><span class="o">().</span><span class="na">addListener</span><span class="o">(</span><span class="k">new</span> <span class="nc">ThreadSafeReportListener</span><span class="o">()</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ruleViolationAdded</span><span class="o">(</span><span class="nc">RuleViolation</span> <span class="n">ruleViolation</span><span class="o">)</span> <span class="o">{</span>
@@ -1539,7 +1539,7 @@ use such a listener to implement your own renderer. The listener must implement 
   </li>
   <li>
     <p>Now, all the preparations are done, and PMD can be executed. This is done by calling
-<code class="highlighter-rouge">PMD.processFiles(...)</code>. This method call takes the configuration, the ruleset factory, the files
+<code class="language-plaintext highlighter-rouge">PMD.processFiles(...)</code>. This method call takes the configuration, the ruleset factory, the files
 to process, the rule context and the list of renderers. Provide an empty list, if you don’t want to use
 any renderer. Note: The auxclasspath needs to be closed explicitly. Otherwise the class or jar files may
 remain open and file resources are leaked.</p>
@@ -1556,7 +1556,7 @@ remain open and file resources are leaked.</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>After the call, you need to finish the renderer via <code class="highlighter-rouge">end()</code> and <code class="highlighter-rouge">flush()</code>.
+    <p>After the call, you need to finish the renderer via <code class="language-plaintext highlighter-rouge">end()</code> and <code class="language-plaintext highlighter-rouge">flush()</code>.
 Then you can check the rendered output.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">renderer</span><span class="o">.</span><span class="na">end</span><span class="o">();</span>
@@ -1706,7 +1706,7 @@ Then you can check the rendered output.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

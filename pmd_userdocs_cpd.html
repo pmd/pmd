@@ -1412,7 +1412,7 @@ But PMD’s <strong>Copy/Paste Detector (CPD)</strong> can find it for you!</p>
 
 <p>CPD works with Java, JSP, C/C++, C#, Go, Kotlin, Ruby, Swift and <a href="#supported-languages">many more languages</a>.
 It can be used via <a href="#cli-usage">command-line</a>, or via an <a href="#ant-task">Ant task</a>.
-It can also be run with Maven by using the <code class="highlighter-rouge">cpd-check</code> goal on the <a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a>.</p>
+It can also be run with Maven by using the <code class="language-plaintext highlighter-rouge">cpd-check</code> goal on the <a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a>.</p>
 
 <p>Your own language is missing?
 See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here</a>.</p>
@@ -1894,17 +1894,17 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <p>Minimum required options: Just give it the minimum duplicate size and the source directory:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
 </code></pre></div></div>
 
 <p>You can also specify the language:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
 </code></pre></div></div>
 
 <p>You may wish to check sources that are stored in different directories:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
 </code></pre></div></div>
 
 <p><em>There should be no limit to the number of ‘–files’, you may add… But if you stumble one, please tell us !</em></p>
@@ -1912,38 +1912,38 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 <p>And if you’re checking a C source tree with duplicate files in different architecture directories
 you can skip those using –skip-duplicate-files:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
 </code></pre></div></div>
 
 <p>You can also specify the encoding to use when parsing files:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
 </code></pre></div></div>
 
 <p>You can also specify a report format - here we’re using the XML report:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
 </code></pre></div></div>
 
-<p>The default format is a text report, and there’s also a <code class="highlighter-rouge">csv</code> report.</p>
+<p>The default format is a text report, and there’s also a <code class="language-plaintext highlighter-rouge">csv</code> report.</p>
 
 <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export PMD_JAVA_OPTS=-Xmx512m
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export PMD_JAVA_OPTS=-Xmx512m
 $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
 </code></pre></div></div>
 
-<p>In order to change the heap size under Windows, you’ll need to edit the batch file <code class="highlighter-rouge">cpd.bat</code> or
-set the environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code> prior to starting CPD:</p>
+<p>In order to change the heap size under Windows, you’ll need to edit the batch file <code class="language-plaintext highlighter-rouge">cpd.bat</code> or
+set the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> prior to starting CPD:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\ &gt; cd C:\pmd-bin-6.27.0-SNAPSHOT\bin
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\ &gt; cd C:\pmd-bin-6.27.0-SNAPSHOT\bin
 C:\...\bin &gt; set PMD_JAVA_OPTS=-Xmx512m
 C:\...\bin &gt; .\cpd.bat --minimum-tokens 100 --files c:\temp\src
 </code></pre></div></div>
 
 <p>If you specify a source directory but don’t want to scan the sub-directories, you can use the non-recursive option:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
 </code></pre></div></div>
 
 <h3 id="exit-status">Exit status</h3>
@@ -2323,9 +2323,9 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 </table>
 
-<p>Also, you can get verbose output from this task by running ant with the <code class="highlighter-rouge">-v</code> flag; i.e.:</p>
+<p>Also, you can get verbose output from this task by running ant with the <code class="language-plaintext highlighter-rouge">-v</code> flag; i.e.:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ant -v -f mybuildfile.xml cpd
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ant -v -f mybuildfile.xml cpd
 </code></pre></div></div>
 
 <p>Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xslt/cpdhtml.xslt.  Just run
@@ -2336,16 +2336,16 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 
 <h2 id="gui">GUI</h2>
 
-<p>CPD also comes with a simple GUI. You can start it via some scripts in the <code class="highlighter-rouge">bin</code> folder:</p>
+<p>CPD also comes with a simple GUI. You can start it via some scripts in the <code class="language-plaintext highlighter-rouge">bin</code> folder:</p>
 
 <p>For Windows:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cpdgui.bat
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cpdgui.bat
 </code></pre></div></div>
 
 <p>For Linux:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh cpdgui
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh cpdgui
 </code></pre></div></div>
 
 <p>Here’s a screenshot of CPD after running on the JDK 8 java.lang package:</p>
@@ -2355,7 +2355,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 <h2 id="suppression">Suppression</h2>
 
 <p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Dart</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
-<strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong>, <strong>Swift</strong> and <strong>C#</strong> by including the keywords <code class="highlighter-rouge">CPD-OFF</code> and <code class="highlighter-rouge">CPD-ON</code>.</p>
+<strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong>, <strong>Swift</strong> and <strong>C#</strong> by including the keywords <code class="language-plaintext highlighter-rouge">CPD-OFF</code> and <code class="language-plaintext highlighter-rouge">CPD-ON</code>.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="c1">// some unignored code</span>
@@ -2377,10 +2377,10 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 </code></pre></div></div>
 
 <p>Additionally, <strong>Java</strong> allows to toggle suppression by adding the annotations
-<strong><code class="highlighter-rouge">@SuppressWarnings("CPD-START")</code></strong> and <strong><code class="highlighter-rouge">@SuppressWarnings("CPD-END")</code></strong>
+<strong><code class="language-plaintext highlighter-rouge">@SuppressWarnings("CPD-START")</code></strong> and <strong><code class="language-plaintext highlighter-rouge">@SuppressWarnings("CPD-END")</code></strong>
 all code within will be ignored by CPD.</p>
 
-<p>This approach however, is limited to the locations were <code class="highlighter-rouge">@SuppressWarnings</code> is accepted.
+<p>This approach however, is limited to the locations were <code class="language-plaintext highlighter-rouge">@SuppressWarnings</code> is accepted.
 It’s legacy and the new comment’s based approach should be favored.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">//enable suppression</span>
@@ -2440,7 +2440,7 @@ the comment based approach will be extended to those of them that can support it
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

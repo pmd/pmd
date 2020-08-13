@@ -1407,18 +1407,18 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <h2 id="message-and-priority-overriding">Message and priority overriding</h2>
 
-<p>You can change a rule’s <strong>message</strong> by specifying a <code class="highlighter-rouge">message</code>
+<p>You can change a rule’s <strong>message</strong> by specifying a <code class="language-plaintext highlighter-rouge">message</code>
 attribute on the rule element. This will override the previous
 value and change the message the rule will print on the report.</p>
 
 <p>Similarly, the <strong>priority</strong> of a rule can be changed via a nested
 element. Using priority, you can deactivate some rules based on a
-minimum priority threshold (set using the <code class="highlighter-rouge">-min</code> CLI option).
+minimum priority threshold (set using the <code class="language-plaintext highlighter-rouge">-min</code> CLI option).
 Priority is an integer ranging from 1 to 5, with 1 being the highest
 priority.</p>
 
 <p>Putting things together, the following rule reference lowers the priority
-of EmptyCatchBlock to 5, such that e.g. using the <code class="highlighter-rouge">-min 4</code> CLI parameters
+of EmptyCatchBlock to 5, such that e.g. using the <code class="language-plaintext highlighter-rouge">-min 4</code> CLI parameters
 will cause the rule to be ignored.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/EmptyCatchBlock"</span>
@@ -1440,12 +1440,12 @@ will cause the rule to be ignored.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Properties are assigned a value with a <code class="highlighter-rouge">property</code> element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the <code class="highlighter-rouge">value</code> attribute, e.g.</p>
+<p>Properties are assigned a value with a <code class="language-plaintext highlighter-rouge">property</code> element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the <code class="language-plaintext highlighter-rouge">value</code> attribute, e.g.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportLevel"</span> <span class="na">value=</span><span class="s">"150"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p>All property assignments must be enclosed in a <code class="highlighter-rouge">properties</code> element, which is itself inside a <code class="highlighter-rouge">rule</code> element.</p>
+<p>All property assignments must be enclosed in a <code class="language-plaintext highlighter-rouge">properties</code> element, which is itself inside a <code class="language-plaintext highlighter-rouge">rule</code> element.</p>
 
 <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> The properties of a rule are documented with the rule, e.g. <a href="pmd_rules_java_design.html#npathcomplexity">here</a> for NPathComplexity. Note that <strong>assigning a value to a property that does not exist throws an error!</strong></div>
 
@@ -1483,7 +1483,7 @@ will cause the rule to be ignored.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

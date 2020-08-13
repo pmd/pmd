@@ -1407,7 +1407,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <h2 id="options">Options</h2>
 
-<p>The tool comes with a rather extensive help text, simply running with <code class="highlighter-rouge">-help</code>!</p>
+<p>The tool comes with a rather extensive help text, simply running with <code class="language-plaintext highlighter-rouge">-help</code>!</p>
 
 <table>
     <tr>
@@ -1993,9 +1993,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
 if you want to analyze a project, that uses one of OpenJDK’s <a href="http://openjdk.java.net/jeps/12">Preview Language Features</a>.</p>
 
-<p>Just set the environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code> before executing PMD, e.g.</p>
+<p>Just set the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> before executing PMD, e.g.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS="--enable-preview"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS="--enable-preview"
 ./run.sh pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
 </code></pre></div></div>
 
@@ -2015,8 +2015,8 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 <p>The language is determined automatically by PMD from the file extensions. Some languages such as “Java”
 however support multiple versions. The default version will be used, which is usually the latest supported
 version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
-that are not available yet, won’t be executed, you need to specify a specific version via the <code class="highlighter-rouge">-language</code>
-and <code class="highlighter-rouge">-version</code> parameter.</p>
+that are not available yet, won’t be executed, you need to specify a specific version via the <code class="language-plaintext highlighter-rouge">-language</code>
+and <code class="language-plaintext highlighter-rouge">-version</code> parameter.</p>
 
 <p>These parameters are irrelevant for languages that don’t support different versions.</p>
 
@@ -2076,7 +2076,7 @@ All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Repo
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1427,7 +1427,7 @@ simply renaming the rule would break existing (custom) ruleset. Therefore the fo
   <li>
     <p>Add a deprecated rule reference with the old name, that points to the new rule name:</p>
 
-    <p><code class="highlighter-rouge">&lt;rule name="OldRuleName" ref="NewRuleName" deprecated="true" /&gt;</code></p>
+    <p><code class="language-plaintext highlighter-rouge">&lt;rule name="OldRuleName" ref="NewRuleName" deprecated="true" /&gt;</code></p>
   </li>
 </ul>
 
@@ -1444,7 +1444,7 @@ sense, if it would be in a different, better fitting category.</p>
   <li>
     <p>Add a deprecated rule reference in the old category, that points to the rule in the new category:</p>
 
-    <p><code class="highlighter-rouge">&lt;rule name="MyRule" ref="category/java/errorprone.xml/MyRule" deprecated="true" /&gt;</code></p>
+    <p><code class="language-plaintext highlighter-rouge">&lt;rule name="MyRule" ref="category/java/errorprone.xml/MyRule" deprecated="true" /&gt;</code></p>
   </li>
 </ul>
 
@@ -1456,7 +1456,7 @@ are used.</p>
 
 <p>Before a rule can be removed, it must have been marked as deprecated:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;rule name="MyRule" class="...." deprecated="true"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;rule name="MyRule" class="...." deprecated="true"&gt;
 ...
 &lt;/rule&gt;
 </code></pre></div></div>
@@ -1485,7 +1485,7 @@ this rule directly. Therefore rules can only be removed with the next major rele
 with a major release of PMD.</p>
 
 <p>In order to prepare for the change, properties can be deprecated as well: If the property description
-starts with the magic string <code class="highlighter-rouge">deprecated!</code>, then this property is rendered in the rule documentation
+starts with the magic string <code class="language-plaintext highlighter-rouge">deprecated!</code>, then this property is rendered in the rule documentation
 as deprecated. However, there is no automatic check done if such a property is used and no
 deprecation warning is issued with the log.</p>
 
@@ -1493,7 +1493,7 @@ deprecation warning is issued with the log.</p>
 
 <ul>
   <li>Create a new property with the same type and new name</li>
-  <li>Prefix the description of the old property with <code class="highlighter-rouge">deprecated!</code> and also add a explanation
+  <li>Prefix the description of the old property with <code class="language-plaintext highlighter-rouge">deprecated!</code> and also add a explanation
 either in the property description or in the rule description, which property should be used
 instead of the deprecated property.</li>
   <li>Adjust the rule implementation to first check the old property. If it has a value other than the
@@ -1534,7 +1534,7 @@ major release of PMD.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> November 15, 2019<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> November 15, 2019<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

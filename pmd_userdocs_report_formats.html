@@ -1412,10 +1412,10 @@ be customized further via properties. Violations might also be suppressed and th
 be processing errors or configuration errors. Not all report formats display all information.</p>
 
 <p>The header of the sections below are used to select the format on the command line, as
-arguments to the <code class="highlighter-rouge">-format</code> option. When a format accepts <em>properties</em>,
-those can be specified with the <code class="highlighter-rouge">-property</code> / <code class="highlighter-rouge">-P</code> option on the command-line.</p>
+arguments to the <code class="language-plaintext highlighter-rouge">-format</code> option. When a format accepts <em>properties</em>,
+those can be specified with the <code class="language-plaintext highlighter-rouge">-property</code> / <code class="language-plaintext highlighter-rouge">-P</code> option on the command-line.</p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Suppressed violations are only reported, if the CLI parameter <code class="highlighter-rouge">-showsuppressed</code> is set.</div>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Suppressed violations are only reported, if the CLI parameter <code class="language-plaintext highlighter-rouge">-showsuppressed</code> is set.</div>
 
 <h2 id="codeclimate">codeclimate</h2>
 
@@ -1423,7 +1423,7 @@ those can be specified with the <code class="highlighter-rouge">-property</code>
 
 <p>This format is used when running PMD within <a href="https://codeclimate.com/">Code Climate</a>.
 The renderer will stream JSON objects, each object is a own issue (a PMD rule violation). Each issue
-is separated by the null character (<code class="highlighter-rouge">\0</code>).</p>
+is separated by the null character (<code class="language-plaintext highlighter-rouge">\0</code>).</p>
 
 <p>The format is specified here: <a href="https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md">https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md</a>.</p>
 
@@ -1432,7 +1432,7 @@ the full rule details for each reported rule violation.</p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{"type":"issue","check_name":"GuardLogStatement","description":"Logger calls should be surrounded by log level guards.","content":{"body":"## GuardLogStatement\n\nSince: PMD 5.1.0\n\nPriority: Medium High\n\n[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\n\nWhenever using a log level, one should check if the loglevel is actually enabled, or otherwise skip the associate String creation and manipulation.\n\n### Example:\n\n```java\n\n\n // Add this for performance\n if (log.isDebugEnabled() { ...\n log.debug('log something' + ' and ' + 'concat strings');\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_userdocs_configuring_rules.html#rule-properties)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\nlogLevels | trace,debug,info,warn,error,log,finest,finer,fine,info,warning,severe | LogLevels to guard\nguardsMethods | isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable | Method use to guard the log statement\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java","lines":{"begin":124,"end":125}},"severity":"normal","remediation_points":50000}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{"type":"issue","check_name":"GuardLogStatement","description":"Logger calls should be surrounded by log level guards.","content":{"body":"## GuardLogStatement\n\nSince: PMD 5.1.0\n\nPriority: Medium High\n\n[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\n\nWhenever using a log level, one should check if the loglevel is actually enabled, or otherwise skip the associate String creation and manipulation.\n\n### Example:\n\n```java\n\n\n // Add this for performance\n if (log.isDebugEnabled() { ...\n log.debug('log something' + ' and ' + 'concat strings');\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_userdocs_configuring_rules.html#rule-properties)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\nlogLevels | trace,debug,info,warn,error,log,finest,finer,fine,info,warning,severe | LogLevels to guard\nguardsMethods | isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable | Method use to guard the log statement\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java","lines":{"begin":124,"end":125}},"severity":"normal","remediation_points":50000}
 {"type":"issue","check_name":"ForLoopCanBeForeach","description":"This for loop can be replaced by a foreach loop","content":{"body":"## ForLoopCanBeForeach\n\nSince: PMD 6.0.0\n\nPriority: Medium\n\n[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\n\nReports loops that can be safely replaced with the foreach syntax. The rule considers loops over lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to access an element of the list or array, only has one update statement, and loops through *every* element of the list or array left to right.\n\n### Example:\n\n```java\n\n\npublic class MyClass {\n void loop(List&lt;String&gt; l) {\n for (int i = 0; i &lt; l.size(); i++) { // pre Java 1.5\n System.out.println(l.get(i));\n }\n\n for (String s : l) { // post Java 1.5\n System.out.println(s);\n }\n }\n}\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_userdocs_configuring_rules.html#rule-properties)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java","lines":{"begin":58,"end":62}},"severity":"normal","remediation_points":50000}
 </code></pre></div></div>
 
@@ -1444,13 +1444,13 @@ the full rule details for each reported rule violation.</p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Problem","Package","File","Priority","Line","Description","Rule set","Rule"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Problem","Package","File","Priority","Line","Description","Rule set","Rule"
 "1","net.sourceforge.pmd","/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java","2","124","Logger calls should be surrounded by log level guards.","Best Practices","GuardLogStatement"
 "1","net.sourceforge.pmd.benchmark","/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java","3","58","This for loop can be replaced by a foreach loop","Best Practices","ForLoopCanBeForeach"
 </code></pre></div></div>
 
 <p>This format can be configured to display only certain columns. In order to not show the problem counter and package
-columns, use these CLI parameters additionally: <code class="highlighter-rouge">-property problem=false -property package=false</code></p>
+columns, use these CLI parameters additionally: <code class="language-plaintext highlighter-rouge">-property problem=false -property package=false</code></p>
 
 <p><strong>Properties:</strong></p>
 
@@ -1471,7 +1471,7 @@ columns, use these CLI parameters additionally: <code class="highlighter-rouge">
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124: Logger calls should be surrounded by log level guards.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124: Logger calls should be surrounded by log level guards.
 /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58: This for loop can be replaced by a foreach loop
 </code></pre></div></div>
 
@@ -1480,7 +1480,7 @@ columns, use these CLI parameters additionally: <code class="highlighter-rouge">
 <p>HTML format.</p>
 
 <p>This renderer provides two properties to render a link to the source where the violations
-have been found. The following example has been created with <code class="highlighter-rouge">-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd</code>.
+have been found. The following example has been created with <code class="language-plaintext highlighter-rouge">-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd</code>.
 If “linkPrefix” is not set, then “linePrefix” has no effect anyway: just the filename will
 be rendered, with no html link. Otherwise if “linePrefix” is not set, then the link will
 not contain a line number.</p>
@@ -1511,17 +1511,17 @@ normal source file extensions (e.g. “.java”) with “.html”, so that the g
   <li>For a single file: then all three properties need to be provided</li>
 </ol>
 
-<p><code class="highlighter-rouge">run.sh pmd -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo</code></p>
+<p><code class="language-plaintext highlighter-rouge">run.sh pmd -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo</code></p>
 
 <ol>
   <li>For a directory: then the fileName property can be omitted</li>
 </ol>
 
-<p><code class="highlighter-rouge">run.sh pmd -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method</code></p>
+<p><code class="language-plaintext highlighter-rouge">run.sh pmd -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method</code></p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Logger calls should be surrounded by log level guards.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Logger calls should be surrounded by log level guards.
  at Foo(:124)
 This for loop can be replaced by a foreach loop
  at Foo(:58)
@@ -1530,7 +1530,7 @@ This for loop can be replaced by a foreach loop
 <p><strong>Properties:</strong></p>
 
 <ul>
-  <li>classAndMethodName: Class and method name, pass <code class="highlighter-rouge">.method</code> when processing a directory.</li>
+  <li>classAndMethodName: Class and method name, pass <code class="language-plaintext highlighter-rouge">.method</code> when processing a directory.</li>
   <li>sourcePath:</li>
   <li>fileName:</li>
 </ul>
@@ -1542,10 +1542,10 @@ This for loop can be replaced by a foreach loop
 <p>This prints a single JSON object containing some header information,
 and then the violations grouped by file. The root object fields are</p>
 <ul>
-  <li><code class="highlighter-rouge">formatVersion</code>: an integer which will be incremented if we change the serialization format</li>
-  <li><code class="highlighter-rouge">pmdVersion</code>: the version of PMD that produced the report</li>
-  <li><code class="highlighter-rouge">timestamp</code>: explicit</li>
-  <li><code class="highlighter-rouge">files</code>: an array of objects (see the example)</li>
+  <li><code class="language-plaintext highlighter-rouge">formatVersion</code>: an integer which will be incremented if we change the serialization format</li>
+  <li><code class="language-plaintext highlighter-rouge">pmdVersion</code>: the version of PMD that produced the report</li>
+  <li><code class="language-plaintext highlighter-rouge">timestamp</code>: explicit</li>
+  <li><code class="language-plaintext highlighter-rouge">files</code>: an array of objects (see the example)</li>
 </ul>
 
 <p><a href="report-examples/pmd-report-json.json">Example</a></p>
@@ -1575,7 +1575,7 @@ and configuration errors are reported.</p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    Logger calls should be surrounded by log level guards.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    Logger calls should be surrounded by log level guards.
 /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:   This for loop can be replaced by a foreach loop
 /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java    -   PMDException: Error while parsing /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java
 CloseResource rule violation suppressed by Annotation in /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java
@@ -1651,7 +1651,7 @@ Was expecting one of:
 <p><strong>Properties:</strong></p>
 
 <ul>
-  <li>color: Enables colors with anything other than <code class="highlighter-rouge">false</code> or <code class="highlighter-rouge">0</code>. Default: yes.</li>
+  <li>color: Enables colors with anything other than <code class="language-plaintext highlighter-rouge">false</code> or <code class="language-plaintext highlighter-rouge">0</code>. Default: yes.</li>
 </ul>
 
 <h2 id="textpad">textpad</h2>
@@ -1660,7 +1660,7 @@ Was expecting one of:
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java(124,  GuardLogStatement):  Logger calls should be surrounded by log level guards.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java(124,  GuardLogStatement):  Logger calls should be surrounded by log level guards.
 /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java(58,  ForLoopCanBeForeach):  This for loop can be replaced by a foreach loop
 </code></pre></div></div>
 
@@ -1791,7 +1791,7 @@ The output directory must exist. If not specified, the html files are created in
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

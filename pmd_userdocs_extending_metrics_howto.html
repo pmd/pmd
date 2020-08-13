@@ -1424,8 +1424,8 @@ each enum.</p>
 
 <h2 id="for-xpath-rules">For XPath rules</h2>
 
-<p>XPath rules can compute metrics using the <code class="highlighter-rouge">metric</code> function. This function takes a single <strong>string argument</strong>,
-which is the name of the metric key as defined in  <code class="highlighter-rouge">JavaClassMetricKey</code> or <code class="highlighter-rouge">JavaOperationMetricKey</code>. The metric
+<p>XPath rules can compute metrics using the <code class="language-plaintext highlighter-rouge">metric</code> function. This function takes a single <strong>string argument</strong>,
+which is the name of the metric key as defined in  <code class="language-plaintext highlighter-rouge">JavaClassMetricKey</code> or <code class="language-plaintext highlighter-rouge">JavaOperationMetricKey</code>. The metric
  will be <strong>computed on the context node</strong>.</p>
 
 <p>The function will throw an exception in the following cases:</p>
@@ -1442,9 +1442,9 @@ it’s not one of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNA
 <h3 id="examples">Examples</h3>
 
 <ul>
-  <li><code class="highlighter-rouge">//ClassOrInterfaceDeclaration[metric('NCSS') &gt; 200]</code></li>
-  <li><code class="highlighter-rouge">//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></li>
-  <li><code class="highlighter-rouge">//ClassOrInterfaceDeclaration[metric('CYCLO') &gt; 50]</code>: IllegalArgumentException!
+  <li><code class="language-plaintext highlighter-rouge">//ClassOrInterfaceDeclaration[metric('NCSS') &gt; 200]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">//ClassOrInterfaceDeclaration[metric('CYCLO') &gt; 50]</code>: IllegalArgumentException!
 CYCLO’s only defined for methods and constructors.</li>
 </ul>
 
@@ -1452,11 +1452,11 @@ CYCLO’s only defined for methods and constructors.</li>
 
 <p>The static façade class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> is the single entry point to compute metrics in the Java framework.</p>
 
-<p>This class provides the method <code class="highlighter-rouge">get</code> and its overloads. The following sections describes the interface of this class.</p>
+<p>This class provides the method <code class="language-plaintext highlighter-rouge">get</code> and its overloads. The following sections describes the interface of this class.</p>
 
 <h3 id="basic-usage">Basic usage</h3>
 
-<p>The simplest overloads of <code class="highlighter-rouge">JavaMetrics.get</code> take two parameters: <strong>a <code class="highlighter-rouge">MetricKey</code> and a node of the corresponding type.</strong>
+<p>The simplest overloads of <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code> take two parameters: <strong>a <code class="language-plaintext highlighter-rouge">MetricKey</code> and a node of the corresponding type.</strong>
 Say you want to write a rule to report methods that have a high cyclomatic complexity. In your rule’s visitor, you
 can get the value of Cyclo for a method node like so:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
@@ -1468,10 +1468,10 @@ can get the value of Cyclo for a method node like so:</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>The same goes for class metrics: you select one among <code class="highlighter-rouge">JavaClassMetricKey</code>’s constants and pass it along with the node
-to <code class="highlighter-rouge">JavaMetrics.get</code>.</p>
+<p>The same goes for class metrics: you select one among <code class="language-plaintext highlighter-rouge">JavaClassMetricKey</code>’s constants and pass it along with the node
+to <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code>.</p>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> A specific base rule class (<code class="highlighter-rouge">AbstractJavaMetricsRule</code>) exists
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> A specific base rule class (<code class="language-plaintext highlighter-rouge">AbstractJavaMetricsRule</code>) exists
            to e.g. check constructors and method nodes completely alike. This comes
            in handy for metrics, as they usually don’t make the distinction</div>
 
@@ -1480,7 +1480,7 @@ to <code class="highlighter-rouge">JavaMetrics.get</code>.</p>
 <p>Metrics are not necessarily computable on any node of the type they handle. For example, Cyclo cannot be computed on
 abstract methods. Metric keys provides a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricKey.html#supports(net.sourceforge.pmd.lang.ast.Node)"><code>supports(Node)</code></a> boolean method
 to find out if the metric can be computed on
-the specified node. <strong>If the metric cannot be computed on the given node, <code class="highlighter-rouge">JavaMetrics.get</code> will return <code class="highlighter-rouge">Double.NaN</code> .</strong>
+the specified node. <strong>If the metric cannot be computed on the given node, <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code> will return <code class="language-plaintext highlighter-rouge">Double.NaN</code> .</strong>
 If you’re concerned about that, you can condition your call on whether the node is supported or not:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">.</span><span class="na">supports</span><span class="o">(</span><span class="n">node</span><span class="o">))</span> <span class="o">{</span>
@@ -1496,12 +1496,12 @@ If you’re concerned about that, you can condition your call on whether the nod
 <h3 id="metric-options">Metric options</h3>
 
 <p>Some metrics define options that can be used to slightly modify the computation. You’ll typically see these options
-gathered inside an enum in the implementation class of the metric, for example <code class="highlighter-rouge">CycloMetric.CycloOption</code>. They’re
+gathered inside an enum in the implementation class of the metric, for example <code class="language-plaintext highlighter-rouge">CycloMetric.CycloOption</code>. They’re
 also documented on the <a href="pmd_java_metrics_index.html">index of metrics</a>.</p>
 
-<p>To use options with a metric, you must first bundle them into a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code>MetricOptions</code></a> object. <code class="highlighter-rouge">MetricOptions</code> provides the
-utility method <code class="highlighter-rouge">ofOptions</code> to get a <code class="highlighter-rouge">MetricOptions</code> bundle from a collection or with varargs parameters. You can then
-pass this bundle as a parameter to <code class="highlighter-rouge">JavaMetrics.get</code>:</p>
+<p>To use options with a metric, you must first bundle them into a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code>MetricOptions</code></a> object. <code class="language-plaintext highlighter-rouge">MetricOptions</code> provides the
+utility method <code class="language-plaintext highlighter-rouge">ofOptions</code> to get a <code class="language-plaintext highlighter-rouge">MetricOptions</code> bundle from a collection or with varargs parameters. You can then
+pass this bundle as a parameter to <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code>:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
                                     <span class="nc">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="nc">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">));</span>
@@ -1512,8 +1512,8 @@ pass this bundle as a parameter to <code class="highlighter-rouge">JavaMetrics.g
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>The version of <code class="highlighter-rouge">MetricOptions.ofOptions</code> using a collection is useful when you’re building a <code class="highlighter-rouge">MetricOptions</code> from eg
-the value of an <code class="highlighter-rouge">EnumeratedMultiProperty</code>, which gives users control of the options they use. See
+<p>The version of <code class="language-plaintext highlighter-rouge">MetricOptions.ofOptions</code> using a collection is useful when you’re building a <code class="language-plaintext highlighter-rouge">MetricOptions</code> from eg
+the value of an <code class="language-plaintext highlighter-rouge">EnumeratedMultiProperty</code>, which gives users control of the options they use. See
 <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.java#L35">CyclomaticComplexityRule</a>
 for an example usage.</p>
 
@@ -1531,8 +1531,8 @@ class very simply. You can for example get the highest value of the metric over 
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>Notice that <strong>we use an operation metric and a class node</strong>. The <code class="highlighter-rouge">ResultOption</code> parameter controls what result will be
-computed: you can choose among <code class="highlighter-rouge">HIGHEST</code>, <code class="highlighter-rouge">SUM</code> and <code class="highlighter-rouge">AVERAGE</code>. You can use metric options together with a result
+<p>Notice that <strong>we use an operation metric and a class node</strong>. The <code class="language-plaintext highlighter-rouge">ResultOption</code> parameter controls what result will be
+computed: you can choose among <code class="language-plaintext highlighter-rouge">HIGHEST</code>, <code class="language-plaintext highlighter-rouge">SUM</code> and <code class="language-plaintext highlighter-rouge">AVERAGE</code>. You can use metric options together with a result
 option too.</p>
 
 <h3 id="complete-use-case">Complete use case</h3>
@@ -1607,16 +1607,16 @@ the Java framework but it’s symmetrical in the Apex framework.</p>
 
 <ol>
   <li>Determine whether your metric is an operation metric or a class metric and
-<strong>extend the correct base class</strong> (<code class="highlighter-rouge">AbstractJavaClassMetric</code> or
-<code class="highlighter-rouge">AbstractJavaOperationMetric</code>)</li>
-  <li>You’re immediately prompted by your IDE to <strong>implement the <code class="highlighter-rouge">computeFor</code> method</strong>.
+<strong>extend the correct base class</strong> (<code class="language-plaintext highlighter-rouge">AbstractJavaClassMetric</code> or
+<code class="language-plaintext highlighter-rouge">AbstractJavaOperationMetric</code>)</li>
+  <li>You’re immediately prompted by your IDE to <strong>implement the <code class="language-plaintext highlighter-rouge">computeFor</code> method</strong>.
 This method takes a node of the type you want to handle, a bundle of options,
 and returns the result of the metric.</li>
   <li>Optionally specify a predicate to check if a node can be handled by <strong>overriding
-the <code class="highlighter-rouge">supports</code> method</strong>.</li>
-  <li>Optionally define options (implementing <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/metrics/MetricOption.java"><code class="highlighter-rouge">MetricOption</code></a>)
-and handle them as you see fit in your <code class="highlighter-rouge">computeFor</code> method</li>
-  <li><strong>Create a metric key</strong> using <code class="highlighter-rouge">MetricKeyUtil</code>’s <code class="highlighter-rouge">of</code> method, specifying a name
+the <code class="language-plaintext highlighter-rouge">supports</code> method</strong>.</li>
+  <li>Optionally define options (implementing <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/metrics/MetricOption.java"><code class="language-plaintext highlighter-rouge">MetricOption</code></a>)
+and handle them as you see fit in your <code class="language-plaintext highlighter-rouge">computeFor</code> method</li>
+  <li><strong>Create a metric key</strong> using <code class="language-plaintext highlighter-rouge">MetricKeyUtil</code>’s <code class="language-plaintext highlighter-rouge">of</code> method, specifying a name
 for your metric and an instance of your metric. You’re done and can use your
 metric key as if it were a standard one.</li>
 </ol>
@@ -1625,11 +1625,11 @@ metric key as if it were a standard one.</li>
 
 <ul>
   <li><strong>Metrics should be stateless</strong>. In any case, instances of the same metric class
-are considered <code class="highlighter-rouge">equals</code>. The same instance of your metric will be used to
+are considered <code class="language-plaintext highlighter-rouge">equals</code>. The same instance of your metric will be used to
 compute the metric on the AST of different nodes so it should really be
 “functionnally pure”. That rule also makes you keep it simple and understandable
 which is nice.</li>
-  <li><strong>Implementation patterns:</strong> You can implement your <code class="highlighter-rouge">computeFor</code> method as you
+  <li><strong>Implementation patterns:</strong> You can implement your <code class="language-plaintext highlighter-rouge">computeFor</code> method as you
 like it. But most metrics in our library are implemented following a few
 patterns you may want to look at:
     <ul>
@@ -1645,7 +1645,7 @@ Additionnally, it makes your metric more easily generalisable to other node type
 to count the number of methods or fields that match a specific signature, e.g.
 public static final fields. Basically a signature is an object that describes
 a field or method, with info about its modifers and other node-specific info.
- <code class="highlighter-rouge">AbstractJavaClassMetric</code> has a few methods that allow you to count signatures
+ <code class="language-plaintext highlighter-rouge">AbstractJavaClassMetric</code> has a few methods that allow you to count signatures
   directly, see e.g. the metrics <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NopaMetric.java">NOPA</a>
   and <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/WocMetric.java">WOC</a>.</p>
       </li>
@@ -1655,9 +1655,9 @@ a field or method, with info about its modifers and other node-specific info.
 
 <h3 id="capability-checking-1">Capability checking</h3>
 
-<p>You may have noticed that when you extend e.g. <code class="highlighter-rouge">AbstractJavaClassMetric</code>, the
-<code class="highlighter-rouge">computeFor</code> method you’re prompted to implement takes a node of type
-<code class="highlighter-rouge">ASTAnyTypeDeclaration</code> as a parameter. That’s not a concrete node type, but
+<p>You may have noticed that when you extend e.g. <code class="language-plaintext highlighter-rouge">AbstractJavaClassMetric</code>, the
+<code class="language-plaintext highlighter-rouge">computeFor</code> method you’re prompted to implement takes a node of type
+<code class="language-plaintext highlighter-rouge">ASTAnyTypeDeclaration</code> as a parameter. That’s not a concrete node type, but
 an interface, implemented by several concrete node types. Basically that’s done
 so that class metrics are given the ability to be computed on any type
 declaration, and operation metrics on constructors and methods. Here are the
@@ -1674,20 +1674,20 @@ concrete node types you can target with class and operation metrics, by language
   <tbody>
     <tr>
       <td>Operation declaration</td>
-      <td><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration</code><br />&gt;: <code class="highlighter-rouge">ASTMethodDeclaration</code>, <code class="highlighter-rouge">ASTConstructorDeclaration</code></td>
-      <td><code class="highlighter-rouge">ASTMethod</code>*</td>
+      <td><code class="language-plaintext highlighter-rouge">ASTMethodOrConstructorDeclaration</code><br />&gt;: <code class="language-plaintext highlighter-rouge">ASTMethodDeclaration</code>, <code class="language-plaintext highlighter-rouge">ASTConstructorDeclaration</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ASTMethod</code>*</td>
     </tr>
     <tr>
       <td>Type declaration</td>
-      <td><code class="highlighter-rouge">ASTAnyTypeDeclaration</code> &gt;: <code class="highlighter-rouge">ASTEnumDeclaration</code>, <br /> <code class="highlighter-rouge">ASTAnnotationDeclaration</code>, <code class="highlighter-rouge">ASTClassOrInterfaceDeclaration</code></td>
-      <td><code class="highlighter-rouge">ASTUserClassOrInterface</code> &gt;: <code class="highlighter-rouge">ASTUserClass</code>, <code class="highlighter-rouge">ASTUserInterface</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ASTAnyTypeDeclaration</code> &gt;: <code class="language-plaintext highlighter-rouge">ASTEnumDeclaration</code>, <br /> <code class="language-plaintext highlighter-rouge">ASTAnnotationDeclaration</code>, <code class="language-plaintext highlighter-rouge">ASTClassOrInterfaceDeclaration</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ASTUserClassOrInterface</code> &gt;: <code class="language-plaintext highlighter-rouge">ASTUserClass</code>, <code class="language-plaintext highlighter-rouge">ASTUserInterface</code></td>
     </tr>
   </tbody>
 </table>
 
 <p>*Apex method metrics are also applied to triggers by default (see <a href="https://github.com/pmd/pmd/pull/771">#771</a>). Finer capability checking is not available out of the box for now.</p>
 
-<p>What if you don’t want such a generalisation? The <code class="highlighter-rouge">supports</code> method lets you
+<p>What if you don’t want such a generalisation? The <code class="language-plaintext highlighter-rouge">supports</code> method lets you
 define a predicate to check that the node is supported by your metric. For example,
 if your metric can only be computed on classes, you may override the default behaviour
 like so:</p>
@@ -1697,11 +1697,11 @@ like so:</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can be sure that if your <code class="highlighter-rouge">supports</code> method returns <code class="highlighter-rouge">false</code> on a node, then
-           that node will never be passed as a parameter to <code class="highlighter-rouge">computeFor</code>. That allows you
-           to write your <code class="highlighter-rouge">computeFor</code> method without worrying about unsupported nodes.</div>
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can be sure that if your <code class="language-plaintext highlighter-rouge">supports</code> method returns <code class="language-plaintext highlighter-rouge">false</code> on a node, then
+           that node will never be passed as a parameter to <code class="language-plaintext highlighter-rouge">computeFor</code>. That allows you
+           to write your <code class="language-plaintext highlighter-rouge">computeFor</code> method without worrying about unsupported nodes.</div>
 
-<p>The <code class="highlighter-rouge">supports</code> method already has a default implementation in the abstract base
+<p>The <code class="language-plaintext highlighter-rouge">supports</code> method already has a default implementation in the abstract base
 classes. Here’s the default behaviour by language and type of metric:</p>
 
 <table>
@@ -1716,7 +1716,7 @@ classes. Here’s the default behaviour by language and type of metric:</p>
     <tr>
       <td>Operation metrics</td>
       <td>supports constructors and non abstract methods</td>
-      <td>supports any non abstract method (including triggers), except <code class="highlighter-rouge">&lt;init&gt;</code>, <code class="highlighter-rouge">&lt;clinit&gt;</code>, and <code class="highlighter-rouge">clone</code></td>
+      <td>supports any non abstract method (including triggers), except <code class="language-plaintext highlighter-rouge">&lt;init&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;clinit&gt;</code>, and <code class="language-plaintext highlighter-rouge">clone</code></td>
     </tr>
     <tr>
       <td>Type declaration</td>
@@ -1758,7 +1758,7 @@ classes. Here’s the default behaviour by language and type of metric:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> December 18, 2017<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> December 18, 2017<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

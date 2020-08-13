@@ -1444,7 +1444,7 @@ can easier see, what exactly is available and decide, which rules are useful for
 <h3 id="xpath">XPath</h3>
 
 <p>PMD 6 supports XPath 1.0 via the Jaxen library. This library is old and unmaintained creating some problems
-(one of which is duplicated classes in the package <code class="highlighter-rouge">org.w3c.dom</code> which is a Java API actually).
+(one of which is duplicated classes in the package <code class="language-plaintext highlighter-rouge">org.w3c.dom</code> which is a Java API actually).
 Therefore XPath 1.0 support will be dropped and we upgrade our XPath 2.0 implementation with Saxon moving
 on to Saxon HE. This will eventually add support in PMD for XPath 3.1.</p>
 
@@ -1481,38 +1481,38 @@ be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions b
 the type of compatibility support we guarantee for our libraries, and ways to make
 them explicit to clients of PMD.</p>
 
-<h4 id="internal-packages-and-internalapi-annotation"><code class="highlighter-rouge">.internal</code> packages and <code class="highlighter-rouge">@InternalApi</code> annotation</h4>
+<h4 id="internal-packages-and-internalapi-annotation"><code class="language-plaintext highlighter-rouge">.internal</code> packages and <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation</h4>
 
 <p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
 may be modified in any way, or even removed, at any time.</p>
 
-<p>Any API in a package that contains an <code class="highlighter-rouge">.internal</code> segment is considered internal.
-The <code class="highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
+<p>Any API in a package that contains an <code class="language-plaintext highlighter-rouge">.internal</code> segment is considered internal.
+The <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
 these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
 these can be removed anytime).</p>
 
-<h4 id="reservedsubclassing"><code class="highlighter-rouge">@ReservedSubclassing</code></h4>
+<h4 id="reservedsubclassing"><code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code></h4>
 
-<p>Types marked with the <code class="highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
+<p>Types marked with the <code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
 by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
 at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
 means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
 
-<h4 id="experimental"><code class="highlighter-rouge">@Experimental</code></h4>
+<h4 id="experimental"><code class="language-plaintext highlighter-rouge">@Experimental</code></h4>
 
-<p>APIs marked with the <code class="highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
+<p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
 They can be modified in any way, or even removed, at any time. You should not use or rely
  on them in any production code. They are purely to allow broad testing and feedback.</p>
 
-<h4 id="deprecated"><code class="highlighter-rouge">@Deprecated</code></h4>
+<h4 id="deprecated"><code class="language-plaintext highlighter-rouge">@Deprecated</code></h4>
 
-<p>APIs marked with the <code class="highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
+<p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
 until the next major release but it is recommended to stop using them.</p>
 
 <h3 id="the-transition">The transition</h3>
 
 <p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
-<code class="highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="highlighter-rouge">@InternalApi</code> before that major release, and
+<code class="language-plaintext highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="language-plaintext highlighter-rouge">@InternalApi</code> before that major release, and
 the breaking API changes will be performed in 7.0.0.</p>
 
 <h2 id="planned-api-removals">Planned API removals</h2>
@@ -1520,7 +1520,7 @@ the breaking API changes will be performed in 7.0.0.</p>
 <h3 id="list-of-currently-deprecated-apis">List of currently deprecated APIs</h3>
 
 <div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> This list is not exhaustive. The ultimate reference is whether
-an API is tagged as <code class="highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
+an API is tagged as <code class="language-plaintext highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we’ll try to avoid it.</div>
 
 <h4 id="6260">6.26.0</h4>
@@ -1541,13 +1541,13 @@ we may decide to remove some APIs that were not tagged as deprecated, though we�
 
 <ul>
   <li>
-    <p>The maven module <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala</code> is deprecated. Use <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.13</code>
-or <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> instead.</p>
+    <p>The maven module <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-scala</code> is deprecated. Use <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.13</code>
+or <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> instead.</p>
   </li>
   <li>
     <p>Rule implementation classes are internal API and should not be used by clients directly.
 The rules should only be referenced via their entry in the corresponding category ruleset
-(e.g. <code class="highlighter-rouge">&lt;rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" /&gt;</code>).</p>
+(e.g. <code class="language-plaintext highlighter-rouge">&lt;rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" /&gt;</code>).</p>
 
     <p>While we definitely won’t move or rename the rule classes in PMD 6.x, we might consider changes
 in PMD 7.0.0 and onwards.</p>
@@ -1559,7 +1559,7 @@ in PMD 7.0.0 and onwards.</p>
 <h6 id="internal-api">Internal API</h6>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractIgnoredAnnotationRule.html#"><code>AbstractIgnoredAnnotationRule</code></a> (Java)</li>
@@ -1625,7 +1625,7 @@ definitive API.</li>
 <h6 id="internal-api-1">Internal API</h6>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/AbstractXPathRuleQuery.html#"><code>AbstractXPathRuleQuery</code></a></li>
@@ -1700,9 +1700,9 @@ implementations, and their corresponding Parser if it exists (in the same packag
 <p>In the <strong>Java AST</strong> the following attributes are deprecated and will issue a warning when used in XPath rules:</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#getImage()"><code>ASTAdditiveExpression#getImage</code></a> - use <code class="highlighter-rouge">getOperator()</code> instead</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getImage()"><code>ASTVariableDeclaratorId#getImage</code></a> - use <code class="highlighter-rouge">getName()</code> instead</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getVariableName()"><code>ASTVariableDeclaratorId#getVariableName</code></a> - use <code class="highlighter-rouge">getName()</code> instead</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#getImage()"><code>ASTAdditiveExpression#getImage</code></a> - use <code class="language-plaintext highlighter-rouge">getOperator()</code> instead</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getImage()"><code>ASTVariableDeclaratorId#getImage</code></a> - use <code class="language-plaintext highlighter-rouge">getName()</code> instead</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getVariableName()"><code>ASTVariableDeclaratorId#getVariableName</code></a> - use <code class="language-plaintext highlighter-rouge">getName()</code> instead</li>
 </ul>
 
 <h6 id="for-removal-2">For removal</h6>
@@ -1712,7 +1712,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#setFileName(java.lang.String)"><code>TokenManager#setFileName</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#setFileName(java.lang.String)"><code>AbstractTokenManager#setFileName</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#getFileName(java.lang.String)"><code>AbstractTokenManager#getFileName</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/cpd/token/AntlrToken.html#getType()"><code>AntlrToken#getType</code></a> - use <code class="highlighter-rouge">getKind()</code> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/cpd/token/AntlrToken.html#getType()"><code>AntlrToken#getType</code></a> - use <code class="language-plaintext highlighter-rouge">getKind()</code> instead.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/ImmutableLanguage.html#"><code>ImmutableLanguage</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/MockRule.html#"><code>MockRule</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getFirstParentOfAnyType(java.lang.Class[])"><code>Node#getFirstParentOfAnyType</code></a></li>
@@ -1729,7 +1729,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 <h6 id="internal-api-2">Internal API</h6>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageHandler.html#"><code>JavaLanguageHandler</code></a></li>
@@ -1750,7 +1750,7 @@ eg <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourc
     <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRulesetFactory(net.sourceforge.pmd.PMDConfiguration,net.sourceforge.pmd.util.ResourceLoader)"><code>getRulesetFactory</code></a></p>
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code>AbstractApexNode</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="highlighter-rouge">visit</code>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="language-plaintext highlighter-rouge">visit</code>
 methods on <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code>ApexParserVisitor</code></a> and its implementations.
  Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</li>
 </ul>
@@ -1775,7 +1775,7 @@ a replacement for the language-specific façades too.</li>
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="language-plaintext highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getKind()"><code>ASTAnyTypeDeclaration#getKind</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a></li>
@@ -1795,13 +1795,13 @@ a replacement for the language-specific façades too.</li>
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.</li>
         </ul>
       </li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="highlighter-rouge">getSimpleName()</code>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="language-plaintext highlighter-rouge">getSimpleName()</code>
 instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.</li>
       <li>Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
-have been added. This includes the XPath attribute <code class="highlighter-rouge">@Finally</code>, replace it with a test for <code class="highlighter-rouge">child::FinallyStatement</code>.</li>
-      <li>Several methods named <code class="highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="highlighter-rouge">getCondition</code>. This affects the
+have been added. This includes the XPath attribute <code class="language-plaintext highlighter-rouge">@Finally</code>, replace it with a test for <code class="language-plaintext highlighter-rouge">child::FinallyStatement</code>.</li>
+      <li>Several methods named <code class="language-plaintext highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="language-plaintext highlighter-rouge">getCondition</code>. This affects the
 following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
 anymore come 7.0.0. Test the type of the expression nested within it.</li>
@@ -1880,8 +1880,8 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sour
 
 <h5 id="plsql-ast">PLSQL AST</h5>
 
-<p>The production and node <code class="highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
-parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
+<p>The production and node <code class="language-plaintext highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
+parsed as <code class="language-plaintext highlighter-rouge">ASTCursorSpecification</code>.</p>
 
 <h4 id="6210">6.21.0</h4>
 
@@ -1890,7 +1890,7 @@ parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
 <h6 id="internal-api-3">Internal API</h6>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageHandler.html#"><code>JavaLanguageHandler</code></a></li>
@@ -1912,7 +1912,7 @@ eg <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourc
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code>AbstractApexNode</code></a></li>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="highlighter-rouge">visit</code>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="language-plaintext highlighter-rouge">visit</code>
 methods on <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code>ApexParserVisitor</code></a> and its implementations.
  Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</p>
   </li>
@@ -1940,7 +1940,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sour
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="language-plaintext highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getKind()"><code>ASTAnyTypeDeclaration#getKind</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a></li>
@@ -1960,13 +1960,13 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sour
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.</li>
         </ul>
       </li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="highlighter-rouge">getSimpleName()</code>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="language-plaintext highlighter-rouge">getSimpleName()</code>
 instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.</li>
       <li>Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
-have been added. This includes the XPath attribute <code class="highlighter-rouge">@Finally</code>, replace it with a test for <code class="highlighter-rouge">child::FinallyStatement</code>.</li>
-      <li>Several methods named <code class="highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="highlighter-rouge">getCondition</code>. This affects the
+have been added. This includes the XPath attribute <code class="language-plaintext highlighter-rouge">@Finally</code>, replace it with a test for <code class="language-plaintext highlighter-rouge">child::FinallyStatement</code>.</li>
+      <li>Several methods named <code class="language-plaintext highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="language-plaintext highlighter-rouge">getCondition</code>. This affects the
 following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
 anymore come 7.0.0. Test the type of the expression nested within it.</li>
@@ -2077,7 +2077,7 @@ been deprecated. They were leftovers from a previous deprecation round targeting
 
 <h6 id="internal-apis-1">Internal APIs</h6>
 
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
   <li>pmd-core
@@ -2134,7 +2134,7 @@ of deprecations.</p>
 <h6 id="for-removal-7">For removal</h6>
 
 <ul>
-  <li>The <code class="highlighter-rouge">DumpFacades</code> in all languages, that could be used to transform a AST into a textual representation,
+  <li>The <code class="language-plaintext highlighter-rouge">DumpFacades</code> in all languages, that could be used to transform a AST into a textual representation,
 will be removed with PMD 7. The rule designer is a better way to inspect nodes.
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a></li>
@@ -2159,11 +2159,11 @@ removed as well. It is deprecated, along with all its implementations in the sub
 
 <h5 id="command-line-interface">Command Line Interface</h5>
 
-<p>The start scripts <code class="highlighter-rouge">run.sh</code>, <code class="highlighter-rouge">pmd.bat</code> and <code class="highlighter-rouge">cpd.bat</code> support the new environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code>.
-This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=-Xmx512m</code>)
-or enable preview language features (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=--enable-preview</code>).</p>
+<p>The start scripts <code class="language-plaintext highlighter-rouge">run.sh</code>, <code class="language-plaintext highlighter-rouge">pmd.bat</code> and <code class="language-plaintext highlighter-rouge">cpd.bat</code> support the new environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code>.
+This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS=-Xmx512m</code>)
+or enable preview language features (e.g. <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS=--enable-preview</code>).</p>
 
-<p>The previously available variables such as <code class="highlighter-rouge">OPTS</code> or <code class="highlighter-rouge">HEAPSIZE</code> are deprecated and will be removed with PMD 7.0.0.</p>
+<p>The previously available variables such as <code class="language-plaintext highlighter-rouge">OPTS</code> or <code class="language-plaintext highlighter-rouge">HEAPSIZE</code> are deprecated and will be removed with PMD 7.0.0.</p>
 
 <h5 id="deprecated-api-1">Deprecated API</h5>
 
@@ -2175,8 +2175,8 @@ Properties “cc_categories”, “cc_remediation_points_multiplier”, “cc_bl
 See <a href="https://github.com/pmd/pmd/pull/1702">#1702</a> for more.</p>
   </li>
   <li>
-    <p>The Apex ruleset <code class="highlighter-rouge">rulesets/apex/ruleset.xml</code> has been deprecated and will be removed in 7.0.0. Please use the new
-quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml</code> instead.</p>
+    <p>The Apex ruleset <code class="language-plaintext highlighter-rouge">rulesets/apex/ruleset.xml</code> has been deprecated and will be removed in 7.0.0. Please use the new
+quickstart ruleset <code class="language-plaintext highlighter-rouge">rulesets/apex/quickstart.xml</code> instead.</p>
   </li>
 </ul>
 
@@ -2214,12 +2214,12 @@ is being replaced by the simpler <a href="https://docs.pmd-code.org/apidocs/pmd-
   <li>
     <p>Concrete property classes like <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code>StringMultiProperty</code></a> will gradually
 all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a>
-interface, e.g. <code class="highlighter-rouge">PropertyDescriptor&lt;Integer&gt;</code> or <code class="highlighter-rouge">PropertyDescriptor&lt;List&lt;String&gt;&gt;</code>.</p>
+interface, e.g. <code class="language-plaintext highlighter-rouge">PropertyDescriptor&lt;Integer&gt;</code> or <code class="language-plaintext highlighter-rouge">PropertyDescriptor&lt;List&lt;String&gt;&gt;</code>.</p>
   </li>
   <li>
     <p>Instead of spreading properties across countless classes, the utility class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> will become
 from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
-by a corresponding method on <code class="highlighter-rouge">PropertyFactory</code>:</p>
+by a corresponding method on <code class="language-plaintext highlighter-rouge">PropertyFactory</code>:</p>
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code>PropertyFactory#intProperty</code></a>
         <ul>
@@ -2303,20 +2303,20 @@ accordingly.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()"><code>preferredRowCount</code></a> is deprecated with no intended replacement. It was never implemented, and does not belong
-in this interface. The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()"><code>uiOrder</code></a> and <code class="highlighter-rouge">compareTo(PropertyDescriptor)</code> are deprecated for the
+in this interface. The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()"><code>uiOrder</code></a> and <code class="language-plaintext highlighter-rouge">compareTo(PropertyDescriptor)</code> are deprecated for the
 same reason. These methods mix presentation logic with business logic and are not necessary for PropertyDescriptors to work.
-<code class="highlighter-rouge">PropertyDescriptor</code> will not extend <code class="highlighter-rouge">Comparable&lt;PropertyDescriptor&gt;</code> anymore come 7.0.0.</li>
+<code class="language-plaintext highlighter-rouge">PropertyDescriptor</code> will not extend <code class="language-plaintext highlighter-rouge">Comparable&lt;PropertyDescriptor&gt;</code> anymore come 7.0.0.</li>
   <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#propertyErrorFor(net.sourceforge.pmd.Rule)"><code>propertyErrorFor</code></a> is deprecated and will be removed with no intended
-replacement. It’s really just a shortcut for <code class="highlighter-rouge">prop.errorFor(rule.getProperty(prop))</code>.</li>
-  <li><code class="highlighter-rouge">T </code><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)"><code>valueFrom(String)</code></a> and <code class="highlighter-rouge">String </code><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object)"><code>asDelimitedString</code></a><code class="highlighter-rouge">(T)</code> are deprecated and will be removed. These were
+replacement. It’s really just a shortcut for <code class="language-plaintext highlighter-rouge">prop.errorFor(rule.getProperty(prop))</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">T </code><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)"><code>valueFrom(String)</code></a> and <code class="language-plaintext highlighter-rouge">String </code><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object)"><code>asDelimitedString</code></a><code class="language-plaintext highlighter-rouge">(T)</code> are deprecated and will be removed. These were
 used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
 XML syntax which will make them obsolete.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code>isMultiValue</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#type()"><code>type</code></a> are deprecated and won’t be replaced. The new XML syntax will remove the need
 for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
-Since arbitrary types may be represented, <code class="highlighter-rouge">type</code> will become obsolete as it can’t represent generic types,
+Since arbitrary types may be represented, <code class="language-plaintext highlighter-rouge">type</code> will become obsolete as it can’t represent generic types,
 which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
 new way to document these properties exhaustively will be added with 7.0.0.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code>errorFor</code></a> is deprecated as its return type will be changed to <code class="highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code>errorFor</code></a> is deprecated as its return type will be changed to <code class="language-plaintext highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
 </ul>
 
 <h5 id="deprecated-apis-9">Deprecated APIs</h5>
@@ -2370,12 +2370,12 @@ also been deprecated:</p>
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code>getTypeDefinition</code></a> are deprecated.</p>
       </li>
       <li>
-        <p>The method <code class="highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
+        <p>The method <code class="language-plaintext highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
       </li>
     </ul>
 
     <p>All these are deprecated because those nodes may declare several variables at once, possibly
-with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;</code><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a><code class="highlighter-rouge">&gt;</code>
+with different types (and obviously with different names). They both implement <code class="language-plaintext highlighter-rouge">Iterator&lt;</code><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a><code class="language-plaintext highlighter-rouge">&gt;</code>
 though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
   </li>
   <li>
@@ -2438,25 +2438,25 @@ respective setters.</li>
 
 <ul>
   <li>
-    <p>A couple of methods and fields in <code class="highlighter-rouge">net.sourceforge.pmd.properties.AbstractPropertySource</code> have been
+    <p>A couple of methods and fields in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.AbstractPropertySource</code> have been
 deprecated, as they are replaced by already existing functionality or expose internal implementation
-details: <code class="highlighter-rouge">propertyDescriptors</code>, <code class="highlighter-rouge">propertyValuesByDescriptor</code>,
-<code class="highlighter-rouge">copyPropertyDescriptors()</code>, <code class="highlighter-rouge">copyPropertyValues()</code>, <code class="highlighter-rouge">ignoredProperties()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>,
-<code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
+details: <code class="language-plaintext highlighter-rouge">propertyDescriptors</code>, <code class="language-plaintext highlighter-rouge">propertyValuesByDescriptor</code>,
+<code class="language-plaintext highlighter-rouge">copyPropertyDescriptors()</code>, <code class="language-plaintext highlighter-rouge">copyPropertyValues()</code>, <code class="language-plaintext highlighter-rouge">ignoredProperties()</code>, <code class="language-plaintext highlighter-rouge">usesDefaultValues()</code>,
+<code class="language-plaintext highlighter-rouge">useDefaultValueFor()</code>.</p>
   </li>
   <li>
-    <p>Some methods in <code class="highlighter-rouge">net.sourceforge.pmd.properties.PropertySource</code> have been deprecated as well:
-<code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>, <code class="highlighter-rouge">ignoredProperties()</code>.</p>
+    <p>Some methods in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertySource</code> have been deprecated as well:
+<code class="language-plaintext highlighter-rouge">usesDefaultValues()</code>, <code class="language-plaintext highlighter-rouge">useDefaultValueFor()</code>, <code class="language-plaintext highlighter-rouge">ignoredProperties()</code>.</p>
   </li>
   <li>
-    <p>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code> has been deprecated and will
+    <p>The class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code> has been deprecated and will
 be removed with PMD 7.0.0. It is internally only in use by RuleReference.</p>
   </li>
   <li>
-    <p>The default constructor of <code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.RuleReference</code> has been deprecated
+    <p>The default constructor of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.RuleReference</code> has been deprecated
 and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
-a RuleSetReference. Furthermore the following methods are deprecated: <code class="highlighter-rouge">setRuleReference()</code>,
-<code class="highlighter-rouge">hasOverriddenProperty()</code>, <code class="highlighter-rouge">usesDefaultValues()</code>, <code class="highlighter-rouge">useDefaultValueFor()</code>.</p>
+a RuleSetReference. Furthermore the following methods are deprecated: <code class="language-plaintext highlighter-rouge">setRuleReference()</code>,
+<code class="language-plaintext highlighter-rouge">hasOverriddenProperty()</code>, <code class="language-plaintext highlighter-rouge">usesDefaultValues()</code>, <code class="language-plaintext highlighter-rouge">useDefaultValueFor()</code>.</p>
   </li>
 </ul>
 
@@ -2464,10 +2464,10 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
 
 <ul>
   <li>
-    <p>All classes in the package <code class="highlighter-rouge">net.sourceforge.pmd.lang.dfa.report</code> have been deprecated and will be removed
-with PMD 7.0.0. This includes the class <code class="highlighter-rouge">net.sourceforge.pmd.lang.dfa.report.ReportTree</code>. The reason is,
+    <p>All classes in the package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.dfa.report</code> have been deprecated and will be removed
+with PMD 7.0.0. This includes the class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.dfa.report.ReportTree</code>. The reason is,
 that this class is very specific to Java and not suitable for other languages. It has only been used for
-<code class="highlighter-rouge">YAHTMLRenderer</code>, which has been rewritten to work without these classes.</p>
+<code class="language-plaintext highlighter-rouge">YAHTMLRenderer</code>, which has been rewritten to work without these classes.</p>
   </li>
   <li>
     <p>The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
@@ -2481,16 +2481,16 @@ ShiftExpression#getOperator.</p>
 
 <ul>
   <li>
-    <p>The utility class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.CommentUtil</code> has been deprecated and will be removed
+    <p>The utility class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.CommentUtil</code> has been deprecated and will be removed
 with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
-around the AST node <code class="highlighter-rouge">FormalComment</code>, which contains as children <code class="highlighter-rouge">JavadocElement</code> nodes, which in
-turn provide access to the <code class="highlighter-rouge">JavadocTag</code>.</p>
+around the AST node <code class="language-plaintext highlighter-rouge">FormalComment</code>, which contains as children <code class="language-plaintext highlighter-rouge">JavadocElement</code> nodes, which in
+turn provide access to the <code class="language-plaintext highlighter-rouge">JavadocTag</code>.</p>
 
-    <p>All comment AST nodes (<code class="highlighter-rouge">FormalComment</code>, <code class="highlighter-rouge">MultiLineComment</code>, <code class="highlighter-rouge">SingleLineComment</code>) have a new method
-<code class="highlighter-rouge">getFilteredComment()</code> which provide access to the comment text without the leading <code class="highlighter-rouge">/*</code> markers.</p>
+    <p>All comment AST nodes (<code class="language-plaintext highlighter-rouge">FormalComment</code>, <code class="language-plaintext highlighter-rouge">MultiLineComment</code>, <code class="language-plaintext highlighter-rouge">SingleLineComment</code>) have a new method
+<code class="language-plaintext highlighter-rouge">getFilteredComment()</code> which provide access to the comment text without the leading <code class="language-plaintext highlighter-rouge">/*</code> markers.</p>
   </li>
   <li>
-    <p>The method <code class="highlighter-rouge">AbstractCommentRule.tagsIndicesIn()</code> has been deprecated and will be removed with
+    <p>The method <code class="language-plaintext highlighter-rouge">AbstractCommentRule.tagsIndicesIn()</code> has been deprecated and will be removed with
 PMD 7.0.0. It is not very useful, since it doesn’t extract the information
 in a useful way. You would still need check, which tags have been found, and with which
 data they might be accompanied.</p>
@@ -2500,131 +2500,131 @@ data they might be accompanied.</p>
 <h4 id="640">6.4.0</h4>
 
 <ul>
-  <li>The following classes in package <code class="highlighter-rouge">net.sourceforge.pmd.benchmark</code> have been deprecated: <code class="highlighter-rouge">Benchmark</code>, <code class="highlighter-rouge">Benchmarker</code>,
-<code class="highlighter-rouge">BenchmarkReport</code>, <code class="highlighter-rouge">BenchmarkResult</code>, <code class="highlighter-rouge">RuleDuration</code>, <code class="highlighter-rouge">StringBuilderCR</code> and <code class="highlighter-rouge">TextReport</code>. Their API is not supported anymore
-and is disconnected from the internals of PMD. Use the newer API based around <code class="highlighter-rouge">TimeTracker</code> instead, which can be found
+  <li>The following classes in package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.benchmark</code> have been deprecated: <code class="language-plaintext highlighter-rouge">Benchmark</code>, <code class="language-plaintext highlighter-rouge">Benchmarker</code>,
+<code class="language-plaintext highlighter-rouge">BenchmarkReport</code>, <code class="language-plaintext highlighter-rouge">BenchmarkResult</code>, <code class="language-plaintext highlighter-rouge">RuleDuration</code>, <code class="language-plaintext highlighter-rouge">StringBuilderCR</code> and <code class="language-plaintext highlighter-rouge">TextReport</code>. Their API is not supported anymore
+and is disconnected from the internals of PMD. Use the newer API based around <code class="language-plaintext highlighter-rouge">TimeTracker</code> instead, which can be found
 in the same package.</li>
-  <li>The class <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.TypeOfFunction</code> has been deprecated. Use the newer <code class="highlighter-rouge">TypeIsFunction</code> in the same package.</li>
-  <li>The <code class="highlighter-rouge">typeof</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.JavaFunctions</code> have been deprecated.
-Use the newer <code class="highlighter-rouge">typeIs</code> method in the same class instead..</li>
-  <li>The methods <code class="highlighter-rouge">isA</code>, <code class="highlighter-rouge">isEither</code> and <code class="highlighter-rouge">isNeither</code> of <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.typeresolution.TypeHelper</code>.
-Use the new <code class="highlighter-rouge">isExactlyAny</code> and <code class="highlighter-rouge">isExactlyNone</code> methods in the same class instead.</li>
+  <li>The class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.TypeOfFunction</code> has been deprecated. Use the newer <code class="language-plaintext highlighter-rouge">TypeIsFunction</code> in the same package.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">typeof</code> methods in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.xpath.JavaFunctions</code> have been deprecated.
+Use the newer <code class="language-plaintext highlighter-rouge">typeIs</code> method in the same class instead..</li>
+  <li>The methods <code class="language-plaintext highlighter-rouge">isA</code>, <code class="language-plaintext highlighter-rouge">isEither</code> and <code class="language-plaintext highlighter-rouge">isNeither</code> of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.typeresolution.TypeHelper</code>.
+Use the new <code class="language-plaintext highlighter-rouge">isExactlyAny</code> and <code class="language-plaintext highlighter-rouge">isExactlyNone</code> methods in the same class instead.</li>
 </ul>
 
 <h4 id="620">6.2.0</h4>
 
 <ul>
   <li>
-    <p>The static method <code class="highlighter-rouge">PMDParameters.transformParametersIntoConfiguration(PMDParameters)</code> is now deprecated,
-for removal in 7.0.0. The new instance method <code class="highlighter-rouge">PMDParameters.toConfiguration()</code> replaces it.</p>
+    <p>The static method <code class="language-plaintext highlighter-rouge">PMDParameters.transformParametersIntoConfiguration(PMDParameters)</code> is now deprecated,
+for removal in 7.0.0. The new instance method <code class="language-plaintext highlighter-rouge">PMDParameters.toConfiguration()</code> replaces it.</p>
   </li>
   <li>
-    <p>The method <code class="highlighter-rouge">ASTConstructorDeclaration.getParameters()</code> has been deprecated in favor of the new method
-<code class="highlighter-rouge">getFormalParameters()</code>. This method is available for both <code class="highlighter-rouge">ASTConstructorDeclaration</code> and
-<code class="highlighter-rouge">ASTMethodDeclaration</code>.</p>
+    <p>The method <code class="language-plaintext highlighter-rouge">ASTConstructorDeclaration.getParameters()</code> has been deprecated in favor of the new method
+<code class="language-plaintext highlighter-rouge">getFormalParameters()</code>. This method is available for both <code class="language-plaintext highlighter-rouge">ASTConstructorDeclaration</code> and
+<code class="language-plaintext highlighter-rouge">ASTMethodDeclaration</code>.</p>
   </li>
 </ul>
 
 <h4 id="610">6.1.0</h4>
 
 <ul>
-  <li>The method <code class="highlighter-rouge">getXPathNodeName</code> is added to the <code class="highlighter-rouge">Node</code> interface, which removes the
-use of the <code class="highlighter-rouge">toString</code> of a node to get its XPath element name (see <a href="https://github.com/pmd/pmd/issues/569">#569</a>).
+  <li>The method <code class="language-plaintext highlighter-rouge">getXPathNodeName</code> is added to the <code class="language-plaintext highlighter-rouge">Node</code> interface, which removes the
+use of the <code class="language-plaintext highlighter-rouge">toString</code> of a node to get its XPath element name (see <a href="https://github.com/pmd/pmd/issues/569">#569</a>).
     <ul>
-      <li>The default implementation provided in  <code class="highlighter-rouge">AbstractNode</code>, will
+      <li>The default implementation provided in  <code class="language-plaintext highlighter-rouge">AbstractNode</code>, will
 be removed with 7.0.0</li>
-      <li>With 7.0.0, the <code class="highlighter-rouge">Node.toString</code> method will not necessarily provide its XPath node
+      <li>With 7.0.0, the <code class="language-plaintext highlighter-rouge">Node.toString</code> method will not necessarily provide its XPath node
 name anymore.</li>
     </ul>
   </li>
   <li>
-    <p>The interface <code class="highlighter-rouge">net.sourceforge.pmd.cpd.Renderer</code> has been deprecated. A new interface
-<code class="highlighter-rouge">net.sourceforge.pmd.cpd.renderer.CPDRenderer</code> has been introduced to replace it. The main
-difference is that the new interface is meant to render directly to a <code class="highlighter-rouge">java.io.Writer</code>
+    <p>The interface <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.Renderer</code> has been deprecated. A new interface
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.renderer.CPDRenderer</code> has been introduced to replace it. The main
+difference is that the new interface is meant to render directly to a <code class="language-plaintext highlighter-rouge">java.io.Writer</code>
 rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on
-large projects, with many duplications, it was causing <code class="highlighter-rouge">OutOfMemoryError</code>s (see <a href="https://github.com/pmd/pmd/issues/795">#795</a>).</p>
+large projects, with many duplications, it was causing <code class="language-plaintext highlighter-rouge">OutOfMemoryError</code>s (see <a href="https://github.com/pmd/pmd/issues/795">#795</a>).</p>
 
-    <p><code class="highlighter-rouge">net.sourceforge.pmd.cpd.FileReporter</code> has also been deprecated as part of this change, as it’s no longer needed.</p>
+    <p><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.FileReporter</code> has also been deprecated as part of this change, as it’s no longer needed.</p>
   </li>
 </ul>
 
 <h4 id="601">6.0.1</h4>
 
 <ul>
-  <li>The constant <code class="highlighter-rouge">net.sourceforge.pmd.PMD.VERSION</code> has been deprecated and will be removed with PMD 7.0.0.
-Please use <code class="highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSION</code> instead.</li>
+  <li>The constant <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMD.VERSION</code> has been deprecated and will be removed with PMD 7.0.0.
+Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSION</code> instead.</li>
 </ul>
 
 <h3 id="list-of-currently-deprecated-rules">List of currently deprecated rules</h3>
 
 <ul>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#misleadingvariablename"><code class="highlighter-rouge">MIsLeadingVariableName</code></a>,
-<a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname"><code class="highlighter-rouge">SuspiciousConstantFieldName</code></a>, and <a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters"><code class="highlighter-rouge">AvoidPrefixingMethodParameters</code></a> are
+    <p>The Java rules <a href="pmd_rules_java_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#misleadingvariablename"><code class="language-plaintext highlighter-rouge">MIsLeadingVariableName</code></a>,
+<a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname"><code class="language-plaintext highlighter-rouge">SuspiciousConstantFieldName</code></a>, and <a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters"><code class="language-plaintext highlighter-rouge">AvoidPrefixingMethodParameters</code></a> are
 now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
-<a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>, and
-<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
+<a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, and
+<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#abstractnaming"><code class="highlighter-rouge">AbstractNaming</code></a> is deprecated
-in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="highlighter-rouge">ClassNamingConventions</code></a>.</p>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#abstractnaming"><code class="language-plaintext highlighter-rouge">AbstractNaming</code></a> is deprecated
+in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces"><code class="highlighter-rouge">WhileLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#forloopsmustusebraces"><code class="highlighter-rouge">ForLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces"><code class="highlighter-rouge">IfStmtsMustUseBraces</code></a>, and <a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces"><code class="highlighter-rouge">IfElseStmtsMustUseBraces</code></a>
-are deprecated. They will be replaced by the new rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a>.</p>
+    <p>The Java rules <a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces"><code class="language-plaintext highlighter-rouge">WhileLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#forloopsmustusebraces"><code class="language-plaintext highlighter-rouge">ForLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfStmtsMustUseBraces</code></a>, and <a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfElseStmtsMustUseBraces</code></a>
+are deprecated. They will be replaced by the new rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
   </li>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_design.html#ncssconstructorcount"><code class="highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_java_design.html#ncssmethodcount"><code class="highlighter-rouge">NcssMethodCount</code></a>, and <a href="pmd_rules_java_design.html#ncsstypecount"><code class="highlighter-rouge">NcssTypeCount</code></a> have been
-deprecated. They will be replaced by the new rule <a href="pmd_rules_java_design.html#ncsscount"><code class="highlighter-rouge">NcssCount</code></a> in the category <code class="highlighter-rouge">design</code>.</p>
+    <p>The Java rules <a href="pmd_rules_java_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_java_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, and <a href="pmd_rules_java_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a> have been
+deprecated. They will be replaced by the new rule <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> in the category <code class="language-plaintext highlighter-rouge">design</code>.</p>
   </li>
   <li>
-    <p>The Java rule <code class="highlighter-rouge">LooseCoupling</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">bestpractices</code> instead.</p>
+    <p>The Java rule <code class="language-plaintext highlighter-rouge">LooseCoupling</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead.</p>
   </li>
   <li>
-    <p>The Java rule <code class="highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">errorprone</code> instead.</p>
+    <p>The Java rule <code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">errorprone</code> instead.</p>
   </li>
   <li>
-    <p>The Java rule <code class="highlighter-rouge">UnusedImports</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
-the same name from category <code class="highlighter-rouge">bestpractices</code> instead.</p>
+    <p>The Java rule <code class="language-plaintext highlighter-rouge">UnusedImports</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
+the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead.</p>
   </li>
   <li>
-    <p>The Java rule <code class="highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="highlighter-rouge">design</code> instead.</p>
+    <p>The Java rule <code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">design</code> instead.</p>
   </li>
   <li>
-    <p>The Java rule <code class="highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="highlighter-rouge">java-empty</code> is deprecated. Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="highlighter-rouge">EmptyInitializer</code></a>, which covers both static and non-static empty initializers.`</p>
+    <p>The Java rule <code class="language-plaintext highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="language-plaintext highlighter-rouge">java-empty</code> is deprecated. Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a>, which covers both static and non-static empty initializers.`</p>
   </li>
   <li>
-    <p>The Java rules <code class="highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="highlighter-rouge">java-logging-jakarta-commons</code>) and <code class="highlighter-rouge">GuardLogStatementJavaUtil</code>
-(ruleset <code class="highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule <a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="highlighter-rouge">GuardLogStatement</code></a>, which covers all cases regardless of the logging framework.</p>
+    <p>The Java rules <code class="language-plaintext highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-jakarta-commons</code>) and <code class="language-plaintext highlighter-rouge">GuardLogStatementJavaUtil</code>
+(ruleset <code class="language-plaintext highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule <a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="language-plaintext highlighter-rouge">GuardLogStatement</code></a>, which covers all cases regardless of the logging framework.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter"><code class="highlighter-rouge">UnsynchronizedStaticDateFormatter</code></a> has been deprecated and
+    <p>The Java rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticDateFormatter</code></a> has been deprecated and
 will be removed with PMD 7.0.0. The rule is replaced by the more general
-<a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
+<a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
   </li>
   <li>
-    <p>The two Java rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
-and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> (ruleset <code class="highlighter-rouge">java-bestpractices</code>)
-have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+    <p>The two Java rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
+and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> (ruleset <code class="language-plaintext highlighter-rouge">java-bestpractices</code>)
+have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="highlighter-rouge">AvoidFinalLocalVariable</code></a> (<code class="highlighter-rouge">java-codestyle</code>) has been deprecated
+    <p>The Java rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="language-plaintext highlighter-rouge">AvoidFinalLocalVariable</code></a> (<code class="language-plaintext highlighter-rouge">java-codestyle</code>) has been deprecated
 and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
-rules such as <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
-constants in a scope smaller than the class, then the rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a>
+rules such as <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="language-plaintext highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
+constants in a scope smaller than the class, then the rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>
 should be used instead.</p>
   </li>
   <li>
-    <p>The Apex rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has been deprecated and
+    <p>The Apex rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a> (<code class="language-plaintext highlighter-rouge">apex-codestyle</code>) has been deprecated and
 will be removed with PMD 7.0.0. The rule is replaced by the more general rules
-<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>,
-<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>,
-<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>, and
-<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a>.</p>
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>, and
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been deprecated
-and will be removed with PMD 7.0.0. The rule is replaced by <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a>.</p>
+    <p>The Java rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="language-plaintext highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>) has been deprecated
+and will be removed with PMD 7.0.0. The rule is replaced by <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a>.</p>
   </li>
 </ul>
 
@@ -2643,7 +2643,7 @@ and will be removed with PMD 7.0.0. The rule is replaced by <a href="https://pmd
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

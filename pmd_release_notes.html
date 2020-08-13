@@ -1414,7 +1414,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables"><code class="highlighter-rouge">AvoidReassigningCatchVariables</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) finds
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningCatchVariables</code></a> (<code class="language-plaintext highlighter-rouge">java-bestpractices</code>) finds
 cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
 further evolution of the code like multi-catch.</li>
 </ul>
@@ -1422,8 +1422,8 @@ further evolution of the code like multi-catch.</li>
 <h4 id="deprecated-rules">Deprecated Rules</h4>
 
 <ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="highlighter-rouge">java-errorprone</code>)
-is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="highlighter-rouge">UnusedAssignment</code></a> (<code class="highlighter-rouge">java-bestpractices</code>),
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="language-plaintext highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>)
+is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> (<code class="language-plaintext highlighter-rouge">java-bestpractices</code>),
 which was introduced in PMD 6.26.0.</li>
 </ul>
 
@@ -1453,7 +1453,7 @@ which was introduced in PMD 6.26.0.</li>
   </li>
   <li>java-performance
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2441">#2441</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="highlighter-rouge">char foo = '\0';</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2441">#2441</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code></li>
     </ul>
   </li>
 </ul>
@@ -1461,10 +1461,10 @@ which was introduced in PMD 6.26.0.</li>
 <h3 id="api-changes">API Changes</h3>
 
 <ul>
-  <li>XML rule definition in rulesets: In PMD 7, the <code class="highlighter-rouge">language</code> attribute will be required on all <code class="highlighter-rouge">rule</code>
+  <li>XML rule definition in rulesets: In PMD 7, the <code class="language-plaintext highlighter-rouge">language</code> attribute will be required on all <code class="language-plaintext highlighter-rouge">rule</code>
 elements that declare a new rule. Some base rule classes set the language implicitly in their
 constructor, and so this is not required in all cases for the rule to work. But this
-behavior will be discontinued in PMD 7, so missing <code class="highlighter-rouge">language</code> attributes are now
+behavior will be discontinued in PMD 7, so missing <code class="language-plaintext highlighter-rouge">language</code> attributes are now
 reported as a forward compatibility warning.</li>
 </ul>
 
@@ -1507,7 +1507,7 @@ includes all code in the following packages, and their subpackages:
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
-  <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2682">#2682</a>: [java] New Rule: AvoidReassigningCatchVariables - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
@@ -1529,7 +1529,7 @@ includes all code in the following packages, and their subpackages:
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

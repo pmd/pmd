@@ -1422,7 +1422,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <p>We assume, that the PR has been created from the master branch. If this is not the case,
 then we’ll either need to rebase or ask for rebasing before merging.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master &amp;&amp; git pull origin master                    # make sure, you have the latest code
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master &amp;&amp; git pull origin master                    # make sure, you have the latest code
 git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creates a new temporary branch
 </code></pre></div>    </div>
   </li>
@@ -1438,7 +1438,7 @@ git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creat
       <li>
         <p>Commit these changes with the message:</p>
 
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add docs/pages/release_notes.md
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add docs/pages/release_notes.md
 git commit -m "Update release notes, refs #123"
 </code></pre></div>        </div>
       </li>
@@ -1446,20 +1446,20 @@ git commit -m "Update release notes, refs #123"
 
     <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If the PR fixes a bug, verify, that we have a commit with the message
 “Fixes #issue-number”. If this doesn’t exist, you can add it to the commit message when
-updating the release notes: <code class="highlighter-rouge">Update release notes, refs #123, fixes #issue-number</code>.
+updating the release notes: <code class="language-plaintext highlighter-rouge">Update release notes, refs #123, fixes #issue-number</code>.
 This will automatically close the github issue.</div>
   </li>
   <li>
     <p>Now merge the pull request into the master branch:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
 git merge --no-ff pr-123
 </code></pre></div>    </div>
 
     <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If there are merge conflicts, you’ll need to deal with them here.</div>
   </li>
   <li>
-    <p>Run the complete build: <code class="highlighter-rouge">./mvnw clean verify</code></p>
+    <p>Run the complete build: <code class="language-plaintext highlighter-rouge">./mvnw clean verify</code></p>
 
     <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> This will execute all the unit tests and the checkstyle tests. It ensures,
 that the complete project can be build and is functioning on top of the current master.</div>
@@ -1467,11 +1467,11 @@ that the complete project can be build and is functioning on top of the current 
   <li>
     <p>If the build was successful, you are ready to push:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
 </code></pre></div>    </div>
 
     <p>Since the temporary branch is now not needed anymore, you can delete it:
-<code class="highlighter-rouge">git branch -d pr-123</code>.</p>
+<code class="language-plaintext highlighter-rouge">git branch -d pr-123</code>.</p>
   </li>
 </ol>
 
@@ -1482,7 +1482,7 @@ But if a pull request is intended to fix a bug in an older version of PMD, then 
 
 <h3 id="creating-a-maintenance-branch">Creating a maintenance branch</h3>
 
-<p>For older versions, we use maintenance branches, like <code class="highlighter-rouge">pmd/5.8.x</code>. If there is no maintenance branch for
+<p>For older versions, we use maintenance branches, like <code class="language-plaintext highlighter-rouge">pmd/5.8.x</code>. If there is no maintenance branch for
 the specific version, then we’ll have to create it first. Let’s say, we want a maintenance branch for
 PMD version 5.8.0, so that we can create a bugfix release 5.8.1.</p>
 
@@ -1490,14 +1490,14 @@ PMD version 5.8.0, so that we can create a bugfix release 5.8.1.</p>
   <li>
     <p>We’ll simply create a new branch off of the release tag:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch pmd/5.8.x pmd_releases/5.8.0 &amp;&amp; git checkout pmd/5.8.x
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch pmd/5.8.x pmd_releases/5.8.0 &amp;&amp; git checkout pmd/5.8.x
 </code></pre></div>    </div>
   </li>
   <li>
     <p>Now we’ll need to adjust the version, since it’s currently the same as the release version.
 We’ll change the version to the next patch version: “5.8.1-SNAPSHOT”.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
 git add pom.xml \*/pom.xml
 git commit -m "prepare next version 5.8.1-SNAPSHOT"
 </code></pre></div>    </div>
@@ -1513,7 +1513,7 @@ git commit -m "prepare next version 5.8.1-SNAPSHOT"
   <li>
     <p>Fetch the PR and rebase it onto the maintenance branch:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git fetch origin pull/124/head:pr-124 &amp;&amp; git checkout pr-124     # creates a new temporary branch
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git fetch origin pull/124/head:pr-124 &amp;&amp; git checkout pr-124     # creates a new temporary branch
 git rebase master --onto pmd/5.8.x
 ./mvnw clean verify                                # make sure, everything works after the rebase
 </code></pre></div>    </div>
@@ -1527,17 +1527,17 @@ PMD version.</div>
   <li>
     <p>Now merge the pull request into the maintenance branch:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.8.x
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.8.x
 git merge --no-ff pr-124
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Just to be sure, run the complete build again: <code class="highlighter-rouge">./mvnw clean verify</code>.</p>
+    <p>Just to be sure, run the complete build again: <code class="language-plaintext highlighter-rouge">./mvnw clean verify</code>.</p>
   </li>
   <li>
     <p>If the build was successful, you are ready to push:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin pmd/5.8.x
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin pmd/5.8.x
 </code></pre></div>    </div>
   </li>
   <li>
@@ -1552,19 +1552,19 @@ rebased onto the maintenance branch.</p>
 <p>Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
 Therefore, we merge first into the next minor version maintenance branch (if existing):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.9.x
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.9.x
 git merge pmd/5.8.x
 </code></pre></div></div>
 
 <p>After that, we merge the changes into the master branch:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
 git merge pmd/5.9.x
 </code></pre></div></div>
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> This ensures, that every change on the maintenance branch eventually ends
 up in the master branch and therefore in any future version of PMD.<br />
-The downside is however, that there are inevitable merge conflicts for the maven <code class="highlighter-rouge">pom.xml</code> files, since
+The downside is however, that there are inevitable merge conflicts for the maven <code class="language-plaintext highlighter-rouge">pom.xml</code> files, since
 every branch changed the version number differently.<br />
 We could avoid this by merging only the temporary branch “pr-124” into each maintenance branch and
 eventually into master, with the risk of missing single commits in a maintenance branch, that have been
@@ -1593,7 +1593,7 @@ integrated (e.g. gitk and github show the branches, from which the specific comm
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> August 2017<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> August 2017<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

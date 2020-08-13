@@ -1412,7 +1412,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>The rule makes sure you are using randomly generated IVs and keys for <code class="highlighter-rouge">Crypto</code> calls.
+<p>The rule makes sure you are using randomly generated IVs and keys for <code class="language-plaintext highlighter-rouge">Crypto</code> calls.
 Hard-wiring these values greatly compromises the security of encrypted data.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexBadCryptoRule.java">net.sourceforge.pmd.lang.apex.rule.security.ApexBadCryptoRule</a></p>
@@ -1547,7 +1547,7 @@ privilege and may produce runtime errors. This check forces you to handle such s
 By just accessing a page, the DML statements would be executed and the database would be modified.
 Just querying the database is permitted.</p>
 
-<p>In addition to constructors and initializers, any method called <code class="highlighter-rouge">init</code> is checked as well.</p>
+<p>In addition to constructors and initializers, any method called <code class="language-plaintext highlighter-rouge">init</code> is checked as well.</p>
 
 <p>Salesforce Apex already protects against this scenario and raises a runtime exception.</p>
 
@@ -1624,9 +1624,9 @@ using DML in constructors is not a security problem, but crashes the application
 <p>For the time being, it reports:</p>
 
 <ul>
-  <li>Against <code class="highlighter-rouge">FinancialForce</code>’s <code class="highlighter-rouge">Configuration.disableTriggerCRUDSecurity()</code>. Disabling CRUD security
+  <li>Against <code class="language-plaintext highlighter-rouge">FinancialForce</code>’s <code class="language-plaintext highlighter-rouge">Configuration.disableTriggerCRUDSecurity()</code>. Disabling CRUD security
 opens the door to several attacks and requires manual validation, which is unreliable.</li>
-  <li>Calling <code class="highlighter-rouge">System.debug</code> passing sensitive data as parameter, which could lead to exposure
+  <li>Calling <code class="language-plaintext highlighter-rouge">System.debug</code> passing sensitive data as parameter, which could lead to exposure
 of private data.</li>
 </ul>
 
@@ -1983,7 +1983,7 @@ forces the developer to take access restrictions into account before modifying o
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Reports on calls to <code class="highlighter-rouge">addError</code> with disabled escaping. The message passed to <code class="highlighter-rouge">addError</code>
+<p>Reports on calls to <code class="language-plaintext highlighter-rouge">addError</code> with disabled escaping. The message passed to <code class="language-plaintext highlighter-rouge">addError</code>
 will be displayed directly to the user in the UI, making it prime ground for XSS
 attacks if unescaped.</p>
 
@@ -2105,7 +2105,7 @@ to avoid XSS attacks.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

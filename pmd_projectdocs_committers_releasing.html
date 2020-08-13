@@ -1408,25 +1408,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>Since versions 5.4.5 / 5.5.4 there is an automated release process using <a href="https://travis-ci.org">travis-ci</a>
 in place. However, there are still a few steps, that need manual examination.</p>
 
-<p>Note: You can find a small shell script in the root of the repo: <code class="highlighter-rouge">do-release.sh</code>. This script guides you
+<p>Note: You can find a small shell script in the root of the repo: <code class="language-plaintext highlighter-rouge">do-release.sh</code>. This script guides you
 through the release process.</p>
 
 <h2 id="preparations">Preparations</h2>
 
 <p>Make sure code is up to date and everything is committed and pushed with git:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./mvnw clean
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./mvnw clean
 $ git pull
 $ git status
 </code></pre></div></div>
 
 <h3 id="the-release-notes-and-docs">The Release Notes and docs</h3>
 
-<p>You can find the release notes here: <code class="highlighter-rouge">docs/pages/release_notes.md</code>.</p>
+<p>You can find the release notes here: <code class="language-plaintext highlighter-rouge">docs/pages/release_notes.md</code>.</p>
 
-<p>The date (<code class="highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
+<p>The date (<code class="language-plaintext highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="language-plaintext highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
     version: 6.22.0
     previous_version: 6.21.0
     date: 12-March-2020
@@ -1436,20 +1436,20 @@ $ git status
 <p>The release type could be one of “bugfix”, “minor”, or “major”.</p>
 
 <p>The release notes usual mention any new rules that have been added since the last release.
-Please double check the file <code class="highlighter-rouge">pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml</code>, so
+Please double check the file <code class="language-plaintext highlighter-rouge">pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml</code>, so
 that all new rules are listed.</p>
 
 <p>Add the new rules as comments to the quickstart rulesets:</p>
 <ul>
-  <li><code class="highlighter-rouge">pmd-apex/src/main/resources/rulesets/apex/quickstart.xml</code></li>
-  <li><code class="highlighter-rouge">pmd-java/src/main/resources/rulesets/java/quickstart.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">pmd-apex/src/main/resources/rulesets/apex/quickstart.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">pmd-java/src/main/resources/rulesets/java/quickstart.xml</code></li>
 </ul>
 
 <p>We maintain a documentation for the <a href="pmd_next_major_development.html">next major release</a>. Copy the API
-changes from the current release notes to this document: <code class="highlighter-rouge">docs/pages/next_major_development.md</code>.</p>
+changes from the current release notes to this document: <code class="language-plaintext highlighter-rouge">docs/pages/next_major_development.md</code>.</p>
 
 <p>The designer lives at <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a>.
-Update property <code class="highlighter-rouge">pmd-designer.version</code> in <strong>pom.xml</strong> to reference the latest pmd-designer release.
+Update property <code class="language-plaintext highlighter-rouge">pmd-designer.version</code> in <strong>pom.xml</strong> to reference the latest pmd-designer release.
 See <a href="https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav">https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav</a> for the available releases.</p>
 
 <p>Starting with PMD 6.23.0 we’ll provide small statistics for every release. This needs to be added
@@ -1468,33 +1468,33 @@ create the numbers, that can be attached to the release notes as a last section:
 <span class="nb">echo</span> <span class="s2">"* Days since last release: </span><span class="k">$((</span> <span class="o">(</span> <span class="si">$(</span><span class="nb">date</span> +%s<span class="si">)</span> <span class="o">-</span> <span class="si">$(</span>git log <span class="nt">--max-count</span><span class="o">=</span>1 <span class="nt">--format</span><span class="o">=</span><span class="s2">"%at"</span> pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span><span class="si">)</span> <span class="o">)</span> <span class="o">/</span> <span class="m">86400</span><span class="k">))</span><span class="s2">"</span>
 </code></pre></div></div>
 
-<p>Note: this part is also integrated into <code class="highlighter-rouge">do-release.sh</code>.</p>
+<p>Note: this part is also integrated into <code class="language-plaintext highlighter-rouge">do-release.sh</code>.</p>
 
 <p>Check in all (version) changes to branch master or any other branch, from which the release takes place:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -a -m "Prepare pmd release &lt;version&gt;"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -a -m "Prepare pmd release &lt;version&gt;"
 $ git push
 </code></pre></div></div>
 
 <h3 id="the-homepage">The Homepage</h3>
 
-<p>The github repo <code class="highlighter-rouge">pmd.github.io</code> hosts the homepage for <a href="https://pmd.github.io">https://pmd.github.io</a>.</p>
+<p>The github repo <code class="language-plaintext highlighter-rouge">pmd.github.io</code> hosts the homepage for <a href="https://pmd.github.io">https://pmd.github.io</a>.</p>
 
-<p>The new version needs to be entered into <code class="highlighter-rouge">_config.yml</code>, e.g.:</p>
+<p>The new version needs to be entered into <code class="language-plaintext highlighter-rouge">_config.yml</code>, e.g.:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
   latestVersion: 6.22.0
   latestVersionDate: 12-March-2020
 </code></pre></div></div>
 
 <p>Also move the previous version down into the “downloads” section.</p>
 
-<p>Then create a new page for the new release, e.g. <code class="highlighter-rouge">_posts/2020-03-12-PMD-6.22.0.md</code> and copy
+<p>Then create a new page for the new release, e.g. <code class="language-plaintext highlighter-rouge">_posts/2020-03-12-PMD-6.22.0.md</code> and copy
 the release notes into this page. This will appear under the news section.</p>
 
 <p>Check in all (version) changes to branch master:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -a -m "Prepare pmd release &lt;version&gt;"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -a -m "Prepare pmd release &lt;version&gt;"
 $ git push
 </code></pre></div></div>
 
@@ -1505,10 +1505,10 @@ removing the “-SNAPSHOT” suffix, builds the changed project locally, commits
 a new tag from this commit, changes the version of the project to the next snapshot, commits this change
 and pushes everything.</p>
 
-<p><code class="highlighter-rouge">RELEASE_VERSION</code> is the version of the release. It is reused for the tag. <code class="highlighter-rouge">DEVELOPMENT_VERSION</code> is the
+<p><code class="language-plaintext highlighter-rouge">RELEASE_VERSION</code> is the version of the release. It is reused for the tag. <code class="language-plaintext highlighter-rouge">DEVELOPMENT_VERSION</code> is the
 next snapshot version after the release.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn -B release:clean release:prepare \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
     -DdevelopmentVersion=${DEVELOPMENT_VERSION}
@@ -1527,7 +1527,7 @@ the release notes.</li>
 <a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>, including the release notes. The new binaries are
 selected as the new default downloads for PMD.</li>
   <li>Add the documentation of the new release to a subfolder on <a href="https://pmd.github.io">https://pmd.github.io</a>, also make
-this folder available as <code class="highlighter-rouge">latest</code>.</li>
+this folder available as <code class="language-plaintext highlighter-rouge">latest</code>.</li>
   <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>.</li>
 </ul>
 
@@ -1540,7 +1540,7 @@ this folder available as <code class="highlighter-rouge">latest</code>.</li>
 <p>Submit news to SF on the <a href="https://sourceforge.net/p/pmd/news/">PMD Project News</a> page. You can use
 the following template:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD &lt;version&gt; released
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD &lt;version&gt; released
 
 *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F&lt;version&gt;
 *   Documentation: https://pmd.github.io/pmd-&lt;version&gt;/
@@ -1550,7 +1550,7 @@ And Copy-Paste the release notes
 
 <h3 id="write-an-email-to-the-mailing-list">Write an email to the mailing list</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>To: PMD Developers List &lt;pmd-devel@lists.sourceforge.net&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>To: PMD Developers List &lt;pmd-devel@lists.sourceforge.net&gt;
 Subject: [ANNOUNCE] PMD &lt;version&gt; released
 
 
@@ -1568,7 +1568,7 @@ And Copy-Paste the release notes
   <li>
     <p>Update version in <strong>docs/_config.yml</strong>. Note - the next version needs to have a SNAPSHOT in it.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
     version: 6.23.0-SNAPSHOT
     previous_version: 6.22.0
     date: ??-??-2020
@@ -1579,7 +1579,7 @@ And Copy-Paste the release notes
   <li>Update version/release info in <strong>docs/pages/release_notes.md</strong>. Use the following template:</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
 title: PMD Release Notes
 permalink: pmd_release_notes.html
 keywords: changelog, release notes
@@ -1607,7 +1607,7 @@ This is a {{ site.pmd.release_type }} release.
 
 <p>Commit and push</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -m "Prepare next development version"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -m "Prepare next development version"
 $ git push origin master
 </code></pre></div></div>
 
@@ -1620,8 +1620,8 @@ Maybe there are some milestones on sourceforge, too: <a href="https://sourceforg
 
 <h3 id="merging">Merging</h3>
 
-<p>If the release was done on a maintenance branch, such as <code class="highlighter-rouge">pmd/5.4.x</code>, then this branch should be
-merged into the next “higher” branches, such as <code class="highlighter-rouge">pmd/5.5.x</code> and <code class="highlighter-rouge">master</code>.</p>
+<p>If the release was done on a maintenance branch, such as <code class="language-plaintext highlighter-rouge">pmd/5.4.x</code>, then this branch should be
+merged into the next “higher” branches, such as <code class="language-plaintext highlighter-rouge">pmd/5.5.x</code> and <code class="language-plaintext highlighter-rouge">master</code>.</p>
 
 <p>This ensures, that all fixes done on the maintenance branch, finally end up in the other branches.
 In theory, the fixes should already be there, but you never now.</p>
@@ -1629,19 +1629,19 @@ In theory, the fixes should already be there, but you never now.</p>
 <h3 id="multiple-releases">Multiple releases</h3>
 
 <p>If releases from multiple branches are being done, the order matters. You should start from the “oldest” branch,
-e.g. <code class="highlighter-rouge">pmd/5.4.x</code>, release from there. Then merge (see above) into the next branch, e.g. <code class="highlighter-rouge">pmd/5.5.x</code> and release
-from there. Then merge into the <code class="highlighter-rouge">master</code> branch and release from there. This way, the last release done, becomes
+e.g. <code class="language-plaintext highlighter-rouge">pmd/5.4.x</code>, release from there. Then merge (see above) into the next branch, e.g. <code class="language-plaintext highlighter-rouge">pmd/5.5.x</code> and release
+from there. Then merge into the <code class="language-plaintext highlighter-rouge">master</code> branch and release from there. This way, the last release done, becomes
 automatically the latest release on <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a> and on sourceforge.</p>
 
 <h3 id="optional-create-a-new-release-branch">(Optional) Create a new release branch</h3>
 
 <p>At some point, it might be time for a new maintenance branch. Such a branch is usually created from
-the <code class="highlighter-rouge">master</code> branch. Here are the steps:</p>
+the <code class="language-plaintext highlighter-rouge">master</code> branch. Here are the steps:</p>
 
 <ul>
-  <li>Create a new branch: <code class="highlighter-rouge">git branch pmd/5.6.x master</code></li>
-  <li>Update the version in both the new branch and master, e.g. <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.6.1-SNAPSHOT</code>
-and <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT</code>.</li>
+  <li>Create a new branch: <code class="language-plaintext highlighter-rouge">git branch pmd/5.6.x master</code></li>
+  <li>Update the version in both the new branch and master, e.g. <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVersion=5.6.1-SNAPSHOT</code>
+and <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT</code>.</li>
   <li>Update the release notes on both the new branch and master</li>
 </ul>
 
@@ -1660,7 +1660,7 @@ and <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1422,8 +1422,8 @@ expressions.</p>
 rules quickly and painlessly. Basically, it allows you to examine the AST of a code
 snippet and evaluate an XPath expression against it.</p>
 
-<p>Like for PMD and CPD, you can launch it using <code class="highlighter-rouge">run.sh designer</code> on Linux/Unix
-and <code class="highlighter-rouge">designer.bat</code> on Windows. The interface looks like the following:</p>
+<p>Like for PMD and CPD, you can launch it using <code class="language-plaintext highlighter-rouge">run.sh designer</code> on Linux/Unix
+and <code class="language-plaintext highlighter-rouge">designer.bat</code> on Windows. The interface looks like the following:</p>
 
 <figure><img class="docimage" src="images/userdocs/designer-overview-with-nums.png" alt="Designer overview" /></figure>
 
@@ -1462,7 +1462,7 @@ save it to <a href="pmd_userdocs_extending_testing.html">make test cases</a>.</p
 <h2 id="a-simple-rule">A simple rule</h2>
 
 <p>Let’s say you want to prevent your coding team from naming variables of type
-<code class="highlighter-rouge">short</code> after your boss, whose name is Bill. You try the designer on the following
+<code class="language-plaintext highlighter-rouge">short</code> after your boss, whose name is Bill. You try the designer on the following
  offending code snippet:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
@@ -1477,14 +1477,14 @@ save it to <a href="pmd_userdocs_extending_testing.html">make test cases</a>.</p
 </code></pre></div></div>
 
 <p>Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
-descendant, whose <code class="highlighter-rouge">Image</code> XPath attribute is exactly <code class="highlighter-rouge">bill</code>. You thus write your first attempt
+descendant, whose <code class="language-plaintext highlighter-rouge">Image</code> XPath attribute is exactly <code class="language-plaintext highlighter-rouge">bill</code>. You thus write your first attempt
 in the XPath editor:</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p>You can see the XPath result list is updated with the variable declarator.
 If you try the query against the following updated snippet though, you can
-see that the field declaration id is matched even though it’s not of type <code class="highlighter-rouge">short</code>.</p>
+see that the field declaration id is matched even though it’s not of type <code class="language-plaintext highlighter-rouge">short</code>.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KeepingItSerious</span> <span class="o">{</span>
 
@@ -1507,7 +1507,7 @@ declaration nodes.</p>
 <h3 id="exporting-to-xml">Exporting to XML</h3>
 
 <p>You estimate that your rule is now production ready, and you’d like to use it in your ruleset.
-The <code class="highlighter-rouge">File &gt; Export XPath to rule...</code> allows you to do that in a few clicks: just enter some
+The <code class="language-plaintext highlighter-rouge">File &gt; Export XPath to rule...</code> allows you to do that in a few clicks: just enter some
 additional metadata for your rule, and the popup will generate an XML element that you can
 copy-paste into your ruleset XML. The resulting element looks like so:</p>
 
@@ -1561,7 +1561,7 @@ of a rule of type XPathRule, which is how XPath rules are implemented.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

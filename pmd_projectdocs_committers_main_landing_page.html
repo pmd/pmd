@@ -1419,7 +1419,7 @@ It usually takes 15 minutes.</p>
     <ul>
       <li>Layout: <a href="https://github.com/pmd/pmd.github.io/blob/master/_layouts/default.html">_layouts/default.html</a>.
 It includes all the sub section, which can be found in the includes directory <a href="https://github.com/pmd/pmd.github.io/tree/master/_includes">_includes/</a></li>
-      <li>The latest PMD version is configured in <code class="highlighter-rouge">_config.yml</code> and the variables <code class="highlighter-rouge">site.pmd.latestVersion</code> are used
+      <li>The latest PMD version is configured in <code class="language-plaintext highlighter-rouge">_config.yml</code> and the variables <code class="language-plaintext highlighter-rouge">site.pmd.latestVersion</code> are used
 e.g. in <a href="https://github.com/pmd/pmd.github.io/blob/master/_includes/home.html">_includes/home.html</a>.</li>
     </ul>
   </li>
@@ -1441,18 +1441,18 @@ This makes the latest release documentation available under the stable URL
 <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a>. This URL is also used for the <a href="https://github.com/pmd/pmd.github.io/blob/master/sitemap.xml">sitemap.xml</a>.</li>
     </ul>
   </li>
-  <li>Documentation for previous releases are still being kept under the folders <code class="highlighter-rouge">pmd-&lt;version&gt;/</code>.</li>
+  <li>Documentation for previous releases are still being kept under the folders <code class="language-plaintext highlighter-rouge">pmd-&lt;version&gt;/</code>.</li>
 </ul>
 
 <h2 id="building-the-page-locally">Building the page locally</h2>
 
 <p>Since the repository contains the documentation for many old PMD releases, it is quite big. When executing
-Jekyll to generate the site, it copies all the files to the folder <code class="highlighter-rouge">_site/</code> - and this can take a while.</p>
+Jekyll to generate the site, it copies all the files to the folder <code class="language-plaintext highlighter-rouge">_site/</code> - and this can take a while.</p>
 
-<p>In order to speed things up locally, consider to add <code class="highlighter-rouge">pmd-*</code> to the exclude patterns in <code class="highlighter-rouge">_config.yml</code>. See
+<p>In order to speed things up locally, consider to add <code class="language-plaintext highlighter-rouge">pmd-*</code> to the exclude patterns in <code class="language-plaintext highlighter-rouge">_config.yml</code>. See
 also the comments in this file.</p>
 
-<p>Then it is a matter of simply executing <code class="highlighter-rouge">bundle exec jekyll serve</code>. This will generate the site and host
+<p>Then it is a matter of simply executing <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code>. This will generate the site and host
 it on localhost, so you can test the page at <a href="http://127.0.0.1:4000">http://127.0.0.1:4000</a>.</p>
 
 <h2 id="updates-during-a-release">Updates during a release</h2>
@@ -1462,18 +1462,18 @@ This done as part of the <a href="pmd_projectdocs_committers_releasing.html">Rel
 summarized here as well:</p>
 
 <ul>
-  <li>The versions (e.g. <code class="highlighter-rouge">pmd.latestVersion</code>) needs to be updated in <code class="highlighter-rouge">_config.yml</code>
+  <li>The versions (e.g. <code class="language-plaintext highlighter-rouge">pmd.latestVersion</code>) needs to be updated in <code class="language-plaintext highlighter-rouge">_config.yml</code>
     <ul>
       <li>This is needed to generate the correct links and texts for the latest version on landing page</li>
     </ul>
   </li>
-  <li>The new PMD documentation needs to be copied to <code class="highlighter-rouge">/pmd-&lt;version&gt;/</code></li>
-  <li>Then this folder needs to copied to <code class="highlighter-rouge">/latest/</code>, actually replacing the old version.</li>
-  <li>A new blog post with release notes is added: <code class="highlighter-rouge">/_posts/YYYY-mm-dd-PMD-&lt;version&gt;.md</code></li>
-  <li>The sitemap <code class="highlighter-rouge">sitemap.xml</code> is regenerated</li>
+  <li>The new PMD documentation needs to be copied to <code class="language-plaintext highlighter-rouge">/pmd-&lt;version&gt;/</code></li>
+  <li>Then this folder needs to copied to <code class="language-plaintext highlighter-rouge">/latest/</code>, actually replacing the old version.</li>
+  <li>A new blog post with release notes is added: <code class="language-plaintext highlighter-rouge">/_posts/YYYY-mm-dd-PMD-&lt;version&gt;.md</code></li>
+  <li>The sitemap <code class="language-plaintext highlighter-rouge">sitemap.xml</code> is regenerated</li>
 </ul>
 
-<p>Some of these steps are automated through <code class="highlighter-rouge">do-release.sh</code> (like blog post), some are manual steps
+<p>Some of these steps are automated through <code class="language-plaintext highlighter-rouge">do-release.sh</code> (like blog post), some are manual steps
 (updating the version in _config.yml) and other steps are done on the travis-ci-build (like
 copying the new documentation).</p>
 
@@ -1482,13 +1482,13 @@ copying the new documentation).</p>
 <p>Adding a new blog post is as easy as:</p>
 
 <ul>
-  <li>Creating a new file in the folder “_posts”: <code class="highlighter-rouge">/_posts/YYYY-mm-dd-&lt;title&gt;.md</code></li>
+  <li>Creating a new file in the folder “_posts”: <code class="language-plaintext highlighter-rouge">/_posts/YYYY-mm-dd-&lt;title&gt;.md</code></li>
   <li>The file name needs to fit this pattern. The date of the blog post is taken from the file name. The “<title>"
 is used for the url.</title></li>
   <li>The file is a markdown file starting with a frontmatter for jekyll. Just use this template for the new file:</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
 layout: post
 title: Title
 ---
@@ -1514,7 +1514,7 @@ the new post is recognized and added to the news section and also on the news su
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> March 2020<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> March 2020<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

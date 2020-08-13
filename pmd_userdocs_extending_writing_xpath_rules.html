@@ -1414,7 +1414,7 @@ also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about ho
 <h2 id="xpath-version">XPath version</h2>
 
 <p>PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
-The version can be specified with the <code class="highlighter-rouge">version</code> property in the rule definition, like so:</p>
+The version can be specified with the <code class="language-plaintext highlighter-rouge">version</code> property in the rule definition, like so:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">version=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- or "1.0", or "1.0 compatibility" --&gt;</span>
 </code></pre></div></div>
@@ -1444,7 +1444,7 @@ for the given node</li>
   <li>Some Java getters are exposed as XML attributes on those elements
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
-example, the attribute <code class="highlighter-rouge">@SimpleName</code> of the Java node <code class="highlighter-rouge">EnumDeclaration</code> is backed
+example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
 by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
@@ -1457,7 +1457,7 @@ depends on the XPath version used.</p>
 
 <h4 id="xpath-10">XPath 1.0</h4>
 
-<p>On XPath 1.0 we map every Java value to an <code class="highlighter-rouge">xs:string</code> value by using the <code class="highlighter-rouge">toString</code>
+<p>On XPath 1.0 we map every Java value to an <code class="language-plaintext highlighter-rouge">xs:string</code> value by using the <code class="language-plaintext highlighter-rouge">toString</code>
 of the object. Since XPath 1.0 allows many implicit conversions this works, but it
 causes some incompatibilities with XPath 2.0 (see the section about migration further
  down).</p>
@@ -1465,59 +1465,59 @@ causes some incompatibilities with XPath 2.0 (see the section about migration fu
 <h4 id="xpath-20">XPath 2.0</h4>
 
 <p>XPath 2.0 is a strongly typed language, and so we use more precise type annotations.
-In the following table we refer to the type conversion function as <code class="highlighter-rouge">conv</code>, a
+In the following table we refer to the type conversion function as <code class="language-plaintext highlighter-rouge">conv</code>, a
 function from Java types to XDM types.</p>
 
 <table>
   <thead>
     <tr>
-      <th>Java type <code class="highlighter-rouge">T</code></th>
-      <th>XSD type <code class="highlighter-rouge">conv(T)</code></th>
+      <th>Java type <code class="language-plaintext highlighter-rouge">T</code></th>
+      <th>XSD type <code class="language-plaintext highlighter-rouge">conv(T)</code></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">int</code></td>
-      <td><code class="highlighter-rouge">xs:integer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">int</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:integer</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">long</code></td>
-      <td><code class="highlighter-rouge">xs:integer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">long</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:integer</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">double</code></td>
-      <td><code class="highlighter-rouge">xs:decimal</code></td>
+      <td><code class="language-plaintext highlighter-rouge">double</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:decimal</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">float</code></td>
-      <td><code class="highlighter-rouge">xs:decimal</code></td>
+      <td><code class="language-plaintext highlighter-rouge">float</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:decimal</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">boolean</code></td>
-      <td><code class="highlighter-rouge">xs:boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:boolean</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">String</code></td>
-      <td><code class="highlighter-rouge">xs:string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">String</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:string</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">Character</code></td>
-      <td><code class="highlighter-rouge">xs:string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Character</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:string</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">Enum&lt;E&gt;</code></td>
-      <td><code class="highlighter-rouge">xs:string</code> (uses <code class="highlighter-rouge">Object::toString</code>)</td>
+      <td><code class="language-plaintext highlighter-rouge">Enum&lt;E&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">xs:string</code> (uses <code class="language-plaintext highlighter-rouge">Object::toString</code>)</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">List&lt;E&gt;</code></td>
-      <td><code class="highlighter-rouge">conv(E)*</code> (a sequence type) <br /> ⚠️ List support is deprecated with 6.25.0. See below.</td>
+      <td><code class="language-plaintext highlighter-rouge">List&lt;E&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">conv(E)*</code> (a sequence type) <br /> ⚠️ List support is deprecated with 6.25.0. See below.</td>
     </tr>
   </tbody>
 </table>
 
-<p>The same <code class="highlighter-rouge">conv</code> function is used to translate rule property values to XDM values.</p>
+<p>The same <code class="language-plaintext highlighter-rouge">conv</code> function is used to translate rule property values to XDM values.</p>
 
-<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Support for attributes of type <code class="highlighter-rouge">List&lt;E&gt;</code> has been deprecated
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Support for attributes of type <code class="language-plaintext highlighter-rouge">List&lt;E&gt;</code> has been deprecated
 with PMD 6.25.0 and will be removed completely with PMD 7. The reason is that newer Saxon
 versions don’t support sequences as attributes anymore. Lists are still possible in Java-based
 rules but not with XPath.
@@ -1536,37 +1536,37 @@ caused by the specification, but by the different engines we use to run
 XPath 1.0 and 2.0 queries. Here’s a list of known incompatibilities:</p>
 
 <ul>
-  <li>The namespace prefixes <code class="highlighter-rouge">fn:</code> and <code class="highlighter-rouge">string:</code> should not be mentioned explicitly.
+  <li>The namespace prefixes <code class="language-plaintext highlighter-rouge">fn:</code> and <code class="language-plaintext highlighter-rouge">string:</code> should not be mentioned explicitly.
 In XPath 2.0 mode, the engine will complain about an undeclared namespace, but
 the functions are in the default namespace. Removing the namespace prefixes fixes it.
     <ul>
-      <li><code><b style="color:red">fn:</b>substring("Foo", 1)</code> → <code class="highlighter-rouge">substring("Foo", 1)</code></li>
+      <li><code><b style="color:red">fn:</b>substring("Foo", 1)</code> → <code class="language-plaintext highlighter-rouge">substring("Foo", 1)</code></li>
     </ul>
   </li>
-  <li>Conversely, calls to custom PMD functions like <code class="highlighter-rouge">typeIs</code> <em>must</em> be prefixed
-with the namespace of the declaring module (<code class="highlighter-rouge">pmd-java</code>).
+  <li>Conversely, calls to custom PMD functions like <code class="language-plaintext highlighter-rouge">typeIs</code> <em>must</em> be prefixed
+with the namespace of the declaring module (<code class="language-plaintext highlighter-rouge">pmd-java</code>).
     <ul>
-      <li><code class="highlighter-rouge">typeIs("Foo")</code> → <code><b style="color:green">pmd-java:</b>typeIs("Foo")</code></li>
+      <li><code class="language-plaintext highlighter-rouge">typeIs("Foo")</code> → <code><b style="color:green">pmd-java:</b>typeIs("Foo")</code></li>
     </ul>
   </li>
   <li>Boolean attribute values on our 1.0 engine are represented as the string values
-<code class="highlighter-rouge">"true"</code> and <code class="highlighter-rouge">"false"</code>. In 2.0 mode though, boolean values are truly represented
+<code class="language-plaintext highlighter-rouge">"true"</code> and <code class="language-plaintext highlighter-rouge">"false"</code>. In 2.0 mode though, boolean values are truly represented
 as boolean values, which in XPath may only be obtained through the functions
-<code class="highlighter-rouge">true()</code> and <code class="highlighter-rouge">false()</code>.
-If your XPath 1.0 rule tests an attribute like <code class="highlighter-rouge">@Private="true"</code>, then it just
-needs to be changed to <code class="highlighter-rouge">@Private=true()</code> when migrating. A type error will warn
+<code class="language-plaintext highlighter-rouge">true()</code> and <code class="language-plaintext highlighter-rouge">false()</code>.
+If your XPath 1.0 rule tests an attribute like <code class="language-plaintext highlighter-rouge">@Private="true"</code>, then it just
+needs to be changed to <code class="language-plaintext highlighter-rouge">@Private=true()</code> when migrating. A type error will warn
 you that you must update the comparison. More is explained on <a href="https://github.com/pmd/pmd/issues/1244">issue #1244</a>.
     <ul>
-      <li><code class="highlighter-rouge">"true"</code>, <code class="highlighter-rouge">'true'</code> → <code class="highlighter-rouge">true()</code></li>
-      <li><code class="highlighter-rouge">"false"</code>, <code class="highlighter-rouge">'false'</code> → <code class="highlighter-rouge">false()</code></li>
+      <li><code class="language-plaintext highlighter-rouge">"true"</code>, <code class="language-plaintext highlighter-rouge">'true'</code> → <code class="language-plaintext highlighter-rouge">true()</code></li>
+      <li><code class="language-plaintext highlighter-rouge">"false"</code>, <code class="language-plaintext highlighter-rouge">'false'</code> → <code class="language-plaintext highlighter-rouge">false()</code></li>
     </ul>
   </li>
   <li>In XPath 1.0, comparing a number to a string coerces the string to a number.
 In XPath 2.0, a type error occurs. Like for boolean values, numeric values are
-represented by our 1.0 implementation as strings, meaning that <code class="highlighter-rouge">@BeginLine &gt; "1"</code>
+represented by our 1.0 implementation as strings, meaning that <code class="language-plaintext highlighter-rouge">@BeginLine &gt; "1"</code>
 worked —that’s not the case in 2.0 mode.
     <ul>
-      <li><code>@ArgumentCount &gt; <b style="color:red">'</b>1<b style="color:red">'</b></code> → <code class="highlighter-rouge">@ArgumentCount &gt; 1</code></li>
+      <li><code>@ArgumentCount &gt; <b style="color:red">'</b>1<b style="color:red">'</b></code> → <code class="language-plaintext highlighter-rouge">@ArgumentCount &gt; 1</code></li>
     </ul>
   </li>
 </ul>
@@ -1586,7 +1586,7 @@ information from the AST.</p>
 
 <h3 id="java">Java</h3>
 
-<p>Java functions are in the namespace <code class="highlighter-rouge">pmd-java</code>.</p>
+<p>Java functions are in the namespace <code class="language-plaintext highlighter-rouge">pmd-java</code>.</p>
 
 <div class="table-responsive">
     <table width="100%">
@@ -1810,9 +1810,9 @@ information from the AST.</p>
 
 </div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> There is also a <code class="highlighter-rouge">typeOf</code> function which is
-deprecated and whose usages should be replaced with uses of <code class="highlighter-rouge">typeIs</code> or
-<code class="highlighter-rouge">typeIsExactly</code>. That one will be removed with PMD 7.0.0.</div>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> There is also a <code class="language-plaintext highlighter-rouge">typeOf</code> function which is
+deprecated and whose usages should be replaced with uses of <code class="language-plaintext highlighter-rouge">typeIs</code> or
+<code class="language-plaintext highlighter-rouge">typeIsExactly</code>. That one will be removed with PMD 7.0.0.</div>
 
 
 
@@ -1842,7 +1842,7 @@ deprecated and whose usages should be replaced with uses of <code class="highlig
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

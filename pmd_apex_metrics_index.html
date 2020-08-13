@@ -1414,9 +1414,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="description">Description</h3>
 
 <p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
-Formally, given that the control flow graph of the block has <code class="highlighter-rouge">n</code> vertices, <code class="highlighter-rouge">e</code> 
-edges and <code class="highlighter-rouge">p</code> connected components, the cyclomatic complexity of the block is 
-given by <code class="highlighter-rouge">CYCLO = e - n + 2p</code> [<a href="#McCabe76">McCabe76</a>]. In practice it can be 
+Formally, given that the control flow graph of the block has <code class="language-plaintext highlighter-rouge">n</code> vertices, <code class="language-plaintext highlighter-rouge">e</code> 
+edges and <code class="language-plaintext highlighter-rouge">p</code> connected components, the cyclomatic complexity of the block is 
+given by <code class="language-plaintext highlighter-rouge">CYCLO = e - n + 2p</code> [<a href="#McCabe76">McCabe76</a>]. In practice it can be 
 calculated by counting control flow statements following the standard rules given 
 below.</p>
 
@@ -1424,10 +1424,10 @@ below.</p>
 
 <ul>
   <li>Methods have a base complexity of 1.</li>
-  <li>+1 for every control flow statement (<code class="highlighter-rouge">if</code>, <code class="highlighter-rouge">catch</code>, <code class="highlighter-rouge">throw</code>, <code class="highlighter-rouge">do</code>,
-<code class="highlighter-rouge">while</code>, <code class="highlighter-rouge">for</code>, <code class="highlighter-rouge">break</code>, <code class="highlighter-rouge">continue</code>) and conditional expression (<code class="highlighter-rouge">?:</code>).</li>
-  <li><code class="highlighter-rouge">else</code>, <code class="highlighter-rouge">finally</code> and <code class="highlighter-rouge">default</code> don’t count;</li>
-  <li>+1 for every boolean operator (<code class="highlighter-rouge">&amp;&amp;</code>, <code class="highlighter-rouge">||</code>) in the guard condition of a control 
+  <li>+1 for every control flow statement (<code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">catch</code>, <code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">do</code>,
+<code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">break</code>, <code class="language-plaintext highlighter-rouge">continue</code>) and conditional expression (<code class="language-plaintext highlighter-rouge">?:</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">finally</code> and <code class="language-plaintext highlighter-rouge">default</code> don’t count;</li>
+  <li>+1 for every boolean operator (<code class="language-plaintext highlighter-rouge">&amp;&amp;</code>, <code class="language-plaintext highlighter-rouge">||</code>) in the guard condition of a control 
 flow statement.</li>
 </ul>
 
@@ -1496,7 +1496,7 @@ flow statement.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

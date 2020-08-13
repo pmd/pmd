@@ -1436,15 +1436,15 @@ basic rule reference:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/EmptyCatchBlock"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p>Adding that element into the <code class="highlighter-rouge">ruleset</code> element adds the rule <a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>
+<p>Adding that element into the <code class="language-plaintext highlighter-rouge">ruleset</code> element adds the rule <a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>
 to your ruleset. This is a Java rule, so it will be executed on every Java file PMD encounters in
 its search space.</p>
 
-<p>How to read the <code class="highlighter-rouge">ref</code> attribute?</p>
+<p>How to read the <code class="language-plaintext highlighter-rouge">ref</code> attribute?</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">category/java/errorprone.xml</code> is a reference to the Java category <code class="highlighter-rouge">errorprone</code>. Since PMD 6.0.0,
+    <p><code class="language-plaintext highlighter-rouge">category/java/errorprone.xml</code> is a reference to the Java category <code class="language-plaintext highlighter-rouge">errorprone</code>. Since PMD 6.0.0,
 all PMD built-in rules are sorted in one of eight categories, which are consistent across languages:</p>
 
     <ol>
@@ -1463,7 +1463,7 @@ all PMD built-in rules are sorted in one of eight categories, which are consiste
 <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can discover the available rules by language and category <a href="tag_rule_references.html">from this page</a></div>
 
 <ul>
-  <li><code class="highlighter-rouge">EmptyCatchBlock</code> is simply the name of the rule. If there were no rule with that name within the specified
+  <li><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code> is simply the name of the rule. If there were no rule with that name within the specified
 category, then PMD would fail before starting the analysis.</li>
 </ul>
 
@@ -1481,9 +1481,9 @@ category, then PMD would fail before starting the analysis.</li>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Here, the <code class="highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
+<p>Here, the <code class="language-plaintext highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Path separators in the source file path are normalized to be the <code class="highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</div>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Path separators in the source file path are normalized to be the <code class="language-plaintext highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</div>
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Referencing a complete category or ruleset means, you’ll also get automatically any
 changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
@@ -1540,7 +1540,7 @@ a single rule reference.</div>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

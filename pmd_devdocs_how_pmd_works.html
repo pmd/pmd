@@ -1407,7 +1407,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <h2 id="overview">Overview</h2>
 
-<p>The processing starts e.g. with the main class: <code class="highlighter-rouge">net.sourceforge.pmd.PMD</code></p>
+<p>The processing starts e.g. with the main class: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMD</code></p>
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> This is the command line interface. There are many other means, who
 PMD can be invoked. E.g. via ant, maven, gradle…</div>
@@ -1423,10 +1423,10 @@ Also load the incremental analysis cache file</li>
   <li>Check whether we can use the incremental analysis cache (if the rulesets changed, it will be invalid)</li>
   <li>Prepare the SourceCodeProcessor based on the configuration</li>
   <li>Analyze the files. Either single threaded or multi-threaded parallel. This task is encapsulated
-in <code class="highlighter-rouge">net.sourceforge.pmd.processor.PMDRunnable</code>:
+in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.processor.PMDRunnable</code>:
     <ul>
       <li>Create input stream</li>
-      <li>Call source code processor (<code class="highlighter-rouge">net.sourceforge.pmd.SourceCodeProcessor</code>):
+      <li>Call source code processor (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.SourceCodeProcessor</code>):
         <ol>
           <li>Determine the language</li>
           <li>Check whether the file is already analyzed and a result is available from the analysis cache</li>
@@ -1476,7 +1476,7 @@ type resolution information and DFA nodes.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> September 2017<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> September 2017<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

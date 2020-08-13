@@ -1493,24 +1493,24 @@ the associated value, not the label. Here’s an example:</p>
 <p>You can see an example of properties used in a PMD rule <a href="https://github.com/pmd/pmd/blob/d06b01785a712e61d33f366520f37c2473f5bd1a/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java#L43-L52">here</a>.
 There are several things to notice here:</p>
 <ul>
-  <li>The property descriptors are declared <code class="highlighter-rouge">static final</code>, which should generally be
+  <li>The property descriptors are declared <code class="language-plaintext highlighter-rouge">static final</code>, which should generally be
 the case, as descriptors are immutable and can be shared between instances of the same rule;</li>
   <li>The property is declared using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor</code></a>` <em>in the constructor</em>,
 which ensures the property gets recognised by PMD at the time the properties
 are overridden (which happens before rule execution);</li>
   <li>The value of the property is <em>not retrieved in the constructor</em>, but in one of
-the <code class="highlighter-rouge">visit</code> methods (typically on the highest node in the tree, since the property
+the <code class="language-plaintext highlighter-rouge">visit</code> methods (typically on the highest node in the tree, since the property
 doesn’t change).</li>
 </ul>
 
 <h2 id="for-xpath-rules">For XPath rules</h2>
 
-<p>XPath rules can also define their own properties. To do so, you must add a <code class="highlighter-rouge">property</code> element in the <code class="highlighter-rouge">properties</code> element of your rule, which <strong>declares the <code class="highlighter-rouge">type</code> attribute</strong>. This attribute conditions what type the underlying property has, and can have the following values:</p>
+<p>XPath rules can also define their own properties. To do so, you must add a <code class="language-plaintext highlighter-rouge">property</code> element in the <code class="language-plaintext highlighter-rouge">properties</code> element of your rule, which <strong>declares the <code class="language-plaintext highlighter-rouge">type</code> attribute</strong>. This attribute conditions what type the underlying property has, and can have the following values:</p>
 
 <table>
   <thead>
     <tr>
-      <th><code class="highlighter-rouge">type</code> attribute</th>
+      <th><code class="language-plaintext highlighter-rouge">type</code> attribute</th>
       <th>XSD type</th>
     </tr>
   </thead>
@@ -1553,15 +1553,15 @@ doesn’t change).</li>
 
 <p>Note that enumerated properties are not available in XPath rules (yet?).</p>
 
-<p>Properties defined in XPath also <em>must</em> declare the <code class="highlighter-rouge">description</code> attribute.
-Numeric properties also expect the <code class="highlighter-rouge">min</code> and <code class="highlighter-rouge">max</code> attributes for now. Here are
+<p>Properties defined in XPath also <em>must</em> declare the <code class="language-plaintext highlighter-rouge">description</code> attribute.
+Numeric properties also expect the <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes for now. Here are
 a few examples to sum it up:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"stringProp"</span> <span class="na">type=</span><span class="s">"Boolean"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="na">description=</span><span class="s">"A BooleanProperty."</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"intProp"</span> <span class="na">type=</span><span class="s">"Integer"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="na">min=</span><span class="s">"1"</span> <span class="na">max=</span><span class="s">"20"</span> <span class="na">description=</span><span class="s">"An IntegerProperty."</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p>You can then use the property in XPath with the syntax <code class="highlighter-rouge">$propertyName</code>, for example:</p>
+<p>You can then use the property in XPath with the syntax <code class="language-plaintext highlighter-rouge">$propertyName</code>, for example:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXpathRule"</span> <span class="err">...</span><span class="nt">&gt;</span>
   <span class="nt">&lt;properties&gt;</span>
@@ -1577,12 +1577,12 @@ a few examples to sum it up:</p>
 
 <h3 id="multivalued-properties">Multivalued properties</h3>
 
-<p>Multivalued properties are also allowed and their <code class="highlighter-rouge">type</code> attribute has the form
-<code class="highlighter-rouge">List[Boolean]</code> or <code class="highlighter-rouge">List[Character]</code>, with every above type allowed. These
+<p>Multivalued properties are also allowed and their <code class="language-plaintext highlighter-rouge">type</code> attribute has the form
+<code class="language-plaintext highlighter-rouge">List[Boolean]</code> or <code class="language-plaintext highlighter-rouge">List[Character]</code>, with every above type allowed. These
 properties <strong>require XPath 2.0</strong> to work properly, and make use of the
 <strong>sequence datatype</strong> provided by that language. You thus need to set the
-<code class="highlighter-rouge">version</code> property to <code class="highlighter-rouge">2.0</code> to use them. Properties can also declare the
-<code class="highlighter-rouge">delimiter</code> attribute.</p>
+<code class="language-plaintext highlighter-rouge">version</code> property to <code class="language-plaintext highlighter-rouge">2.0</code> to use them. Properties can also declare the
+<code class="language-plaintext highlighter-rouge">delimiter</code> attribute.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXpathRule"</span> <span class="err">...</span><span class="nt">&gt;</span>
   <span class="nt">&lt;properties&gt;</span>
@@ -1598,10 +1598,10 @@ properties <strong>require XPath 2.0</strong> to work properly, and make use of 
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Notice that in the example above, <code class="highlighter-rouge">@Image = $reportedIdentifiers</code> doesn’t test
-<code class="highlighter-rouge">@Image</code> for equality with the whole sequence <code class="highlighter-rouge">('foo', 'bar')</code>, it tests whether
-the sequence <em>contains</em> <code class="highlighter-rouge">@Image</code>. That is, the above rule will report all variables
-named <code class="highlighter-rouge">foo</code> or <code class="highlighter-rouge">bar</code>. All other XPath 2.0 <a href="https://www.w3.org/TR/xpath-functions/#sequence-functions">functions operating on sequences</a>
+<p>Notice that in the example above, <code class="language-plaintext highlighter-rouge">@Image = $reportedIdentifiers</code> doesn’t test
+<code class="language-plaintext highlighter-rouge">@Image</code> for equality with the whole sequence <code class="language-plaintext highlighter-rouge">('foo', 'bar')</code>, it tests whether
+the sequence <em>contains</em> <code class="language-plaintext highlighter-rouge">@Image</code>. That is, the above rule will report all variables
+named <code class="language-plaintext highlighter-rouge">foo</code> or <code class="language-plaintext highlighter-rouge">bar</code>. All other XPath 2.0 <a href="https://www.w3.org/TR/xpath-functions/#sequence-functions">functions operating on sequences</a>
 are supported.</p>
 
 <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can also <a href="pmd_userdocs_extending_designer_reference.html#rule-properties">define properties directly in the designer</a></div>
@@ -1633,7 +1633,7 @@ are supported.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 7, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

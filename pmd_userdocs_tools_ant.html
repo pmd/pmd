@@ -1411,18 +1411,18 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="installation">Installation</h3>
 
-<p>Before you can use the <code class="highlighter-rouge">pmd</code> task in your ant <code class="highlighter-rouge">build.xml</code> file, you need to install PMD and its libraries into
+<p>Before you can use the <code class="language-plaintext highlighter-rouge">pmd</code> task in your ant <code class="language-plaintext highlighter-rouge">build.xml</code> file, you need to install PMD and its libraries into
 ant’s classpath, as described in <a href="https://ant.apache.org/manual/install.html#optionalTasks">Optional Tasks</a>.</p>
 
 <p>First you need to download PMD’s binary distribution zip file.
 Then you can either copy all “*.jar” files from PMD’s lib folder into one of ANT’s library folders
-(<code class="highlighter-rouge">ANT_HOME/lib</code>, <code class="highlighter-rouge">${user.home}/.ant/lib</code>) or using the <code class="highlighter-rouge">-lib</code> command line parameter.</p>
+(<code class="language-plaintext highlighter-rouge">ANT_HOME/lib</code>, <code class="language-plaintext highlighter-rouge">${user.home}/.ant/lib</code>) or using the <code class="language-plaintext highlighter-rouge">-lib</code> command line parameter.</p>
 
-<p>However, the preferred way is to define a <code class="highlighter-rouge">&lt;classpath&gt;</code> for pmd itself and use this classpath when
-adding the PMD Task. Assuming, you have extracted the PMD zip file to <code class="highlighter-rouge">/home/joe/pmd-bin-6.27.0-SNAPSHOT</code>,
+<p>However, the preferred way is to define a <code class="language-plaintext highlighter-rouge">&lt;classpath&gt;</code> for pmd itself and use this classpath when
+adding the PMD Task. Assuming, you have extracted the PMD zip file to <code class="language-plaintext highlighter-rouge">/home/joe/pmd-bin-6.27.0-SNAPSHOT</code>,
 then you can make use of the PMD Task like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"&gt;
     &lt;classpath&gt;
         &lt;fileset dir="/home/joe/pmd-bin-6.27.0-SNAPSHOT/lib"&gt;
             &lt;include name="*.jar"/&gt;
@@ -1431,9 +1431,9 @@ then you can make use of the PMD Task like this:</p>
 &lt;/taskdef&gt;
 </code></pre></div></div>
 
-<p>Alternatively, a path can be defined and used via <code class="highlighter-rouge">classpathref</code>:</p>
+<p>Alternatively, a path can be defined and used via <code class="language-plaintext highlighter-rouge">classpathref</code>:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
     &lt;fileset dir="/home/joe/pmd-bin-6.27.0-SNAPSHOT/lib"&gt;
         &lt;include name="*.jar"/&gt;
     &lt;/fileset&gt;
@@ -1521,7 +1521,7 @@ then you can make use of the PMD Task like this:</p>
     </tr>
 </table>
 
-<p><code class="highlighter-rouge">formatter</code> nested element - specifies the format of and the files to which the report is written. You can
+<p><code class="language-plaintext highlighter-rouge">formatter</code> nested element - specifies the format of and the files to which the report is written. You can
 configure multiple formatters.</p>
 
 <table>
@@ -1558,21 +1558,21 @@ configure multiple formatters.</p>
 </tr>
 </table>
 
-<p><code class="highlighter-rouge">classpath</code> nested element - useful for specifying custom rules. More details on the <code class="highlighter-rouge">classpath</code>
+<p><code class="language-plaintext highlighter-rouge">classpath</code> nested element - useful for specifying custom rules. More details on the <code class="language-plaintext highlighter-rouge">classpath</code>
 element are in the Ant documentation for <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a> and there’s
 an example below.</p>
 
-<p><code class="highlighter-rouge">auxclasspath</code> nested element - extra classpath used for type resolution. Some rules make use of type resolution
-in order to avoid false positives. The <code class="highlighter-rouge">auxclasspath</code> is configured also with <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a>. It should contain the compiled classes of the project that is being analyzed and all the compile time
+<p><code class="language-plaintext highlighter-rouge">auxclasspath</code> nested element - extra classpath used for type resolution. Some rules make use of type resolution
+in order to avoid false positives. The <code class="language-plaintext highlighter-rouge">auxclasspath</code> is configured also with <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a>. It should contain the compiled classes of the project that is being analyzed and all the compile time
 dependencies.</p>
 
-<p><code class="highlighter-rouge">sourceLanguage</code> nested element - specify which language (Java, Ecmascript, XML,…)
+<p><code class="language-plaintext highlighter-rouge">sourceLanguage</code> nested element - specify which language (Java, Ecmascript, XML,…)
 and the associated version (1.5, 1.6,…). This element is optional. The language is determined by file extension
 automatically and the latest language version is used.</p>
 
-<p><code class="highlighter-rouge">ruleset</code> nested element - another way to specify rulesets. You can specify multiple elements. Here’s an example:</p>
+<p><code class="language-plaintext highlighter-rouge">ruleset</code> nested element - another way to specify rulesets. You can specify multiple elements. Here’s an example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
     &lt;pmd shortFilenames="true"&gt;
         &lt;ruleset&gt;rulesets/java/quickstart.xml&lt;/ruleset&gt;
@@ -1584,7 +1584,7 @@ automatically and the latest language version is used.</p>
 &lt;/target&gt;
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">fileset</code> nested element - specify the actual java source files, that PMD should analyze. You can use multiple
+<p><code class="language-plaintext highlighter-rouge">fileset</code> nested element - specify the actual java source files, that PMD should analyze. You can use multiple
 fileset elements. See <a href="https://ant.apache.org/manual/Types/fileset.html">FileSet</a> for the syntax and usage.</p>
 
 <h3 id="language-version-selection">Language version selection</h3>
@@ -1594,14 +1594,14 @@ supported, PMD uses the latest version as default. This is currently the case fo
 support for multiple versions.</p>
 
 <p>If a languages supports multiple versions, you can select a specific version here, so that e.g. rules, that only apply
-to specific versions, are not executed. E.g. the rule <a href="pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> only makes
-sense with Java 1.7 and later. If your project uses Java 1.5, then you should configure the <code class="highlighter-rouge">sourceLanguage</code>
+to specific versions, are not executed. E.g. the rule <a href="pmd_rules_java_bestpractices.html#usetrywithresources"><code class="language-plaintext highlighter-rouge">UseTryWithResources</code></a> only makes
+sense with Java 1.7 and later. If your project uses Java 1.5, then you should configure the <code class="language-plaintext highlighter-rouge">sourceLanguage</code>
 accordingly and this rule won’t be executed.</p>
 
-<p>The specific version of a language to be used is selected via the <code class="highlighter-rouge">sourceLanguage</code>
+<p>The specific version of a language to be used is selected via the <code class="language-plaintext highlighter-rouge">sourceLanguage</code>
 nested element. Possible values are:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sourceLanguage name="apex" version="48"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sourceLanguage name="apex" version="48"/&gt;
 &lt;sourceLanguage name="ecmascript" version="3"/&gt;
 &lt;sourceLanguage name="java" version="1.3"/&gt;
 &lt;sourceLanguage name="java" version="1.4"/&gt;
@@ -1644,14 +1644,14 @@ nested element. Possible values are:</p>
 which you can use to transform the XML report into nifty HTML.  To do this,
 make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;formatter type="xml" toFile="${tempbuild}/report_pmd.xml"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;formatter type="xml" toFile="${tempbuild}/report_pmd.xml"&gt;
     &lt;param name="encoding" value="UTF-8" /&gt; &lt;!-- enforce UTF-8 encoding for the XML --&gt;
 &lt;/formatter&gt;
 </code></pre></div></div>
 
 <p>Then, after the end of the PMD task, do this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;xslt in="${tempbuild}/report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/report_pmd.html" /&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;xslt in="${tempbuild}/report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/report_pmd.html" /&gt;
 </code></pre></div></div>
 
 <h3 id="examples">Examples</h3>
@@ -1660,7 +1660,7 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 
 <p>Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;pmd rulesetfiles="rulesets/java/quickstart.xml" cacheLocation="build/pmd/pmd.cache"&gt;
         &lt;formatter type="html" toFile="pmd_report.html" toConsole="true"/&gt;
         &lt;fileset dir="C:\j2sdk1.4.1_01\src\java\lang\"&gt;
@@ -1674,7 +1674,7 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 
 <p>Running multiple rulesets to produce an XML report with the same analysis cache</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;pmd rulesetfiles="rulesets/java/quickstart.xml,config/my-ruleset.xml" cacheLocation="build/pmd/pmd.cache"&gt;
         &lt;formatter type="xml" toFile="c:\pmd_report.xml"/&gt;
         &lt;fileset dir="C:\j2sdk1.4.1_01\src\java\lang\"&gt;
@@ -1689,7 +1689,7 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 <p>Using a custom renderer. For this to work, you need to add you custom renderer to the classpath of PMD. This
 need to be configured when defining the task:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
     &lt;fileset dir="/home/joe/pmd-bin-6.27.0-SNAPSHOT/lib"&gt;
         &lt;include name="*.jar"/&gt;
     &lt;/fileset&gt;
@@ -1713,7 +1713,7 @@ need to be configured when defining the task:</p>
 <p>Full build file example using the correct auxclasspath configuration.
 Your project needs to be compiled first which happens in the target “compile”:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;project name="MyProject" default="pmd" basedir="."&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;project name="MyProject" default="pmd" basedir="."&gt;
     &lt;property name="src" location="src"/&gt;
     &lt;property name="build" location="build"/&gt;
     &lt;path id="project.dependencies"&gt;
@@ -1757,11 +1757,11 @@ Your project needs to be compiled first which happens in the target “compile�
 &lt;/project&gt;
 </code></pre></div></div>
 
-<p>You can run pmd then with <code class="highlighter-rouge">ant pmd</code>.</p>
+<p>You can run pmd then with <code class="language-plaintext highlighter-rouge">ant pmd</code>.</p>
 
 <h4 id="getting-verbose-output">Getting verbose output</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal bin]$ ant -v pmd
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal bin]$ ant -v pmd
 Apache Ant version 1.6.2 compiled on July 16 2004
 Buildfile: build.xml
 Detected Java version: 1.4 in: /usr/local/j2sdk1.4.2_03/jre
@@ -1799,7 +1799,7 @@ Total time: 2 seconds
 
 <p>An HTML report with the “linkPrefix” and “linePrefix” properties:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
     &lt;pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true"&gt;
         &lt;formatter type="html" toFile="pmd_report.html"&gt;
@@ -1825,12 +1825,12 @@ To prevent this from happening, increase the maximum memory usable by ant using 
 
 <p>On Windows:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set ANT_OPTS=-Xmx1024m -Xms512m
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set ANT_OPTS=-Xmx1024m -Xms512m
 </code></pre></div></div>
 
 <p>On Linux</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ANT_OPTS="-Xmx1024m -Xms512m"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ANT_OPTS="-Xmx1024m -Xms512m"
 </code></pre></div></div>
 
 
@@ -1860,7 +1860,7 @@ To prevent this from happening, increase the maximum memory usable by ant using 
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1562,7 +1562,7 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.<
 
 <p><a href="http://bluej.org/">BlueJ</a> is a teaching IDE. To install the PMD extension for BlueJ, download
 the <a href="http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/">PMDExtension jar file</a>
-and place it in your <code class="highlighter-rouge">bluej/lib/extensions/</code> directory.</p>
+and place it in your <code class="language-plaintext highlighter-rouge">bluej/lib/extensions/</code> directory.</p>
 
 <h3 id="eclipse">Eclipse</h3>
 
@@ -1643,11 +1643,11 @@ source file in your project.</p>
       <li>Name: PMD</li>
       <li>Description: PMD, good for what ails you.</li>
       <li>Menu: Select the “Main menu”, “Project views”, “Editor menu”, and “Search results” checkboxes.</li>
-      <li>Program: <code class="highlighter-rouge">c:\pmd\bin\pmd.bat</code></li>
+      <li>Program: <code class="language-plaintext highlighter-rouge">c:\pmd\bin\pmd.bat</code></li>
       <li>For the next parameter you’ll need to plug in the location of your PMD installation
 and the rulesets you want to use</li>
       <li>Parameters:
-<code class="highlighter-rouge">-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$</code></li>
+<code class="language-plaintext highlighter-rouge">-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$</code></li>
     </ul>
   </li>
 </ul>
@@ -1673,7 +1673,7 @@ and <a href="http://plugins.jetbrains.com/idea/plugin/4594-qaplug">QAPlug</a>.</
 
 <ul>
   <li>Download the <a href="https://sourceforge.net/projects/pmd/files/pmd-jbuilder/">latest binary release</a></li>
-  <li>Unzip it into your <code class="highlighter-rouge">jbuilder/lib/ext/</code> directory</li>
+  <li>Unzip it into your <code class="language-plaintext highlighter-rouge">jbuilder/lib/ext/</code> directory</li>
   <li>Restart JBuilder</li>
 </ul>
 
@@ -1773,9 +1773,9 @@ selecting the “Ask for Directory” checkbox.</p>
 
 <ul>
   <li>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed
-into your machine, and exists in <code class="highlighter-rouge">D:\java\jdk\_142\</code>. This means that <code class="highlighter-rouge">D:\java\jdk\_142\bin\java.exe</code> exists.</li>
-  <li>PMD version 5.0 exists in <code class="highlighter-rouge">D:\java\pmd-bin-\</code>.
-This means that <code class="highlighter-rouge">D:\java\pmd-bin-\lib\pmd-.jar</code> (among other jar files
+into your machine, and exists in <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\</code>. This means that <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\bin\java.exe</code> exists.</li>
+  <li>PMD version 5.0 exists in <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\</code>.
+This means that <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\lib\pmd-.jar</code> (among other jar files
 in the same directory) exist.</li>
 </ul>
 
@@ -1786,42 +1786,42 @@ in the same directory) exist.</li>
   <li>In the left pane of the Preferences dialog, choose the <strong>Tools</strong> branch by clicking on the <em>word</em> “Tools”.</li>
   <li>On the far right of the dialog, click on the <strong>Add</strong> button, and then select <strong>Program…</strong> from the drop-down.
 This opens the standard Windows Open File dialog.</li>
-  <li>Type <code class="highlighter-rouge">D:\java\jdk_142\bin\java.exe</code> and click the <strong>Open</strong> button.  In the center pane of the Preferences dialog,
+  <li>Type <code class="language-plaintext highlighter-rouge">D:\java\jdk_142\bin\java.exe</code> and click the <strong>Open</strong> button.  In the center pane of the Preferences dialog,
 an item “Java” has now been added, and is currently selected.</li>
   <li>Click the word Java, which makes the word editable. Select the entire word, and type “PMD directory”. Press Return.</li>
   <li>Repeat steps three through five, but type “PMD file”, instead of “PMD directory”.</li>
   <li>Click <strong>Apply</strong>.</li>
-  <li>Expand the <strong>Tools</strong> branch (if not already) by clicking on the ‘<code class="highlighter-rouge">+</code>’ directly to its left.</li>
+  <li>Expand the <strong>Tools</strong> branch (if not already) by clicking on the ‘<code class="language-plaintext highlighter-rouge">+</code>’ directly to its left.</li>
   <li>In the expanded list, select <strong>PMD directory</strong>. This changes the right side of this dialog to the “tool” form.</li>
   <li>In the “tool” form, enter these parameters:
     <ul>
-      <li><strong>Parameters:</strong>  <code class="highlighter-rouge">-classpath D:\java\pmd-bin-\lib\pmd-.jar;D:\java\pmd-bin-\lib\asm-3.2.jar;D:\java\pmd-bin-\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d &lt;i&gt;&lt;b&gt;$FileDir&lt;/b&gt;&lt;/i&gt; -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug</code></li>
-      <li><strong>Initial Folder:</strong>  <code class="highlighter-rouge">$FileDir</code></li>
-      <li><strong>Save all documents first:</strong>  <code class="highlighter-rouge">Checked</code></li>
-      <li><strong>Capture output:</strong>  <code class="highlighter-rouge">Checked</code></li>
+      <li><strong>Parameters:</strong>  <code class="language-plaintext highlighter-rouge">-classpath D:\java\pmd-bin-\lib\pmd-.jar;D:\java\pmd-bin-\lib\asm-3.2.jar;D:\java\pmd-bin-\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d &lt;i&gt;&lt;b&gt;$FileDir&lt;/b&gt;&lt;/i&gt; -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug</code></li>
+      <li><strong>Initial Folder:</strong>  <code class="language-plaintext highlighter-rouge">$FileDir</code></li>
+      <li><strong>Save all documents first:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
+      <li><strong>Capture output:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
       <li><strong><em>All other checkboxes</em>:</strong>  Unchecked</li>
-      <li><strong>Regular expression to match output:</strong>  <code class="highlighter-rouge">^\([^(]+\)(\([0-9]+\),</code></li>
-      <li><strong>Registers/File:</strong> <code class="highlighter-rouge">1</code></li>
-      <li><strong>Registers/Line:</strong> <code class="highlighter-rouge">2</code></li>
+      <li><strong>Regular expression to match output:</strong>  <code class="language-plaintext highlighter-rouge">^\([^(]+\)(\([0-9]+\),</code></li>
+      <li><strong>Registers/File:</strong> <code class="language-plaintext highlighter-rouge">1</code></li>
+      <li><strong>Registers/Line:</strong> <code class="language-plaintext highlighter-rouge">2</code></li>
     </ul>
   </li>
   <li>In the expanded list, select <strong>PMD file</strong>.</li>
-  <li>In the “tool” form, enter the same parameters as above, except replace ‘<code class="highlighter-rouge">$FileDir</code>’ with ‘<code class="highlighter-rouge">$File</code>’,
+  <li>In the “tool” form, enter the same parameters as above, except replace ‘<code class="language-plaintext highlighter-rouge">$FileDir</code>’ with ‘<code class="language-plaintext highlighter-rouge">$File</code>’,
 in the Parameters textbox.</li>
   <li>To save your work (truly, given a quirk of TextPad), click on <strong>OK</strong>, which closes the Preferences dialog.
 Restart TextPad and re-open the Preferences dialog.</li>
-  <li>Go back to both the “PMD directory” and “PMD file” Tools branches, and replace ‘<code class="highlighter-rouge">E:\directory\my_pmd_ruleset.xml</code>’
-with the ruleset of your choice.  For example, <code class="highlighter-rouge">basic</code>.</li>
+  <li>Go back to both the “PMD directory” and “PMD file” Tools branches, and replace ‘<code class="language-plaintext highlighter-rouge">E:\directory\my_pmd_ruleset.xml</code>’
+with the ruleset of your choice.  For example, <code class="language-plaintext highlighter-rouge">basic</code>.</li>
   <li>Go to the <strong>Keyboard</strong> branch in the left pane (above <strong>Tools</strong>), which changes the right side to
 the “keyboard configuration” form.</li>
   <li>In the <strong>Categories</strong> list box, select <strong>Tools</strong>.</li>
   <li>In the <strong>Command</strong> list box, select <strong>PMD directory</strong>.</li>
   <li>Put your cursor into the <strong>Press new shortcut key</strong>, and type your desired key command.
-For example <code class="highlighter-rouge">Ctrl+Page Up</code></li>
+For example <code class="language-plaintext highlighter-rouge">Ctrl+Page Up</code></li>
   <li>Click <strong>Assign</strong>.</li>
   <li>In the <strong>Command</strong> list box, select <strong>PMD file</strong>.</li>
   <li>Put your cursor into the <strong>Press new shortcut key</strong>, and type your desired key command.
-For example <code class="highlighter-rouge">Ctrl+Page Down</code></li>
+For example <code class="language-plaintext highlighter-rouge">Ctrl+Page Down</code></li>
   <li>Click <strong>Assign</strong>.</li>
   <li>Save your work again: Click on <strong>OK</strong>, which closes the Preferences dialog, and then restart TextPad.</li>
 </ol>
@@ -1830,7 +1830,7 @@ For example <code class="highlighter-rouge">Ctrl+Page Down</code></li>
 
 <ol>
   <li>In TextPad, open any Java file.</li>
-  <li>Click <code class="highlighter-rouge">Ctrl+Page Down</code>. This opens an empty, read-only text document (titled “Command Results”).
+  <li>Click <code class="language-plaintext highlighter-rouge">Ctrl+Page Down</code>. This opens an empty, read-only text document (titled “Command Results”).
 When PMD completes its analysis, this document will be populated with a listing of violated rules
 (or “Command completed successfully” indicating no violations).</li>
   <li>Double click any line to go to it.</li>
@@ -1841,7 +1841,7 @@ When PMD completes its analysis, this document will be populated with a listing 
 <ol>
   <li>In TextPad, open <em>any</em> file in the <em>root</em> directory you wish to analyze. Unfortunately, you’ll need to
 create a dummy file, if no file exists there.</li>
-  <li>Click <code class="highlighter-rouge">Ctrl+Page Up</code>. This opens an empty, read-only text document (titled “Command Results”).
+  <li>Click <code class="language-plaintext highlighter-rouge">Ctrl+Page Up</code>. This opens an empty, read-only text document (titled “Command Results”).
 When PMD completes its analysis, this document will be populated with a listing of violated rules
 (or “Command completed successfully” indicating no violations).</li>
   <li>Double click any line to go to it.</li>
@@ -1881,7 +1881,7 @@ the (blank Command Results) document, and then confirming that, “yes, I do rea
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 7, 2020 <br />
+ Site last generated: Aug 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
