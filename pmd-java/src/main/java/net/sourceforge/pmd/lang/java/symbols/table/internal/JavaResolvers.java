@@ -185,46 +185,69 @@ public final class JavaResolvers {
         };
     }
 
-    static BinaryOperator<List<JMethodSig>> methodMerger() {
-        return (myResult, otherResult) -> {
-            if (otherResult.isEmpty()) {
-                return myResult;
-            }
+    private static final BinaryOperator<List<JMethodSig>> STATIC_MERGER =
+        (as, bs) -> methodMerger(true, as, bs);
 
-            // For both the input lists, their elements are pairwise non-equivalent.
-            // If any element of myResult is override-equivalent to
-            // another in otherResult, then we must exclude the otherResult
+    private static final BinaryOperator<List<JMethodSig>> NON_STATIC_MERGER =
+        (as, bs) -> methodMerger(false, as, bs);
 
-            BitSet isShadowed = new BitSet(otherResult.size());
 
-            for (JMethodSig m1 : myResult) {
-                int i = 0;
-                for (JMethodSig m2 : otherResult) {
-                    boolean isAlreadyShadowed = isShadowed.get(i);
-                    if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)) {
-                        isShadowed.set(i); // we'll remove it later
-                    }
-                    i++;
+    static BinaryOperator<List<JMethodSig>> methodMerger(boolean inStaticType) {
+        return inStaticType ? STATIC_MERGER : NON_STATIC_MERGER;
+    }
+
+    /**
+     * Merges two method scopes, the otherResult is the one of an enclosing class,
+     * the inner result is the one inherited from supertypes (which take precedence
+     * in case of override equivalence).
+     *
+     * <p>Non-static methods of the outer result are excluded if the inner scope is static.
+     */
+    private static List<JMethodSig> methodMerger(boolean inStaticType, List<JMethodSig> myResult, List<JMethodSig> otherResult) {
+        if (otherResult.isEmpty()) {
+            return myResult;
+        }
+
+        // For both the input lists, their elements are pairwise non-equivalent.
+        // If any element of myResult is override-equivalent to
+        // another in otherResult, then we must exclude the otherResult
+
+        BitSet isShadowed = new BitSet(otherResult.size());
+
+        for (JMethodSig m1 : myResult) {
+            int i = 0;
+            for (JMethodSig m2 : otherResult) {
+                boolean isAlreadyShadowed = isShadowed.get(i);
+                if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)) {
+                    isShadowed.set(i); // we'll remove it later
                 }
+                i++;
             }
+        }
 
-            if (isShadowed.isEmpty()) {
-                return CollectionUtil.concatView(myResult, otherResult);
-            } else {
-                List<JMethodSig> result = new ArrayList<>(myResult.size() + otherResult.size() - 1);
-                result.addAll(myResult);
+        if (isShadowed.isEmpty()) {
+            return CollectionUtil.concatView(myResult, otherResult);
+        } else {
+            List<JMethodSig> result = new ArrayList<>(myResult.size() + otherResult.size() - 1);
+            result.addAll(myResult);
+            copyIntoWithMask(otherResult, isShadowed, result);
+            return Collections.unmodifiableList(result);
+        }
+    }
 
-                int last = 0;
-                for (int i = isShadowed.nextSetBit(0); i >= 0; i = isShadowed.nextSetBit(i + 1)) {
-                    result.addAll(otherResult.subList(last, i));
-                    last = i + 1;
-                }
-                if (last != otherResult.size()) {
-                    result.addAll(otherResult.subList(last, otherResult.size()));
-                }
-                return Collections.unmodifiableList(result);
-            }
-        };
+    /**
+     * Copy the elements of the input list into the result list, excluding
+     * all elements marked by the bitset.
+     */
+    private static <T> void copyIntoWithMask(List<? extends T> input, BitSet denyList, List<? super T> result) {
+        int last = 0;
+        for (int i = denyList.nextSetBit(0); i >= 0; i = denyList.nextSetBit(i + 1)) {
+            result.addAll(input.subList(last, i));
+            last = i + 1;
+        }
+        if (last != input.size()) {
+            result.addAll(input.subList(last, input.size()));
+        }
     }
 
 

@@ -9,11 +9,13 @@ import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackage
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.FORMAL_PARAM;
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -329,7 +331,8 @@ final class SymTableFactory {
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(t.getDeclaredFields()));
 
         ShadowChainNode<JMethodSig, ScopeInfo> methods = methodNode(parent);
-        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.subtypeMethodResolver(t), JavaResolvers.methodMerger());
+        BinaryOperator<List<JMethodSig>> merger = JavaResolvers.methodMerger(Modifier.isStatic(t.getSymbol().getModifiers()));
+        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.subtypeMethodResolver(t), merger);
 
         return buildTable(parent, fields, methods, types);
     }
