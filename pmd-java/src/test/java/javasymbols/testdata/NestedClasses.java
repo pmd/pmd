@@ -17,6 +17,14 @@ public class NestedClasses {
 
     public class Inner {
 
+        public Inner() {
+
+        }
+
+        public <T> Inner(T t) {
+
+        }
+
         class IInner {
 
         }

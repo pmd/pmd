@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -109,8 +110,11 @@ class AsmLoaderTest : FunSpec({
 
         inner.modifiers shouldBe Opcodes.ACC_PUBLIC
 
-        inner.constructors.shouldBeSingleton {
+        inner.constructors.forExactly(1) {
             it.formalParameters.shouldHaveSize(0) // even if there's a synthetic parameter
+        }
+        inner.constructors.forExactly(1) {
+            it.formalParameters.shouldHaveSize(1) // the one with a generic signature
         }
     }
 

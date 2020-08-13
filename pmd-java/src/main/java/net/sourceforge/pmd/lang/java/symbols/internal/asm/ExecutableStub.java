@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 
@@ -74,15 +72,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     @Override
     public int getArity() {
-        try {
-            return type.getParameterTypes().size();
-        } catch (NullPointerException e) {
-            throw new ContextedRuntimeException(e)
-                .addContextValue("descriptor", descriptor)
-                .addContextValue("method name", this.getSimpleName())
-                .addContextValue("type", ToStringBuilder.reflectionToString(type))
-                .addContextValue("declarator", getEnclosingClass());
-        }
+        return type.getParameterTypes().size();
     }
 
     @Override

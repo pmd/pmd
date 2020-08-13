@@ -199,8 +199,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         LazyMethodType(ExecutableStub ctx, @NonNull String descriptor, @Nullable String genericSig, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions, boolean skipFirstParam) {
             super(ctx);
-            this.skipFirstParam = skipFirstParam;
             this.signature = genericSig != null ? genericSig : descriptor;
+            // generic signatures already omit the synthetic param
+            this.skipFirstParam = skipFirstParam && genericSig == null;
         }
 
         @Override
