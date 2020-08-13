@@ -122,6 +122,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * parenthesized expressions
            * conditional exprs in loops
            * ignore variables that start with 'ignore'
+           * ignore params of native methods
+           * ignore params of abstract methods
 
      */
 
@@ -1001,7 +1003,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (ASTAnyTypeBodyDeclaration decl : declarations) {
                 JavaNode d = decl.getDeclarationNode();
                 if (d instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    ASTMethodDeclaration method = (ASTMethodDeclaration) d;
+                    if (!method.isAbstract() && !method.isNative()) {
+                        ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    }
                 } else if (d instanceof ASTAnyTypeDeclaration) {
                     JavaNode body = d.getChild(d.getNumChildren() - 1);
                     visitTypeBody(body, data.forkEmptyNonLocal());
