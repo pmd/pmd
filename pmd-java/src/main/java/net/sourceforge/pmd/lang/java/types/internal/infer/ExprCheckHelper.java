@@ -384,6 +384,7 @@ final class ExprCheckHelper {
 
         // finally, add bounds
         if (result != ts.NO_TYPE) {
+            // should also set parameter types!
             for (ExprMirror expr : lambda.getResultExpressions()) {
                 if (!isCompatible(result, expr)) {
                     return false;
