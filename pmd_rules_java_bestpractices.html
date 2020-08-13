@@ -2976,6 +2976,18 @@ out by default, in case you already have enabled those rules, but may be enabled
 <code class="language-plaintext highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> are filtered out, as
 is standard practice for exceptions.</p>
 
+<p>Limitations:</p>
+<ul>
+  <li>The rule currently cannot know which method calls throw exceptions, or which exceptions they throw.
+In the body of a try block, every method or constructor call is assumed to throw.  This may cause false-negatives.
+The only other language construct that is assumed to throw is the <code class="language-plaintext highlighter-rouge">throw</code> statement, in particular,
+things like <code class="language-plaintext highlighter-rouge">assert</code> statements, or NullPointerExceptions on dereference are ignored.</li>
+  <li>The rule cannot resolve assignments across constructors, when they’re called with the special
+<code class="language-plaintext highlighter-rouge">this(...)</code> syntax. This may cause false-negatives.</li>
+</ul>
+
+<p>Both of those limitations may be partly relaxed in PMD 7.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedAssignmentRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule</a></p>
 
 <p><strong>Example(s):</strong></p>
