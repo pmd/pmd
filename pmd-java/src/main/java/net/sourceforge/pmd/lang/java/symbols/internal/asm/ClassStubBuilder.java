@@ -68,6 +68,11 @@ class ClassStubBuilder extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+        if ((access & (Opcodes.ACC_SYNTHETIC | Opcodes.ACC_BRIDGE)) != 0) {
+            // ignore synthetic methods
+            return null;
+        }
+
         if ("<clinit>".equals(name)) {
             return null;
         } else if ("<init>".equals(name)) {
