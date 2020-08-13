@@ -1176,8 +1176,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Definitions in try block reach catch blocks</description>
-        <expected-problems>0</expected-problems>
+        <description>Definitions in try block reach catch blocks through method calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'halfway' is never used</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
 
@@ -1185,6 +1190,57 @@ public class Foo {
         boolean halfway = false;
 
         try {
+            halfway = true; // this may not fail so the catch block is unreachable
+        } catch(Exception e) {
+            System.out.println(halfway);
+        }
+    }
+}
+
+
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Definitions in try block reach catch blocks through method calls 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    void method() {
+        boolean halfway = false;
+
+        try {
+            halfway = true;
+            trySomethingWhichFails(); // catch may be reached if this throws
+        } catch(Exception e) {
+            System.out.println(halfway);
+        }
+    }
+}
+
+
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Definitions in try block reach catch blocks through method calls 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'halfway' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    void method() {
+        boolean halfway = false;
+
+        try {
+            trySomethingWhichFails(); // catch may be reached if this throws (initializer would be used)
             halfway = true;
         } catch(Exception e) {
             System.out.println(halfway);
@@ -1203,7 +1259,7 @@ public class Foo {
 public class Foo {
 
     public int foo() {
-        int a = 0;
+        int a = 0; // used in catch
         try (Reader r = new StringReader("")) {
             a = r.read();  // used in finally
         } catch (IOException e) {
@@ -1229,9 +1285,9 @@ public class Foo {
     public int foo() {
         int a = 0;
         try (Reader r = new StringReader("")) {
-            a = r.read();  // used in finally
+            a = r.read();  // used in return
         } catch (IOException e) {
-            a = -1; // used in finally
+            a = -1; // used in return
         } finally {
             // don't use a
         }
@@ -1239,6 +1295,68 @@ public class Foo {
     }
 
 }        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally 4</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,6,8</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 6, 8 and 10)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 10)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    public int foo() {
+        int a = 0; // overwritten in try body & catch
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // overwritten in finally
+        } catch (IOException e) {
+            a = -1; // overwritten in finally
+        } finally {
+            a = 0;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested finally</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,11,13,16</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 11, 13, 16 and 18)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 13)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 16 and 18)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 18)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.Reader;
+            import java.io.StringReader;
+
+            public class Foo {
+
+                public int foo() {
+                    int a = 0;
+                    try (Reader r = new StringReader("")) {
+                        try (Reader r = new StringReader("")) {
+                            a = r.read();       // overwritten in finally
+                        } finally {
+                            a = 0; // overwritten in enclosing catch, if `read()` threw, otherwise in enclosing finally
+                        }
+                    } catch (IOException e) {
+                        a = -1; // overwritten in finally
+                    } finally {
+                        a = 1;
+                    }
+                    return a;
+                }
+
+            }
+        ]]></code>
     </test-code>
     <test-code>
         <description>Try/catch finally in loop</description>
@@ -2987,4 +3105,58 @@ public class UnusedAssignmentNative {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Try stmt FP in try when method can throw #2684</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.Reader;
+            import java.io.StringReader;
+            import java.io.IOException;
+
+            public class Foo {
+
+                public int foo() {
+                    int a = 0;
+                    try (Reader r = new StringReader("")) {
+                        a = r.read(); // might assign or fail
+                        a = r.read(); // might assign or fail
+                    } catch (IOException e) {
+                    }
+                    return a;
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try stmt FP in try when method can throw (2) #2684</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 11 and 13)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.Reader;
+            import java.io.StringReader;
+
+            class Foo {
+
+                public int foo() {
+                    int a;
+                    try (Reader r = new StringReader("")) {
+                        a = r.read(); // really unused: overwritten with r.read() and 0;
+                        a = r.read(); // might assign or fail
+                    } catch (IOException e) {
+                        a = 0;
+                    }
+                    return a;
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
