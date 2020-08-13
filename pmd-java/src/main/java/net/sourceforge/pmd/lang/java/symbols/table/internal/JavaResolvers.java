@@ -206,7 +206,7 @@ public final class JavaResolvers {
     private static List<JMethodSig> methodMerger(boolean inStaticType, List<JMethodSig> myResult, List<JMethodSig> otherResult) {
         if (otherResult.isEmpty()) {
             return myResult;
-        }
+        } // don't check myResult for emptyness, we might need to remove static methods
 
         // For both the input lists, their elements are pairwise non-equivalent.
         // If any element of myResult is override-equivalent to
@@ -218,7 +218,8 @@ public final class JavaResolvers {
             int i = 0;
             for (JMethodSig m2 : otherResult) {
                 boolean isAlreadyShadowed = isShadowed.get(i);
-                if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)) {
+                if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)
+                    || inStaticType && !m2.isStatic()) {
                     isShadowed.set(i); // we'll remove it later
                 }
                 i++;
@@ -242,7 +243,9 @@ public final class JavaResolvers {
     private static <T> void copyIntoWithMask(List<? extends T> input, BitSet denyList, List<? super T> result) {
         int last = 0;
         for (int i = denyList.nextSetBit(0); i >= 0; i = denyList.nextSetBit(i + 1)) {
-            result.addAll(input.subList(last, i));
+            if (last != i) {
+                result.addAll(input.subList(last, i));
+            }
             last = i + 1;
         }
         if (last != input.size()) {

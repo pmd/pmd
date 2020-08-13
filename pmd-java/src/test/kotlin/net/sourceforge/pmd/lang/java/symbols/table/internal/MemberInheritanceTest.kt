@@ -116,7 +116,7 @@ class MemberInheritanceTest : ParserTestSpec({
         }
 
         doTest("Inside Inner: Outer#f() is shadowed") {
-            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer are in scope)
+            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer) are in scope
             // But Outer#f() is shadowed by Inner#f()
             inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
         }
@@ -138,6 +138,74 @@ class MemberInheritanceTest : ParserTestSpec({
             // only Outer#g() overrides its parent
             inner.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
         }
+    }
+
+    parserTest("Non-static methods in static inner class") {
+
+        val acu = parser.withProcessing().parse("""
+            package test;
+
+            class Outer {
+
+                void f() {}
+
+                static void f(String s) {}
+
+                static class Inner {
+                    void f(int i) {}
+                }
+            }
+        """)
+
+        val (outerF, staticOuter, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+        val (outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+
+
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
+        }
+
+        doTest("Inside Inner: non-static Outer#f() is not in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, staticOuter)
+        }
+
+    }
+
+    parserTest("Non-static methods in inner class") {
+
+        val acu = parser.withProcessing().parse("""
+            package test;
+
+            class Outer {
+
+                void f() {}
+
+                static void f(String s) {}
+
+                class Inner { // not static
+                    void f(int i) {}
+                }
+            }
+        """)
+
+        val (outerF, staticOuter, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+        val (outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+
+
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
+        }
+
+        doTest("Inside Inner: all methods are in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, outerF, staticOuter)
+        }
+
     }
 
 

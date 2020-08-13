@@ -33,6 +33,7 @@ public class Foo {
         </example>
     </rule>
     <rule name="TypeResTest"
+          language="java"
           since="6.4.0"
           message="Do not use hard coded encryption keys"
           class="net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule"
