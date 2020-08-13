@@ -1,5 +1,6 @@
 /**
- * Remove support for Java 13 preview language features
+ * Remove support for Java 13 preview language features.
+ * Promote text blocks as a permanent language features with Java 15.
  * Andreas Dangel 08/2020
  *====================================================================
  * Add support for record types introduced as a preview language
@@ -453,14 +454,14 @@ public class JavaParser {
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion != 14 || !preview) {
-      throwParseException("Text block literals are only supported with Java 14 Preview");
+    if (jdkVersion < 15 && !preview) {
+      throwParseException("Text block literals are only supported with Java 14 Preview and Java >= 15");
     }
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if ((jdkVersion != 14 || !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
-      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
+    if ((jdkVersion < 15 && !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview and Java >= 15");
     }
   }
 
