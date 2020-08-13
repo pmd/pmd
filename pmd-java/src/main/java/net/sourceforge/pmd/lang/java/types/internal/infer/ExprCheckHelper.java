@@ -72,14 +72,17 @@ final class ExprCheckHelper {
      * @return true if it's compatible (or we don't have enough info, and the check is deferred)
      */
     boolean isCompatible(JTypeMirror targetType, ExprMirror expr) {
-        JTypeMirror standalone = expr.getStandaloneType();
-        if (standalone != null) {
+        {
+            JTypeMirror standalone = expr.getStandaloneType();
+            if (standalone != null) {
 
-            // defer check if fi is not ground
-            checker.checkExprConstraint(infCtx, standalone, targetType);
-            return true;
+                // defer check if fi is not ground
+                checker.checkExprConstraint(infCtx, standalone, targetType);
+                return true;
+            }
+        }
 
-        } else if (expr instanceof LambdaExprMirror) {
+        if (expr instanceof LambdaExprMirror) {
 
             return isLambdaCompatible(infCtx.toClassType(targetType), (LambdaExprMirror) expr);
 

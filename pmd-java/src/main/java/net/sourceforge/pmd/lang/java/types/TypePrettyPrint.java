@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -25,26 +26,30 @@ public final class TypePrettyPrint {
 
     }
 
-    @NonNull
-    public static String prettyPrint(@NonNull JTypeVisitable t) {
+    public static @NonNull String prettyPrint(@NonNull JTypeVisitable t) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         t.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
         return sb.getResult();
     }
 
-    @NonNull
-    public static String prettyPrint(@NonNull JMethodSig sig, boolean printHeader) {
+    public static @NonNull String prettyPrint(@NonNull JMethodSig sig, boolean printHeader) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         sb.printMethodHeader = printHeader;
         sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
         return sb.getResult();
     }
 
-    @NonNull
-    public static String prettyPrintWithTvarBounds(@NonNull JTypeMirror sig) {
+    public static @NonNull String prettyPrintWithTvarBounds(@NonNull JTypeMirror sig) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         sb.printTypeVarBounds = YES;
         sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
+        return sb.getResult();
+    }
+
+    public static String prettyPrintWithTvarQualifier(@NonNull JTypeMirror t) {
+        TypePrettyPrinter sb = new TypePrettyPrinter();
+        sb.qualifyTvars = true;
+        t.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
         return sb.getResult();
     }
 
@@ -54,6 +59,7 @@ public final class TypePrettyPrint {
 
         private boolean printMethodHeader = true;
         private OptionalBool printTypeVarBounds = UNKNOWN;
+        private boolean qualifyTvars = false;
         private boolean isVarargs = false;
 
 
@@ -134,8 +140,15 @@ public final class TypePrettyPrint {
         @Override
         public Void visitTypeVar(JTypeVar t, TypePrettyPrinter sb) {
             if (t.isCaptured()) {
-                sb.append(t);
+                sb.append(t); // overridden, they use a special name, etc
             } else {
+                if (sb.qualifyTvars) {
+                    JTypeParameterSymbol sym = t.getSymbol();
+                    if (sym != null) {
+                        sb.append(sym.getDeclaringSymbol().getSimpleName());
+                        sb.append('#');
+                    }
+                }
                 sb.append(t.getName());
             }
 

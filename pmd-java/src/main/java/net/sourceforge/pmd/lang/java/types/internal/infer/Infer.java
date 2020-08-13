@@ -743,6 +743,7 @@ public final class Infer {
      * See {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
     private void addBoundOrDefer(InferenceContext infCtx, MethodResolutionPhase phase, ExprMirror arg, JTypeMirror formalType) {
+        // todo fast path for standalone types: directly call checkConvertibleOrDefer
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase);
 

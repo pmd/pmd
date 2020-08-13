@@ -118,7 +118,7 @@ final class InferenceContext {
      * inference vars.
      */
     JTypeMirror mapToIVars(JTypeMirror t) {
-        return t.subst(mapping);
+        return TypeOps.subst(t, mapping);
     }
 
     /**

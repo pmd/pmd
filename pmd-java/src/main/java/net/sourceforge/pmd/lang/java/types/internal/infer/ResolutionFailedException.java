@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 
@@ -74,7 +75,7 @@ final class ResolutionFailedException extends RuntimeException {
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             // this constructor is pretty expensive due to the pretty printing when log is enabled
             arg.getLocation(),
-            "Incompatible formals: " + found + " is not convertible to " + required
+            "Incompatible formals: " + isNotConvertibleMessage(found, required)
         ));
     }
 
@@ -82,8 +83,23 @@ final class ResolutionFailedException extends RuntimeException {
         // in javac it's "no instance of type variables exist ..."
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             expr.getLocation(),
-            "Incompatible return type: " + found + " is not convertible to " + required
+            "Incompatible return type: " + isNotConvertibleMessage(found, required)
         ));
+    }
+
+    private static @NonNull String isNotConvertibleMessage(JTypeMirror found, JTypeMirror required) {
+        String fs = found.toString();
+        String rs = required.toString();
+        if (fs.equals(rs)) {
+            // This often happens with type variables, which usually
+            // are named T,K,V,U,S, etc. This makes name conflicts harder
+            // to see
+            // Better would be to pretty print in a location-aware way:
+            // hidden/out of scope tvars would be qualified
+            fs = TypePrettyPrint.prettyPrintWithTvarQualifier(found);
+            rs = TypePrettyPrint.prettyPrintWithTvarQualifier(required);
+        }
+        return fs + " is not convertible to " + rs;
     }
 
     static ResolutionFailedException unsolvableDependency(TypeInferenceLogger logger) {
