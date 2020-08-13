@@ -1456,6 +1456,7 @@ which was introduced in PMD 6.26.0.</li>
   <li>java-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2441">#2441</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2530">#2530</a>: [java] StringToString can not detect the case: getStringMethod().toString()</li>
     </ul>
   </li>
 </ul>
@@ -1509,6 +1510,7 @@ includes all code in the following packages, and their subpackages:
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2659">#2659</a>: [java] StringToString can not detect the case: getStringMethod().toString() - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
