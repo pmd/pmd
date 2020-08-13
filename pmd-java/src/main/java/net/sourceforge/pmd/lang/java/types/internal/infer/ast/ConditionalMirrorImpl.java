@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,10 +33,9 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
 
     @Override
-    public Stream<ExprMirror> getBranches() {
-        return Stream.of(thenBranch, elseBranch);
+    public boolean branchesMatch(Predicate<? super ExprMirror> condition) {
+        return condition.test(thenBranch) && condition.test(elseBranch);
     }
-
 
     @Override
     public @Nullable JTypeMirror getStandaloneType() {

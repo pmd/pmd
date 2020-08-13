@@ -57,7 +57,7 @@ final class ExprOps {
             // of its second and third operand expressions are potentially compatible with that type.
 
             BranchingMirror cond = (BranchingMirror) e;
-            return cond.getBranches().allMatch(branch -> isPotentiallyCompatible(m, branch, t));
+            return cond.branchesMatch(branch -> isPotentiallyCompatible(m, branch, t));
 
         }
 
@@ -164,7 +164,7 @@ final class ExprOps {
             // of its second and third operand expressions are potentially compatible with that type.
 
             BranchingMirror cond = (BranchingMirror) arg;
-            return cond.getBranches().allMatch(branch -> isPertinentToApplicability(branch, m, formalType, invoc));
+            return cond.branchesMatch(branch -> isPertinentToApplicability(branch, m, formalType, invoc));
         }
 
         return true;

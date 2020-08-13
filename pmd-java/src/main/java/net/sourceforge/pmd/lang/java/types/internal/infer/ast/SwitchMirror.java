@@ -4,23 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.function.Predicate;
 
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class SwitchMirror extends BasePolyMirror<ASTSwitchExpression> implements BranchingMirror {
 
     // todo standalone types
 
+    private final List<ExprMirror> branches;
+
     SwitchMirror(JavaExprMirrors mirrors, ASTSwitchExpression myNode) {
         super(mirrors, myNode);
+        branches = myNode.getYieldExpressions().toList(factory::getMirror);
     }
 
 
     @Override
-    public Stream<ExprMirror> getBranches() {
-        return myNode.getYieldExpressions().toStream().map(factory::getMirror);
+    public boolean branchesMatch(Predicate<? super ExprMirror> condition) {
+        return CollectionUtil.all(branches, condition);
     }
 }

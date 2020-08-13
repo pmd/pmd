@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -140,10 +140,10 @@ public interface ExprMirror {
     interface BranchingMirror extends PolyExprMirror {
 
         /**
-         * Stream of the branches of this expr. Returns a
-         * new stream each time.
+         * Returns true if every result expression matches the given
+         * predicate.
          */
-        Stream<ExprMirror> getBranches();
+        boolean branchesMatch(Predicate<? super ExprMirror> condition);
 
     }
 

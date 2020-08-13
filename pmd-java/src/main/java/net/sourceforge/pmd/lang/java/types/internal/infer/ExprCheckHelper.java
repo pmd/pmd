@@ -114,7 +114,7 @@ final class ExprCheckHelper {
             );
             return true;
         } else if (expr instanceof BranchingMirror) {
-            return ((BranchingMirror) expr).getBranches().allMatch(it -> isCompatible(targetType, it));
+            return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
         }
 
         return false;
