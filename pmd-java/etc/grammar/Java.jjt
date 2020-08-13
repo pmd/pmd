@@ -2,6 +2,7 @@
  * Remove support for Java 13 preview language features.
  * Promote text blocks as a permanent language features with Java 15.
  * Support Pattern Matching for instanceof with Java 15 Preview.
+ * Support Records with Java 15 Preview.
  * Andreas Dangel 08/2020
  *====================================================================
  * Add support for record types introduced as a preview language
@@ -419,7 +420,7 @@ public class JavaParser {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
     }
     if (jdkVersion >= 14 && preview && "record".equals(image)) {
-      throwParseException("With JDK 14 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+      throwParseException("With JDK 14 Preview and JDK 15 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -467,8 +468,8 @@ public class JavaParser {
   }
 
   private void checkForRecordType() {
-    if (jdkVersion != 14 || !preview) {
-      throwParseException("Records are only supported with Java 14 Preview");
+    if (jdkVersion != 14 && jdkVersion != 15 || !preview) {
+      throwParseException("Records are only supported with Java 14 Preview and Java 15 Preview");
     }
   }
 

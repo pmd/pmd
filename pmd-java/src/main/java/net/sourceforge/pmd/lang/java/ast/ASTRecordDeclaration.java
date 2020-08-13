@@ -57,6 +57,12 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested();
     }
 
+    @Override
+    public boolean isFinal() {
+        // A record is implicitly final
+        return true;
+    }
+
     /**
      * @deprecated Renamed to {@link #getRecordComponents()}
      */
