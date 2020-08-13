@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -121,6 +123,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * parenthesized expressions
            * conditional exprs in loops
            * ignore variables that start with 'ignore'
+           * ignore params of native methods
+           * ignore params of abstract methods
 
      */
 
@@ -528,10 +532,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before.myFinally = before.forkEmpty();
             }
 
-            ASTResourceList resources = node.getResources();
+            final List<ASTCatchClause> catchClauses = node.getCatchClauses().toList();
+            final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.emptyList()
+                                                                     : new ArrayList<SpanInfo>();
 
-            SpanInfo bodyState = acceptOpt(resources, before.fork());
+            // pre-fill catch spans
+            for (int i = 0; i < catchClauses.size(); i++) {
+                catchSpans.add(before.forkEmpty());
+            }
+
+            @Nullable ASTResourceList resources = node.getResources();
+
+            SpanInfo bodyState = before.fork();
+            bodyState = bodyState.withCatchBlocks(catchSpans);
+            bodyState = acceptOpt(resources, bodyState);
             bodyState = acceptOpt(node.getBody(), bodyState);
+            bodyState = bodyState.withCatchBlocks(Collections.emptyList());
 
             SpanInfo exceptionalState = null;
             for (ASTCatchClause catchClause : node.getCatchClauses()) {
@@ -548,6 +564,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 SpanInfo abruptFinally = before.myFinally.absorb(before);
                 acceptOpt(finallyClause, abruptFinally);
                 before.myFinally = null;
+                abruptFinally.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
 
                 // this is the normal finally
                 finalState = acceptOpt(finallyClause, finalState);
@@ -750,7 +767,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTThrowStatement node, Object data) {
             super.visit(node, data);
-            return ((SpanInfo) data).abruptCompletion(null);
+            return ((SpanInfo) data).abruptCompletionByThrow(false);
         }
 
         @Override
@@ -842,7 +859,37 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (var != null) {
                 state.use(var);
             }
+
+            maybeThrowUncheckedExceptions(node, state);
+
             return state;
+        }
+
+        private void maybeThrowUncheckedExceptions(ASTPrimaryExpression e, SpanInfo state) {
+            // Note that this doesn't really respect the order of evaluation of subexpressions
+            // This can be easily fixed in the 7.0 tree, but this is rare enough to not deserve
+            // the effort on master.
+
+            // For the record this has problems with call chains with side effects, like
+            //  a.foo(a = 2).bar(a = 3);
+
+            if (!state.isInTryBlock()) {
+                return;
+            }
+            // otherwise any method/ctor call may throw
+
+            // In 7.0, with the precise type/overload resolution, we
+            // could only target methods that throw checked exceptions
+            // (unless some catch block catches an unchecked exceptions)
+            for (JavaNode child : e.children()) {
+                if (child instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) child).isArguments()
+                // fixme commented out on java-grammar
+                // || child instanceof ASTPrimarySuffix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression
+                // || child instanceof ASTPrimaryPrefix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression
+                ) {
+                    state.abruptCompletionByThrow(true);
+                }
+            }
         }
 
         /**
@@ -979,7 +1026,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             for (ASTBodyDeclaration decl : declarations) {
                 if (decl instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(decl, data.forkCapturingNonLocal());
+                    ASTMethodDeclaration method = (ASTMethodDeclaration) decl;
+                    if (method.getBody() != null) {
+                        ONLY_LOCALS.acceptOpt(decl, data.forkCapturingNonLocal());
+                    }
                 } else if (decl instanceof ASTAnyTypeDeclaration) {
                     ASTTypeBody body = (ASTTypeBody) decl.getChild(decl.getNumChildren() - 1);
                     visitTypeBody(body, data.forkEmptyNonLocal());
@@ -1123,6 +1173,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // needs to go through the finally span (the finally must absorb it)
         SpanInfo myFinally = null;
 
+
+        /**
+         * Inside a try block, we assume that any method/ctor call may
+         * throw, which means, any assignment reaching such a method call
+         * may reach the catch blocks if there are any.
+         */
+        List<SpanInfo> myCatches;
+
         final GlobalAlgoState global;
 
         final Map<ASTVariableDeclaratorId, VarLocalInfo> symtable;
@@ -1137,6 +1195,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             this.parent = parent;
             this.global = global;
             this.symtable = symtable;
+            this.myCatches = Collections.emptyList();
         }
 
         boolean hasVar(ASTVariableDeclaratorId var) {
@@ -1234,16 +1293,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return copy;
         }
 
-        private SpanInfo doFork(SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
+        private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
             return new SpanInfo(parent, this.global, reaching);
         }
 
+        /** Abrupt completion for return, continue, break. */
         SpanInfo abruptCompletion(SpanInfo target) {
             // if target == null then this will unwind all the parents
             SpanInfo parent = this;
             while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
+                    // stop on the first finally, its own end state will
+                    // be merged into the nearest enclosing finally
+                    return this;
                 }
                 parent = parent.parent;
             }
@@ -1252,6 +1315,57 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return this;
         }
 
+
+        /**
+         * Record an abrupt completion occurring because of a thrown
+         * exception.
+         *
+         * @param byMethodCall If true, a method/ctor call threw the exception
+         *                     (we conservatively consider they do inside try blocks).
+         *                     Otherwise, a throw statement threw.
+         */
+        SpanInfo abruptCompletionByThrow(boolean byMethodCall) {
+            // Find the first block that has a finally
+            // Be absorbed into every catch block on the way.
+
+            // In 7.0, with the precise type/overload resolution, we
+            // can target the specific catch block that would catch the
+            // exception.
+
+            SpanInfo parent = this;
+            while (parent != null) {
+
+                if (!parent.myCatches.isEmpty()) {
+                    for (SpanInfo c : parent.myCatches) {
+                        c.absorb(this);
+                    }
+                }
+
+                if (parent.myFinally != null) {
+                    // stop on the first finally, its own end state will
+                    // be merged into the nearest enclosing finally
+                    parent.myFinally.absorb(this);
+                    return this;
+                }
+                parent = parent.parent;
+            }
+
+            if (!byMethodCall) {
+                this.symtable.clear(); // following is dead code
+            }
+            return this;
+        }
+
+        SpanInfo withCatchBlocks(List<SpanInfo> catchStmts) {
+            assert myCatches.isEmpty() || catchStmts.isEmpty() : "Cannot set catch blocks twice";
+            myCatches = Collections.unmodifiableList(catchStmts); // we own the list now, to avoid copying
+            return this;
+        }
+
+        private boolean isInTryBlock() {
+            // ignore resources, once they're initialized everything's fine in the block
+            return !myCatches.isEmpty() || myFinally != null;
+        }
 
         SpanInfo absorb(SpanInfo other) {
             // Merge reaching defs of the other scope into this
