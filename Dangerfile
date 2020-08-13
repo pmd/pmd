@@ -27,7 +27,7 @@ def upload_report
     end
 
     `tar -cf #{tar_filename} diff/`
-    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} chunk.io`
+    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
       @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
