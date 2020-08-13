@@ -223,18 +223,20 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>external class as a method parameter NullPointerException test</description>
+        <description>external class as a method parameter</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
-import org.springframework.context.MessageSourceResolvable;
+import java.util.Properties;
 public class Foo {
-    public String getData(MessageSourceResolvable msr) {
-        return "MSR: " + msr.toString();
+    public Long getData(User usr) {
+        return usr.getId();
     }
-
+    public String getData(Properties props) {
+        return "Props: " + props.toString();
+    }
     public void bar() {
-        String s = getData(new MessageSourceResolvable()).toString();
+        String s = getData(new Properties()).toString();
     }
 }
         ]]></code>
@@ -264,6 +266,49 @@ class B {
     }
     public String getData(Number a, Number b) {
         return "uniqueArgsCountExample";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>variable as method call argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class Foo {
+    public void bar() {
+        User user = new User();
+        String s = getId(user).toString();
+    }
+    public int getId(Car car) {
+        return 0;
+    }
+    public String getId(User user) {
+        return "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method call as method call argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String s = getData(getLong()).toString();
+    }
+    public long getLong() {
+        return 0;
+    }
+    public long getData(String d) {
+        return 0;
+    }
+    public String getData(long d) {
+        return "";
     }
 }
         ]]></code>
