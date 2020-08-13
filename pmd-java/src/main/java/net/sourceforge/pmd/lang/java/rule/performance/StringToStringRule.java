@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,10 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -71,7 +72,7 @@ public class StringToStringRule extends AbstractJavaRule {
 
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_MAP;
 
-    private final Set<ASTMethodDeclaration> declaredMethods = new HashSet<>();
+    private final Set<ASTMethodDeclaration> declaredMethods = new LinkedHashSet<>();
 
     static {
         Map<Class<?>, Class<?>> primitiveToWrapper = new HashMap<>();
@@ -160,7 +161,7 @@ public class StringToStringRule extends AbstractJavaRule {
                 JavaNode methodCall = primaryExpr.getChild(callIndex);
                 if (isToStringMethodCall(methodCall)) {
                     JavaNode prevMethodCall = primaryExpr.getChild(callIndex - 2);
-                    JavaNode prevMethodCallArgs = primaryExpr.getChild(callIndex - 1);
+                    ASTPrimarySuffix prevMethodCallArgs = (ASTPrimarySuffix) primaryExpr.getChild(callIndex - 1);
                     if (calledMethodReturnsString(prevMethodCall, prevMethodCallArgs)) {
                         addViolation(data, methodCall);
                     }
@@ -183,36 +184,19 @@ public class StringToStringRule extends AbstractJavaRule {
         return "toString".equals(methodName);
     }
 
-    private boolean calledMethodReturnsString(JavaNode methodCall, JavaNode methodCallArgs) {
+    private boolean calledMethodReturnsString(JavaNode methodCall, ASTPrimarySuffix methodCallArgs) {
         String returnTypeName = getCalledMethodReturnTypeName(methodCall, methodCallArgs);
         return "String".equals(returnTypeName);
     }
 
-    private String getCalledMethodReturnTypeName(JavaNode methodCall, JavaNode methodCallArgs) {
-        String calledMethodName = getCalledMethodName(methodCall);
-        ASTArguments arguments = methodCallArgs.getFirstDescendantOfType(ASTArguments.class);
-        return calledMethodName != null && arguments != null
-                ? findMethodReturnTypeName(calledMethodName, arguments)
-                : null;
+    private String getCalledMethodReturnTypeName(JavaNode methodCall, ASTPrimarySuffix methodCallArgs) {
+        ASTMethodDeclaration calledMethod = getCalledMethod(methodCall, methodCallArgs);
+        return calledMethod != null ? getReturnTypeName(calledMethod) : null;
     }
 
     private String getCalledMethodName(JavaNode methodCall) {
         ASTName name = methodCall.getFirstDescendantOfType(ASTName.class);
         return name != null ? name.getImage() : methodCall.getImage();
-    }
-
-    private String findMethodReturnTypeName(String methodName, ASTArguments args) {
-        List<ASTMethodDeclaration> candidateMethods = getMethodsByNameAndArgsCount(methodName, args.size());
-        if (candidateMethods.size() > 1) {
-            ASTArgumentList argsList = args.getFirstChildOfType(ASTArgumentList.class);
-            for (ASTMethodDeclaration candidateMethod : candidateMethods) {
-                ASTFormalParameters methodParams = candidateMethod.getFormalParameters();
-                if (argsMatchMethodParamsByType(argsList, methodParams)) {
-                    return getReturnTypeName(candidateMethod);
-                }
-            }
-        }
-        return getFirstMethodReturnTypeNameIfPresent(candidateMethods);
     }
 
     private List<ASTMethodDeclaration> getMethodsByNameAndArgsCount(String name, int argsCount) {
@@ -230,20 +214,58 @@ public class StringToStringRule extends AbstractJavaRule {
             ASTFormalParameter methodParam = (ASTFormalParameter) methodParams.getChild(paramIndex);
             Class<?> typeOfParam = methodParam.getType();
             ASTExpression arg = (ASTExpression) argsList.getChild(paramIndex);
-            if (typeOfParam != null
-                    && !TypeHelper.isA(arg, typeOfParam)
-                    && !isPrimitiveWrapperMatch(arg, typeOfParam)) {
+            Class<?> typeOfArg = getTypeOfExpression(arg);
+            if (typeOfParam == null || typeOfArg == null) {
+                return false;
+            }
+            if (!typeOfParam.isAssignableFrom(typeOfArg) && !isPrimitiveWrapperMatch(typeOfArg, typeOfParam)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isPrimitiveWrapperMatch(TypeNode arg, Class<?> typeOfParam) {
-        if (arg.getType() == null) {
+    private Class<?> getTypeOfExpression(ASTExpression expr) {
+        if (expr.getType() != null) {
+            return expr.getType();
+        }
+        if (isMethodCall(expr)) {
+            ASTPrimaryExpression primary = expr.getFirstChildOfType(ASTPrimaryExpression.class);
+            ASTPrimaryPrefix methodCall = (ASTPrimaryPrefix) primary.getChild(0);
+            ASTPrimarySuffix methodCallArgs = (ASTPrimarySuffix) primary.getChild(1);
+            ASTMethodDeclaration method = getCalledMethod(methodCall, methodCallArgs);
+            return getMethodReturnType(method);
+        }
+        return null;
+    }
+
+    private boolean isMethodCall(ASTExpression expr) {
+        ASTPrimaryExpression primaryExpression = expr.getFirstChildOfType(ASTPrimaryExpression.class);
+        return primaryExpression != null && primaryExpression.getNumChildren() == 2;
+    }
+
+    private ASTMethodDeclaration getCalledMethod(JavaNode methodCall, ASTPrimarySuffix methodCallArgs) {
+        String methodName = getCalledMethodName(methodCall);
+        if (!methodCallArgs.isArguments()) {
+            return null;
+        }
+        ASTArguments arguments = methodCallArgs.getFirstChildOfType(ASTArguments.class);
+        ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
+        List<ASTMethodDeclaration> candidates = getMethodsByNameAndArgsCount(methodName, arguments.size());
+        for (ASTMethodDeclaration candidate : candidates) {
+            ASTFormalParameters formalParameters = candidate.getFormalParameters();
+            if (argsMatchMethodParamsByType(argumentList, formalParameters)) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    private boolean isPrimitiveWrapperMatch(Class<?> typeOfArg, Class<?> typeOfParam) {
+        if (typeOfArg == null || typeOfParam == null) {
             return false;
         }
-        Class<?> argType = toWrapperClassIfPrimitive(arg.getType());
+        Class<?> argType = toWrapperClassIfPrimitive(typeOfArg);
         Class<?> paramType = toWrapperClassIfPrimitive(typeOfParam);
         return paramType.isAssignableFrom(argType);
     }
@@ -255,19 +277,16 @@ public class StringToStringRule extends AbstractJavaRule {
         return type;
     }
 
-    private String getFirstMethodReturnTypeNameIfPresent(List<ASTMethodDeclaration> methods) {
-        if (!methods.isEmpty()) {
-            ASTMethodDeclaration firstMethod = methods.get(0);
-            return getReturnTypeName(firstMethod);
-        }
-        return null;
+    private String getReturnTypeName(ASTMethodDeclaration method) {
+        Class<?> type = getMethodReturnType(method);
+        return type != null ? type.getSimpleName() : null;
     }
 
-    private String getReturnTypeName(ASTMethodDeclaration method) {
-        ASTType returnType = method.getResultType().getFirstDescendantOfType(ASTType.class);
+    private Class<?> getMethodReturnType(ASTMethodDeclaration method) {
+        ASTType returnType = method != null ? method.getResultType().getFirstDescendantOfType(ASTType.class) : null;
         if (returnType != null) {
             Class<?> type = returnType.getType();
-            return type != null ? type.getSimpleName() : returnType.getTypeImage();
+            return type;
         }
         return null;
     }
