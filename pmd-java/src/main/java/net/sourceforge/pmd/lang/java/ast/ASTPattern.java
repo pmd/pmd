@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 
 /**
  * A pattern (for pattern matching constructs like {@link ASTInstanceOfExpression InstanceOfExpression}).
- * This is a JDK 14 preview feature and is subject to change.
+ * This is a JDK 14 and JDK 15 preview feature and is subject to change.
  *
  * <p>This interface will be implemented by all forms of patterns. For
  * now, only type test patterns are supported. Record deconstruction
