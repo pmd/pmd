@@ -151,7 +151,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
 
                     it::getFormalParameters shouldBe formalsList(0)
@@ -178,7 +178,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(0)
 
@@ -212,7 +212,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(1) {
                         child<ASTFormalParameter> {
@@ -243,7 +243,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(1) {
                         child<ASTFormalParameter> {
@@ -282,7 +282,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(0)
 
@@ -313,9 +313,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 annotationMethod {
                     modifiers { }
 
-                    resultType {
-                        primitiveType(PrimitiveType.INT)
-                    }
+                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
+
                     formalsList(0)
                 }
             }
@@ -324,9 +323,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe resultType {
-                        primitiveType(PrimitiveType.INT)
-                    }
+                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
+
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe defaultValue { int(2) }
@@ -336,9 +334,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             "int bar() @NonZero [];" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
-                    it::getResultType shouldBe resultType {
-                        primitiveType(PrimitiveType.INT)
-                    }
+                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
+
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe null
@@ -353,9 +350,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             "Override bar() default @Override;" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
-                    it::getResultType shouldBe resultType {
-                        classType("Override")
-                    }
+                    it::getResultTypeNode shouldBe classType("Override")
+
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe defaultValue { annotation("Override") }
@@ -365,9 +361,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             "Override bar()[] default { @Override };" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
-                    it::getResultType shouldBe resultType {
-                        classType("Override")
-                    }
+                    it::getResultTypeNode shouldBe classType("Override")
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getExtraDimensions shouldBe child {
@@ -401,7 +395,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(0) {
                         it.toList() shouldBe emptyList()
@@ -429,7 +423,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultType shouldBe voidResult()
+                    it::getResultTypeNode shouldBe voidType()
 
                     it::getFormalParameters shouldBe formalsList(1) {
 
@@ -473,11 +467,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                         }
                     }
 
-                    it::getResultType shouldBe resultType {
-                        classType("Ret") {
-                            annotation("OnType")
-                        }
+                    it::getResultTypeNode shouldBe classType("Ret") {
+                        annotation("OnType")
                     }
+
 
                     formalsList(0)
                     block()

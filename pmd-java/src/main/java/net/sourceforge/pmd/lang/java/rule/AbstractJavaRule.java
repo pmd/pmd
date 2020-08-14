@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -221,6 +222,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Deprecated
     public Object visit(ASTMethodDeclarator node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTResultType node, Object data) {
         return null;
     }
 
