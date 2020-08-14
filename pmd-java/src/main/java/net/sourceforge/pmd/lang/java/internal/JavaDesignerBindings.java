@@ -13,9 +13,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -94,6 +98,27 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         public Attribute visit(ASTClassOrInterfaceType node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
+
+        @Override
+        public Attribute visit(ASTMethodCall node, Void data) {
+            return new Attribute(node, "MethodName", node.getMethodName());
+        }
+
+        @Override
+        public Attribute visit(ASTMethodReference node, Void data) {
+            return new Attribute(node, "MethodName", node.getMethodName());
+        }
+
+        @Override
+        public Attribute visit(ASTFieldAccess node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTVariableAccess node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
 
         @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {
