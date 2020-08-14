@@ -73,7 +73,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<JClassType> enclosingType = new ArrayDeque<>();
+        private final Deque<ASTAnyTypeDeclaration> enclosingType = new ArrayDeque<>();
 
         /*
             TODO do disambiguation entirely in this visitor
@@ -164,7 +164,7 @@ public final class SymbolTableResolver {
         public Void visit(ASTAnyTypeDeclaration node, Void data) {
             int pushed = 0;
 
-            enclosingType.push(node.getTypeMirror());
+            enclosingType.push(node);
 
             // the following is just for the body
             pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
@@ -357,7 +357,7 @@ public final class SymbolTableResolver {
         }
 
         private JClassType enclosing() {
-            return enclosingType.peek();
+            return enclosingType.getFirst().getTypeMirror();
         }
 
         private void setTopSymbolTableAndRecurse(JavaNode node) {

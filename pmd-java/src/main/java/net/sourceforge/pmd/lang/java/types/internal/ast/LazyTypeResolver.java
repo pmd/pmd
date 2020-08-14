@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.unaryNumericPromotion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
@@ -77,7 +78,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
  * Lazy version of ClassTypeResolver. This is not appropriate for
  * all nodes, though it is appropriate for standalone expressions.
  */
-public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
+public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror> {
 
     private final TypeSystem ts;
     private final PolyResolution polyResolution;
@@ -96,8 +97,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
 
     @Override
     public JTypeMirror visit(JavaNode node, Void data) {
-        // don't recurse
-        return ts.NO_TYPE;
+        throw new IllegalArgumentException("Not a type node:" + node);
     }
 
 
@@ -318,7 +318,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
             }
 
         default:
-            throw new IllegalStateException("Unknown operator " + op);
+            throw new AssertionError("Unknown operator for " + node);
         }
     }
 
@@ -341,7 +341,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         case POST_DECREMENT:
             return node.getOperand().getTypeMirror();
         default:
-            throw new IllegalStateException("Unknown operator for " + node);
+            throw new AssertionError("Unknown operator for " + node);
         }
     }
 
@@ -351,7 +351,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
         if (pattern instanceof ASTTypeTestPattern) {
             return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeMirror();
         }
-        return ts.NO_TYPE;
+        throw new IllegalArgumentException("Unknown pattern " + pattern);
     }
 
     @Override
@@ -422,7 +422,7 @@ public class LazyTypeResolver extends JavaVisitorBase<Void, JTypeMirror> {
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
         @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
         if (result == null) {
-            return null;
+            return ts.UNRESOLVED_TYPE;
         }
         return TypeConversion.capture(result.getTypeMirror());
     }

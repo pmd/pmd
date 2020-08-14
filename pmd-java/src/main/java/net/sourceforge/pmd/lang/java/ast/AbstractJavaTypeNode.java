@@ -24,16 +24,10 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
     }
 
     @Override
-    @NonNull
-    public JTypeMirror getTypeMirror() {
+    public @NonNull JTypeMirror getTypeMirror() {
         if (typeMirror == null) {
-
             LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
-            assert resolver != null : "Null type resolver!";
-
-            JTypeMirror result = this.acceptVisitor(resolver, null);
-
-            this.typeMirror = result != null ? result : resolver.getTypeSystem().UNRESOLVED_TYPE;
+            typeMirror = this.acceptVisitor(resolver, null);
         }
         return typeMirror;
     }

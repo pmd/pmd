@@ -106,7 +106,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         this.lazyTypeResolver = typeResolver;
     }
 
-    LazyTypeResolver getLazyTypeResolver() {
+    @NonNull LazyTypeResolver getLazyTypeResolver() {
         assert lazyTypeResolver != null : "Type resolution not initialized";
         return lazyTypeResolver;
     }
