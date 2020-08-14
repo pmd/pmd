@@ -36,7 +36,7 @@ public final class ASTLabeledStatement extends AbstractStatement {
      * Returned the statement named by this label.
      */
     public ASTStatement getStatement() {
-        return (ASTStatement) getChild(1);
+        return (ASTStatement) getChild(0);
     }
 
 }

@@ -77,7 +77,7 @@ class ASTConstructorCallTest : ParserTestSpec({
                     it::isQualifiedInstanceCreation shouldBe true
 
                     it::getQualifier shouldBe fieldAccess("c", READ) {
-                        it::getFieldName shouldBe "c"
+                        it::getName shouldBe "c"
 
                         it::getQualifier shouldBe ambiguousName("a.g")
                     }

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTWhileStatement extends AbstractStatement {
+public final class ASTWhileStatement extends AbstractStatement implements ASTLoopStatement {
 
     ASTWhileStatement(int id) {
         super(id);

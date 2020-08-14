@@ -5,19 +5,23 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedAssignableExpr;
 
 /**
- * A reference to an unqualified variable. {@linkplain ASTAmbiguousName Ambiguous names} are promoted
- * to this status in the syntactic contexts, where we know they're definitely variable references.
- * This node represents both references to fields and to variables (for now?).
+ * An unqualified reference to a variable (either local, or a field that
+ * is in scope).
  *
  * <pre class="grammar">
  *
  * VariableAccess ::= &lt;IDENTIFIER&gt;
  *
  * </pre>
+ *
+ * @implNote {@linkplain ASTAmbiguousName Ambiguous names} are promoted
+ *     to this status in the syntactic contexts, where we know they're definitely
+ *     variable references.
  */
-public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssignableExpr {
+public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedAssignableExpr {
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.
@@ -42,11 +46,8 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssi
         super(id);
     }
 
-
-    /**
-     * Gets the name of the referenced variable.
-     */
-    public String getVariableName() {
+    @Override
+    public String getName() {
         return getImage();
     }
 

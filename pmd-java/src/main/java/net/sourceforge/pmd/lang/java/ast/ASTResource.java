@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * A resource of a {@linkplain try-with-resources}. This contains another
+ * A resource of a {@linkplain ASTTryStatement try-with-resources}. This contains another
  * node that represents the resource, according to the grammar below.
  *
  * <p>In the case of concise try-with resources, the subexpressions are
@@ -55,7 +55,7 @@ public final class ASTResource extends AbstractJavaNode {
             StringBuilder builder = new StringBuilder();
             while (expr instanceof ASTFieldAccess) {
                 ASTFieldAccess fa = (ASTFieldAccess) expr;
-                builder.insert(0, "." + fa.getFieldName());
+                builder.insert(0, "." + fa.getName());
                 expr = fa.getQualifier();
             }
             // the last one may be ambiguous, or a variable reference
@@ -67,7 +67,7 @@ public final class ASTResource extends AbstractJavaNode {
             }
             return builder.toString();
         } else {
-            return asLocalVariableDeclaration().iterator().next().getVariableName();
+            return asLocalVariableDeclaration().iterator().next().getName();
         }
     }
 
