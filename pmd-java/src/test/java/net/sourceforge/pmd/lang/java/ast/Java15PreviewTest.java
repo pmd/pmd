@@ -164,4 +164,47 @@ public class Java15PreviewTest {
         Assert.assertEquals("MerchantSales", records.get(0).getSimpleName());
         Assert.assertTrue(records.get(0).isLocal());
     }
+
+    @Test(expected = ParseException.class)
+    public void sealedClassBeforeJava15Preview() {
+        java15.parseResource("geometry/Shape.java");
+    }
+
+    @Test
+    public void sealedClass() {
+        ASTCompilationUnit compilationUnit = java15p.parseResource("geometry/Shape.java");
+        ASTClassOrInterfaceDeclaration classDecl = compilationUnit.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        Assert.assertTrue(classDecl.isSealed());
+        List<ASTClassOrInterfaceType> permittedSubclasses = classDecl.getPermittedSubclasses();
+        Assert.assertEquals(3, permittedSubclasses.size());
+        Assert.assertEquals("Circle", permittedSubclasses.get(0).getImage());
+        Assert.assertEquals("Rectangle", permittedSubclasses.get(1).getImage());
+        Assert.assertEquals("Square", permittedSubclasses.get(2).getImage());
+    }
+
+    @Test
+    public void nonSealedClass() {
+        ASTCompilationUnit compilationUnit = java15p.parseResource("geometry/Square.java");
+        ASTClassOrInterfaceDeclaration classDecl = compilationUnit.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        Assert.assertTrue(classDecl.isNonSealed());
+        Assert.assertEquals(0, classDecl.getPermittedSubclasses().size());
+    }
+
+    @Test(expected = ParseException.class)
+    public void sealedInterfaceBeforeJava15Preview() {
+        java15.parseResource("expression/Expr.java");
+    }
+
+    @Test
+    public void sealedInterface() {
+        ASTCompilationUnit compilationUnit = java15p.parseResource("expression/Expr.java");
+        ASTClassOrInterfaceDeclaration interfaceDecl = compilationUnit.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        Assert.assertTrue(interfaceDecl.isSealed());
+        List<ASTClassOrInterfaceType> permittedSubclasses = interfaceDecl.getPermittedSubclasses();
+        Assert.assertEquals(4, permittedSubclasses.size());
+        Assert.assertEquals("ConstantExpr", permittedSubclasses.get(0).getImage());
+        Assert.assertEquals("PlusExpr", permittedSubclasses.get(1).getImage());
+        Assert.assertEquals("TimesExpr", permittedSubclasses.get(2).getImage());
+        Assert.assertEquals("NegExpr", permittedSubclasses.get(3).getImage());
+    }
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -140,4 +141,23 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return it == null ? Collections.<ASTClassOrInterfaceType>emptyList() : CollectionUtil.toList(it.iterator());
     }
 
+    @Experimental
+    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+        ASTPermittedSubclasses permitted = getFirstChildOfType(ASTPermittedSubclasses.class);
+        return permitted == null
+                ? Collections.<ASTClassOrInterfaceType>emptyList()
+                : CollectionUtil.toList(permitted.iterator());
+    }
+
+    @Experimental
+    public boolean isSealed() {
+        int modifiers = getModifiers();
+        return (modifiers & AccessNode.SEALED) == AccessNode.SEALED;
+    }
+
+    @Experimental
+    public boolean isNonSealed() {
+        int modifiers = getModifiers();
+        return (modifiers & AccessNode.NON_SEALED) == AccessNode.NON_SEALED;
+    }
 }
