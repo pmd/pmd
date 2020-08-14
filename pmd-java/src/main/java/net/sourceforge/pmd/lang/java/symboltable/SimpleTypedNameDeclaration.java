@@ -8,10 +8,14 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Just stores a type image and a actual type. And makes it easy to compare
  * these.
  */
+@Deprecated
+@InternalApi
 public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     private final String typeImage;
