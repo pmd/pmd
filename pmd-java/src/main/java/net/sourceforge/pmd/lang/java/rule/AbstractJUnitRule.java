@@ -10,14 +10,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * @deprecated Internal API
@@ -101,22 +99,11 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
             return false;
         }
 
-        if (node.getType() != null && TypeHelper.isA(node, JUNIT3_CLASS_NAME)) {
+        if (TypeTestUtil.isA(JUNIT3_CLASS_NAME, node)) {
             return true;
-        } else if (node.getType() == null) {
-            ASTExtendsList extendsList = cid.getFirstChildOfType(ASTExtendsList.class);
-            if (extendsList == null) {
-                return false;
-            }
-            if (((ASTClassOrInterfaceType) extendsList.getChild(0)).getImage().endsWith("TestCase")) {
-                return true;
-            }
-            String className = cid.getSimpleName();
-            return className.endsWith("Test");
-        } else if (hasImports(node, JUNIT3_CLASS_NAME)) {
+        } else {
             return cid.getSimpleName().endsWith("Test");
         }
-        return false;
     }
 
     private boolean isJUnit4Class(ASTCompilationUnit node) {
@@ -137,7 +124,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
                 if (name != null && (name.hasImageEqualTo("Test") || name.hasImageEqualTo(annotationTypeClassName))) {
                     return true;
                 }
-            } else if (TypeHelper.isA(annotationType, annotationTypeClassName)) {
+            } else if (TypeTestUtil.isA(annotationTypeClassName, annotationType)) {
                 return true;
             }
         }

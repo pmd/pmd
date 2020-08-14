@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
 
@@ -65,7 +65,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
     private boolean notCollectionAccess(ASTAllocationExpression node) {
         if (node.getNthParent(4) instanceof ASTArgumentList && node.getNthParent(8) instanceof ASTStatementExpression) {
             ASTStatementExpression statement = (ASTStatementExpression) node.getNthParent(8);
-            return !TypeHelper.isA(statement, Collection.class);
+            return !TypeTestUtil.isA(Collection.class, statement);
         }
         return true;
     }

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Finds hard coded encryption keys that are passed to
@@ -35,8 +35,7 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        ASTClassOrInterfaceType declClassName = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        if (declClassName != null && TypeHelper.isA(declClassName, SECRET_KEY_SPEC)) {
+        if (TypeTestUtil.isA(SECRET_KEY_SPEC, node.getFirstChildOfType(ASTClassOrInterfaceType.class))) {
             Node firstArgument = null;
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
