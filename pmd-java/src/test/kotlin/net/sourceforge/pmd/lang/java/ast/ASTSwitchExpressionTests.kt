@@ -331,6 +331,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """ should parseAs {
                 switchStmt {
 
+                    val switch = it
+
                     it::getTestedExpression shouldBe variableAccess("day")
 
                     switchFallthrough {
@@ -339,7 +341,9 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                         }
 
                         exprStatement()
-                        breakStatement()
+                        breakStatement {
+                            it::getTarget shouldBe switch
+                        }
                     }
 
                     switchFallthrough {

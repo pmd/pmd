@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTDoStatement extends AbstractStatement {
+public final class ASTDoStatement extends AbstractStatement implements ASTLoopStatement {
 
     ASTDoStatement(int id) {
         super(id);

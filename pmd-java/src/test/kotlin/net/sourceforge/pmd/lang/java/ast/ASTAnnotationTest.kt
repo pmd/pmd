@@ -96,7 +96,7 @@ class ASTAnnotationTest : ParserTestSpec({
                         shorthandMemberValue {
                             child<ASTMemberValueArrayInitializer> {
                                 child<ASTFieldAccess> {
-                                    it::getFieldName shouldBe "PI"
+                                    it::getName shouldBe "PI"
                                     ambiguousName("java.lang.Math")
                                 }
                             }

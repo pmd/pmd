@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -23,7 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode {
+public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifiableExpression, LeftRecursiveNode {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -55,7 +53,16 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      */
     @Override
     public @Nullable ASTExpression getQualifier() {
-        return QualifierOwner.super.getQualifier();
+        return QualifiableExpression.super.getQualifier();
+    }
+
+    /**
+     * Returns true if this constructor call uses the diamond operator,
+     * eg {@code new ArrayList<>()}.
+     */
+    public boolean isDiamond() {
+        ASTTypeArguments targs = getTypeNode().getTypeArguments();
+        return targs != null && targs.isDiamond();
     }
 
     @Nullable

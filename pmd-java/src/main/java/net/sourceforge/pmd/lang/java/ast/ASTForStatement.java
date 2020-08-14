@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTForStatement extends AbstractStatement {
+public final class ASTForStatement extends AbstractStatement implements ASTLoopStatement {
 
     ASTForStatement(int id) {
         super(id);

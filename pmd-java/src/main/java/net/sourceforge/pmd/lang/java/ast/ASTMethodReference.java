@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * Method or constructor reference expression.
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode {
+public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, QualifiableExpression, LeftRecursiveNode {
 
     ASTMethodReference(int id) {
         super(id);
@@ -56,9 +56,8 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * <p>Note that if this is a {@linkplain #isConstructorReference() constructor reference},
      * then this can only return a {@linkplain ASTTypeExpression type expression}.
      */
-    @NonNull
     @Override
-    public ASTExpression getQualifier() {
+    public @NonNull ASTExpression getQualifier() {
         return (ASTExpression) getChild(0);
     }
 
@@ -68,21 +67,24 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * Type arguments mentioned before the "::", if any, are contained within
      * the {@linkplain #getQualifier() lhs type}.
      */
-    @Nullable
-    public ASTTypeArguments getExplicitTypeArguments() {
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
     /**
-     * Returns the method name, or an empty optional if this is a
-     * {@linkplain #isConstructorReference() constructor reference}.
+     * Returns the method name, or an {@link JConstructorSymbol#CTOR_NAME}
+     * if this is a {@linkplain #isConstructorReference() constructor reference}.
      */
-    @Nullable
-    public String getMethodName() {
-        return isConstructorReference() ? null : getImage();
+    public @NonNull String getMethodName() {
+        return super.getImage();
     }
 
+    @Deprecated
+    @Override
+    public @Nullable String getImage() {
+        return null;
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
