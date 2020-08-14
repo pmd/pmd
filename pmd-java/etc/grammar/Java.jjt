@@ -478,6 +478,21 @@ public class JavaParser {
     return (jdkVersion == 14 || jdkVersion == 15) && preview;
   }
 
+  private boolean isRecordDeclarationAhead() {
+    int amount = 1;
+    while (amount < 10) {
+        Token next = getToken(amount);
+        if (next.kind == IDENTIFIER && "record".equals(next.image)) {
+            return true;
+        }
+        // stop looking ahead at "=" or ";" or "{"
+        if (next.kind == ASSIGN || next.kind == LBRACE || next.kind == SEMICOLON) {
+            return false;
+        }
+        amount++;
+    }
+    return false;
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1886,10 +1901,10 @@ void BlockStatement():
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 |
-  LOOKAHEAD(2147483647, ( "final" | Annotation() )* Type() <IDENTIFIER>, {isRecordTypeSupported() && !isKeyword("record") || !isRecordTypeSupported()})
+  LOOKAHEAD(2147483647, ( "final" | Annotation() )* Type() <IDENTIFIER>, {isRecordTypeSupported() && !isRecordDeclarationAhead() || !isRecordTypeSupported()})
   LocalVariableDeclaration() ";"
 |
-  LOOKAHEAD({isRecordTypeSupported() && !isKeyword("record") || !isRecordTypeSupported()})
+  LOOKAHEAD(1, {isRecordTypeSupported() && !isRecordDeclarationAhead() || !isRecordTypeSupported()})
   Statement()
 |
   // we don't need to lookahead further here

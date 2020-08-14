@@ -23,4 +23,15 @@ public class LocalRecords {
             .map(MerchantSales::merchant)
             .collect(Collectors.toList());
     }
+
+    void methodWithLocalRecordAndModifiers() {
+        final record MyRecord1(String a) {}
+        final static record MyRecord2(String a) {}
+        @Deprecated record MyRecord3(String a) {}
+        final @Deprecated static record MyRecord4(String a) {}
+    }
+
+    void methodWithLocalClass() {
+        class MyLocalClass {}
+    }
 }

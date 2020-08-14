@@ -160,7 +160,7 @@ public class Java15PreviewTest {
     public void localRecords() {
         ASTCompilationUnit compilationUnit = java15p.parseResource("LocalRecords.java");
         List<ASTRecordDeclaration> records = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class);
-        Assert.assertEquals(1, records.size());
+        Assert.assertEquals(5, records.size());
         Assert.assertEquals("MerchantSales", records.get(0).getSimpleName());
         Assert.assertTrue(records.get(0).isLocal());
     }
