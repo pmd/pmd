@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 import java.io.IOException;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
@@ -21,7 +25,10 @@ public class Records {
             this.real = real;
             this.imaginary = imaginary;
         }
+
         public record Nested(int a) {}
+
+        public static class NestedClass { }
     }
 
 

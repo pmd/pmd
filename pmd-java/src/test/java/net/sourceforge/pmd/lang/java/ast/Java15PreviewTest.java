@@ -50,6 +50,7 @@ public class Java15PreviewTest {
         ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
         Assert.assertEquals("Point", recordDecl.getImage());
         Assert.assertFalse(recordDecl.isNested());
+        Assert.assertFalse(recordDecl.isLocal());
         Assert.assertTrue("Records are implicitly always final", recordDecl.isFinal());
         List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
                                                         .findChildrenOfType(ASTRecordComponent.class);
@@ -101,9 +102,10 @@ public class Java15PreviewTest {
         Assert.assertTrue(complex.isNested());
         Assert.assertEquals(0, getComponent(complex, 0).findChildrenOfType(ASTAnnotation.class).size());
         Assert.assertEquals(1, getComponent(complex, 1).findChildrenOfType(ASTAnnotation.class).size());
-        Assert.assertEquals(2, complex.getDeclarations().size());
+        Assert.assertEquals(3, complex.getDeclarations().size());
         Assert.assertTrue(complex.getDeclarations().get(0).getChild(1) instanceof ASTConstructorDeclaration);
         Assert.assertTrue(complex.getDeclarations().get(1).getChild(0) instanceof ASTRecordDeclaration);
+        Assert.assertTrue(complex.getDeclarations().get(2) instanceof ASTClassOrInterfaceBodyDeclaration);
         Assert.assertTrue(complex.getParent() instanceof ASTClassOrInterfaceBodyDeclaration);
         ASTClassOrInterfaceBodyDeclaration complexParent = complex.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
         Assert.assertEquals(DeclarationKind.RECORD, complexParent.getKind());
@@ -152,5 +154,14 @@ public class Java15PreviewTest {
     @Test(expected = ParseException.class)
     public void recordIsARestrictedIdentifier() {
         java15p.parse("public class record {}");
+    }
+
+    @Test
+    public void localRecords() {
+        ASTCompilationUnit compilationUnit = java15p.parseResource("LocalRecords.java");
+        List<ASTRecordDeclaration> records = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class);
+        Assert.assertEquals(1, records.size());
+        Assert.assertEquals("MerchantSales", records.get(0).getSimpleName());
+        Assert.assertTrue(records.get(0).isLocal());
     }
 }

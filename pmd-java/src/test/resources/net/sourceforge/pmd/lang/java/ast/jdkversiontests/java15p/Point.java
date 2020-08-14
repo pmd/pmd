@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
  */

@@ -3,6 +3,7 @@
  * Promote text blocks as a permanent language features with Java 15.
  * Support Pattern Matching for instanceof with Java 15 Preview.
  * Support Records with Java 15 Preview.
+ * Support Local Records with Java 15 Preview.
  * Andreas Dangel 08/2020
  *====================================================================
  * Add support for record types introduced as a preview language
@@ -468,9 +469,13 @@ public class JavaParser {
   }
 
   private void checkForRecordType() {
-    if (jdkVersion != 14 && jdkVersion != 15 || !preview) {
+    if (!isRecordTypeSupported()) {
       throwParseException("Records are only supported with Java 14 Preview and Java 15 Preview");
     }
+  }
+
+  private boolean isRecordTypeSupported() {
+    return (jdkVersion == 14 || jdkVersion == 15) && preview;
   }
 
 
@@ -1881,22 +1886,25 @@ void BlockStatement():
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 |
-  LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
+  LOOKAHEAD(2147483647, ( "final" | Annotation() )* Type() <IDENTIFIER>, {isRecordTypeSupported() && !isKeyword("record") || !isRecordTypeSupported()})
   LocalVariableDeclaration() ";"
 |
+  LOOKAHEAD({isRecordTypeSupported() && !isKeyword("record") || !isRecordTypeSupported()})
   Statement()
 |
   // we don't need to lookahead further here
   // the ambiguity between start of local class and local variable decl
-  // is already handled in the lookahead guarding LocalVariableDeclaration above.
-  LocalClassDecl()
+  // and start of local record and local variable decl or statement
+  // is already handled in the lookahead guarding LocalVariableDeclaration
+  // and Statement above.
+  LocalClassOrRecordDecl()
 }
 
-void LocalClassDecl() #void:
+void LocalClassOrRecordDecl() #void:
 {int mods = 0;}
 {
-    // this preserves the modifiers of the local class.
-    // it allows for modifiers that are forbidden for local classes,
+    // this preserves the modifiers of the local class or record.
+    // it allows for modifiers that are forbidden for local classes and records,
     // but anyway we are *not* checking modifiers for incompatibilities
     // anywhere else in this grammar (and indeed the production Modifiers
     // accepts any modifier explicitly for the purpose of forgiving modifier errors,
@@ -1905,7 +1913,11 @@ void LocalClassDecl() #void:
     // In particular, it unfortunately allows local class declarations to start
     // with a "default" modifier, which introduces an ambiguity with default
     // switch labels. This is guarded by a custom lookahead around SwitchLabel
-    mods=Modifiers() ClassOrInterfaceDeclaration(mods)
+    mods=Modifiers()
+    (
+        LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods)
+        | ClassOrInterfaceDeclaration(mods)
+    )
 }
 
 /*

@@ -63,6 +63,10 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return true;
     }
 
+    public boolean isLocal() {
+        return getParent() instanceof ASTBlockStatement;
+    }
+
     /**
      * @deprecated Renamed to {@link #getRecordComponents()}
      */
