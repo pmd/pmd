@@ -273,6 +273,9 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
                                 variableAccess("s") {
                                     it.typeMirror shouldBe t_Scratch
                                 }
+                                classType("WithField") {
+                                    it.typeMirror shouldBe t_WithField
+                                }
                                 argList(0)
                             }
                         }

@@ -148,7 +148,7 @@ final class TypesFromAst {
         if (typeArguments != null) {
             if (typeArguments.isDiamond()) {
                 // todo should be set to the inferred type! later
-                return ts.rawType(reference);
+                return ts.declaration((JClassSymbol) reference);
             } else {
                 final List<JTypeMirror> boundGenerics = new ArrayList<>(typeArguments.getNumChildren());
                 for (ASTType t : typeArguments) {

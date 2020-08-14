@@ -160,6 +160,14 @@ public final class InternalApiBridge {
         }
     }
 
+    public static boolean hasReferenceBeenResolved(ASTClassOrInterfaceType t) {
+        return t.getReferencedSym() != null;
+    }
+
+    public static JavaAstProcessor getProcessor(JavaNode n) {
+        return n.getRoot().getLazyTypeResolver().getProcessor();
+    }
+
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }

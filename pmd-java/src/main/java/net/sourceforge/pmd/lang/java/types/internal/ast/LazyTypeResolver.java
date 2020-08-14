@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -39,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
@@ -85,12 +87,18 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
     private final TypeSystem ts;
     private final PolyResolution polyResolution;
     private final JClassType stringType;
+    private final JavaAstProcessor processor;
 
 
     public LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
         this.polyResolution = new PolyResolution(new Infer(ts, processor.getJdkVersion(), logger));
         this.stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
+        this.processor = processor;
+    }
+
+    public JavaAstProcessor getProcessor() {
+        return processor;
     }
 
     public TypeSystem getTypeSystem() {
@@ -106,6 +114,16 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
     @Override
     public JTypeMirror visit(ASTVariableDeclarator node, Void data) {
         return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
+    }
+
+    @Override
+    public JTypeMirror visit(ASTName node, Void data) {
+        return ts.NO_TYPE; // TODO shouldn't be a typenode (basically an AmbiguousName)
+    }
+
+    @Override
+    public JTypeMirror visit(ASTCompilationUnit node, Void data) {
+        return ts.NO_TYPE; // TODO shouldn't be a typenode
     }
 
     @Override
@@ -436,7 +454,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context
                 ASTLambdaExpression lambda = id.ancestors(ASTLambdaExpression.class).firstOrThrow();
-                lambda.getTypeMirror(); // force resolution
+                lambda.getTypeMirror(); // force resolution, noop if we're already doing its resolution
             }
         }
 

@@ -216,8 +216,28 @@ class StandaloneTypesTest : ProcessorTestSpec({
             }
 
         }
+    }
 
+    parserTest("Test unboxed foreach parameter") {
+        inContext(StatementParsingCtx) {
+            """
+            {
+                List<Integer> l = java.util.Collections.emptyList();
+                for (int controller : list);
+            }
+        """ should parseAs {
+                block {
+                    localVarDecl()
+                    foreachLoop {
+                        it.varId.typeMirror.isPrimitive(INT) shouldBe true
 
+                        localVarDecl()
+                        variableAccess("list")
+                        emptyStatement()
+                    }
+                }
+            }
+        }
     }
 
 })

@@ -210,3 +210,9 @@ class O {
 }
 
  */
+
+/* TODO test bridge method execution filtering
+    In AsmLoaderTest
+
+
+ */
