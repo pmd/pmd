@@ -258,7 +258,7 @@ public final class Infer {
     private boolean isReturnTypeFinished(JMethodSig m) {
         return !isAdaptedConsType(m)
             // this means that the invocation type cannot be affected by context type
-            && !TypeOps.mentionsAnyTvar(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters());
+            && !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters());
     }
 
     private boolean isAdaptedConsType(JMethodSig m) {
@@ -275,7 +275,7 @@ public final class Infer {
             return var;
         });
 
-        assert !TypeOps.mentionsAnyTvar(t.getReturnType(), t.getTypeParameters())
+        assert !TypeOps.mentionsAny(t.getReturnType(), t.getTypeParameters())
             : " Method return type mentions type params: " + t;
 
         return true;

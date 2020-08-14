@@ -242,7 +242,7 @@ final class ExprOps {
                 // same as the generic method.
                 JClassType lhsClass = (JClassType) candidate.getDeclaringType();
                 JMethodSig unerased = candidate.internalApi().withOwner(lhsClass.getGenericTypeDeclaration()).internalApi().originalMethod();
-                if (TypeOps.mentionsAnyTvar(unerased, lhsClass.getFormalTypeParams())) {
+                if (TypeOps.mentionsAny(unerased, lhsClass.getFormalTypeParams())) {
                     return null;
                 }
             }

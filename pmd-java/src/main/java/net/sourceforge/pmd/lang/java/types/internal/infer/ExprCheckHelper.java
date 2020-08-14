@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areSameTypes;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
-import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAnyTvar;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -239,10 +239,10 @@ final class ExprCheckHelper {
         // at least one of the method's type parameters, then:
         if (mref.getExplicitTypeArguments().isEmpty()
             && ctdecl.isGeneric()
-            && mentionsAnyTvar(ctdecl.internalApi().adaptedMethod().getReturnType(), ctdecl.getTypeParameters())) {
+            && TypeOps.mentionsAny(ctdecl.internalApi().adaptedMethod().getReturnType(), ctdecl.getTypeParameters())) {
 
             // If R mentions one of the type parameters of the function type, the constraint reduces to false.
-            if (mentionsAnyTvar(r, fun.getTypeParameters())) {
+            if (TypeOps.mentionsAny(r, fun.getTypeParameters())) {
                 // Rationale from JLS
                 // In this case, a constraint in terms of R might lead an inference variable to
                 // be bound by an out-of-scope type variable. Since instantiating an inference

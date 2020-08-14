@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAnyTvar;
-
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -41,7 +39,7 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
                                          .getMethodType();
 
         if (!ctdecl.getTypeParameters().isEmpty()
-            && mentionsAnyTvar(ctdecl.getReturnType(), ctdecl.getTypeParameters())) {
+            && TypeOps.mentionsAny(ctdecl.getReturnType(), ctdecl.getTypeParameters())) {
             return null;
         }
 

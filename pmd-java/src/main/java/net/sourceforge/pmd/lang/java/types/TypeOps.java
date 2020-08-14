@@ -830,7 +830,7 @@ public final class TypeOps {
 
                     TypeSystem ts = t.getTypeSystem();
                     if (u != ts.OBJECT
-                        && (mentionsAnyTvar(bi, formals) || !bi.isSubtypeOf(u))) {
+                        && (mentionsAny(bi, formals) || !bi.isSubtypeOf(u))) {
                         newTargs.add(ts.wildcard(true, u));
                     } else {
                         JTypeMirror down = ai.acceptVisitor(DOWNWARDS_PROJECTOR, null);
@@ -1162,7 +1162,7 @@ public final class TypeOps {
             if (ai instanceof JWildcardType) {
                 JTypeVar pi = tparams.get(i);
                 JTypeMirror bi = pi.getUpperBound();
-                if (mentionsAnyTvar(bi, new HashSet<>(tparams))) {
+                if (mentionsAny(bi, new HashSet<JTypeVar>(tparams))) {
                     return null;
                 }
 
@@ -1421,33 +1421,17 @@ public final class TypeOps {
 
 
     public static boolean mentions(@NonNull JTypeVisitable type, @NonNull JInferenceVar parent) {
-        try {
-            return type.acceptVisitor(MentionsVisitor.IVAR_VISITOR, Collections.singleton(parent));
-        } catch (StackOverflowError e) {
-            return false;
-        }
+        return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
     }
 
-    // for inference vars
-    public static boolean mentionsAny(JTypeVisitable t, Collection<? extends JInferenceVar> vars) {
-        return !vars.isEmpty() && t.acceptVisitor(MentionsVisitor.IVAR_VISITOR, vars);
-    }
-
-    public static boolean mentionsAnyTvar(JTypeVisitable t, Collection<? extends JTypeVar> vars) {
-        return !vars.isEmpty() && t.acceptVisitor(MentionsVisitor.TVAR_VISITOR, vars);
+    public static boolean mentionsAny(JTypeVisitable t, Collection<? extends SubstVar> vars) {
+        return !vars.isEmpty() && t.acceptVisitor(MentionsVisitor.INSTANCE, vars);
     }
 
 
     private static final class MentionsVisitor implements JTypeVisitor<Boolean, Collection<? extends JTypeMirror>> {
 
-        static final MentionsVisitor TVAR_VISITOR = new MentionsVisitor(true);
-        static final MentionsVisitor IVAR_VISITOR = new MentionsVisitor(false);
-
-        private final boolean isTvar;
-
-        private MentionsVisitor(boolean isTvar) {
-            this.isTvar = isTvar;
-        }
+        static final MentionsVisitor INSTANCE = new MentionsVisitor();
 
         @Override
         public Boolean visit(JTypeMirror t, Collection<? extends JTypeMirror> targets) {
@@ -1456,23 +1440,17 @@ public final class TypeOps {
 
         @Override
         public Boolean visitTypeVar(JTypeVar t, Collection<? extends JTypeMirror> targets) {
-            if (isTvar) {
-                return targets.contains(t);
-            }
-            //t.getUpperBound().acceptVisitor(this, targets);
-            // this causes infinite loops eg with types like the type var
-            // <E extends Enum<E>>
-            return false;
+            return targets.contains(t);
+        }
+
+        @Override
+        public Boolean visitInferenceVar(JInferenceVar t, Collection<? extends JTypeMirror> targets) {
+            return targets.contains(t);
         }
 
         @Override
         public Boolean visitWildcard(JWildcardType t, Collection<? extends JTypeMirror> targets) {
             return t.getBound().acceptVisitor(this, targets);
-        }
-
-        @Override
-        public Boolean visitInferenceVar(JInferenceVar t, Collection<? extends JTypeMirror> targets) {
-            return !isTvar && targets.contains(t);
         }
 
         @Override

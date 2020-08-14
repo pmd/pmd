@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -125,7 +124,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     static JTypeMirror eraseToRaw(JTypeMirror m, Substitution typeSubst) {
-        if (TypeOps.mentionsAnyTvar(m, (Set<JTypeVar>) (Set) typeSubst.getMap().keySet())) {
+        if (TypeOps.mentionsAny(m, typeSubst.getMap().keySet())) {
             return m.getErasure();
         } else {
             // less brutal than erasure,
