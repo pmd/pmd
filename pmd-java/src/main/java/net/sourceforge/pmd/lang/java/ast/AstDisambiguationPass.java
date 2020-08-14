@@ -342,16 +342,7 @@ final class AstDisambiguationPass {
                 }
 
                 if (type.getReferencedSym() == null) {
-                    JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
-                    if (sym == null) {
-                        processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
-                        sym = setArity(type, processor, type.getSimpleName());
-                    } else {
-                        if (sym.isUnresolved()) {
-                            sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
-                        }
-                    }
-                    type.setSymbol(sym);
+                    setClassSymbolFallback(type, ctx, processor);
                 }
             }
 
@@ -359,6 +350,19 @@ final class AstDisambiguationPass {
 
             postProcess(type, processor);
             return null;
+        }
+
+        private static void setClassSymbolFallback(ASTClassOrInterfaceType type, ReferenceCtx ctx, JavaAstProcessor processor) {
+            JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
+            if (sym == null) {
+                processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
+                sym = setArity(type, processor, type.getSimpleName());
+            } else {
+                if (sym.isUnresolved()) {
+                    sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
+                }
+            }
+            type.setSymbol(sym);
         }
 
         private void postProcess(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
@@ -377,8 +381,7 @@ final class AstDisambiguationPass {
             }
         }
 
-        @NonNull
-        private JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, JavaAstProcessor processor, String canonicalName) {
+        private static @NonNull JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, JavaAstProcessor processor, String canonicalName) {
             int arity = ASTList.orEmpty(type.getTypeArguments()).size();
             return processor.makeUnresolvedReference(canonicalName, arity);
         }

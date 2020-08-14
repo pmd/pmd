@@ -106,7 +106,6 @@ public final class TypeSystem {
      * a method declaration in the type {@link #UNRESOLVED_TYPE},
      * returning {@link #UNRESOLVED_TYPE}.
      */
-    // TODO it doesn't need to be declared in UNRESOLVED_TYPE
     public final JMethodSig UNRESOLVED_METHOD = new UnresolvedMethodSig(this);
 
     /**
