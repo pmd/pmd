@@ -30,7 +30,8 @@ public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
 
     /**
      * Returns true if this is a diamond, that is, the
-     * actual type arguments are inferred.
+     * actual type arguments are inferred. In this case
+     * this list has no children.
      */
     public boolean isDiamond() {
         return size() == 0;

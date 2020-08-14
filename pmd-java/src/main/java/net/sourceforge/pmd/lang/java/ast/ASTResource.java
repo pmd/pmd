@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * A resource of a {@linkplain try-with-resources}. This contains another
+ * A resource of a {@linkplain ASTTryStatement try-with-resources}. This contains another
  * node that represents the resource, according to the grammar below.
  *
  * <p>In the case of concise try-with resources, the subexpressions are
@@ -67,7 +67,7 @@ public final class ASTResource extends AbstractJavaNode {
             }
             return builder.toString();
         } else {
-            return asLocalVariableDeclaration().iterator().next().getVariableName();
+            return asLocalVariableDeclaration().iterator().next().getName();
         }
     }
 
