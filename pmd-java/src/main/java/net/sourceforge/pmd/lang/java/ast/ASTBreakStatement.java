@@ -45,7 +45,7 @@ public final class ASTBreakStatement extends AbstractStatement {
     /**
      * Returns the statement that is the target of this break. This is
      * most commonly a loop, or a switch statement (but any statement
-     * may be labeled).
+     * may be labeled). This may return null if the code is invalid.
      */
     public ASTStatement getTarget() {
         String myLabel = this.getLabel();

@@ -257,6 +257,11 @@ fun TreeNodeWrapper<Node, *>.emptyStatement(contents: NodeSpec<ASTEmptyStatement
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.ifStatement(contents: NodeSpec<ASTIfStatement> = EmptyAssertions) =
+        child<ASTIfStatement>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
         child<ASTForStatement> {
             val body = body()
@@ -311,6 +316,18 @@ fun TreeNodeWrapper<Node, *>.breakStatement(label: String? = null, contents: Nod
         child<ASTBreakStatement>(ignoreChildren = contents == EmptyAssertions) {
             it::getLabel shouldBe label
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.continueStatement(label: String? = null, contents: NodeSpec<ASTContinueStatement> = EmptyAssertions) =
+        child<ASTContinueStatement>(ignoreChildren = contents == EmptyAssertions) {
+            it::getLabel shouldBe label
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.labeledStatement(label: String, contents: ValuedNodeSpec<ASTLabeledStatement, ASTStatement>) =
+        child<ASTLabeledStatement>(ignoreChildren = contents == EmptyAssertions) {
+            it::getLabel shouldBe label
+            it::getStatement shouldBe contents()
         }
 
 fun TreeNodeWrapper<Node, *>.yieldStatement(contents: ValuedNodeSpec<ASTYieldStatement, ASTExpression?> = {null}) =
