@@ -61,6 +61,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -422,8 +424,22 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
         @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
         if (result == null) {
-            return ts.UNRESOLVED_TYPE;
+            return ts.UNRESOLVED_TYPE; // type of an out-of-scope field
         }
+
+        JVariableSymbol symbol = result.getSymbol();
+        if (symbol instanceof JLocalVariableSymbol) {
+            ASTVariableDeclaratorId id = symbol.tryGetNode();
+            assert id != null : "Expected a local declaration";
+            if (id.isLambdaParameter()) {
+                // then the type of the parameter depends on the type
+                // of the lambda, which most likely depends on the overload
+                // resolution of an enclosing invocation context
+                ASTLambdaExpression lambda = id.ancestors(ASTLambdaExpression.class).firstOrThrow();
+                lambda.getTypeMirror(); // force resolution
+            }
+        }
+
         return TypeConversion.capture(result.getTypeMirror());
     }
 

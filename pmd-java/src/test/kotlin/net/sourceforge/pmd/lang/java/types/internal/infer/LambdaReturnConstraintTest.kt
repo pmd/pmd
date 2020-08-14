@@ -235,7 +235,7 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("!Test lambda with field access in return expression (inner ctor call)") {
+    parserTest("Test lambda with field access in return expression (inner ctor call)") {
         val acu = parser.parse("""
             import java.util.function.Function;
 
@@ -263,7 +263,6 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
 
         fooCall.shouldMatchN {
             methodCall("foo") {
-                it.methodType.symbol shouldBe foo.symbol
                 argList {
                     exprLambda {
                         lambdaFormals(1)
@@ -279,11 +278,12 @@ class LambdaReturnConstraintTest : ProcessorTestSpec({
                         }
                     }
                 }
+                it.methodType.symbol shouldBe foo.symbol // ask after asking for type of inner
             }
         }
     }
 
-    parserTest("!Test lambda with field access in return expression (method call)") {
+    parserTest("Test lambda with field access in return expression (method call)") {
         val acu = parser.parse("""
             import java.util.function.Function;
 

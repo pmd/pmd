@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -56,17 +55,7 @@ final class TypesFromAst {
             return null;
         }
 
-        if (InternalApiBridge.getTypeMirrorInternal(node) == ts.UNRESOLVED_TYPE) {
-            return ts.UNRESOLVED_TYPE;
-        }
-
-        try {
-            return fromAstImpl(ts, lexicalSubst, node);
-        } catch (Exception | AssertionError e) {
-            InternalApiBridge.setTypeMirrorInternal(node, ts.UNRESOLVED_TYPE);
-            throw new ContextedRuntimeException(e)
-                .addContextValue("node:", node);
-        }
+        return fromAstImpl(ts, lexicalSubst, node);
     }
 
     public static JTypeMirror fromAstImpl(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
@@ -132,32 +121,34 @@ final class TypesFromAst {
         JTypeDeclSymbol reference = node.getReferencedSym();
         assert reference != null : "Null reference for " + node + " in " + node.getParent();
 
-        if (enclosing != null
-            && (!(enclosing instanceof JClassType)
-            || Modifier.isStatic(reference.getModifiers()))) {
-            // already reported elsewhere
-            enclosing = null;
-        }
-        if (enclosing == null
-            && reference instanceof JClassSymbol
-            && reference.getEnclosingClass() != null
-            && !Modifier.isStatic(reference.getModifiers())
-        ) {
-            // todo this should be ensured to happen only inside the body of
-            // the declaration, otherwise type variables may leak
-            enclosing = ts.declaration(reference.getEnclosingClass());
-        }
-
-
         if (reference instanceof JTypeParameterSymbol) {
             return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
         }
 
-        ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
+        if (enclosing != null && !shouldEnclose(enclosing, reference)) {
+            // It's possible to write Map.Entry<A,B> but Entry is a static type,
+            // so we should ignore the "enclosing" Map
+            enclosing = null;
+        } else if (enclosing == null && needsEnclosing(reference)) {
+            // class Foo<T> {
+            //      class Inner {}
+            //      void bar(Inner k) {}
+            //               ^^^^^
+            //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
+            // }
+            //
+            // Todo this should be ensured to happen only inside the body of
+            //  the declaration, otherwise type variables may leak. (Should be
+            //  done in disambiguation pass?)
+            enclosing = ts.declaration(reference.getEnclosingClass());
+        }
 
-        if (typeArguments != null && reference instanceof JClassSymbol) {
+        ASTTypeArguments typeArguments = node.getTypeArguments();
+
+        if (typeArguments != null) {
             if (typeArguments.isDiamond()) {
-                return ts.declaration((JClassSymbol) reference); // a generic type declaration
+                // todo should be set to the inferred type! later
+                return ts.rawType(reference);
             } else {
                 final List<JTypeMirror> boundGenerics = new ArrayList<>(typeArguments.getNumChildren());
                 for (ASTType t : typeArguments) {
@@ -177,5 +168,18 @@ final class TypesFromAst {
         } else {
             return ts.rawType(reference);
         }
+    }
+
+    // Whether the reference needs an enclosing type if it is unqualified
+    private static boolean needsEnclosing(JTypeDeclSymbol reference) {
+        return reference instanceof JClassSymbol
+            && reference.getEnclosingClass() != null
+            && !Modifier.isStatic(reference.getModifiers());
+    }
+
+    // Whether the reference is a non-static inner type of the enclosing type
+    // Note most checks have already been done in the disambiguation pass (including reporting)
+    private static boolean shouldEnclose(@NonNull JTypeMirror enclosing, JTypeDeclSymbol reference) {
+        return enclosing instanceof JClassType && !Modifier.isStatic(reference.getModifiers());
     }
 }

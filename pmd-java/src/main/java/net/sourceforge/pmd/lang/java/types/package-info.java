@@ -153,3 +153,60 @@ public class Date {
 
     See ignored ("!") tests in LambdaReturnConstraintTest
  */
+
+/* TODO inner types can be inherited
+    Test that ClassTypeImpl doesn't throw on #selectInner, and disambig doesn't report an error
+
+class Scratch<T> {
+    class I {}
+}
+
+class Sub<T> extends Scratch<T> {}
+
+
+class O {
+    {
+        // this is well formed!!
+        // Sub<String>.I is an alias for Scratch<String>.I
+        Sub<String>.I inner = new Scratch<String>().new I();
+
+        // Note the following is not ok
+        // new Scratch<String>().new Scratch.I();
+        // The name of the inner class must be unqualified
+
+    }
+}
+
+---- Other test
+
+class Scratch<T> {
+    class Inner {}
+}
+
+class Sub<T> extends Scratch<String> {
+
+    void foo(Inner i) {}
+    //       ^^^^^
+    //       This is shorthand for Scratch<String>.Inner
+
+}
+
+ */
+
+/* TODO possibly, the type node for a diamond should have the parameterized
+    type, for now it's a raw type (and untested)
+    See TypesFromAst
+
+import java.util.ArrayList;
+
+class O {
+    {
+        List<String> l = new ArrayList<>();
+        //                   -----------
+        //                   this node has a raw type, maybe it should have type ArrayList<String>
+
+        // Note that the whole expression has type ArrayList<String> after inference
+    }
+}
+
+ */
