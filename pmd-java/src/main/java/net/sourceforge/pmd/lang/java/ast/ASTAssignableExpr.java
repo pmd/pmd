@@ -33,8 +33,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
      * or as the target of an {@linkplain ASTUnaryExpression increment or decrement expression},
      * this method returns {@link AccessType#WRITE}. Otherwise the value is just {@linkplain AccessType#READ read}.
      */
-    @NonNull
-    default AccessType getAccessType() {
+    default @NonNull AccessType getAccessType() {
 
         Node parent = this.getParent();
 
@@ -44,6 +43,27 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         }
 
         return AccessType.READ;
+    }
+
+    /**
+     * An {@linkplain ASTAssignableExpr assignable expression} that has
+     * a name, and refers to a symbol.
+     *
+     * <pre class="grammar">
+     *
+     * NamedAssignableExpr ::= {@link ASTVariableAccess VariableAccess}
+     *                       | {@link ASTFieldAccess FieldAccess}
+     *
+     * </pre>
+     */
+    interface ASTNamedAssignableExpr extends ASTAssignableExpr {
+
+
+        /**
+         * Returns the name of the referenced variable.
+         */
+        String getName();
+
     }
 
 

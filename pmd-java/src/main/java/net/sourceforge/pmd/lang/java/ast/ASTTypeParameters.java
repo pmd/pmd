@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- * TypeParameters ::= "<" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
+ * TypeParameters ::= "&lt;" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* "&gt;"
  *
  * </pre>
  */

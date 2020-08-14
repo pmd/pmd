@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -17,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner {
+public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifiableExpression {
     ASTArrayAccess(int id) {
         super(id);
     }

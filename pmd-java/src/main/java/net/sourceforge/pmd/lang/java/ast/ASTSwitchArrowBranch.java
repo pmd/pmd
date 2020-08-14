@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * SwitchLabeledExpression ::= {@link ASTSwitchLabel SwitchLabel} "->" {@link ASTSwitchArrowRHS SwitchArrowRHS}
+ * SwitchLabeledExpression ::= {@link ASTSwitchLabel SwitchLabel} "-&gt;" {@link ASTSwitchArrowRHS SwitchArrowRHS}
  *
  * </pre>
  */

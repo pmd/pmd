@@ -440,7 +440,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
 
     @Override
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
-        @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getVariableName());
+        @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getName());
         if (result == null) {
             return ts.UNRESOLVED_TYPE; // type of an out-of-scope field
         }
@@ -463,7 +463,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JType
 
     @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
-        JVariableSig sig = TypeConversion.capture(node.getQualifier().getTypeMirror()).getField(node.getFieldName());
+        JVariableSig sig = TypeConversion.capture(node.getQualifier().getTypeMirror()).getField(node.getName());
         return sig != null ? sig.getTypeMirror() : ts.UNRESOLVED_TYPE;
     }
 

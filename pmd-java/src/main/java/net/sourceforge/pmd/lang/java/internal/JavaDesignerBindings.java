@@ -17,10 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
@@ -142,26 +144,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visit(ASTMethodCall node, Void data) {
-            return new Attribute(node, "MethodName", node.getMethodName());
-        }
-
-        @Override
-        public Attribute visit(ASTMethodReference node, Void data) {
-            return new Attribute(node, "MethodName", node.getMethodName());
-        }
-
-        @Override
-        public Attribute visit(ASTFieldAccess node, Void data) {
-            return new Attribute(node, "FieldName", node.getFieldName());
-        }
-
-        @Override
-        public Attribute visit(ASTVariableAccess node, Void data) {
-            return new Attribute(node, "VariableName", node.getVariableName());
-        }
-
-        @Override
         public Attribute visit(ASTAnnotation node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
@@ -175,6 +157,27 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         public Attribute visit(ASTPrimitiveType node, Void data) {
             return new Attribute(node, "Kind", node.getKind().getSimpleName());
         }
+
+        @Override
+        public Attribute visit(ASTMethodCall node, Void data) {
+            return new Attribute(node, "MethodName", node.getMethodName());
+        }
+
+        @Override
+        public Attribute visit(ASTMethodReference node, Void data) {
+            return new Attribute(node, "MethodName", node.getMethodName());
+        }
+
+        @Override
+        public Attribute visit(ASTFieldAccess node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTVariableAccess node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
 
         @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {

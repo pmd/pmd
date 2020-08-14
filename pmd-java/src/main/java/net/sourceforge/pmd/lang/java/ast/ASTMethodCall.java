@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
@@ -24,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  */
 public final class ASTMethodCall extends AbstractJavaExpr
     implements ASTPrimaryExpression,
-               QualifierOwner,
+               QualifiableExpression,
                InvocationNode {
 
     private JMethodSig methodType;

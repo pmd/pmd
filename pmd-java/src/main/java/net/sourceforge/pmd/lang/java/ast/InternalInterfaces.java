@@ -58,24 +58,6 @@ final class InternalInterfaces {
     }
 
     /**
-     * Node that may be qualified by an expression, e.g. an instance method call or
-     * inner class constructor invocation. This also works for {@link ASTExplicitConstructorInvocation}
-     * which is why this interface does not implement {@link ASTExpression}.
-     */
-    interface QualifierOwner extends JavaNode {
-
-        /**
-         * Returns the expression to the left of the "." if it exists.
-         * This may be a {@link ASTTypeExpression type expression}, or
-         * an {@link ASTAmbiguousName ambiguous name}.
-         */
-        @Nullable
-        default ASTExpression getQualifier() {
-            return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
-        }
-    }
-
-    /**
      * Tags a node that has at least one child, then some methods never
      * return null.
      */

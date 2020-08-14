@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner {
+public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner, ASTLoopStatement {
 
     ASTForeachStatement(int id) {
         super(id);

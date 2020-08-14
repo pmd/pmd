@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
@@ -24,7 +23,8 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * </pre>
  */
-public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode implements InvocationNode, QualifierOwner, ASTStatement {
+public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
+    implements InvocationNode, ASTStatement {
 
     private boolean isSuper;
     private JMethodSig methodType;
@@ -96,9 +96,8 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
      * constructor invocation}.
      */
     @Nullable
-    @Override
     public ASTExpression getQualifier() {
-        return QualifierOwner.super.getQualifier();
+        return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
 
 

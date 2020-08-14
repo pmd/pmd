@@ -38,11 +38,13 @@ class ASTStatementsTest : ParserTestSpec({
             """
                  for (@Nullable final Integer i : new Iter<>()) {
                  
-                 
+                    continue;
                  }
             """ should parseAs {
 
                 foreachLoop {
+
+                    val foreach = it
 
                     localVarDecl {
                         it::getModifiers shouldBe modifiers {
@@ -56,7 +58,11 @@ class ASTStatementsTest : ParserTestSpec({
 
                     it::getIterableExpr shouldBe constructorCall()
 
-                    block()
+                    block {
+                        continueStatement {
+                            it::getTarget shouldBe foreach
+                        }
+                    }
                 }
             }
         }
@@ -131,6 +137,57 @@ class ASTStatementsTest : ParserTestSpec({
                     forLoop()
                     foreachLoop()
                     exprStatement()
+                }
+            }
+        }
+    }
+
+    parserTest("Labeled statements") {
+
+        inContext(StatementParsingCtx) {
+
+            """
+               {
+                 l: for (;;) {
+                    i: for (;;)
+                        if (true || false)
+                            break l;
+                        else
+                            continue i;
+                 }
+
+                 for (Integer i : new Iter<>())
+                    break l;
+               }
+            """ should parseAs {
+                block {
+                    labeledStatement("l") {
+                        forLoop {
+                            val loopL = it
+                            block {
+                                labeledStatement("i") {
+                                    forLoop {
+                                        val loopI = it;
+                                        ifStatement {
+                                            it::getCondition shouldBe unspecifiedChild()
+                                            it::getThenBranch shouldBe breakStatement("l") {
+                                                it::getTarget shouldBe loopL
+                                            }
+                                            it::getElseBranch shouldBe continueStatement("i") {
+                                                it::getTarget shouldBe loopI
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreachLoop {
+                        unspecifiedChildren(2)
+                        breakStatement("l") {
+                            it::getTarget shouldBe null // invalid code
+                        }
+                    }
                 }
             }
         }

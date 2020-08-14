@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
@@ -27,7 +24,11 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode, InvocationNode {
+public final class ASTConstructorCall extends AbstractJavaExpr
+    implements ASTPrimaryExpression,
+               QualifiableExpression,
+               LeftRecursiveNode,
+               InvocationNode {
 
     private JMethodSig methodType;
     private boolean varargs;
@@ -62,7 +63,7 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      */
     @Override
     public @Nullable ASTExpression getQualifier() {
-        return QualifierOwner.super.getQualifier();
+        return QualifiableExpression.super.getQualifier();
     }
 
     /**
