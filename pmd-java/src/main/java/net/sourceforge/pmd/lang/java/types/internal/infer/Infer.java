@@ -499,7 +499,7 @@ public final class Infer {
         return !target.getInferenceContext().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
             && !(resultType instanceof JInferenceVar    //no eager instantiation is required (as per 18.5.2)
-            && needsEagerInstantiation((JInferenceVar) inferenceContext.mapToIVars(resultType), target.getExpectedType(), inferenceContext));
+            && needsEagerInstantiation((JInferenceVar) resultType, target.getExpectedType(), inferenceContext));
     }
 
     /**
@@ -523,7 +523,6 @@ public final class Infer {
         InferenceContext outerInfCtx = site.getInferenceContext();
 
         if (!infCtx.isGround(resultType) && !outerInfCtx.isEmpty() && resultType instanceof JClassType) {
-            // TODO we need to link the capture variables to the outer context
             JClassType resClass = capture((JClassType) resultType);
             resultType = resClass;
 

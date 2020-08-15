@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -18,13 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestSpec.GroupTestCtx.VersionedTe
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
-import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
-import java.util.function.BiFunction
-import java.util.function.BinaryOperator
 import java.util.function.Supplier
-import java.util.stream.Stream
 
 /**
  */
@@ -561,6 +556,48 @@ class MyMap<K, V> {
             }
         }
 
+    }
+
+
+
+    parserTest("Cast context doesn't constrain invocation type") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+class Scratch {
+
+    static <T> T id(T t) {
+        return t;
+    }
+    
+    static {
+        Comparable o = null;
+        // T := Object, and there's no error
+        o = (String) id(o);
+    }
+}
+
+        """.trimIndent())
+
+        val (t_Scratch) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+                with (it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "id",
+                            declaredIn = t_Scratch,
+                            withFormals = listOf(gen.t_Comparable),
+                            returning = gen.t_Comparable
+                    )
+                }
+
+                argList(1)
+            }
+        }
     }
 
 
