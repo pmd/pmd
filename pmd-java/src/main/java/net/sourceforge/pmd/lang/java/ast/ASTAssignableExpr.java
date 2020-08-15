@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -65,20 +66,22 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
          */
         String getName();
 
-        // TODO
+        // TODO, also figure out if it makes sense to have unresolved symbols for those
+        //  using null would be simpler...
 
         /**
          * Returns the signature of the referenced variable. This is
          * relevant for fields, as they may be inherited from some
          * parameterized supertype.
          */
-        JVariableSig getSignature();
+        @Nullable JVariableSig getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol + type with getTypeMirror and getReferencedSym
 
         /**
          * Returns the symbol referenced by this variable.
          */
-        default JVariableSymbol getReferencedSym() {
-            return getSignature().getSymbol();
+        default @Nullable JVariableSymbol getReferencedSym() {
+            JVariableSig sig = getSignature();
+            return sig == null ? null : sig.getSymbol();
         }
 
     }

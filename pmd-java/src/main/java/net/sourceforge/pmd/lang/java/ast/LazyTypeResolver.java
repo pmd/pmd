@@ -16,13 +16,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -393,10 +396,27 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     @Override
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
+        if (node.getParent() instanceof ASTSwitchLabel) {
+            // may be an enum constant, in which case symbol table doesn't help
+            ASTSwitchLike switchParent = node.ancestors(ASTSwitchLike.class).firstOrThrow();
+            JTypeMirror testedType = switchParent.getTestedExpression().getTypeMirror();
+            JTypeDeclSymbol testedSym = testedType.getSymbol();
+            if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
+                JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
+                if (enumConstant == null) {
+                    return ts.UNRESOLVED_TYPE;
+                } else {
+                    node.setTypedSym(ts.sigOf(testedType, enumConstant));
+                    return testedType;
+                }
+            } // fallthrough
+        }
+
         @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getName());
         if (result == null) {
             return ts.UNRESOLVED_TYPE; // type of an out-of-scope field
         }
+        node.setTypedSym(result);
 
         JVariableSymbol symbol = result.getSymbol();
         if (symbol instanceof JLocalVariableSymbol) {
@@ -416,7 +436,9 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
-        JVariableSig sig = TypeConversion.capture(node.getQualifier().getTypeMirror()).getField(node.getName());
+        JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
+        FieldSig sig = qualifierT.getField(node.getName());
+        node.setTypedSym(sig);
         return sig != null ? sig.getTypeMirror() : ts.UNRESOLVED_TYPE;
     }
 

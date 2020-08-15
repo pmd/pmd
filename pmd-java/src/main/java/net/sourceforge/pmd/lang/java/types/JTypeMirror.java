@@ -305,7 +305,7 @@ public interface JTypeMirror extends JTypeVisitable {
      *
      * @param name Name of the field
      */
-    default @Nullable FieldSig getField(String name) { // todo change param to JFieldSymbol
+    default @Nullable FieldSig getField(String name) { // todo change param to JFieldSymbol, FIXME intersections + tvars
         return null;
     }
 

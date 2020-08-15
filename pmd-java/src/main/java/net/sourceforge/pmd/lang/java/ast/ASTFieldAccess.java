@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -61,22 +62,18 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
     }
 
     @Override
-    public FieldSig getSignature() {
-        if (typedSym == null) {
-            getTypeMirror(); // force evaluation
-            assert typedSym != null : "Null signature?";
-        }
+    public @Nullable FieldSig getSignature() {
+        getTypeMirror(); // force evaluation
         return typedSym;
     }
 
     @Override
-    public JFieldSymbol getReferencedSym() {
-        return getSignature().getSymbol();
+    public @Nullable JFieldSymbol getReferencedSym() {
+        return (JFieldSymbol) ASTNamedReferenceExpr.super.getReferencedSym();
     }
 
-    void setTypedSym(FieldSig sig) {
+    void setTypedSym(@Nullable FieldSig sig) {
         this.typedSym = sig;
-        assert typedSym != null : "Null signature?";
     }
 
     @Override

@@ -63,6 +63,9 @@ public class JVariableSig {
      * variables, this is always the generic type declaration of the enclosing
      * type.
      */
+    // mm so this thing is useless except for FieldSig
+    // Looks weird to me. Also getTypeMirror is captured by LazyTypeResolver
+    // but not this one.
     public JTypeMirror getDeclaringType() {
         return declarator;
     }
