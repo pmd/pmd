@@ -6,21 +6,16 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.ast.ParserTestSpec.GroupTestCtx.VersionedTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
-import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
-import java.util.function.Supplier
-import kotlin.collections.ArrayList
 
 /**
  */
@@ -64,12 +59,13 @@ class TypeInferenceTest : ProcessorTestSpec({
 
         importedTypes += Arrays::class.java
 
-        val call = parseExpr<ASTMethodCall>("Arrays.asList(1, 2.0)")
+        val call = ExpressionParsingCtx.parseNode("Arrays.asList(1, 2.0)", ctx = this) as ASTMethodCall
 
         val arraysClass = with(call.typeDsl) { Arrays::class.decl }
         val asList = arraysClass.getMethodsByName("asList")[0]
 
 
+        call.isVarargsCall shouldBe true
         call.methodType.also {
             it.isVarargs shouldBe true
             val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
@@ -88,48 +84,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
             it.returnType shouldBe ret
             it.typeParameters shouldBe asList.typeParameters // not substituted
-        }
-    }
-
-    parserTest("Test method invoc resolution, nested invocation exprs") {
-
-        asIfIn(TypeInferenceTestCases::class.java)
-
-        //  defined as
-        //  public static <K, L extends List<K>> L appendL(List<? extends K> in, L top)
-
-        val call = parseExpr<ASTMethodCall>("appendL(Arrays.asList(\"a\"), new ArrayList<>())")
-        call.methodType.also {
-            it.name shouldBe "appendL"
-            with(call.typeDsl) {
-
-                assertSoftly {
-
-                    it.formalParameters[0] shouldBe gen.`t_List{? extends String}`
-                    it.formalParameters[1] shouldBe gen.`t_ArrayList{String}`
-                    it.isVarargs shouldBe false
-                    it.returnType shouldBe gen.`t_ArrayList{String}`
-
-                }
-            }
-        }
-    }
-
-    parserTest("Test method resolution with lambda param") {
-
-        asIfIn(TypeInferenceTestCases::class.java)
-
-        //  defined as
-        //  public static <T, L extends List<T>> L appendL(List<? extends T> in, L top)
-
-        val call = parseExpr<ASTMethodCall>("makeThree(() -> \"foo\")")
-
-        call.methodType.also {
-            it.name shouldBe "makeThree"
-            with(call.typeDsl) {
-                it.formalParameters[0] shouldBe Supplier::class[gen.t_String]
-                it.returnType shouldBe gen.`t_List{String}`
-            }
         }
     }
 
@@ -203,7 +157,7 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test method call chain") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
 
         inContext(ExpressionParsingCtx) {
             stream should parseAs {
@@ -213,7 +167,7 @@ class TypeInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test method call chain as var initializer") {
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
 
         inContext(StatementParsingCtx) {
             "var foo = $stream;" should parseAs {
@@ -234,8 +188,6 @@ class TypeInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test local var inference") {
-
-        asIfIn(TypeInferenceTestCases::class.java)
 
         val chain = """
             {
@@ -300,8 +252,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test for var inference projection") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
-
         inContext(TypeBodyParsingCtx) {
             """
             static <T> void take5(Iterable<? extends T> iter) {
@@ -340,15 +290,14 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test void compatible lambda") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
         inContext(StatementParsingCtx) {
 
             """
-             final $jlang.Runnable pr = 0 == null ? null : () -> id(true);
+             final Runnable pr = 0 == null ? null : () -> id(true);
         """ should parseAs {
                 localVarDecl {
                     localVarModifiers {  }
-                    qualClassType("$jlang.Runnable")
+                    classType("Runnable")
                     variableDeclarator("pr") {
                         child<ASTConditionalExpression> {
                             unspecifiedChildren(2)
@@ -367,7 +316,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test many dependencies") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
         inContext(StatementParsingCtx) {
 
             """
@@ -492,8 +440,6 @@ class Scratch {
 
     parserTest("Constructor with inner class") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 import java.util.Iterator;
 import java.util.Map;
@@ -560,6 +506,3 @@ class MyMap<K, V> {
     }
 
 })
-
-private inline fun <reified T : ASTExpression> VersionedTestCtx.parseExpr(exprStr: String) =
-        ExpressionParsingCtx.parseNode(exprStr, this, parser.withProcessing()) as T

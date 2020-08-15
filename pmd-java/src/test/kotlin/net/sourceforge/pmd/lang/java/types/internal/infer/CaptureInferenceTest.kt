@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
 import java.util.function.Supplier
 import java.util.function.ToIntFunction
@@ -23,7 +22,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
     parserTest("Test capture incompatibility recovery") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.List"
 
         inContext(TypeBodyParsingCtx) {
 
@@ -31,8 +30,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                 void something(List<?> l) {
                     l.set(1, l.get(0)); // captured, fails
                 }
-            """)
-                    .descendants(ASTMethodCall::class.java).get(1)!!
+            """).descendants(ASTMethodCall::class.java).get(1)!!
 
 
             // todo now we don't recover, we get UNRESOLVED
@@ -228,8 +226,6 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Problem with GLB of several capture variables") {
-
-        logTypeInference(true)
 
         val acu = parser.parse("""
             import java.util.HashMap;

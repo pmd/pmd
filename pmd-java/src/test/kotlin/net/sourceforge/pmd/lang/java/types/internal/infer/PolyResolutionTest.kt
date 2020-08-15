@@ -364,8 +364,6 @@ class O {
 
     parserTest("Method call in some ternary bug") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 
 class O {
@@ -402,8 +400,6 @@ class O {
 
 
     parserTest("Cast context doesn't constrain invocation type") {
-
-        logTypeInference(true)
 
         val acu = parser.parse("""
 class Scratch {

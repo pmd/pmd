@@ -81,7 +81,8 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
     parserTest("Test ternary without context lubs params") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.ArrayList"
+        otherImports += "java.util.LinkedList"
 
         inContext(StatementParsingCtx) {
 
@@ -116,7 +117,9 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
     parserTest("Test switch without context lubs params") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.ArrayList"
+        otherImports += "java.util.LinkedList"
+        otherImports += "java.util.Collections"
 
         inContext(StatementParsingCtx) {
 
@@ -182,8 +185,6 @@ class BranchingExprsTestCases : ProcessorTestSpec({
     }
 
     parserTest("Test ternary without context promotes primitives") {
-
-        asIfIn(TypeInferenceTestCases::class.java)
 
         inContext(StatementParsingCtx) {
 
@@ -344,8 +345,6 @@ class Scratch {
     }
 
     parserTest("Reference ternary with context has type of its target") {
-
-        asIfIn(TypeInferenceTestCases::class.java)
 
         inContext(StatementParsingCtx) {
 

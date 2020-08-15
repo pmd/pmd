@@ -184,8 +184,6 @@ class AnonCtorsTest : ProcessorTestSpec({
     parserTest("Test anonymous interface constructor in invocation ctx") {
 
 
-        logTypeInference(true)
-
         val acu = parser.parse(
                 """
             class Scratch {

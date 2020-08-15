@@ -75,7 +75,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test call chain with method reference") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
 
         val chain = "Stream.of(\"\").map(String::isEmpty).collect(Collectors.toList())"
 
@@ -129,7 +129,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test call chain with constructor reference") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
 
         val chain = "Stream.of(1, 2).map(int[]::new).collect(Collectors.toList())"
 
@@ -188,7 +188,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test call chain with array method reference") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
 
         val chain = "Stream.<int[]>of(new int[0]).map(int[]::clone)"
 
@@ -243,10 +243,11 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test method reference overload resolution") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+        otherImports += "java.util.stream.*"
+
         val stringBuilder = "java.lang.StringBuilder"
 
-        val chain = "Stream.of(\"\", 4).reduce(new $stringBuilder(), $stringBuilder::append, $stringBuilder::append)"
+        val chain = "Stream.of(\"\", 4).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)"
 
         inContext(ExpressionParsingCtx) {
 
@@ -306,7 +307,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                             }
 
                             typeExpr {
-                                qualClassType(stringBuilder)
+                                classType("StringBuilder")
                             }
                         }
 
@@ -323,7 +324,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                             }
 
                             typeExpr {
-                                qualClassType(stringBuilder)
+                                classType("StringBuilder")
                             }
                         }
                     }
