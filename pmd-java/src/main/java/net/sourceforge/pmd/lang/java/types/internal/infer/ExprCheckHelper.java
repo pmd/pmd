@@ -235,6 +235,7 @@ final class ExprCheckHelper {
         JTypeMirror r = fun.getReturnType();
         if (r == ts.NO_TYPE) {
             // If R is void, the constraint reduces to true.
+            completeMethodRefInference(mref, nonWildcard, fun, ctdecl, false);
             return;
         }
 

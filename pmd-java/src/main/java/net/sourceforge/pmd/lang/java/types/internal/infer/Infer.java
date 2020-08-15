@@ -113,6 +113,10 @@ public final class Infer {
         return new InferenceContext(ts, m.getTypeParameters(), LOG);
     }
 
+    /**
+     * Infer lambdas and method references that have a target type: cast contexts,
+     * and some assignment contexts (not inferred, not return from lambda).
+     */
     public void inferLambdaOrMrefInUnambiguousContext(PolySite site) {
         Objects.requireNonNull(site);
         Objects.requireNonNull(site.getExpectedType(), "Cannot proceed without a target type");

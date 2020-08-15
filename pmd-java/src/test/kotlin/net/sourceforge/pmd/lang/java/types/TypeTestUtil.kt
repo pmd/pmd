@@ -255,6 +255,7 @@ interface TypeDslMixin {
     val short get() = ts.SHORT
     val boolean get() = ts.BOOLEAN
     val float get() = ts.FLOAT
+    val void get() = ts.NO_TYPE
 
 
     /** intersection */

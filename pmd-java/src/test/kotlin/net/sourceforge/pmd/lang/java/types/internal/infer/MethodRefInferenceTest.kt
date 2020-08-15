@@ -10,9 +10,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import java.util.function.BiFunction
-import java.util.function.BinaryOperator
-import java.util.function.Consumer
+import java.util.function.*
 import java.util.stream.Collector
 
 /**
@@ -534,8 +532,6 @@ abstract class NodeStream<T> implements Iterable<T> {
 
     parserTest("Fix method ref non-wildcard parameterization not being ground in listener") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -587,6 +583,81 @@ class Scratch {
                                     it.functionalMethod shouldBe it.typeMirror.streamMethods {  it.simpleName == "apply" }.findFirst().get()
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("Method refs targeting a void function in unambiguous context must still be assigned a type") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
+
+class Scratch {
+
+    private static IntConsumer adapt(Sink<Integer> sink) {
+        LongConsumer l = ((LongConsumer) sink::accept);
+        return sink::accept;
+    }
+
+    interface Sink<T> {
+
+        default void accept(int value) {}
+
+        default void accept(long value) { }
+
+        default void accept(double value) {}
+
+    }
+
+}
+        """.trimIndent())
+
+        val (_, t_Sink) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (castRef, returnRef) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        doTest("In cast context") {
+
+            castRef.shouldMatchN {
+                methodRef("accept") {
+                    unspecifiedChild()
+                    with(it.typeDsl) {
+                        it.typeMirror shouldBe LongConsumer::class.decl
+                        it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "accept" }.findFirst().get()
+                        it.referencedMethod.shouldMatchMethod(
+                                named = "accept",
+                                declaredIn = t_Sink[int.box()],
+                                withFormals = listOf(long),
+                                returning = void
+                        ).also {
+                            it.symbol.tryGetNode() shouldBe acceptLong
+                        }
+                    }
+                }
+            }
+        }
+
+        doTest("In return context") {
+
+            returnRef.shouldMatchN {
+                methodRef("accept") {
+                    unspecifiedChild()
+                    with(it.typeDsl) {
+                        it.typeMirror shouldBe IntConsumer::class.decl
+                        it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "accept" }.findFirst().get()
+                        it.referencedMethod.shouldMatchMethod(
+                                named = "accept",
+                                declaredIn = t_Sink[int.box()],
+                                withFormals = listOf(int),
+                                returning = void
+                        ).also {
+                            it.symbol.tryGetNode() shouldBe acceptInt
                         }
                     }
                 }
