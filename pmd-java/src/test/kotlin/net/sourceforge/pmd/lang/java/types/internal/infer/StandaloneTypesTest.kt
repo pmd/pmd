@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
 import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -164,6 +165,56 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         "1 $op String" should haveType { boolean }
 
                     }
+        }
+    }
+
+    parserTest("Test assignment expr") {
+
+        inContext(StatementParsingCtx) {
+
+            """
+            {
+                java.util.List<? extends Number> l = java.util.Collections.emptyList();
+                l = l = l;
+            }
+        """ should parseAs {
+                block {
+                    localVarDecl()
+                    exprStatement {
+                        with(it.typeDsl) {
+                            val captEnd = captureMatcher(`?` extends gen.t_Number)
+                            val captMid = captureMatcher(`?` extends gen.t_Number)
+                            val captFirst = captureMatcher(`?` extends gen.t_Number)
+
+                            assignmentExpr(AssignmentOp.ASSIGN) {
+                                it.typeMirror shouldBe gen.t_List[captEnd]
+
+                                variableAccess("l") {
+                                    // write access: not captured
+                                    it.typeMirror shouldBe gen.`t_List{? extends Number}`
+                                }
+
+                                assignmentExpr(AssignmentOp.ASSIGN) {
+                                    it.typeMirror shouldBe gen.t_List[captMid]
+
+                                    variableAccess("l") {
+                                        // write access: not captured
+                                        it.typeMirror shouldBe gen.`t_List{? extends Number}`
+                                    }
+                                    variableAccess("l") {
+                                        it.typeMirror shouldBe gen.t_List[captFirst]
+                                    }
+                                }
+                            }.also {
+                                // captures are distinct
+                                captFirst shouldNotBe captMid
+                                captMid shouldNotBe captEnd
+                                captEnd shouldNotBe captFirst
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

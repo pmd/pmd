@@ -14,6 +14,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -438,7 +439,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             }
         }
 
-        return TypeConversion.capture(result.getTypeMirror());
+        // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
+        // Only capture if the name is on the RHS
+        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(result.getTypeMirror())
+                                                       : result.getTypeMirror();
     }
 
     @Override
@@ -446,7 +450,15 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
         FieldSig sig = qualifierT.getField(node.getName());
         node.setTypedSym(sig);
-        return sig != null ? sig.getTypeMirror() : ts.UNRESOLVED_TYPE;
+
+        if (sig == null) {
+            return ts.UNRESOLVED_TYPE;
+        }
+
+        // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
+        // Only capture if the name is on the RHS
+        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(sig.getTypeMirror())
+                                                       : sig.getTypeMirror();
     }
 
 
