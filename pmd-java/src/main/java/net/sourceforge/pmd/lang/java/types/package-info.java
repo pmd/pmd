@@ -179,3 +179,8 @@ class O {
 /* TODO finish NamedReferenceExpr by patching LazyTypeResolver
 
  */
+
+
+/* TODO test explicitly typed lambda (in ExplicitTypesTest)
+
+ */
