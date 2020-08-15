@@ -37,7 +37,7 @@ public class TypeResTestRule extends AbstractJavaRule {
             System.out.println(fileId);
             System.out.println("Resolved: " + numResolved + ", unresolved " + numUnresolved);
             double rate = numResolved / (double) (numUnresolved + numResolved);
-            System.out.println("Resolved " + Math.floor(10000 * rate) / 100 + "%");
+            System.out.println("Resolved " + Math.floor(1000000 * rate) / 10000 + "%");
             System.out.println("Errors\t" + numerrors);
         }
 
