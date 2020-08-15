@@ -175,20 +175,6 @@ class O {
     }
 }
 
----- Other test
-
-class Scratch<T> {
-    class Inner {}
-}
-
-class Sub<T> extends Scratch<String> {
-
-    void foo(Inner i) {}
-    //       ^^^^^
-    //       This is shorthand for Scratch<String>.Inner
-
-}
-
  */
 
 /* TODO possibly, the type node for a diamond should have the parameterized
@@ -212,5 +198,51 @@ class O {
 /* TODO test bridge method execution filtering
     In AsmLoaderTest
 
+
+ */
+
+/* TODO switch on enum also depends on the type of the tested expr to
+    resolve the variable name
+
+class Scratch {
+
+    enum SomeEnum {
+        A,
+        B
+    }
+
+    public static void main(String[] args) {
+        SomeEnum e = SomeEnum.A;
+
+        switch (e) {
+        // neither A nor B are in scope
+        case A:
+            return;
+        case B:
+            return;
+        }
+
+        A.foo(); // this is an ambiguous name
+
+
+    }
+}
+
+
+ */
+
+/* TODO the condition of a ternary does not flow context
+
+    public static double copySign(double magnitude, double sign) {
+        return Math.copySign(magnitude, (Double.isNaN(sign)?1.0d:sign));
+    }
+
+ */
+
+/* TODO the condition of a ternary is not an an
+
+    public static double copySign(double magnitude, double sign) {
+        return Math.copySign(magnitude, (Double.isNaN(sign)?1.0d:sign));
+    }
 
  */
