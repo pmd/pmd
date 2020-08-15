@@ -8,6 +8,7 @@
 package net.sourceforge.pmd.lang.java.types;
 /*
 TODO:  inference of `throws` clause
+    -> pretty hard, see throws constraint formulas in JLS 18
 
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ class Scratch {
 
     {
         try {
-            wrap(Scratch::runThrowing);
+            wrap(Scratch::runThrowing); // throws IOException
         } catch (IOException e) {
 
         }
@@ -41,6 +42,7 @@ class Scratch {
 
 /*
 TODO: qualified super ctor call
+   -> Update CtorInvocMirror.ExplicitCtorInvocMirror#getNewType
 
 
 class Outer {
@@ -149,13 +151,9 @@ public class Date {
 
  */
 
-/* TODO lambda bug, needs major rehaul to make typeres strict
-
-    See ignored ("!") tests in LambdaReturnConstraintTest
- */
-
 /* TODO inner types can be inherited
-    Test that ClassTypeImpl doesn't throw on #selectInner, and disambig doesn't report an error
+    -> Test that ClassTypeImpl doesn't throw on #selectInner, and disambig doesn't report an error
+    -> Second test will be fixed naturally when we use types in symbol table for disambiguation
 
 class Scratch<T> {
     class I {}

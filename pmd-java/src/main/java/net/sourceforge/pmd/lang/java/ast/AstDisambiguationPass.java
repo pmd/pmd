@@ -625,27 +625,4 @@ final class AstDisambiguationPass {
             return remaining.next();
         }
     }
-
-
-    /*
-        TODO: inheritance of type members
-
-        class Scratch {
-            interface A { class Mem {} }
-            class Foo implements A { }
-
-            Foo.Mem m; // ok, Foo inherits A.Mem
-        }
-
-        class Scratch2 {
-            interface A { class Mem {} }
-            interface B { class Mem {} }
-            class Foo implements A, B {
-                Foo.Mem m; // not ok, Foo.Mem is ambiguous between A.Mem, B.Mem
-            }
-        }
-
-        TODO both names must be visible to produce an ambiguity error
-     */
-
 }
