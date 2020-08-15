@@ -309,7 +309,7 @@ class VarScopingTest : ProcessorTestSpec({
 
     }
 
-    parserTest("f:Switch on enum has field names in scope") {
+    parserTest("Switch on enum has field names in scope") {
 
         val acu = parser.parse("""
 

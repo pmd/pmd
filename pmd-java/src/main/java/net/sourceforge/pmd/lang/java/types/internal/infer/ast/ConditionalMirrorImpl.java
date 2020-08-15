@@ -113,6 +113,12 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
                 Note that, for a generic method, this is the type before instantiating the method's type arguments.
 
             */
+            JTypeMirror current = InternalApiBridge.getTypeMirrorInternal(e);
+            if (current != null) {
+                // don't redo the compile-time decl resolution
+                // The CTDecl is cached on the mirror, not the node
+                return current;
+            }
 
             MethodCallSite site = factory.infer.newCallSite((InvocationMirror) mirror, null);
 

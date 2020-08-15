@@ -112,10 +112,15 @@ final class PolyResolution {
                 JTypeMirror targetType = getTargetType(ctx, false);
                 return inferInvocation((InvocationNode) e, e, targetType);
             } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
-                // Those take directly the target type, if there is one
-                // otherwise they're standalone expressions
-                // Fixme they should preferentially be standalone...
-                return getTargetType(ctx, true);
+                // Those are standalone if possible, otherwise they take
+                // the target type
+                JTypeMirror standalone = exprMirrors.getMirror((ASTExpression) e).getStandaloneType();
+                if (standalone != null) {
+                    return standalone;
+                }
+                // else use the target type (cast, or assignment)
+                JTypeMirror target = getTargetType(ctx, true);
+                return target == null ? ts.ERROR_TYPE : target;
             } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
                 // these may use a cast as a target type
                 JTypeMirror targetType = getTargetType(ctx, true);
@@ -277,16 +282,15 @@ final class PolyResolution {
 
             if (methodDecl == null || methodDecl instanceof ASTAnyTypeDeclaration) {
                 // in initializer, or constructor decl, return with expression is forbidden
-                return ts.ERROR_TYPE;
+                return null;
             } else if (methodDecl instanceof ASTLambdaExpression) {
                 // return within a lambda
                 // "assignment context", deferred to lambda inference
                 JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
-                return fun == null ? ts.UNRESOLVED_TYPE : fun.getReturnType();
+                return fun == null ? null : fun.getReturnType();
             } else {
                 ASTResultType resultType = ((ASTMethodDeclaration) methodDecl).getResultType();
-                // in void method, return with expression is forbidden
-                return resultType.getTypeNode() == null ? ts.ERROR_TYPE
+                return resultType.getTypeNode() == null ? null
                                                         : resultType.getTypeNode().getTypeMirror();
             }
         } else if (context instanceof ASTAssignmentExpression) {

@@ -172,7 +172,7 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JClassType capture(JClassType type) {
-        if (isNotWilcardParameterized(type)) {
+        if (!isWilcardParameterized(type)) {
             return type; // 99% take this path
         }
 
@@ -243,11 +243,15 @@ public final class TypeConversion {
         return type.withTypeArguments(freshVars);
     }
 
-    public static boolean isNotWilcardParameterized(JTypeMirror t) {
+    /**
+     * Returns true if the type is a parameterized class type, which has
+     * wildcards as type arguments. Capture variables don't count.
+     */
+    public static boolean isWilcardParameterized(JTypeMirror t) {
         if (!(t instanceof JClassType)) {
-            return true;
+            return false;
         }
-        return CollectionUtil.none(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
+        return CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
     }
 
 

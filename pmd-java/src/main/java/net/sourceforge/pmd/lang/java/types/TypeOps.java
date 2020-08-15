@@ -374,11 +374,6 @@ public final class TypeOps {
         return capture(t).acceptVisitor(unchecked ? SubtypeVisitor.UNCHECKED : SubtypeVisitor.CHECKED, s);
     }
 
-    private static boolean isUnresolved(@NonNull JTypeMirror s) {
-        TypeSystem ts = s.getTypeSystem();
-        return s == ts.UNRESOLVED_TYPE || s == ts.ERROR_TYPE || s.getSymbol() != null && s.getSymbol().isUnresolved();
-    }
-
     private static JTypeMirror upperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             return upperBound(((JWildcardType) type).asUpperBound());
@@ -1509,6 +1504,7 @@ public final class TypeOps {
 
     // </editor-fold>
 
+    // <editor-fold  defaultstate="collapsed" desc="Accessibility utils">
 
 
     public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
@@ -1619,4 +1615,27 @@ public final class TypeOps {
         }
     }
 
+    // </editor-fold>
+
+    // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
+
+
+    /**
+     * Returns true if the type is {@link TypeSystem#UNRESOLVED_TYPE},
+     * {@link TypeSystem#ERROR_TYPE}, or its symbol is unresolved.
+     *
+     * @param t Non-null type
+     *
+     * @throws NullPointerException if the parameter is null
+     */
+    public static boolean isUnresolved(@NonNull JTypeMirror t) {
+        TypeSystem ts = t.getTypeSystem();
+        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE || t.getSymbol() != null && t.getSymbol().isUnresolved();
+    }
+
+    public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {
+        return t == null || isUnresolved(t);
+    }
+
+    // </editor-fold>
 }

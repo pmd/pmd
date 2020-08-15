@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.isNotWilcardParameterized;
+import static net.sourceforge.pmd.lang.java.types.TypeConversion.isWilcardParameterized;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
@@ -589,11 +589,11 @@ public final class Infer {
 
         // T is a reference type, but is not a wildcard-parameterized type, and either
 
-        if (!t.isPrimitive() && isNotWilcardParameterized(t)) {
+        if (!t.isPrimitive() && !isWilcardParameterized(t)) {
             // i) B2 contains a bound of one of the forms alpha = S or S <: alpha,
             //    where S is a wildcard-parameterized type, or
             for (JTypeMirror s : alpha.getBounds(BoundKind.EQ_LOWER)) {
-                if (!isNotWilcardParameterized(s)) {
+                if (isWilcardParameterized(s)) {
                     return true;
                 }
             }

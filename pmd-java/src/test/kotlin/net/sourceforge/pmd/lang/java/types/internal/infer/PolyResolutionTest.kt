@@ -444,31 +444,4 @@ class Scratch {
 
 
 
-    parserTest("Cast context doesn't influence standalone ternary") {
-
-        logTypeInference(true)
-
-        val acu = parser.parse("""
-class Scratch {
-
-    static void putBoolean(byte[] b, int off, boolean val) {
-        b[off] = (byte) (val ? 1 : 0);
-    }
-}
-
-        """.trimIndent())
-
-        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
-
-        ternary.shouldMatchN {
-            ternaryExpr {
-                it.typeMirror.shouldBePrimitive(INT)
-                variableAccess("val")
-                int(1)
-                int(0)
-            }
-        }
-    }
-
-
 })

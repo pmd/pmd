@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 
 
@@ -28,7 +30,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                 methodCall("makeThree") {
 
                     argList {
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             boolean(true)
                             child<ASTLambdaExpression> {
                                 it.typeMirror shouldBe it.typeSystem.stringSupplier()
@@ -58,7 +60,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                 methodCall("makeThree") {
                     argList {
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             it.typeMirror shouldBe it.typeSystem.stringSupplier()
 
                             boolean(true)
@@ -94,10 +96,10 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                             ts.lub(gen.`t_ArrayList{String}`, gen.`t_LinkedList{String}`)
                         }
 
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             it.typeMirror shouldBe lubOfBothLists
                             boolean(true)
-                            with (it.typeDsl) {
+                            with(it.typeDsl) {
                                 child<ASTConstructorCall>(ignoreChildren = true) {
                                     it.typeMirror shouldBe gen.`t_ArrayList{String}`
                                 }
@@ -191,7 +193,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             it::getTypeMirror shouldBe it.typeSystem.INT
                             boolean(true)
                             int(1)
@@ -207,7 +209,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             it::getTypeMirror shouldBe it.typeSystem.DOUBLE
                             boolean(true)
                             int(1)
@@ -223,7 +225,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
+                        ternaryExpr {
                             it::getTypeMirror shouldBe it.typeSystem.INT
                             boolean(true)
                             int(1)
@@ -235,9 +237,35 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test ternary with context has type of its target") {
 
-        asIfIn(TypeInferenceTestCases::class.java)
+
+    parserTest("Cast context doesn't influence standalone ternary") {
+
+        val acu = parser.parse("""
+class Scratch {
+
+    static void putBoolean(byte[] b, int off, boolean val) {
+        b[off] = (byte) (val ? 1 : 0);
+    }
+}
+
+        """.trimIndent())
+
+        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+
+        ternary.shouldMatchN {
+            ternaryExpr {
+                it.typeMirror.shouldBePrimitive(INT)
+                variableAccess("val")
+                int(1)
+                int(0)
+            }
+        }
+    }
+
+
+    parserTest("Assignment context doesn't influence standalone ternary") {
+
 
         inContext(StatementParsingCtx) {
 
@@ -247,10 +275,32 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     primitiveType(DOUBLE)
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                        ternaryExpr {
+                            it.typeMirror.shouldBePrimitive(INT)
+
                             boolean(true)
                             int(1)
+                            int(3)
+                        }
+                    }
+                }
+            }
+
+            "double ter = true ? new Integer(2) : 3;" should parseAs {
+                localVarDecl {
+                    modifiers { }
+                    primitiveType(DOUBLE)
+                    variableDeclarator("ter") {
+
+                        ternaryExpr {
+                            it.typeMirror.shouldBePrimitive(INT) // unboxed
+
+                            boolean(true)
+                            constructorCall {
+                                it.typeMirror shouldBe it.typeSystem.INT.box()
+
+                                unspecifiedChildren(2)
+                            }
                             int(3)
                         }
                     }
@@ -263,8 +313,9 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     primitiveType(DOUBLE)
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                        ternaryExpr {
+                            it.typeMirror.shouldBePrimitive(DOUBLE)
+
                             boolean(true)
                             int(1)
                             number(DOUBLE)
@@ -279,11 +330,73 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     primitiveType(DOUBLE)
                     variableDeclarator("ter") {
 
-                        child<ASTConditionalExpression> {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                        ternaryExpr {
+                            it.typeMirror.shouldBePrimitive(INT)
+
                             boolean(true)
                             int(1)
                             char('c')
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("Reference ternary with context has type of its target") {
+
+        asIfIn(TypeInferenceTestCases::class.java)
+
+        inContext(StatementParsingCtx) {
+
+            "Object ter = true ? String.valueOf(1) : String.valueOf(2);" should parseAs {
+                localVarDecl {
+                    modifiers { }
+                    classType("Object")
+                    variableDeclarator("ter") {
+
+                        ternaryExpr {
+                            it.typeMirror shouldBe it.typeSystem.OBJECT // not String
+
+                            boolean(true)
+                            methodCall("valueOf") {
+                                it.typeMirror shouldBe it.typeSystem.STRING
+
+                                unspecifiedChildren(2)
+                            }
+                            methodCall("valueOf") {
+                                it.typeMirror shouldBe it.typeSystem.STRING
+
+                                unspecifiedChildren(2)
+                            }
+                        }
+                    }
+                }
+            }
+
+            "String ter = (String) (Object) (true ? String.valueOf(1) : 2);" should parseAs {
+                localVarDecl {
+                    modifiers { }
+                    classType("String")
+                    variableDeclarator("ter") {
+
+                        castExpr {
+                            unspecifiedChild()
+                            castExpr {
+                                unspecifiedChild()
+
+                                ternaryExpr {
+                                    it.typeMirror shouldBe it.typeSystem.OBJECT
+
+                                    boolean(true)
+                                    methodCall("valueOf") {
+                                        it.typeMirror shouldBe it.typeSystem.STRING
+
+                                        unspecifiedChildren(2)
+                                    }
+                                    int(2)
+                                }
+                            }
                         }
                     }
                 }
