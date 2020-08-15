@@ -146,7 +146,7 @@ class LocalTypeScopesTest : ParserTestSpec({
     }
 
 
-    parserTest("f:Inner class creation expressions should have inner classes in scope") {
+    parserTest("Inner class creation expressions should have inner classes in scope") {
 
         val acu = parser.withProcessing().parse("""
             package scratch;

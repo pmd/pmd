@@ -151,7 +151,7 @@ class InnerTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("f:Inner types can be inherited") {
+    parserTest("Inner types can be inherited") {
 
         val acu = parser.parse("""
 

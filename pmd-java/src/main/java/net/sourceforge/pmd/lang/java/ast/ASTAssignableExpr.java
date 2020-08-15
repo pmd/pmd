@@ -65,6 +65,8 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
          */
         String getName();
 
+        // TODO
+
         /**
          * Returns the signature of the referenced variable. This is
          * relevant for fields, as they may be inherited from some

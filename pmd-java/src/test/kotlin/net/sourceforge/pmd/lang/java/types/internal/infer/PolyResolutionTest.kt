@@ -7,7 +7,11 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BOOLEAN
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
@@ -148,6 +152,64 @@ class PolyResolutionTest : ProcessorTestSpec({
                 }
             }
         }
+    }
+
+    parserTest("Ternary condition does not let context flow") {
+
+        suspend fun doTest(askOuterFirst: Boolean) {
+
+            val acu = parser.parse("""
+
+class O {
+    public static double copySign(double magnitude, double sign) {
+        return Math.copySign(magnitude, (Double.isNaN(sign) ? 1.0d : sign));
+    }
+}
+        """.trimIndent())
+
+
+            val (copySignCall) =
+                    acu.descendants(ASTMethodCall::class.java).toList()
+
+            val double = acu.typeSystem.DOUBLE
+            val boolean = acu.typeSystem.BOOLEAN
+
+            val testName = if (askOuterFirst) "Ask outer first" else "Ask inner first"
+            doTest(testName) {
+
+                copySignCall.shouldMatchN {
+                    methodCall("copySign") {
+
+                        if (askOuterFirst)
+                            it::getTypeMirror shouldBe double
+
+                        it::getQualifier shouldBe unspecifiedChild()
+                        argList {
+                            variableAccess("magnitude")
+                            child<ASTConditionalExpression> {
+                                methodCall("isNaN") {
+                                    it::getTypeMirror shouldBe boolean
+
+                                    it::getQualifier shouldBe unspecifiedChild()
+                                    argList(1)
+                                }
+
+                                unspecifiedChild()
+                                unspecifiedChild()
+                            }
+                        }
+
+                        if (!askOuterFirst)
+                            it::getTypeMirror shouldBe double
+
+                    }
+                }
+            }
+        }
+
+        doTest(askOuterFirst = true)
+        doTest(askOuterFirst = false)
+
     }
 
 

@@ -17,29 +17,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
-import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.InvocationNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -384,14 +361,14 @@ final class PolyResolution {
                 // constructor or method call, maybe there's another context around
                 JavaNode ctx = contextOf(papi, true);
                 // if the cascade expr has no context itself, then it's not a context and we return the node
-                return doesCascadesContext(ctx) ? node : ctx;
+                return doesCascadesContext(ctx, papi) ? node : ctx;
             }
-        } else if (doesCascadesContext(papa)) {
+        } else if (doesCascadesContext(papa, node)) {
             // switch/conditional
 
             JavaNode ctx = contextOf(papa, onlyInvoc);
             // if the cascade expr has no context itself, then it's not a context and we return the node
-            return doesCascadesContext(ctx) ? node : ctx;
+            return doesCascadesContext(ctx, papa) ? node : ctx;
         }
 
         if (onlyInvoc) {
@@ -411,7 +388,7 @@ final class PolyResolution {
             // break with value (switch expr)
             ASTSwitchExpression owner = ((ASTYieldStatement) papa).getYieldTarget();
             JavaNode ctx = contextOf(owner, false);
-            return doesCascadesContext(ctx) ? node : owner;
+            return doesCascadesContext(ctx, node) ? node : owner;
         } else {
             // stop recursion
             return node;
@@ -423,10 +400,10 @@ final class PolyResolution {
      * Neither of those are contexts, rather, they pass context through their branches.
      * If their parent has no context, then they don't either.
      */
-    private static boolean doesCascadesContext(JavaNode node) {
-        return node instanceof ASTSwitchExpression
+    private static boolean doesCascadesContext(JavaNode node, JavaNode child) {
+        return node instanceof ASTSwitchExpression  && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
-            || node instanceof ASTConditionalExpression;
+            || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0; // not the condition
     }
 
 

@@ -205,18 +205,6 @@ class Scratch {
 
  */
 
-/* TODO the condition of a ternary does not flow context
-
-    public static double copySign(double magnitude, double sign) {
-        return Math.copySign(magnitude, (Double.isNaN(sign)?1.0d:sign));
-    }
-
- */
-
-/* TODO the condition of a ternary is not an an
-
-    public static double copySign(double magnitude, double sign) {
-        return Math.copySign(magnitude, (Double.isNaN(sign)?1.0d:sign));
-    }
+/* TODO finish NamedReferenceExpr by patching LazyTypeResolver
 
  */
