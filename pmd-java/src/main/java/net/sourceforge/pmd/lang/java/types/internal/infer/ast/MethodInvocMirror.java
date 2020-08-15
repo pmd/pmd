@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -18,32 +17,17 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
+    /*
+     * method calls with explicit type arguments are standalone. To reduce the
+     * number of branches in the code they still go through Infer, so that their
+     * method type is set like all the others. So don't override getStandaloneType.
+     */
 
 
     MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call) {
         super(mirrors, call);
-    }
-
-    @Override
-    public @Nullable JTypeMirror getStandaloneType() {
-        if (myNode.getExplicitTypeArguments() == null) {
-            return null;
-        }
-
-        MethodCallSite site = factory.infer.newCallSite(this, null);
-
-        JMethodSig ctdecl = factory.infer.getCompileTimeDecl(site) // this is cached for later anyway
-                                         .getMethodType();
-
-        if (!ctdecl.getTypeParameters().isEmpty()
-            && TypeOps.mentionsAny(ctdecl.getReturnType(), ctdecl.getTypeParameters())) {
-            return null;
-        }
-
-        return ctdecl.getReturnType();
     }
 
     @Override

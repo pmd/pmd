@@ -24,7 +24,7 @@ class ExplicitTypesTest : ProcessorTestSpec({
            public class SomeIter {
                {
                   foreach(java.util.Collections.<String>emptyList());
-               } 
+               }
 
                <T> void foreach(Collection<? super T> action) {}
            }

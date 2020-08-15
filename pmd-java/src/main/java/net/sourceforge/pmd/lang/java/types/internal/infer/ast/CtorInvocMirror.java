@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -20,22 +19,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
+    /*
+     * Non-diamond constructor calls, are standalone. To reduce the number of branches in the
+     * code they still go through Infer, so that their method type is set like all
+     * the others. So don't override getStandaloneType.
+     */
 
 
     CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call) {
         super(mirrors, call);
-    }
-
-    @Override
-    public @Nullable JTypeMirror getStandaloneType() {
-        if (myNode.isDiamond()) {
-            return null;
-        }
-        return myNode.getTypeNode().getTypeMirror();
     }
 
     @Override

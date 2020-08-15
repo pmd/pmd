@@ -186,6 +186,13 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     /**
      * Poly expressions need context and are resolved by {@link PolyResolution}.
+     *
+     * <p>Note that some poly expression are only poly part of the time.
+     * In particular, method calls with explicit type arguments, and non-diamond
+     * constructor calls, are standalone. To reduce the number of branches in the
+     * code they still go through Infer, so that their method type is set like all
+     * the others.
+     *
      */
     private JTypeMirror handlePoly(TypeNode node) {
         return polyResolution.computePolyType(node);

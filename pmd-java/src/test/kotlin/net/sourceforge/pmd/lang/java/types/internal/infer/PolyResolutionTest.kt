@@ -9,9 +9,14 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.STRING
+import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import java.io.BufferedOutputStream
+import java.io.DataOutputStream
+import java.io.OutputStream
 
 /**
  * Expensive test cases for the overload resolution phase.
@@ -255,6 +260,102 @@ class O {
                 methodCall("getName") {
                     variableAccess("c")
                     argList(0)
+                }
+            }
+        }
+
+    }
+
+
+
+    parserTest("Standalone ctor in invocation ctx") {
+
+        val acu = parser.parse("""
+import java.io.*;
+
+class O {
+    public static void doSt(OutputStream out) {
+        new DataOutputStream(new BufferedOutputStream(out));
+    }
+}
+        """.trimIndent())
+
+
+        val outerCtor =
+                acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        outerCtor.shouldMatchN {
+            constructorCall {
+                it::getTypeMirror shouldBe with(it.typeDsl) {
+                    DataOutputStream::class.raw
+                }
+
+                it::getTypeNode shouldBe unspecifiedChild()
+
+                argList {
+                    constructorCall {
+                        with(it.typeDsl) {
+                            it::getTypeMirror shouldBe BufferedOutputStream::class.raw
+
+                            it.methodType.shouldMatchMethod(
+                                    named = JConstructorSymbol.CTOR_NAME,
+                                    declaredIn = BufferedOutputStream::class.raw,
+                                    withFormals = listOf(OutputStream::class.raw),
+                                    returning = BufferedOutputStream::class.raw
+                            )
+                        }
+
+                        it::getTypeNode shouldBe unspecifiedChild()
+
+                        argList {
+                            variableAccess("out")
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    parserTest("Method call in invocation ctx of standalone ctor") {
+
+        val acu = parser.parse("""
+import java.io.*;
+
+class O {
+
+    public static void doSt(OutputStream out) {
+        new DataOutputStream(wrap(out));
+    }
+    
+    static OutputStream wrap(OuputStream out) { return out; }
+
+}
+        """.trimIndent())
+
+
+        val outerCtor =
+                acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        outerCtor.shouldMatchN {
+            constructorCall {
+                it::getTypeMirror shouldBe with(it.typeDsl) {
+                    DataOutputStream::class.raw
+                }
+
+                it::getTypeNode shouldBe unspecifiedChild()
+
+                argList {
+                    methodCall("wrap") {
+                        it::getTypeMirror shouldBe with(it.typeDsl) {
+                            OutputStream::class.raw
+                        }
+
+                        argList {
+                            variableAccess("out")
+                        }
+                    }
                 }
             }
         }
