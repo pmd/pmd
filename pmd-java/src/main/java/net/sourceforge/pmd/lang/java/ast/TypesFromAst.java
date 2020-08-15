@@ -126,7 +126,7 @@ final class TypesFromAst {
             //               ^^^^^
             //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
             // }
-            enclosing = InternalApiBridge.getImplicitEnclosingType(node);
+            enclosing = node.getImplicitEnclosing();
             assert enclosing != null : "Implicit enclosing type should have been set by disambiguation, for " + node;
         }
 
@@ -165,12 +165,12 @@ final class TypesFromAst {
     }
 
     private static @NonNull JTypeDeclSymbol getReference(ASTClassOrInterfaceType node) {
-        if (InternalApiBridge.hasReferenceBeenResolved(node)) {
+        if (node.getReferencedSym() != null) {
             return node.getReferencedSym();
         } else if (node.getParent() instanceof ASTConstructorCall) {
             ASTExpression qualifier = ((ASTConstructorCall) node.getParent()).getQualifier();
             if (qualifier != null) {
-                assert InternalApiBridge.getImplicitEnclosingType(node) == null
+                assert node.getImplicitEnclosing() == null
                     : "Qualified ctor calls should be handled lazily";
                 JTypeMirror qualifierType = qualifier.getTypeMirror();
                 if (qualifierType instanceof JClassType) {
@@ -182,7 +182,7 @@ final class TypesFromAst {
                                           ? (JClassSymbol) node.getTypeSystem().UNRESOLVED_TYPE.getSymbol()
                                           // compile-time error
                                           : resolved.getSymbol();
-                    InternalApiBridge.setLateResolvedReference(node, symbol);
+                    node.setSymbol(symbol);
                     return symbol;
                 }
             } // else fallthrough

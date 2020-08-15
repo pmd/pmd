@@ -23,11 +23,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader.ClassLoaderWrapper;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 public final class TypeHelper {
 
@@ -131,8 +132,8 @@ public final class TypeHelper {
                 classType = (ASTClassOrInterfaceType) n;
             }
 
-            JTypeDeclSymbol sym = classType.getReferencedSym();
-            return sym instanceof JClassSymbol && ((JClassSymbol) sym).getBinaryName().equals(clazzName);
+            JTypeMirror sym = classType.getTypeMirror();
+            return sym instanceof JClassType && ((JClassType) sym).getSymbol().getBinaryName().equals(clazzName);
         }
 
         if (n instanceof ASTClassOrInterfaceDeclaration) {

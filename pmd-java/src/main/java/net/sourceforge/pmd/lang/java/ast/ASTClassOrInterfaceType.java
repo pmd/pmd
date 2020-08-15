@@ -129,10 +129,9 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
     /**
      * Returns the type symbol this type refers to. This is never null
-     * after disambiguation has been run.
+     * after disambiguation has been run. This is also very internal.
      */
-    public JTypeDeclSymbol getReferencedSym() {
-        // this is a crutch for now, can be replaced with getTypeDefinition later
+    JTypeDeclSymbol getReferencedSym() {
         return symbol;
     }
 

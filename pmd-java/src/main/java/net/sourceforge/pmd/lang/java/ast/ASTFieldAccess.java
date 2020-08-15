@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 /**
@@ -27,7 +24,6 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
 
     private FieldSig typedSym;
 
-    private JVariableSig.FieldSig typedSym;
 
     ASTFieldAccess(int id) {
         super(id);

@@ -322,7 +322,9 @@ final class AstDisambiguationPass {
                 var = varAccess;
             } else {
                 ASTFieldAccess fieldAccess = new ASTFieldAccess(qualifier, identifier);
-                fieldAccess.setTypedSym((FieldSig) varSym);
+                if (varSym != null) {
+                    fieldAccess.setTypedSym((FieldSig) varSym);
+                }
                 var = fieldAccess;
             }
 

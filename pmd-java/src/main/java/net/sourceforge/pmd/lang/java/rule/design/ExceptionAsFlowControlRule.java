@@ -7,13 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Catches the use of exception statements as a flow control device.
@@ -21,6 +19,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * @author Will Sargent
  */
 public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+
+    // TODO tests:
+    //   - catch a supertype of the exception (unless this is unwanted)
+    //   - throw statements with not just a new SomethingExpression, eg a method call returning an exception
 
     @Override
     public Object visit(ASTThrowStatement node, Object data) {
@@ -35,20 +37,12 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
             return data;
         }
 
-        ASTExpression expr = node.getExpr();
-        ASTClassOrInterfaceType thrownType;
-        if (expr instanceof ASTConstructorCall) {
-            // todo when typeres is up we can just use the static type of the expression
-            thrownType = ((ASTConstructorCall) expr).getTypeNode();
-        } else {
-            return data;
-        }
+        JTypeMirror thrownType = node.getExpr().getTypeMirror();
 
         enclosingTries.flatMap(ASTTryStatement::getCatchClauses)
                       .map(ASTCatchClause::getParameter)
                       .flatMap(ASTCatchParameter::getAllExceptionTypes)
-                      // todo when type res is up: use a subtyping test
-                      .filter(ex -> ex.getReferencedSym().equals(thrownType.getReferencedSym()))
+                      .filter(ex -> ex.getTypeMirror().isSubtypeOf(thrownType))
                       .forEach(ex -> addViolation(data, ex));
         return data;
     }

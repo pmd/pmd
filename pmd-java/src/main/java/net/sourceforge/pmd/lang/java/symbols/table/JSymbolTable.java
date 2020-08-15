@@ -37,7 +37,7 @@ public interface JSymbolTable {
      * to the type of the tested expression (eg {@code someEnum} here).
      * In other words, {@code variables().resolve("A")} will return a symbol
      * that is not necessarily the actual reference for the enum constant,
-     * or no symbol at all. {@link ASTVariableAccess#getReferencedSym()}
+     * or no symbol at all. {@link ASTVariableAccess#getSignature()}
      * will be accurate though.
      * </ul>
      */
@@ -56,7 +56,7 @@ public interface JSymbolTable {
      * in the outer expression. It depends on the type of the left hand expression,
      * which may be an arbitrary expression. {@code types().resolve("Inner")} will
      * return a symbol that is not necessarily the actual reference for {@code Outer.Inner},
-     * or no symbol at all. {@link ASTClassOrInterfaceType#getReferencedSym()}
+     * or no symbol at all. {@link ASTClassOrInterfaceType#getTypeMirror()}
      * will be accurate though.
      * </ul>
      */

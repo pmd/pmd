@@ -195,7 +195,7 @@ class TypeParamScopingTest : ParserTestSpec({
             val annot = acu.descendants(ASTAnnotation::class.java).first()!!
 
             annot.symbolTable.shouldResolveTypeTo("Y", annotY.typeMirror) // not the Y of the method
-            annot.symbol.shouldBeSameInstanceAs(annotY.symbol)
+            annot.typeMirror.shouldBeSameInstanceAs(annotY.symbol)
         }
 
         doTest("Local class shadows type param") {

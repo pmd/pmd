@@ -246,7 +246,7 @@ final class AstClassSym
                 // we play safe here, but the symbol is either a JClassSymbol
                 // or a JTypeParameterSymbol, with the latter case being a
                 // compile-time error
-                JTypeDeclSymbol sym = n.getReferencedSym();
+                JTypeDeclSymbol sym = n.getTypeMirror().getSymbol();
                 return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
             }
         );

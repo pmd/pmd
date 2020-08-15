@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
  * Represents an annotation.
@@ -35,21 +36,16 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
         return (ASTClassOrInterfaceType) getChild(0);
     }
 
-    /**
-     * Returns the symbol of the annotation type.
-     */
-    public JClassSymbol getSymbol() {
-        // This cast would fail if you use a type parameter as an
-        // annotation name. This is reported as an error by the
-        // disambiguation pass
-        return (JClassSymbol) getTypeNode().getReferencedSym();
+    @Override
+    public @NonNull JClassType getTypeMirror() {
+        return (JClassType) super.getTypeMirror();
     }
 
     /**
      * Returns the name of the annotation as it is used,
      * eg {@code java.lang.Override} or {@code Override}.
      *
-     * @deprecated Use {@link #getSymbol()} instead.
+     * @deprecated Use {@link #getTypeMirror()} instead
      */
     @Deprecated
     @DeprecatedUntil700
