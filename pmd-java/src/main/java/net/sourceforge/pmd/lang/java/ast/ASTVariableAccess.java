@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -22,6 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  *     variable references.
  */
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
+
+    private JVariableSig typedSym;
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.
@@ -50,6 +53,22 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     public String getName() {
         return getImage();
     }
+
+
+    @Override
+    public JVariableSig getSignature() {
+        if (typedSym == null) {
+            getTypeMirror(); // force evaluation
+            assert typedSym != null : "Null signature?";
+        }
+        return typedSym;
+    }
+
+    void setTypedSym(JVariableSig sig) {
+        this.typedSym = sig;
+        assert typedSym != null : "Null signature?";
+    }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
  * An expression that may be assigned by an {@linkplain ASTAssignmentExpression assignment expression},
@@ -62,6 +64,20 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
          * Returns the name of the referenced variable.
          */
         String getName();
+
+        /**
+         * Returns the signature of the referenced variable. This is
+         * relevant for fields, as they may be inherited from some
+         * parameterized supertype.
+         */
+        JVariableSig getSignature();
+
+        /**
+         * Returns the symbol referenced by this variable.
+         */
+        default JVariableSymbol getReferencedSym() {
+            return getSignature().getSymbol();
+        }
 
     }
 

@@ -21,6 +21,8 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -122,13 +124,20 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambig(processor, root);
     }
 
-    @Nullable
-    public static JTypeMirror getTypeMirrorInternal(TypeNode node) {
+    public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
         return ((AbstractJavaTypeNode) node).getTypeMirrorInternal();
     }
 
     public static void setTypeMirrorInternal(TypeNode node, JTypeMirror inferred) {
         ((AbstractJavaTypeNode) node).setTypeMirror(inferred);
+    }
+
+    public static void setSignature(ASTFieldAccess node, FieldSig sig) {
+        node.setTypedSym(sig);
+    }
+
+    public static void setSignature(ASTVariableAccess node, JVariableSig sig) {
+        node.setTypedSym(sig);
     }
 
     public static void setFunctionalMethod(ASTMethodReference methodReference, JMethodSig methodType) {

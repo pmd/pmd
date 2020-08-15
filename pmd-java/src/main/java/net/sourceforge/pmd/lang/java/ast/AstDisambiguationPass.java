@@ -20,11 +20,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
@@ -155,13 +157,10 @@ final class AstDisambiguationPass {
         }
 
         @Nullable
-        JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
+        FieldSig findStaticField(JTypeDeclSymbol classSym, String name) {
             if (classSym instanceof JClassSymbol) {
                 JClassType t = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
-                FieldSig field = JavaResolvers.getMemberFieldResolver(t, packageName, enclosingClass, name).resolveFirst(name);
-                if (field != null) {
-                    return field.getSymbol();
-                }
+                return JavaResolvers.getMemberFieldResolver(t, packageName, enclosingClass, name).resolveFirst(name);
             }
             return null;
         }
@@ -423,7 +422,7 @@ final class AstDisambiguationPass {
                 JVariableSig varResult = symTable.variables().resolveFirst(firstIdent.getImage());
 
                 if (varResult != null) {
-                    return resolveExpr(null, firstIdent, tokens, ctx);
+                    return resolveExpr(null, varResult, firstIdent, tokens, ctx);
                 }
             }
 
@@ -456,15 +455,24 @@ final class AstDisambiguationPass {
          *  Also must filter by visibility
          */
         private static ASTExpression resolveExpr(@Nullable ASTExpression qualifier, // lhs
-                                                 // JVariableSymbol varSym,         // we don't need that for now
+                                                 @Nullable JVariableSig varSym,     // signature, only set if this is the leftmost access
                                                  JavaccToken identifier,            // identifier for the field/var name
                                                  Iterator<JavaccToken> remaining,   // rest of tokens, starting with following '.'
                                                  ReferenceCtx ctx) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            ASTExpression var = qualifier == null ? new ASTVariableAccess(identifier)
-                                                  : new ASTFieldAccess(qualifier, identifier);
+            ASTNamedReferenceExpr var;
+            if (qualifier == null) {
+                ASTVariableAccess varAccess = new ASTVariableAccess(identifier);
+                varAccess.setTypedSym(varSym);
+                var = varAccess;
+            } else {
+                ASTFieldAccess fieldAccess = new ASTFieldAccess(qualifier, identifier);
+                fieldAccess.setTypedSym((FieldSig) varSym);
+                var = fieldAccess;
+            }
+
 
             if (!remaining.hasNext()) { // done
                 return var;
@@ -475,7 +483,7 @@ final class AstDisambiguationPass {
             // following must also be expressions (field accesses)
             // we can't assert that for now, as symbols lack type information
 
-            return resolveExpr(var, nextIdent, remaining, ctx);
+            return resolveExpr(var, null, nextIdent, remaining, ctx);
         }
 
         /**
@@ -520,11 +528,11 @@ final class AstDisambiguationPass {
             final String nextSimpleName = nextIdent.getImage();
 
             if (!isPackageOrTypeOnly) {
-                JFieldSymbol field = ctx.findStaticField(sym, nextSimpleName);
+                @Nullable FieldSig field = ctx.findStaticField(sym, nextSimpleName);
                 if (field != null) {
                     // todo check field is static
                     ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-                    return resolveExpr(typeExpr, nextIdent, remaining, ctx);
+                    return resolveExpr(typeExpr, field, nextIdent, remaining, ctx);
                 }
             }
 

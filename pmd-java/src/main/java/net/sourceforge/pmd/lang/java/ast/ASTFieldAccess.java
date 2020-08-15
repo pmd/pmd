@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 
 /**
  * A field access expression.
@@ -19,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  * </pre>
  */
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr, QualifiableExpression {
+
+    private FieldSig typedSym;
 
     ASTFieldAccess(int id) {
         super(id);
@@ -56,6 +61,24 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return getImage();
     }
 
+    @Override
+    public FieldSig getSignature() {
+        if (typedSym == null) {
+            getTypeMirror(); // force evaluation
+            assert typedSym != null : "Null signature?";
+        }
+        return typedSym;
+    }
+
+    @Override
+    public JFieldSymbol getReferencedSym() {
+        return getSignature().getSymbol();
+    }
+
+    void setTypedSym(FieldSig sig) {
+        this.typedSym = sig;
+        assert typedSym != null : "Null signature?";
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
