@@ -14,7 +14,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 class SwitchMirror extends BasePolyMirror<ASTSwitchExpression> implements BranchingMirror {
 
-    // todo standalone types
+    // This doesn't require an impl for getStandaloneType
+    // If we explore it during overload resolution/ type inference, it's
+    // because it's in an invocation ctx (or assignment, as the return of a lambda)
+    // Rules are more complicated for ternary exprs, and they require this.
 
     private final List<ExprMirror> branches;
 

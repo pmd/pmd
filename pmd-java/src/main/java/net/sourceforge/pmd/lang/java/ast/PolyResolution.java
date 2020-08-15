@@ -59,7 +59,7 @@ final class PolyResolution {
             // - a CastExpression -> cast context
             JavaNode ctx = contextOf(e, false);
 
-            if (ctx != e && ctx instanceof InvocationNode) { // NOPMD CompareObjectsWithEquals
+            if (ctx instanceof InvocationNode) { // NOPMD CompareObjectsWithEquals
                 // an outer invocation ctx
                 if (ctx instanceof ASTExpression) {
                     // method call or regular constructor call
@@ -70,17 +70,17 @@ final class PolyResolution {
                 } else {
                     return inferInvocation((InvocationNode) ctx, e, null);
                 }
-            } else if (ctx == e) { // NOPMD CompareObjectsWithEquals
+            } else if (ctx == null) { // NOPMD CompareObjectsWithEquals
                 // no surrounding context
-                if (ctx instanceof InvocationNode) {
+                if (e instanceof InvocationNode) {
                     JTypeMirror targetType = null;
-                    if (ctx instanceof ASTExplicitConstructorInvocation) {
+                    if (e instanceof ASTExplicitConstructorInvocation) {
                         // target type is superclass type
-                        targetType = ctx.getEnclosingType().getTypeMirror().getSuperClass();
+                        targetType = e.getEnclosingType().getTypeMirror().getSuperClass();
                     }
                     // Invocation context: infer the called method, which will cascade down this node.
                     // This branch is also taken, if e is an invocation and has no surrounding context (ctx == e).
-                    return inferInvocation((InvocationNode) ctx, e, targetType);
+                    return inferInvocation((InvocationNode) e, e, targetType);
                 }
 
                 // no context for a poly that's not an invocation? This could either mean
@@ -114,7 +114,8 @@ final class PolyResolution {
                     infer.inferLambdaOrMrefInUnambiguousContext(site);
                     return fetchCascaded(e);
                 } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
-                    // those take directly the target type
+                    // Those take directly the target type, if there is one
+                    // otherwise they're standalone expressions
                     return targetType;
                 } else {
                     throw new IllegalStateException("Unknown poly?");
@@ -265,8 +266,7 @@ final class PolyResolution {
      * Returns the target type bestowed by the given context.
      * If the context was an {@link InvocationNode}, it should go elsewhere.
      */
-    @NonNull
-    private JTypeMirror getTargetType(JavaNode context) {
+    private @NonNull JTypeMirror getTargetType(JavaNode context) {
 
         if (context instanceof ASTReturnStatement) {
             // assignment context
@@ -316,7 +316,7 @@ final class PolyResolution {
      * <p>The returned context may never be a conditional or switch,
      * those just forward an outer context to their branches.
      *
-     * <p>If there is no context node, returns the parameter.
+     * <p>If there is no context node, returns null.
      *
      * Examples:
      * <pre>
@@ -334,14 +334,14 @@ final class PolyResolution {
      *
      * foo();            // expression statement, no target type
      *
-     * 1 + (a ? foo() : 2) //  contextOf(methodCall) = itself
+     * 1 + (a ? foo() : 2) //  contextOf(methodCall) = null
      *                     //  foo() here has no target type, because the enclosing conditional has none
      *
      *
      * </pre>
      */
-    private static JavaNode contextOf(JavaNode node, boolean onlyInvoc) {
-        JavaNode papa = node.getParent();
+    private static @Nullable JavaNode contextOf(JavaNode node, boolean onlyInvoc) {
+        final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
             // eg in
@@ -353,26 +353,23 @@ final class PolyResolution {
 
             // we can't just recurse directly up, because then contextOf(bog) = lhs,
             // and that's not true (bog() is in an invocation context)
-            JavaNode papi = papa.getParent();
+            final JavaNode papi = papa.getParent();
 
             if (papi instanceof ASTExplicitConstructorInvocation || papi instanceof ASTEnumConstant) {
                 return papi;
             } else {
-                // constructor or method call, maybe there's another context around
-                JavaNode ctx = contextOf(papi, true);
-                // if the cascade expr has no context itself, then it's not a context and we return the node
-                return doesCascadesContext(ctx, papi) ? node : ctx;
+                // Constructor or method call, maybe there's another context around
+                // We want to fetch the outermost invocation node, but not further
+                JavaNode outerCtx = contextOf(papi, /*onlyInvoc:*/true);
+                return outerCtx == null ? papi : outerCtx;
             }
         } else if (doesCascadesContext(papa, node)) {
             // switch/conditional
-
-            JavaNode ctx = contextOf(papa, onlyInvoc);
-            // if the cascade expr has no context itself, then it's not a context and we return the node
-            return doesCascadesContext(ctx, papa) ? node : ctx;
+            return contextOf(papa, onlyInvoc);
         }
 
         if (onlyInvoc) {
-            return node;
+            return null;
         }
 
         if (papa instanceof ASTCastExpression) {
@@ -387,21 +384,24 @@ final class PolyResolution {
         } else if (papa instanceof ASTYieldStatement) {
             // break with value (switch expr)
             ASTSwitchExpression owner = ((ASTYieldStatement) papa).getYieldTarget();
-            JavaNode ctx = contextOf(owner, false);
-            return doesCascadesContext(ctx, node) ? node : owner;
+            return contextOf(owner, false);
         } else {
             // stop recursion
-            return node;
+            return null;
         }
     }
 
 
     /**
-     * Neither of those are contexts, rather, they pass context through their branches.
-     * If their parent has no context, then they don't either.
+     * Identifies a node that can forward an invocation/assignment context
+     * inward. If their parent has no context, then they don't either.
      */
     private static boolean doesCascadesContext(JavaNode node, JavaNode child) {
-        return node instanceof ASTSwitchExpression  && child.getIndexInParent() != 0 // not the condition
+        if (child.getParent() != node) {
+            // means the "node" is a "stop recursion because no context" result in contextOf
+            return false;
+        }
+        return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
             || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0; // not the condition
     }

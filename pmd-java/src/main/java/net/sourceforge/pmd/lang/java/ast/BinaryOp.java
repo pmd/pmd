@@ -61,7 +61,7 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
 
     // additive
 
-    /** Addition {@code "+"} operator. */
+    /** Addition {@code "+"} operator, or string concatenation. */
     ADD("+"),
     /** Subtraction {@code "-"} operator. */
     SUB("-"),

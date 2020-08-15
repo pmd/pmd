@@ -9,9 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BOOLEAN
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE
+import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
@@ -106,7 +104,7 @@ class PolyResolutionTest : ProcessorTestSpec({
 
     }
 
-    parserTest("Test with varargs method") {
+    parserTest("Test standalonable ternary in invoc ctx") {
 
         inContext(StatementParsingCtx) {
 
@@ -130,8 +128,9 @@ class PolyResolutionTest : ProcessorTestSpec({
                                     variableAccess("packageName")
                                 }
                             }
-                            child<ASTConditionalExpression> {
+                            ternaryExpr {
 
+                                // not String (this is a not standalone, just in an invocation ctx)
                                 it.typeMirror shouldBe it.typeSystem.OBJECT
 
                                 infixExpr(BinaryOp.GT) {
@@ -209,6 +208,56 @@ class O {
 
         doTest(askOuterFirst = true)
         doTest(askOuterFirst = false)
+
+    }
+
+
+    parserTest("Ternaries with an additive expr as context") {
+
+        val acu = parser.parse("""
+
+class O {
+
+    public static String toString(Class c) {
+        return (c.isInterface() ? "interface " : (c.isPrimitive() ? "" : "class "))
+            + c.getName();
+    }
+}
+        """.trimIndent())
+
+
+        val additive =
+                acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
+
+        additive.shouldMatchN {
+            infixExpr(BinaryOp.ADD) {
+                it::getTypeMirror shouldBe it.typeSystem.STRING
+
+                ternaryExpr {
+                    it::getCondition shouldBe methodCall("isInterface") {
+                        variableAccess("c")
+                        argList(0)
+                    }
+
+                    it::getThenBranch shouldBe stringLit("\"interface \"")
+
+                    it::getElseBranch shouldBe ternaryExpr {
+                        it::getCondition shouldBe methodCall("isPrimitive") {
+                            variableAccess("c")
+                            argList(0)
+                        }
+                        it::getThenBranch shouldBe stringLit("\"\"")
+
+                        it::getElseBranch shouldBe stringLit("\"class \"")
+                    }
+                }
+
+                methodCall("getName") {
+                    variableAccess("c")
+                    argList(0)
+                }
+            }
+        }
 
     }
 

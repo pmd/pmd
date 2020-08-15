@@ -557,6 +557,11 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
 
 val EmptyAssertions: NodeSpec<out Node> = {}
 
+fun TreeNodeWrapper<Node, *>.ternaryExpr(assertions: NodeSpec<ASTConditionalExpression> = EmptyAssertions) =
+        child<ASTConditionalExpression>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {
             assertions()
