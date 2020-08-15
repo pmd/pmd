@@ -285,7 +285,7 @@ final class InferenceContext {
     }
 
 
-    void onBoundAdded(JInferenceVar ivar, BoundKind kind, JTypeMirror bound) {
+    void onBoundAdded(JInferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
         if (ivar.getDelegate() != null) {
             return;
         }
@@ -293,11 +293,11 @@ final class InferenceContext {
         // all variables have it, it's useless to propagate it
         if (kind != BoundKind.UPPER || bound != ts.OBJECT) {
             if (parent != null) {
-                parent.onBoundAdded(ivar, kind, bound);
+                parent.onBoundAdded(ivar, kind, bound, isSubstitution);
                 return;
             }
 
-            logger.boundAdded(this, ivar, kind, bound);
+            logger.boundAdded(this, ivar, kind, bound, isSubstitution);
 
             incorporationActions.add(new CheckBound(ivar, kind, bound));
             incorporationActions.add(new PropagateBounds(ivar, kind, bound));

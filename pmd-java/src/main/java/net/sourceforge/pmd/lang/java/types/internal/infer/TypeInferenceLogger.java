@@ -71,7 +71,7 @@ public interface TypeInferenceLogger {
     // ivar events
 
 
-    default void boundAdded(InferenceContext ctx, JInferenceVar var, BoundKind kind, JTypeMirror bound) { }
+    default void boundAdded(InferenceContext ctx, JInferenceVar var, BoundKind kind, JTypeMirror bound, boolean isSubstitution) { }
 
     default void ivarMerged(InferenceContext ctx, JInferenceVar var, JInferenceVar delegate) { }
 
@@ -340,8 +340,9 @@ public interface TypeInferenceLogger {
         }
 
         @Override
-        public void boundAdded(InferenceContext ctx, JInferenceVar ivar, BoundKind kind, JTypeMirror bound) {
-            println(addCtxInfo(ctx, "New bound") + kind.format(ivar, bound));
+        public void boundAdded(InferenceContext ctx, JInferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+            String message = isSubstitution ? "Changed bound" : "New bound";
+            println(addCtxInfo(ctx, message) + kind.format(ivar, bound));
         }
 
         @Override
@@ -354,9 +355,8 @@ public interface TypeInferenceLogger {
             println(addCtxInfo(ctx, "Ivar instantiated") + var + " := " + inst);
         }
 
-        @NonNull
-        private String addCtxInfo(InferenceContext ctx, String event) {
-            return event + "  (ctx " + ctx.getId() + "):\t";
+        private @NonNull String addCtxInfo(InferenceContext ctx, String event) {
+            return String.format("%-20s(ctx %d):   ", event, ctx.getId());
         }
 
         @Override

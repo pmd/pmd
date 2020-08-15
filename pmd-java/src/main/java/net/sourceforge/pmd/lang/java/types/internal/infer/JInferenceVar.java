@@ -83,6 +83,10 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
      * Adds a new bound on this variable.
      */
     public void addBound(BoundKind kind, JTypeMirror type) {
+        addBound(kind, type, false);
+    }
+
+    public void addBound(BoundKind kind, JTypeMirror type, boolean isSubstitution) {
         if (type == this) {
             // may occur because of transitive propagation
             // alpha <: alpha is always true and not interesting
@@ -125,7 +129,7 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
         }
 
         if (bounds.computeIfAbsent(kind, k -> new LinkedHashSet<>()).add(type)) {
-            ctx.onBoundAdded(this, kind, type);
+            ctx.onBoundAdded(this, kind, type, isSubstitution);
         }
     }
 
@@ -156,11 +160,18 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
 
 
             // put the new bounds before updating
-            bounds.put(kind, new LinkedHashSet<>());
+            LinkedHashSet<JTypeMirror> newBounds = new LinkedHashSet<>();
+            bounds.put(kind, newBounds);
 
             for (JTypeMirror prev : prevBounds) {
                 // add substituted bound
-                addBound(kind, prev.subst(substitution));
+                JTypeMirror newBound = prev.subst(substitution);
+                if (newBound == prev) {
+                    // not actually new, don't call listeners, etc
+                    newBounds.add(prev);
+                } else {
+                    addBound(kind, newBound);
+                }
             }
         }
     }
