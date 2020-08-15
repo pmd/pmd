@@ -10,10 +10,9 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
+import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.lang.java.types.typeDsl
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
@@ -398,6 +397,77 @@ class O {
             }
         }
 
+    }
+
+
+
+    parserTest("Cast context doesn't constrain invocation type") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+class Scratch {
+
+    static <T> T id(T t) {
+        return t;
+    }
+    
+    static {
+        Comparable o = null;
+        // T := Object, and there's no error
+        o = (String) id(o);
+    }
+}
+
+        """.trimIndent())
+
+        val (t_Scratch) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "id",
+                            declaredIn = t_Scratch,
+                            withFormals = listOf(gen.t_Comparable),
+                            returning = gen.t_Comparable
+                    )
+                }
+
+                argList(1)
+            }
+        }
+    }
+
+
+
+
+    parserTest("Cast context doesn't influence standalone ternary") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+class Scratch {
+
+    static void putBoolean(byte[] b, int off, boolean val) {
+        b[off] = (byte) (val ? 1 : 0);
+    }
+}
+
+        """.trimIndent())
+
+        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+
+        ternary.shouldMatchN {
+            ternaryExpr {
+                it.typeMirror.shouldBePrimitive(INT)
+                variableAccess("val")
+                int(1)
+                int(0)
+            }
+        }
     }
 
 

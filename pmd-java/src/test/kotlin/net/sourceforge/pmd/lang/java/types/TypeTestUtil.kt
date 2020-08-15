@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import kotlin.String
 import kotlin.reflect.KClass
 import kotlin.streams.toList
+import kotlin.test.assertEquals
 
 /*
     Note: in parser tests, you can get a log for the inference by calling
@@ -337,3 +338,8 @@ fun ParserTestCtx.makeDummyTVars(vararg names: String): List<JTypeVar> {
 /** A type that binds to a capture variable for the given wildcard. */
 fun captureMatcher(wild: JWildcardType): JTypeVar =
         CaptureMatcher(wild)
+
+
+fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
+    this shouldBe typeSystem.getPrimitive(kind)
+}

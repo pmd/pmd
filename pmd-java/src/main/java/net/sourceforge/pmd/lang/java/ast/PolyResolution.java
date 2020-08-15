@@ -114,7 +114,8 @@ final class PolyResolution {
             } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
                 // Those take directly the target type, if there is one
                 // otherwise they're standalone expressions
-                return getTargetType(ctx, false);
+                // Fixme they should preferentially be standalone...
+                return getTargetType(ctx, true);
             } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
                 // these may use a cast as a target type
                 JTypeMirror targetType = getTargetType(ctx, true);

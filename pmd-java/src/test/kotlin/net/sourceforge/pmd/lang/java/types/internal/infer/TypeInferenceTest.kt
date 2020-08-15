@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.*
 import java.util.function.Supplier
+import kotlin.collections.ArrayList
 
 /**
  */
@@ -557,50 +558,6 @@ class MyMap<K, V> {
         }
 
     }
-
-
-
-    parserTest("Cast context doesn't constrain invocation type") {
-
-        logTypeInference(true)
-
-        val acu = parser.parse("""
-class Scratch {
-
-    static <T> T id(T t) {
-        return t;
-    }
-    
-    static {
-        Comparable o = null;
-        // T := Object, and there's no error
-        o = (String) id(o);
-    }
-}
-
-        """.trimIndent())
-
-        val (t_Scratch) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
-
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-        call.shouldMatchN {
-            methodCall("id") {
-                with (it.typeDsl) {
-                    it.methodType.shouldMatchMethod(
-                            named = "id",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(gen.t_Comparable),
-                            returning = gen.t_Comparable
-                    )
-                }
-
-                argList(1)
-            }
-        }
-    }
-
-
 
 })
 
