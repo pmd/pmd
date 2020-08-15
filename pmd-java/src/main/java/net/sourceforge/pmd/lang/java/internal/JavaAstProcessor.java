@@ -11,8 +11,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -21,14 +19,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
-import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -94,11 +90,6 @@ public final class JavaAstProcessor {
 
     public JClassSymbol makeUnresolvedReference(String canonicalName) {
         return makeUnresolvedReference(canonicalName, 0);
-    }
-
-    public FieldSig makeUnresolvedField(@Nullable JClassSymbol enclosing, String simpleName) {
-        JFieldSymbol sym = typeSystem.symbols().makeUnresolvedField(enclosing, simpleName);
-        return typeSystem.sigOf(typeSystem.UNRESOLVED_TYPE, sym);
     }
 
     public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerRelativeName) {

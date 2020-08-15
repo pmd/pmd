@@ -10,9 +10,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -96,22 +94,4 @@ public final class SymbolFactory {
         return sym;
     }
 
-    /**
-     * Produces an unresolved class symbol from the given canonical name.
-     *
-     * @param container  Symbol declaring the field, if null, defaults to
-     *                   {@link TypeSystem#UNRESOLVED_TYPE UNRESOLVED_TYPE.symbol()}
-     * @param simpleName Simple name of the field
-     *
-     * @throws NullPointerException If the name is null
-     * @throws AssertionError       If the name is not a java identifier
-     */
-    public @NonNull JFieldSymbol makeUnresolvedField(JClassSymbol container, String simpleName) {
-        assert AssertionUtil.isJavaIdentifier(simpleName) : "Not a simple name '" + simpleName + "'";
-        if (container == null) {
-            container = (JClassSymbol) ts.UNRESOLVED_TYPE.getSymbol();
-        }
-        return new UnresolvedFieldSymbol(container, ts, simpleName);
-
-    }
 }

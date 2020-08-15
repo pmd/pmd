@@ -405,9 +405,8 @@ final class AstDisambiguationPass {
 
             // todo report on the specific token failing
             ctx.reportUnresolvedMember(ambig, Fallback.FIELD_ACCESS, nextSimpleName, sym);
-            FieldSig fallbackField = ctx.makeUnresolvedField(sym, nextSimpleName);
             ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-            return resolveExpr(typeExpr, fallbackField, nextIdent, remaining, ctx); // this will chain for the rest of the name
+            return resolveExpr(typeExpr, null, nextIdent, remaining, ctx); // this will chain for the rest of the name
         }
 
         /**
@@ -532,13 +531,6 @@ final class AstDisambiguationPass {
                 return result == null ? null : result.getSymbol();
             }
             return null;
-        }
-
-        public FieldSig makeUnresolvedField(JTypeDeclSymbol owner, String simpleName) {
-            if (owner instanceof JClassSymbol) {
-                return processor.makeUnresolvedField((JClassSymbol) owner, simpleName);
-            }
-            return processor.makeUnresolvedField(null, simpleName);
         }
 
         public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerRelativeName) {
