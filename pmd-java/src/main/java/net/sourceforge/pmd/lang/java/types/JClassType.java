@@ -20,10 +20,10 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
  * Represents class and interface types, including functional interface
  * types. This interface can be thought of as a {@link JClassSymbol}
  * viewed under a given parameterization. Methods like {@link #streamMethods(Predicate)},
- * {@link #getField(String)} return signatures that are already
- * partially substituted. Eg the method {@code get(int)} for type
- * {@code List<String>} has return type {@code String}, not the
- * type var {@code T} or the erasure {@code Object}.
+ * return signatures that are already partially substituted. Eg the
+ * method {@code get(int)} for type {@code List<String>} has return
+ * type {@code String}, not the type var {@code T} or the erasure
+ * {@code Object}.
  *
  * <p>A class type may present its symbol under several views:
  * <ul>

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -296,17 +294,6 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     default List<JMethodSig> getConstructors() {
         return Collections.emptyList();
-    }
-
-
-    /**
-     * Returns the signature of the field with the given name, possibly
-     * inherited from a supertype. May return {@link TypeSystem#UNRESOLVED_TYPE}.
-     *
-     * @param name Name of the field
-     */
-    default @Nullable FieldSig getField(String name) { // todo change param to JFieldSymbol, FIXME intersections + tvars
-        return null;
     }
 
 

@@ -5,15 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -82,14 +79,6 @@ final class ArrayTypeImpl implements JArrayType {
     @Override
     public boolean isRaw() {
         return getElementType().isRaw();
-    }
-
-    @Override
-    public @Nullable FieldSig getField(String name) {
-        if ("length".equals(name)) {
-            return JVariableSig.forField(this, getSymbol().getDeclaredField("length"));
-        }
-        return null;
     }
 
     @Override

@@ -31,6 +31,10 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
@@ -1556,6 +1560,63 @@ public final class TypeOps {
 
         JClassSymbol superclass = sub.getSuperclass();
         return superclass != null && isSubClassOfNoInterface(superclass, symbol);
+    }
+
+    public static NameResolver<FieldSig> getMemberFieldResolver(JTypeMirror c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        if (c instanceof JClassType) {
+            // fast path
+            return JavaResolvers.getMemberFieldResolver((JClassType) c, accessPackageName, access, name);
+        }
+
+        return c.acceptVisitor(GetFieldVisitor.INSTANCE, new FieldSearchParams(accessPackageName, access, name));
+    }
+
+    private static final class FieldSearchParams {
+
+        private final @NonNull String accessPackageName;
+        private final @Nullable JClassSymbol access;
+        private final String name;
+
+        FieldSearchParams(@NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+            this.accessPackageName = accessPackageName;
+            this.access = access;
+            this.name = name;
+        }
+    }
+
+    private static final class GetFieldVisitor implements JTypeVisitor<NameResolver<FieldSig>, FieldSearchParams> {
+
+        static final GetFieldVisitor INSTANCE = new GetFieldVisitor();
+
+        @Override
+        public NameResolver<FieldSig> visit(JTypeMirror t, FieldSearchParams fieldSearchParams) {
+            return CoreResolvers.emptyResolver();
+        }
+
+        @Override
+        public NameResolver<FieldSig> visitClass(JClassType t, FieldSearchParams fieldSearchParams) {
+            return JavaResolvers.getMemberFieldResolver(t, fieldSearchParams.accessPackageName, fieldSearchParams.access, fieldSearchParams.name);
+        }
+
+        @Override
+        public NameResolver<FieldSig> visitTypeVar(JTypeVar t, FieldSearchParams fieldSearchParams) {
+            return t.getUpperBound().acceptVisitor(this, fieldSearchParams);
+        }
+
+        @Override
+        public NameResolver<FieldSig> visitIntersection(JIntersectionType t, FieldSearchParams fieldSearchParams) {
+            return NameResolver.composite(
+                CollectionUtil.map(t.getComponents(), c -> c.acceptVisitor(this, fieldSearchParams))
+            );
+        }
+
+        @Override
+        public NameResolver<FieldSig> visitArray(JArrayType t, FieldSearchParams fieldSearchParams) {
+            if (fieldSearchParams.name.equals("length")) {
+                return CoreResolvers.singleton("length", t.getTypeSystem().sigOf(t, t.getSymbol().getDeclaredField("length")));
+            }
+            return CoreResolvers.emptyResolver();
+        }
     }
 
 }

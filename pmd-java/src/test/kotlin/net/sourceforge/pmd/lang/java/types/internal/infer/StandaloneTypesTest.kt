@@ -218,6 +218,25 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test field access on type variable") {
+
+        val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx=this)
+
+        val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
+        val fieldAccess= method.descendants(ASTFieldAccess::class.java).firstOrThrow()
+
+        fieldAccess.shouldMatchN {
+            fieldAccess("length") {
+                variableAccess("t") {
+                    it.typeMirror shouldBe tvar
+                }
+                it.typeMirror shouldBe it.typeSystem.INT
+                it.referencedSym shouldNotBe null
+                it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
+            }
+        }
+    }
+
     parserTest("Test literals") {
 
         inContext(ExpressionParsingCtx) {

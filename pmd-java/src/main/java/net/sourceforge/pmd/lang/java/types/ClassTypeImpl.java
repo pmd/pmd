@@ -20,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -243,11 +242,6 @@ class ClassTypeImpl implements JClassType {
         } else {
             return selectInner(inner, Collections.emptyList());
         }
-    }
-
-    @Override
-    public @Nullable FieldSig getField(String name) {
-        return JavaResolvers.getMemberFieldResolver(this, symbol.getPackageName(), symbol, name).resolveFirst(name);
     }
 
     @Override
