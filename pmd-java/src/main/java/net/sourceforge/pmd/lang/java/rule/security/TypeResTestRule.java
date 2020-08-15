@@ -79,7 +79,7 @@ public class TypeResTestRule extends AbstractJavaRule {
         if (node instanceof TypeNode) {
             try {
                 if (((TypeNode) node).getTypeMirror() == node.getTypeSystem().UNRESOLVED_TYPE) {
-                    if (IS_SINGLE_FILE) {
+                    if (true) {
                         System.err.println("Unresolved at " + position(node, data) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }

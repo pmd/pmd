@@ -303,7 +303,15 @@ public final class SymbolTableResolver {
             setTopSymbolTableAndRecurse(node.getIterableExpr());
 
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getVarId().getSymbol()));
-            node.getBody().acceptVisitor(this, data);
+            ASTStatement body = node.getBody();
+            if (body instanceof ASTBlock) { // if it's a block then it will be set
+                body.acceptVisitor(this, data);
+            } else {
+                // if not, then the body statement may never set a
+                // symbol table that would have this table as parent,
+                // so the table would be dangling
+                setTopSymbolTableAndRecurse(body);
+            }
             popStack(pushed);
             return null;
         }

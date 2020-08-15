@@ -277,4 +277,36 @@ class VarScopingTest : ProcessorTestSpec({
             }
         }
     }
+
+
+    parserTest("Foreach with no braces") {
+
+        val acu = parser.parse("""
+            import java.util.*;
+            import java.io.*;
+            class Outer {
+
+                public File[] listFiles(FilenameFilter filter) {
+                    String ss[] = list();
+                    if (ss == null) return null;
+                    ArrayList<File> files = new ArrayList<>();
+                    for (String s : ss)
+                        if ((filter == null) || filter.accept(this, s)) // s should be resolved
+                            files.add(new File(s, this));
+                    return files.toArray(new File[files.size()]);
+                }
+            }
+        """.trimIndent())
+
+        val foreachVar =
+                acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "s" }!!
+
+        val foreachBody =
+                acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
+
+        foreachBody shouldResolveToLocal foreachVar
+
+    }
+
+
 })

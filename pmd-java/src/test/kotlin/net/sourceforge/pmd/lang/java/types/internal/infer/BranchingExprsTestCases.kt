@@ -97,8 +97,14 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         child<ASTConditionalExpression> {
                             it.typeMirror shouldBe lubOfBothLists
                             boolean(true)
-                            child<ASTConstructorCall>(ignoreChildren = true) {}
-                            child<ASTConstructorCall>(ignoreChildren = true) {}
+                            with (it.typeDsl) {
+                                child<ASTConstructorCall>(ignoreChildren = true) {
+                                    it.typeMirror shouldBe gen.`t_ArrayList{String}`
+                                }
+                                child<ASTConstructorCall>(ignoreChildren = true) {
+                                    it.typeMirror shouldBe gen.`t_LinkedList{String}`
+                                }
+                            }
                         }
                     }
                 }
