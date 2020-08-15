@@ -398,6 +398,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         } else if (parent instanceof ASTVariableDeclarator) {
             ASTVariableDeclaratorId id = ((ASTVariableDeclarator) parent).getVarId();
             return id.isTypeInferred() ? ts.ERROR_TYPE : id.getTypeMirror();
+        } else if (parent instanceof ASTArrayInitializer) {
+            JTypeMirror tm = ((ASTArrayInitializer) parent).getTypeMirror();
+            return tm instanceof JArrayType ? ((JArrayType) tm).getComponentType()
+                                            : ts.ERROR_TYPE;
         }
         return ts.ERROR_TYPE;
     }

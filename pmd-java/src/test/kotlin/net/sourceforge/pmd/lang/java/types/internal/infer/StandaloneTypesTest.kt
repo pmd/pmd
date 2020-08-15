@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
@@ -82,6 +83,21 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         "1f $op 2d" should haveType { double }
 
                     }
+        }
+    }
+
+
+    parserTest("Test array initializer") {
+
+        val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
+        val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
+        with (block.typeDsl) {
+            oneDim.typeMirror shouldBe int.toArray()
+
+            withClue("Multi dim array") {
+                twoDim.typeMirror shouldBe int.toArray(2)
+                nested.typeMirror shouldBe int.toArray()
+            }
         }
     }
 

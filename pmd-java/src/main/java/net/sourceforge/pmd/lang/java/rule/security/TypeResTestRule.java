@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -78,7 +80,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
         if (node instanceof TypeNode) {
             try {
-                if (((TypeNode) node).getTypeMirror() == node.getTypeSystem().UNRESOLVED_TYPE) {
+                if (isUnresolved(((TypeNode) node).getTypeMirror())) {
                     if (true) {
                         System.err.println("Unresolved at " + position(node, data) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
@@ -98,6 +100,12 @@ public class TypeResTestRule extends AbstractJavaRule {
         }
 
         return data;
+    }
+
+
+    private static boolean isUnresolved(@NonNull JTypeMirror s) {
+        TypeSystem ts = s.getTypeSystem();
+        return s == ts.UNRESOLVED_TYPE || s == ts.ERROR_TYPE || s.getSymbol() != null && s.getSymbol().isUnresolved();
     }
 
     @NonNull

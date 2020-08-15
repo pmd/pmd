@@ -663,9 +663,7 @@ class Scratch {
         }
     }
 
-    parserTest("f:Method refs disambiguation between static methods") {
-
-        logTypeInference(true)
+    parserTest("Method refs disambiguation between static methods") {
 
         val acu = parser.parse("""
 import java.util.function.IntConsumer;
@@ -716,6 +714,31 @@ class Scratch {
             methodRef("baz") {
                 it.typeMirror shouldBe t_IntConsumer
                 it.referencedMethod.arity shouldBe 1
+
+                unspecifiedChild()
+            }
+        }
+    }
+
+    parserTest("Missing compile-time decl") {
+
+        val acu = parser.parse("""
+import java.util.function.IntConsumer;
+
+class Scratch {
+
+    static  {
+        IntConsumer ic = Scratch::foo;
+    }
+}
+        """.trimIndent())
+
+        val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        fooRef.shouldMatchN {
+            methodRef("foo") {
+                it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
 
                 unspecifiedChild()
             }

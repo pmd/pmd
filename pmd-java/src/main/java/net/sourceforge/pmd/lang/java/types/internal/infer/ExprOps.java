@@ -260,6 +260,8 @@ final class ExprOps {
     }
 
     @Nullable MethodCtDecl findRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
+        // https://docs.oracle.com/javase/specs/jls/se14/html/jls-15.html#jls-15.13.1
+
         JTypeMirror lhsIfType = mref.getLhsIfType();
         boolean acceptLowerArity = lhsIfType != null && lhsIfType.isClassOrInterface() && !mref.isConstructorRef();
 
