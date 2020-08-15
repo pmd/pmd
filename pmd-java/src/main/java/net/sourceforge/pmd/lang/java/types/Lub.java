@@ -334,7 +334,7 @@ final class Lub {
         PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
         PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
         JTypeMirror lastBadClass = null;
-        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext(); ) {
+        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext();) {
             JTypeMirror ci = iterator.next();
 
             if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
@@ -353,7 +353,7 @@ final class Lub {
                     iterator.remove();
                 } else {
                     JTypeMirror lower = cvarLowerBound(ci);
-                    if (lower != ci && lower != ts.NULL_TYPE) {
+                    if (lower != ci && lower != ts.NULL_TYPE) { // NOPMD CompareObjectsWithEquals
                         cvarLowers = cvarLowers.plus(lower);
                         cvarsToRemove = cvarsToRemove.plus(ci);
                         retryWithCaptureBounds = YES;
@@ -376,7 +376,7 @@ final class Lub {
             return glb(ts, list);
         case NO:
             break;
-        case UNKNOWN:
+        default:
             throw new IllegalArgumentException("Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
 
