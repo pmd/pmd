@@ -78,7 +78,11 @@ final class ExprCheckHelper {
 
                 // defer check if fi is not ground
                 checker.checkExprConstraint(infCtx, standalone, targetType);
-                return true;
+                if (!(expr instanceof BranchingMirror)) {
+                    return true;
+                }
+                // otherwise fallthrough, we potentially need to finish
+                // inferring the branches.
             }
         }
 

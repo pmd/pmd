@@ -532,7 +532,7 @@ abstract class NodeStream<T> implements Iterable<T> {
 
     }
 
-    parserTest("f:todo rename") {
+    parserTest("Fix method ref non-wildcard parameterization not being ground in listener") {
 
         logTypeInference(true)
 
