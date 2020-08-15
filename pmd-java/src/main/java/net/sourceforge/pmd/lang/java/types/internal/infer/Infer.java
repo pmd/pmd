@@ -123,11 +123,19 @@ public final class Infer {
         PolyExprMirror expr = site.getExpr();
         if (expr instanceof MethodRefMirror || expr instanceof LambdaExprMirror) {
             try {
-                // this infers method invocations and stuff, I think it's recursive though
                 addBoundOrDefer(emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
             } catch (ResolutionFailedException rfe) {
                 rfe.getFailure().addContext(null, site, null);
                 LOG.logResolutionFail(rfe.getFailure());
+                expr.setInferredType(getTypeSystem().UNRESOLVED_TYPE);
+                if (expr instanceof MethodRefMirror) {
+                    MethodRefMirror mref = (MethodRefMirror) expr;
+                    mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+                    mref.setCompileTimeDecl(ts.UNRESOLVED_METHOD);
+                } else {
+                    LambdaExprMirror lambda = (LambdaExprMirror) expr;
+                    lambda.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+                }
             }
         } else {
             throw new IllegalArgumentException(expr + " should be lambda or method ref");
@@ -304,12 +312,6 @@ public final class Infer {
                                          MethodCallSite site,
                                          MethodResolutionPhase phase) {
         try {
-            if (phase.requiresVarargs() && !m.isVarargs()) {
-                assert !phase.isInvocation()
-                    // this would mean isPotentiallyApplicable is broken
-                    : "Should not have proceeded to invocation";
-                return null;
-            }
             return instantiateMaybeNoInfer(m, site, phase);
         } catch (ResolutionFailedException e) {
             ResolutionFailure failure = e.getFailure();
