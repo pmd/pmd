@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedAssignableExp
  *     to this status in the syntactic contexts, where we know they're definitely
  *     variable references.
  */
-public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedAssignableExpr {
+public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.

@@ -56,8 +56,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
      *
      * </pre>
      */
-    interface ASTNamedAssignableExpr extends ASTAssignableExpr {
-
+    interface ASTNamedReferenceExpr extends ASTAssignableExpr {
 
         /**
          * Returns the name of the referenced variable.
