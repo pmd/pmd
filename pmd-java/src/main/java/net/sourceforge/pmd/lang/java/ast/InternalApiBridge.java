@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -152,8 +152,8 @@ public final class InternalApiBridge {
         methodReference.setCompileTimeDecl(methodType);
     }
 
-    public static void setTypeResolver(ASTCompilationUnit acu, LazyTypeResolver typeResolver) {
-        acu.setTypeResolver(typeResolver);
+    public static void initTypeResolver(ASTCompilationUnit acu, JavaAstProcessor processor, TypeInferenceLogger typeResolver) {
+        acu.setTypeResolver(new LazyTypeResolver(processor, typeResolver));
     }
 
     public static void setMethodType(InvocationNode expression, JMethodSig inferred, boolean varargsPhase) {

@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.types.internal.ast;
+package net.sourceforge.pmd.lang.java.ast;
 
 
 import static java.util.Arrays.asList;

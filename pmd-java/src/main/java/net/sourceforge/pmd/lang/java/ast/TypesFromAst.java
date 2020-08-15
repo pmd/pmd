@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.types.internal.ast;
+package net.sourceforge.pmd.lang.java.ast;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,19 +12,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
-import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;

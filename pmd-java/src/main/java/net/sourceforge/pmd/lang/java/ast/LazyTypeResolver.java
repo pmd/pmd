@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.types.internal.ast;
+package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.binaryNumericPromotion;
@@ -14,53 +14,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayDimensions;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
-import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPattern;
-import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
@@ -82,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
  * Lazy version of ClassTypeResolver. This is not appropriate for
  * all nodes, though it is appropriate for standalone expressions.
  */
-public final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror> {
+final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror> {
 
     private final TypeSystem ts;
     private final PolyResolution polyResolution;

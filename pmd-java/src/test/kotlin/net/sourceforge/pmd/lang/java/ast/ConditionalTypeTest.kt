@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.types.internal.ast
+package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -12,10 +12,7 @@ import net.sourceforge.pmd.lang.java.types.*
 /**
  * @author Clément Fournier
  */
-class ConditionalTypeTest : FunSpec({
-
-
-}) {
+class ConditionalTypeTest : FunSpec({}) {
 
     private val tested = mutableMapOf<TypePair, JTypeMirror>()
 

@@ -26,6 +26,7 @@ public interface SemanticChecksLogger {
      * Warning, classpath is misconfigured (or not configured).
      */
     String CANNOT_RESOLVE_SYMBOL = "Cannot resolve symbol {0}";
+    String INACCESSIBLE_SYMBOL = "Symbol {0} is inaccessible";
 
 
     /**

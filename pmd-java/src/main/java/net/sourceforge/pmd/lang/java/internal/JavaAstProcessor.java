@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
@@ -102,11 +101,11 @@ public final class JavaAstProcessor {
         return typeSystem.sigOf(typeSystem.UNRESOLVED_TYPE, sym);
     }
 
-    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerSimpleName) {
+    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerRelativeName) {
         if (outer instanceof JClassSymbol) {
-            return makeUnresolvedReference(((JClassSymbol) outer).getCanonicalName() + '.' + innerSimpleName);
+            return makeUnresolvedReference(((JClassSymbol) outer).getCanonicalName() + '.' + innerRelativeName);
         }
-        return makeUnresolvedReference(innerSimpleName); // child of a type variable does not exist
+        return makeUnresolvedReference(innerRelativeName); // child of a type variable does not exist
     }
 
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
@@ -133,31 +132,13 @@ public final class JavaAstProcessor {
      * Performs semantic analysis on the given source file.
      */
     public void process(ASTCompilationUnit acu) {
-        /*
-            PASSES:
-
-            - qname resolution, setting symbols on declarations
-              - now AST symbols are only partially initialized, their type-related methods will fail
-            - symbol table resolution
-              - AST symbols are now functional
-            - AST disambiguation here
-            - type resolution initialization
-         */
 
         SymbolResolver knownSyms = bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
-        // We set the type resolver before symbol table resolution
-        // This is whacky, but there is a corner case with inner class creation expression (`foo.new Inner()`)
-        // whereby the symbol to which `Inner` resolves depends on type resolution of `foo` (of the whole LHS).
-
-        // This is handled in the disambiguation pass. Because the
-        // SymbolTableResolver may request early disambiguation of some nodes,
-        // type resolution must be ready to fire before table resolution starts
-        LazyTypeResolver typeResolver = new LazyTypeResolver(this, typeInferenceLogger);
-        InternalApiBridge.setTypeResolver(acu, typeResolver);
+        InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
         bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("3. AST disambiguation", () -> InternalApiBridge.disambig(this, acu));

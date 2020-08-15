@@ -8,7 +8,6 @@ import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
