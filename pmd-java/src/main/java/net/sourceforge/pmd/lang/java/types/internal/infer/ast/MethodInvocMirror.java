@@ -25,7 +25,6 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
         super(mirrors, call);
     }
 
-
     @Override
     public List<JMethodSig> getAccessibleCandidates() {
         TypeNode lhs = myNode.getQualifier();

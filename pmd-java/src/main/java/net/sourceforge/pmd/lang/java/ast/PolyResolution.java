@@ -95,10 +95,10 @@ final class PolyResolution {
                 //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
                 // - a poly in a var assignment context: var f = a ? b : c;
                 if (e instanceof ASTConditionalExpression) {
-                    return computeStandaloneConditionalType((ASTConditionalExpression) e, false);
+                    return computeStandaloneConditionalType((ASTConditionalExpression) e);
                 } else if (e instanceof ASTSwitchExpression) {
                     List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-                    return computeConditionalType(ts, branches, false);
+                    return computeStandaloneConditionalType(ts, branches);
                 } else {
                     return ts.ERROR_TYPE;
                 }
@@ -204,13 +204,10 @@ final class PolyResolution {
         }
 
         if (e instanceof ASTConditionalExpression) {
-            // Prefer a standalone primitive type if possible, which matches the JLS more closely
-            JTypeMirror standalone = computeStandaloneConditionalType(
-                (ASTConditionalExpression) e,
-                /*mustBePrimitive*/true
-            );
-            if (standalone != null) {
-                return standalone;
+            // this is set if the conditional is standalone
+            JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
+            if (type != null) {
+                return type;
             }
             // otherwise fallthrough
         }
@@ -403,20 +400,17 @@ final class PolyResolution {
     }
 
 
-    private JTypeMirror computeStandaloneConditionalType(ASTConditionalExpression node, boolean mustBePrimitive) {
-        return computeConditionalType(
+    private JTypeMirror computeStandaloneConditionalType(ASTConditionalExpression node) {
+        return computeStandaloneConditionalType(
             ts,
-            asList(
-                node.getThenBranch().getTypeMirror(),
-                node.getElseBranch().getTypeMirror()
-            ),
-            mustBePrimitive
+            node.getThenBranch().getTypeMirror(),
+            node.getElseBranch().getTypeMirror()
         );
     }
 
     // test only
     static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, JTypeMirror t2, JTypeMirror t3) {
-        return computeConditionalType(ts, asList(t2, t3), false);
+        return computeStandaloneConditionalType(ts, asList(t2, t3));
     }
 
     /**
@@ -424,7 +418,7 @@ final class PolyResolution {
      * how Javac does it for now, and it's exactly an extension of the
      * rules for ternary operators to an arbitrary number of branches.
      */
-    private static @Nullable JTypeMirror computeConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes, boolean mustBePrimitive) {
+    private static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes) {
         // There is a corner case with constant values
 
         if (branchTypes.isEmpty()) {
@@ -435,7 +429,7 @@ final class PolyResolution {
         List<JTypeMirror> tail = branchTypes.subList(1, branchTypes.size());
 
         if (all(tail, head::equals)) {
-            return !mustBePrimitive || head.isPrimitive() ? head : null;
+            return head;
         }
 
 
@@ -447,10 +441,6 @@ final class PolyResolution {
                     return a;
                 }
             }
-        }
-
-        if (mustBePrimitive) {
-            return null;
         }
 
         List<JTypeMirror> boxed = map(branchTypes, JTypeMirror::box);
