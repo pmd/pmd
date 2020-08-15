@@ -146,7 +146,7 @@ class LocalTypeScopesTest : ParserTestSpec({
     }
 
 
-    parserTest("Inner class creation expressions should have inner classes in scope") {
+    parserTest("f:Inner class creation expressions should have inner classes in scope") {
 
         val acu = parser.withProcessing().parse("""
             package scratch;
@@ -179,15 +179,16 @@ class LocalTypeScopesTest : ParserTestSpec({
         val (n2, mapEntry, kkEntry, n2i2, i4) =
                 acu.descendants(ASTClassOrInterfaceType::class.java).toList()
 
-        val (_, _, cKkEntry, cN2, cN2i2) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+        val (_, cKK, cKkEntry, cN2, cN2i2) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         // setup
-        n2.referencedSym shouldBe cN2.symbol
-        mapEntry.referencedSym shouldBe with(acu.typeDsl) { java.util.Map.Entry::class.decl.symbol }
-        kkEntry.referencedSym shouldBe cKkEntry.symbol
-        n2i2.referencedSym shouldBe cN2i2.symbol
-        i4.referencedSym::isUnresolved shouldBe true
+        n2.typeMirror.symbol shouldBe cN2.symbol
+        mapEntry.typeMirror shouldBe with(acu.typeDsl) { java.util.Map.Entry::class.raw }
+        kkEntry.typeMirror shouldBe cKkEntry
+        (kkEntry.typeMirror as JClassType).enclosingType shouldBe cKK // not cN2! this calls getAsSuper
+        n2i2.typeMirror shouldBe cN2i2
+        i4.typeMirror.symbol?.isUnresolved shouldBe true
     }
 
 })

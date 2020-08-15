@@ -109,7 +109,7 @@ final class TypesFromAst {
 
         @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
-        JTypeDeclSymbol reference = getReference(node);
+        JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
         if (reference instanceof JTypeParameterSymbol) {
             return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
@@ -164,7 +164,7 @@ final class TypesFromAst {
             && !Modifier.isStatic(reference.getModifiers());
     }
 
-    private static @NonNull JTypeDeclSymbol getReference(ASTClassOrInterfaceType node) {
+    private static @NonNull JTypeDeclSymbol getReferenceEnsureResolved(ASTClassOrInterfaceType node) {
         if (node.getReferencedSym() != null) {
             return node.getReferencedSym();
         } else if (node.getParent() instanceof ASTConstructorCall) {
@@ -175,13 +175,18 @@ final class TypesFromAst {
                 JTypeMirror qualifierType = qualifier.getTypeMirror();
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
-                    InternalApiBridge.setImplicitEnclosingType(node, enclosing);
                     JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
                                                        .resolveFirst(node.getSimpleName());
-                    JClassSymbol symbol = resolved == null
-                                          ? (JClassSymbol) node.getTypeSystem().UNRESOLVED_TYPE.getSymbol()
-                                          // compile-time error
-                                          : resolved.getSymbol();
+                    JClassSymbol symbol;
+                    if (resolved == null) {
+                        // compile-time error
+                        symbol = (JClassSymbol) node.getTypeSystem().UNRESOLVED_TYPE.getSymbol();
+                    } else {
+                        symbol = resolved.getSymbol();
+                        JClassType actualEnclosing = enclosing.getAsSuper(symbol.getEnclosingClass());
+                        assert actualEnclosing != null : "We got this symbol by looking into enclosing";
+                        node.setImplicitEnclosing(actualEnclosing);
+                    }
                     node.setSymbol(symbol);
                     return symbol;
                 }

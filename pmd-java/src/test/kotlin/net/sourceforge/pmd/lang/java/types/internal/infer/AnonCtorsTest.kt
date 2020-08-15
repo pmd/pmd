@@ -48,7 +48,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                     argList {
                         constructorCall {
                             classType("Gen") {
-                                it::getReferencedSym shouldBe gen
+                                it.typeMirror.symbol shouldBe gen
                                 diamond()
                             }
 
@@ -96,7 +96,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             call.shouldMatchN {
                 constructorCall {
                     classType("BitMetric") {
-                        it::getReferencedSym shouldBe bitMetric.symbol
+                        it.typeMirror.symbol shouldBe bitMetric.symbol
                     }
 
                     it.methodType.apply {
@@ -143,7 +143,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             call.shouldMatchN {
                 constructorCall {
                     classType("BitMetric") {
-                        it::getReferencedSym shouldBe bitMetric.symbol
+                        it.typeMirror.symbol shouldBe bitMetric.symbol
                     }
 
                     it.methodType.apply {

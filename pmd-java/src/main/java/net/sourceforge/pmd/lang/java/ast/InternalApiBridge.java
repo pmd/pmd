@@ -190,8 +190,4 @@ public final class InternalApiBridge {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
-    public static void setImplicitEnclosingType(ASTClassOrInterfaceType t, JClassType e) {
-        t.setImplicitEnclosing(e);
-    }
-
 }
