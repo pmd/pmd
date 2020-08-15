@@ -14,12 +14,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -70,20 +67,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     @Override
     public JClassType getNewType() {
-        ASTClassOrInterfaceType typeNode = myNode.getTypeNode();
-        if (!InternalApiBridge.hasReferenceBeenResolved(typeNode)) {
-            // We enter here if the disambiguation pass has asked for type resolution
-            // of a the qualifier of a ctor invoc
-            assert myNode.isQualifiedInstanceCreation() : "For non-qualified ctor invoc, reference shouldn't be null";
-            InternalApiBridge.disambig(
-                InternalApiBridge.getProcessor(myNode),
-                NodeStream.of(typeNode),
-                myNode.getEnclosingType(),
-                false
-            );
-            assert InternalApiBridge.hasReferenceBeenResolved(typeNode);
-        }
-        return (JClassType) typeNode.getTypeMirror();
+        return (JClassType) myNode.getTypeNode().getTypeMirror();
     }
 
     @Override

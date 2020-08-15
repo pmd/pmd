@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
+import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class MemberInheritanceTest : ParserTestSpec({
 
@@ -228,6 +229,50 @@ class MemberInheritanceTest : ParserTestSpec({
             it[0].apply {
                 formalParameters shouldBe emptyList()
                 declaringType shouldBe acu.typeSystem.OBJECT
+            }
+        }
+
+    }
+
+
+    parserTest("Inner types may be inherited") {
+
+        val acu = parser.withProcessing().parse("""
+
+            class Scratch<T> {
+                class Inner {}
+            }
+
+            class Sub<T> extends Scratch<String> {
+
+                void foo(Inner i) {
+                //       ^^^^^
+                //       This is shorthand for Scratch<String>.Inner
+                    call();
+                }
+
+            }
+        """)
+
+        val (t_Scratch, t_Inner) =
+                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+
+        val insideFoo =
+                acu.descendants(ASTClassOrInterfaceBody::class.java).get(2)!!
+
+        val `t_Scratch{String}Inner` = with (acu.typeDsl) {
+            t_Scratch[gen.t_String].selectInner(t_Inner.symbol, emptyList())
+        }
+
+        insideFoo.symbolTable.types().resolve("Inner").shouldBeSingleton {
+            it.shouldBe(`t_Scratch{String}Inner`)
+        }
+
+        val typeNode = acu.descendants(ASTClassOrInterfaceType::class.java).first { it.simpleName == "Inner" }!!
+
+        typeNode.shouldMatchN {
+            classType("Inner") {
+                it.typeMirror shouldBe `t_Scratch{String}Inner`
             }
         }
 

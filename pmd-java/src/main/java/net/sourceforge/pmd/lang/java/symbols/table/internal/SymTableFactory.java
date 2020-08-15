@@ -184,9 +184,6 @@ final class SymTableFactory {
         return buildTable(parent, vars, methods, types);
     }
 
-    // FIXME import on demands may import inherited fields
-    // Make them truly on-demand, ie lazy (there's already the necessary resolvers in JavaResolver)
-
     private void fillImportOnDemands(Iterable<ASTImportDeclaration> importsOnDemand,
                                      ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder importedTypes,
                                      ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder importedFields,

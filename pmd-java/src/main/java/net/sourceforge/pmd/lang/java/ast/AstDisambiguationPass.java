@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -61,7 +62,11 @@ final class AstDisambiguationPass {
      * promoted to a ClassOrInterfaceType, or demoted to a package
      * name (removed from the tree)
      * <li>All ClassOrInterfaceTypes have a non-null symbol, even if
-     * it is unresolved
+     * it is unresolved EXCEPT the ones of a qualified constructor call.
+     * Those references are resolved lazily by {@link LazyTypeResolver},
+     * because they depend on the full type resolution of the qualifier
+     * expression, and that resolution may use things that are not yet
+     * disambiguated
      * <li>There may still be AmbiguousNames, but only in expressions,
      * for the worst kind of ambiguity
      * </ul>
@@ -118,6 +123,10 @@ final class AstDisambiguationPass {
             parentClass = processor.makeUnresolvedReference(fullName, numTypeArgs);
         }
         parent.setSymbol(parentClass);
+    }
+
+    private static @Nullable JClassType enclosingType(JTypeMirror typeResult) {
+        return typeResult instanceof JClassType ? ((JClassType) typeResult).getEnclosingType() : null;
     }
 
     /**
@@ -322,27 +331,16 @@ final class AstDisambiguationPass {
                 assert lhsSym != null : "Unresolved LHS for " + type;
                 checkParentIsMember(ctx, lhsType, type);
             } else {
-                if (type.getParent() instanceof ASTConstructorCall) {
-                    @Nullable ASTExpression ctorLhs = ((ASTConstructorCall) type.getParent()).getQualifier();
-                    if (ctorLhs != null) {
-                        // then give precedence to members of the lhs type
-                        // This triggers early evaluation of the qualifier
-                        // Let's hope the source is well-formed (eg, no forward references)
-                        // FIXME this fails if SymbolTableResolver is
-                        //  asking for early disambiguation (eg, a qualified ctor call for an anonymous class)
-                        //  This may be fixed if SymbolTableResolver disambiguates every type it finds
-                        JTypeMirror lhsTypeMirror = ctorLhs.getTypeMirror();
-                        if (lhsTypeMirror instanceof JClassType) {
-                            JClassSymbol ref = ctx.findTypeMember(lhsTypeMirror.getSymbol(), type.getSimpleName(), type);
-                            if (ref != null) {
-                                type.setSymbol(ref);
-                            } // else fallthrough
-                        }
-                    }
+                if (type.getParent() instanceof ASTConstructorCall
+                    && ((ASTConstructorCall) type.getParent()).isQualifiedInstanceCreation()) {
+                    // Leave the reference null, this is handled lazily,
+                    // because the interaction it depends on the type of
+                    // the qualifier
+                    return null;
                 }
 
                 if (type.getReferencedSym() == null) {
-                    setClassSymbolFallback(type, ctx, processor);
+                    setClassSymbolIfNoQualifier(type, ctx, processor);
                 }
             }
 
@@ -352,17 +350,20 @@ final class AstDisambiguationPass {
             return null;
         }
 
-        private static void setClassSymbolFallback(ASTClassOrInterfaceType type, ReferenceCtx ctx, JavaAstProcessor processor) {
-            JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
-            if (sym == null) {
+        private static void setClassSymbolIfNoQualifier(ASTClassOrInterfaceType type, ReferenceCtx ctx, JavaAstProcessor processor) {
+            final JTypeMirror resolved = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
+            JTypeDeclSymbol sym;
+            if (resolved == null) {
                 processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
                 sym = setArity(type, processor, type.getSimpleName());
             } else {
+                sym = resolved.getSymbol();
                 if (sym.isUnresolved()) {
                     sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
                 }
             }
             type.setSymbol(sym);
+            type.setImplicitEnclosing(enclosingType(resolved));
         }
 
         private void postProcess(ASTClassOrInterfaceType type, JavaAstProcessor processor) {
@@ -428,19 +429,20 @@ final class AstDisambiguationPass {
 
             // otherwise, test if it is a type name
 
-            JTypeDeclSymbol typeResult = resolveSingleTypeName(symTable, firstIdent.getImage(), ctx, name);
+            JTypeMirror typeResult = resolveSingleTypeName(symTable, firstIdent.getImage(), ctx, name);
 
             if (typeResult != null) {
-                return resolveType(null, typeResult, false, firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
+                JClassType enclosing = enclosingType(typeResult);
+                return resolveType(null, enclosing, typeResult.getSymbol(), false, firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
             }
 
             // otherwise, first is reclassified as package name.
             return resolvePackage(firstIdent, new StringBuilder(firstIdent.getImage()), tokens, name, isPackageOrTypeOnly, ctx);
         }
 
-        private static JTypeDeclSymbol resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
-            JTypeMirror result = ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
-            return result == null ? null : result.getSymbol();
+
+        private static JTypeMirror resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
+            return ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
         }
 
 
@@ -494,6 +496,7 @@ final class AstDisambiguationPass {
          * @param isPackageOrTypeOnly If true, expressions are disallowed by the context, so we don't check fields
          */
         private static ASTExpression resolveType(final @Nullable ASTClassOrInterfaceType qualifier, // lhs
+                                                 final @Nullable JClassType implicitEnclosing,      // enclosing type, if it is implicitly inherited
                                                  final JTypeDeclSymbol sym,                         // symbol for the type
                                                  final boolean isFqcn,                              // whether this is a fully-qualified name
                                                  final JavaccToken identifier,                      // ident of the simple name of the symbol
@@ -507,6 +510,7 @@ final class AstDisambiguationPass {
 
             final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, isFqcn, ambig.getFirstToken(), identifier);
             type.setSymbol(sym);
+            type.setImplicitEnclosing(implicitEnclosing);
 
             if (!remaining.hasNext()) { // done
                 return new ASTTypeExpression(type);
@@ -533,7 +537,7 @@ final class AstDisambiguationPass {
             }
 
             if (inner != null) {
-                return resolveType(type, inner, false, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
+                return resolveType(type, null, inner, false, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             }
 
             // no inner type, yet we have a lhs that is a type...
@@ -593,7 +597,7 @@ final class AstDisambiguationPass {
             JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
 
             if (nextClass != null) {
-                return resolveType(null, nextClass, true, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
+                return resolveType(null, null, nextClass, true, nextIdent, remaining, ambig, isPackageOrTypeOnly, ctx);
             } else {
                 return resolvePackage(nextIdent, packageImage, remaining, ambig, isPackageOrTypeOnly, ctx);
             }

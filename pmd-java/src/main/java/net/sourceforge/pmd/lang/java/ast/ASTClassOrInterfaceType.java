@@ -10,6 +10,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 // @formatter:off
 /**
@@ -41,6 +42,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     // Note that this is only populated during disambiguation, if
     // the ambiguous qualifier is resolved to a package name
     private boolean isFqcn;
+    private JClassType implicitEnclosing;
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
@@ -114,6 +116,15 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
     void setSymbol(JTypeDeclSymbol symbol) {
         this.symbol = symbol;
+    }
+
+    // this is just a transitory variable
+    void setImplicitEnclosing(JClassType enclosing) {
+        implicitEnclosing = enclosing;
+    }
+
+    JClassType getImplicitEnclosing() {
+        return implicitEnclosing;
     }
 
     /**

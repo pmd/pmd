@@ -15,16 +15,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -118,8 +122,7 @@ final class TypesFromAst {
 
         @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
-        JTypeDeclSymbol reference = node.getReferencedSym();
-        assert reference != null : "Null reference for " + node + " in " + node.getParent();
+        JTypeDeclSymbol reference = getReference(node);
 
         if (reference instanceof JTypeParameterSymbol) {
             return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
@@ -136,11 +139,8 @@ final class TypesFromAst {
             //               ^^^^^
             //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
             // }
-            //
-            // Todo this should be ensured to happen only inside the body of
-            //  the declaration, otherwise type variables may leak. (Should be
-            //  done in disambiguation pass?)
-            enclosing = ts.declaration(reference.getEnclosingClass());
+            enclosing = InternalApiBridge.getImplicitEnclosingType(node);
+            assert enclosing != null : "Implicit enclosing type should have been set by disambiguation, for " + node;
         }
 
         ASTTypeArguments typeArguments = node.getTypeArguments();
@@ -170,11 +170,37 @@ final class TypesFromAst {
         }
     }
 
-    // Whether the reference needs an enclosing type if it is unqualified
+    // Whether the reference needs an enclosing type if it is unqualified (non-static inner type)
     private static boolean needsEnclosing(JTypeDeclSymbol reference) {
         return reference instanceof JClassSymbol
             && reference.getEnclosingClass() != null
             && !Modifier.isStatic(reference.getModifiers());
+    }
+
+    private static @NonNull JTypeDeclSymbol getReference(ASTClassOrInterfaceType node) {
+        if (InternalApiBridge.hasReferenceBeenResolved(node)) {
+            return node.getReferencedSym();
+        } else if (node.getParent() instanceof ASTConstructorCall) {
+            ASTExpression qualifier = ((ASTConstructorCall) node.getParent()).getQualifier();
+            if (qualifier != null) {
+                assert InternalApiBridge.getImplicitEnclosingType(node) == null
+                    : "Qualified ctor calls should be handled lazily";
+                JTypeMirror qualifierType = qualifier.getTypeMirror();
+                if (qualifierType instanceof JClassType) {
+                    JClassType enclosing = (JClassType) qualifierType;
+                    InternalApiBridge.setImplicitEnclosingType(node, enclosing);
+                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
+                                                       .resolveFirst(node.getSimpleName());
+                    JClassSymbol symbol = resolved == null
+                                          ? (JClassSymbol) node.getTypeSystem().UNRESOLVED_TYPE.getSymbol()
+                                          // compile-time error
+                                          : resolved.getSymbol();
+                    InternalApiBridge.setLateResolvedReference(node, symbol);
+                    return symbol;
+                }
+            } // else fallthrough
+        }
+        throw new IllegalStateException("Disambiguation pass should resolve everything except qualified ctor calls");
     }
 
     // Whether the reference is a non-static inner type of the enclosing type

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -164,6 +165,10 @@ public final class InternalApiBridge {
         return t.getReferencedSym() != null;
     }
 
+    public static void setLateResolvedReference(ASTClassOrInterfaceType t, JClassSymbol sym) {
+        t.setSymbol(sym);
+    }
+
     public static JavaAstProcessor getProcessor(JavaNode n) {
         return n.getRoot().getLazyTypeResolver().getProcessor();
     }
@@ -182,6 +187,14 @@ public final class InternalApiBridge {
 
     public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
+    }
+
+    public static @Nullable JClassType getImplicitEnclosingType(ASTClassOrInterfaceType t) {
+        return t.getImplicitEnclosing();
+    }
+
+    public static void setImplicitEnclosingType(ASTClassOrInterfaceType t, JClassType e) {
+        t.setImplicitEnclosing(e);
     }
 
 }

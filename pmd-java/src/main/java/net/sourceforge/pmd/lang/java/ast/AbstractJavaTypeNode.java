@@ -38,10 +38,15 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
                 typeMirror = this.acceptVisitor(resolver, null);
             } catch (Exception | AssertionError e) {
                 // this will add every type in the chain
-                throw new ContextedRuntimeException(e).addContextValue("Resolving type of", this);
+                throw addContextValue(e, "Resolving type of", this);
             }
         }
         return typeMirror;
+    }
+
+    private static ContextedRuntimeException addContextValue(Throwable e, String label, Object value) {
+        return e instanceof ContextedRuntimeException ? ((ContextedRuntimeException) e).addContextValue(label, value)
+                                                      : new ContextedRuntimeException(e).addContextValue(label, value);
     }
 
     JTypeMirror getTypeMirrorInternal() {
