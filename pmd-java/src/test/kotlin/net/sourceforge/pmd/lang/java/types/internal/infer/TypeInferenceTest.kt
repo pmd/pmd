@@ -438,6 +438,56 @@ class Scratch {
     }
 
 
+    parserTest("Varargs on generic array") {
+
+        val acu = parser.parse("""
+import java.util.Arrays;
+import java.lang.reflect.Type;
+
+class Scratch {
+
+    static {
+        Class<?>[] genArray = null;
+        Arrays.stream(genArray)
+              .map(Type::getTypeName);
+    }
+}
+        """.trimIndent())
+
+        acu.descendants(ASTMethodCall::class.java)
+                .firstOrThrow()
+                .shouldMatchN {
+                    methodCall("map") {
+
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+
+                        it::getQualifier shouldBe methodCall("stream") {
+                            it.isVarargsCall shouldBe false
+                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                            unspecifiedChild()
+                            argList {
+                                variableAccess("genArray") {
+                                    it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                }
+                            }
+                        }
+
+
+                        argList {
+                            methodRef("getTypeName") {
+                                with(it.typeDsl) {
+                                    it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
+                                }
+
+                                it::getQualifier shouldBe unspecifiedChild()
+                            }
+                        }
+                    }
+                }
+
+    }
+
+
     parserTest("Constructor with inner class") {
 
         val acu = parser.parse("""
