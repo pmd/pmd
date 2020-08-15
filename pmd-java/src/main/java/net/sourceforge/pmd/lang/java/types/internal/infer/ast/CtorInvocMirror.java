@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocat
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
     /*
-     * Non-diamond constructor calls, are standalone. To reduce the number of branches in the
+     * Non-diamond constructor calls are standalone. To reduce the number of branches in the
      * code they still go through Infer, so that their method type is set like all
      * the others. So don't override getStandaloneType.
      */

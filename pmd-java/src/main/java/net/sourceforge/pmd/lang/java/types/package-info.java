@@ -184,3 +184,46 @@ class O {
 /* TODO test explicitly typed lambda (in ExplicitTypesTest)
 
  */
+
+
+/* TODO real anonymous types
+    - define hooks on JClassType (isAnonymous/projectAnonymous)
+    - handle this in projectUpwards
+
+class Scratch {
+
+    public static void main(String[] args) {
+        new Object() {
+            void def() {}
+        }.def(); // ok
+
+        // type is Object, not Scratch$2
+        var foo = new Object() {
+            void def() {}
+        };
+    }
+}
+
+
+
+ */
+
+
+/* TODO qualified anonymous constructor
+    - define hooks on JClassType (isAnonymous/projectAnonymous)
+    - handle this in projectUpwards
+
+class Scratch {
+
+    class Inner {}
+
+    public static void main(String[] args) {
+        new Scratch().new Inner() {
+
+        };
+    }
+}
+
+
+
+ */

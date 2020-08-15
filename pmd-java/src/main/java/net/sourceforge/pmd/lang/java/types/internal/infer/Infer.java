@@ -332,7 +332,9 @@ public final class Infer {
 
         CtorInvocationMirror expr = (CtorInvocationMirror) site.getExpr();
 
-        JMethodSig adapted = expr.isDiamond() || expr.getNewType().isParameterizedType()
+        JMethodSig adapted = expr.isDiamond()
+                                 || expr.getNewType().isParameterizedType()
+                                 || expr.isAnonymous()
                              ? adaptGenericConstructor(cons, expr.getNewType())
                              : cons;
 

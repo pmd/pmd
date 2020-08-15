@@ -174,14 +174,6 @@ final class PolyResolution {
         mirror.setMethodType(ctDecl);
         mirror.setInferredType(ctDecl.getMethodType().getReturnType());
 
-        // adapt constructor call
-        if (ctxNode instanceof ASTConstructorCall) {
-            ASTConstructorCall ctor = (ASTConstructorCall) ctxNode;
-            if (ctor.isAnonymousClass()) {
-                mirror.setInferredType(ctor.getAnonymousClassDeclaration().getTypeMirror());
-            }
-        }
-
         return fetchCascaded(enclosed);
     }
 
