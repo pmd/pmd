@@ -175,35 +175,6 @@ class O {
 
  */
 
-/* TODO switch on enum also depends on the type of the tested expr to
-    resolve the variable name
-
-class Scratch {
-
-    enum SomeEnum {
-        A,
-        B
-    }
-
-    public static void main(String[] args) {
-        SomeEnum e = SomeEnum.A;
-
-        switch (e) {
-        // neither A nor B are in scope
-        case A:
-            return;
-        case B:
-            return;
-        }
-
-        A.foo(); // this is an ambiguous name
-
-
-    }
-}
-
-
- */
 
 /* TODO finish NamedReferenceExpr by patching LazyTypeResolver
 
