@@ -10,9 +10,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.LOOSE;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.VARARGS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -194,21 +192,8 @@ public final class Infer {
         }
 
         LOG.noCompileTimeDeclaration(site);
-
-        // no applicable method, maybe a check on a parameter failed
-        if (potentiallyApplicable.size() == 1) {
-            // single applicable method? assume it's the ctdecl (there can be no other one)
-
-            // this is custom behavior for PMD to reflect more types than we know for sure,
-            // a compiler would probably refuse to go further (an IDE would though)
-
-            JMethodSig fallback = potentiallyApplicable.get(0);
-
-            LOG.fallBackCompileTimeDecl(fallback, site); // log it
-
-            return new MethodCtDecl(fallback, fallback.isVarargs() ? VARARGS : LOOSE);
-        }
-
+        // there used to be a fallback in case there's a single potentially
+        // applicable method. This is more trouble than it's worth, and hides errors.
         return UNRESOLVED_CTDECL;
     }
 
