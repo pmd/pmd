@@ -8,10 +8,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertible;
+import static net.sourceforge.pmd.util.CollectionUtil.all;
+import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -59,7 +60,7 @@ final class PolyResolution {
             // - a CastExpression -> cast context
             JavaNode ctx = contextOf(e, false);
 
-            if (ctx instanceof InvocationNode) { // NOPMD CompareObjectsWithEquals
+            if (ctx instanceof InvocationNode) {
                 // an outer invocation ctx
                 if (ctx instanceof ASTExpression) {
                     // method call or regular constructor call
@@ -94,10 +95,10 @@ final class PolyResolution {
                 //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
                 // - a poly in a var assignment context: var f = a ? b : c;
                 if (e instanceof ASTConditionalExpression) {
-                    return computeStandaloneConditionalType((ASTConditionalExpression) e);
+                    return computeStandaloneConditionalType((ASTConditionalExpression) e, false);
                 } else if (e instanceof ASTSwitchExpression) {
                     List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-                    return computeStandaloneConditionalType(ts, branches);
+                    return computeConditionalType(ts, branches, false);
                 } else {
                     return ts.ERROR_TYPE;
                 }
@@ -162,7 +163,7 @@ final class PolyResolution {
      *
      * }</pre>
      */
-    private JTypeMirror inferInvocation(InvocationNode ctxNode, TypeNode enclosed, @Nullable JTypeMirror targetType) {
+    private JTypeMirror inferInvocation(InvocationNode ctxNode, TypeNode actualResultTarget, @Nullable JTypeMirror targetType) {
         InvocationMirror mirror = exprMirrors.getInvocationMirror(ctxNode);
         MethodCallSite site = infer.newCallSite(mirror, targetType);
         @NonNull MethodCtDecl ctDecl = infer.determineInvocationType(site);
@@ -174,7 +175,7 @@ final class PolyResolution {
         mirror.setMethodType(ctDecl);
         mirror.setInferredType(ctDecl.getMethodType().getReturnType());
 
-        return fetchCascaded(enclosed);
+        return fetchCascaded(actualResultTarget);
     }
 
     // TODO don't use IllegalStateException, log
@@ -203,10 +204,13 @@ final class PolyResolution {
         }
 
         if (e instanceof ASTConditionalExpression) {
-            // this is set if the conditional is standalone
-            JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
-            if (type != null) {
-                return type;
+            // Prefer a standalone primitive type if possible, which matches the JLS more closely
+            JTypeMirror standalone = computeStandaloneConditionalType(
+                (ASTConditionalExpression) e,
+                /*mustBePrimitive*/true
+            );
+            if (standalone != null) {
+                return standalone;
             }
             // otherwise fallthrough
         }
@@ -399,17 +403,20 @@ final class PolyResolution {
     }
 
 
-    private JTypeMirror computeStandaloneConditionalType(ASTConditionalExpression node) {
-        return computeStandaloneConditionalType(
+    private JTypeMirror computeStandaloneConditionalType(ASTConditionalExpression node, boolean mustBePrimitive) {
+        return computeConditionalType(
             ts,
-            node.getThenBranch().getTypeMirror(),
-            node.getElseBranch().getTypeMirror()
+            asList(
+                node.getThenBranch().getTypeMirror(),
+                node.getElseBranch().getTypeMirror()
+            ),
+            mustBePrimitive
         );
     }
 
     // test only
     static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, JTypeMirror t2, JTypeMirror t3) {
-        return computeStandaloneConditionalType(ts, asList(t2, t3));
+        return computeConditionalType(ts, asList(t2, t3), false);
     }
 
     /**
@@ -417,33 +424,38 @@ final class PolyResolution {
      * how Javac does it for now, and it's exactly an extension of the
      * rules for ternary operators to an arbitrary number of branches.
      */
-    private static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes) {
+    private static @Nullable JTypeMirror computeConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes, boolean mustBePrimitive) {
         // There is a corner case with constant values
 
         if (branchTypes.isEmpty()) {
             return ts.OBJECT;
         }
 
-        JTypeMirror first = branchTypes.get(0);
+        JTypeMirror head = branchTypes.get(0);
+        List<JTypeMirror> tail = branchTypes.subList(1, branchTypes.size());
 
-        if (branchTypes.stream().skip(1).allMatch(first::equals)) {
-            return first;
+        if (all(tail, head::equals)) {
+            return !mustBePrimitive || head.isPrimitive() ? head : null;
         }
 
 
-        List<JTypeMirror> unboxed = branchTypes.stream().map(JTypeMirror::unbox).collect(Collectors.toList());
-        if (unboxed.stream().allMatch(JTypeMirror::isPrimitive)) {
+        List<JTypeMirror> unboxed = map(branchTypes, JTypeMirror::unbox);
+        if (all(unboxed, JTypeMirror::isPrimitive)) {
             for (JPrimitiveType a : ts.allPrimitives) {
-                if (unboxed.stream().allMatch(it -> it.isSubtypeOf(a))) {
+                if (all(unboxed, it -> it.isSubtypeOf(a))) {
                     // then all types are convertible to a
                     return a;
                 }
             }
         }
 
-        List<JTypeMirror> boxed = branchTypes.stream().map(JTypeMirror::box).collect(Collectors.toList());
+        if (mustBePrimitive) {
+            return null;
+        }
+
+        List<JTypeMirror> boxed = map(branchTypes, JTypeMirror::box);
         for (JTypeMirror a : boxed) {
-            if (unboxed.stream().allMatch(it -> isConvertible(it, a))) {
+            if (all(unboxed, it -> isConvertible(it, a))) {
                 // then all types are convertible to a
                 return a;
             }

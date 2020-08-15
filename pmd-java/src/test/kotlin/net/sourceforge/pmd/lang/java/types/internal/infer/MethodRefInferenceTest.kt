@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.function.BiFunction
 import java.util.function.BinaryOperator
 import java.util.function.Consumer
+import java.util.stream.Collector
 
 /**
  *
@@ -529,6 +530,68 @@ abstract class NodeStream<T> implements Iterable<T> {
                     }
                 }
 
+    }
+
+    parserTest("f:todo rename") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+class Scratch {
+
+
+    public List<String> main(String[] args) {
+        return Stream.of(args)
+                     .distinct()
+                     .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+    }
+}
+        """.trimIndent())
+
+        val (t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        collectCall.shouldMatchN {
+            methodCall("collect") {
+                with(it.typeDsl) {
+                    it.typeMirror shouldBe gen.`t_List{String}`
+                }
+
+                methodCall("distinct") {
+                    with(it.typeDsl) {
+                        it.typeMirror shouldBe gen.t_Stream[gen.t_String]
+                    }
+
+                    unspecifiedChildren(2)
+                }
+
+                argList {
+                    methodCall("collectingAndThen") {
+                        with(it.typeDsl) {
+                            it.typeMirror shouldBe Collector::class[gen.t_String, ts.OBJECT, gen.`t_List{String}`]
+                        }
+
+                        argList {
+                            methodCall("toList")
+                            methodRef("unmodifiableList") {
+                                unspecifiedChild()
+                                with(it.typeDsl) {
+                                    it.typeMirror shouldBe gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
+                                    it.functionalMethod shouldBe it.typeMirror.streamMethods {  it.simpleName == "apply" }.findFirst().get()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 })

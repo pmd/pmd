@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -27,6 +28,17 @@ abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> impl
         }
     }
 
+
+    /**
+     * some forms of those expressions are standalone. To reduce the
+     * number of branches in the code they still go through Infer, so
+     * that their type is set like all the others, and in particular
+     * that eg branches of conditionals are explored exhaustively. So don't override getStandaloneType.
+     */
+    @Override
+    public final @Nullable JTypeMirror getStandaloneType() {
+        return null;
+    }
 
     @NonNull
     @Override

@@ -172,6 +172,10 @@ final class InferenceContext {
         return t.subst(InferenceContext::groundSubst);
     }
 
+    JClassType ground(JClassType t) {
+        return t.subst(InferenceContext::groundSubst);
+    }
+
     /**
      * Replace instantiated inference vars with their instantiation in the given type.
      */

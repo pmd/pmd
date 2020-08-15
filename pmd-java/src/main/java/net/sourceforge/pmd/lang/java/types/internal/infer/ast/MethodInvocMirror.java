@@ -19,16 +19,12 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
-    /*
-     * method calls with explicit type arguments are standalone. To reduce the
-     * number of branches in the code they still go through Infer, so that their
-     * method type is set like all the others. So don't override getStandaloneType.
-     */
 
 
     MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call) {
         super(mirrors, call);
     }
+
 
     @Override
     public List<JMethodSig> getAccessibleCandidates() {

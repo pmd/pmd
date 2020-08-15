@@ -174,8 +174,7 @@ final class ExprOps {
     /**
      * Returns null if the method reference is inexact.
      */
-    @Nullable
-    static JMethodSig getExactMethod(MethodRefMirror mref) {
+    static @Nullable JMethodSig getExactMethod(MethodRefMirror mref) {
         JMethodSig cached = mref.getCachedExactMethod();
 
         if (cached == null) { // inexact

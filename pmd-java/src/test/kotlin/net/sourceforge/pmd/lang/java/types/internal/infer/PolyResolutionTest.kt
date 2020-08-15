@@ -363,4 +363,42 @@ class O {
     }
 
 
+    parserTest("Method call in some ternary bug") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+
+class O {
+
+     public static String getConnectPermission(Object url) {
+        String urlString = url.toString();
+        int bangPos = urlString.indexOf("!/");
+        urlString = urlString.substring(4, bangPos > -1 ? bangPos : urlString.length()); // <- HERE the call to length is bugged
+        return urlString;
+    }
+
+}
+        """.trimIndent())
+
+
+        val ternary =
+                acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+
+        ternary.shouldMatchN {
+            ternaryExpr {
+                unspecifiedChild()
+                unspecifiedChild()
+                methodCall("length") {
+                    it.typeMirror shouldBe it.typeSystem.INT
+
+                    unspecifiedChild()
+                    unspecifiedChild()
+                }
+            }
+        }
+
+    }
+
+
 })

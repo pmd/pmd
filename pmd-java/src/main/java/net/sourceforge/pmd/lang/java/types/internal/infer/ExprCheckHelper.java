@@ -210,7 +210,7 @@ final class ExprCheckHelper {
             // here we defer the check until the variables are ground
             infCtx.addInstantiationListener(
                 infCtx.freeVarsIn(fun.getFormalParameters()),
-                solvedCtx -> solveCtdeclCompatibility(mref, nonWildcard, solvedCtx.ground(fun))
+                solvedCtx -> solveCtdeclCompatibility(mref, solvedCtx.ground(nonWildcard), solvedCtx.ground(fun))
             );
         }
         return true;
@@ -325,7 +325,7 @@ final class ExprCheckHelper {
             infCtx.addInstantiationListener(
                 infCtx.freeVarsIn(groundTargetType),
                 solved -> {
-                    JClassType solvedGround = (JClassType) solved.ground(groundTargetType);
+                    JClassType solvedGround = solved.ground(groundTargetType);
                     lambda.setInferredType(solvedGround);
                     lambda.setFunctionalMethod(solved.ground(groundFun).internalApi().withOwner(solved.ground(groundFun.getDeclaringType())));
                 }
