@@ -151,5 +151,60 @@ class InnerTypesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("f:Inner types can be inherited") {
+
+        val acu = parser.parse("""
+
+class Scratch<T> {
+    class I {}
+}
+
+class Sub<T> extends Scratch<T> {}
+
+
+class O {
+    {
+        Sub<String>.I inner = new Scratch<String>().new I(); // Sub<String>.I is an alias for Scratch<String>.I
+        inner = new Sub<String>().new I(); // this is also correct
+
+        // Note the following is not ok
+        // new Scratch<String>().new Scratch.I();
+        // The name of the inner class must be unqualified
+
+    }
+}
+        """.trimIndent())
+
+
+        val (t_Scratch, t_Inner, t_Sub) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val (innerCtor, supCtor, innerCtor2, subCtor) =
+                acu.descendants(ASTConstructorCall::class.java).toList()
+
+        val `t_Scratch{String}` = with (acu.typeDsl) {
+            t_Scratch[gen.t_String]
+        }
+
+        val `t_Sub{String}` = with (acu.typeDsl) {
+            t_Sub[gen.t_String]
+        }
+
+        val `t_Scratch{String}Inner` = `t_Scratch{String}`.selectInner(t_Inner.symbol, emptyList())
+
+        doTest("Can call ctor on the real enclosing class") {
+
+            supCtor.typeMirror shouldBe `t_Scratch{String}`
+            innerCtor.typeMirror shouldBe `t_Scratch{String}Inner`
+
+        }
+
+        doTest("Can call ctor on some subclass") {
+            subCtor.typeMirror shouldBe `t_Sub{String}` // sub
+            innerCtor2.typeMirror shouldBe `t_Scratch{String}Inner` // but scratch
+        }
+
+    }
+
 
 })

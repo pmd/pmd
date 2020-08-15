@@ -107,7 +107,6 @@ final class TypesFromAst {
 
         ASTClassOrInterfaceType lhsType = node.getQualifier();
 
-        @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
@@ -115,20 +114,7 @@ final class TypesFromAst {
             return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
         }
 
-        if (enclosing != null && !shouldEnclose(enclosing, reference)) {
-            // It's possible to write Map.Entry<A,B> but Entry is a static type,
-            // so we should ignore the "enclosing" Map
-            enclosing = null;
-        } else if (enclosing == null && needsEnclosing(reference)) {
-            // class Foo<T> {
-            //      class Inner {}
-            //      void bar(Inner k) {}
-            //               ^^^^^
-            //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
-            // }
-            enclosing = node.getImplicitEnclosing();
-            assert enclosing != null : "Implicit enclosing type should have been set by disambiguation, for " + node;
-        }
+        JClassType enclosing = getEnclosing(ts, node, subst, lhsType, reference);
 
         ASTTypeArguments typeArguments = node.getTypeArguments();
 
@@ -143,7 +129,7 @@ final class TypesFromAst {
                 }
 
                 if (enclosing != null) {
-                    return ((JClassType) enclosing).selectInner((JClassSymbol) reference, boundGenerics);
+                    return enclosing.selectInner((JClassSymbol) reference, boundGenerics);
                 } else {
                     return ts.parameterise((JClassSymbol) reference, boundGenerics);
                 }
@@ -151,10 +137,39 @@ final class TypesFromAst {
         }
 
         if (enclosing != null) {
-            return ((JClassType) enclosing).selectInner((JClassSymbol) reference, Collections.emptyList());
+            return enclosing.selectInner((JClassSymbol) reference, Collections.emptyList());
         } else {
             return ts.rawType(reference);
         }
+    }
+
+    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst, ASTClassOrInterfaceType lhsType, JTypeDeclSymbol reference) {
+        @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
+
+        if (enclosing != null && !shouldEnclose(reference)) {
+            // It's possible to write Map.Entry<A,B> but Entry is a static type,
+            // so we should ignore the "enclosing" Map
+            enclosing = null;
+        } else if (enclosing == null && needsEnclosing(reference)) {
+            // class Foo<T> {
+            //      class Inner {}
+            //      void bar(Inner k) {}
+            //               ^^^^^
+            //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
+            // }
+            enclosing = node.getImplicitEnclosing();
+            assert enclosing != null : "Implicit enclosing type should have been set by disambiguation, for " + node;
+        }
+
+        if (enclosing != null) {
+            // the actual enclosing type may be a supertype of the one that was explicitly written
+            // (Sub <: Sup) => (Sub.Inner = Sup.Inner)
+            // We normalize them to the actual declaring class
+            enclosing = enclosing.getAsSuper(reference.getEnclosingClass());
+            assert enclosing != null : "We got this symbol by looking into enclosing";
+            return (JClassType) enclosing;
+        }
+        return null;
     }
 
     // Whether the reference needs an enclosing type if it is unqualified (non-static inner type)
@@ -197,7 +212,7 @@ final class TypesFromAst {
 
     // Whether the reference is a non-static inner type of the enclosing type
     // Note most checks have already been done in the disambiguation pass (including reporting)
-    private static boolean shouldEnclose(@NonNull JTypeMirror enclosing, JTypeDeclSymbol reference) {
-        return enclosing instanceof JClassType && !Modifier.isStatic(reference.getModifiers());
+    private static boolean shouldEnclose(JTypeDeclSymbol reference) {
+        return !Modifier.isStatic(reference.getModifiers());
     }
 }

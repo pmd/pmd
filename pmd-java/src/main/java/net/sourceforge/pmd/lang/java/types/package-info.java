@@ -151,32 +151,6 @@ public class Date {
 
  */
 
-/* TODO inner types can be inherited
-    -> Test that ClassTypeImpl doesn't throw on #selectInner, and disambig doesn't report an error
-    -> Second test will be fixed naturally when we use types in symbol table for disambiguation
-
-class Scratch<T> {
-    class I {}
-}
-
-class Sub<T> extends Scratch<T> {}
-
-
-class O {
-    {
-        // this is well formed!!
-        // Sub<String>.I is an alias for Scratch<String>.I
-        Sub<String>.I inner = new Scratch<String>().new I();
-
-        // Note the following is not ok
-        // new Scratch<String>().new Scratch.I();
-        // The name of the inner class must be unqualified
-
-    }
-}
-
- */
-
 /* TODO possibly, the type node for a diamond should have the parameterized
     type, for now it's a raw type (and untested)
     See TypesFromAst
