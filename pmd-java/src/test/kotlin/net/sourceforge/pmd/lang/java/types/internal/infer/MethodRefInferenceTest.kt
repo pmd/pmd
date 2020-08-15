@@ -592,8 +592,6 @@ class Scratch {
 
     parserTest("Method refs targeting a void function in unambiguous context must still be assigned a type") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
@@ -661,6 +659,65 @@ class Scratch {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    parserTest("f:Method refs disambiguation between static methods") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import java.util.function.IntConsumer;
+
+class Scratch {
+    
+    static void foo(int i) {}        // this one
+    static void foo() {}
+
+    static void bar(int i) {}        // this one
+    static void bar(int a, int b) {}
+    
+    static void baz(int i) {}        // this one
+    void baz(int a, int b) {}
+    
+
+    static  {
+        IntConsumer ic = Scratch::foo;
+        ic = Scratch::bar;
+        ic = Scratch::baz;
+    }
+}
+        """.trimIndent())
+
+        val (fooRef, barRef, bazRef) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        val t_IntConsumer = with (acu.typeDsl) { IntConsumer::class.decl }
+
+        fooRef.shouldMatchN {
+            methodRef("foo") {
+                it.typeMirror shouldBe t_IntConsumer
+                it.referencedMethod.arity shouldBe 1
+
+                unspecifiedChild()
+            }
+        }
+
+        barRef.shouldMatchN {
+            methodRef("bar") {
+                it.typeMirror shouldBe t_IntConsumer
+                it.referencedMethod.arity shouldBe 1
+
+                unspecifiedChild()
+            }
+        }
+
+        bazRef.shouldMatchN {
+            methodRef("baz") {
+                it.typeMirror shouldBe t_IntConsumer
+                it.referencedMethod.arity shouldBe 1
+
+                unspecifiedChild()
             }
         }
     }

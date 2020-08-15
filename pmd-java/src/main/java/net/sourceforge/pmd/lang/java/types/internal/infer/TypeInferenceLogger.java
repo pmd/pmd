@@ -320,8 +320,9 @@ public interface TypeInferenceLogger {
 
         @Override
         public void skipArgAsNonPertinent(int i, ExprMirror expr) {
-            println("Argument " + i + " is not pertinent to applicability");
+            startSection("Argument " + i + " is not pertinent to applicability");
             printExpr(expr);
+            endSection("");
         }
 
         @Override
