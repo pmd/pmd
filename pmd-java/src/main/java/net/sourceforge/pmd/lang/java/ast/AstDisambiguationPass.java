@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.internal.Fallback;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -627,6 +626,27 @@ final class AstDisambiguationPass {
 
         public JTypeMirror resolveSingleTypeName(JSymbolTable symTable, String image, JavaNode errorLoc) {
             return maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
+        }
+    }
+
+    /**
+     * Fallback strategy for unresolved stuff.
+     */
+    enum Fallback {
+        AMBIGUOUS("ambiguous"),
+        FIELD_ACCESS("a field access"),
+        PACKAGE_NAME("a package name"),
+        TYPE("an unresolved type");
+
+        private final String displayName;
+
+        Fallback(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
         }
     }
 }
