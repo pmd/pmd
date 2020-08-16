@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -139,9 +140,7 @@ class StressTest : ProcessorTestSpec({
                 .map { it.varIds[0]!!.initializer!! }
                 .forEachIndexed { i, expr ->
                     val t = measureTimeMillis {
-                        assertFalse {
-                            expr.typeMirror == expr.typeSystem.UNRESOLVED_TYPE
-                        }
+                        expr.typeMirror shouldNotBe expr.typeSystem.UNRESOLVED_TYPE
                     }
                     myLog("c${i + 2}: $t ms")
                 }

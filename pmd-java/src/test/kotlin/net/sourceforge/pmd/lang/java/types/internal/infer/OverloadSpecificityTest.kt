@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence
@@ -481,6 +482,42 @@ class Scratch {
                     declaredIn = long.box(),
                     withFormals = listOf(long),
                     returning = long
+            )
+        }
+        assert(logGetter().isEmpty())
+    }
+
+    parserTest("Test specificity between generic ctors") {
+
+        val logGetter = logTypeInference()
+        val acu = parser.parse(
+                """
+
+class C<U> {
+ U fu;
+ C() {}
+ C(C<U> other) { this.fu = other.fu; }
+ C(U fu) { this.fu = fu; }
+
+ static {
+     C<String> c = new C<>(new C<>(new C<>()));
+ }
+}
+
+                """.trimIndent()
+        )
+
+        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        assert(logGetter().isEmpty())
+        with(call.typeDsl) {
+            call.methodType.shouldMatchMethod(
+                    named = JConstructorSymbol.CTOR_NAME,
+                    declaredIn = t_C,
+                    withFormals = listOf(t_C[gen.t_String]),
+                    returning = t_C[gen.t_String]
             )
         }
         assert(logGetter().isEmpty())

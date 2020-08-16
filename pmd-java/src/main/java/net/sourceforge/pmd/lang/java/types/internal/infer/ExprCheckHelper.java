@@ -102,9 +102,12 @@ final class ExprCheckHelper {
             MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
             MethodCtDecl argCtDecl = infer.determineInvocationType(nestedSite);
             JMethodSig mostSpecific = argCtDecl.getMethodType();
+            if (argCtDecl == infer.FAILED_INVOCATION) {
+                throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
+            }
+
             // now if the return type of the arg is polymorphic and unsolved,
             // there are some additional bounds on our own infCtx
-
 
             checker.checkExprConstraint(infCtx, mostSpecific.getReturnType(), targetType);
 

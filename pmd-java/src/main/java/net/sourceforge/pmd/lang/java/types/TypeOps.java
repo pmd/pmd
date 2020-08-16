@@ -366,7 +366,7 @@ public final class TypeOps {
             // it's possible to add a bound to UNRESOLVED
             ((JInferenceVar) s).addBound(BoundKind.LOWER, t);
             return true;
-        } else if (isUnresolved(t)) {
+        } else if (t == t.getTypeSystem().ERROR_TYPE) {
             // don't check both, because subtyping must be asymmetric
             return true;
         }

@@ -155,7 +155,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public JMethodSig withReturnType(JTypeMirror returnType) {
         // share formals & thrown to avoid recomputing
-        return new ClassMethodSigImpl(owner, symbol, adaptedMethod, getTypeParameters(), returnType, formals, thrown);
+        return new ClassMethodSigImpl(owner, symbol, adaptedMethod, tparams, returnType, formals, thrown);
     }
 
     @Override

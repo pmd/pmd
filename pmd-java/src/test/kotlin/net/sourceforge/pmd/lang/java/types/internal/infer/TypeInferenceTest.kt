@@ -438,53 +438,72 @@ class Scratch {
     }
 
 
-    parserTest("Varargs on generic array") {
+    parserTest("Overload selection must identify fallbacks if any") {
+
+        logTypeInference(true)
 
         val acu = parser.parse("""
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.lang.reflect.Type;
 
 class Scratch {
 
+    static void foo(int notOk) {}
+    static void foo(long notOk) {}
+    static void foo(String ok) {}
+    static void foo(Object ok) {}
+
     static {
         Class<?>[] genArray = null;
-        Arrays.stream(genArray)
-              .map(Type::getTypeName);
+        foo(Arrays.stream(genArray)
+                  .map(Type::getTypeName)
+                  .collect(Collectors.joining(", ")));
     }
 }
         """.trimIndent())
 
-        acu.descendants(ASTMethodCall::class.java)
-                .firstOrThrow()
-                .shouldMatchN {
-                    methodCall("map") {
+        val fooCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+        fooCall.shouldMatchN {
+            methodCall("foo") {
+                argList {
+                    methodCall("collect") {
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
 
-                        it::getQualifier shouldBe methodCall("stream") {
-                            it.isVarargsCall shouldBe false
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
-                            unspecifiedChild()
+                        methodCall("map") {
+
+                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+
+                            it::getQualifier shouldBe methodCall("stream") {
+                                it.isVarargsCall shouldBe false
+                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                                unspecifiedChild()
+                                argList {
+                                    variableAccess("genArray") {
+                                        it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                    }
+                                }
+                            }
+
+
                             argList {
-                                variableAccess("genArray") {
-                                    it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                methodRef("getTypeName") {
+                                    with(it.typeDsl) {
+                                        it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
+                                    }
+
+                                    it::getQualifier shouldBe unspecifiedChild()
                                 }
                             }
                         }
 
 
-                        argList {
-                            methodRef("getTypeName") {
-                                with(it.typeDsl) {
-                                    it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
-                                }
-
-                                it::getQualifier shouldBe unspecifiedChild()
-                            }
-                        }
+                        argList(1)
                     }
                 }
-
+            }
+        }
     }
 
 

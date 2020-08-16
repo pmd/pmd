@@ -328,7 +328,7 @@ class O {
         new DataOutputStream(wrap(out));
     }
     
-    static OutputStream wrap(OuputStream out) { return out; }
+    static OutputStream wrap(OutputStream out) { return out; }
 
 }
         """.trimIndent())

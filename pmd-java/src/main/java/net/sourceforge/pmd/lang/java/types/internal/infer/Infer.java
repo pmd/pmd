@@ -10,7 +10,9 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.LOOSE;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.VARARGS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -44,19 +46,23 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Main entry point for type inference.
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public final class Infer {
 
     final ExprOps exprOps;
     private final OverloadComparator overloadComparator;
 
-    @SuppressWarnings("PMD.FieldNamingConventions")
     final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
     private final boolean isJava8; // NOPMD this is unused but may be used later
     private final TypeSystem ts;
 
-    @SuppressWarnings("PMD.FieldNamingConventions")
-    private final MethodCtDecl UNRESOLVED_CTDECL; // SUPPRESS CHECKSTYLE same
+    final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
+
+    /**
+     * This is a sentinel for when the CTDecl was resolved, but invocation failed.
+     */
+    final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
 
     /**
      * Creates a new instance.
@@ -71,7 +77,8 @@ public final class Infer {
         this.isJava8 = jdkVersion >= 8;
         this.LOG = logger;
 
-        this.UNRESOLVED_CTDECL = new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT);
+        this.NO_CTDECL = new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT);
+        this.FAILED_INVOCATION = new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true);
         this.exprOps = new ExprOps(this);
         this.overloadComparator = new OverloadComparator(this);
     }
@@ -173,7 +180,7 @@ public final class Infer {
 
         if (potentiallyApplicable.isEmpty()) {
             LOG.noApplicableCandidates(site);
-            return UNRESOLVED_CTDECL;
+            return NO_CTDECL;
         }
 
         JMethodSig bestApplicable = null;
@@ -191,10 +198,24 @@ public final class Infer {
             }
         }
 
+
         LOG.noCompileTimeDeclaration(site);
-        // there used to be a fallback in case there's a single potentially
-        // applicable method. This is more trouble than it's worth, and hides errors.
-        return UNRESOLVED_CTDECL;
+
+        // no applicable method, maybe a check on a parameter failed
+        if (potentiallyApplicable.size() == 1) {
+            // single applicable method? assume it's the ctdecl (there can be no other one)
+
+            // this is custom behavior for PMD to reflect more types than we know for sure,
+            // a compiler would probably refuse to go further (an IDE would though)
+
+            JMethodSig fallback = potentiallyApplicable.get(0);
+
+            LOG.fallBackCompileTimeDecl(fallback, site); // log it
+
+            return new MethodCtDecl(fallback, fallback.isVarargs() ? VARARGS : LOOSE);
+        }
+
+        return NO_CTDECL;
     }
 
     private @Nullable JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
@@ -221,7 +242,7 @@ public final class Infer {
      */
     public @NonNull MethodCtDecl determineInvocationType(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == UNRESOLVED_CTDECL) { // NOPMD CompareObjectsWithEquals
+        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
             return ctdecl;
         }
 
@@ -248,8 +269,10 @@ public final class Infer {
         // arguments that are not pertinent to applicability (lambdas)
         // to instantiate all tvars
 
-        JMethodSig inst = logInference(site, ctdecl.getResolvePhase().asInvoc(), ctdecl.getMethodType().internalApi().adaptedMethod());
-        return inst == null ? UNRESOLVED_CTDECL : new MethodCtDecl(inst, ctdecl.getResolvePhase());
+        MethodResolutionPhase instPhase = ctdecl.getResolvePhase().asInvoc();
+        JMethodSig inst = logInference(site, instPhase, ctdecl.getMethodType().internalApi().originalMethod());
+        return inst == null ? FAILED_INVOCATION
+                            : new MethodCtDecl(inst, ctdecl.getResolvePhase());
     }
 
     private boolean isReturnTypeFinished(JMethodSig m) {
@@ -303,7 +326,8 @@ public final class Infer {
             failure.addContext(m, site, phase);
             LOG.logResolutionFail(failure);
             // preserve method if we were in invocation
-            return phase.isInvocation() ? deleteTypeParams(m) : null;
+            return null;
+            // return phase.isInvocation() ? deleteTypeParams(m) : null;
         }
     }
 
@@ -370,7 +394,7 @@ public final class Infer {
 
             // type parameters are not part of the adapted signature, so that when we reset
             // the signature for invocation inference, we don't duplicate new type parameters
-            return adaptedSig.internalApi().withTypeParams(tparams);
+            return adaptedSig.internalApi().withTypeParams(tparams).internalApi().markAsAdapted();
         }
     }
 

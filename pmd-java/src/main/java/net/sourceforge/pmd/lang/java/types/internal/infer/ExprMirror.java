@@ -266,10 +266,16 @@ public interface ExprMirror {
         class MethodCtDecl {
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
+            private final boolean failed;
 
             MethodCtDecl(JMethodSig methodType, MethodResolutionPhase resolvePhase) {
+                this(methodType, resolvePhase, false);
+            }
+
+            MethodCtDecl(JMethodSig methodType, MethodResolutionPhase resolvePhase, boolean failed) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
+                this.failed = failed;
             }
 
             public JMethodSig getMethodType() {
@@ -278,6 +284,10 @@ public interface ExprMirror {
 
             public boolean phaseRequiresVarargs() {
                 return resolvePhase.requiresVarargs();
+            }
+
+            public boolean isFailed(){
+                return failed;
             }
 
             MethodResolutionPhase getResolvePhase() {

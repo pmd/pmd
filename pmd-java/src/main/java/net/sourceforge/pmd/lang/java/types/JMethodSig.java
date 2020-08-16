@@ -35,12 +35,10 @@ public interface JMethodSig extends JTypeVisitable {
     TypeSystem getTypeSystem();
 
 
+    /**
+     * Returns the symbol of the method or constructor.
+     */
     JExecutableSymbol getSymbol();
-
-
-    @Override
-    JMethodSig subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
-
 
     /**
      * Returns the name of the method. If this is a constructor,
@@ -50,7 +48,9 @@ public interface JMethodSig extends JTypeVisitable {
         return getSymbol().getSimpleName();
     }
 
-
+    /**
+     * Returns whether this is a constructor.
+     */
     default boolean isConstructor() {
         return JConstructorSymbol.CTOR_NAME.equals(getName());
     }
@@ -62,13 +62,21 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
 
-    /** Returns the type that declares this method. May be an array type, a class type. */
+    /**
+     * Returns the type that declares this method. May be an array type,
+     * a class type. If this is a constructor for a generic class, returns
+     * the generic type declaration of the constructor.
+     * TODO this is inconsistent between diamond inference and explicit arguments
+     */
     JTypeMirror getDeclaringType();
 
 
     /**
      * Returns the result type of the method. If this is a constructor,
-     * returns the type that declares this constructor.
+     * returns the type of the instance produced by the constructor. In
+     * particular, for a diamond constructor call, returns the inferred
+     * type. For example for {@code List<String> l = new ArrayList<>()},
+     * returns {@code ArrayList<String>}.
      */
     JTypeMirror getReturnType();
 
@@ -82,15 +90,28 @@ public interface JMethodSig extends JTypeVisitable {
 
     /**
      * Returns the types of the formal parameters. If this is a varargs
-     * method, the last parameter should have an array type.
+     * method, the last parameter should have an array type. For generic
+     * methods that have been inferred, these are substituted with the
+     * inferred type parameters. For example for {@code Arrays.asList("a", "b")},
+     * returns a singleton list containing {@code String[]}.
      */
     List<JTypeMirror> getFormalParameters();
 
 
-    /** Arity of the symbol. A varargs parameter counts as one. */
+    /**
+     * Number of formal parameters. A varargs parameter counts as one.
+     */
     default int getArity() {
         return getSymbol().getArity();
     }
+
+    /**
+     * Returns the type parameters of the method.
+     */
+    List<JTypeVar> getTypeParameters();
+
+
+    List<JTypeMirror> getThrownExceptions();
 
 
     default boolean isAbstract() {
@@ -110,17 +131,13 @@ public interface JMethodSig extends JTypeVisitable {
 
     boolean isBridge();
 
-
-    /** Returns the type parameters of the method. */
-    List<JTypeVar> getTypeParameters();
-
-
-    List<JTypeMirror> getThrownExceptions();
-
-
     default boolean isGeneric() {
         return !getTypeParameters().isEmpty();
     }
+
+
+    @Override
+    JMethodSig subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
 
     @Override
@@ -129,6 +146,10 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
 
+    /**
+     * Internal API, should not be used outside of the type inference
+     * implementation.
+     */
     @InternalApi
     InternalMethodTypeItf internalApi();
 

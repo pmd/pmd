@@ -51,8 +51,8 @@ public final class OverloadComparator {
             return currentBest;
         }
 
-        JMethodSig m1 = currentBest.internalApi().originalMethod();
-        JMethodSig m2 = candidate.internalApi().originalMethod();
+        JMethodSig m1 = currentBest.internalApi().adaptedMethod();
+        JMethodSig m2 = candidate.internalApi().adaptedMethod();
 
         return isStrictlyMoreSpecific(m1, m2, site, phase)
                ? currentBest
