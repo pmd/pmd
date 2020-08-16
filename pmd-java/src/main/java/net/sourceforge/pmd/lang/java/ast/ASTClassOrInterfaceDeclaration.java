@@ -65,6 +65,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
      * Returns true if the class is declared inside a block other
      * than the body of another class, or the top level.
      */
+    @Override
     public boolean isLocal() {
         if (!isLocalComputed) {
             Node current = getParent();

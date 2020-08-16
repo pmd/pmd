@@ -207,4 +207,25 @@ public class Java15PreviewTest {
         Assert.assertEquals("TimesExpr", permittedSubclasses.get(2).getImage());
         Assert.assertEquals("NegExpr", permittedSubclasses.get(3).getImage());
     }
+
+    @Test
+    public void localInterfaceAndEnums() {
+        ASTCompilationUnit compilationUnit = java15p.parseResource("LocalInterfacesAndEnums.java");
+        List<ASTAnyTypeDeclaration> types = compilationUnit.findDescendantsOfType(ASTAnyTypeDeclaration.class);
+        Assert.assertEquals(5, types.size());
+        Assert.assertTrue(types.get(0) instanceof ASTClassOrInterfaceDeclaration);
+        Assert.assertFalse(types.get(0).isLocal());
+        Assert.assertTrue(types.get(1) instanceof ASTClassOrInterfaceDeclaration);
+        Assert.assertTrue(types.get(2) instanceof ASTClassOrInterfaceDeclaration);
+        Assert.assertTrue(types.get(3) instanceof ASTEnumDeclaration);
+        Assert.assertTrue(types.get(4) instanceof ASTAnnotationTypeDeclaration);
+        for (int i = 1; i < 5; i++) {
+            Assert.assertTrue(types.get(i).isLocal());
+        }
+    }
+
+    @Test(expected = ParseException.class)
+    public void localInterfacesAndEnumsBeforeJava15PreviewShouldFail() {
+        java15.parseResource("LocalInterfacesAndEnums.java");
+    }
 }

@@ -239,9 +239,11 @@ options {
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {
 
@@ -484,28 +486,22 @@ public class JavaParser {
     }
   }
 
+  private void checkForLocalInterfaceOrEnumType() {
+      if (!isRecordTypeSupported()) {
+          throwParseException("Local interfaces and enums are only supported with Java 14 Preview and Java 15 Preview");
+      }
+  }
+
   private boolean isRecordTypeSupported() {
     return (jdkVersion == 14 || jdkVersion == 15) && preview;
   }
 
-  private boolean isRecordDeclarationAhead() {
-    int amount = 1;
-    while (amount < 10) {
-        Token next = getToken(amount);
-        if (next.kind == IDENTIFIER && "record".equals(next.image)) {
-            return true;
-        }
-        // stop looking ahead at "=" or ";" or "{"
-        if (next.kind == ASSIGN || next.kind == LBRACE || next.kind == SEMICOLON) {
-            return false;
-        }
-        amount++;
-    }
-    return false;
+  private boolean isSealedClassSupported() {
+      return jdkVersion == 15 && preview;
   }
 
   private void checkForSealedClassUsage() {
-     if (jdkVersion != 15 || !preview) {
+     if (!isSealedClassSupported()) {
         throwParseException("Sealed Classes are only supported with Java 15 Preview");
      }
   }
@@ -571,6 +567,29 @@ public class JavaParser {
             && minusToken.endColumn + 1 == sealedToken.beginColumn;
       }
       return false;
+  }
+
+  private boolean classModifierLookahead() {
+      Token next = getToken(1);
+      return next.kind == AT
+        || next.kind == PUBLIC
+        || next.kind == PROTECTED
+        || next.kind == PRIVATE
+        || next.kind == ABSTRACT
+        || next.kind == STATIC
+        || next.kind == FINAL
+        || next.kind == STRICTFP
+        || isSealedClassSupported() && isKeyword("sealed")
+        || isSealedClassSupported() && isNonSealedModifier();
+  }
+
+  private boolean localTypeDeclLookahead() {
+      Token next = getToken(1);
+      return next.kind == CLASS
+        || isRecordTypeSupported() && next.kind == INTERFACE
+        || isRecordTypeSupported() && next.kind == AT && isToken(2, INTERFACE)
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
   }
 
   /**
@@ -1963,42 +1982,63 @@ void Block() :
 }
 
 void BlockStatement():
-{}
+{int mods = 0;}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
-|
-  LOOKAHEAD(2147483647, ( "final" | Annotation() )* Type() <IDENTIFIER>, {isRecordTypeSupported() && !isRecordDeclarationAhead() || !isRecordTypeSupported()})
-  LocalVariableDeclaration() ";"
-|
-  LOOKAHEAD(1, {isRecordTypeSupported() && !isRecordDeclarationAhead() || !isRecordTypeSupported()})
-  Statement()
-|
-  // we don't need to lookahead further here
-  // the ambiguity between start of local class and local variable decl
-  // and start of local record and local variable decl or statement
-  // is already handled in the lookahead guarding LocalVariableDeclaration
-  // and Statement above.
-  LocalClassOrRecordDecl()
-}
-
-void LocalClassOrRecordDecl() #void:
-{int mods = 0;}
-{
-    // this preserves the modifiers of the local class or record.
-    // it allows for modifiers that are forbidden for local classes and records,
-    // but anyway we are *not* checking modifiers for incompatibilities
-    // anywhere else in this grammar (and indeed the production Modifiers
-    // accepts any modifier explicitly for the purpose of forgiving modifier errors,
-    // and reporting them later if needed --see its documentation).
-
-    // In particular, it unfortunately allows local class declarations to start
-    // with a "default" modifier, which introduces an ambiguity with default
-    // switch labels. This is guarded by a custom lookahead around SwitchLabel
+| LOOKAHEAD( "@" | "final" )
+    // this eagerly parses all modifiers and annotations. After that, either a local type declaration
+    // or a local variable declaration follows.
+    // This allows more modifiers for local variables than actually allowed
+    // and the annotations for local variables need to be moved in the AST down again.
     mods=Modifiers()
     (
-        LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods)
-        | ClassOrInterfaceDeclaration(mods)
+        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl(mods)
+        |
+        {
+            List<Node> annotationsAndChildren = new ArrayList<Node>();
+            while (jjtree.peekNode() instanceof ASTAnnotation) {
+              annotationsAndChildren.add(jjtree.popNode());
+            }
+        }
+        LocalVariableDeclaration()
+        {
+            ASTLocalVariableDeclaration localVarDecl = (ASTLocalVariableDeclaration) jjtree.peekNode();
+            if ((mods & AccessNode.FINAL) == AccessNode.FINAL) {
+                localVarDecl.setFinal(true);
+            }
+            if (!annotationsAndChildren.isEmpty()) {
+                Collections.reverse(annotationsAndChildren);
+                for (int i = 0; i < localVarDecl.getNumChildren(); i++) {
+                    annotationsAndChildren.add(localVarDecl.getChild(i));
+                }
+                for (int i = 0; i < annotationsAndChildren.size(); i++) {
+                    Node child = annotationsAndChildren.get(i);
+                    child.jjtSetParent(localVarDecl);
+                    localVarDecl.jjtAddChild(child, i);
+                }
+            }
+        }
+        ";"
+    )
+| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
+    mods=Modifiers()
+    LocalTypeDecl(mods)
+| LOOKAHEAD(Type() <IDENTIFIER>)
+    LocalVariableDeclaration() ";"
+|
+  Statement()
+}
+
+void LocalTypeDecl(int mods) #void:
+{}
+{
+    (
+          LOOKAHEAD(<CLASS>) ClassOrInterfaceDeclaration(mods)
+        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | AnnotationTypeDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
     )
 }
 

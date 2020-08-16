@@ -63,6 +63,7 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return true;
     }
 
+    @Override
     public boolean isLocal() {
         return getParent() instanceof ASTBlockStatement;
     }
