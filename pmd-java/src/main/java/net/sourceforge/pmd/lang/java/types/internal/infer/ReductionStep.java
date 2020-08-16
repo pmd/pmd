@@ -11,8 +11,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Reduction steps on a variable. If its bounds match a certain pattern,
@@ -75,6 +78,26 @@ enum ReductionStep {
 
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }
+    },
+
+    FBOUND(BoundKind.UPPER) {
+        // This is just spitballing, Javac doesn't do this
+        // I use this for fbounds, like a context that has stuff like this
+        //   β { β <: java.lang.Enum<β> }
+        // It may be solvable, with an unchecked warning
+
+        @Override
+        public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
+            Set<JTypeMirror> ubounds = t.getBounds(BoundKind.UPPER);
+            Set<JInferenceVar> freeVars = inferenceContext.freeVarsIn(ubounds);
+            return CollectionUtil.asSingle(freeVars) == t // contains only itself in its upper bounds
+                && ubounds.iterator().next() instanceof JClassType; // and erasure is enough to get rid of the dependency
+        }
+
+        @Override
+        JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
+            return infCtx.ts.glb(TypeOps.erase(uv.getBounds(BoundKind.UPPER)));
+        }
     };
 
     /**
@@ -85,7 +108,8 @@ enum ReductionStep {
         listOf(
             EnumSet.of(EQ),
             EnumSet.of(EQ, LOWER),
-            EnumSet.of(EQ, LOWER, UPPER, CAPTURED)
+            EnumSet.of(EQ, LOWER, UPPER, CAPTURED),
+            EnumSet.of(EQ, LOWER, UPPER, CAPTURED, FBOUND)
         );
 
     final BoundKind kind;

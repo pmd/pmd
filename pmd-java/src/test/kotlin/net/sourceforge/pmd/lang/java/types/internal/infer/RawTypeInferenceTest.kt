@@ -19,8 +19,7 @@ import net.sourceforge.pmd.lang.java.types.typeDsl
  */
 class RawTypeInferenceTest : ProcessorTestSpec({
 
-    // todo
-    parserTest("!Test raw type in argument erases result") {
+    parserTest("Test raw type in argument erases result") {
 
         val logGetter = logTypeInference()
         val acu = parser.parse(
@@ -41,21 +40,22 @@ class C {
         val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).firstOrThrow()
+        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
 
         assert(logGetter().isEmpty())
         with(call.typeDsl) {
             call.methodType.shouldMatchMethod(
                     named = "valueOf",
                     declaredIn = t_C,
-                    withFormals = listOf(Class::class.raw),
-                    returning = Class::class.raw
+                    withFormals = listOf(Class::class[gen.t_Enum]),
+                    returning = gen.t_Enum
             )
+            call.typeMirror shouldBe gen.t_Enum
         }
         assert(logGetter().isEmpty())
 
         with(call.typeDsl) {
-            id.typeMirror shouldBe Class::class.raw
+            id.typeMirror shouldBe gen.t_Enum
         }
     }
 

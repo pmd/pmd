@@ -16,12 +16,14 @@ import java.util.List;
 import java.util.stream.Collector;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.util.OptionalBool;
 
 public final class OverloadComparator {
@@ -44,25 +46,25 @@ public final class OverloadComparator {
      *
      * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5
      */
-    JMethodSig selectMostSpecific(JMethodSig currentBest, JMethodSig candidate, MethodCallSite site, MethodResolutionPhase phase) {
-        if (currentBest == null) {
+    @NonNull MethodCtDecl selectMoreSpecific(MethodCtDecl currentBest, MethodCtDecl candidate, MethodCallSite site, MethodResolutionPhase phase) {
+        if (currentBest.isFailed()) {
             return candidate;
-        } else if (candidate == null) {
+        } else if (candidate.isFailed()) {
             return currentBest;
         }
 
-        JMethodSig m1 = currentBest.internalApi().adaptedMethod();
-        JMethodSig m2 = candidate.internalApi().adaptedMethod();
+        JMethodSig m1 = currentBest.getMethodType().internalApi().adaptedMethod();
+        JMethodSig m2 = candidate.getMethodType().internalApi().adaptedMethod();
 
-        return isStrictlyMoreSpecific(m1, m2, site, phase)
+        return isMoreSpecific(m1, m2, site, phase)
                ? currentBest
                : candidate;
     }
 
-    private boolean isStrictlyMoreSpecific(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
+    private boolean isMoreSpecific(@NonNull JMethodSig m1, @NonNull JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
 
-        boolean m1OverM2 = isMoreSpecific(m1, m2, site, phase);
-        boolean m2OverM1 = isMoreSpecific(m2, m1, site, phase);
+        boolean m1OverM2 = isMoreSpecificImpl(m1, m2, site, phase);
+        boolean m2OverM1 = isMoreSpecificImpl(m2, m1, site, phase);
 
         if (m1OverM2 != m2OverM1) {
             // then one of them is strictly more specific than the other
@@ -168,7 +170,7 @@ public final class OverloadComparator {
         return definitely(c1Height < c2Height);
     }
 
-    private boolean isMoreSpecific(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
+    private boolean isMoreSpecificImpl(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
         return m2.isGeneric() ? isInferredMoreSpecific(m1, m2, site, phase)
                               : isMoreSpecificNonGeneric(m1, m2, site, phase);
     }
@@ -214,7 +216,7 @@ public final class OverloadComparator {
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(ctx.toClassType(ti));
             if (fun == null) {
                 // not a functional interface
-                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase);
+                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
             }
 
             // todo special conditions for lambdas/ mrefs
@@ -223,7 +225,7 @@ public final class OverloadComparator {
 
         if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
             // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase);
+            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, null);
         }
 
         ctx.solve();         // throws ResolutionFailedException

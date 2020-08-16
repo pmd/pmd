@@ -116,7 +116,7 @@ final class ExprCheckHelper {
                 solved -> {
                     JMethodSig ground = solved.ground(mostSpecific);
                     invoc.setInferredType(ground.getReturnType());
-                    invoc.setMethodType(new MethodCtDecl(ground, argCtDecl.getResolvePhase()));
+                    invoc.setMethodType(argCtDecl.withMethod(ground));
                 }
             );
             return true;

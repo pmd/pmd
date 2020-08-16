@@ -269,18 +269,40 @@ public interface ExprMirror {
 
         /** transient data used during the analysis */
         class MethodCtDecl {
+
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
+            private final boolean argsAreAllRelevant;
+            private final boolean needsUncheckedConversion;
             private final boolean failed;
 
-            MethodCtDecl(JMethodSig methodType, MethodResolutionPhase resolvePhase) {
-                this(methodType, resolvePhase, false);
-            }
-
-            MethodCtDecl(JMethodSig methodType, MethodResolutionPhase resolvePhase, boolean failed) {
+            MethodCtDecl(JMethodSig methodType,
+                         MethodResolutionPhase resolvePhase,
+                         boolean argsAreAllRelevant,
+                         boolean needsUncheckedConversion,
+                         boolean failed) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
+                this.argsAreAllRelevant = argsAreAllRelevant;
+                this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
+            }
+
+            MethodCtDecl withMethod(JMethodSig method) {
+                return withMethod(method, false);
+            }
+
+            MethodCtDecl withMethod(JMethodSig method, boolean failed) {
+                return new MethodCtDecl(method, resolvePhase, argsAreAllRelevant, needsUncheckedConversion, failed);
+            }
+
+            // package-private
+            boolean areAllArgsRelevant() {
+                return argsAreAllRelevant;
+            }
+
+            public boolean needsUncheckedConversion() {
+                return needsUncheckedConversion;
             }
 
             public JMethodSig getMethodType() {
@@ -304,8 +326,8 @@ public interface ExprMirror {
                 return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';
             }
 
-            public static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT);
+            static MethodCtDecl unresolved(TypeSystem ts, boolean isFailed) {
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, isFailed);
             }
         }
     }

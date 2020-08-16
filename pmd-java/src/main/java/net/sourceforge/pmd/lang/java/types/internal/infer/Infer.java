@@ -10,7 +10,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -30,6 +29,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Subtyping;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprCheckHelper.ExprChecker;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
@@ -75,8 +75,8 @@ public final class Infer {
         this.isJava8 = jdkVersion >= 8;
         this.LOG = logger;
 
-        this.NO_CTDECL = new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT);
-        this.FAILED_INVOCATION = new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true);
+        this.NO_CTDECL = MethodCtDecl.unresolved(ts, false);
+        this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts, true);
         this.exprOps = new ExprOps(this);
         this.overloadComparator = new OverloadComparator(this);
     }
@@ -126,7 +126,7 @@ public final class Infer {
         PolyExprMirror expr = site.getExpr();
         if (expr instanceof MethodRefMirror || expr instanceof LambdaExprMirror) {
             try {
-                addBoundOrDefer(emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
+                addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
             } catch (ResolutionFailedException rfe) {
                 rfe.getFailure().addContext(null, site, null);
                 LOG.logResolutionFail(rfe.getFailure());
@@ -173,7 +173,7 @@ public final class Infer {
         if (invocType == FAILED_INVOCATION) {
             JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
             LOG.fallbackInvocation(fallback, site);
-            return new MethodCtDecl(fallback, ctdecl.getResolvePhase().asInvoc(), true);
+            return ctdecl.withMethod(fallback, true);
         }
         return invocType;
     }
@@ -238,18 +238,21 @@ public final class Infer {
             return NO_CTDECL;
         }
 
-        JMethodSig bestApplicable = null;
+        MethodCtDecl bestApplicable = FAILED_INVOCATION;
 
         for (MethodResolutionPhase phase : MethodResolutionPhase.APPLICABILITY_TESTS) {
             for (JMethodSig m : potentiallyApplicable) {
-                JMethodSig candidate = logInference(site, phase, m);
+                site.resetInferenceData();
 
-                bestApplicable = overloadComparator.selectMostSpecific(bestApplicable, candidate, site, phase);
+                MethodCtDecl candidate = logInference(site, phase, m);
+
+                bestApplicable = overloadComparator.selectMoreSpecific(bestApplicable, candidate, site, phase);
             }
 
-            if (bestApplicable != null) {
-                bestApplicable = ExprOps.adaptGetClass(bestApplicable, site.getExpr().getErasedReceiverType());
-                return new MethodCtDecl(bestApplicable, phase);
+            if (bestApplicable != FAILED_INVOCATION) {
+                JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
+                                                           site.getExpr().getErasedReceiverType());
+                return bestApplicable.withMethod(adapted);
             }
         }
 
@@ -281,10 +284,10 @@ public final class Infer {
         // arguments that are not pertinent to applicability (lambdas)
         // to instantiate all tvars
 
-        MethodResolutionPhase instPhase = ctdecl.getResolvePhase().asInvoc();
-        JMethodSig inst = logInference(site, instPhase, ctdecl.getMethodType().internalApi().adaptedMethod());
-        return inst == null ? FAILED_INVOCATION
-                            : new MethodCtDecl(inst, ctdecl.getResolvePhase());
+        site.loadInferenceData(ctdecl);
+        return logInference(site,
+                            ctdecl.getResolvePhase().asInvoc(),
+                            ctdecl.getMethodType().internalApi().adaptedMethod());
     }
 
     private boolean isReturnTypeFinished(JMethodSig m) {
@@ -314,11 +317,20 @@ public final class Infer {
     }
 
 
-    private @Nullable JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
+    private @NonNull MethodCtDecl logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
         LOG.startInference(m, site, phase);
         @Nullable JMethodSig candidate = instantiateMethodOrCtor(site, phase, m);
         LOG.endInference(candidate);
-        return candidate;
+
+        if (candidate == null) {
+            return FAILED_INVOCATION;
+        } else {
+            return new MethodCtDecl(candidate,
+                                    phase,
+                                    site.areAllArgsRelevantToApplicability(),
+                                    site.needsUncheckedConversion(),
+                                    false);
+        }
     }
 
 
@@ -502,12 +514,10 @@ public final class Infer {
                     // of this context
                     LOG.propagateAndAbort(infCtx, site.getInferenceContext());
                     infCtx.duplicateInto(site.getInferenceContext());
-                    // TODO there may be stuck terms
                     return infCtx.mapToIVars(m);
                 }
             }
 
-            // TODO there may be stuck terms
             infCtx.solve();
 
             // instantiate vars and return
@@ -537,14 +547,19 @@ public final class Infer {
      * <p>This binds the ivars of this context to those of the outer context.
      */
     private JTypeMirror addReturnConstraints(InferenceContext infCtx, JMethodSig m, MethodCallSite site) {
-        // TODO if unchecked conversion was necessary, the return type must be erased
 
         /*
             Remember: calling stuff like isConvertible or isSubtype
             adds constraints on the type variables that are found there.
          */
 
-        JTypeMirror resultType = infCtx.mapToIVars(m.getReturnType());
+        JTypeMirror resultType = m.getReturnType();
+        if (site.needsUncheckedConversion()) {
+            // if unchecked conversion is necessary, the result type,
+            // and all thrown exception types, are erased.
+            resultType = resultType.getErasure();
+        }
+        resultType = infCtx.mapToIVars(resultType);
         InferenceContext outerInfCtx = site.getInferenceContext();
 
         if (!infCtx.isGround(resultType) && !outerInfCtx.isEmpty() && resultType instanceof JClassType) {
@@ -569,7 +584,7 @@ public final class Infer {
             if (needsEagerInstantiation(retVar, actualRes, infCtx)) {
                 infCtx.solve(retVar);
                 infCtx.callListeners();
-                if (!isConvertible(retVar.getInst(), actualRes, true)) {
+                if (!isConvertible(retVar.getInst(), actualRes, true).evenUnchecked()) {
                     actualRes = ts.OBJECT;
                 }
             } else if (actualRes.isPrimitive()) {
@@ -577,7 +592,7 @@ public final class Infer {
             }
         }
 
-        if (!isConvertible(mapped, outerInfCtx.mapToIVars(actualRes), true)) {
+        if (!isConvertible(mapped, outerInfCtx.mapToIVars(actualRes), true).evenUnchecked()) {
             throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), mapped, actualRes);
         }
 
@@ -737,7 +752,7 @@ public final class Infer {
                     }
                 }
 
-                addBoundOrDefer(infCtx, phase, ei, fi);
+                addBoundOrDefer(site, infCtx, phase, ei, fi);
 
                 LOG.endArg();
             } else {
@@ -754,12 +769,12 @@ public final class Infer {
             for (int i = lastP; i < args.size(); i++) {
                 ExprMirror ei = args.get(i);
 
-
                 if (phase.isInvocation() || isPertinentToApplicability(ei, m, varargsComponent, expr)) {
                     LOG.startArg(i, ei, varargsComponent);
-                    addBoundOrDefer(infCtx, phase, ei, varargsComponent);
+                    addBoundOrDefer(site, infCtx, phase, ei, varargsComponent);
                     LOG.endArg();
                 } else {
+                    site.setSomeArgsAreNotPertinent();
                     LOG.skipArgAsNonPertinent(i, ei);
                 }
             }
@@ -774,10 +789,10 @@ public final class Infer {
      *
      * See {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
-    private void addBoundOrDefer(InferenceContext infCtx, MethodResolutionPhase phase, ExprMirror arg, JTypeMirror formalType) {
+    private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, ExprMirror arg, JTypeMirror formalType) {
         // todo fast path for standalone types: directly call checkConvertibleOrDefer
         ExprChecker exprChecker =
-            (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase);
+            (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
 
         ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, this);
         helper.isCompatible(formalType, arg);
@@ -790,10 +805,10 @@ public final class Infer {
      *
      * <p>This method is called back to by {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
-    void checkConvertibleOrDefer(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType, ExprMirror arg, MethodResolutionPhase phase) {
+    void checkConvertibleOrDefer(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType, ExprMirror arg, MethodResolutionPhase phase, @Nullable MethodCallSite site) {
         if (!infCtx.isGround(formalType) || !infCtx.isGround(exprType)) {
             // defer the check
-            infCtx.addInstantiationListener(setOf(formalType, exprType), solvedCtx -> checkConvertibleOrDefer(solvedCtx, exprType, formalType, arg, phase));
+            infCtx.addInstantiationListener(setOf(formalType, exprType), solvedCtx -> checkConvertibleOrDefer(solvedCtx, exprType, formalType, arg, phase, site));
         }
 
         JTypeMirror groundE = infCtx.ground(exprType);
@@ -807,10 +822,12 @@ public final class Infer {
 
         // If they are ground, then they must conform to each other else
         // the exception stops the resolution process.
-        if (!isConvertible(groundE, groundF, phase.canBox())) {
+        Subtyping conversionResult = isConvertible(groundE, groundF, phase.canBox());
+        if (conversionResult == Subtyping.NO) {
             throw ResolutionFailedException.incompatibleFormal(LOG, arg, groundE, groundF);
+        } else if (conversionResult == Subtyping.UNCHECKED_WARNING && site != null) {
+            site.setNeedsUncheckedConversion();
         }
-
     }
 
     /**
@@ -818,20 +835,24 @@ public final class Infer {
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
-    static boolean isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
+    static Subtyping isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
         if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
             // fast path
-            return true;
+            return Subtyping.YES;
         }
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
             // then boxing conversions may be useful
-            return TypeOps.isSubtype(exprType.box(), formalType.box()).evenUnchecked()
-                || TypeOps.isSubtype(exprType.unbox(), formalType.unbox()).evenUnchecked();
+            Subtyping result = TypeOps.isSubtype(exprType.box(), formalType.box());
+            if (result != Subtyping.NO) {
+                return result;
+            } else {
+                return TypeOps.isSubtype(exprType.unbox(), formalType.unbox());
+            }
         }
 
         // unchecked conversion is allowed even in STRICT
-        return TypeOps.isSubtype(exprType, formalType).evenUnchecked();
+        return TypeOps.isSubtype(exprType, formalType);
     }
 
     /**

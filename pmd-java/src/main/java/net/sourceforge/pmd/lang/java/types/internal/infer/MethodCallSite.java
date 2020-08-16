@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 
 /**
@@ -30,6 +31,9 @@ public class MethodCallSite extends PolySite {
     private boolean logEnabled = true;
     private final Map<MethodResolutionPhase, List<ResolutionFailure>> errors = new EnumMap<>(MethodResolutionPhase.class);
 
+    private boolean areAllArgsRelevant = true;
+    private boolean needsUncheckedConversion = false;
+
     public MethodCallSite(InvocationMirror expr,
                           @Nullable JTypeMirror expectedType,
                           @NonNull InferenceContext infCtx) {
@@ -38,8 +42,6 @@ public class MethodCallSite extends PolySite {
 
         this.localInferenceContext = infCtx;
     }
-
-    private boolean areAllArgsRelevant = true;
 
     void acceptFailure(ResolutionFailure exception) {
         if (logEnabled) {
@@ -76,6 +78,24 @@ public class MethodCallSite extends PolySite {
 
     void setSomeArgsAreNotPertinent() {
         areAllArgsRelevant = false;
+    }
+
+    boolean needsUncheckedConversion() {
+        return areAllArgsRelevant;
+    }
+
+    void setNeedsUncheckedConversion() {
+        needsUncheckedConversion = true;
+    }
+
+    void resetInferenceData() {
+        areAllArgsRelevant = true;
+        needsUncheckedConversion = false;
+    }
+
+    void loadInferenceData(MethodCtDecl ctdecl) {
+        areAllArgsRelevant = ctdecl.areAllArgsRelevant();
+        needsUncheckedConversion = ctdecl.needsUncheckedConversion();
     }
 
     /**

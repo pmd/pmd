@@ -1476,14 +1476,9 @@ public final class TypeOps {
         }
     }
 
-    /** Returns a new list with the erasures of the given types. */
-    public static List<JTypeMirror> erase(List<? extends JTypeMirror> ts) {
-        List<JTypeMirror> res = new ArrayList<>(ts.size());
-        for (JTypeMirror t : ts) {
-            res.add(t.getErasure());
-        }
-
-        return res;
+    /** Returns a list with the erasures of the given types, may be unmodifiable. */
+    public static List<JTypeMirror> erase(Collection<? extends JTypeMirror> ts) {
+        return CollectionUtil.map(ts, JTypeMirror::getErasure);
     }
 
     // <editor-fold  defaultstate="collapsed" desc="Mentions">
