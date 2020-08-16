@@ -37,6 +37,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         defaultValues.add("java.lang.Deprecated");
         defaultValues.add("javafx.fxml.FXML");
         defaultValues.add("lombok.experimental.Delegate");
+        defaultValues.add("lombok.EqualsAndHashCode");
         return defaultValues;
     }
 
