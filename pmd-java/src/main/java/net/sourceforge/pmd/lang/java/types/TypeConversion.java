@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.NONE;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.NO_WARNING;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.WARNING;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,45 +20,6 @@ public final class TypeConversion {
 
     private TypeConversion() {
 
-    }
-
-    /**
-     * Returns whether the type 'from' is convertible to the type 'to'
-     * by unchecked conversion. There is an unchecked conversion from the
-     * raw class or interface type G to any parameterized type {@code G<...>} etc.
-     *
-     * <p>https://docs.oracle.com/javase/specs/jls/se9/html/jls-5.html#jls-5.1.9
-     */
-    public static UncheckedConversion uncheckedConversionExists(JTypeMirror from, JTypeMirror to) {
-
-        if (from instanceof JArrayType && to instanceof JArrayType) {
-            return uncheckedConversionExists(((JArrayType) from).getComponentType(),
-                                             ((JArrayType) to).getComponentType());
-        }
-
-        if (!(from.isRaw() && to instanceof JClassType)) {
-            return NONE;
-        }
-
-        JClassType toC = (JClassType) to;
-
-        JClassType asSuper = ((JClassType) from).getAsSuper(toC.getSymbol());
-        if (asSuper == null) {
-            return NONE; // unrelated types
-        }
-
-        return TypeOps.allArgsAreUnboundedWildcards(toC.getTypeArgs())
-               ? NO_WARNING // also catches the case where 'asSuper' is raw as well
-               : WARNING;
-    }
-
-    public enum UncheckedConversion {
-        /** Eg {@code Class<?> ~/> Class<String>}. */
-        NONE,
-        /** Eg {@code Class ~> Class<String>}. */
-        WARNING,
-        /** Eg {@code Class ~> Class<?>}, or special case of {@code Class ~> Class} (identity conversion). */
-        NO_WARNING
     }
 
     /**

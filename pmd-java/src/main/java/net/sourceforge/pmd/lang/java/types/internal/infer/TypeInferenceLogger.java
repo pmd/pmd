@@ -218,10 +218,12 @@ public interface TypeInferenceLogger {
             if (!site.isLogEnabled()) {
                 return;
             }
-            println("[WARNING] Instantiation failed");
+            println("");
+            printExpr(site.getExpr());
+            startSection("[WARNING] Instantiation failed");
             summarizeFailures(site);
-            println("[WARNING] Falling back on " + color(ctdecl, ANSI_BLUE)
-                        + " (this may cause future mistakes)");
+            endSection("[WARNING] Falling back on " + color(ctdecl, ANSI_BLUE)
+                           + " (this may cause future mistakes)");
         }
 
         @Override

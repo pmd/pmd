@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
+import net.sourceforge.pmd.lang.java.types.TypeOps.*
 import kotlin.String
 import kotlin.reflect.KClass
 import kotlin.streams.toList
@@ -193,8 +193,10 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
 
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
-private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, pos: Boolean) {
-    assertSubtypeUnchecked(t, s, pos, unchecked = false)
+// if result == null, consider we allow unchecked and no
+private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, result: Subtyping) {
+    val res = isSubtype(t , s)
+    assertEquals(result, res, message = "Failure, expected\n\t${if (result.evenUnchecked()) "" else " not"} $t \n\t\t<: $s")
     // println("Proven ${if(pos) "" else " ¬"} $t <: $s")
 }
 
@@ -207,22 +209,22 @@ private fun assertSubtypeUnchecked(t: JTypeMirror, s: JTypeMirror, pos: Boolean,
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other, true)
-    assertSubtype(other, this, this == other)
+    assertSubtype(this, other, Subtyping.YES)
+    // assertSubtype(other, this, SubtypeResult.definitely(this == other))
 }
 
 infix fun JTypeMirror.shouldNotBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other, false)
+    assertSubtype(this, other, Subtyping.NO)
 }
 
 infix fun JTypeMirror.shouldBeUncheckedSubtypeOf(other: JTypeMirror) {
-    assertSubtypeUnchecked(this, other, true)
+    assertSubtype(this, other, Subtyping.UNCHECKED_WARNING)
 }
 
 infix fun JTypeMirror.shouldBeUnrelatedTo(other: JTypeMirror) {
     if (this == other) return
-    assertSubtype(this, other, false)
-    assertSubtype(other, this, false)
+    assertSubtype(this, other, Subtyping.NO)
+    assertSubtype(other, this, Subtyping.NO)
 }
 
 /**
@@ -266,7 +268,7 @@ interface TypeDslMixin {
     /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
             // flatten
-            ts.intersect(TypeOps.asList(this) + TypeOps.asList(t))
+            ts.intersect(asList(this) + asList(t))
 
     /** subtyping */
     operator fun JTypeMirror.compareTo(t: JTypeMirror): Int = when {
@@ -315,7 +317,7 @@ class WildcardDsl(override val ts: TypeSystem) : JWildcardType by ts.UNBOUNDED_W
     infix fun `super`(t: KClass<*>) = `super`(t.raw)
 
     override fun equals(other: Any?): Boolean =
-            other is JWildcardType && TypeOps.isSameType(this, other)
+            other is JWildcardType && isSameType(this, other)
 
     override fun hashCode(): Int = ts.UNBOUNDED_WILD.hashCode()
 }

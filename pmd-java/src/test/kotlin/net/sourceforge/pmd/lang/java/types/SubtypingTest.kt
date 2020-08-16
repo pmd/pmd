@@ -6,16 +6,17 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.forNone
 import io.kotest.inspectors.forNone
 import io.kotest.matchers.shouldBe
+import io.kotest.properties.forNone
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
-import net.sourceforge.pmd.lang.java.types.TypeConversion.UncheckedConversion.*
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * @author Clément Fournier
@@ -133,6 +134,8 @@ class SubtypingTest : FunSpec({
                 val `Class{?}` = Class::class[`?`]
                 val Class = Class::class.raw
 
+                val `Comparable{?}` = java.lang.Comparable::class[`?`]
+
                 /*
                     Class raw = String.class;
                     Class<?> wild = raw;
@@ -155,13 +158,10 @@ class SubtypingTest : FunSpec({
                 `Class{String}` shouldBeSubtypeOf `Class{?}`
                 `Class{?}` shouldNotBeSubtypeOf `Class{String}`
 
-                Class shouldNotBeSubtypeOf `Class{?}`
-                Class shouldNotBeSubtypeOf `Class{String}`
+                Class shouldBeSubtypeOf `Class{?}` // no warning
+                Class shouldBeUncheckedSubtypeOf `Class{String}`
 
-                assertEquals(NO_WARNING, TypeConversion.uncheckedConversionExists(Class, `Class{?}`))
-                assertEquals(WARNING, TypeConversion.uncheckedConversionExists(Class, `Class{String}`))
-                assertEquals(NONE, TypeConversion.uncheckedConversionExists(`Class{?}`, `Class{String}`))
-                assertEquals(NONE, TypeConversion.uncheckedConversionExists(`Class{String}`, `Class{String}`))
+                ts.STRING shouldBeSubtypeOf `Comparable{?}`
             }
 
             test("Test wildcard subtyping") {
@@ -202,7 +202,7 @@ class SubtypingTest : FunSpec({
                 }
 
                 ts.allPrimitives.forNone {
-                    assert(ts.NULL_TYPE.isSubtypeOf(it))
+                    assertTrue(ts.NULL_TYPE.isSubtypeOf(it))
                 }
             }
         }
