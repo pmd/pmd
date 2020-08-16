@@ -574,4 +574,45 @@ class MyMap<K, V> {
 
     }
 
+    parserTest("Test C-style array dimensions as target type") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+import java.util.Iterator;
+import java.util.Map;
+
+class Scratch {
+
+    static <T> T[] getArr(T[] a) { return null; }
+
+    { 
+        String arr[] = getArr(new String[0]);
+    }
+}
+
+        """.trimIndent())
+
+        val (t_Scratch) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val ctorCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        ctorCall.shouldMatchN {
+            methodCall("getArr") {
+                with(it.typeDsl) {
+
+                    it.methodType.shouldMatchMethod(
+                            named = "getArr",
+                            declaredIn = t_Scratch,
+                            withFormals = listOf(ts.STRING.toArray()),
+                            returning = ts.STRING.toArray()
+                    )
+                }
+
+                argList(1)
+            }
+        }
+
+    }
+
 })

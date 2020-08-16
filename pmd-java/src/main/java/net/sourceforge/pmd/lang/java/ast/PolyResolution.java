@@ -12,7 +12,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -297,8 +296,9 @@ final class PolyResolution {
             // assignment context
             return ((ASTAssignmentExpression) context).getLeftOperand().getTypeMirror();
         } else if (context instanceof ASTVariableDeclarator) {
-            ASTType type = ((ASTVariableDeclarator) context).getVarId().getTypeNode();
-            return Objects.requireNonNull(type, "For inferred type contextOf() should not return null").getTypeMirror();
+            assert ((ASTVariableDeclarator) context).getVarId().getTypeNode() != null
+                : "Local var inference should not have a context node, this could loop forever";
+            return ((ASTVariableDeclarator) context).getVarId().getTypeMirror();
         } else if (context instanceof ASTCastExpression) {
             return allowCasts ? ((ASTCastExpression) context).getCastType().getTypeMirror()
                               : null;

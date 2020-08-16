@@ -101,6 +101,16 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test array allocation") {
+
+        val block = StatementParsingCtx.parseNode("{ Object is = new int[0]; is = new String[0][]; }", ctx = this)
+        val (intArray, stringArray) = block.descendants(ASTArrayAllocation::class.java).toList()
+        with (block.typeDsl) {
+            intArray.typeMirror shouldBe int.toArray()
+            stringArray.typeMirror shouldBe ts.STRING.toArray(2)
+        }
+    }
+
 
     parserTest("Test unary mutation expressions have the same type as the variable") {
 

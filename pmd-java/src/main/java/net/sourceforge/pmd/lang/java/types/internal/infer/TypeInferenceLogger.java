@@ -197,20 +197,21 @@ public interface TypeInferenceLogger {
             if (!site.isLogEnabled()) {
                 return;
             }
-            println("");
+            startSection("[WARNING] Compile-time declaration resolution failed.");
             printExpr(site.getExpr());
-            startSection("[WARNING] CTDecl resolution failed. Summary of failures:");
             summarizeFailures(site);
             endSection("");
         }
 
         private void summarizeFailures(MethodCallSite site) {
+            startSection("Summary of failures:");
             site.getResolutionFailures()
                 .forEach((phase, failures) -> {
                     startSection(phase.toString() + ":");
                     failures.forEach(it -> println(it.getReason() + "\t\t" + ppMethod(it.getFailedMethod())));
                     endSection("");
                 });
+            endSection("");
         }
 
         @Override
@@ -218,12 +219,12 @@ public interface TypeInferenceLogger {
             if (!site.isLogEnabled()) {
                 return;
             }
-            println("");
+            startSection("[WARNING] Invocation type resolution failed");
             printExpr(site.getExpr());
-            startSection("[WARNING] Instantiation failed");
             summarizeFailures(site);
-            endSection("[WARNING] Falling back on " + color(ctdecl, ANSI_BLUE)
+            println("-> Falling back on " + color(ctdecl, ANSI_BLUE)
                            + " (this may cause future mistakes)");
+            endSection("");
         }
 
         @Override
