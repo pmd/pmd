@@ -6,11 +6,12 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
@@ -29,7 +30,7 @@ class C {
     static <T extends Enum<T>> T valueOf(Class<T> k) { return null; } 
 
     static {
-        Enum<?> c = valueOf((Class) Object.class));
+        var c = valueOf((Class) Object.class);
     }
 }
 
@@ -39,17 +40,22 @@ class C {
         val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val id = acu.descendants(ASTVariableDeclaratorId::class.java).firstOrThrow()
 
         assert(logGetter().isEmpty())
         with(call.typeDsl) {
             call.methodType.shouldMatchMethod(
-                    named = JConstructorSymbol.CTOR_NAME,
+                    named = "valueOf",
                     declaredIn = t_C,
-                    withFormals = listOf(Class::class.decl),
-                    returning = t_C[gen.t_String]
+                    withFormals = listOf(Class::class.raw),
+                    returning = Class::class.raw
             )
         }
         assert(logGetter().isEmpty())
+
+        with(call.typeDsl) {
+            id.typeMirror shouldBe Class::class.raw
+        }
     }
 
     /*

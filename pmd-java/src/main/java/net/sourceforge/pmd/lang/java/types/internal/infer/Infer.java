@@ -10,9 +10,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.LOOSE;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.VARARGS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -233,6 +231,8 @@ public final class Infer {
         JMethodSig m = ctdecl.getMethodType();
         InvocationMirror expr = site.getExpr();
 
+        // todo remove this check for site.getExpectedType
+        //  apparently removing it messes up anonymous class inference
         if (isReturnTypeFinished(m) && site.getExpectedType() == null) {
             assert assertReturnIsGround(m);
 
@@ -794,12 +794,12 @@ public final class Infer {
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
             // then boxing conversions may be useful
-            return exprType.box().isSubtypeOf(formalType.box(), true)
-                || exprType.unbox().isSubtypeOf(formalType.unbox(), true);
+            return TypeOps.isSubtype(exprType.box(), formalType.box()).evenUnchecked()
+                || TypeOps.isSubtype(exprType.unbox(), formalType.unbox()).evenUnchecked();
         }
 
         // unchecked conversion is allowed even in STRICT
-        return exprType.isSubtypeOf(formalType, true);
+        return TypeOps.isSubtype(exprType, formalType).evenUnchecked();
     }
 
     /**

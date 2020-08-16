@@ -348,31 +348,92 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Subtyping">
 
     /**
-     * Returns true if {@code T <: S}, ie T is a subtype of S.
+     * Returns whether if {@code T <: S}, ie T is a subtype of S.
      *
-     * @param t         T
-     * @param s         S
-     * @param unchecked Whether to allow unchecked conversion.
-     *                  If true, then this tests if T is *convertible*
-     *                  to S, there is no "unchecked subtyping".
+     * @param t T
+     * @param s S
      */
-    public static boolean isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean unchecked) {
+    public static SubtypeResult isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
         if (t == s) {
-            return true;
+            return SubtypeResult.YES;
         } else if (s == t.getTypeSystem().OBJECT) {
-            return !t.isPrimitive();
+            return SubtypeResult.definitely(!t.isPrimitive());
         }
 
         if (s instanceof JInferenceVar) {
             // it's possible to add a bound to UNRESOLVED
             ((JInferenceVar) s).addBound(BoundKind.LOWER, t);
-            return true;
+            return SubtypeResult.YES;
         } else if (t == t.getTypeSystem().ERROR_TYPE) {
             // don't check both, because subtyping must be asymmetric
-            return true;
+            return SubtypeResult.YES;
         }
 
-        return capture(t).acceptVisitor(unchecked ? SubtypeVisitor.UNCHECKED : SubtypeVisitor.CHECKED, s);
+        return capture(t).acceptVisitor(SubtypeVisitor.INSTANCE, s);
+    }
+
+    public enum SubtypeResult {
+        NO,
+        UNCHECKED,
+        YES;
+
+        public boolean toBoolean(boolean allowUnchecked) {
+            return allowUnchecked ? this != NO
+                                  : this == YES;
+        }
+
+        public boolean evenUnchecked() {
+            return this != NO;
+        }
+
+        SubtypeResult or(SubtypeResult b) {
+            if (this == NO) {
+                return b;
+            } else if (b == NO) {
+                return this;
+            } else if (this == UNCHECKED || b == UNCHECKED) {
+                return UNCHECKED;
+            } else {
+                return YES;
+            }
+        }
+
+        SubtypeResult and(SubtypeResult b) {
+            if (this == b) {
+                return this;
+            } else if (this == NO || b == NO) {
+                return NO;
+            }
+            return UNCHECKED;
+        }
+
+        static SubtypeResult definitely(boolean b) {
+            return b ? YES : NO;
+        }
+
+        static SubtypeResult subtypesAll(JTypeMirror t, List<? extends JTypeMirror> supers) {
+            SubtypeResult result = YES;
+            for (JTypeMirror ui : supers) {
+                SubtypeResult sub = isSubtype(t, ui);
+                if (sub == NO) {
+                    return NO;
+                }
+                result = result.and(sub);
+            }
+            return result;
+        }
+
+        static SubtypeResult superTypesAny(JTypeMirror t, List<? extends JTypeMirror> supers) {
+            SubtypeResult result = NO;
+            for (JTypeMirror ui : supers) {
+                SubtypeResult sub = isSubtype(t, ui);
+                if (result != NO) {
+                    return result;
+                }
+                result = result.or(sub);
+            }
+            return result;
+        }
     }
 
     private static JTypeMirror upperBound(JTypeMirror type) {
@@ -418,7 +479,7 @@ public final class TypeOps {
      *
      * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
      */
-    public static boolean typeArgContains(JTypeMirror t, JTypeMirror s) {
+    public static SubtypeResult typeArgContains(JTypeMirror t, JTypeMirror s) {
         // the contains relation can be understood intuitively if we
         // represent types as ranges on a line:
 
@@ -438,7 +499,7 @@ public final class TypeOps {
 
         if (isSameType(t, s, true)) {
             // T <= T
-            return true;
+            return SubtypeResult.YES;
         }
 
         //        if (t instanceof JWildcardType && s instanceof JTypeVar) {
@@ -449,96 +510,84 @@ public final class TypeOps {
 
         if (t instanceof JWildcardType) {
             JWildcardType tw = (JWildcardType) t;
-
-            return
+            if (tw.isUpperBound()) {
+                //  U(S) <: U(T) if T is "super" bound (U(T) is top)
+                return isSubtype(upperBound(s), tw.asUpperBound());
+            } else {
                 // L(T) <: L(S) if T is "extends" bound (L(T) is bottom)
-                (tw.isUpperBound() || tw.asLowerBound().isSubtypeOf(lowerBound(s)))
-                    //  U(S) <: U(T) if T is "super" bound (U(T) is top)
-                    && (tw.isLowerBound() || upperBound(s).isSubtypeOf(tw.asUpperBound()));
-
+                return isSubtype(tw.asLowerBound(), lowerBound(s));
+            }
         }
 
-        return false;
+        return SubtypeResult.NO;
     }
 
 
-    private static final class SubtypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
+    private static final class SubtypeVisitor implements JTypeVisitor<SubtypeResult, JTypeMirror> {
 
-        static final SubtypeVisitor UNCHECKED = new SubtypeVisitor(true);
-        static final SubtypeVisitor CHECKED = new SubtypeVisitor(false);
-
-        private final boolean unchecked;
-
-        private SubtypeVisitor(boolean unchecked) {
-            this.unchecked = unchecked;
-        }
+        static final SubtypeVisitor INSTANCE = new SubtypeVisitor();
 
         @Override
-        public Boolean visit(JTypeMirror t, JTypeMirror s) {
+        public SubtypeResult visit(JTypeMirror t, JTypeMirror s) {
             throw new IllegalStateException("Should not be called");
         }
 
         @Override
-        public Boolean visitTypeVar(JTypeVar t, JTypeMirror s) {
+        public SubtypeResult visitTypeVar(JTypeVar t, JTypeMirror s) {
             if (isTypeRange(s)) {
-                return t.isSubtypeOf(lowerBoundRec(s), unchecked);
+                return isSubtype(t, lowerBoundRec(s));
             }
-            return t.getUpperBound().isSubtypeOf(s, unchecked);
+            return isSubtype(t.getUpperBound(), s);
         }
 
         @Override
-        public Boolean visitNullType(JTypeMirror t, JTypeMirror s) {
-            return !s.isPrimitive();
+        public SubtypeResult visitNullType(JTypeMirror t, JTypeMirror s) {
+            return SubtypeResult.definitely(!s.isPrimitive());
         }
 
         @Override
-        public Boolean visitSentinel(JTypeMirror t, JTypeMirror s) {
-            return true;
+        public SubtypeResult visitSentinel(JTypeMirror t, JTypeMirror s) {
+            return SubtypeResult.YES;
         }
 
         @Override
-        public Boolean visitInferenceVar(JInferenceVar t, JTypeMirror s) {
+        public SubtypeResult visitInferenceVar(JInferenceVar t, JTypeMirror s) {
             if (s == t.getTypeSystem().NULL_TYPE || s instanceof JPrimitiveType) {
-                return false;
+                return SubtypeResult.NO;
             }
             // here we add a constraint on the variable
             t.addBound(BoundKind.UPPER, s);
-            return true;
+            return SubtypeResult.YES;
         }
 
         @Override
-        public Boolean visitWildcard(JWildcardType t, JTypeMirror s) {
+        public SubtypeResult visitWildcard(JWildcardType t, JTypeMirror s) {
             // wildcards should be captured and so we should not end up here
-            return false;
+            return SubtypeResult.NO;
         }
 
         @Override
-        public Boolean visitClass(JClassType t, JTypeMirror s) {
+        public SubtypeResult visitClass(JClassType t, JTypeMirror s) {
             if (s == t.getTypeSystem().OBJECT) {
-                return true;
+                return SubtypeResult.YES;
             }
 
             if (s instanceof JIntersectionType) {
                 // If S is an intersection, then T must conform to *all* bounds of S
                 // Symmetrically, if T is an intersection, T <: S requires only that
                 // at least one bound of T is a subtype of S.
-                for (JTypeMirror ui : asList(s)) {
-                    if (!t.isSubtypeOf(ui, unchecked)) {
-                        return false;
-                    }
-                }
-                return true;
+                return SubtypeResult.subtypesAll(t, asList(s));
             }
 
             if (isTypeRange(s)) {
-                return t.isSubtypeOf(lowerBoundRec(s), unchecked);
+                return isSubtype(t, lowerBoundRec(s));
             }
 
             if (!(s instanceof JClassType)) {
                 // note, that this ignores wildcard types,
                 // because they're only compared through
                 // type argument containment.
-                return false;
+                return SubtypeResult.NO;
             }
 
             JClassType cs = (JClassType) s;
@@ -547,70 +596,74 @@ public final class TypeOps {
             // if null then not a subtype
             JClassType superDecl = t.getAsSuper(cs.getSymbol());
 
-            return superDecl != null && (
-                    // unchecked conversion maps a raw type C to any parameterization C<T1, .., Tn>
-                    unchecked && superDecl.isRaw()
-                        // a raw type C is a supertype for all the family of parameterized type generated by C<F1, .., Fn>
-                        || cs.isRaw()
-                        // otherwise, each type arguments must contain the other pairwise
-                        || typeArgsAreContained(superDecl.getTypeArgs(), cs.getTypeArgs())
-                );
+            if (superDecl == null) {
+                return SubtypeResult.NO;
+            } else if (cs.isRaw()) {
+                // a raw type C is a supertype for all the family of parameterized type generated by C<F1, .., Fn>
+                return SubtypeResult.YES;
+            } else if (superDecl.isRaw()) {
+                // unchecked conversion maps a raw type C to any parameterization C<T1, .., Tn>
+                return cs.isRaw() ? SubtypeResult.YES : SubtypeResult.UNCHECKED;
+            } else {
+                return typeArgsAreContained(superDecl.getTypeArgs(), cs.getTypeArgs());
+            }
         }
 
         /**
          * Generalises equality to check if for each i, {@code Ti <= Si}.
          */
-        private boolean typeArgsAreContained(List<JTypeMirror> targs, List<JTypeMirror> sargs) {
+        private SubtypeResult typeArgsAreContained(List<JTypeMirror> targs, List<JTypeMirror> sargs) {
             if (targs.isEmpty() && !sargs.isEmpty()) {
                 // T is raw, it's convertible to S if T = C and S = D<?, .., ?>, C <: D
 
                 // This is technically an unchecked conversion, but which
                 // is safe and generates no warning, so could be allowed by default?
-                if (!unchecked) {
-                    return false;
-                }
-                return allArgsAreUnboundedWildcards(sargs);
+                return allArgsAreUnboundedWildcards(sargs) ? SubtypeResult.YES
+                                                           : SubtypeResult.UNCHECKED;
             }
 
+            SubtypeResult result = SubtypeResult.YES;
             for (int i = 0; i < targs.size(); i++) {
-                if (!typeArgContains(sargs.get(i), targs.get(i))) {
-                    return false;
+                SubtypeResult sub = typeArgContains(sargs.get(i), targs.get(i));
+                if (sub == SubtypeResult.NO) {
+                    return SubtypeResult.NO;
                 }
+                result = result.and(sub);
             }
 
-            return true;
+            return result;
         }
 
         @Override
-        public Boolean visitIntersection(JIntersectionType t, JTypeMirror s) {
-            return t.getComponents().stream().anyMatch(it -> it.isSubtypeOf(s));
+        public SubtypeResult visitIntersection(JIntersectionType t, JTypeMirror s) {
+            return SubtypeResult.superTypesAny(t, t.getComponents());
         }
 
         @Override
-        public Boolean visitArray(JArrayType t, JTypeMirror s) {
+        public SubtypeResult visitArray(JArrayType t, JTypeMirror s) {
             TypeSystem ts = t.getTypeSystem();
             if (s == ts.OBJECT || s.equals(ts.CLONEABLE) || s.equals(ts.SERIALIZABLE)) {
-                return true;
+                return SubtypeResult.YES;
             }
 
             if (!(s instanceof JArrayType)) {
                 // not comparable to any other type
-                return false;
+                return SubtypeResult.NO;
             }
 
             JArrayType cs = (JArrayType) s;
 
             if (t.getComponentType().isPrimitive() || cs.getComponentType().isPrimitive()) {
                 // arrays of primitive types have no sub-/ supertype
-                return cs.getComponentType() == t.getComponentType();
+                return SubtypeResult.definitely(cs.getComponentType() == t.getComponentType());
             } else {
-                return t.getComponentType().isSubtypeOf(cs.getComponentType(), unchecked);
+                return isSubtype(t.getComponentType(), cs.getComponentType());
             }
         }
 
         @Override
-        public Boolean visitPrimitive(JPrimitiveType t, JTypeMirror s) {
-            return t.isSubtypeOf(s, false); // JPrimitiveType already overrides this
+        public SubtypeResult visitPrimitive(JPrimitiveType t, JTypeMirror s) {
+            return SubtypeResult.definitely(t.isSubtypeOf(s, false)); // JPrimitiveType already overrides this
         }
     }
 

@@ -49,7 +49,7 @@ public interface JTypeMirror extends JTypeVisitable {
      *                  via unchecked conversion.
      */
     default boolean isSubtypeOf(JTypeMirror other, boolean unchecked) {
-        return other != null && TypeOps.isSubtype(this, other, unchecked);
+        return other != null && TypeOps.isSubtype(this, other).toBoolean(unchecked);
     }
 
 
