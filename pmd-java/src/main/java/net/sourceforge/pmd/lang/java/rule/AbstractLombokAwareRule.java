@@ -45,7 +45,6 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
         LOMBOK_ANNOTATIONS.add("lombok.AllArgsConstructor");
         LOMBOK_ANNOTATIONS.add("lombok.NoArgsConstructor");
         LOMBOK_ANNOTATIONS.add("lombok.Builder");
-        LOMBOK_ANNOTATIONS.add("lombok.EqualsAndHashCode");
     }
 
     @Override
