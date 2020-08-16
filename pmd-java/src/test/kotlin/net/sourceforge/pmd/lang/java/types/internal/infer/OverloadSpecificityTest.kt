@@ -16,10 +16,8 @@ import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
 import kotlin.test.assertFalse
 
-private val OverloadsQname = "net.sourceforge.pmd.lang.java.types.testdata.Overloads"
-
 private val TypeGen.t_Overloads : JClassType
-    get() = ts.declaration(ts.getClassSymbol(OverloadsQname)!!) as JClassType
+    get() = ts.declaration(ts.getClassSymbol("net.sourceforge.pmd.lang.java.types.testdata.Overloads")!!) as JClassType
 
 class OverloadSpecificityTest : ProcessorTestSpec({
 

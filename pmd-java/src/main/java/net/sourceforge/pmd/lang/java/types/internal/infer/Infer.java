@@ -147,6 +147,32 @@ public final class Infer {
         }
     }
 
+
+    /**
+     * Determines the most specific applicable method for the given call site.
+     *
+     * <p>The returned method type may be {@link TypeSystem#UNRESOLVED_METHOD},
+     * in which case no method is applicable (compile-time error).
+     *
+     * <p>The returned method type may contain un-instantiated inference
+     * variables, which depend on the target type. In that case those
+     * variables and their bounds will have been duplicated into the
+     * inference context of the [site].
+     *
+     * <p>The given call site should mention information like the expected
+     * return type, to help inference. This should be non-null if we're
+     * in an invocation or assignment context, otherwise can be left blank.
+     */
+    public @NonNull MethodCtDecl determineInvocationType(MethodCallSite site) {
+        MethodCtDecl ctdecl = getCompileTimeDecl(site);
+        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+            return ctdecl;
+        }
+
+        return finishInstantiation(site, ctdecl);
+    }
+
+
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
         if (site.getExpr().getMethodType() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
@@ -154,7 +180,6 @@ public final class Infer {
         }
         return site.getExpr().getMethodType();
     }
-
 
     /**
      * Determines the most specific applicable method for the given call site.
@@ -219,37 +244,6 @@ public final class Infer {
         return NO_CTDECL;
     }
 
-    private @Nullable JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
-        LOG.startInference(m, site, phase);
-        @Nullable JMethodSig candidate = instantiateMethodOrCtor(site, phase, m);
-        LOG.endInference(candidate);
-        return candidate;
-    }
-
-    /**
-     * Determines the most specific applicable method for the given call site.
-     *
-     * <p>The returned method type may be {@link TypeSystem#UNRESOLVED_METHOD},
-     * in which case no method is applicable (compile-time error).
-     *
-     * <p>The returned method type may contain un-instantiated inference
-     * variables, which depend on the target type. In that case those
-     * variables and their bounds will have been duplicated into the
-     * inference context of the [site].
-     *
-     * <p>The given call site should mention information like the expected
-     * return type, to help inference. This should be non-null if we're
-     * in an invocation or assignment context, otherwise can be left blank.
-     */
-    public @NonNull MethodCtDecl determineInvocationType(MethodCallSite site) {
-        MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
-            return ctdecl;
-        }
-
-        return finishInstantiation(site, ctdecl);
-    }
-
     private MethodCtDecl finishInstantiation(MethodCallSite site, MethodCtDecl ctdecl) {
         JMethodSig m = ctdecl.getMethodType();
         InvocationMirror expr = site.getExpr();
@@ -302,6 +296,15 @@ public final class Infer {
         return true;
     }
 
+
+    private @Nullable JMethodSig logInference(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
+        LOG.startInference(m, site, phase);
+        @Nullable JMethodSig candidate = instantiateMethodOrCtor(site, phase, m);
+        LOG.endInference(candidate);
+        return candidate;
+    }
+
+
     private JMethodSig instantiateMethodOrCtor(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
         return site.getExpr() instanceof CtorInvocationMirror ? instantiateConstructor(m, site, phase)
                                                               : instantiateMethod(m, site, phase);
@@ -326,20 +329,8 @@ public final class Infer {
             ResolutionFailure failure = e.getFailure();
             failure.addContext(m, site, phase);
             LOG.logResolutionFail(failure);
-            // preserve method if we were in invocation
             return null;
-            // return phase.isInvocation() ? deleteTypeParams(m) : null;
         }
-    }
-
-    // If the invocation fails, replace type parameters with a placeholder,
-    // to not hide a bad failure, while preserving the method if possible
-    private JMethodSig deleteTypeParams(JMethodSig m) {
-        if (!m.isGeneric()) {
-            return m;
-        }
-        List<JTypeVar> tparams = m.getTypeParameters();
-        return m.subst(Substitution.mapping(tparams, Collections.nCopies(tparams.size(), ts.ERROR_TYPE)));
     }
 
     private JMethodSig instantiateConstructor(JMethodSig cons,
@@ -529,6 +520,7 @@ public final class Infer {
      * <p>This binds the ivars of this context to those of the outer context.
      */
     private JTypeMirror addReturnConstraints(InferenceContext infCtx, JMethodSig m, MethodCallSite site) {
+        // TODO if unchecked conversion was necessary, the return type must be erased
 
         /*
             Remember: calling stuff like isConvertible or isSubtype
@@ -572,7 +564,7 @@ public final class Infer {
             throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), mapped, actualRes);
         }
 
-        return resultType; // return to preserve the capture
+        return resultType;
     }
 
 

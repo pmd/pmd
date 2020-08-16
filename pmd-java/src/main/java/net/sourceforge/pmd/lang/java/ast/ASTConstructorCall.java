@@ -52,7 +52,7 @@ public final class ASTConstructorCall extends AbstractJavaExpr
      * the new instance of Outer.
      */
     public boolean isQualifiedInstanceCreation() {
-        return getChild(0) instanceof ASTPrimaryExpression;
+        return getChild(0) instanceof ASTExpression;
     }
 
     /**

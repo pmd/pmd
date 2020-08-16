@@ -685,7 +685,7 @@ class Scratch {
     }
 
 
-    parserTest("!Test inexact method ref conflict between static and non-static") {
+    parserTest("Test inexact method ref conflict between static and non-static") {
 
         val acu = parser.parse("""
             import java.util.stream.*;
