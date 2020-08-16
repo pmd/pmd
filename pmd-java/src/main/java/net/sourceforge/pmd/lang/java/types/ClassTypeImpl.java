@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
@@ -284,6 +285,15 @@ class ClassTypeImpl implements JClassType {
                                                       .map(m -> new ClassMethodSigImpl(sup, m))
                                    );
     }
+
+    @Override
+    public @Nullable JMethodSig getDeclaredMethod(JExecutableSymbol sym) {
+        if (sym.getEnclosingClass().equals(getSymbol())) {
+            return new ClassMethodSigImpl(this, sym);
+        }
+        return null;
+    }
+
 
     public int getModifiers() {
         return symbol.getModifiers();

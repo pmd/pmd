@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -1046,44 +1047,40 @@ public final class TypeOps {
     public static boolean overrides(JMethodSig m1, JMethodSig m2, JTypeMirror origin) {
 
         if (m1.isConstructor() || m2.isConstructor()) {
-            return false;
+            return m1.equals(m2); // "by convention a method overrides itself"
         }
 
         JTypeMirror m1Owner = m1.getDeclaringType();
         JClassType m2Owner = (JClassType) m2.getDeclaringType();
 
-        if (isOverridableIn(m2, m2Owner.getSymbol(), (JClassSymbol) m1Owner.getSymbol())
-            && m1Owner.getAsSuper(m2Owner.getSymbol()) != null) {
-
-            if (isSubSigInOrigin(m1, m2, m1Owner)) {
-                return true;
+        if (isOverridableIn(m2, m2Owner.getSymbol(), (JClassSymbol) m1Owner.getSymbol())) {
+            JClassType m2AsM1Supertype = (JClassType) m1Owner.getAsSuper(m2Owner.getSymbol());
+            if (m2AsM1Supertype != null) {
+                JMethodSig m2Prime = m2AsM1Supertype.getDeclaredMethod(m2.getSymbol());
+                assert m2Prime != null;
+                if (isSubSignature(m1, m2Prime)) {
+                    return true;
+                }
             }
         }
 
-        // check for an inherited implementation
+        // todo that is very weird
         if (m1.isAbstract()
             || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
             || !isOverridableIn(m2, m2Owner.getSymbol(), (JClassSymbol) origin.getSymbol())
-            || !origin.isSubtypeOf(m2Owner)) {
+            || !(m1Owner instanceof JClassType)) {
             return false;
         }
 
-        return isSubSigInOrigin(m1, m2, origin);
-    }
-
-    private static boolean isSubSigInOrigin(JMethodSig m1, JMethodSig m2, JTypeMirror origin) {
-        JMethodSig s1;
-        JMethodSig s2;
-
-        if (origin.isRaw()) {
-            s1 = m1.getErasure();
-            s2 = m2.getErasure();
-        } else {
-            Substitution subst = origin instanceof JClassType ? ((JClassType) origin).getTypeParamSubst() : EMPTY;
-            s1 = m1.subst(subst);
-            s2 = m2.subst(subst);
+        JTypeMirror m1AsSuper = origin.getAsSuper(((JClassType) m1Owner).getSymbol());
+        JTypeMirror m2AsSuper = origin.getAsSuper(m2Owner.getSymbol());
+        if (m1AsSuper instanceof JClassType && m2AsSuper instanceof JClassType) {
+            m1 = ((JClassType) m1AsSuper).getDeclaredMethod(m1.getSymbol());
+            m2 = ((JClassType) m2AsSuper).getDeclaredMethod(m2.getSymbol());
+            assert m1 != null && m2 != null;
+            return isSubSignature(m1, m2);
         }
-        return isSubSignature(s1, s2);
+        return false;
     }
 
     /**
@@ -1192,8 +1189,7 @@ public final class TypeOps {
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-9.html#jls-9.9
      */
-    @Nullable
-    public static JMethodSig findFunctionalInterfaceMethod(JClassType candidateSam) {
+    public static @Nullable JMethodSig findFunctionalInterfaceMethod(JClassType candidateSam) {
         if (candidateSam == null) {
             return null;
         }
@@ -1214,27 +1210,31 @@ public final class TypeOps {
         //  interface is the function type of the notional functional interface.
     }
 
-    @Nullable
-    private static JMethodSig findFunctionTypeImpl(@Nullable JClassType candidateSam) {
+    private static @Nullable JMethodSig findFunctionTypeImpl(@Nullable JClassType candidateSam) {
 
         if (candidateSam == null || !candidateSam.isInterface() || candidateSam.getSymbol().isAnnotation()) {
             return null;
         }
 
-        List<JMethodSig> candidates =
-            candidateSam.streamMethods(it -> Modifier.isAbstract(it.getModifiers()))
-                        .filter(TypeOps::isNotDeclaredInClassObject)
-                        .collect(Collectors.toList());
+        Map<String, List<JMethodSig>> relevantMethods = candidateSam.streamMethods(it -> !Modifier.isStatic(it.getModifiers()))
+                                                                    .filter(TypeOps::isNotDeclaredInClassObject)
+                                                                    .collect(Collectors.groupingBy(JMethodSig::getName, OverloadComparator.collectMostSpecific(candidateSam)));
+
+
+        List<JMethodSig> candidates = new ArrayList<>();
+        for (Entry<String, List<JMethodSig>> entry : relevantMethods.entrySet()) {
+            for (JMethodSig sig : entry.getValue()) {
+                if (sig.isAbstract()) {
+                    candidates.add(sig);
+                }
+            }
+        }
 
         if (candidates.isEmpty()) {
             return null;
         } else if (candidates.size() == 1) {
             return candidates.get(0);
         }
-
-        // we can technically order them approximately by depth in the
-        // hierarchy to select the one that has the best chance to override
-        // all other abstracts.
 
         JMethodSig currentBest = null;
 

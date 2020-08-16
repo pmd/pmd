@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 
 /**
  * Represents class and interface types, including functional interface
@@ -216,10 +217,18 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    @Nullable
-    default JClassType getAsSuper(JClassSymbol symbol) {
+    default @Nullable JClassType getAsSuper(JClassSymbol symbol) {
         return (JClassType) JTypeMirror.super.getAsSuper(symbol);
     }
+
+
+    /**
+     * Returns the typed signature for the symbol, if it is declared
+     * directly in this type, and not a supertype.
+     *
+     * @param sym Method or constructor symbol
+     */
+    @Nullable JMethodSig getDeclaredMethod(JExecutableSymbol sym);
 
 
     @Override

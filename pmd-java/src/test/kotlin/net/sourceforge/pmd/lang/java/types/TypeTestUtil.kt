@@ -7,6 +7,7 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.fail
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -54,12 +55,15 @@ object PrimitiveGen : Exhaustive<JPrimitiveType>() {
         get() = testTypeSystem.allPrimitives.toList()
 }
 
-fun JMethodSig.shouldMatchMethod(
+fun JMethodSig?.shouldMatchMethod(
         named: String,
         declaredIn: JTypeMirror,
         withFormals: List<JTypeMirror>? = null,
         returning: JTypeMirror? = null
 ): JMethodSig {
+    if (this == null)
+        fail("Expected non-null result")
+
     assertSoftly {
         this::getName shouldBe named
         this::getDeclaringType shouldBe declaredIn

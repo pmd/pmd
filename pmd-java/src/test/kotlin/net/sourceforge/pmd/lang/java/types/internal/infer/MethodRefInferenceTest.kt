@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.function.*
 import java.util.stream.Collector
 
@@ -545,7 +544,7 @@ class Scratch {
                                 unspecifiedChild()
                                 with(it.typeDsl) {
                                     it.typeMirror shouldBe gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
-                                    it.functionalMethod shouldBe it.typeMirror.streamMethods {  it.simpleName == "apply" }.findFirst().get()
+                                    it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "apply" }.findFirst().get()
                                 }
                             }
                         }
