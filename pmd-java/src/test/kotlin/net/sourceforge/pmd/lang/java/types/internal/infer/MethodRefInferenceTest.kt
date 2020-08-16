@@ -813,4 +813,58 @@ class Scratch {
         }
     }
 
+
+    parserTest("Method ref on static class") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+            import java.util.Arrays;
+            import java.util.Objects;
+            import java.util.stream.Stream;
+
+            class Scratch {
+
+                static {
+                    Object value = null;
+                    Stream<String> comps = Arrays.stream((Object[])value).map(Objects::toString);
+                }
+            }
+
+        """.trimIndent())
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("map") {
+                it.typeMirror shouldBe with(it.typeDsl) {
+                    gen.t_Stream[gen.t_String]
+                }
+
+                it::getQualifier shouldBe methodCall("stream") {
+                    it.typeMirror shouldBe with(it.typeDsl) {
+                        gen.t_Stream[ts.OBJECT]
+                    }
+
+                    unspecifiedChildren(2)
+                }
+
+                argList {
+
+                    methodRef("toString") {
+                        with (it.typeDsl) {
+                            it.referencedMethod.shouldMatchMethod(
+                                    named = "toString",
+                                    declaredIn = java.util.Objects::class.raw,
+                                    withFormals = listOf(ts.OBJECT),
+                                    returning = ts.STRING
+                            )
+                        }
+                        unspecifiedChild()
+                    }
+                }
+            }
+        }
+    }
+
 })

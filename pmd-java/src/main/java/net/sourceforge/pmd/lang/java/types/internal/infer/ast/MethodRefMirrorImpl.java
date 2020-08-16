@@ -10,7 +10,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -38,10 +37,8 @@ class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements 
 
     @Override
     public JTypeMirror getLhsIfType() {
-        // TODO simplify when we have disambiguation
         ASTExpression lhsType = myNode.getQualifier();
         return lhsType instanceof ASTTypeExpression
-                   || lhsType instanceof ASTAmbiguousName
                ? lhsType.getTypeMirror()
                : null;
     }

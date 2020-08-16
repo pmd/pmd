@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -309,12 +310,8 @@ final class ExprOps {
         // the arguments are treated as if they were of the type
         // of the formal parameters of the candidate
         List<JTypeMirror> formals = targetType.getFormalParameters();
-        final boolean mayHaveInstanceMethods;
         if (asInstanceMethod && !formals.isEmpty()) {
-            mayHaveInstanceMethods = !formals.get(0).isPrimitive();
             formals = formals.subList(1, formals.size()); // skip first param (receiver)
-        } else {
-            mayHaveInstanceMethods = true;
         }
 
         List<ExprMirror> arguments = CollectionUtil.map(
@@ -349,11 +346,7 @@ final class ExprOps {
 
             @Override
             public Iterable<JMethodSig> getAccessibleCandidates() {
-                if (mayHaveInstanceMethods) {
-                    return ExprOps.getAccessibleCandidates(mref, asInstanceMethod, targetType);
-                } else {
-                    return Collections.emptyList();
-                }
+                return ExprOps.getAccessibleCandidates(mref, asInstanceMethod, targetType);
             }
 
             @Override
@@ -418,34 +411,38 @@ final class ExprOps {
         if (exactMethod != null) {
             return Collections.singletonList(exactMethod);
         } else {
-            JTypeMirror typeToSearch = mref.getTypeToSearch();
-            if (typeToSearch.isArray() && mref.isConstructorRef()) {
-                // ArrayType :: new
-                return typeToSearch.getConstructors();
-            } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
-                // ClassType :: [TypeArguments] new
-                // TODO treatment of raw constructors is whacky
-                return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
-            }
-
-            if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType && targetType.getArity() > 0) {
-                //  In the second search, if P1, ..., Pn is not empty
-                //  and P1 is a subtype of ReferenceType, then the
-                //  method reference expression is treated as if it were
-                //  a method invocation expression with argument expressions
-                //  of types P2, ..., Pn. If ReferenceType is a raw type,
-                //  and there exists a parameterization of this type, G<...>,
-                //  that is a supertype of P1, the type to search is the result
-                //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
-                //  the type to search is the same as the type of the first search.
-
-                JClassType type = (JClassType) typeToSearch;
-                JTypeMirror p1 = targetType.getFormalParameters().get(0);
-                JTypeMirror asSuper = p1.getAsSuper(type.getSymbol());
-                if (asSuper != null && asSuper.isParameterizedType()) {
-                    typeToSearch = capture(asSuper);
+            final JTypeMirror actualTypeToSearch;
+            {
+                JTypeMirror typeToSearch = mref.getTypeToSearch();
+                if (typeToSearch.isArray() && mref.isConstructorRef()) {
+                    // ArrayType :: new
+                    return typeToSearch.getConstructors();
+                } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
+                    // ClassType :: [TypeArguments] new
+                    // TODO treatment of raw constructors is whacky
+                    return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
                 }
 
+                if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
+                    && targetType.getArity() > 0) {
+                    //  In the second search, if P1, ..., Pn is not empty
+                    //  and P1 is a subtype of ReferenceType, then the
+                    //  method reference expression is treated as if it were
+                    //  a method invocation expression with argument expressions
+                    //  of types P2, ..., Pn. If ReferenceType is a raw type,
+                    //  and there exists a parameterization of this type, G<...>,
+                    //  that is a supertype of P1, the type to search is the result
+                    //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
+                    //  the type to search is the same as the type of the first search.
+
+                    JClassType type = (JClassType) typeToSearch;
+                    JTypeMirror p1 = targetType.getFormalParameters().get(0);
+                    JTypeMirror asSuper = p1.getAsSuper(type.getSymbol());
+                    if (asSuper != null && asSuper.isParameterizedType()) {
+                        typeToSearch = capture(asSuper);
+                    }
+                }
+                actualTypeToSearch = typeToSearch;
             }
 
             // Primary :: [TypeArguments] Identifier
@@ -453,9 +450,28 @@ final class ExprOps {
             // super :: [TypeArguments] Identifier
             // TypeName.super :: [TypeArguments] Identifier
             // ReferenceType :: [TypeArguments] Identifier
-            return typeToSearch.streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol()))
-                               .collect(Collectors.toList());
+
+            boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
+
+            return actualTypeToSearch.streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol()))
+                                     .filter(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods)
+                                     .collect(Collectors.toList());
         }
+    }
+
+    private static boolean canUseInstanceMethods(JTypeMirror typeToSearch, JMethodSig sig, MethodRefMirror mref) {
+        // For example, if you write
+        // stringStream.map(Objects::toString),
+
+        // The type to search is Objects. But Objects inherits Object.toString(),
+        // which could not be called on a string (String.toString() != Objects.toString()).
+
+        if (mref.getLhsIfType() != null && !sig.getFormalParameters().isEmpty()) {
+            // ReferenceType :: [TypeArguments] Identifier
+            JTypeMirror firstFormal = sig.getFormalParameters().get(0);
+            return firstFormal.isSubtypeOf(typeToSearch);
+        }
+        return true;
     }
 
 

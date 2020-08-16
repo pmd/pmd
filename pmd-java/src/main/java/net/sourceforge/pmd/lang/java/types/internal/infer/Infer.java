@@ -394,7 +394,7 @@ public final class Infer {
             List<JTypeVar> consParams = cons.getTypeParameters();
             if (consParams.size() > cons.getSymbol().getTypeParameterCount()) {
                 // it's already been adapted
-                assert consParams.size() == newTypeFormals.size() + consParams.size();
+                assert consParams.equals(CollectionUtil.concatView(cons.getSymbol().getTypeParameters(), newTypeFormals));
                 return adaptedSig;
             }
             List<JTypeVar> tparams = CollectionUtil.concatView(consParams, newTypeFormals);

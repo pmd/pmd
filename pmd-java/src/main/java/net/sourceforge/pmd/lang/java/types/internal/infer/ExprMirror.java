@@ -83,6 +83,12 @@ public interface ExprMirror {
 
         /**
          * Returns the type of the left hand-side, if it is not an expression.
+         * Note that the following qualifier super forms are considered "expressions",
+         * that have a context-dependent type (depends on the type of the {@code this} expr):
+         * <pre>
+         * super :: [TypeArguments] Identifier
+         * TypeName.super :: [TypeArguments] Identifier
+         * </pre>
          */
         @Nullable
         JTypeMirror getLhsIfType();
