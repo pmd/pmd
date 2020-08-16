@@ -226,21 +226,6 @@ public final class Infer {
 
         LOG.noCompileTimeDeclaration(site);
 
-        // todo remove all this
-        // no applicable method, maybe a check on a parameter failed
-        if (potentiallyApplicable.size() == 1) {
-            // single applicable method? assume it's the ctdecl (there can be no other one)
-
-            // this is custom behavior for PMD to reflect more types than we know for sure,
-            // a compiler would probably refuse to go further (an IDE would though)
-
-            JMethodSig fallback = potentiallyApplicable.get(0);
-
-            LOG.fallBackCompileTimeDecl(fallback, site); // log it
-
-            return new MethodCtDecl(fallback, fallback.isVarargs() ? VARARGS : LOOSE);
-        }
-
         return NO_CTDECL;
     }
 
