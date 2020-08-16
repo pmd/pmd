@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
@@ -37,22 +35,22 @@ public class ImportWrapper {
     }
 
     public ImportWrapper(String fullname, String name, ASTImportDeclaration node) {
-        this(fullname, name, node, false, null);
+        this(fullname, name, node, false);
     }
 
-    public ImportWrapper(String fullname, String name, ASTImportDeclaration node, boolean isStaticDemand, RuleContext ctx) {
+    public ImportWrapper(String fullname, String name, ASTImportDeclaration node, boolean isStaticDemand) {
         this.fullname = fullname;
         this.name = name;
         this.node = node;
         this.isStaticDemand = isStaticDemand;
-        this.allStaticDemands = collectStaticFieldsAndMethods(node, ctx);
+        this.allStaticDemands = collectStaticFieldsAndMethods(node);
 
     }
 
     /**
      * @param node
      */
-    private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node, RuleContext ctx) {
+    private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node) {
         if (!this.isStaticDemand || node == null || node.getType() == null) {
             return Collections.emptySet();
         }
@@ -74,11 +72,8 @@ public class ImportWrapper {
             }
             return names;
         } catch (LinkageError e) {
-            if (ctx != null) {
-                ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
-            } else {
-                LOG.log(Level.WARNING, "Error while processing imports", e);
-            }
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing imports", e);
             return Collections.emptySet();
         }
     }

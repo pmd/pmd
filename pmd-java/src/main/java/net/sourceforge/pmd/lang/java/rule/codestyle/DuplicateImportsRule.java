@@ -8,14 +8,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DuplicateImportsRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(DuplicateImportsRule.class.getName());
 
     private Set<ImportWrapper> singleTypeImports;
     private Set<ImportWrapper> importOnDemandImports;
@@ -76,8 +78,9 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                                     return true;
                                 }
                             }
-                        } catch (LinkageError ignored) {
-                            // TODO : This is an incomplete classpath, report the missing class
+                        } catch (LinkageError e) {
+                            // This is an incomplete classpath, report the missing class
+                            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                         }
                     }
                 }
@@ -92,7 +95,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(),
-                node, node.isStatic() && node.isImportOnDemand(), (RuleContext) data);
+                node, node.isStatic() && node.isImportOnDemand());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be
         // polymorphic...

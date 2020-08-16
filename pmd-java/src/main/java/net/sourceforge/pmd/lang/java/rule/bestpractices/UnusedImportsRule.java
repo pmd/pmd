@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -118,7 +117,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
     public Object visit(ASTImportDeclaration node, Object data) {
         if (node.isImportOnDemand()) {
             ASTName importedType = (ASTName) node.getChild(0);
-            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.isStatic(), (RuleContext) data));
+            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.isStatic()));
         } else {
             if (!node.isImportOnDemand()) {
                 ASTName importedType = (ASTName) node.getChild(0);
