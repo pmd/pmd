@@ -167,6 +167,38 @@ public final class Infer {
             return ctdecl;
         }
 
+        site.clearFailures();
+
+        MethodCtDecl invocType = finishInstantiation(site, ctdecl);
+        if (invocType == FAILED_INVOCATION) {
+            JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
+            LOG.fallbackInvocation(fallback, site);
+            return new MethodCtDecl(fallback, ctdecl.getResolvePhase().asInvoc(), true);
+        }
+        return invocType;
+    }
+
+    // If the invocation fails, replace type parameters with a placeholder,
+    // to not hide a bad failure, while preserving the method if possible
+    private JMethodSig deleteTypeParams(JMethodSig m) {
+        if (!m.isGeneric()) {
+            return m;
+        }
+        List<JTypeVar> tparams = m.getTypeParameters();
+        List<JTypeMirror> nErrors = Collections.nCopies(tparams.size(), ts.ERROR_TYPE);
+        return m.subst(Substitution.mapping(tparams, nErrors));
+    }
+
+    /**
+     * Like {@link #determineInvocationType(MethodCallSite)}, but returns
+     * {@link #FAILED_INVOCATION} if the invocation fails, not a fallback method.
+     */
+    @NonNull MethodCtDecl determineInvocationTypeOrFail(MethodCallSite site) {
+        MethodCtDecl ctdecl = getCompileTimeDecl(site);
+        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+            return ctdecl;
+        }
+
         return finishInstantiation(site, ctdecl);
     }
 

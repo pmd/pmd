@@ -100,7 +100,7 @@ final class ExprCheckHelper {
             // in that case we need to infer that as well
             InvocationMirror invoc = (InvocationMirror) expr;
             MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
-            MethodCtDecl argCtDecl = infer.determineInvocationType(nestedSite);
+            MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
             JMethodSig mostSpecific = argCtDecl.getMethodType();
             if (argCtDecl == infer.FAILED_INVOCATION) {
                 throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
@@ -146,8 +146,7 @@ final class ExprCheckHelper {
 
         JMethodSig fun = findFunctionalInterfaceMethod(nonWildcard);
         if (fun == null) {
-            // not a funct interface
-            return false;
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref.getLocation());
         }
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);

@@ -66,6 +66,10 @@ public class MethodCallSite extends PolySite {
         return Collections.unmodifiableMap(errors);
     }
 
+    void clearFailures() {
+        errors.clear();
+    }
+
     boolean areAllArgsRelevantToApplicability() {
         return areAllArgsRelevant;
     }

@@ -41,7 +41,7 @@ public interface TypeInferenceLogger {
 
     default void endInference(@Nullable JMethodSig result) { }
 
-    default void fallBackCompileTimeDecl(JMethodSig ctdecl, MethodCallSite site) { }
+    default void fallbackInvocation(JMethodSig ctdecl, MethodCallSite site) { }
 
     default void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) { }
 
@@ -200,20 +200,26 @@ public interface TypeInferenceLogger {
             println("");
             printExpr(site.getExpr());
             startSection("[WARNING] CTDecl resolution failed. Summary of failures:");
+            summarizeFailures(site);
+            endSection("");
+        }
+
+        private void summarizeFailures(MethodCallSite site) {
             site.getResolutionFailures()
                 .forEach((phase, failures) -> {
                     startSection(phase.toString() + ":");
                     failures.forEach(it -> println(it.getReason() + "\t\t" + ppMethod(it.getFailedMethod())));
                     endSection("");
                 });
-            endSection("");
         }
 
         @Override
-        public void fallBackCompileTimeDecl(JMethodSig ctdecl, MethodCallSite site) {
+        public void fallbackInvocation(JMethodSig ctdecl, MethodCallSite site) {
             if (!site.isLogEnabled()) {
                 return;
             }
+            println("[WARNING] Instantiation failed");
+            summarizeFailures(site);
             println("[WARNING] Falling back on " + color(ctdecl, ANSI_BLUE)
                         + " (this may cause future mistakes)");
         }

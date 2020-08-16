@@ -257,7 +257,7 @@ final class ExprOps {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
         wrapper.setMethodType(ctdecl);
         MethodCallSite site = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), outerCtx);
-        return infer.determineInvocationType(site).getMethodType();
+        return infer.determineInvocationTypeOrFail(site).getMethodType();
     }
 
     // for inexact method refs
@@ -269,7 +269,7 @@ final class ExprOps {
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
-        MethodCtDecl ctd1 = infer.determineInvocationType(site1);
+        MethodCtDecl ctd1 = infer.determineInvocationTypeOrFail(site1);
         JMethodSig m1 = ctd1.getMethodType();
 
         if (acceptLowerArity) {
@@ -278,7 +278,7 @@ final class ExprOps {
 
             MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
             site2.setLogging(false);
-            MethodCtDecl ctd2 = infer.determineInvocationType(site2);
+            MethodCtDecl ctd2 = infer.determineInvocationTypeOrFail(site2);
             JMethodSig m2 = ctd2.getMethodType();
 
             //  If the first search produces a most specific method that is static,

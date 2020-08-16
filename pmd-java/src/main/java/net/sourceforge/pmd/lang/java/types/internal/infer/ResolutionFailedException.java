@@ -126,6 +126,12 @@ final class ResolutionFailedException extends RuntimeException {
                                                                  "No compile time declaration found conforming to: " + fun));
     }
 
+    static ResolutionFailedException notAFunctionalInterface(TypeInferenceLogger logger, JTypeMirror failedCandidate, JavaNode loc) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(loc,
+                                                                 "Not a functional interface: " + failedCandidate));
+    }
+
 
     private static @NonNull ResolutionFailedException getShared(ResolutionFailure failure) {
         ResolutionFailedException instance = SHARE_EXCEPTION ? getSharedInstance()
