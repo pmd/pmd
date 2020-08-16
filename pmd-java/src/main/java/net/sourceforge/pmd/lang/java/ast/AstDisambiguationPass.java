@@ -501,7 +501,7 @@ final class AstDisambiguationPass {
         final String packageName;
         final @Nullable JClassSymbol enclosingClass;
 
-        public ReferenceCtx(JavaAstProcessor processor, String packageName, @Nullable JClassSymbol enclosingClass) {
+        ReferenceCtx(JavaAstProcessor processor, String packageName, @Nullable JClassSymbol enclosingClass) {
             this.processor = processor;
             this.packageName = packageName;
             this.enclosingClass = enclosingClass;

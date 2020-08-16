@@ -48,7 +48,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     private final JavaAstProcessor processor;
 
 
-    public LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
+    LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
         this.polyResolution = new PolyResolution(new Infer(ts, processor.getJdkVersion(), logger));
         this.stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
@@ -453,8 +453,9 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
-        if (qualifierT == ts.UNRESOLVED_TYPE)
+        if (qualifierT == ts.UNRESOLVED_TYPE) {
             return ts.UNRESOLVED_TYPE;
+        }
 
         NameResolver<FieldSig> fieldResolver = TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getName());
 

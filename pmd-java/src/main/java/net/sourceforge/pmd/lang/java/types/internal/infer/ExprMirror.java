@@ -58,8 +58,7 @@ public interface ExprMirror {
 
 
         @Override
-        @Nullable
-        default JTypeMirror getStandaloneType() {
+        default @Nullable JTypeMirror getStandaloneType() {
             return null;
         }
 
@@ -292,7 +291,7 @@ public interface ExprMirror {
                 return resolvePhase.requiresVarargs();
             }
 
-            public boolean isFailed(){
+            public boolean isFailed() {
                 return failed;
             }
 

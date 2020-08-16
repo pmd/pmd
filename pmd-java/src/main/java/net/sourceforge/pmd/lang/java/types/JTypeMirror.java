@@ -122,8 +122,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <li>{@link JWildcardType}, {@link TypeSystem#NULL_TYPE the null type}: null, always
      * </ul>
      */
-    @Nullable
-    default JTypeDeclSymbol getSymbol() {
+    default @Nullable JTypeDeclSymbol getSymbol() {
         return null;
     }
 
@@ -154,8 +153,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>Returns null if that can't be found, meaning that the given type
      * is not a supertype of this type.
      */
-    @Nullable
-    default JTypeMirror getAsSuper(JClassSymbol symbol) {
+    default @Nullable JTypeMirror getAsSuper(JClassSymbol symbol) {
         return TypeOps.asSuper(this, symbol);
     }
 

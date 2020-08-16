@@ -423,7 +423,7 @@ public final class TypeOps {
             return result;
         }
 
-        static SubtypeResult superTypesAny(JTypeMirror t, List<? extends JTypeMirror> supers) {
+        static SubtypeResult anySubTypes(List<? extends JTypeMirror> supers, JTypeMirror t) {
             SubtypeResult result = NO;
             for (JTypeMirror ui : supers) {
                 SubtypeResult sub = isSubtype(t, ui);
@@ -636,7 +636,7 @@ public final class TypeOps {
 
         @Override
         public SubtypeResult visitIntersection(JIntersectionType t, JTypeMirror s) {
-            return SubtypeResult.superTypesAny(t, t.getComponents());
+            return SubtypeResult.anySubTypes(t.getComponents(), s);
         }
 
         @Override
@@ -698,9 +698,8 @@ public final class TypeOps {
 
     // relies on the fact the original list is unmodifiable or won't be
     // modified
-    @NonNull
     @SuppressWarnings("unchecked")
-    private static <T> List<T> mapPreservingSelf(List<? extends T> ts, Function<? super T, ? extends @NonNull T> subst) {
+    private static @NonNull <T> List<T> mapPreservingSelf(List<? extends T> ts, Function<? super T, ? extends @NonNull T> subst) {
         // Profiling shows, only 10% of calls to this method need to
         // create a new list. Substitution in general is a hot spot
         // of the framework, so optimizing this out is nice
@@ -979,8 +978,7 @@ public final class TypeOps {
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.4
      */
-    @Nullable
-    private static JMethodSig adaptForTypeParameters(JMethodSig m1, JMethodSig m2) {
+    private static @Nullable JMethodSig adaptForTypeParameters(JMethodSig m1, JMethodSig m2) {
         if (haveSameTypeParams(m1, m2)) {
             return m1.subst(mapping(m1.getTypeParameters(), m2.getTypeParameters()));
         }
@@ -1194,8 +1192,7 @@ public final class TypeOps {
      *
      * @param type A parameterized functional interface type
      */
-    @Nullable
-    public static JClassType nonWildcardParameterization(@NonNull JClassType type) {
+    public static @Nullable JClassType nonWildcardParameterization(@NonNull JClassType type) {
         TypeSystem ts = type.getTypeSystem();
 
         List<JTypeMirror> targs = type.getTypeArgs();
@@ -1326,8 +1323,7 @@ public final class TypeOps {
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
      */
-    @Nullable
-    public static JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
+    public static @Nullable JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
 
         if (!t.isPrimitive() && s.equals(t.getTypeSystem().OBJECT.getSymbol())) {
             // interface types need to have OBJECT somewhere up their hierarchy
@@ -1394,8 +1390,7 @@ public final class TypeOps {
             return firstResult(target, t.getComponents());
         }
 
-        @Nullable
-        public JTypeMirror firstResult(JClassSymbol target, List<? extends JTypeMirror> components) {
+        public @Nullable JTypeMirror firstResult(JClassSymbol target, List<? extends JTypeMirror> components) {
             for (JTypeMirror ci : components) {
                 @Nullable JTypeMirror sup = ci.acceptVisitor(this, target);
                 if (sup != null) {
@@ -1661,7 +1656,7 @@ public final class TypeOps {
 
         @Override
         public NameResolver<FieldSig> visitArray(JArrayType t, FieldSearchParams fieldSearchParams) {
-            if (fieldSearchParams.name.equals("length")) {
+            if ("length".equals(fieldSearchParams.name)) {
                 return CoreResolvers.singleton("length", t.getTypeSystem().sigOf(t, t.getSymbol().getDeclaredField("length")));
             }
             return CoreResolvers.emptyResolver();

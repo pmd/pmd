@@ -258,8 +258,7 @@ public final class TypeSystem {
         return Objects.requireNonNull(sym, "sym");
     }
 
-    @NonNull
-    private JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
+    private @NonNull JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
         return new JPrimitiveType(this, kind, new RealPrimitiveSymbol(this, kind), getBootStrapSymbol(box));
     }
 
@@ -273,8 +272,7 @@ public final class TypeSystem {
      *
      * @param clazz Class
      */
-    @Nullable
-    public JClassSymbol getClassSymbol(@Nullable Class<?> clazz) {
+    public @Nullable JClassSymbol getClassSymbol(@Nullable Class<?> clazz) {
         if (clazz == null) {
             return null;
         } else if (clazz.isPrimitive()) {
@@ -418,8 +416,7 @@ public final class TypeSystem {
     }
 
 
-    @NonNull
-    public JTypeMirror parameterise(JClassSymbol klass, List<? extends JTypeMirror> typeArgs) {
+    public @NonNull JTypeMirror parameterise(JClassSymbol klass, List<? extends JTypeMirror> typeArgs) {
         Objects.requireNonNull(klass, "Null class symbol");
         Objects.requireNonNull(typeArgs, "Null type arguments, use an empty list!");
 

@@ -50,6 +50,7 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
      * scoped, so always resolvable), nor anonymous classes (can only be referenced
      * on their declaration site), type variables, etc.
      */
+    @Override
     default boolean isUnresolved() {
         return false;
     }

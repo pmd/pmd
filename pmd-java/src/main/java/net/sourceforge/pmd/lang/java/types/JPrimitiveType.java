@@ -156,8 +156,7 @@ public final class JPrimitiveType implements JTypeMirror {
          * @return A constant, or null if the string doesn't correspond
          *     to a primitive type
          */
-        @Nullable
-        public static PrimitiveTypeKind fromName(String token) {
+        public static @Nullable PrimitiveTypeKind fromName(String token) {
             switch (token) {
             case "boolean": return BOOLEAN;
             case "char": return CHAR;

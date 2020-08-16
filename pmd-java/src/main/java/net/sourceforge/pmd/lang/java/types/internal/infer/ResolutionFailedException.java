@@ -127,8 +127,7 @@ final class ResolutionFailedException extends RuntimeException {
     }
 
 
-    @NonNull
-    private static ResolutionFailedException getShared(ResolutionFailure failure) {
+    private static @NonNull ResolutionFailedException getShared(ResolutionFailure failure) {
         ResolutionFailedException instance = SHARE_EXCEPTION ? getSharedInstance()
                                                              : new ResolutionFailedException();
         instance.setFailure(failure);

@@ -407,8 +407,7 @@ final class ExprCheckHelper {
         return true;
     }
 
-    @Nullable
-    private JClassType groundTargetType(JClassType type, LambdaExprMirror lambda) {
+    private @Nullable JClassType groundTargetType(JClassType type, LambdaExprMirror lambda) {
 
 
         List<JTypeMirror> targs = type.getTypeArgs();

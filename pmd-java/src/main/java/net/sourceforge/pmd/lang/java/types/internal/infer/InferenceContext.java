@@ -57,8 +57,7 @@ final class InferenceContext {
     final TypeInferenceLogger logger;
 
     private Substitution mapping = Substitution.EMPTY;
-    @Nullable
-    private InferenceContext parent;
+    private @Nullable InferenceContext parent;
     private final int id;
 
     /**

@@ -27,8 +27,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 class ClassTypeImpl implements JClassType {
 
-    @Nullable
-    private final JClassType enclosingType;
+    private final @Nullable JClassType enclosingType;
 
     private final JClassSymbol symbol;
     private final TypeSystem ts;
@@ -171,9 +170,8 @@ class ClassTypeImpl implements JClassType {
         return isGenericTypeDeclaration() ? (List) getFormalTypeParams() : typeArgs;
     }
 
-    @Nullable
     @Override
-    public JClassType getEnclosingType() {
+    public @Nullable JClassType getEnclosingType() {
         return enclosingType;
     }
 
@@ -203,8 +201,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    @Nullable
-    public JClassType getSuperClass() {
+    public @Nullable JClassType getSuperClass() {
         if (superClass == null) {
             if (hasErasedSuperTypes()) {
                 superClass = ts.erasedType(symbol.getSuperclass());
@@ -350,8 +347,7 @@ class ClassTypeImpl implements JClassType {
         }
     }
 
-    @NonNull
-    protected static IllegalArgumentException invalidTypeArgs(JClassSymbol symbol, List<? extends JTypeMirror> typeArgs) {
+    protected static @NonNull IllegalArgumentException invalidTypeArgs(JClassSymbol symbol, List<? extends JTypeMirror> typeArgs) {
         return new IllegalArgumentException("Cannot parameterize " + symbol + " with " + typeArgs
                                                 + ", expecting  " + symbol.getTypeParameterCount()
                                                 + " type arguments");

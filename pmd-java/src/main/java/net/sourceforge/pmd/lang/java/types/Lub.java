@@ -238,8 +238,7 @@ final class Lub {
             }
         }
 
-        @NonNull
-        private JTypeMirror computeLcta(JTypeMirror t, JTypeMirror s) {
+        private @NonNull JTypeMirror computeLcta(JTypeMirror t, JTypeMirror s) {
 
             // lcta(U, V) = U if U = V
             if (t.equals(s)) {

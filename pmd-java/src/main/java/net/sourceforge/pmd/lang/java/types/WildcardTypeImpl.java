@@ -43,9 +43,8 @@ final class WildcardTypeImpl implements JWildcardType {
         return TypeVarImpl.freshCapture(this);
     }
 
-    @NonNull
     @Override
-    public JTypeMirror getBound() {
+    public @NonNull JTypeMirror getBound() {
         return bound;
     }
 

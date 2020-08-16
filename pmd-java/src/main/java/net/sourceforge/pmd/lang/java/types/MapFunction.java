@@ -32,9 +32,8 @@ class MapFunction<T, R> implements Function<T, R> {
         return map.isEmpty();
     }
 
-    @Nullable
     @Override
-    public R apply(@NonNull T var) {
+    public @Nullable R apply(@NonNull T var) {
         return map.get(var);
     }
 

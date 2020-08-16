@@ -37,8 +37,7 @@ public interface JIntersectionType extends JTypeMirror {
     List<JTypeMirror> getComponents();
 
 
-    @Nullable
-    default JTypeMirror getSuperClass() {
+    default @Nullable JTypeMirror getSuperClass() {
         for (JTypeMirror ci : getComponents()) {
             // there can't be more than one normally
             if (!ci.isInterface()) {
@@ -49,8 +48,7 @@ public interface JIntersectionType extends JTypeMirror {
     }
 
 
-    @Nullable
-    default Set<JTypeMirror> getInterfaces() {
+    default @Nullable Set<JTypeMirror> getInterfaces() {
         Set<JTypeMirror> interfaces = new LinkedHashSet<>(getComponents());
         interfaces.remove(getSuperClass());
         return interfaces;

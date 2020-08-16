@@ -166,7 +166,7 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
             for (JTypeMirror prev : prevBounds) {
                 // add substituted bound
                 JTypeMirror newBound = prev.subst(substitution);
-                if (newBound == prev) {
+                if (newBound == prev) { // NOPMD CompareObjectsWithEquals
                     // not actually new, don't call listeners, etc
                     newBounds.add(prev);
                 } else {

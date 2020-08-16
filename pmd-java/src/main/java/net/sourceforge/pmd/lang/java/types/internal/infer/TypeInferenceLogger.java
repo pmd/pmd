@@ -242,8 +242,7 @@ public interface TypeInferenceLogger {
                 + node.getEndLine() + ":" + node.getEndColumn();
         }
 
-        @NonNull
-        protected String ppMethod(JMethodSig sig) {
+        protected @NonNull String ppMethod(JMethodSig sig) {
             return TypePrettyPrint.prettyPrint(sig, false);
         }
 

@@ -70,8 +70,7 @@ class TypeVarImpl implements FreshTypeVar {
     }
 
     @Override
-    @NonNull
-    public JTypeMirror getLowerBound() {
+    public @NonNull JTypeMirror getLowerBound() {
         return lowerBound;
     }
 
