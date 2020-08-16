@@ -172,7 +172,12 @@ final class ExprCheckHelper {
                     return false;
                 }
 
-                checker.checkExprConstraint(infCtx, ps.get(0), lhs);
+                // The receiver may not be boxed
+                JTypeMirror receiver = ps.get(0);
+                if (receiver.isPrimitive()) {
+                    throw ResolutionFailedException.cannotInvokeInstanceMethodOnPrimitive(infer.LOG, receiver, mref.getLocation());
+                }
+                checker.checkExprConstraint(infCtx, receiver, lhs);
 
                 for (int i = 1; i < n; i++) {
                     checker.checkExprConstraint(infCtx, ps.get(i), fs.get(i - 1));

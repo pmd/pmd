@@ -259,6 +259,7 @@ final class ExprOps {
         return infer.determineInvocationType(site).getMethodType();
     }
 
+    // for inexact method refs
     @Nullable MethodCtDecl findRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-15.html#jls-15.13.1
 
@@ -308,8 +309,12 @@ final class ExprOps {
         // the arguments are treated as if they were of the type
         // of the formal parameters of the candidate
         List<JTypeMirror> formals = targetType.getFormalParameters();
+        final boolean mayHaveInstanceMethods;
         if (asInstanceMethod && !formals.isEmpty()) {
+            mayHaveInstanceMethods = !formals.get(0).isPrimitive();
             formals = formals.subList(1, formals.size()); // skip first param (receiver)
+        } else {
+            mayHaveInstanceMethods = true;
         }
 
         List<ExprMirror> arguments = CollectionUtil.map(
@@ -344,7 +349,11 @@ final class ExprOps {
 
             @Override
             public Iterable<JMethodSig> getAccessibleCandidates() {
-                return ExprOps.getAccessibleCandidates(mref, asInstanceMethod, targetType);
+                if (mayHaveInstanceMethods) {
+                    return ExprOps.getAccessibleCandidates(mref, asInstanceMethod, targetType);
+                } else {
+                    return Collections.emptyList();
+                }
             }
 
             @Override

@@ -722,8 +722,8 @@ class Scratch {
         }
     }
 
-    // TODO
-    parserTest("Test inexact method ref conflict between static and non-static") {
+    parserTest("Test inexact method ref conflict between static and non-static for primitive type") {
+        // this is related to the test below, but this works for inexact methods
 
         val acu = parser.parse("""
             import java.util.stream.*;
@@ -732,7 +732,7 @@ class Scratch {
                 private String getName(int[] certIds) {
                     return IntStream.of(certIds)
                             // both static Integer::toString(int) and non-static Integer::toString() are applicable
-                            // the determining factor is that Integer::toString() requires boxing
+                            // the determining factor is that Integer::toString() would require boxing
                             .mapToObj(Integer::toString)
                             .collect(Collectors.joining(", "));
                 }
@@ -756,6 +756,33 @@ class Scratch {
                 }
 
                 argList(1)
+            }
+        }
+    }
+
+
+    parserTest("Exact method ref with primitive receiver cannot select instance methods of wrapper type") {
+
+        val acu = parser.parse("""
+            import java.util.stream.IntStream;
+
+            class Scratch {
+
+                public static void main(String[] args) {
+                    IntStream.of(1,2).mapToObj(Integer::doubleValue);
+                }
+            }
+        """.trimIndent())
+
+        val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
+
+        collectCall.shouldMatchN {
+            methodCall("mapToObj") {
+                with (it.typeDsl) {
+                    it.typeMirror shouldBe ts.UNRESOLVED_TYPE
+                }
+
+                unspecifiedChildren(2)
             }
         }
     }

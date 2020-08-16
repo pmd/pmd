@@ -114,6 +114,12 @@ final class ResolutionFailedException extends RuntimeException {
                                                                  "Incompatible arity: " + found + " != " + required));
     }
 
+    static ResolutionFailedException cannotInvokeInstanceMethodOnPrimitive(TypeInferenceLogger logger, JTypeMirror actual, JavaNode location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location,
+                                                                 "Cannot invoke instance method on primitive: " + actual));
+    }
+
     static ResolutionFailedException noCtDeclaration(TypeInferenceLogger logger, JMethodSig fun, MethodRefMirror mref) {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(mref.getLocation(),
