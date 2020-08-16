@@ -271,7 +271,7 @@ public final class Infer {
         // to instantiate all tvars
 
         MethodResolutionPhase instPhase = ctdecl.getResolvePhase().asInvoc();
-        JMethodSig inst = logInference(site, instPhase, ctdecl.getMethodType().internalApi().originalMethod());
+        JMethodSig inst = logInference(site, instPhase, ctdecl.getMethodType().internalApi().adaptedMethod());
         return inst == null ? FAILED_INVOCATION
                             : new MethodCtDecl(inst, ctdecl.getResolvePhase());
     }
@@ -391,7 +391,13 @@ public final class Infer {
         } else {
             // else transform the constructor to add the type parameters
             // of the constructed type
-            List<JTypeVar> tparams = CollectionUtil.concatView(cons.getTypeParameters(), newTypeFormals);
+            List<JTypeVar> consParams = cons.getTypeParameters();
+            if (consParams.size() > cons.getSymbol().getTypeParameterCount()) {
+                // it's already been adapted
+                assert consParams.size() == newTypeFormals.size() + consParams.size();
+                return adaptedSig;
+            }
+            List<JTypeVar> tparams = CollectionUtil.concatView(consParams, newTypeFormals);
 
             // type parameters are not part of the adapted signature, so that when we reset
             // the signature for invocation inference, we don't duplicate new type parameters

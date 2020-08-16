@@ -10,8 +10,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.captureMatcher
 import net.sourceforge.pmd.lang.java.types.typeDsl
-import java.util.*
-import java.util.function.Function
 import java.util.function.Supplier
 
 /**
@@ -139,6 +137,53 @@ class SpecialMethodsTest : ProcessorTestSpec({
                         it.typeMirror shouldBe with(it.typeDsl) {
                             t_Foo.toArray()
                         }
+
+                        argList(0)
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("getClass in invocation ctx") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse("""
+
+            class Scratch {
+                public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
+                    return null;
+                }
+
+
+                public static <T, E> T[] doCopy(T[] a) {
+                    E[] elements = null;
+                    return (T[]) copyOf(elements, a.getClass());
+                }
+            }
+
+        """.trimIndent())
+
+        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("copyOf") {
+                it.typeMirror shouldBe with(it.typeDsl) {
+                    ts.OBJECT.toArray()
+                }
+
+                argList {
+                    variableAccess("elements")
+
+                    methodCall("getClass") {
+                        it.typeMirror shouldBe with(it.typeDsl) {
+                            Class::class[`?` extends ts.OBJECT.toArray()] // todo should this be captured?
+                        }
+
+                        variableAccess("a")
 
                         argList(0)
                     }
