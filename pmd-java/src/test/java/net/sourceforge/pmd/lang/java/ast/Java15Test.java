@@ -71,4 +71,9 @@ public class Java15Test {
         java14.parse("class Foo { String s =\"a\\sb\"; }");
     }
 
+    @Test
+    public void sealedAndNonSealedIdentifiers() {
+        java15.parseResource("NonSealedIdentifier.java");
+        java15p.parseResource("NonSealedIdentifier.java");
+    }
 }

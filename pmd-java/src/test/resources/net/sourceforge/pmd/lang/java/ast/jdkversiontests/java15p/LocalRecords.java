@@ -34,4 +34,12 @@ public class LocalRecords {
     void methodWithLocalClass() {
         class MyLocalClass {}
     }
+
+    void methodWithLocalVarsNamedSealed() {
+        int result = 0;
+        int non = 1;
+        int sealed = 2;
+        result = non-sealed;
+        System.out.println(result);
+    }
 }

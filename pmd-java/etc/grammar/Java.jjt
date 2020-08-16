@@ -537,13 +537,40 @@ public class JavaParser {
    * specific restricted keyword.
    *
    * <p>Restricted keywords are:
-   * var, yield, record, sealed, permits
+   * var, yield, record, sealed, permits, "non" + "-" + "sealed"
    *
    * <p>enum and assert is used like restricted keywords, as they were not keywords
    * in the early java versions.
    */
-  private boolean isKeyword(String keyword) {
-    return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+  private boolean isKeyword(String image) {
+    return isKeyword(1, image);
+  }
+
+  private boolean isKeyword(int index, String image) {
+      Token token = getToken(index);
+      return token.kind == IDENTIFIER && token.image.equals(image);
+  }
+
+  private boolean isToken(int index, int kind) {
+      return getToken(index).kind == kind;
+  }
+
+  /**
+   * Semantic lookahead which matches "non-sealed".
+   *
+   * <p>"non-sealed" cannot be a token, for several reasons:
+   * It is only a keyword with java15 preview+, it consists actually
+   * of several separate tokens, which are valid on their own.
+   */
+  private boolean isNonSealedModifier() {
+      if (isKeyword(1, "non") && isToken(2, MINUS) && isKeyword(3, "sealed")) {
+          Token nonToken = getToken(1);
+          Token minusToken = getToken(2);
+          Token sealedToken = getToken(3);
+          return nonToken.endColumn + 1 == minusToken.beginColumn
+            && minusToken.endColumn + 1 == sealedToken.beginColumn;
+      }
+      return false;
   }
 
   /**
@@ -1024,14 +1051,6 @@ TOKEN :
 | < GT: ">" >
 }
 
-// Note: New token need to be added at the very end in order to
-// keep (binary) compatibility with the generated token ids
-// see JavaParserConstants
-TOKEN :
-{
-  < NON_SEALED: "non-sealed" >
-}
-
 /*****************************************
  * THE JAVA LANGUAGE GRAMMAR STARTS HERE *
  *****************************************/
@@ -1104,7 +1123,7 @@ int Modifiers() #void:
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
   | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; checkForSealedClassUsage(); }
-  | "non-sealed" { modifiers |= AccessNode.NON_SEALED; checkForSealedClassUsage(); }
+  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; checkForSealedClassUsage(); }
   | Annotation()
   )
  )*
