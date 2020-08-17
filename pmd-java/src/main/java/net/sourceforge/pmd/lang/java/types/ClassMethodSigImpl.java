@@ -159,7 +159,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public JMethodSig withTypeParams(List<JTypeVar> tparams) {
+    public JMethodSig withTypeParams(@Nullable List<JTypeVar> tparams) {
         return new ClassMethodSigImpl(owner, symbol, adaptedMethod, tparams, resultType, formals, thrown);
     }
 

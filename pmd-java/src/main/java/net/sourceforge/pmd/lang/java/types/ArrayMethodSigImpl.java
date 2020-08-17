@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -95,7 +96,7 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public JMethodSig withTypeParams(List<JTypeVar> tparams) {
+    public JMethodSig withTypeParams(@Nullable List<JTypeVar> tparams) {
         if (!tparams.isEmpty()) {
             throw new UnsupportedOperationException("Something went wrong");
         }

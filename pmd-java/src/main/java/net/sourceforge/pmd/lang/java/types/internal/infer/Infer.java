@@ -369,13 +369,25 @@ public final class Infer {
 
         CtorInvocationMirror expr = (CtorInvocationMirror) site.getExpr();
 
-        JMethodSig adapted = expr.isDiamond()
-                                 || expr.getNewType().isParameterizedType()
-                                 || expr.isAnonymous()
-                             ? adaptGenericConstructor(cons, expr.getNewType())
+        JClassType newType = expr.getNewType();
+        boolean isAdapted = needsAdaptation(expr, newType);
+        JMethodSig adapted = isAdapted
+                             ? adaptGenericConstructor(cons, newType)
                              : cons;
 
-        return instantiateMethod(adapted, site, phase);
+        JMethodSig result = instantiateMethod(adapted, site, phase);
+        if (isAdapted && result != null) {
+            // undo the adaptation
+            return result.internalApi().withOwner(result.getReturnType())
+                         .internalApi().withTypeParams(null);
+        }
+        return result;
+    }
+
+    private boolean needsAdaptation(CtorInvocationMirror expr, JClassType newType) {
+        return expr.isDiamond()
+            || newType.isParameterizedType() // ???
+            || expr.isAnonymous();
     }
 
     /**

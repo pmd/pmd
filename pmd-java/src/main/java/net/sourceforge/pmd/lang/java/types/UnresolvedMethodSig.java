@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -88,7 +89,7 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public JMethodSig withTypeParams(List<JTypeVar> tparams) {
+    public JMethodSig withTypeParams(@Nullable List<JTypeVar> tparams) {
         return this;
     }
 
