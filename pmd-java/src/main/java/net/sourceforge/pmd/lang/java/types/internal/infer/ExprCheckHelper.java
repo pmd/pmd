@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areSameTypes;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;
 
@@ -87,12 +88,20 @@ final class ExprCheckHelper {
         }
 
         if (expr instanceof LambdaExprMirror) {
+            if (targetType instanceof JInferenceVar) {
+                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+                return true;
+            }
 
-            return isLambdaCompatible(infCtx.toClassType(targetType), (LambdaExprMirror) expr);
+            return isLambdaCompatible(infCtx.asClassType(targetType), (LambdaExprMirror) expr);
 
         } else if (expr instanceof MethodRefMirror) {
+            if (targetType instanceof JInferenceVar) {
+                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+                return true;
+            }
 
-            return isMethodRefCompatible(infCtx.toClassType(targetType), (MethodRefMirror) expr);
+            return isMethodRefCompatible(infCtx.asClassType(targetType), (MethodRefMirror) expr);
 
         } else if (expr instanceof InvocationMirror) {
 
@@ -146,7 +155,8 @@ final class ExprCheckHelper {
 
         JMethodSig fun = findFunctionalInterfaceMethod(nonWildcard);
         if (fun == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref.getLocation());
+            // throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref.getLocation());
+            return false;
         }
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);

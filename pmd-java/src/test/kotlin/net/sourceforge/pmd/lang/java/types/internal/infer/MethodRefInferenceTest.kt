@@ -866,4 +866,91 @@ class Scratch {
         }
     }
 
+
+
+    parserTest("f:Method ref where target type is fully unknown (is an ivar)") {
+
+        logTypeInference(true)
+        val acu = parser.parse("""
+            import java.util.Map;
+            import java.util.Map.Entry;
+            import java.util.function.Function;
+            
+            class Scratch {
+            
+                private static final Map<String, Function<Integer, Integer>> canonicalMap
+                    = ofEntries(entry("c1", Scratch::add),
+                                entry("c2", Scratch::add));
+
+                @SafeVarargs
+                static <K, V> Map<K, V> ofEntries(Entry<? extends K, ? extends V>... entries) {
+                    return null;
+                }
+
+                static <K, V> Entry<K, V> entry(K k, V v) {
+                    return null;
+                }
+
+                public static int add(int args) {
+                    return args;
+                }
+            }
+        """.trimIndent())
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("ofEntries") {
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "ofEntries",
+                            declaredIn = call.enclosingType.typeMirror,
+                            withFormals = listOf(gen.t_MapEntry[`?` extends gen.t_String, `?` extends gen.t_Function[int.box(), int.box()]].toArray()),
+                            returning = gen.t_Map[gen.t_String, gen.t_Function[int.box(), int.box()]]
+                    )
+                }
+
+                argList {
+
+                    methodCall("entry") {
+                        argList {
+                            unspecifiedChild()
+
+                            methodRef("add") {
+                                with(it.typeDsl) {
+                                    it.referencedMethod.shouldMatchMethod(
+                                            named = "add",
+                                            declaredIn = call.enclosingType.typeMirror,
+                                            withFormals = listOf(int),
+                                            returning = int
+                                    )
+                                }
+                                unspecifiedChild()
+                            }
+                        }
+                    }
+
+                    methodCall("entry") {
+                        argList {
+                            unspecifiedChild()
+
+                            methodRef("add") {
+                                with(it.typeDsl) {
+                                    it.referencedMethod.shouldMatchMethod(
+                                            named = "add",
+                                            declaredIn = call.enclosingType.typeMirror,
+                                            withFormals = listOf(int),
+                                            returning = int
+                                    )
+                                }
+                                unspecifiedChild()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 })

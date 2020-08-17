@@ -421,14 +421,11 @@ final class InferenceContext {
         return sb.toString();
     }
 
-    @Nullable JClassType toClassType(JTypeMirror t) {
+    @Nullable JClassType asClassType(JTypeMirror t) {
         if (t instanceof JClassType) {
             return (JClassType) t;
         } else if (t instanceof JIntersectionType) {
             return ((JIntersectionType) t).getInducedClassType();
-        } else if (t instanceof JInferenceVar) {
-            JTypeVar baseVar = ((JInferenceVar) t).getBaseVar();
-            return toClassType(mapToIVars(baseVar.getUpperBound()));
         }
         return null;
     }
