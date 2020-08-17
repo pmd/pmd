@@ -18,10 +18,11 @@ class AnonCtorsTest : ProcessorTestSpec({
 
 
     parserTest("Diamond anonymous class constructor") {
-        inContext(ExpressionParsingCtx) {
 
-            val acu = parser.parse(
-                    """
+        logTypeInference(true)
+
+        val acu = parser.parse(
+                """
             class Scratch {
 
                 interface Gen<T> { T get(); }
@@ -36,40 +37,39 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-            val (t_Scratch, t_Gen, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Gen, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
+        val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
 
-            call.shouldMatchN {
-                methodCall("useGen") {
+        call.shouldMatchN {
+            methodCall("useGen") {
 
-                    it.methodType.formalParameters.shouldBe(listOf(with(it.typeDsl) {
-                        t_Gen[`?` extends int.box()] // Gen<? extends Integer>
-                    }))
+                it.methodType.formalParameters.shouldBe(listOf(with(it.typeDsl) {
+                    t_Gen[`?` extends int.box()] // Gen<? extends Integer>
+                }))
 
-                    argList {
-                        constructorCall {
-                            classType("Gen") {
-                                it.typeMirror shouldBe t_Gen
-                                diamond()
+                argList {
+                    constructorCall {
+                        classType("Gen") {
+                            it.typeMirror shouldBe t_Gen
+                            diamond()
+                        }
+
+                        argList(0)
+
+                        with(it.typeDsl) {
+                            it.methodType.shouldMatchMethod(
+                                    named = JConstructorSymbol.CTOR_NAME,
+                                    declaredIn = ts.OBJECT,
+                                    withFormals = emptyList(),
+                                    returning = t_Gen[int.box()] // Gen<Integer>
+                            ).also {
+                                it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
                             }
+                        }
 
-                            argList(0)
-
-                            with(it.typeDsl) {
-                                it.methodType.shouldMatchMethod(
-                                        named = JConstructorSymbol.CTOR_NAME,
-                                        declaredIn = ts.OBJECT,
-                                        withFormals = emptyList(),
-                                        returning = t_Gen[int.box()] // Gen<Integer>
-                                ).also {
-                                    it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
-                                }
-                            }
-
-                            child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                                it.typeMirror shouldBe t_Anon
-                            }
+                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                            it.typeMirror shouldBe t_Anon
                         }
                     }
                 }
@@ -77,11 +77,11 @@ class AnonCtorsTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test anonymous interface constructor") {
-        inContext(ExpressionParsingCtx) {
 
-            val acu = parser.parse(
-                    """
+    parserTest("Test anonymous interface constructor") {
+
+        val acu = parser.parse(
+                """
             class Scratch {
                 public interface BitMetric {
                     public double getBitLength(int value);
@@ -95,42 +95,41 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-            val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                constructorCall {
-                    classType("BitMetric") {
-                        it.typeMirror.symbol shouldBe t_BitMetric.symbol
-                    }
-
-                    with(it.typeDsl) {
-                        it.methodType.shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = ts.OBJECT,
-                                withFormals = emptyList(),
-                                returning = t_BitMetric
-                        ).also {
-                            it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
-                        }
-                    }
-                    it.typeMirror shouldBe t_BitMetric
-
-                    argList {}
-
-                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
+        call.shouldMatchN {
+            constructorCall {
+                classType("BitMetric") {
+                    it.typeMirror.symbol shouldBe t_BitMetric.symbol
                 }
-            }
 
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = ts.OBJECT,
+                            withFormals = emptyList(),
+                            returning = t_BitMetric
+                    ).also {
+                        it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
+                    }
+                }
+                it.typeMirror shouldBe t_BitMetric
+
+                argList {}
+
+                child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
+            }
         }
+
     }
 
-    parserTest("Test anonymous class constructor") {
-        inContext(ExpressionParsingCtx) {
 
-            val acu = parser.parse(
-                    """
+    parserTest("Test anonymous class constructor") {
+
+        val acu = parser.parse(
+                """
             class Scratch {
                 public abstract class BitMetric {
                     public BitMetric(int i) {}
@@ -146,39 +145,39 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-            val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                constructorCall {
-                    classType("BitMetric") {
-                        it.typeMirror.symbol shouldBe t_BitMetric.symbol
+        call.shouldMatchN {
+            constructorCall {
+                classType("BitMetric") {
+                    it.typeMirror.symbol shouldBe t_BitMetric.symbol
+                }
+
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = t_BitMetric,
+                            withFormals = listOf(int),
+                            returning = t_BitMetric
+                    ).also {
+                        it.symbol shouldBe t_BitMetric.symbol.constructors[0]
                     }
+                }
 
-                    with(it.typeDsl) {
-                        it.methodType.shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = t_BitMetric,
-                                withFormals = listOf(int),
-                                returning = t_BitMetric
-                        ).also {
-                            it.symbol shouldBe t_BitMetric.symbol.constructors[0]
-                        }
-                    }
+                argList {
+                    int(4)
+                }
 
-                    argList {
-                        int(4)
-                    }
+                child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                    it.typeMirror shouldBe t_Anon // though
 
-                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                        it.typeMirror shouldBe t_Anon // though
-
-                    }
                 }
             }
         }
     }
+
 
 
     parserTest("Test anonymous interface constructor in invocation ctx") {

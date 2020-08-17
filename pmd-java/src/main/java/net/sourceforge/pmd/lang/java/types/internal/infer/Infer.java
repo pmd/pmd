@@ -372,14 +372,21 @@ public final class Infer {
         JClassType newType = expr.getNewType();
         boolean isAdapted = needsAdaptation(expr, newType);
         JMethodSig adapted = isAdapted
-                             ? adaptGenericConstructor(cons, newType)
+                             ? adaptGenericConstructor(cons, newType, expr)
                              : cons;
 
         JMethodSig result = instantiateMethod(adapted, site, phase);
         if (isAdapted && result != null) {
             // undo the adaptation
-            return result.internalApi().withOwner(result.getReturnType())
-                         .internalApi().withTypeParams(null);
+
+            JTypeMirror rtype = result.getReturnType();
+            if (!rtype.isInterface()) {
+                // this is for anonymous class ctors
+                // an interface cannot declare a constructor
+                result = result.internalApi().withOwner(rtype);
+            }
+            return result.internalApi().withTypeParams(null);
+
         }
         return result;
     }
@@ -406,7 +413,7 @@ public final class Infer {
      *
      * the return type being that of the created instance.
      */
-    private static JMethodSig adaptGenericConstructor(JMethodSig cons, JClassType newType) {
+    private static JMethodSig adaptGenericConstructor(JMethodSig cons, JClassType newType, CtorInvocationMirror expr) {
         assert cons.isConstructor() : cons + " should be a constructor";
 
         if (cons.getDeclaringType().isArray()) {
@@ -429,7 +436,7 @@ public final class Infer {
                 // it's already been adapted
                 assert consParams.equals(CollectionUtil.concatView(cons.getSymbol().getTypeParameters(), newTypeFormals));
                 return adaptedSig;
-            } else if (!cons.getDeclaringType().isGenericTypeDeclaration()) {
+            } else if (!expr.isDiamond()) {
                 // it doesn't need adaptation, we're not doing diamond inference
                 return adaptedSig;
             }

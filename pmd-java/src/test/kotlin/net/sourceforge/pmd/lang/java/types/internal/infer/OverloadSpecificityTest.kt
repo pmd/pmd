@@ -513,7 +513,7 @@ class C<U> {
         with(call.typeDsl) {
             call.methodType.shouldMatchMethod(
                     named = JConstructorSymbol.CTOR_NAME,
-                    declaredIn = t_C,
+                    declaredIn = t_C[gen.t_String],
                     withFormals = listOf(t_C[gen.t_String]),
                     returning = t_C[gen.t_String]
             )
