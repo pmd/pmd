@@ -14,6 +14,9 @@ import java.util.*
 
 class ExplicitTypesTest : ProcessorTestSpec({
 
+    // todo test explicitly typed lambda
+    // todo test explicit type args on ctor call
+
 
     parserTest("Test explicit type arguments") {
 

@@ -101,9 +101,11 @@ public final class OverloadComparator {
         // 2. the one that overrides the other
         // 3. the non-abstract method
 
-        if (m1.isBridge() != m2.isBridge()) {
-            return definitely(!m1.isBridge());
-        } else if (overrides(m1, m2, commonSubtype)) {
+        // Symbols don't reflect bridge methods anymore
+        // if (m1.isBridge() != m2.isBridge()) {
+        //      return definitely(!m1.isBridge());
+        // } else
+        if (overrides(m1, m2, commonSubtype)) {
             return YES;
         } else if (overrides(m2, m1, commonSubtype)) {
             return NO;

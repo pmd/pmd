@@ -48,7 +48,6 @@ class CtorInferenceTest : ProcessorTestSpec({
                         it.typeParameters shouldBe emptyList()
                         it.isGeneric shouldBe false
                     }
-
                 }
             }
         }

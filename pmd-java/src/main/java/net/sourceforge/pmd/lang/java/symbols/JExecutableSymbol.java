@@ -64,8 +64,7 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
 
 
     @Override
-    @NonNull
-    default String getPackageName() {
+    default @NonNull String getPackageName() {
         return getEnclosingClass().getPackageName();
     }
 

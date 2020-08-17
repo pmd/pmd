@@ -69,11 +69,6 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public boolean isBridge() {
-        return false;
-    }
-
-    @Override
     public JMethodSig withReturnType(JTypeMirror returnType) {
         return this;
     }

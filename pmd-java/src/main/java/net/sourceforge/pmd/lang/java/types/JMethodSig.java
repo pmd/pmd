@@ -41,9 +41,7 @@ public interface JMethodSig extends JTypeVisitable {
     TypeSystem getTypeSystem();
 
 
-    /**
-     * Returns the symbol of the method or constructor.
-     */
+    /** Returns the symbol of the method or constructor. */
     JExecutableSymbol getSymbol();
 
     /**
@@ -54,9 +52,7 @@ public interface JMethodSig extends JTypeVisitable {
         return getSymbol().getSimpleName();
     }
 
-    /**
-     * Returns whether this is a constructor.
-     */
+    /** Returns whether this is a constructor. */
     default boolean isConstructor() {
         return JConstructorSymbol.CTOR_NAME.equals(getName());
     }
@@ -72,7 +68,6 @@ public interface JMethodSig extends JTypeVisitable {
      * Returns the type that declares this method. May be an array type,
      * a class type. If this is a constructor for a generic class, returns
      * the generic type declaration of the constructor.
-     * TODO this is inconsistent between diamond inference and explicit arguments
      */
     JTypeMirror getDeclaringType();
 
@@ -112,11 +107,19 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
     /**
-     * Returns the type parameters of the method.
+     * Returns the type parameters of the method. After type inference,
+     * occurrences of these type parameters are replaced by their instantiation
+     * in formals, return type and thrown exceptions (but not type parameter bounds).
+     * If instantiation failed, some variables might have been substituted
+     * with {@link TypeSystem#ERROR_TYPE}.
      */
     List<JTypeVar> getTypeParameters();
 
-
+    /**
+     * Returns the list of thrown exception types. Exception types may
+     * be type variables of the method or of an enclosing context, that
+     * extend Throwable.
+     */
     List<JTypeMirror> getThrownExceptions();
 
 
@@ -135,9 +138,10 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
 
-    boolean isBridge();
-
     default boolean isGeneric() {
+        // do not override
+        // the type parameters may be adapted and we
+        // can't compare to the symbol
         return !getTypeParameters().isEmpty();
     }
 

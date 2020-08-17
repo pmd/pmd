@@ -143,11 +143,6 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public boolean isBridge() {
-        return symbol instanceof JMethodSymbol && ((JMethodSymbol) symbol).isBridge();
-    }
-
-    @Override
     public InternalMethodTypeItf internalApi() {
         return this;
     }

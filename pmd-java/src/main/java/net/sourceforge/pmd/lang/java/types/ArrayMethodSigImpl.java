@@ -78,11 +78,6 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public boolean isBridge() {
-        return false;
-    }
-
-    @Override
     public InternalMethodTypeItf internalApi() {
         return this;
     }
