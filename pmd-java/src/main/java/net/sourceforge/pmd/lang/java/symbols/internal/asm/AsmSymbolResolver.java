@@ -104,9 +104,11 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     @NonNull JClassSymbol resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
-        assert internalName != null : "Null name";
-        return knownStubs.computeIfAbsent(internalName, iname -> {
-            @Nullable URL url = getUrlOfInternalName(internalName);
+        return knownStubs.compute(internalName, (iname, prev) -> {
+            if (prev != failed && prev != null) {
+                return prev;
+            }
+            @Nullable URL url = getUrlOfInternalName(iname);
             Loader loader = url == null ? FailedLoader.INSTANCE : new UrlLoader(url);
             return new SoftClassReference(this, iname, loader, observedArity);
         }).get();

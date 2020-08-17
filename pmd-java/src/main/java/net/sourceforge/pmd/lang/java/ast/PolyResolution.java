@@ -186,13 +186,11 @@ final class PolyResolution {
         return fetchCascaded(actualResultTarget);
     }
 
-    // TODO don't use IllegalStateException, log
-
     /**
      * Fetch the resolved value when it was inferred as part of overload
      * resolution of an enclosing invocation context.
      */
-    private JTypeMirror fetchCascaded(TypeNode e) {
+    private @NonNull JTypeMirror fetchCascaded(TypeNode e) {
         if (e instanceof ASTLambdaExpression
             || e instanceof ASTMethodReference
             || e instanceof InvocationNode) {
@@ -202,11 +200,10 @@ final class PolyResolution {
             // if we called getTypeMirror, and the field is null,
             // will recurse into this method (so use internal fetch method)
             JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
-            if (type == null) {
+            if (type == ts.UNRESOLVED_TYPE || type == ts.ERROR_TYPE || type == null) {
                 // The type is set if the overload resolution ended correctly
                 // If not the process may have been aborted early
-                // TODO might log this
-                return ts.UNRESOLVED_TYPE;
+                return fallbackIfCtxFailed(e, type == null);
             }
             return type;
         }
@@ -234,6 +231,22 @@ final class PolyResolution {
         }
 
         throw new IllegalStateException("Unknown poly? " + e);
+    }
+
+    /**
+     * If resolution of the outer context failed, like if we call an unknown
+     * method, we may still be able to derive the types of the arguments. We
+     * treat them as if they occur as standalone expressions.
+     * TODO would using error-type as a target type be better?
+     */
+    private @NonNull JTypeMirror fallbackIfCtxFailed(@Nullable TypeNode e, boolean canRetry) {
+        if (e instanceof ASTConstructorCall && !((ASTConstructorCall) e).isDiamond()) {
+            // fallback: even if we couldn't select the constructor, we can have its type
+            return ((ASTConstructorCall) e).getTypeNode().getTypeMirror();
+        } else if (canRetry && e instanceof InvocationNode) {
+            return inferInvocation((InvocationNode) e, e, null); // retry with no context
+        }
+        return ts.UNRESOLVED_TYPE;
     }
 
     private JTypeMirror nthVarargParam(InvocationNode parentInvoc, JMethodSig mt, int paramIdx) {
