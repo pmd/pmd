@@ -817,8 +817,6 @@ class Scratch {
 
     parserTest("Method ref on static class") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
             import java.util.Arrays;
             import java.util.Objects;
@@ -954,9 +952,8 @@ class Scratch {
     }
 
 
-    parserTest("f:Method ref with explicit type parameters") {
+    parserTest("Method ref with explicit type parameters") {
 
-        logTypeInference(true)
         val acu = parser.parse("""
 import java.util.Optional;
 

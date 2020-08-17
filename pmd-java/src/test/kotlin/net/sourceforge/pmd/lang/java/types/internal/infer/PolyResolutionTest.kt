@@ -440,9 +440,8 @@ class Scratch {
 
 
 
-    parserTest("f:Method invocation selection in lambda return") {
+    parserTest("Method invocation selection in lambda return") {
 
-        logTypeInference(true)
         val acu = parser.parse("""
 class Scratch {
 

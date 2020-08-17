@@ -147,8 +147,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
     parserTest("getClass in invocation ctx") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 
             class Scratch {
