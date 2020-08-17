@@ -50,13 +50,15 @@ class CaptureInferenceTest : ProcessorTestSpec({
             val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
 
             with (setCall.typeDsl) {
-                val capture2 = captureMatcher(`?`)
-                setCall.methodType.shouldMatchMethod(
-                        named = "set",
-                        declaredIn = gen.t_List[capture2],
-                        withFormals = listOf(int, capture2),
-                        returning = capture2
-                )
+                setCall.methodType shouldBe ts.UNRESOLVED_METHOD
+                // there is also no fallback for this anymore
+                // val capture2 = captureMatcher(`?`)
+                // setCall.methodType.shouldMatchMethod(
+                //         named = "set",
+                //         declaredIn = gen.t_List[capture2],
+                //         withFormals = listOf(int, capture2),
+                //         returning = capture2
+                // )
             }
         }
     }

@@ -170,7 +170,7 @@ public final class Infer {
         site.clearFailures();
 
         MethodCtDecl invocType = finishInstantiation(site, ctdecl);
-        if (invocType == FAILED_INVOCATION) {
+        if (invocType == FAILED_INVOCATION) { // NOPMD
             JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
             LOG.fallbackInvocation(fallback, site);
             return ctdecl.withMethod(fallback, true);
@@ -249,7 +249,7 @@ public final class Infer {
                 bestApplicable = overloadComparator.selectMoreSpecific(bestApplicable, candidate, site, phase);
             }
 
-            if (bestApplicable != FAILED_INVOCATION) {
+            if (bestApplicable != FAILED_INVOCATION) { // NOPMD
                 JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
                                                            site.getExpr().getErasedReceiverType());
                 return bestApplicable.withMethod(adapted);
@@ -262,7 +262,7 @@ public final class Infer {
         return NO_CTDECL;
     }
 
-    private MethodCtDecl finishInstantiation(MethodCallSite site, MethodCtDecl ctdecl) {
+    @NonNull MethodCtDecl finishInstantiation(MethodCallSite site, MethodCtDecl ctdecl) {
         JMethodSig m = ctdecl.getMethodType();
         InvocationMirror expr = site.getExpr();
 
