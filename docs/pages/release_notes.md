@@ -40,6 +40,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#2431](https://github.com/pmd/pmd/issues/2431): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message
     *   [#2439](https://github.com/pmd/pmd/issues/2439): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)
+    *   [#2531](https://github.com/pmd/pmd/issues/2531): \[java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase())
     *   [#2647](https://github.com/pmd/pmd/issues/2647): \[java] Deprecate rule DataFlowAnomalyAnalysis
 *   java-performance
     *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
@@ -85,6 +86,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *   [#2659](https://github.com/pmd/pmd/pull/2659): \[java] StringToString can not detect the case: getStringMethod().toString() - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2662](https://github.com/pmd/pmd/pull/2662): \[java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase()) - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2678](https://github.com/pmd/pmd/pull/2678): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2679](https://github.com/pmd/pmd/pull/2679): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - [Mykhailo Palahuta](https://github.com/Drofff)
