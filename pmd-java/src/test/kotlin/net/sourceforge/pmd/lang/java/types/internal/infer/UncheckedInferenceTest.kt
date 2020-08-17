@@ -180,27 +180,4 @@ class C {
         }
     }
 
-    /*
-If the ... is generic:
-
- If unchecked conversion was necessary for the method to be applicable during constraint
- set reduction in §18.5.1, the constraint formula ‹|R| → T› is reduced and incorporated
- with B2.
-
-
-
- Otherwise, the constraint formula ‹R θ → T› is reduced and incorporated with B2.
-
-
-If the chosen method is not generic, then:
-
-     If unchecked conversion was necessary for the method to be applicable, the
-      parameter types of the invocation type are the parameter types of the method's
-      type, and the return type and thrown types are given by the erasures of the
-      return type and thrown types of the method's type.
-
-
-     */
-
-
 })
