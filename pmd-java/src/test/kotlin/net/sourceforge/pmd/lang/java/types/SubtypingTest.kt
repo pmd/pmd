@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forNone
 import io.kotest.inspectors.forNone
@@ -15,6 +16,7 @@ import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
 import kotlin.test.assertTrue
 
@@ -73,17 +75,37 @@ class SubtypingTest : FunSpec({
 
             test("Test intersection type subtyping") {
 
-                val comp = comparableOf(`t_List{String}`)
+                val intersection = `t_List{String}` * t_Comparable[`t_List{String}`]
 
-                val intersection = ts.intersect(`t_List{String}`, comp)
+                // implements List<T> and Comparable<T>
+                val comparableList = ComparableList::class[t_String]
 
-                intersection shouldBeSubtypeOf comp
-                intersection shouldBeSubtypeOf t_Comparable
-                intersection shouldBeSubtypeOf `t_List{String}`
-                intersection shouldBeSubtypeOf `t_Collection{String}`
+                withClue("Intersection supertypes") {
+                    intersection shouldBeSubtypeOf t_Comparable[`t_List{String}`]
+                    intersection shouldBeSubtypeOf t_Comparable
+                    intersection shouldBeSubtypeOf `t_List{String}`
+                    intersection shouldBeSubtypeOf `t_Collection{String}`
+                    intersection shouldNotBeSubtypeOf  comparableList
 
-                intersection shouldBeUnrelatedTo `t_Collection{Integer}`
+                    intersection shouldBeUnrelatedTo `t_Collection{Integer}`
+                }
 
+                withClue("Intersection subtypes") {
+
+                    comparableList shouldBeSubtypeOf intersection
+
+                    t_Comparable shouldNotBeSubtypeOf intersection
+                    `t_List{String}` shouldNotBeSubtypeOf intersection
+                    `t_Collection{String}` shouldNotBeSubtypeOf intersection
+                }
+
+                withClue("Intersection subtypes itself") {
+                    // create another so that == will not succeed
+                    val intersection2 = `t_List{String}` * t_Comparable[`t_List{String}`]
+
+                    intersection shouldBeSubtypeOf intersection2
+                    intersection2 shouldBeSubtypeOf intersection
+                }
             }
 
             test("Test enum f-bound") {

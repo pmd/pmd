@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
+import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -193,19 +194,11 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
 
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
-// if result == null, consider we allow unchecked and no
-private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, result: Subtyping) {
+private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Subtyping) {
     val res = isSubtype(t , s)
-    assertEquals(result, res, message = "Failure, expected\n\t${if (result.evenUnchecked()) "" else " not"} $t \n\t\t<: $s")
-    // println("Proven ${if(pos) "" else " ¬"} $t <: $s")
-}
-
-private fun assertSubtypeUnchecked(t: JTypeMirror, s: JTypeMirror, pos: Boolean, unchecked: Boolean = true) {
-    val res = t.isSubtypeOf(s, unchecked)
-    assert(if (pos) res else !res) {
-        "Failure, expected\n\t${if (pos) "" else " not"} $t \n\t\t<: $s"
+    withClue("$t \n\t\t<: $s") {
+        res shouldBe expected
     }
-    // println("Proven ${if(pos) "" else " ¬"} $t <: $s")
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {

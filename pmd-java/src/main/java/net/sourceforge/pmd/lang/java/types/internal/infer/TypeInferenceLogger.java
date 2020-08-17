@@ -174,14 +174,15 @@ public interface TypeInferenceLogger {
                     return;
                 }
             }
-            println("");
-            printExpr(site.getExpr());
+
             if (site.getExpr() instanceof CtorInvocationMirror) {
-                println("[WARNING] No potentially applicable constructors in "
+                startSection("[WARNING] No potentially applicable constructors in "
                             + ((CtorInvocationMirror) site.getExpr()).getNewType());
             } else {
-                println("[WARNING] No potentially applicable methods in " + receiver);
+                startSection("[WARNING] No potentially applicable methods in " + receiver);
             }
+            printExpr(site.getExpr());
+
             Iterator<JMethodSig> iter = site.getExpr().getAccessibleCandidates().iterator();
             if (iter.hasNext()) {
                 startSection("Accessible signatures:");
@@ -190,6 +191,7 @@ public interface TypeInferenceLogger {
             } else {
                 println("No accessible signatures");
             }
+            endSection("");
         }
 
         @Override

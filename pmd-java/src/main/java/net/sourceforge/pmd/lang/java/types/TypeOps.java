@@ -448,16 +448,16 @@ public final class TypeOps {
             return result;
         }
 
-        static Subtyping anySubTypes(List<? extends JTypeMirror> supers, JTypeMirror t) {
-            Subtyping result = NO;
-            for (JTypeMirror ui : supers) {
-                Subtyping sub = isSubtype(ui, t);
-                if (result != NO) {
-                    return result;
+        static Subtyping anySubTypesAny(List<? extends JTypeMirror> us, List<? extends JTypeMirror> vs) {
+            for (JTypeMirror ui : us) {
+                for (JTypeMirror vi : vs) {
+                    Subtyping sub = isSubtype(ui, vi);
+                    if (sub != NO) {
+                        return sub;
+                    }
                 }
-                result = result.or(sub);
             }
-            return result;
+            return NO;
         }
     }
 
@@ -662,7 +662,23 @@ public final class TypeOps {
 
         @Override
         public Subtyping visitIntersection(JIntersectionType t, JTypeMirror s) {
-            return Subtyping.anySubTypes(t.getComponents(), s);
+            // A & B <: A
+            // A & B <: B
+
+            // But for a class C, `C <: A & B` if `C <: A` and `C <: B`
+
+            // So we can't just say, "any component of t must subtype s",
+            // because if s is itself an intersection we have a problem:
+            // Eg let T = S = A & B
+            // T <: S -> A & B <: S
+            //        -> A <: S OR B <: S
+            //        -> A <: A & B OR B <: A & B
+            //        -> false
+
+            // what we mean is, if S is an intersection, then
+            // "any component of T subtypes any component of S"
+
+            return Subtyping.anySubTypesAny(t.getComponents(), asList(s));
         }
 
         @Override
