@@ -208,7 +208,7 @@ public interface TypeInferenceLogger {
             site.getResolutionFailures()
                 .forEach((phase, failures) -> {
                     startSection(phase.toString() + ":");
-                    failures.forEach(it -> println(it.getReason() + "\t\t" + ppMethod(it.getFailedMethod())));
+                    failures.forEach(it -> println(String.format("%-64s // while checking %s", it.getReason(), ppMethod(it.getFailedMethod()))));
                     endSection("");
                 });
             endSection("");

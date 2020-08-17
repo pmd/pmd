@@ -78,11 +78,17 @@ enum ReductionStep {
         }
     },
 
+    /**
+     * Special case of {@link #UPPER}, that applies to f-bounds.
+     * This is just spitballing, Javac doesn't do this.
+     *
+     * I use this for fbounds, like a context that has stuff like this
+     * {@code β { β <: java.lang.Enum<β> } }. These usually get more bounds
+     * via arguments, but unchecked casts may deny a more specific bound.
+     * This should probably only apply when the call site doesn't need unchecked
+     * conversions. This is a
+     */
     FBOUND(BoundKind.UPPER) {
-        // This is just spitballing, Javac doesn't do this
-        // I use this for fbounds, like a context that has stuff like this
-        //   β { β <: java.lang.Enum<β> }
-        // It may be solvable, with an unchecked warning
 
         @Override
         public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
@@ -102,11 +108,8 @@ enum ReductionStep {
      * This is for compatibility with Javac, they implement it this way,
      * though I don't know why..
      */
-    static final List<List<ReductionStep>> WAVES =
-        listOf(
-            listOf(EQ),
-            listOf(LOWER, FBOUND, UPPER, CAPTURED)
-        );
+    static final List<ReductionStep> WAVES =
+            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED);
 
     final BoundKind kind;
 
