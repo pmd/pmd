@@ -9,8 +9,10 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import java.util.*
 import java.util.function.*
 import java.util.stream.Collector
+import java.util.function.Function as JavaFunction
 
 /**
  *
@@ -868,9 +870,8 @@ class Scratch {
 
 
 
-    parserTest("f:Method ref where target type is fully unknown (is an ivar)") {
+    parserTest("Method ref where target type is fully unknown (is an ivar)") {
 
-        logTypeInference(true)
         val acu = parser.parse("""
             import java.util.Map;
             import java.util.Map.Entry;
@@ -947,6 +948,72 @@ class Scratch {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+
+    parserTest("f:Method ref with explicit type parameters") {
+
+        logTypeInference(true)
+        val acu = parser.parse("""
+import java.util.Optional;
+
+class Scratch {
+
+    interface NodeStream<T extends Number> {}
+
+    static <T extends Number> NodeStream<T> ofOptional(Optional<? extends T> optNode) {
+        return optNode.map(Scratch::<T>singleton).orElseGet(Scratch::empty);
+    }
+
+    public static <P extends Number> NodeStream<P> singleton(P node) {
+        return null;
+    }
+
+    public static <K extends Number> NodeStream<K> empty() {
+        return null;
+    }
+
+}
+        """.trimIndent())
+
+        val (_, t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("orElseGet") {
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                            named = "orElseGet",
+                            declaredIn = Optional::class[t_NodeStream[tvar]],
+                            withFormals = listOf(Supplier::class[`?` extends t_NodeStream[tvar]]),
+                            returning = t_NodeStream[tvar]
+                    )
+                }
+
+                methodCall("map") {
+                    with(it.typeDsl) {
+                        val capture = captureMatcher(`?` extends tvar)
+                        it.methodType.shouldMatchMethod(
+                                named = "map",
+                                declaredIn = Optional::class[capture],
+                                withFormals = listOf(JavaFunction::class[`?` `super` capture, `?` extends t_NodeStream[tvar]]),
+                                returning = Optional::class[t_NodeStream[tvar]]
+                        )
+                    }
+
+                    variableAccess("optNode")
+
+                    argList {
+                        methodRef("singleton")
+                    }
+                }
+
+                argList {
+                    methodRef("empty")
                 }
             }
         }

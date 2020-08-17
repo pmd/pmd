@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
@@ -235,6 +236,8 @@ final class ExprOps {
                 || candidate.isGeneric() && mref.getExplicitTypeArguments().isEmpty()) {
                 return null;
             }
+
+            candidate = candidate.subst(Substitution.mapping(candidate.getTypeParameters(), mref.getExplicitTypeArguments()));
 
             if (lhs != null && lhs.isRaw()) {
                 // can be raw if the method doesn't mention type vars
