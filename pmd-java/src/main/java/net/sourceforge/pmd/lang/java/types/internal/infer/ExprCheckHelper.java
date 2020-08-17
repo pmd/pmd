@@ -406,12 +406,18 @@ final class ExprCheckHelper {
 
         // finally, add bounds
         if (result != ts.NO_TYPE) {
-            // should also set parameter types!
-            for (ExprMirror expr : lambda.getResultExpressions()) {
-                if (!isCompatible(result, expr)) {
-                    return false;
-                }
-            }
+            infCtx.addInstantiationListener(
+                infCtx.freeVarsIn(groundFun.getFormalParameters()),
+                solvedCtx -> {
+                    lambda.setInferredType(solvedCtx.ground(groundTargetType));
+                    lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
+                    JTypeMirror groundResult = solvedCtx.ground(result);
+                    for (ExprMirror expr : lambda.getResultExpressions()) {
+                        if (!isCompatible(groundResult, expr)) {
+                            return;
+                        }
+                    }
+                });
         }
         return true;
     }

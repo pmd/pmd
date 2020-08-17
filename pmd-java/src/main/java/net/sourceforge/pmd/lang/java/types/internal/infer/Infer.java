@@ -268,7 +268,7 @@ public final class Infer {
 
         // todo remove this check for site.getExpectedType
         //  apparently removing it messes up anonymous class inference
-        if (isReturnTypeFinished(m) && site.getExpectedType() == null) {
+        if (isReturnTypeFinished(m, site) && site.getExpectedType() == null) {
             assert assertReturnIsGround(m);
 
             expr.setInferredType(m.getReturnType());
@@ -290,10 +290,11 @@ public final class Infer {
                             ctdecl.getMethodType().internalApi().adaptedMethod());
     }
 
-    private boolean isReturnTypeFinished(JMethodSig m) {
+    private boolean isReturnTypeFinished(JMethodSig m, MethodCallSite site) {
         return !isAdaptedConsType(m)
             // this means that the invocation type cannot be affected by context type
-            && !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters());
+            && !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters())
+            && site.getInferenceContext().isGround(m.getReturnType());
     }
 
     private boolean isAdaptedConsType(JMethodSig m) {
