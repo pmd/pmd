@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 
 final class ExprCheckHelper {
 
@@ -88,20 +89,20 @@ final class ExprCheckHelper {
         }
 
         if (expr instanceof LambdaExprMirror) {
-            if (targetType instanceof JInferenceVar) {
-                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+            JClassType funType = getFunTypeOrDefer(targetType, expr);
+            if (funType == null) {
                 return true;
             }
 
-            return isLambdaCompatible(infCtx.asClassType(targetType), (LambdaExprMirror) expr);
+            return isLambdaCompatible(funType, (LambdaExprMirror) expr);
 
         } else if (expr instanceof MethodRefMirror) {
-            if (targetType instanceof JInferenceVar) {
-                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+            JClassType funType = getFunTypeOrDefer(targetType, expr);
+            if (funType == null) {
                 return true;
             }
 
-            return isMethodRefCompatible(infCtx.asClassType(targetType), (MethodRefMirror) expr);
+            return isMethodRefCompatible(funType, (MethodRefMirror) expr);
 
         } else if (expr instanceof InvocationMirror) {
 
@@ -134,6 +135,19 @@ final class ExprCheckHelper {
         }
 
         return false;
+    }
+
+    private @Nullable JClassType getFunTypeOrDefer(JTypeMirror targetType, ExprMirror expr) {
+        if (targetType instanceof JInferenceVar) {
+            JClassType earlyBound = infCtx.asClassType(ts.glb(((JInferenceVar) targetType).getBounds(BoundKind.UPPER)));
+            if (earlyBound == null) {
+                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+                return null;
+            }
+            return earlyBound;
+        } else {
+            return infCtx.asClassType(targetType);
+        }
     }
 
     private boolean isMethodRefCompatible(@Nullable JClassType functionalItf, MethodRefMirror mref) {

@@ -368,6 +368,7 @@ final class InferenceContext {
                 if (!solveBasic(varsToSolve).isEmpty()) {
                     incorporate();
                     progress = true;
+                    callListeners();
                 }
             }
         }
