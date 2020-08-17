@@ -7,11 +7,9 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
@@ -90,8 +88,7 @@ enum ReductionStep {
         public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
             Set<JTypeMirror> ubounds = t.getBounds(BoundKind.UPPER);
             Set<JInferenceVar> freeVars = inferenceContext.freeVarsIn(ubounds);
-            return CollectionUtil.asSingle(freeVars) == t // contains only itself in its upper bounds
-                && ubounds.iterator().next() instanceof JClassType; // and erasure is enough to get rid of the dependency
+            return CollectionUtil.asSingle(freeVars) == t; // contains only itself in its upper bounds
         }
 
         @Override
@@ -102,14 +99,13 @@ enum ReductionStep {
 
     /**
      * Sequence of steps to use in order when solving.
-     * This is for compatibility with Javac.
+     * This is for compatibility with Javac, they implement it this way,
+     * though I don't know why..
      */
-    static final List<Set<ReductionStep>> WAVES =
+    static final List<List<ReductionStep>> WAVES =
         listOf(
-            EnumSet.of(EQ),
-            EnumSet.of(EQ, LOWER),
-            EnumSet.of(EQ, LOWER, UPPER, CAPTURED),
-            EnumSet.of(EQ, LOWER, UPPER, CAPTURED, FBOUND)
+            listOf(EQ),
+            listOf(LOWER, FBOUND, UPPER, CAPTURED)
         );
 
     final BoundKind kind;

@@ -366,7 +366,7 @@ final class InferenceContext {
             outer:
             while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
                 progress = false;
-                for (Set<ReductionStep> wave : ReductionStep.WAVES) {
+                for (List<ReductionStep> wave : ReductionStep.WAVES) {
                     if (!solveBasic(varsToSolve, wave).isEmpty()) {
                         incorporate();
                         progress = true;
@@ -374,9 +374,6 @@ final class InferenceContext {
                     }
                 }
             }
-
-            // TODO in case we stopped because we aren't making progress (cyclic dep)
-            //      in some cases we can recover cleanly
         }
     }
 
@@ -384,7 +381,7 @@ final class InferenceContext {
      * Tries to solve as much of varsToSolve as possible using some reduction steps.
      * Returns the set of solved variables during this step.
      */
-    private Set<JInferenceVar> solveBasic(Set<JInferenceVar> varsToSolve, Set<ReductionStep> steps) {
+    private Set<JInferenceVar> solveBasic(Set<JInferenceVar> varsToSolve, List<ReductionStep> steps) {
         Set<JInferenceVar> solvedVars = new LinkedHashSet<>();
         for (JInferenceVar ivar : intersect(varsToSolve, freeVars)) {
             for (ReductionStep step : steps) {

@@ -81,7 +81,7 @@ public class MethodCallSite extends PolySite {
     }
 
     boolean needsUncheckedConversion() {
-        return areAllArgsRelevant;
+        return needsUncheckedConversion;
     }
 
     void setNeedsUncheckedConversion() {

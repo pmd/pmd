@@ -28,7 +28,13 @@ import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
  * types.
  *
  * <p>Typically the output of type inference is a method symbol whose
- * type parameters have been given a specific instantiation.
+ * type parameters have been given a specific instantiation. But If a signature
+ * is produced by type inference, it may not match
+ * its symbol exactly (ie, not just be a substitution applied to the
+ * symbol's type parameters), to account for special cases depending
+ * on context information. For example, the actual return type of a method
+ * whose applicability required an unchecked conversion is the erasure of the
+ * return type of the declaration.
  */
 public interface JMethodSig extends JTypeVisitable {
 

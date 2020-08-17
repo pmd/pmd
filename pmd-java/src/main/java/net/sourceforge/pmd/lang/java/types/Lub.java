@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -29,6 +28,7 @@ import org.pcollections.PSet;
 import org.pcollections.PStack;
 
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -159,14 +159,14 @@ final class Lub {
             // MEC = { V | V in EC, and for all W ≠ V in EC, it is not the case that W <: V }
             Set<JTypeMirror> mec = TypeOps.mostSpecific(ec);
 
-            List<JTypeMirror> best = mec.stream().map(g -> {
+            List<JTypeMirror> best = CollectionUtil.map(mec, g -> {
                 if (g instanceof JClassType) {
                     List<JClassType> relevant = relevant((JClassType) g, stunion);
                     return relevant != null ? lcp(relevant) : g;
                 } else {
                     return g;
                 }
-            }).collect(Collectors.toList());
+            });
 
             return best.isEmpty() ? ts.OBJECT : ts.glb(best);
         }
@@ -180,7 +180,7 @@ final class Lub {
          */
         private JClassType lcp(List<JClassType> relevant) {
             if (relevant.isEmpty()) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Empty set");
             }
 
             if (relevant.size() == 1) {
