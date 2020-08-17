@@ -49,17 +49,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
             // kept for compatibility with existing tests
 //            new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
-    },
-
-    /**
-     * Data flow analysis.
-     */
-    DFA("Data flow analysis") {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            // removed because of incompatibilities with current AST
-            // new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
-        }
     };
 
     private final String displayName;
