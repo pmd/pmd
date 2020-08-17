@@ -95,16 +95,7 @@ public interface JClassType extends JTypeMirror {
     boolean isRaw();
 
 
-    /**
-     * Returns true if this represents the *declaration* of a generic
-     * class or interface and not some parameterization. This is the
-     * "canonical" form of a parameterized type.
-     *
-     * <p>In that case, the {@link #getTypeArgs()} is the same as {@link #getFormalTypeParams()}.
-     *
-     * <p>The generic type declaration of a generic type may be obtained
-     * with {@link #getGenericTypeDeclaration()}.
-     */
+    @Override
     boolean isGenericTypeDeclaration();
 
 

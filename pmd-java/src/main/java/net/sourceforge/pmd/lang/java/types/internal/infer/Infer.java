@@ -417,7 +417,11 @@ public final class Infer {
                 // it's already been adapted
                 assert consParams.equals(CollectionUtil.concatView(cons.getSymbol().getTypeParameters(), newTypeFormals));
                 return adaptedSig;
+            } else if (!cons.getDeclaringType().isGenericTypeDeclaration()) {
+                // it doesn't need adaptation, we're not doing diamond inference
+                return adaptedSig;
             }
+
             List<JTypeVar> tparams = CollectionUtil.concatView(consParams, newTypeFormals);
 
             // type parameters are not part of the adapted signature, so that when we reset

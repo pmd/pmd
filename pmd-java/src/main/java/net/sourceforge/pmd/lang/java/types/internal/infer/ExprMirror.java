@@ -65,17 +65,20 @@ public interface ExprMirror {
 
     }
 
+    /**
+     * Mirror of a method reference expression.
+     */
     interface MethodRefMirror extends PolyExprMirror {
 
+        /** True if this references a ctor. */
         boolean isConstructorRef();
 
 
         /**
          * Returns the type to search as defined by the first section of
-         *
-         * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.13.1
-         *
-         * , except it may also return an array type.
+         * <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.13.1">JLS§15.13.1</a>
+         * , except it may also return an array type (the jls makes an exception for it,
+         * while we don't).
          */
         JTypeMirror getTypeToSearch();
 
@@ -182,9 +185,18 @@ public interface ExprMirror {
         Iterable<ExprMirror> getResultExpressions();
 
 
+        /**
+         * Returns true if the body is value-compatible, ie it is either
+         * an expression, or a block whose return statements return an
+         * expression.
+         */
         boolean isValueCompatible();
 
-
+        /**
+         * Returns true if the body is value-compatible, ie it is either
+         * an expression which "may" have type void (eg, not {@code a + 1}),
+         * or a block whose return statements return no expression.
+         */
         boolean isVoidCompatible();
 
 
@@ -192,8 +204,7 @@ public interface ExprMirror {
     }
 
     /**
-     * Adapter representing a method invocation expression for the purposes
-     * of determining applicability.
+     * Adapter over a method or constructor invocation expression.
      */
     interface InvocationMirror extends PolyExprMirror {
 
@@ -267,8 +278,10 @@ public interface ExprMirror {
         MethodCtDecl getMethodType();
 
 
-        /** transient data used during the analysis */
+        /** Result of an inference run. */
         class MethodCtDecl {
+            // note this data is gathered by the MethodCallSite, stashed
+            // in this object, and restored when we play invocation.
 
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
@@ -288,6 +301,8 @@ public interface ExprMirror {
                 this.failed = failed;
             }
 
+            // package-private:
+
             MethodCtDecl withMethod(JMethodSig method) {
                 return withMethod(method, false);
             }
@@ -296,39 +311,64 @@ public interface ExprMirror {
                 return new MethodCtDecl(method, resolvePhase, argsAreAllRelevant, needsUncheckedConversion, failed);
             }
 
-            // package-private
             boolean areAllArgsRelevant() {
                 return argsAreAllRelevant;
-            }
-
-            public boolean needsUncheckedConversion() {
-                return needsUncheckedConversion;
-            }
-
-            public JMethodSig getMethodType() {
-                return methodType;
-            }
-
-            public boolean phaseRequiresVarargs() {
-                return resolvePhase.requiresVarargs();
-            }
-
-            public boolean isFailed() {
-                return failed;
             }
 
             MethodResolutionPhase getResolvePhase() {
                 return resolvePhase;
             }
 
+            static MethodCtDecl unresolved(TypeSystem ts, boolean isFailed) {
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, isFailed);
+            }
+
+            // public:
+
+            /**
+             * The result type. After an invocation phase, this is the
+             * method type of the ctdecl, substituted with the instantiations
+             * of the type parameters as inferred with context and such,
+             * possibly adapted in some special cases ({@code getClass}).
+             */
+            public JMethodSig getMethodType() {
+                return methodType;
+            }
+
+            /**
+             * Whether the declaration needed unchecked conversion to be
+             * applicable. In this case, the return type of the method is
+             * erased.
+             */
+            public boolean needsUncheckedConversion() {
+                return needsUncheckedConversion;
+            }
+
+            /**
+             * Returns whether the overload resolution phase that selected
+             * this overload was a varargs phase. In this case, the last
+             * formal parameter of the method type should be interpreted
+             * specially with-respect-to the argument expressions.
+             */
+            public boolean phaseRequiresVarargs() {
+                return resolvePhase.requiresVarargs();
+            }
+
+            /**
+             * Returns true if the invocation of this method failed. This
+             * means, the presented method type is a fallback, whose type
+             * parameters might not have been fully instantiated.
+             */
+            public boolean isFailed() {
+                return failed;
+            }
+
+
             @Override
             public String toString() {
                 return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';
             }
 
-            static MethodCtDecl unresolved(TypeSystem ts, boolean isFailed) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, isFailed);
-            }
         }
     }
 
@@ -339,13 +379,13 @@ public interface ExprMirror {
 
         /**
          * Return the type name being instantiated. If the constructor call
-         * is a diamond invocation (or no type args), returns the raw type.
+         * is a diamond invocation (or no type args), returns the generic type declaration.
          * Otherwise returns the parameterised type. If the call declares
          * an anonymous class, then this does *not* return the anonymous
-         * type, but its supertype.
+         * type, but its explicit supertype.
          *
          * <ul>
-         *  <li>e.g. for {@code new ArrayList<>()}, returns {@code ArrayList}.
+         *  <li>e.g. for {@code new ArrayList<>()}, returns {@code ArrayList<T>}.
          *  <li>e.g. for {@code new ArrayList()}, returns {@code ArrayList}.
          *  <li>e.g. for {@code new ArrayList<String>()}, returns {@code ArrayList<String>}.
          *  <li>e.g. for {@code new Runnable() {}} (anonymous), returns {@code Runnable}.
@@ -353,6 +393,10 @@ public interface ExprMirror {
          */
         JClassType getNewType();
 
+        /**
+         * True if this creates an anonymous class. Since java 9 those
+         * can also be diamond-inferred.
+         */
         boolean isAnonymous();
 
         /**

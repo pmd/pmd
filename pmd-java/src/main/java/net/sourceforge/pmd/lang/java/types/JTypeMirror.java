@@ -256,6 +256,21 @@ public interface JTypeMirror extends JTypeVisitable {
         return false;
     }
 
+    /**
+     * Returns true if this represents the *declaration* of a generic
+     * class or interface and not some parameterization. This is the
+     * "canonical" form of a parameterized type.
+     *
+     * <p>In that case, the {@link JClassType#getTypeArgs()} is the same as {@link JClassType#getFormalTypeParams()}.
+     *
+     * <p>The generic type declaration of a generic type may be obtained
+     * with {@link JClassType#getGenericTypeDeclaration()}.
+     */
+    default boolean isGenericTypeDeclaration() {
+        return false;
+    }
+
+
 
     /**
      * Returns true if this type is a generic class type.

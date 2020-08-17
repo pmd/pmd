@@ -66,18 +66,20 @@ fun JMethodSig?.shouldMatchMethod(
         fail("Expected non-null result")
 
     assertSoftly {
-        withClue("name") {
-            this::getName shouldBe named
+        withClue(this) {
+            withClue("name") {
+                this::getName shouldBe named
+            }
+            withClue("Declaring type") { this::getDeclaringType shouldBe declaredIn }
+            if (withFormals != null)
+                withClue("Formals") {
+                    this::getFormalParameters shouldBe withFormals
+                }
+            if (returning != null)
+                withClue("Return type") {
+                    this::getReturnType shouldBe returning
+                }
         }
-        withClue("Declaring type") { this::getDeclaringType shouldBe declaredIn }
-        if (withFormals != null)
-            withClue("Formals") {
-                this::getFormalParameters shouldBe withFormals
-            }
-        if (returning != null)
-            withClue("Return type") {
-                this::getReturnType shouldBe returning
-            }
     }
     return this
 }
