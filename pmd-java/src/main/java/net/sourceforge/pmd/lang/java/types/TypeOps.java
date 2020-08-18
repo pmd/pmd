@@ -349,11 +349,15 @@ public final class TypeOps {
     /**
      * Returns whether if {@code T <: S}, ie T is a subtype of S.
      *
-     * @param t T
-     * @param s S
+     * <p>Note that {@link TypeSystem#ERROR_TYPE} and {@link TypeSystem#UNRESOLVED_TYPE}
+     * are considered subtypes of anything.
+     *
+     * @param t A type T
+     * @param s A type S
      */
     public static Subtyping isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
         if (t == s) {
+            Objects.requireNonNull(t);
             return Subtyping.YES;
         } else if (s == t.getTypeSystem().OBJECT) {
             return Subtyping.definitely(!t.isPrimitive());
@@ -399,6 +403,8 @@ public final class TypeOps {
          * case of unchecked conversion that produces no warning. For example,
          * {@code Class<String>} is convertible to {@code Class<?>}.
          * </ul>
+         *
+         * <p>Note that this ignores any other kind of conversion.
          */
         YES;
 
@@ -411,18 +417,7 @@ public final class TypeOps {
             return this != NO;
         }
 
-        Subtyping or(Subtyping b) {
-            if (this == NO) {
-                return b;
-            } else if (b == NO) {
-                return this;
-            } else if (this == UNCHECKED_WARNING || b == UNCHECKED_WARNING) {
-                return UNCHECKED_WARNING;
-            } else {
-                return YES;
-            }
-        }
-
+        /** Preserves the unchecked warning. */
         Subtyping and(Subtyping b) {
             if (this == b) {
                 return this;
@@ -640,7 +635,7 @@ public final class TypeOps {
                     // T is raw, it's convertible to S if T = C and S = D<?, .., ?>, C <: D
 
                     // This is technically an unchecked conversion, but which
-                    // is safe and generates no warning, so could be allowed by default?
+                    // is safe and generates no warning
                     return allArgsAreUnboundedWildcards(sargs) ? Subtyping.YES
                                                                : Subtyping.UNCHECKED_WARNING;
                 } else {

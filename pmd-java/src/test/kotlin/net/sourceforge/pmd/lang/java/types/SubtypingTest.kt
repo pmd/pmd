@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forNone
+import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forNone
 import io.kotest.matchers.shouldBe
 import io.kotest.properties.forNone
@@ -225,6 +226,26 @@ class SubtypingTest : FunSpec({
 
                 ts.allPrimitives.forNone {
                     assertTrue(ts.NULL_TYPE.isSubtypeOf(it))
+                }
+            }
+
+            test("Test error type subtyping") {
+                forAll(gen) {
+                    ts.ERROR_TYPE.isSubtypeOf(it)
+                }
+
+                ts.allPrimitives.forAll {
+                    assertTrue(ts.ERROR_TYPE.isSubtypeOf(it))
+                }
+            }
+
+            test("Test unresolved type subtyping") {
+                forAll(gen) {
+                    ts.UNRESOLVED_TYPE.isSubtypeOf(it)
+                }
+
+                ts.allPrimitives.forAll {
+                    assertTrue(ts.UNRESOLVED_TYPE.isSubtypeOf(it))
                 }
             }
         }
