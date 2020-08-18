@@ -102,6 +102,13 @@ final class ResolutionFailedException extends RuntimeException {
         return fs + " is not convertible to " + rs;
     }
 
+    static ResolutionFailedException notAVarargsMethod(TypeInferenceLogger logger, ExprMirror expr) {
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
+            expr.getLocation(),
+            "Method is not varargs"
+        ));
+    }
+
     static ResolutionFailedException unsolvableDependency(TypeInferenceLogger logger) {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(null,

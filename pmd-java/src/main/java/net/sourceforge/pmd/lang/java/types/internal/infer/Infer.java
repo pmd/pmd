@@ -453,6 +453,9 @@ public final class Infer {
      * Catch the easy cases before starting inference.
      */
     private JMethodSig instantiateMaybeNoInfer(JMethodSig m, MethodCallSite site, MethodResolutionPhase phase) {
+        if (phase.requiresVarargs() && !m.isVarargs()) {
+            throw ResolutionFailedException.notAVarargsMethod(LOG, site.getExpr());
+        }
 
         if (!m.isGeneric()) {
             // non-generic methods may mention explicit type arguments
