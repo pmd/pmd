@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
@@ -56,10 +58,9 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
 
 
     @Override
-    public JVariableSig getSignature() {
+    public @Nullable JVariableSig getSignature() {
         if (typedSym == null) {
             getTypeMirror(); // force evaluation
-            assert typedSym != null : "Null signature?";
         }
         return typedSym;
     }

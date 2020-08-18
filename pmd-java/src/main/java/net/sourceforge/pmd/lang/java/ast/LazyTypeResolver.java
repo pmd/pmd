@@ -410,14 +410,15 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTVariableAccess node, Void data) {
         if (node.getParent() instanceof ASTSwitchLabel) {
-            // may be an enum constant, in which case symbol table doesn't help
+            // may be an enum constant, in which case symbol table doesn't help (this is a documented thing)
             ASTSwitchLike switchParent = node.ancestors(ASTSwitchLike.class).firstOrThrow();
             JTypeMirror testedType = switchParent.getTestedExpression().getTypeMirror();
             JTypeDeclSymbol testedSym = testedType.getSymbol();
             if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
                 JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
                 if (enumConstant == null) {
-                    return ts.UNRESOLVED_TYPE;
+                    // no symbol, but type is there
+                    return ts.declaration((JClassSymbol) testedSym);
                 } else {
                     node.setTypedSym(ts.sigOf(testedType, enumConstant));
                     return testedType;
@@ -427,7 +428,8 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
         @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getName());
         if (result == null) {
-            return ts.UNRESOLVED_TYPE; // type of an out-of-scope field
+            // An out-of-scope field. Use context to resolve it.
+            return polyResolution.getContextTypeForStandaloneFallback(node);
         }
         node.setTypedSym(result);
 
@@ -454,7 +456,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
         if (qualifierT == ts.UNRESOLVED_TYPE) {
-            return ts.UNRESOLVED_TYPE;
+            return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
         NameResolver<FieldSig> fieldResolver = TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getName());
@@ -463,7 +465,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         node.setTypedSym(sig);
 
         if (sig == null) {
-            return ts.UNRESOLVED_TYPE;
+            return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
@@ -479,7 +481,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         if (comp instanceof JArrayType) {
             return ((JArrayType) comp).getComponentType();
         } else if (comp == ts.UNRESOLVED_TYPE) {
-            return comp;
+            return polyResolution.getContextTypeForStandaloneFallback(node);
         } else {
             return ts.ERROR_TYPE;
         }

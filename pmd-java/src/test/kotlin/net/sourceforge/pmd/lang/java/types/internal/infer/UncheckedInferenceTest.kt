@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.types.typeDsl
  */
 class UncheckedInferenceTest : ProcessorTestSpec({
 
-    parserTest("Test raw type in argument erases result") {
+    parserTest("f:Test raw type in argument erases result") {
 
         val logGetter = logTypeInference()
         val acu = parser.parse(

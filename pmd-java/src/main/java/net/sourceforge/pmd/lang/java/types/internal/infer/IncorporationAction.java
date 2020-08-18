@@ -117,7 +117,8 @@ abstract class IncorporationAction {
          */
         boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s) {
             // eq bounds are so rare we shouldn't care if they're cached
-            return eq ? isSameType(t, s, true) : checkSubtype(t, s);
+            return eq ? isSameType(t, s, true)
+                      : checkSubtype(t, s);
         }
 
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {

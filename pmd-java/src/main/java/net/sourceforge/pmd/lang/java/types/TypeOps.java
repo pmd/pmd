@@ -1730,7 +1730,14 @@ public final class TypeOps {
      */
     public static boolean isUnresolved(@NonNull JTypeMirror t) {
         TypeSystem ts = t.getTypeSystem();
-        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE || t.getSymbol() != null && t.getSymbol().isUnresolved();
+        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE || hasUnresolvedSymbol(t);
+    }
+
+    public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
+        if (!(t instanceof JClassType)) {
+            return false;
+        }
+        return t.getSymbol() != null && t.getSymbol().isUnresolved();
     }
 
     public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {

@@ -213,17 +213,20 @@ final class PolyResolution {
         if (e.getParent().getParent() instanceof InvocationNode) {
             InvocationNode parentInvoc = (InvocationNode) e.getParent().getParent();
             OverloadSelectionResult info = parentInvoc.getOverloadSelectionInfo();
-            if (info.isFailed()) {
-                // TODO might log this
-                return ts.UNRESOLVED_TYPE;
-            } else if (e instanceof ASTConditionalExpression || e instanceof ASTSwitchExpression) {
-                return info.ithFormalParam(e.getIndexInParent());
-            }
+            return getFormalTypeForArgument((ASTExpression) e, info);
         } else if (e.getParent() instanceof ASTConditionalExpression) {
             return fetchCascaded((TypeNode) e.getParent());
         }
 
         throw new IllegalStateException("Unknown poly? " + e);
+    }
+
+    private JTypeMirror getFormalTypeForArgument(ASTExpression arg, OverloadSelectionResult info) {
+        if (info.isFailed()) {
+            // TODO might log this
+            return ts.UNRESOLVED_TYPE;
+        }
+        return info.ithFormalParam(arg.getIndexInParent());
     }
 
     /**
@@ -252,6 +255,39 @@ final class PolyResolution {
             || e instanceof ASTConditionalExpression
             || e instanceof ASTSwitchExpression
             || e instanceof InvocationNode;
+    }
+
+    // Some symbol is not resolved
+    // go backwards from the context to get it.
+
+    /**
+     * Fallback for some standalone expressions, that may use some context
+     * to set their type. This must not trigger any type inference process
+     * that may need this expression. So if this expression is in an invocation
+     * context, that context must not be called.
+     */
+    JTypeMirror getContextTypeForStandaloneFallback(ASTExpression e) {
+        JavaNode ctx = contextOf(e, false);
+        if (ctx == null) {
+            if (e.getParent() instanceof ASTSwitchLabel) {
+                ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
+                // this may trigger some inference, which doesn't matter
+                // as it is out of context
+                return switchLike.getTestedExpression().getTypeMirror();
+            }
+            return ts.UNRESOLVED_TYPE;
+        } else if (ctx instanceof InvocationNode) {
+            // This is the case mentioned in the doc
+            // TODO we could do that by setting a sentinel value to prevent
+            //  reentry (most likely, unresolved).
+
+            // OverloadSelectionResult ctxInvoc = ((InvocationNode) ctx).getOverloadSelectionInfo();
+            // return getFormalTypeForArgument(e, ctxInvoc);
+            return ts.UNRESOLVED_TYPE;
+        } else {
+            JTypeMirror targetType = getTargetType(ctx, false);
+            return targetType == null ? ts.UNRESOLVED_TYPE : targetType;
+        }
     }
 
     /**

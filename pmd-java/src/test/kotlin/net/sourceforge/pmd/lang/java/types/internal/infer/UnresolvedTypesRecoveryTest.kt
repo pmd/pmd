@@ -221,7 +221,7 @@ class C {
         call.shouldMatchN {
             methodCall("id") {
 
-                with (it.typeDsl) {
+                with(it.typeDsl) {
                     it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
                     it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
                     it.methodType.symbol shouldBe idMethod
@@ -239,7 +239,48 @@ class C {
         }
     }
 
-    parserTest("f:Recovery when there are several applicable overloads") {
+    parserTest("Unresolved types are compatible in type variable bounds") {
+
+        val acu = parser.parse(
+                """
+
+class C {
+
+    static ooo.Foo foo() { return null; }
+    static <T extends ooo.Bound> T id(T t) { return t; }
+
+    static {
+        // Creates bounds: `T >: ooo.Foo` and `T <: ooo.Bound`
+        // Should not be deemed incompatible
+        id(foo()); 
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+
+        val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
+        val t_Bound = idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+
+                it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Foo), returning = t_Foo)
+                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                it.methodType.symbol shouldBe idM
+
+
+                argList(1)
+            }
+        }
+    }
+
+    parserTest("Recovery when there are several applicable overloads") {
 
         val logGetter = logTypeInference()
 
@@ -271,7 +312,7 @@ class C {
         call.shouldMatchN {
             methodCall("append") {
 
-                with (it.typeDsl) {
+                with(it.typeDsl) {
                     it.methodType.shouldMatchMethod("append", withFormals = listOf(ts.OBJECT), returning = gen.t_StringBuilder)
                     it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
                 }
@@ -289,6 +330,138 @@ class C {
             }
         }
         logGetter().shouldContainIgnoringCase("ambiguity")
+    }
+
+    parserTest("Recovery of unknown field using invocation context") {
+        // This is ignored as doing this kind of thing would be impossible with
+        // laziness. If we want to resolve stuff like that, we have to resolve
+        // context first, then push it down into unresolved slots. But standalone
+        // exprs are used for disambiguation. So we'd probably have to split getTypeMirror
+        // into a top-down only and a user-facing one.
+
+        val logGetter = logTypeInference()
+
+        val acu = parser.parse(
+                """
+import ooo.Unresolved;
+
+class C {
+
+    void foo(int i) {}
+
+    static {
+        foo(Unresolved.SOMETHING); // for now, this is unresolved.
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        logGetter().shouldBeEmpty()
+        call.shouldMatchN {
+            methodCall("foo") {
+
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(int), returning = void)
+                    it.overloadSelectionInfo.isFailed shouldBe false
+                }
+
+                argList {
+                    fieldAccess("SOMETHING") {
+                        with(it.typeDsl) {
+                            it.typeMirror shouldBe ts.UNRESOLVED_TYPE
+                            it.referencedSym shouldBe null
+                        }
+                        typeExpr {
+                            classType("Unresolved")
+                        }
+                    }
+                }
+            }
+        }
+        logGetter().shouldBeEmpty()
+    }
+
+    parserTest("Recovery of unknown field/var using assignment context") {
+
+        val acu = parser.parse(
+                """
+import ooo.Unresolved;
+
+class C {
+
+    void foo(int i) {}
+
+    static {
+        int i = Unresolved.SOMETHING;
+        String k = SOMETHING;
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (field, unqual) = acu.descendants(ASTAssignableExpr.ASTNamedReferenceExpr::class.java).toList()
+
+        field.shouldMatchN {
+            fieldAccess("SOMETHING") {
+                with(it.typeDsl) {
+                    it.typeMirror shouldBe int
+                    it.referencedSym shouldBe null
+                }
+                typeExpr {
+                    classType("Unresolved")
+                }
+            }
+        }
+        unqual.shouldMatchN {
+            variableAccess("SOMETHING") {
+                with(it.typeDsl) {
+                    it.typeMirror shouldBe ts.STRING
+                    it.referencedSym shouldBe null
+                }
+            }
+        }
+    }
+
+    parserTest("Unresolved type in primitive switch label") {
+
+        val acu = parser.parse(
+                """
+import ooo.Opcodes.*;
+
+class C {
+    void foo(int i) {
+        switch (i) {
+        case A: break;
+        case B: break;
+        }
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, a, b) = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        a.shouldMatchN {
+            variableAccess("A") {
+                with(it.typeDsl) {
+                    it.typeMirror shouldBe int
+                    it.referencedSym shouldBe null
+                }
+            }
+        }
+        b.shouldMatchN {
+            variableAccess("B") {
+                with(it.typeDsl) {
+                    it.typeMirror shouldBe int
+                    it.referencedSym shouldBe null
+                }
+            }
+        }
     }
 
 })

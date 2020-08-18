@@ -48,6 +48,11 @@ typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
 fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.toList()
 
+fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
+        this.shouldBeA<JClassType> {
+            it.symbol::getCanonicalName shouldBe canonicalName
+        }
+
 fun JMethodSig?.shouldMatchMethod(
         named: String,
         declaredIn: JTypeMirror? = null,
