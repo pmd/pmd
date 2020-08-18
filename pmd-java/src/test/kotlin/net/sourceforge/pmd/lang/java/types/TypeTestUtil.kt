@@ -36,10 +36,10 @@ import kotlin.streams.toList
 fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
 val testTypeSystem: TypeSystem = newTypeSystem()
 
+// bc the method is package private
 val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver
 
 fun TypeSystem.lub(vararg us: JTypeMirror): JTypeMirror = lub(us.toList())
-fun TypeSystem.intersect(vararg us: JTypeMirror): JTypeMirror = intersect(us.toList())
 
 val TypeSystem.STRING get() = declaration(getClassSymbol(String::class.java)) as JClassType
 
@@ -110,11 +110,6 @@ class AllTypesGen(val ts: TypeSystem) : Arb<JTypeMirror>() {
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
 class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
-    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
-
-    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> =
-            pool.asSequence().map { Sample(it, shrinks = RTree({ it.toArray() })) }
-
     val t_String: JClassType get() = java.lang.String::class.decl
     val t_StringBuilder: JClassType get() = java.lang.StringBuilder::class.decl
     val t_CharSequence: JClassType get() = java.lang.CharSequence::class.decl
@@ -181,8 +176,11 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
 
     val t_EnumSet: JClassType get() = java.util.EnumSet::class.raw
 
+    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
 
-    fun comparableOf(mirror: JTypeMirror): JClassType = Comparable::class[mirror]
+    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> =
+            pool.asSequence().map { Sample(it, shrinks = RTree({ it.toArray() })) }
+
 
     private val pool = listOf(
             `t_List{String}`,
@@ -193,6 +191,7 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
             `t_Collection{Integer}`,
             `t_List{? extends Number}`,
             `t_List{?}`,
+            t_MapEntry,
             `t_Array{Object}`
 
     )
@@ -277,8 +276,17 @@ interface TypeDslMixin {
 
     /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
+            ts.glb(listOf(this, t))
+
+    // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
+    fun glb(t1: JTypeMirror, t2: JTypeMirror, vararg tail: JTypeMirror): JTypeMirror =
             // flatten
-            ts.intersect(listOf(this, t))
+            ts.glb(listOf(t1, t2, *tail))
+
+    // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
+    fun lub(vararg tail: JTypeMirror): JTypeMirror =
+            // flatten
+            ts.lub(listOf(*tail))
 
     /** subtyping */
     operator fun JTypeMirror.compareTo(t: JTypeMirror): Int = when {

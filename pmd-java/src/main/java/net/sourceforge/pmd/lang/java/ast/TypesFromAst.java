@@ -72,8 +72,11 @@ final class TypesFromAst {
                 components.add(fromAst(ts, lexicalSubst, t));
             }
 
-            return ts.intersect(components);
-
+            try {
+                return ts.glb(components);
+            } catch (IllegalArgumentException e) {
+                return ts.ERROR_TYPE;
+            }
         } else if (node instanceof ASTArrayType) {
 
             JTypeMirror eltType = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());

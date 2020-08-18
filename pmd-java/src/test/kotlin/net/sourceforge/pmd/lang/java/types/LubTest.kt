@@ -21,8 +21,6 @@ class LubTest : FunSpec({
     with(TypeDslOf(testTypeSystem)) { // import construction DSL
         with(gen) { // import constants
 
-            fun lub(vararg us: JTypeMirror) = ts.lub(us.toList())
-
             test("Test generic supertype set") {
 
                 val set = setOf(
@@ -96,7 +94,7 @@ class LubTest : FunSpec({
             test("Test simple lub") {
 
                 lub(Sub1::class.decl, Sub2::class.decl) shouldBe (
-                        I1::class.decl * comparableOf(`?` extends (I1::class.decl * comparableOf(`?`)))
+                        I1::class.decl * t_Comparable[`?` extends (I1::class.decl * t_Comparable[`?`])]
                 )
             }
 
@@ -115,7 +113,7 @@ class LubTest : FunSpec({
 
                 // List<? extends I1 & Comparable<?>>
 
-                val result = List::class[`?` extends (I1::class.decl * comparableOf(`?`))]
+                val result = List::class[`?` extends (I1::class.decl * t_Comparable[`?`])]
 
                 lub(t_List[Sub1::class.decl], t_List[Sub2::class.decl]) shouldBe result
 

@@ -419,6 +419,15 @@ public final class TypeSystem {
         return typeOf(klass, true);
     }
 
+    /**
+     * Like {@link #typeOf(JTypeDeclSymbol, boolean)}, defaulting the
+     * erased parameter to false. If the symbol is not generic,
+     * the returned symbol is not actually a generic type declaration.
+     *
+     * @param klass Symbol
+     *
+     * @return An erased class type
+     */
     public JTypeMirror declaration(JClassSymbol klass) {
         return typeOf(klass, false);
     }
@@ -522,28 +531,6 @@ public final class TypeSystem {
         return JVariableSig.forLocal(decl, fieldSym);
     }
 
-    /**
-     * Builds an intersection type for the specified component types.
-     * This does not necessarily return a {@link JIntersectionType},
-     * if the parameter has a single component, returns it.
-     *
-     * <p>This is a factory method for intersection types, which performs
-     * no minimization of the intersection, and which does not check the
-     * validity of the bounds. This means, that  Use {@link #glb(Collection)} to perform
-     * minimization.
-     * FIXME this should be replaced by GLB, which performs minimization
-     *
-     * @param types Types to intersect
-     *
-     * @return An intersection type
-     *
-     * @throws NullPointerException     If the collection is null
-     * @throws IllegalArgumentException If the collection is empty
-     */
-    public JTypeMirror intersect(Collection<? extends JTypeMirror> types) {
-        return glb(types);
-    }
-
 
     /**
      * Builds a wildcard type with a single bound.
@@ -617,12 +604,28 @@ public final class TypeSystem {
      * Returns the greatest lower bound of the given set of types.
      * This is defined in JLS§5.1.10 (Capture Conversion):
      *
-     * <blockquote>
+     * <pre>
      * glb(V1,...,Vm) = V1 &amp; ... &amp; Vm
      * glb(V) = V
-     * </blockquote>
+     * </pre>
      *
-     * @throws IllegalArgumentException If some component is not a class, array, or wildcard type
+     * <p>This may alter the components, so that:
+     * <ul>
+     * <li>No intersection type is a component: {@code ((A & B) & C) = (A & (B & C)) = (A & B & C)}
+     * <li>No two types in the intersection are subtypes of one another
+     * (the intersection is minimal): {@code A <: B => (A & B) = A}, in particular, {@code (A & A) = A}
+     * <li>The intersection has a single component that is a
+     * class, array, or type variable. If all components are interfaces,
+     * then that component is {@link #OBJECT}.
+     * </ul>
+     *
+     * <p>If after these transformations, only a single component remains,
+     * then that is the returned type. Otherwise a {@link JIntersectionType}
+     * is created.
+     *
+     * <p>See also JLS§4.9 (Intersection types).
+     *
+     * @throws IllegalArgumentException If some component is not a class, interface, array, or type variable
      * @throws IllegalArgumentException If there is more than one minimal class or array type
      * @throws IllegalArgumentException If types is empty
      * @throws NullPointerException     If types is null

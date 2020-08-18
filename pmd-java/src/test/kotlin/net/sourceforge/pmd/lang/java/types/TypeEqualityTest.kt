@@ -71,41 +71,7 @@ class TypeEqualityTest : FunSpec({
 
                 forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
                     canIntersect(t, s) implies {
-                        (t * s) == (t * s)
-                    }
-                }
-            }
-
-            test("Test intersection identity") {
-
-                forAll(ts.allTypesGen) { t ->
-                    (t * t) == t
-                }
-            }
-
-            test("Test intersection symmetry") {
-
-                forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    canIntersect(t, s) implies {
-                        (t * s) == (s * t)
-                    }
-                }
-            }
-
-            test("Test intersection left associativity") {
-
-                forAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
-                    canIntersect(t, s, r) implies {
-                        (t * s) * r == (t * s * r)
-                    }
-                }
-            }
-
-            test("Test intersection right associativity") {
-
-                forAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
-                    canIntersect(t, s, r) implies {
-                        t * (s * r) == (t * s * r)
+                        glb(t, s) == glb(t, s)
                     }
                 }
             }

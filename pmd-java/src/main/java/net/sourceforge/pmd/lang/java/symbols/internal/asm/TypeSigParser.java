@@ -110,7 +110,7 @@ final class TypeSigParser {
         if (bounds.isEmpty()) {
             b.push(b.ts.OBJECT);
         } else {
-            b.push(b.ts.intersect(bounds));
+            b.push(b.ts.glb(bounds));
         }
         return cur;
     }

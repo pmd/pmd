@@ -139,7 +139,7 @@ class O {
         //                   -----------
         //                   this node has a raw type, maybe it should have type ArrayList<String>
 
-        // Note that the whole expression has type ArrayList<String> after inference
+        // Note that the whole expression already has type ArrayList<String> after inference
     }
 }
 

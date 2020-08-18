@@ -179,7 +179,7 @@ public final class TypesFromReflection {
             boundsMapped.add(jTypeMirror);
         }
         // we intersect
-        return ts.wildcard(isUpper, ts.intersect(boundsMapped));
+        return ts.wildcard(isUpper, ts.glb(boundsMapped));
     }
 
 }
