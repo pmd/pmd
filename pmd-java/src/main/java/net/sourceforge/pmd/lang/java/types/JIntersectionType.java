@@ -5,15 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
@@ -28,31 +25,34 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 public interface JIntersectionType extends JTypeMirror {
 
     /**
-     * From the JLS: Every intersection type induces a notional class
-     * or interface for the purpose of identifying its members.
+     * Returns the list of components. Their erasure must be pairwise disjoint.
+     * If the intersection's superclass is {@link TypeSystem#OBJECT},
+     * then it is excluded from this set.
      */
-    JClassType getInducedClassType();
-
-
     List<JTypeMirror> getComponents();
 
 
-    default @Nullable JTypeMirror getSuperClass() {
-        for (JTypeMirror ci : getComponents()) {
-            // there can't be more than one normally
-            if (!ci.isInterface()) {
-                return ci;
-            }
-        }
-        return getTypeSystem().OBJECT;
-    }
+    /**
+     * The primary bound of this intersection, which may be a type variable,
+     * array type, or class type (not an interface). If all bounds are interfaces,
+     * then this returns {@link TypeSystem#OBJECT}.
+     */
+    @NonNull JTypeMirror getPrimaryBound();
 
 
-    default @Nullable Set<JTypeMirror> getInterfaces() {
-        Set<JTypeMirror> interfaces = new LinkedHashSet<>(getComponents());
-        interfaces.remove(getSuperClass());
-        return interfaces;
-    }
+    /**
+     * Returns all additional bounds on the primary bound, which are 
+     * necessarily interface types.
+     */
+    @NonNull List<JClassType> getInterfaces();
+
+
+    /**
+     * Every intersection type induces a notional class or interface 
+     * for the purpose of identifying its members. This may be a functional
+     * interface.
+     */
+    JClassType getInducedClassType();
 
 
     @Override

@@ -479,20 +479,19 @@ public final class Infer {
                 throw ResolutionFailedException.incompatibleTypeParamCount(LOG, site.getExpr(), m, explicitTargs.size(), tparams.size());
             }
 
-            for (int i = 0; i < tparams.size(); i++) {
-                List<JTypeMirror> bounds = asList(tparams.get(i).getUpperBound());
-                JTypeMirror explicit = explicitTargs.get(i);
+            Substitution explicitSubst = Substitution.mapping(tparams, explicitTargs);
 
-                for (JTypeMirror bound : bounds) {
-                    JTypeMirror sub = bound.subst(Substitution.mapping(tparams, explicitTargs));
-                    if (!explicit.isSubtypeOf(sub, true)) {
-                        throw ResolutionFailedException.incompatibleBound(LOG, explicit, sub, expr.getExplicitTargLoc(i));
-                    }
+            for (int i = 0; i < tparams.size(); i++) {
+                JTypeMirror explicit = explicitTargs.get(i);
+                JTypeMirror upperBound = tparams.get(i).getUpperBound().subst(explicitSubst);
+
+                if (!explicit.isSubtypeOf(upperBound, true)) {
+                    throw ResolutionFailedException.incompatibleBound(LOG, explicit, upperBound, expr.getExplicitTargLoc(i));
                 }
             }
 
 
-            JMethodSig subst = m.subst(Substitution.mapping(tparams, explicitTargs));
+            JMethodSig subst = m.subst(explicitSubst);
 
             // check that the arguments are conformant
             // the inference context is empty because all param types are ground.

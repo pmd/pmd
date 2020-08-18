@@ -202,7 +202,11 @@ public final class TypeOps {
 
             // order is irrelevant
 
-            if (!isSameType(t.getSuperClass(), s2.getSuperClass(), inInference)) {
+            if (s2.getComponents().size() != t.getComponents().size()) {
+                return false;
+            }
+
+            if (!isSameType(t.getPrimaryBound(), s2.getPrimaryBound(), inInference)) {
                 return false;
             }
 
@@ -431,7 +435,7 @@ public final class TypeOps {
             return b ? YES : NO;
         }
 
-        static Subtyping subtypesAll(JTypeMirror t, List<? extends JTypeMirror> supers) {
+        static Subtyping subtypesAll(JTypeMirror t, Iterable<? extends JTypeMirror> supers) {
             Subtyping result = YES;
             for (JTypeMirror ui : supers) {
                 Subtyping sub = isSubtype(t, ui);
@@ -443,7 +447,7 @@ public final class TypeOps {
             return result;
         }
 
-        static Subtyping anySubTypesAny(List<? extends JTypeMirror> us, List<? extends JTypeMirror> vs) {
+        static Subtyping anySubTypesAny(Iterable<? extends JTypeMirror> us, Iterable<? extends JTypeMirror> vs) {
             for (JTypeMirror ui : us) {
                 for (JTypeMirror vi : vs) {
                     Subtyping sub = isSubtype(ui, vi);
@@ -953,7 +957,7 @@ public final class TypeOps {
                     }
                 }
             }
-            return change ? t.getTypeSystem().intersect(comps) : t;
+            return change ? t.getTypeSystem().glb(comps) : t;
         }
 
         @Override
@@ -1437,7 +1441,7 @@ public final class TypeOps {
             return firstResult(target, t.getComponents());
         }
 
-        public @Nullable JTypeMirror firstResult(JClassSymbol target, List<? extends JTypeMirror> components) {
+        public @Nullable JTypeMirror firstResult(JClassSymbol target, Iterable<? extends JTypeMirror> components) {
             for (JTypeMirror ci : components) {
                 @Nullable JTypeMirror sup = ci.acceptVisitor(this, target);
                 if (sup != null) {

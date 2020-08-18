@@ -315,17 +315,20 @@ final class Lub {
         }
 
 
-        ArrayList<JTypeMirror> list = new ArrayList<>(types.size());
+        ArrayList<JTypeMirror> allBounds = new ArrayList<>(types.size());
 
         for (JTypeMirror type : types) {
             // flatten intersections: (A & (B & C)) => (A & B & C)
             if (type instanceof JIntersectionType) {
-                list.addAll(((JIntersectionType) type).getComponents());
+                allBounds.addAll(((JIntersectionType) type).getComponents());
             } else {
-                list.add(type);
+                allBounds.add(type);
             }
         }
 
+        if (allBounds.size() == 1) {
+            return allBounds.get(0);
+        }
 
         JTypeMirror ck = ts.OBJECT; // Ck is a class type
 
@@ -333,14 +336,14 @@ final class Lub {
         PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
         PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
         JTypeMirror lastBadClass = null;
-        for (ListIterator<JTypeMirror> iterator = list.listIterator(); iterator.hasNext();) {
+        for (ListIterator<JTypeMirror> iterator = allBounds.listIterator(); iterator.hasNext(); ) {
             JTypeMirror ci = iterator.next();
 
             if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
                 throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
             }
 
-            if (!isPossiblyAnInterface(ci)) {
+            if (isExclusiveIntersectionBound(ci)) {
                 // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
                 // Ci is not unresolved
 
@@ -370,30 +373,26 @@ final class Lub {
 
         switch (retryWithCaptureBounds) {
         case YES:
-            list.removeAll(cvarsToRemove);
-            list.addAll(cvarLowers);
-            return glb(ts, list);
+            allBounds.removeAll(cvarsToRemove);
+            allBounds.addAll(cvarLowers);
+            return glb(ts, allBounds);
         case NO:
             break;
         default:
             throw new IllegalArgumentException("Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
 
-        if (list.isEmpty()) {
+        if (allBounds.isEmpty()) {
             return ck;
         }
 
         if (ck != ts.OBJECT) {
             // readd ck as first component
-            list.add(0, ck);
+            allBounds.add(0, ck);
         }
 
-        if (list.size() == 1) {
-            return list.get(0);
-        }
-
-        if (ck instanceof JTypeVar) {
-            return new IntersectionTypeImpl(ts, list);
+        if (allBounds.size() == 1) {
+            return allBounds.get(0);
         }
 
         // We assume there cannot be an array type here. Why?
@@ -410,18 +409,26 @@ final class Lub {
 
         // This means, that the loop above would find Ck = Arr[], and delete all Bi, since Ck <: Bi
         // So in the end, we would return Arr[] alone, not create an intersection
+
         // TODO this is order dependent: Arr[] & Serializable is ok, but Serializable & Arr[] is not
         //   Possibly use TypeOps::mostSpecific to merge them
-        assert ck instanceof JClassType : "Weird intersection involving multiple array types? " + list;
+        if (ck instanceof JArrayType) {
+            // If we get here, then the intersection looks like `A[] & B1 & .. & Bn`,
+            // where some Bi is not a subtype of A[], else it would have
+            // been pruned by the loop above. Note that this means some `Bi`
+            // is not in { Serializable, Cloneable, Object }. Since arrays
+            // cannot be extended, such a bound produces a type which cannot contain anything.
+            return ts.NULL_TYPE;
+        }
 
-        return new IntersectionTypeImpl.MinimalIntersection(ts, (JClassType) ck, list);
+        return new IntersectionTypeImpl(ts, ck, allBounds);
     }
 
 
-    private static boolean isPossiblyAnInterface(JTypeMirror ci) {
-        return ci.isInterface()
-            || ci instanceof JInferenceVar
-            || ci.getSymbol() != null && ci.getSymbol().isUnresolved();
+    static boolean isExclusiveIntersectionBound(JTypeMirror ci) {
+        return !ci.isInterface()
+            && !(ci instanceof JInferenceVar)
+            && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
     }
 
     private static JTypeMirror cvarLowerBound(JTypeMirror t) {

@@ -44,7 +44,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                         it.formalParameters[0].shouldBeA<JArrayType> {
                             it.componentType shouldBe it.typeSystem.STRING
                         }
-                        it::getReturnType shouldBe TypeGen(it.typeSystem).`t_List{String}`
+                        it::getReturnType shouldBe RefTypeGen(it.typeSystem).`t_List{String}`
                         it::getTypeParameters shouldBe asList.typeParameters // not substituted
                     }
 

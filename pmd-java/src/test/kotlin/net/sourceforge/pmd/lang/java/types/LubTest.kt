@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
@@ -23,14 +25,18 @@ class LubTest : FunSpec({
 
             test("Test generic supertype set") {
 
-                GenericSub::class[int.box()].superTypeSet shouldBe setOf(
+                val set = setOf(
                         GenericSub::class[int.box()],
                         GenericSuper::class[int.box()],
+                        ts.OBJECT,
                         I3::class.decl,
                         I2::class[I1::class.decl],
-                        I1::class.decl,
-                        ts.OBJECT
+                        I1::class.decl
                 )
+
+                val sups = GenericSub::class[int.box()].superTypeSet
+
+                sups shouldBe set
 
             }
 
@@ -96,7 +102,7 @@ class LubTest : FunSpec({
 
             test("Test lub of one type") {
 
-                RefTypeGen.checkAll { ref ->
+                ts.allTypesGen.checkAll { ref ->
                     lub(ref) shouldBe ref
                 }
 

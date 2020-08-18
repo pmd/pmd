@@ -19,7 +19,9 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
-    val arrayComponentGen = RefTypeGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }
+    val arrayComponentGen = testTypeSystem.allTypesGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }
+
+    // fixme these tests depend on the toString!
 
     parserTest("Test array clone") {
 

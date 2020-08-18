@@ -5,50 +5,64 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 class IntersectionTypeImpl implements JIntersectionType {
 
 
     private final TypeSystem ts;
+    private final JTypeMirror superClass;
     private final List<JTypeMirror> components;
     private JClassType induced;
 
-
-    IntersectionTypeImpl(TypeSystem ts, List<JTypeMirror> components) {
+    /**
+     * @param superClass may be Object if every bound is an interface
+     * @param allBounds  including the superclass, unless Object
+     */
+    IntersectionTypeImpl(TypeSystem ts,
+                         JTypeMirror superClass,
+                         List<JTypeMirror> allBounds) {
+        this.superClass = superClass;
+        this.components = Collections.unmodifiableList(allBounds);
         this.ts = ts;
-        this.components = Collections.unmodifiableList(components);
 
-        if (components.size() < 2) {
-            throw new IllegalArgumentException("Intersection type should have more than one bound");
-        }
+        assert allBounds.size() > 1 : "Intersection of a single bound??"; // should be caught by GLB
+        assert superClass instanceof JArrayType : "Intersection with an array is not well-formed"; // should be caught by GLB
+        assert Lub.isExclusiveIntersectionBound(superClass) :
+            "Wrong primary intersection bound " + superClass + " in " + this;
+
+        checkWellFormed(allBounds);
+
     }
 
     @Override
     public JClassType getInducedClassType() {
+        JTypeMirror primary = getPrimaryBound();
+        if (primary instanceof JTypeVar) {
+            // TODO, should generate an interface which has all the members of Ti
+            throw new NotImplementedException("Intersection with type variable is not implemented yet");
+        }
+
         if (induced == null) {
-            JTypeMirror glb = ts.glb(components);
-            if (glb instanceof MinimalIntersection) {
-                induced = ((MinimalIntersection) glb).induced;
-            } else if (glb instanceof JClassType) {
-                induced = (JClassType) glb;
-            } else {
-                induced = ts.OBJECT; // TODO typeVars, arrays?
-            }
+            JClassSymbol sym = ts.symbols().fakeIntersectionSymbol("", (JClassType) primary, getInterfaces());
+            this.induced = (JClassType) ts.declaration(sym);
         }
         return induced;
     }
 
     @Override
-    public boolean isInterface() {
-        return getInducedClassType().isInterface();
+    public @Nullable JTypeDeclSymbol getSymbol() {
+        return null; // the induced intersection may be an interface
     }
 
     @Override
@@ -63,7 +77,7 @@ class IntersectionTypeImpl implements JIntersectionType {
 
     @Override
     public JTypeMirror getErasure() {
-        return components.get(0).getErasure();
+        return superClass.getErasure();
     }
 
     @Override
@@ -88,40 +102,39 @@ class IntersectionTypeImpl implements JIntersectionType {
         return Objects.hash(components);
     }
 
+    @Override
+    public @NonNull JTypeMirror getPrimaryBound() {
+        return superClass;
+    }
 
-    static final class MinimalIntersection extends IntersectionTypeImpl {
+    @Override
+    public @NonNull List<JClassType> getInterfaces() {
+        List<JTypeMirror> list = superClass == ts.OBJECT ? components
+                                                         : components.subList(1, components.size());
+        return (List<JClassType>) (List) list; // the list is unmodifiable
+    }
 
-        private final JClassType induced;
-
-        MinimalIntersection(TypeSystem ts,
-                            JClassType superClass,
-                            List<JTypeMirror> components) {
-            super(ts, components);
-
-            List<JClassType> superItfs = new ArrayList<>();
-
-            for (JTypeMirror comp : components) {
-                if (comp == superClass) { // NOPMD CompareObjectsWithEquals
-                    continue;
+    private static void checkWellFormed(List<JTypeMirror> flattened) {
+        for (int i = 0; i < flattened.size(); i++) {
+            JTypeMirror ci = flattened.get(i);
+            Objects.requireNonNull(ci, "Null intersection component");
+            if (Lub.isExclusiveIntersectionBound(ci)) {
+                if (i != 0) {
+                    throw malformedIntersection(flattened);
                 }
-                if (comp instanceof JClassType) {
-                    assert comp.isInterface()
-                        || comp.getSymbol() != null && comp.getSymbol().isUnresolved()
-                        : "Not an interface type " + comp + " in intersection " + components;
-
-                    superItfs.add((JClassType) comp);
-                } else if (comp instanceof JTypeVar) {
-                    // TODO, should generate an interface which has all the members of Ti
-                    throw new NotImplementedException("TODO");
-                }
+            } else if (ci instanceof JClassType) {
+                // must be an interface, as per isExclusiveBlabla
+                assert ci.isInterface();
+            } else {
+                throw malformedIntersection(flattened);
             }
-            JClassSymbol sym = ts.symbols().fakeIntersectionSymbol("", superClass, Collections.unmodifiableList(superItfs));
-            this.induced = (JClassType) ts.declaration(sym);
         }
+    }
 
-        @Override
-        public JClassType getInducedClassType() {
-            return induced;
-        }
+    private static RuntimeException malformedIntersection(List<JTypeMirror> flattened) {
+        return new IllegalArgumentException(
+            "Malformed intersection: "
+                + flattened.stream().map(JTypeMirror::toString).collect(Collectors.joining(" & "))
+        );
     }
 }

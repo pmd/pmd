@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.*
 import kotlin.String
 import kotlin.reflect.KClass
 import kotlin.streams.toList
-import kotlin.test.assertEquals
 
 /*
     Note: in parser tests, you can get a log for the inference by calling
@@ -50,11 +49,6 @@ typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
 
 fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.toList()
-
-object PrimitiveGen : Exhaustive<JPrimitiveType>() {
-    override val values: List<JPrimitiveType>
-        get() = testTypeSystem.allPrimitives.toList()
-}
 
 fun JMethodSig?.shouldMatchMethod(
         named: String,
@@ -89,26 +83,44 @@ fun JTypeVar.withNewBounds(upper: JTypeMirror? = null, lower:JTypeMirror? = null
 }
 
 fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =
-    this.shouldBeA<JTypeVar> {
-        it.isCaptured shouldBe true
-        if (wild.isLowerBound)
-            it.lowerBound shouldBe wild.asLowerBound()
-        else
-            it.upperBound shouldBe wild.asUpperBound()
-    }
+        this.shouldBeA<JTypeVar> {
+            it.isCaptured shouldBe true
+            if (wild.isLowerBound)
+                it.lowerBound shouldBe wild.asLowerBound()
+            else
+                it.upperBound shouldBe wild.asUpperBound()
+        }
+
+val TypeSystem.primitiveGen get() = PrimitiveTypeGen(this)
+val TypeSystem.refTypeGen get() = RefTypeGen(this)
+val TypeSystem.allTypesGen get() = AllTypesGen(this)
+
+infix fun Boolean.implies(v: () -> Boolean): Boolean = !this || v()
+
+class PrimitiveTypeGen(val ts: TypeSystem) : Exhaustive<JPrimitiveType>() {
+    override val values = ts.allPrimitives.toList()
+}
+
+class AllTypesGen(val ts: TypeSystem) : Arb<JTypeMirror>() {
+    private val refGen = RefTypeGen(ts)
+
+    override fun edgecases(): List<JTypeMirror> = ts.allPrimitives.toList() + refGen.edgecases()
+
+    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = refGen.values(rs)
+}
 
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
-class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
+class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
-    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
+    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING, testTypeSystem.ERROR_TYPE, testTypeSystem.UNRESOLVED_TYPE)
 
     override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = pool.asSequence().map { Sample(it) }
 
-    val t_String: JClassType                        get() = java.lang.String::class.decl
-    val t_StringBuilder: JClassType                 get() = java.lang.StringBuilder::class.decl
-    val t_CharSequence: JClassType                  get() = java.lang.CharSequence::class.decl
-    val t_Integer: JClassType                       get() = java.lang.Integer::class.decl
-    val t_Number: JClassType                        get() = java.lang.Number::class.decl
+    val t_String: JClassType get() = java.lang.String::class.decl
+    val t_StringBuilder: JClassType get() = java.lang.StringBuilder::class.decl
+    val t_CharSequence: JClassType get() = java.lang.CharSequence::class.decl
+    val t_Integer: JClassType get() = java.lang.Integer::class.decl
+    val t_Number: JClassType get() = java.lang.Number::class.decl
 
     val t_List: JClassType                          get() = java.util.List::class.raw
     val t_Collection: JClassType                    get() = java.util.Collection::class.raw
@@ -188,8 +200,6 @@ class TypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
 }
 
-val RefTypeGen = TypeGen(testTypeSystem)
-
 /**
  * assertSubtypeOrdering(a, b, c) asserts that a >: b >: c
  * In other words, the supertypes are on the left, subtypes on the right
@@ -245,7 +255,7 @@ interface TypeDslMixin {
 
     val ts: TypeSystem
 
-    val gen get() = TypeGen(ts)
+    val gen get() = RefTypeGen(ts)
 
     /* extensions to turn a class (literal) into a type mirror */
 
@@ -269,7 +279,7 @@ interface TypeDslMixin {
     /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
             // flatten
-            ts.intersect(asList(this) + asList(t))
+            ts.intersect(listOf(this, t))
 
     /** subtyping */
     operator fun JTypeMirror.compareTo(t: JTypeMirror): Int = when {
@@ -350,3 +360,15 @@ fun captureMatcher(wild: JWildcardType): JTypeVar =
 fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
     this shouldBe typeSystem.getPrimitive(kind)
 }
+
+fun canIntersect(t: JTypeMirror, s: JTypeMirror) = t.isExlusiveIntersectionBound xor s.isExlusiveIntersectionBound
+fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others:JTypeMirror) : Boolean{
+    val comps = listOf(t, s, *others)
+    return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
+}
+
+/** If so, there can only be one in a well formed intersection. */
+val JTypeMirror.isExlusiveIntersectionBound
+    get() = this is JArrayType
+            || this is JClassType && this.symbol.isClass
+            || this is JTypeVar

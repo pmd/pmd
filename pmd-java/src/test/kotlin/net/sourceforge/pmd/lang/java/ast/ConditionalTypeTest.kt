@@ -35,12 +35,13 @@ class ConditionalTypeTest : FunSpec({}) {
     init {
 
         val ts = testTypeSystem
-        val prims = ts.allPrimitives
+        val prims = ts.primitiveGen
+        val refTypes = ts.refTypeGen
 
         context("Tests for conditional expressions") {
             // we need a suspend fun
 
-            prims.forEach {
+            prims.checkAll {
                 test(it, it, it)
                 test(it.box(), it, it)
                 test(it, it.box(), it)
@@ -51,7 +52,7 @@ class ConditionalTypeTest : FunSpec({}) {
                 test(it.box(), ts.NULL_TYPE, it.box())
             }
 
-            RefTypeGen.checkAll {
+            refTypes.checkAll {
                 test(it, it, it)
                 test(ts.NULL_TYPE, it, it)
                 test(it, ts.NULL_TYPE, it)
@@ -66,7 +67,7 @@ class ConditionalTypeTest : FunSpec({}) {
 
             shortOnes.forEach { (a, b) -> test(a, b, ts.SHORT) }
 
-            val allPrims = (prims.map { it.box() } + prims)
+            val allPrims: List<JTypeMirror> = (prims.values + prims.values.map { it.box() })
 
             val bnpOnes = allPrims.zip(allPrims)
                     .filter { it !in shortOnes }

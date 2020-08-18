@@ -319,7 +319,7 @@ class ClassTypeImpl implements JClassType {
     @Override
     public int hashCode() {
         if (hash == 0) { // hash collision is harmless
-            hash = Objects.hash(typeArgs, symbol, isDecl);
+            hash = Objects.hash(typeArgs, symbol);
         }
         return hash;
     }

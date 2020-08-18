@@ -33,11 +33,11 @@ class BoxingTest : FunSpec({
 
     test("Test boxing reference type is identity conversion") {
 
-        RefTypeGen.forAll {
-            it == it.box()
+        testTypeSystem.refTypeGen.forAllEqual {
+            Pair(it, it.box())
         }
 
-        RefTypeGen.forAllEqual {
+        testTypeSystem.refTypeGen.forAllEqual {
             Pair(it, it.unbox())
         }
     }

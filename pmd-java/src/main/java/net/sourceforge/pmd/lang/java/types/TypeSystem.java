@@ -522,7 +522,14 @@ public final class TypeSystem {
 
     /**
      * Builds an intersection type for the specified component types.
-     * This does not necessarily return a {@link JIntersectionType}.
+     * This does not necessarily return a {@link JIntersectionType},
+     * if the parameter has a single component, returns it.
+     *
+     * <p>This is a factory method for intersection types, which performs
+     * no minimization of the intersection, and which does not check the
+     * validity of the bounds. This means, that  Use {@link #glb(Collection)} to perform
+     * minimization.
+     * FIXME this should be replaced by GLB, which performs minimization
      *
      * @param types Types to intersect
      *
@@ -532,12 +539,7 @@ public final class TypeSystem {
      * @throws IllegalArgumentException If the collection is empty
      */
     public JTypeMirror intersect(Collection<? extends JTypeMirror> types) {
-        if (types.isEmpty()) {
-            throw new IllegalArgumentException("Cannot intersect zero types");
-        } else if (types.size() == 1) {
-            return types.iterator().next();
-        }
-        return new IntersectionTypeImpl(this, new ArrayList<>(types));
+        return glb(types);
     }
 
 
