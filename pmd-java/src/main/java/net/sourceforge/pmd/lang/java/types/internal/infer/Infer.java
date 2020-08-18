@@ -160,21 +160,38 @@ public final class Infer {
      * return type, to help inference. This should be non-null if we're
      * in an invocation or assignment context, otherwise can be left blank.
      */
-    public @NonNull MethodCtDecl determineInvocationType(MethodCallSite site) {
+    public void inferInvocationRecursively(MethodCallSite site) {
+        MethodCtDecl ctdecl = goToInvocationWithFallback(site);
+        InvocationMirror expr = site.getExpr();
+        expr.setMethodType(ctdecl);
+        if (ctdecl == NO_CTDECL) {
+            expr.setInferredType(fallbackType(expr));
+        } else {
+            expr.setInferredType(ctdecl.getMethodType().getReturnType());
+        }
+    }
+
+    private MethodCtDecl goToInvocationWithFallback(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
-            return ctdecl;
-        }
+        if (ctdecl != NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+            // do invocation
+            site.clearFailures();
 
-        site.clearFailures();
+            final MethodCtDecl invocType = finishInstantiation(site, ctdecl);
+            if (invocType == FAILED_INVOCATION) { // NOPMD
+                JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
+                LOG.fallbackInvocation(fallback, site);
 
-        MethodCtDecl invocType = finishInstantiation(site, ctdecl);
-        if (invocType == FAILED_INVOCATION) { // NOPMD
-            JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
-            LOG.fallbackInvocation(fallback, site);
-            return ctdecl.withMethod(fallback, true);
+                // note we take the original ctdecl here.
+                ctdecl = ctdecl.withMethod(fallback, true);
+            }
         }
-        return invocType;
+        return ctdecl;
+    }
+
+    private JTypeMirror fallbackType(PolyExprMirror expr) {
+        JTypeMirror t = expr.unresolvedType();
+        return t == null ? ts.UNRESOLVED_TYPE : t;
     }
 
     // If the invocation fails, replace type parameters with a placeholder,
@@ -189,8 +206,20 @@ public final class Infer {
     }
 
     /**
-     * Like {@link #determineInvocationType(MethodCallSite)}, but returns
-     * {@link #FAILED_INVOCATION} if the invocation fails, not a fallback method.
+     * Similar to {@link #inferInvocationRecursively(MethodCallSite)} for
+     * subexpressions. This never returns a fallback method.
+     *
+     * <p>A return of {@link #NO_CTDECL} indicates no overload is applicable.
+     * <p>A return of {@link #FAILED_INVOCATION} means there is a maximally
+     * specific compile-time declaration, but it failed invocation, meaning,
+     * it couldn't be linked to its context. If so, the outer inference process
+     * must be terminated with a failure.
+     * <p>This ne
+     *
+     * <p>The returned method type may contain un-instantiated inference
+     * variables, which depend on the target type. In that case those
+     * variables and their bounds will have been duplicated into the
+     * inference context of the [site].
      */
     @NonNull MethodCtDecl determineInvocationTypeOrFail(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);

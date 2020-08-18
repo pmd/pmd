@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
@@ -174,15 +173,8 @@ final class PolyResolution {
     private JTypeMirror inferInvocation(InvocationNode ctxNode, TypeNode actualResultTarget, @Nullable JTypeMirror targetType) {
         InvocationMirror mirror = exprMirrors.getInvocationMirror(ctxNode);
         MethodCallSite site = infer.newCallSite(mirror, targetType);
-        @NonNull MethodCtDecl ctDecl = infer.determineInvocationType(site);
+        infer.inferInvocationRecursively(site);
         // errors are on the call site if any
-
-        // This isn't done automatically by Infer because
-        // determineInvocationType may be internally called many times during
-        // type inference, returning partially inferred types.
-        // Only the final time matters.
-        mirror.setMethodType(ctDecl);
-        mirror.setInferredType(ctDecl.getMethodType().getReturnType());
 
         return fetchCascaded(actualResultTarget);
     }
