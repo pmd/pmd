@@ -171,20 +171,26 @@ public final class Infer {
 
     private MethodCtDecl goToInvocationWithFallback(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl != NO_CTDECL) { // NOPMD CompareObjectsWithEquals
-            // do invocation
-            site.clearFailures();
+        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+            return NO_CTDECL;
+        }
 
+        site.clearFailures();
+
+        // do invocation
+
+        { // reduce scope of invocType, outside of here it's failed
             final MethodCtDecl invocType = finishInstantiation(site, ctdecl);
-            if (invocType == FAILED_INVOCATION) { // NOPMD
-                JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
-                LOG.fallbackInvocation(fallback, site);
-
-                // note we take the original ctdecl here.
-                ctdecl = ctdecl.withMethod(fallback, true);
+            if (invocType != FAILED_INVOCATION) { // NOPMD CompareObjectsWithEquals
+                return invocType;
             }
         }
-        return ctdecl;
+        // ok we failed, we can still use some info from the ctdecl
+
+        JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
+        LOG.fallbackInvocation(fallback, site);
+
+        return ctdecl.withMethod(fallback, true);
     }
 
     private JTypeMirror fallbackType(PolyExprMirror expr) {
