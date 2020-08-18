@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
@@ -69,23 +68,6 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public boolean isUnresolved() {
         return false;
-    }
-
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        JTypeDeclSymbol elt = this.getArrayComponent();
-        int depth = 0;
-        while (elt instanceof JClassSymbol && ((JClassSymbol) elt).isArray()) {
-            elt = ((JClassSymbol) elt).getArrayComponent();
-            depth++;
-        }
-
-        Class<?> eltType = elt.getJvmRepr();
-        if (eltType == null) {
-            return null;
-        }
-
-        return Array.newInstance(eltType, (int[]) Array.newInstance(int.class, depth)).getClass();
     }
 
     @Override

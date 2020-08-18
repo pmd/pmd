@@ -98,9 +98,5 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
             return owner;
         }
 
-        @Override
-        public @Nullable Class<?> getJvmRepr() {
-            return null;
-        }
     }
 }

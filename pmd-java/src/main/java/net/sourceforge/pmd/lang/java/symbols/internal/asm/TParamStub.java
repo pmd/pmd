@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -51,11 +50,6 @@ class TParamStub implements JTypeParameterSymbol {
     @Override
     public JTypeVar getTypeMirror() {
         return typeVar;
-    }
-
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return null;
     }
 
     @Override

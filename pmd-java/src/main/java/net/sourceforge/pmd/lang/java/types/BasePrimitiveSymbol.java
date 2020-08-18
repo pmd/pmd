@@ -51,10 +51,6 @@ abstract class BasePrimitiveSymbol implements JClassSymbol {
             return "void";
         }
 
-        @Override
-        public Class<?> getJvmRepr() {
-            return void.class;
-        }
     }
 
 
@@ -83,10 +79,6 @@ abstract class BasePrimitiveSymbol implements JClassSymbol {
         }
 
 
-        @Override
-        public @Nullable Class<?> getJvmRepr() {
-            return kind.jvmRepr();
-        }
     }
 
     @Override

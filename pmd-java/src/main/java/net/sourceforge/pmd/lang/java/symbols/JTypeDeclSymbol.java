@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -54,18 +53,6 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
     default boolean isUnresolved() {
         return false;
     }
-
-
-    /**
-     * Returns the reflected class this node represents, if it's on the auxclasspath.
-     * There's no guarantee that this is even exists (this symbol may be notional).
-     *
-     * <p>This is provided to optimize some stuff, but ideally the symbol
-     * API should reflect everything there is to know about classes,
-     * and this method shouldn't be used.
-     */
-    @Nullable
-    Class<?> getJvmRepr();
 
 
     /**

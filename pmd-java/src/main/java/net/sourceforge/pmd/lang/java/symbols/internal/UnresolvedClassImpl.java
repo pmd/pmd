@@ -106,11 +106,6 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         }
     }
 
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return null;
-    }
-
 
     @Nullable
     @Override

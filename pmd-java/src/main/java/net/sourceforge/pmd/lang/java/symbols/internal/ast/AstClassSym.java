@@ -302,9 +302,4 @@ final class AstClassSym
         return node.isAnonymous();
     }
 
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return null;
-    }
-
 }

@@ -348,11 +348,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
     }
 
     @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return null; // TODO we could still try to load a class though
-    }
-
-    @Override
     public boolean isArray() {
         return false;
     }

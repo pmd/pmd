@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
@@ -42,11 +41,6 @@ final class AstTypeParamSym
     @Override
     public JTypeParameterOwnerSymbol getDeclaringSymbol() {
         return owner;
-    }
-
-    @Override
-    public @Nullable Class<?> getJvmRepr() {
-        return null;
     }
 
     @NonNull

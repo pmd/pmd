@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -53,14 +51,7 @@ public interface TypeNode extends JavaNode {
     @Nullable
     @Deprecated
     default Class<?> getType() {
-        JTypeMirror tm = getTypeMirror().getErasure();
-        if (tm instanceof JWildcardType) {
-            // project onto upper bound (wildcard types have no symbol)
-            tm = ((JWildcardType) tm).asUpperBound();
-        }
-
-        JTypeDeclSymbol symbol = tm.getSymbol();
-        return symbol == null ? null : symbol.getJvmRepr();
+        return null;
     }
 
 
