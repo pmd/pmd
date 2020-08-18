@@ -44,10 +44,9 @@ public final class JArrayType implements JTypeMirror {
         if (symbol == null) {
             JTypeDeclSymbol comp = getComponentType().getSymbol();
             if (comp == null) {
-                // fake a symbol for the component
-                comp = ts.symbols().fakeSymbol("(" + getComponentType().toString() + ")");
+                comp = getComponentType().getErasure().getSymbol();
             }
-            symbol = new ArraySymbolImpl(ts, comp);
+            symbol = new ArraySymbolImpl(ts, comp); // will nullcheck
         }
         return symbol;
     }

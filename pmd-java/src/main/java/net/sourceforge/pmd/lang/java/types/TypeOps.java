@@ -1638,8 +1638,6 @@ public final class TypeOps {
 
         if (Modifier.isPrivate(mods)) {
             return ctx.getNestRoot().equals(owner.getNestRoot());
-        } else if (owner instanceof JArrayType) {
-            return true;
         }
 
         return ctx.getPackageName().equals(owner.getPackageName())

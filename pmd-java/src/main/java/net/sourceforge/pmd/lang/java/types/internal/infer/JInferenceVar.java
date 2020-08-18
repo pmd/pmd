@@ -219,13 +219,10 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
         ctx.onIvarMerged(this, this.delegate);
     }
 
-    /**
-     * Returns the symbol of the {@link JInferenceVar#getInst() instantiation},
-     * or null if there's no instantiation or it has no symbol.
-     */
     @Override
     public @Nullable JTypeDeclSymbol getSymbol() {
-        return inst != null ? inst.getSymbol() : null;
+        return inst != null ? inst.getSymbol()
+                            : new InferenceVarSym(ctx.ts, this);
     }
 
 

@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -35,14 +34,6 @@ public final class SymbolFactory {
      */
     public TypeSystem getTypeSystem() {
         return ts;
-    }
-
-    /**
-     * Fake symbols are used to give a symbol to array components that
-     * cannot be represented by a symbol. This includes inference variables.
-     */
-    public JTypeDeclSymbol fakeSymbol(String name) {
-        return new FakeTypeSymbol(this, name);
     }
 
 

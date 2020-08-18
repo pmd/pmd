@@ -137,10 +137,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <li>{@link JTypeVar}: a {@link JTypeParameterSymbol}, always. Note that the
      * erasure yields a different symbol (eg Object for unbounded tvars).
      * <li>{@link JIntersectionType}: null, though their erasure always
-     * presents a symbol. Additionally, intersection types
-     * {@linkplain JIntersectionType#getInducedClassType() induce a class type}
-     * (which is mostly meaningless and only relevant to check for functional interfaces).
-     *
+     * presents a symbol.
      * <li>{@link JWildcardType}, {@link TypeSystem#NULL_TYPE the null type}: null, always
      * </ul>
      */
