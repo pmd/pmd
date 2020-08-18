@@ -191,4 +191,96 @@ class C {
             }
         }
     }
+
+
+    parserTest("Recovery for primitives in strict invoc") {
+
+        val acu = parser.parse(
+                """
+import ooo.Unresolved;
+
+class C {
+
+    static void id(int i) { }
+
+    static {
+        id(Unresolved.SOME_INT);
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+
+                with (it.typeDsl) {
+                    it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe idMethod
+                }
+
+                argList {
+                    fieldAccess("SOME_INT") {
+                        it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                        typeExpr {
+                            classType("Unresolved")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // TODO note this is ignored
+    parserTest("!Recovery when there are several applicable overloads") {
+
+        val acu = parser.parse(
+                """
+import ooo.Unresolved;
+
+class C {
+
+    static void id(int i) { }
+
+    static {
+        new StringBuilder().append(Unresolved.SOMETHING);
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+
+                with (it.typeDsl) {
+                    it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe idMethod
+                }
+
+                argList {
+                    fieldAccess("SOMETHING") {
+                        it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                        typeExpr {
+                            classType("Unresolved")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 })

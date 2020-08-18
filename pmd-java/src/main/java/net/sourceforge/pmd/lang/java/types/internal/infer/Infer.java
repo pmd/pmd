@@ -801,7 +801,7 @@ public final class Infer {
 
                 if (!phase.canBox()) {
                     // these are cases where applicability is impossible (in strict ctx)
-                    if (stdType != null && stdType.isPrimitive() != fi.isPrimitive()) {
+                    if (stdType != null && stdType.isPrimitive() != fi.isPrimitive() && stdType != ts.UNRESOLVED_TYPE) {
                         throw ResolutionFailedException.incompatibleFormal(LOG, ei, stdType, fi);
                     }
                 }

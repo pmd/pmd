@@ -86,7 +86,7 @@ class SubtypingTest : FunSpec({
                     intersection shouldBeSubtypeOf t_Comparable
                     intersection shouldBeSubtypeOf `t_List{String}`
                     intersection shouldBeSubtypeOf `t_Collection{String}`
-                    intersection shouldNotBeSubtypeOf  comparableList
+                    intersection shouldNotBeSubtypeOf comparableList
 
                     intersection shouldBeUnrelatedTo `t_Collection{Integer}`
                 }
@@ -219,8 +219,8 @@ class SubtypingTest : FunSpec({
 
             }
 
-            test("Test null type subtyping") {
-                forAll(gen) {
+            test("Null type is only compatible with reference types") {
+                forAll(ts.refTypeGen) {
                     ts.NULL_TYPE.isSubtypeOf(it)
                 }
 
@@ -229,23 +229,15 @@ class SubtypingTest : FunSpec({
                 }
             }
 
-            test("Test error type subtyping") {
-                forAll(gen) {
+            test("Error type is compatible with anything") {
+                forAll(ts.allTypesGen) {
                     ts.ERROR_TYPE.isSubtypeOf(it)
-                }
-
-                ts.allPrimitives.forAll {
-                    assertTrue(ts.ERROR_TYPE.isSubtypeOf(it))
                 }
             }
 
-            test("Test unresolved type subtyping") {
-                forAll(gen) {
+            test("Unresolved type is compatible with anything") {
+                forAll(ts.allTypesGen) {
                     ts.UNRESOLVED_TYPE.isSubtypeOf(it)
-                }
-
-                ts.allPrimitives.forAll {
-                    assertTrue(ts.UNRESOLVED_TYPE.isSubtypeOf(it))
                 }
             }
         }
