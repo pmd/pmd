@@ -7,7 +7,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -145,6 +144,50 @@ class C {
                         argList {}
                     }
                 }
+            }
+        }
+    }
+
+    parserTest("Test diamond ctor for unresolved") {
+
+        val acu = parser.parse(
+                """
+import java.io.IOException;
+import ooo.Unresolved;
+
+class C {
+
+    static {
+        Unresolved<String> s = new Unresolved<>();
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val t_UnresolvedOfString = acu.descendants(ASTClassOrInterfaceType::class.java)
+                .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
+                    it.isParameterizedType shouldBe true
+                    it.typeArgs shouldBe listOf(it.typeSystem.STRING)
+                }
+
+        TypeOps.isUnresolved(t_UnresolvedOfString) shouldBe true
+
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            constructorCall {
+                classType("Unresolved")
+
+                it.isDiamond shouldBe true
+
+                it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                it.overloadSelectionInfo.isFailed shouldBe true
+                it.typeMirror shouldBe t_UnresolvedOfString
+
+                argList {}
             }
         }
     }

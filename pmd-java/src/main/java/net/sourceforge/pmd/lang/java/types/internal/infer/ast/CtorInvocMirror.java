@@ -17,6 +17,8 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -43,7 +45,15 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public @Nullable JTypeMirror unresolvedType() {
         JClassType newT = getNewType();
-        if (myNode.isDiamond()) { // eg new Foo<>() -> Foo</*error*/>
+        if (myNode.isDiamond()) {
+            if (myNode.getParent() instanceof ASTVariableDeclarator) {
+                // Foo<String> s = new Foo<>();
+                ASTType explicitType = ((ASTVariableDeclarator) myNode.getParent()).getVarId().getTypeNode();
+                if (explicitType != null) {
+                    return explicitType.getTypeMirror();
+                }
+            }
+            // eg new Foo<>() -> Foo</*error*/>
             List<JTypeMirror> fakeTypeArgs = Collections.nCopies(newT.getSymbol().getTypeParameterCount(), factory.ts.ERROR_TYPE);
             newT = newT.withTypeArguments(fakeTypeArgs);
         }
