@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal;
+package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -21,10 +21,9 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.symbols.internal.ImplicitMemberSymbols;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 
 /**
  * Generic implementation for array symbols, which does not rely on
@@ -32,12 +31,12 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 class ArraySymbolImpl implements JClassSymbol {
 
-    private final SymbolFactory factory;
+    private final TypeSystem ts;
     private final JTypeDeclSymbol component;
 
-    ArraySymbolImpl(SymbolFactory factory, JTypeDeclSymbol component) {
+    ArraySymbolImpl(TypeSystem ts, JTypeDeclSymbol component) {
         this.component = Objects.requireNonNull(component, "Array symbol requires component");
-        this.factory = Objects.requireNonNull(factory, "Array symbol requires symbol factory");
+        this.ts = Objects.requireNonNull(ts, "Array symbol requires symbol factory");
         if (component instanceof JClassSymbol && ((JClassSymbol) component).isAnonymousClass()) {
             throw new IllegalArgumentException("Anonymous classes cannot be array components: " + component);
         }
@@ -45,7 +44,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public TypeSystem getTypeSystem() {
-        return factory.getTypeSystem();
+        return ts;
     }
 
     @Override

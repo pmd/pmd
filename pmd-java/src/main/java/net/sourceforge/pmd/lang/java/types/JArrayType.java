@@ -47,7 +47,7 @@ public final class JArrayType implements JTypeMirror {
                 // fake a symbol for the component
                 comp = ts.symbols().fakeSymbol("(" + getComponentType().toString() + ")");
             }
-            symbol = ts.symbols().makeArraySymbol(comp);
+            symbol = new ArraySymbolImpl(ts, comp);
         }
         return symbol;
     }

@@ -47,21 +47,6 @@ public final class SymbolFactory {
 
 
     /**
-     * Produces an array symbol from the given component symbol (one dimension).
-     * The component can naturally be another array symbol, but cannot be an
-     * anonymous class.
-     *
-     * @param component Component symbol of the array
-     *
-     * @throws NullPointerException     If the component is null
-     * @throws IllegalArgumentException If the component is the symbol for an anonymous class
-     */
-    public @NonNull JClassSymbol makeArraySymbol(JTypeDeclSymbol component) {
-        return new ArraySymbolImpl(this, component);
-    }
-
-
-    /**
      * Produces a new unresolved class symbol from the given canonical name.
      *
      * @param canonicalName Canonical name of the returned symbol

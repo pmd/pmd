@@ -65,6 +65,8 @@ public final class TypeSystem {
      * programs.
      *
      * <p>This implementation uses this as the type of the 'null' literal.
+     *
+     * <p>The null type has no symbol.
      */
     public final JTypeMirror NULL_TYPE = new NullType(this);
 
@@ -288,7 +290,7 @@ public final class TypeSystem {
             }
             return getPrimitive(kind).getSymbol();
         } else if (clazz.isArray()) {
-            return symbols().makeArraySymbol(getClassSymbol(clazz.getComponentType()));
+            return new ArraySymbolImpl(this, getClassSymbol(clazz.getComponentType()));
         }
 
         return resolver.resolveClassFromBinaryName(clazz.getName());

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal
+package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -12,7 +12,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
-import net.sourceforge.pmd.lang.java.types.testTypeSystem
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
+import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 
 /**
  * @author Clément Fournier
@@ -23,10 +25,12 @@ class ArraySymbolTests : WordSpec({
     val INT_SYM = testTypeSystem.getClassSymbol(java.lang.Integer.TYPE)
     val STRING_SYM = testTypeSystem.getClassSymbol(java.lang.String::class.java)
 
+    fun makeArraySym(comp: JTypeDeclSymbol?) = ArraySymbolImpl(testTypeSystem, comp)
+
     "An array symbol" should {
 
         "have a length field" {
-            val intArr = testSymFactory.makeArraySymbol(INT_SYM)
+            val intArr = makeArraySym(INT_SYM)
 
             intArr.getDeclaredField("length").shouldBeA<JFieldSymbol> {
                 it::isFinal shouldBe true
@@ -36,7 +40,7 @@ class ArraySymbolTests : WordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = makeArraySym(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
 
             javanodeArr.getDeclaredField("length").shouldBeA<JFieldSymbol> {
@@ -48,7 +52,7 @@ class ArraySymbolTests : WordSpec({
         }
 
         "have a clone method" {
-            val intArr = testSymFactory.makeArraySymbol(INT_SYM)
+            val intArr = makeArraySym(INT_SYM)
 
             intArr.getDeclaredMethods("clone").single().also {
                 it::getSimpleName shouldBe "clone"
@@ -57,7 +61,7 @@ class ArraySymbolTests : WordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = makeArraySym(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
             javanodeArr.getDeclaredMethods("clone").single().also {
                 it::getSimpleName shouldBe "clone"
@@ -67,7 +71,7 @@ class ArraySymbolTests : WordSpec({
         }
 
         "have a constructor method" {
-            val intArr = testSymFactory.makeArraySymbol(INT_SYM)
+            val intArr = makeArraySym(INT_SYM)
 
             intArr.constructors.single().also {
                 it::getSimpleName shouldBe JConstructorSymbol.CTOR_NAME
@@ -77,7 +81,7 @@ class ArraySymbolTests : WordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = makeArraySym(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
             javanodeArr.constructors.single().also {
                 it::getSimpleName shouldBe JConstructorSymbol.CTOR_NAME
@@ -89,15 +93,15 @@ class ArraySymbolTests : WordSpec({
 
         "reflect its simple name properly" {
 
-            val stringArr = testSymFactory.makeArraySymbol(STRING_SYM)
+            val stringArr = makeArraySym(STRING_SYM)
 
             stringArr::getSimpleName shouldBe "String[]"
 
-            val intArr = testSymFactory.makeArraySymbol(INT_SYM)
+            val intArr = makeArraySym(INT_SYM)
 
             intArr::getSimpleName shouldBe "int[]"
 
-            val iiarr = testSymFactory.makeArraySymbol(intArr)
+            val iiarr = makeArraySym(intArr)
 
             iiarr::getSimpleName shouldBe "int[][]"
 
@@ -105,15 +109,15 @@ class ArraySymbolTests : WordSpec({
 
         "reflect its binary name properly" {
 
-            val stringArr = testSymFactory.makeArraySymbol(STRING_SYM)
+            val stringArr = makeArraySym(STRING_SYM)
 
             stringArr::getBinaryName shouldBe "java.lang.String[]"
 
-            val intArr = testSymFactory.makeArraySymbol(INT_SYM)
+            val intArr = makeArraySym(INT_SYM)
 
             intArr::getBinaryName shouldBe "int[]"
 
-            val iiarr = testSymFactory.makeArraySymbol(intArr)
+            val iiarr = makeArraySym(intArr)
 
             iiarr::getBinaryName shouldBe "int[][]"
 
@@ -121,11 +125,11 @@ class ArraySymbolTests : WordSpec({
 
         "reflect its package name properly" {
 
-            val stringArr = testSymFactory.makeArraySymbol(STRING_SYM)
+            val stringArr = makeArraySym(STRING_SYM)
 
             stringArr::getPackageName shouldBe "java.lang"
 
-            val iarr = testSymFactory.makeArraySymbol(INT_SYM)
+            val iarr = makeArraySym(INT_SYM)
 
             iarr::getPackageName shouldBe PRIMITIVE_PACKAGE
 

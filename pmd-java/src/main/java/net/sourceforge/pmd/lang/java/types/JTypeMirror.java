@@ -117,10 +117,9 @@ public interface JTypeMirror extends JTypeVisitable {
      *
      * <p>The JVM representation of a type is in general the symbol
      * of its erasure. So to get a {@link Class} instance for the runtime
-     * representation of a type, you should do {@code t.getErasure().getSymbol().getJvmRepr()}.
-     * This should not throw an NPE, since the erasure procedure gets
-     * rid of types that have no symbol (except if {@code t} is a wildcard type,
-     * {@link TypeSystem#ERROR_TYPE})
+     * representation of a type, you should do {@code t.getErasure().getSymbol()}.
+     * The erasure procedure gets rid of types that have no symbol (except
+     * if {@code t} is a wildcard type, or the {@link TypeSystem#NULL_TYPE})
      */
     default JTypeMirror getErasure() {
         return this;
