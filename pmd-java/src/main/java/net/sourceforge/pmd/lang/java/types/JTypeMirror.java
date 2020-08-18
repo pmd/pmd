@@ -14,24 +14,47 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
- * from {@link JTypeDeclSymbol symbols} (a layer of abstraction above reflection
- * classes).
+ * from {@link JTypeDeclSymbol symbols}, a layer of abstraction above reflection
+ * classes.
  *
  * <p>Type mirrors can be obtained {@linkplain TypesFromReflection from reflected types},
  * directly {@linkplain TypeNode#getTypeMirror() from nodes}, or from
  * arbitrary symbols (see {@link TypeSystem}).
+ *
+ * <p>Type mirrors are primarily divided between {@linkplain JPrimitiveType primitive types}
+ * and reference types. Reference types can be of one of those kinds:
+ * <ul>
+ * <li>{@linkplain JClassType class or interface types}
+ * <li>{@linkplain JArrayType array types}
+ * <li>{@linkplain JIntersectionType intersection types}
+ * <li>{@linkplain JTypeVar type variables}
+ * </ul>
+ *
+ * <p>{@linkplain JWildcardType Wildcard types} implement this interface,
+ * but are not really types, they can only occur as type arguments of a
+ * class type.
+ *
+ * <p>A few other special types do not implement one of these public interfaces:
+ * <ul>
+ * <li>{@linkplain TypeSystem#NULL_TYPE The null type}
+ * <li>{@linkplain TypeSystem#ERROR_TYPE The error type}
+ * <li>{@linkplain TypeSystem#UNRESOLVED_TYPE The unresolved type}
+ * </ul>
+ *
+ * <p>Lastly, types may be {@linkplain JInferenceVar inference variables},
+ * which <i>never</i> occur outside of a type inference run and can be ignored
+ * when querying the AST.
  */
-@Experimental
 public interface JTypeMirror extends JTypeVisitable {
 
     /**
