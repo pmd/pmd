@@ -81,7 +81,7 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
 
 
     /**
-     * If voidCompatible, return true if the body of the lambda is void compatible,
+     * Returns true if the body of the lambda is void compatible,
      * or value compatible depending on the parameter.
      *
      * Malformed bodies may be neither (it's a compile error)
@@ -92,10 +92,7 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     }
 
     /**
-     * If voidCompatible, return true if the body of the lambda is void compatible.
-     * Else return true if the body of the lambda is expression compatible.
-     *
-     * Malformed bodies may be neither (it's a compile error)
+     * Return true if the expression may return void.
      */
     private static boolean isExpressionStatement(ASTExpression body) {
         // statement expression
