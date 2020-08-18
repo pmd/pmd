@@ -465,9 +465,9 @@ public final class TypeSystem {
             return element;
         }
 
-        JArrayType res = new ArrayTypeImpl(this, element);
+        JArrayType res = new JArrayType(this, element);
         while (--numDimensions > 0) {
-            res = new ArrayTypeImpl(this, res);
+            res = new JArrayType(this, res);
         }
         return res;
     }
@@ -485,7 +485,7 @@ public final class TypeSystem {
      */
     public JArrayType arrayType(@NonNull JTypeMirror component) {
         checkArrayElement(component);
-        return new ArrayTypeImpl(this, component);
+        return new JArrayType(this, component);
     }
 
 
