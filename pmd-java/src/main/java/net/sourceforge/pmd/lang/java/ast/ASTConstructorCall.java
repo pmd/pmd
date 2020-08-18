@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-
 /**
  * A class instance creation expression. Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
  * and unqualified instance creation. May declare an anonymous class body.
@@ -24,14 +22,11 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr
+public final class ASTConstructorCall extends AbstractInvocationExpr
     implements ASTPrimaryExpression,
                QualifiableExpression,
                LeftRecursiveNode,
                InvocationNode {
-
-    private JMethodSig methodType;
-    private boolean varargs;
 
     ASTConstructorCall(int id) {
         super(id);
@@ -93,26 +88,6 @@ public final class ASTConstructorCall extends AbstractJavaExpr
     public boolean usesDiamondTypeArgs() {
         ASTTypeArguments targs = getTypeNode().getTypeArguments();
         return targs != null && targs.isDiamond();
-    }
-
-
-    @Override
-    public JMethodSig getMethodType() {
-        // force evaluation
-        getTypeMirror();
-        return methodType;
-    }
-
-    @Override
-    public boolean isVarargsCall() {
-        // force evaluation
-        getTypeMirror();
-        return varargs;
-    }
-
-    void setMethodType(JMethodSig methodType, boolean varargs) {
-        this.methodType = methodType;
-        this.varargs = varargs;
     }
 
 

@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
  * An explicit constructor invocation, occurring at the start of a
@@ -27,8 +29,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     implements InvocationNode, ASTStatement {
 
     private boolean isSuper;
-    private JMethodSig methodType;
-    private boolean varargsPhase;
+    private OverloadSelectionResult result;
 
     ASTExplicitConstructorInvocation(int id) {
         super(id);
@@ -100,22 +101,14 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
         return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
 
-
     @Override
-    public JMethodSig getMethodType() {
-        getTypeMirror();
-        return methodType;
+    public OverloadSelectionResult getOverloadSelectionInfo() {
+        getTypeMirror(); // force evaluation
+        return Objects.requireNonNull(result, "null result");
     }
 
-    @Override
-    public boolean isVarargsCall() {
-        getTypeMirror();
-        return varargsPhase;
-    }
-
-    void setMethodType(JMethodSig methodType, boolean varargsPhase) {
-        this.methodType = methodType;
-        this.varargsPhase = varargsPhase;
+    void setOverload(OverloadSelectionResult result) {
+        this.result = result;
     }
 
 }

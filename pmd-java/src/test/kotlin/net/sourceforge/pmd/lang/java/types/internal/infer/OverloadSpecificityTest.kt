@@ -67,7 +67,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 
                         // List<String>
                         it.typeMirror shouldBe gen.t_List[gen.t_String]
-                        it.isVarargsCall shouldBe false // selected in strict phase
+                        it.overloadSelectionInfo.isVarargsCall shouldBe false // selected in strict phase
                     }
 
                     it::getArguments shouldBe child {

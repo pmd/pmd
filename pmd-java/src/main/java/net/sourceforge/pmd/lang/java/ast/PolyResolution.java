@@ -17,10 +17,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
@@ -220,12 +220,12 @@ final class PolyResolution {
 
         if (e.getParent().getParent() instanceof InvocationNode) {
             InvocationNode parentInvoc = (InvocationNode) e.getParent().getParent();
-            JMethodSig mt = parentInvoc.getMethodType();
-            if (mt == null || mt == ts.UNRESOLVED_METHOD) {
+            OverloadSelectionResult info = parentInvoc.getOverloadSelectionInfo();
+            if (info.isFailed()) {
                 // TODO might log this
                 return ts.UNRESOLVED_TYPE;
             } else if (e instanceof ASTConditionalExpression || e instanceof ASTSwitchExpression) {
-                return nthVarargParam(parentInvoc, mt, e.getIndexInParent());
+                return info.ithFormalParam(e.getIndexInParent());
             }
         } else if (e.getParent() instanceof ASTConditionalExpression) {
             return fetchCascaded((TypeNode) e.getParent());
@@ -245,18 +245,6 @@ final class PolyResolution {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
         return ts.UNRESOLVED_TYPE;
-    }
-
-    private JTypeMirror nthVarargParam(InvocationNode parentInvoc, JMethodSig mt, int paramIdx) {
-        List<JTypeMirror> formals = mt.getFormalParameters();
-        if (parentInvoc.isVarargsCall() && paramIdx >= formals.size()) {
-            JTypeMirror lastFormal = formals.get(mt.getArity() - 1);
-            return ((JArrayType) lastFormal).getComponentType();
-        } else if (paramIdx > formals.size()) {
-            return ts.UNRESOLVED_TYPE;
-        } else {
-            return formals.get(paramIdx);
-        }
     }
 
     /**

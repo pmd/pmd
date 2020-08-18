@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
@@ -24,8 +24,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
                ASTBodyDeclaration,
                InternalInterfaces.VariableIdOwner {
 
-    private JMethodSig calledConstructor;
-    private boolean varargsPhase;
+    private OverloadSelectionResult result;
 
     ASTEnumConstant(int id) {
         super(id);
@@ -83,20 +82,15 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
         return null;
     }
 
-    @Override
-    public JMethodSig getMethodType() {
-        getTypeMirror();
-        return calledConstructor;
+    void setOverload(OverloadSelectionResult result) {
+        assert result != null;
+        this.result = result;
     }
 
     @Override
-    public boolean isVarargsCall() {
-        getTypeMirror();
-        return varargsPhase;
-    }
-
-    void setCalledConstructor(JMethodSig calledConstructor, boolean varargsPhase) {
-        this.calledConstructor = calledConstructor;
-        this.varargsPhase = varargsPhase;
+    public OverloadSelectionResult getOverloadSelectionInfo() {
+        getTypeMirror(); // force evaluation
+        assert result != null : "Something went wrong during overload resolution for " + this;
+        return result;
     }
 }

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -155,15 +156,13 @@ public final class InternalApiBridge {
         acu.setTypeResolver(new LazyTypeResolver(processor, typeResolver));
     }
 
-    public static void setMethodType(InvocationNode expression, JMethodSig inferred, boolean varargsPhase) {
-        if (expression instanceof ASTMethodCall) {
-            ((ASTMethodCall) expression).setMethodType(inferred, varargsPhase);
-        } else if (expression instanceof ASTConstructorCall) {
-            ((ASTConstructorCall) expression).setMethodType(inferred, varargsPhase);
+    public static void setOverload(InvocationNode expression, OverloadSelectionResult result) {
+        if (expression instanceof AbstractInvocationExpr) {
+            ((AbstractInvocationExpr) expression).setOverload(result);
         } else if (expression instanceof ASTExplicitConstructorInvocation) {
-            ((ASTExplicitConstructorInvocation) expression).setMethodType(inferred, varargsPhase);
+            ((ASTExplicitConstructorInvocation) expression).setOverload(result);
         } else if (expression instanceof ASTEnumConstant) {
-            ((ASTEnumConstant) expression).setCalledConstructor(inferred, varargsPhase);
+            ((ASTEnumConstant) expression).setOverload(result);
         } else {
             throw new IllegalArgumentException("Wrong type: " + expression);
         }

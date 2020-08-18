@@ -64,7 +64,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         val asList = arraysClass.getMethodsByName("asList")[0]
 
 
-        call.isVarargsCall shouldBe true
+        call.overloadSelectionInfo.isVarargsCall shouldBe true
         call.methodType.also {
             it.isVarargs shouldBe true
             val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
@@ -473,7 +473,7 @@ class Scratch {
                             it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
 
                             it::getQualifier shouldBe methodCall("stream") {
-                                it.isVarargsCall shouldBe false
+                                it.overloadSelectionInfo.isVarargsCall shouldBe false
                                 it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
                                 unspecifiedChild()
                                 argList {

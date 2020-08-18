@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
  * Groups {@linkplain ASTMethodCall method} and {@linkplain ASTConstructorCall constructor call},
@@ -43,20 +44,11 @@ public interface InvocationNode extends TypeNode {
 
     /**
      * Gets the type of the method or constructor that is called by
-     * this expression, statement or declaration. This is a method
-     * type whose type parameters have been instantiated by their
-     * actual inferred values.
-     *
-     * <p>For constructors the return type of this signature may be
-     * different from the type of this node. For an anonymous class
-     * constructor (in {@link ASTEnumConstant} or {@link ASTConstructorCall}),
-     * the selected constructor is the *superclass* constructor. In
-     * particular, if the anonymous class implements an interface,
-     * the constructor is the constructor of class {@link Object}.
-     * In that case though, the {@link #getTypeMirror()} of this node
-     * will be the type of the anonymous class (hence the difference).
+     * this node. See {@link OverloadSelectionResult#getMethodType()}.
      */
-    JMethodSig getMethodType();
+    default JMethodSig getMethodType() {
+        return getOverloadSelectionInfo().getMethodType();
+    }
 
 
     /**
@@ -68,7 +60,11 @@ public interface InvocationNode extends TypeNode {
      * Arrays.asList(new String[] { "a", "b" });    // this is not a varargs call
      * }</pre>
      */
-    boolean isVarargsCall();
+    default boolean isVarargsCall() {
+        return getOverloadSelectionInfo().isVarargsCall();
+    }
+
+    OverloadSelectionResult getOverloadSelectionInfo();
 
     /**
      * Returns the name of the called method. If this is a constructor

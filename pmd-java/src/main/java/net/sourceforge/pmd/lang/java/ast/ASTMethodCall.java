@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
@@ -21,13 +19,10 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaExpr
+public final class ASTMethodCall extends AbstractInvocationExpr
     implements ASTPrimaryExpression,
                QualifiableExpression,
                InvocationNode {
-
-    private JMethodSig methodType;
-    private boolean varargsPhase;
 
     ASTMethodCall(int id) {
         super(id);
@@ -78,25 +73,6 @@ public final class ASTMethodCall extends AbstractJavaExpr
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
-    }
-
-
-    @Override
-    public JMethodSig getMethodType() {
-        // force evaluation
-        getTypeMirror();
-        return methodType;
-    }
-
-    @Override
-    public boolean isVarargsCall() {
-        getTypeMirror();
-        return varargsPhase;
-    }
-
-    void setMethodType(JMethodSig methodType, boolean varargs) {
-        this.methodType = methodType;
-        this.varargsPhase = varargs;
     }
 
     @Override

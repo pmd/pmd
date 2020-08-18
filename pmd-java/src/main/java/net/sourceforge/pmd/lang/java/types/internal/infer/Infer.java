@@ -57,9 +57,7 @@ public final class Infer {
 
     final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
 
-    /**
-     * This is a sentinel for when the CTDecl was resolved, but invocation failed.
-     */
+    /** This is a sentinel for when the CTDecl was resolved, but invocation failed. */
     final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
 
     /**
@@ -75,8 +73,9 @@ public final class Infer {
         this.isJava8 = jdkVersion >= 8;
         this.LOG = logger;
 
-        this.NO_CTDECL = MethodCtDecl.unresolved(ts, false);
-        this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts, true);
+        this.NO_CTDECL = MethodCtDecl.unresolved(ts);
+        this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts);
+
         this.exprOps = new ExprOps(this);
         this.overloadComparator = new OverloadComparator(this);
     }

@@ -168,7 +168,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                         val t_SomeEnum = typeOf(t_SomeEnum_name)
                         it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
 
-                        it::isVarargsCall shouldBe true
+                        it.overloadSelectionInfo::isVarargsCall shouldBe true
                         // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
                         it.methodType.shouldMatchMethod(
                                 named = "of",
@@ -204,7 +204,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                     with (it.typeDsl) {
                         it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
 
-                        it::isVarargsCall shouldBe false // selected in strict phase
+                        it.overloadSelectionInfo::isVarargsCall shouldBe false // selected in strict phase
                         // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
                         it.methodType.shouldMatchMethod(
                                 named = "of",

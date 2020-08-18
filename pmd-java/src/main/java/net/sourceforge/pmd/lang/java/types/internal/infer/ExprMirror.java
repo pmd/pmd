@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -288,10 +289,13 @@ public interface ExprMirror {
         MethodCtDecl getMethodType();
 
 
-        /** Result of an inference run. */
-        class MethodCtDecl {
-            // note this data is gathered by the MethodCallSite, stashed
-            // in this object, and restored when we play invocation.
+        /**
+         * Information about the overload-resolution for a specific method.
+         */
+        class MethodCtDecl implements OverloadSelectionResult {
+            // note this data is gathered by the MethodCallSite during
+            // applicability inference, stashed in this object, and
+            // restored when we do invocation.
 
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
@@ -329,46 +333,34 @@ public interface ExprMirror {
                 return resolvePhase;
             }
 
-            static MethodCtDecl unresolved(TypeSystem ts, boolean isFailed) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, isFailed);
+            static MethodCtDecl unresolved(TypeSystem ts) {
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, true);
             }
 
             // public:
 
-            /**
-             * The result type. After an invocation phase, this is the
-             * method type of the ctdecl, substituted with the instantiations
-             * of the type parameters as inferred with context and such,
-             * possibly adapted in some special cases ({@code getClass}).
-             */
+
+            @Override
             public JMethodSig getMethodType() {
                 return methodType;
             }
 
-            /**
-             * Whether the declaration needed unchecked conversion to be
-             * applicable. In this case, the return type of the method is
-             * erased.
-             */
+            @Override
             public boolean needsUncheckedConversion() {
                 return needsUncheckedConversion;
             }
 
-            /**
-             * Returns whether the overload resolution phase that selected
-             * this overload was a varargs phase. In this case, the last
-             * formal parameter of the method type should be interpreted
-             * specially with-respect-to the argument expressions.
-             */
-            public boolean phaseRequiresVarargs() {
+            @Override
+            public boolean isVarargsCall() {
                 return resolvePhase.requiresVarargs();
             }
 
-            /**
-             * Returns true if the invocation of this method failed. This
-             * means, the presented method type is a fallback, whose type
-             * parameters might not have been fully instantiated.
-             */
+            @Override
+            public JTypeMirror ithFormalParam(int i) {
+                return resolvePhase.ithFormal(getMethodType().getFormalParameters(), i);
+            }
+
+            @Override
             public boolean isFailed() {
                 return failed;
             }
