@@ -53,7 +53,7 @@ class IntersectionTypeImpl implements JIntersectionType {
         }
 
         if (induced == null) {
-            JClassSymbol sym = ts.symbols().fakeIntersectionSymbol("", (JClassType) primary, getInterfaces());
+            JClassSymbol sym = new FakeIntersectionSymbol("", (JClassType) primary, getInterfaces());
             this.induced = (JClassType) ts.declaration(sym);
         }
         return induced;

@@ -5,14 +5,11 @@
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -46,20 +43,6 @@ public final class SymbolFactory {
      */
     public JTypeDeclSymbol fakeSymbol(String name) {
         return new FakeTypeSymbol(this, name);
-    }
-
-    /**
-     * Returns a symbol for the type induced by an intersection type.
-     * Such a symbol is an interface if the superclass is {@link TypeSystem#OBJECT}.
-     *
-     * @param name       Name to give to the type
-     * @param superClass Superclass of the new symbol
-     * @param superItfs  Super interfaces of the new symbol
-     *
-     * @return A new symbol
-     */
-    public JClassSymbol fakeIntersectionSymbol(String name, JClassType superClass, List<JClassType> superItfs) {
-        return new FakeIntersectionSymbol(name, superClass, superItfs);
     }
 
 

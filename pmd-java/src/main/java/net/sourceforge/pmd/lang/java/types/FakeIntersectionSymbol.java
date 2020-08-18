@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal;
+package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -17,11 +17,6 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class FakeIntersectionSymbol implements JClassSymbol {
