@@ -2,19 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.types.internal.infer;
+package net.sourceforge.pmd.lang.java.types;
 
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
-import static net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator.shouldTakePrecedence;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.shouldTakePrecedence;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Tracks a set of overloads, automatically pruning override-equivalent

@@ -63,6 +63,16 @@ public interface ExprMirror {
         }
 
 
+        /**
+         * If inference failed to determine the type of this node, returns
+         * a fallback for it. This should not query the context of the expression,
+         * or nodes whose type is unstable because it may be being inferred.
+         *
+         * <p>If no fallback should be used, returns null.
+         */
+        default @Nullable JTypeMirror unresolvedType() {
+            return null;
+        }
     }
 
     /**

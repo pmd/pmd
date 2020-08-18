@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
@@ -36,6 +38,16 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         return super.getEnclosingType();
+    }
+
+    @Override
+    public @Nullable JTypeMirror unresolvedType() {
+        JClassType newT = getNewType();
+        if (myNode.isDiamond()) { // eg new Foo<>() -> Foo</*error*/>
+            List<JTypeMirror> fakeTypeArgs = Collections.nCopies(newT.getSymbol().getTypeParameterCount(), factory.ts.ERROR_TYPE);
+            newT = newT.withTypeArguments(fakeTypeArgs);
+        }
+        return newT;
     }
 
     private List<JMethodSig> getVisibleCandidates() {
@@ -96,6 +108,10 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
             return false;
         }
 
+        @Override
+        public @Nullable JTypeMirror unresolvedType() {
+            return getNewType();
+        }
     }
 
     static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation> implements CtorInvocationMirror {
@@ -123,6 +139,15 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                    ? encl
                    // this may cause NPE, but only if a super ctor call occurs in class Object
                    : encl.getSuperClass().getGenericTypeDeclaration();
+        }
+
+        @Override
+        public @Nullable JTypeMirror unresolvedType() {
+            if (myNode.isThis()) {
+                return myNode.getEnclosingType().getTypeMirror();
+            } else {
+                return myNode.getEnclosingType().getTypeMirror().getSuperClass();
+            }
         }
 
         @Override

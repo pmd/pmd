@@ -175,11 +175,12 @@ final class PolyResolution {
         InvocationMirror mirror = exprMirrors.getInvocationMirror(ctxNode);
         MethodCallSite site = infer.newCallSite(mirror, targetType);
         @NonNull MethodCtDecl ctDecl = infer.determineInvocationType(site);
-        // TODO errors are on the call site if any
+        // errors are on the call site if any
 
-        // this isn't done automatically by Infer because
-        // this procedure may be internally called during
-        // type inference, returning partially inferred types
+        // This isn't done automatically by Infer because
+        // determineInvocationType may be internally called many times during
+        // type inference, returning partially inferred types.
+        // Only the final time matters.
         mirror.setMethodType(ctDecl);
         mirror.setInferredType(ctDecl.getMethodType().getReturnType());
 
@@ -240,10 +241,7 @@ final class PolyResolution {
      * TODO would using error-type as a target type be better?
      */
     private @NonNull JTypeMirror fallbackIfCtxFailed(@Nullable TypeNode e, boolean canRetry) {
-        if (e instanceof ASTConstructorCall && !((ASTConstructorCall) e).isDiamond()) {
-            // fallback: even if we couldn't select the constructor, we can have its type
-            return ((ASTConstructorCall) e).getTypeNode().getTypeMirror();
-        } else if (canRetry && e instanceof InvocationNode) {
+        if (canRetry && e instanceof InvocationNode) {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
         return ts.UNRESOLVED_TYPE;

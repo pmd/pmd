@@ -41,7 +41,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadComparator;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
@@ -127,7 +126,7 @@ public final class JavaResolvers {
                 return t.streamMethods(
                     it -> it.getSimpleName().equals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
-                ).collect(OverloadComparator.collectMostSpecific(t)); // remove overridden, hidden methods
+                ).collect(TypeOps.collectMostSpecific(t)); // remove overridden, hidden methods
             }
 
             @Override
@@ -156,7 +155,7 @@ public final class JavaResolvers {
                         // from the subclass as an "inherited" member, so is in scope in
                         // the relevant contexts.
                         && canBeImportedIn(accessPackageName, it)
-                ).collect(OverloadComparator.collectMostSpecific(container)); // remove overridden, hidden methods
+                ).collect(TypeOps.collectMostSpecific(container)); // remove overridden, hidden methods
             }
 
             @Override
@@ -175,7 +174,7 @@ public final class JavaResolvers {
                     it -> Modifier.isStatic(it.getModifiers())
                         && it.getSimpleName().equals(simpleName)
                         && canBeImportedIn(accessPackageName, it)
-                ).collect(OverloadComparator.collectMostSpecific(container)); // remove overridden, hidden methods
+                ).collect(TypeOps.collectMostSpecific(container)); // remove overridden, hidden methods
             }
 
             @Override

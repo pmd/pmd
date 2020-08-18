@@ -63,4 +63,89 @@ class C {
             }
         }
     }
+
+
+    parserTest("Test constructor call fallback") {
+
+        val acu = parser.parse(
+                """
+import java.io.IOException;
+import ooo.Unresolved;
+
+class C {
+
+    static {
+        new Unresolved();
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            constructorCall {
+                classType("Unresolved") {
+                    TypeOps.isUnresolved(it.typeMirror) shouldBe true
+                    it.typeMirror.symbol.shouldBeA<JClassSymbol> {
+                        it.binaryName shouldBe "ooo.Unresolved"
+                    }
+                }
+
+                it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                it.typeMirror shouldBe it.typeNode.typeMirror
+
+                argList {}
+            }
+        }
+    }
+
+    parserTest("Test ctor fallback in invoc ctx") {
+
+        val acu = parser.parse(
+                """
+import java.io.IOException;
+import ooo.Unresolved;
+
+class C {
+
+    static <T> T id(T t) { return t; }
+
+    static {
+        // the ctor call is failed during inference of the outer method
+        // The variable should be instantiated to *ooo.Unresolved anyway.
+        id(new Unresolved());
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val t_Unresolved = acu.descendants(ASTConstructorCall::class.java).firstOrThrow().typeNode.typeMirror as JClassType
+
+        TypeOps.isUnresolved(t_Unresolved) shouldBe true
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("id") {
+
+                it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Unresolved), returning = t_Unresolved)
+
+                argList {
+                    constructorCall {
+                        classType("Unresolved")
+
+                        it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                        it.typeMirror shouldBe it.typeNode.typeMirror
+
+                        argList {}
+                    }
+                }
+            }
+        }
+    }
 })

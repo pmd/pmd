@@ -112,23 +112,36 @@ final class ExprCheckHelper {
             MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
             MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
             JMethodSig mostSpecific = argCtDecl.getMethodType();
+
+            JTypeMirror actualType = mostSpecific.getReturnType();
+
             if (argCtDecl == infer.FAILED_INVOCATION) {
                 throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
+            } else if (argCtDecl == infer.NO_CTDECL) {
+                JTypeMirror fallback = invoc.unresolvedType();
+                if (fallback != null) {
+                    actualType = fallback;
+                }
+                // else it's ts.UNRESOLVED
+                invoc.setInferredType(fallback);
+                invoc.setMethodType(infer.NO_CTDECL);
             }
 
             // now if the return type of the arg is polymorphic and unsolved,
             // there are some additional bounds on our own infCtx
 
-            checker.checkExprConstraint(infCtx, mostSpecific.getReturnType(), targetType);
+            checker.checkExprConstraint(infCtx, actualType, targetType);
 
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(mostSpecific.getReturnType()),
-                solved -> {
-                    JMethodSig ground = solved.ground(mostSpecific);
-                    invoc.setInferredType(ground.getReturnType());
-                    invoc.setMethodType(argCtDecl.withMethod(ground));
-                }
-            );
+            if (argCtDecl != infer.NO_CTDECL) {
+                infCtx.addInstantiationListener(
+                    infCtx.freeVarsIn(actualType),
+                    solved -> {
+                        JMethodSig ground = solved.ground(mostSpecific);
+                        invoc.setInferredType(ground.getReturnType());
+                        invoc.setMethodType(argCtDecl.withMethod(ground));
+                    }
+                );
+            }
             return true;
         } else if (expr instanceof BranchingMirror) {
             return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));

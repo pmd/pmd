@@ -224,7 +224,7 @@ final class ExprOps {
 
             accessible = mref.getTypeToSearch()
                              .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
-                             .collect(OverloadComparator.collectMostSpecific(enclosing));
+                             .collect(TypeOps.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {

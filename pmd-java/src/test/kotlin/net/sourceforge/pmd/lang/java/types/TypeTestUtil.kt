@@ -50,7 +50,7 @@ fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName =
 
 fun JMethodSig?.shouldMatchMethod(
         named: String,
-        declaredIn: JTypeMirror,
+        declaredIn: JTypeMirror? = null,
         withFormals: List<JTypeMirror>? = null,
         returning: JTypeMirror? = null
 ): JMethodSig {
@@ -62,7 +62,10 @@ fun JMethodSig?.shouldMatchMethod(
             withClue("name") {
                 this::getName shouldBe named
             }
-            withClue("Declaring type") { this::getDeclaringType shouldBe declaredIn }
+            if (declaredIn != null)
+                withClue("Declaring type") {
+                    this::getDeclaringType shouldBe declaredIn
+                }
             if (withFormals != null)
                 withClue("Formals") {
                     this::getFormalParameters shouldBe withFormals
