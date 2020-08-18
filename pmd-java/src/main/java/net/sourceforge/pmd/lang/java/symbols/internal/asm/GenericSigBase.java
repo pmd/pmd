@@ -166,7 +166,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         public List<JClassType> getSuperItfs(Substitution subst) {
             ensureParsed();
-            return (List<JClassType>) (List) TypeOps.subst(superItfs, subst);
+            return TypeOps.substClasses(superItfs, subst);
         }
 
         public @Nullable JClassSymbol getRawSuper() {

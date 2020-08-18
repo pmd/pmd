@@ -72,9 +72,8 @@ class FakeIntersectionSymbol implements JClassSymbol {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<JClassType> getSuperInterfaceTypes(Substitution substitution) {
-        return (List) TypeOps.subst(superItfs, substitution);
+        return TypeOps.substClasses(superItfs, substitution);
     }
 
     @Override

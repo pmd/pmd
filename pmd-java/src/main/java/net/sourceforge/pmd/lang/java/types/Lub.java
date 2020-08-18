@@ -412,7 +412,7 @@ final class Lub {
             return ts.NULL_TYPE;
         }
 
-        return new IntersectionTypeImpl(ts, ck, allBounds);
+        return new JIntersectionType(ts, ck, allBounds);
     }
 
 

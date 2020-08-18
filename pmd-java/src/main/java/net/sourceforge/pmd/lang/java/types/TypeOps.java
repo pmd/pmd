@@ -733,6 +733,10 @@ public final class TypeOps {
         return mapPreservingSelf(ts, t -> t.subst(subst));
     }
 
+    public static List<JClassType> substClasses(List<JClassType> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+        return mapPreservingSelf(ts, t -> t.subst(subst));
+    }
+
     public static List<JTypeVar> substInBoundsOnly(List<JTypeVar> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         return mapPreservingSelf(ts, t -> t.substInBounds(subst));
     }

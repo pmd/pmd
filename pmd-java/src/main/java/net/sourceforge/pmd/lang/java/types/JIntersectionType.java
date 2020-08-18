@@ -2,34 +2,70 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 /**
- * An intersection type. An intersection type act as the
+ * An intersection type. Intersections type act as the
  * {@linkplain TypeSystem#glb(Collection) greatest lower bound}
  * for a set of types.
  *
  * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.9
  */
-public interface JIntersectionType extends JTypeMirror {
+public final class JIntersectionType implements JTypeMirror {
+
+
+    private final TypeSystem ts;
+    private final JTypeMirror primaryBound;
+    private final List<JTypeMirror> components;
+    private JClassType induced;
+
+    /**
+     * @param primaryBound may be Object if every bound is an interface
+     * @param allBounds    including the superclass, unless Object
+     */
+    JIntersectionType(TypeSystem ts,
+                      JTypeMirror primaryBound,
+                      List<? extends JTypeMirror> allBounds) {
+        this.primaryBound = primaryBound;
+        this.components = Collections.unmodifiableList(allBounds);
+        this.ts = ts;
+
+        assert allBounds.size() > 1 : "Intersection of a single bound??"; // should be caught by GLB
+        assert primaryBound instanceof JArrayType : "Intersection with an array is not well-formed"; // should be caught by GLB
+        assert Lub.isExclusiveIntersectionBound(primaryBound) :
+            "Wrong primary intersection bound " + primaryBound + " in " + this;
+
+        checkWellFormed(allBounds);
+
+    }
+
 
     /**
      * Returns the list of components. Their erasure must be pairwise disjoint.
      * If the intersection's superclass is {@link TypeSystem#OBJECT},
      * then it is excluded from this set.
      */
-    List<JTypeMirror> getComponents();
+    public List<JTypeMirror> getComponents() {
+        return components;
+    }
 
 
     /**
@@ -37,38 +73,121 @@ public interface JIntersectionType extends JTypeMirror {
      * array type, or class type (not an interface). If all bounds are interfaces,
      * then this returns {@link TypeSystem#OBJECT}.
      */
-    @NonNull JTypeMirror getPrimaryBound();
+    public @NonNull JTypeMirror getPrimaryBound() {
+        return primaryBound;
+    }
 
 
     /**
-     * Returns all additional bounds on the primary bound, which are 
+     * Returns all additional bounds on the primary bound, which are
      * necessarily interface types.
      */
-    @NonNull List<JClassType> getInterfaces();
-
+    public @NonNull List<JClassType> getInterfaces() {
+        List<JTypeMirror> list = primaryBound == ts.OBJECT ? components
+                                                           : components.subList(1, components.size());
+        return (List<JClassType>) (List) list; // safe because of checkWellFormed
+    }
 
     /**
-     * Every intersection type induces a notional class or interface 
+     * Every intersection type induces a notional class or interface
      * for the purpose of identifying its members. This may be a functional
      * interface.
      */
-    JClassType getInducedClassType();
+    public JClassType getInducedClassType() {
+        JTypeMirror primary = getPrimaryBound();
+        if (primary instanceof JTypeVar) {
+            // TODO, should generate an interface which has all the members of Ti
+            throw new NotImplementedException("Intersection with type variable is not implemented yet");
+        }
 
-
-    @Override
-    default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
-        return visitor.visitIntersection(this, p);
+        if (induced == null) {
+            JClassSymbol sym = new FakeIntersectionSymbol("", (JClassType) primary, getInterfaces());
+            this.induced = (JClassType) ts.declaration(sym);
+        }
+        return induced;
     }
 
     @Override
-    default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
+    public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
+        return visitor.visitIntersection(this, p);
+    }
+
+
+    @Override
+    public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return getComponents().stream().flatMap(it -> it.streamMethods(prefilter));
     }
 
 
     @Override
-    default JIntersectionType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
-        List<JTypeMirror> comps = TypeOps.subst(getComponents(), subst);
-        return comps == getComponents() ? this : (JIntersectionType) getTypeSystem().intersect(comps);
+    public JIntersectionType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+        JTypeMirror newPrimary = primaryBound.subst(subst);
+        List<JClassType> myItfs = getInterfaces();
+        List<JClassType> newBounds = TypeOps.substClasses(myItfs, subst);
+        return newPrimary == getPrimaryBound()
+                   && newBounds == myItfs ? this
+                                          : new JIntersectionType(ts, newPrimary, newBounds);
+    }
+
+    @Override
+    public @Nullable JTypeDeclSymbol getSymbol() {
+        return null; // the induced type may have a symbol though
+    }
+
+    @Override
+    public TypeSystem getTypeSystem() {
+        return ts;
+    }
+
+
+    @Override
+    public JTypeMirror getErasure() {
+        return getPrimaryBound().getErasure();
+    }
+
+    @Override
+    public String toString() {
+        return TypePrettyPrint.prettyPrint(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof JIntersectionType)) {
+            return false;
+        }
+        JIntersectionType that = (JIntersectionType) o;
+        return TypeOps.isSameType(this, that);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(components);
+    }
+
+    private static void checkWellFormed(List<? extends JTypeMirror> flattened) {
+        for (int i = 0; i < flattened.size(); i++) {
+            JTypeMirror ci = flattened.get(i);
+            Objects.requireNonNull(ci, "Null intersection component");
+            if (Lub.isExclusiveIntersectionBound(ci)) {
+                if (i != 0) {
+                    throw malformedIntersection(flattened);
+                }
+            } else if (ci instanceof JClassType) {
+                // must be an interface, as per isExclusiveBlabla
+                assert ci.isInterface();
+            } else {
+                throw malformedIntersection(flattened);
+            }
+        }
+    }
+
+    private static RuntimeException malformedIntersection(List<? extends JTypeMirror> flattened) {
+        return new IllegalArgumentException(
+            "Malformed intersection: "
+                + flattened.stream().map(JTypeMirror::toString).collect(Collectors.joining(" & "))
+        );
     }
 }
