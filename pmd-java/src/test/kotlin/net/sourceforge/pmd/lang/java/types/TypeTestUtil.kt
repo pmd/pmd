@@ -10,10 +10,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import io.kotest.property.Arb
-import io.kotest.property.Exhaustive
-import io.kotest.property.RandomSource
-import io.kotest.property.Sample
+import io.kotest.property.*
+import io.kotest.property.forAll as ktForAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
@@ -112,7 +110,7 @@ class AllTypesGen(val ts: TypeSystem) : Arb<JTypeMirror>() {
 @Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
 class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin {
 
-    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING, testTypeSystem.ERROR_TYPE, testTypeSystem.UNRESOLVED_TYPE)
+    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
 
     override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = pool.asSequence().map { Sample(it) }
 
@@ -365,6 +363,7 @@ fun canIntersect(t: JTypeMirror, s: JTypeMirror) = t.isExlusiveIntersectionBound
 fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others:JTypeMirror) : Boolean{
     val comps = listOf(t, s, *others)
     return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
+            && comps.none { it.isPrimitive }
 }
 
 /** If so, there can only be one in a well formed intersection. */

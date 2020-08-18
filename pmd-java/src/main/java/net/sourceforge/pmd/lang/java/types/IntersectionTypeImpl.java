@@ -38,8 +38,7 @@ class IntersectionTypeImpl implements JIntersectionType {
 
         assert allBounds.size() > 1 : "Intersection of a single bound??"; // should be caught by GLB
         assert superClass instanceof JArrayType : "Intersection with an array is not well-formed"; // should be caught by GLB
-        assert Lub.isExclusiveIntersectionBound(superClass) :
-            "Wrong primary intersection bound " + superClass + " in " + this;
+        assert Lub.isExclusiveIntersectionBound(superClass) : "Wrong primary intersection bound " + superClass + " in " + this;
 
         checkWellFormed(allBounds);
 

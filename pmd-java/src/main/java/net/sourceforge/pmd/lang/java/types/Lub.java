@@ -312,6 +312,8 @@ final class Lub {
     static JTypeMirror glb(TypeSystem ts, Collection<? extends JTypeMirror> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot compute GLB of empty set");
+        } else if (types.size() == 1) {
+            return types.iterator().next();
         }
 
 
@@ -325,6 +327,8 @@ final class Lub {
                 allBounds.add(type);
             }
         }
+
+        allBounds = new ArrayList<>(new LinkedHashSet<>(allBounds)); // prune duplicates, A & A == A
 
         if (allBounds.size() == 1) {
             return allBounds.get(0);
@@ -379,8 +383,11 @@ final class Lub {
         case NO:
             break;
         default:
-            throw new IllegalArgumentException("Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
+            throw new IllegalArgumentException(
+                "Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
+
+        // now we have a most specific primary bound
 
         if (allBounds.isEmpty()) {
             return ck;
@@ -391,24 +398,8 @@ final class Lub {
             allBounds.add(0, ck);
         }
 
-        if (allBounds.size() == 1) {
-            return allBounds.get(0);
-        }
+        // we still need to check for duplicate parameterizations of the same thing
 
-        // We assume there cannot be an array type here. Why?
-        // In well-formed java programs an array type in a GLB can only occur in the following situation
-        //
-        // class C<T extends B1 & .. & Bn>      // nota: the Bi cannot be array types
-        //
-        // Somewhere: C<? extends Arr[]>
-
-        // And capture would merge the bounds of the wildcard and of the tvar
-        // into Arr[] & B1 & .. & Bn
-        // Now the C<? ...> would only typecheck if Arr[] <: Bi forall i
-        // (Note that this means, that Bi in { Serializable, Cloneable, Object })
-
-        // This means, that the loop above would find Ck = Arr[], and delete all Bi, since Ck <: Bi
-        // So in the end, we would return Arr[] alone, not create an intersection
 
         // TODO this is order dependent: Arr[] & Serializable is ok, but Serializable & Arr[] is not
         //   Possibly use TypeOps::mostSpecific to merge them
