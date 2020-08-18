@@ -45,14 +45,12 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     }
 
     /**
-     * Set the number of type parameters of this type. This may do something
-     * if this is a {@link FlexibleUnresolvedClassImpl}.
-     *
-     * @param newArity New number of type parameters
+     * Set the number of type parameters of this type. Does nothing if
+     * it is already set.
      */
-    void setTypeParameterCount(int newArity) {
-        // overridden in FlexibleUnresolvedClassImpl
-    }
+    abstract void setTypeParameterCount(int newArity);
+
+    abstract UnresolvedClassImpl getOrCreateUnresolvedChildClass(String simpleName);
 
     @Override
     public List<JTypeVar> getTypeParameters() {

@@ -88,19 +88,15 @@ public final class JavaAstProcessor {
         }
     }
 
-    public JClassSymbol makeUnresolvedReference(String canonicalName) {
-        return makeUnresolvedReference(canonicalName, 0);
-    }
-
-    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerRelativeName) {
-        if (outer instanceof JClassSymbol) {
-            return makeUnresolvedReference(((JClassSymbol) outer).getCanonicalName() + '.' + innerRelativeName);
-        }
-        return makeUnresolvedReference(innerRelativeName); // child of a type variable does not exist
-    }
-
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
         return unresolvedTypes.makeUnresolvedReference(canonicalName, typeArity);
+    }
+
+    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String simpleName, int typeArity) {
+        if (outer instanceof JClassSymbol) {
+            return unresolvedTypes.makeUnresolvedReference((JClassSymbol) outer, simpleName, typeArity);
+        }
+        return makeUnresolvedReference("error." + simpleName, typeArity);
     }
 
     public SymbolResolver getSymResolver() {

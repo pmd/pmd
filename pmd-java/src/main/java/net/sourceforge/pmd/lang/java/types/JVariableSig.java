@@ -118,6 +118,10 @@ public class JVariableSig {
         return Objects.hash(sym, declarator);
     }
 
+    @Override
+    public String toString() {
+        return "Signature of " + sym + " in " + declarator;
+    }
 
     /**
      * A field signature.

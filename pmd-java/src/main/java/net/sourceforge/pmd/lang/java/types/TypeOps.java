@@ -635,16 +635,15 @@ public final class TypeOps {
          */
         private Subtyping typeArgsAreContained(List<JTypeMirror> targs, List<JTypeMirror> sargs) {
             if (targs.isEmpty()) {
-                if (!sargs.isEmpty()) {
-                    // T is raw, it's convertible to S if T = C and S = D<?, .., ?>, C <: D
-
-                    // This is technically an unchecked conversion, but which
-                    // is safe and generates no warning
-                    return allArgsAreUnboundedWildcards(sargs) ? Subtyping.YES
-                                                               : Subtyping.UNCHECKED_WARNING;
-                } else {
+                if (sargs.isEmpty()) {
                     return Subtyping.YES;
                 }
+                // for some C, S = C<...> and T = C, ie T is raw
+                // T is convertible to S, by unchecked conversion.
+                // If S = D<?, .., ?>, then the conversion produces
+                // no unchecked warning.
+                return allArgsAreUnboundedWildcards(sargs) ? Subtyping.YES
+                                                           : Subtyping.UNCHECKED_WARNING;
             }
 
             Subtyping result = Subtyping.YES;

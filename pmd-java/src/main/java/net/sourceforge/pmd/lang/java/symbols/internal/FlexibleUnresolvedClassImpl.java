@@ -29,6 +29,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
 
     private int arity = UNKNOWN_ARITY;
     private List<JTypeVar> tparams = Collections.emptyList();
+    private List<UnresolvedClassImpl> childClasses = Collections.emptyList();
 
     FlexibleUnresolvedClassImpl(SymbolFactory core,
                                 @Nullable JClassSymbol enclosing,
@@ -54,6 +55,26 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
             }
             this.tparams = Collections.unmodifiableList(newParams);
         }
+    }
+
+    @Override
+    UnresolvedClassImpl getOrCreateUnresolvedChildClass(String simpleName) {
+        if (childClasses.isEmpty())
+            childClasses = new ArrayList<>(); // make it mutable
+        for (UnresolvedClassImpl childClass : childClasses) {
+            if (childClass.getSimpleName().equals(simpleName))
+                return childClass;
+        }
+        FlexibleUnresolvedClassImpl newChild =
+            new FlexibleUnresolvedClassImpl(factory, this, getCanonicalName() + '.' + simpleName);
+        childClasses.add(newChild);
+        return newChild;
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public List<JClassSymbol> getDeclaredClasses() {
+        return (List) childClasses;
     }
 
     @Override

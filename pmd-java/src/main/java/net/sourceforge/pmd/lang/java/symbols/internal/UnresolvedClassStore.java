@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
@@ -30,16 +31,29 @@ public final class UnresolvedClassStore {
     /**
      * Produces an unresolved class symbol from the given canonical name.
      *
-     * @param canonicalName Canonical name of the returned symbol
-     * @param typeArity     Number of type arguments parameterizing the reference.
-     *                      Type parameter symbols will be created to represent them.
-     *                      This may also mutate an existing unresolved reference.
+     * @param qualifier Canonical name of the returned symbol
+     * @param typeArity Number of type arguments parameterizing the reference.
+     *                  Type parameter symbols will be created to represent them.
+     *                  This may also mutate an existing unresolved reference.
      *
      * @throws NullPointerException If the name is null
      */
-    public @NonNull JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
-        UnresolvedClassImpl unresolved = this.unresolved.computeIfAbsent(canonicalName, n -> new FlexibleUnresolvedClassImpl(this.symbols, null, n));
+    public @NonNull JClassSymbol makeUnresolvedReference(@Nullable String canonicalName, int typeArity) {
+
+        UnresolvedClassImpl unresolved = this.unresolved.computeIfAbsent(canonicalName,
+                                                                         n -> new FlexibleUnresolvedClassImpl(this.symbols, null, n));
         unresolved.setTypeParameterCount(typeArity);
         return unresolved;
+    }
+
+    public @NonNull JClassSymbol makeUnresolvedReference(JClassSymbol qualifier, String simpleName, int typeArity) {
+
+        if (qualifier instanceof UnresolvedClassImpl) {
+            UnresolvedClassImpl child = ((UnresolvedClassImpl) qualifier).getOrCreateUnresolvedChildClass(simpleName);
+            child.setTypeParameterCount(typeArity);
+            return child;
+        }
+
+        return makeUnresolvedReference(qualifier.getCanonicalName() + '.' + simpleName, typeArity);
     }
 }

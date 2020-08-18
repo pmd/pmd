@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  */
 abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
-    protected JTypeMirror typeMirror;
+    private JTypeMirror typeMirror;
 
     AbstractJavaTypeNode(int i) {
         super(i);
@@ -35,6 +35,7 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
                 }
                 LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
                 typeMirror = this.acceptVisitor(resolver, null);
+                assert typeMirror != null : "LazyTypeResolver returned null";
             } catch (Exception | AssertionError e) {
                 // this will add every type in the chain
                 throw addContextValue(e, "Resolving type of", this);

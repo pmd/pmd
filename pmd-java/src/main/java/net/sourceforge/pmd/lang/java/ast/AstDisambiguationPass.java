@@ -74,22 +74,14 @@ final class AstDisambiguationPass {
 
     // those ignore JTypeParameterSymbol, for error handling logic to be uniform
 
-    private static String unresolvedQualifier(JTypeDeclSymbol owner, String simpleName) {
-        return owner instanceof JClassSymbol
-               ? ((JClassSymbol) owner).getCanonicalName() + '.' + simpleName
-               // this is not valid code, may break some assumptions elsewhere
-               : owner.getSimpleName() + '.' + simpleName;
-    }
-
 
     private static void checkParentIsMember(ReferenceCtx ctx, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
         JTypeDeclSymbol sym = resolvedType.getReferencedSym();
         JClassSymbol parentClass = ctx.findTypeMember(sym, parent.getSimpleName(), parent);
         if (parentClass == null) {
             ctx.reportUnresolvedMember(parent, Fallback.TYPE, parent.getSimpleName(), sym);
-            String fullName = unresolvedQualifier(sym, parent.getSimpleName());
-            int numTypeArgs = ASTList.orEmpty(parent.getTypeArguments()).size();
-            parentClass = ctx.makeUnresolvedReference(fullName, numTypeArgs);
+            int numTypeArgs = ASTList.sizeOrZero(parent.getTypeArguments());
+            parentClass = ctx.processor.makeUnresolvedReference(sym, parent.getSimpleName(), numTypeArgs);
         }
         parent.setSymbol(parentClass);
     }
@@ -239,8 +231,8 @@ final class AstDisambiguationPass {
         }
 
         private static @NonNull JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, ReferenceCtx ctx, String canonicalName) {
-            int arity = ASTList.orEmpty(type.getTypeArguments()).size();
-            return ctx.makeUnresolvedReference(canonicalName, arity);
+            int arity = ASTList.sizeOrZero(type.getTypeArguments());
+            return ctx.processor.makeUnresolvedReference(canonicalName, arity);
         }
 
         /*
@@ -392,7 +384,7 @@ final class AstDisambiguationPass {
             if (inner == null && isPackageOrTypeOnly) {
                 // normally compile-time error, continue by considering it an unresolved inner type
                 ctx.reportUnresolvedMember(ambig, Fallback.TYPE, nextSimpleName, sym);
-                inner = ctx.makeUnresolvedReference(sym, nextSimpleName);
+                inner = ctx.processor.makeUnresolvedReference(sym, nextSimpleName, 0);
             }
 
             if (inner != null) {
@@ -473,7 +465,7 @@ final class AstDisambiguationPass {
             JClassSymbol parentClass = processor.resolveClassFromBinaryName(fullName);
             if (parentClass == null) {
                 processor.getLogger().warning(parent, CANNOT_RESOLVE_AMBIGUOUS_NAME, fullName, Fallback.TYPE);
-                parentClass = processor.makeUnresolvedReference(null, fullName);
+                parentClass = processor.processor.makeUnresolvedReference(fullName, ASTList.sizeOrZero(parent.getTypeArguments()));
             }
             parent.setSymbol(parentClass);
             parent.setFullyQualified();
@@ -531,14 +523,6 @@ final class AstDisambiguationPass {
                 return result == null ? null : result.getSymbol();
             }
             return null;
-        }
-
-        public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerRelativeName) {
-            return processor.makeUnresolvedReference(outer, innerRelativeName);
-        }
-
-        public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
-            return processor.makeUnresolvedReference(canonicalName, typeArity);
         }
 
 

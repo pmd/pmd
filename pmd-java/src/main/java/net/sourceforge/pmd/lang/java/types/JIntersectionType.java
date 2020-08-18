@@ -87,8 +87,8 @@ public final class JIntersectionType implements JTypeMirror {
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // safe because of checkWellFormed
     public @NonNull List<JClassType> getInterfaces() {
-        return (List<JClassType>) (List) (primaryBound == ts.OBJECT ? components
-                                                                    : components.subList(1, components.size()));
+        return (List) (primaryBound == ts.OBJECT ? components
+                                                 : components.subList(1, components.size()));
     }
 
     /**

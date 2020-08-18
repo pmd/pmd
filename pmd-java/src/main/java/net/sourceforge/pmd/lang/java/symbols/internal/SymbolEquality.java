@@ -184,6 +184,11 @@ public final class SymbolEquality {
     }
 
     public static <T extends JElementSymbol> boolean equals(T e1, Object e2) {
+        if (e1 == e2) {
+            return true;
+        } else if (e2 == null) {
+            return false;
+        }
         @SuppressWarnings("unchecked")
         EqAndHash<T> eqAndHash = (EqAndHash<T>) e1.acceptVisitor(EqAndHashVisitor.INSTANCE, null);
         return eqAndHash.equals(e1, e2);
