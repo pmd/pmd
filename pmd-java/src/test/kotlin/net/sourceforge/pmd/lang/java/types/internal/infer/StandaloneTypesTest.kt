@@ -19,7 +19,9 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
-    val arrayComponentGen = testTypeSystem.allTypesGen.filterNot { it is JClassType && it.isGenericTypeDeclaration || it.isArray }
+    // Todo these tests should use primitives too, but the type system of the AST != testTypeSystem,
+    // so that primitives compare unequal.
+    val arrayComponentGen = testTypeSystem.refTypeGen.filterNot { it.isGenericTypeDeclaration || it.isArray }
 
     // fixme these tests depend on the toString!
 

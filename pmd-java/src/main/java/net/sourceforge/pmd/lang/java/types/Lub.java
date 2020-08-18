@@ -334,13 +334,13 @@ final class Lub {
             return allBounds.get(0);
         }
 
-        JTypeMirror ck = ts.OBJECT; // Ck is a class type
+        JTypeMirror ck = ts.OBJECT; // Ck is the primary bound
 
         OptionalBool retryWithCaptureBounds = NO;
         PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
         PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
         JTypeMirror lastBadClass = null;
-        for (ListIterator<JTypeMirror> iterator = allBounds.listIterator(); iterator.hasNext(); ) {
+        for (ListIterator<JTypeMirror> iterator = allBounds.listIterator(); iterator.hasNext();) {
             JTypeMirror ci = iterator.next();
 
             if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
@@ -393,9 +393,8 @@ final class Lub {
             return ck;
         }
 
-        if (ck != ts.OBJECT) {
-            // readd ck as first component
-            allBounds.add(0, ck);
+        if (ck == ts.OBJECT && allBounds.size() == 1) {
+            return allBounds.get(0);
         }
 
         // we still need to check for duplicate parameterizations of the same thing

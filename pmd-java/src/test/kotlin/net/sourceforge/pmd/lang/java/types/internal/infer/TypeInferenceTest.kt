@@ -24,7 +24,6 @@ class TypeInferenceTest : ProcessorTestSpec({
     val jutil = "java.util"
     val juf = "$jutil.function"
     val justream = "$jutil.stream"
-    val jlang = "java.lang"
 
     parserTest("Test method invoc resolution") {
 

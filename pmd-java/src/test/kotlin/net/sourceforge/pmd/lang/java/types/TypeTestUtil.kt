@@ -112,7 +112,8 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
 
     override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
 
-    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> = pool.asSequence().map { Sample(it) }
+    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> =
+            pool.asSequence().map { Sample(it, shrinks = RTree({ it.toArray() })) }
 
     val t_String: JClassType get() = java.lang.String::class.decl
     val t_StringBuilder: JClassType get() = java.lang.StringBuilder::class.decl

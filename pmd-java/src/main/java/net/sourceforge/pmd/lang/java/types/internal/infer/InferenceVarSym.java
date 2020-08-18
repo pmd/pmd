@@ -17,7 +17,7 @@ class InferenceVarSym implements JTypeDeclSymbol {
     private final TypeSystem ts;
     private final JInferenceVar var;
 
-    public InferenceVarSym(TypeSystem ts, JInferenceVar var) {
+    InferenceVarSym(TypeSystem ts, JInferenceVar var) {
         this.ts = ts;
         this.var = var;
     }

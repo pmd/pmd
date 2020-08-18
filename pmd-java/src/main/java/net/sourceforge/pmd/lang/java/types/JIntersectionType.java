@@ -48,12 +48,15 @@ public final class JIntersectionType implements JTypeMirror {
         this.components = Collections.unmodifiableList(allBounds);
         this.ts = ts;
 
-        assert allBounds.size() > 1 : "Intersection of a single bound??"; // should be caught by GLB
-        assert primaryBound instanceof JArrayType : "Intersection with an array is not well-formed"; // should be caught by GLB
-        assert Lub.isExclusiveIntersectionBound(primaryBound) :
-            "Wrong primary intersection bound " + primaryBound + " in " + this;
+        assert Lub.isExclusiveIntersectionBound(primaryBound)
+            : "Wrong primary intersection bound: " + toString(primaryBound, allBounds);
+        assert primaryBound != ts.OBJECT || allBounds.size() > 1
+            : "Intersection of a single bound: " + toString(primaryBound, allBounds); // should be caught by GLB
+        assert !(primaryBound instanceof JArrayType)
+            : "Intersection with an array is not well-formed: "
+            + toString(primaryBound, allBounds); // should be caught by GLB
 
-        checkWellFormed(allBounds);
+        checkWellFormed(primaryBound, allBounds);
 
     }
 
@@ -82,10 +85,10 @@ public final class JIntersectionType implements JTypeMirror {
      * Returns all additional bounds on the primary bound, which are
      * necessarily interface types.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"}) // safe because of checkWellFormed
     public @NonNull List<JClassType> getInterfaces() {
-        List<JTypeMirror> list = primaryBound == ts.OBJECT ? components
-                                                           : components.subList(1, components.size());
-        return (List<JClassType>) (List) list; // safe because of checkWellFormed
+        return (List<JClassType>) (List) (primaryBound == ts.OBJECT ? components
+                                                                    : components.subList(1, components.size()));
     }
 
     /**
@@ -124,9 +127,9 @@ public final class JIntersectionType implements JTypeMirror {
         JTypeMirror newPrimary = primaryBound.subst(subst);
         List<JClassType> myItfs = getInterfaces();
         List<JClassType> newBounds = TypeOps.substClasses(myItfs, subst);
-        return newPrimary == getPrimaryBound()
-                   && newBounds == myItfs ? this
-                                          : new JIntersectionType(ts, newPrimary, newBounds);
+        return newPrimary == getPrimaryBound() && newBounds == myItfs // NOPMD UseEqualsToCompareObjectReferences
+               ? this
+               : new JIntersectionType(ts, newPrimary, newBounds);
     }
 
     @Override
@@ -167,27 +170,32 @@ public final class JIntersectionType implements JTypeMirror {
         return Objects.hash(components);
     }
 
-    private static void checkWellFormed(List<? extends JTypeMirror> flattened) {
+    private static void checkWellFormed(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
         for (int i = 0; i < flattened.size(); i++) {
             JTypeMirror ci = flattened.get(i);
             Objects.requireNonNull(ci, "Null intersection component");
             if (Lub.isExclusiveIntersectionBound(ci)) {
                 if (i != 0) {
-                    throw malformedIntersection(flattened);
+                    throw malformedIntersection(primary, flattened);
                 }
             } else if (ci instanceof JClassType) {
                 // must be an interface, as per isExclusiveBlabla
                 assert ci.isInterface();
             } else {
-                throw malformedIntersection(flattened);
+                throw malformedIntersection(primary, flattened);
             }
         }
     }
 
-    private static RuntimeException malformedIntersection(List<? extends JTypeMirror> flattened) {
+    private static RuntimeException malformedIntersection(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
         return new IllegalArgumentException(
-            "Malformed intersection: "
-                + flattened.stream().map(JTypeMirror::toString).collect(Collectors.joining(" & "))
+            "Malformed intersection: " + toString(primary, flattened)
         );
+    }
+
+    private static String toString(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
+        return flattened.stream().map(JTypeMirror::toString).collect(Collectors.joining(" & ",
+                                                                                        primary.toString() + " & ",
+                                                                                        ""));
     }
 }

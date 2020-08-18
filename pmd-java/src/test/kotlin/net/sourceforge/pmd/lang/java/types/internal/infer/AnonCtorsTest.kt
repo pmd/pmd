@@ -19,8 +19,6 @@ class AnonCtorsTest : ProcessorTestSpec({
 
     parserTest("Diamond anonymous class constructor") {
 
-        logTypeInference(true)
-
         val acu = parser.parse(
                 """
             class Scratch {

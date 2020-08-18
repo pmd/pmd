@@ -252,12 +252,6 @@ public interface JTypeMirror extends JTypeVisitable {
     }
 
 
-    /** Returns true if this is an {@linkplain JArrayType array type}. */
-    default boolean isArray() {
-        return this instanceof JArrayType;
-    }
-
-
     /**
      * Returns true if this is a raw type. This may be
      * <ul>
@@ -273,6 +267,20 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     default boolean isRaw() {
         return false;
+    }
+
+    /**
+     * Returns true if this is an interface type. Annotations are also
+     * interface types.
+     */
+    default boolean isInterface() {
+        JTypeDeclSymbol sym = getSymbol();
+        return sym != null && sym.isInterface();
+    }
+
+    /** Returns true if this is an {@linkplain JArrayType array type}. */
+    default boolean isArray() {
+        return this instanceof JArrayType;
     }
 
     /**
@@ -328,15 +336,6 @@ public interface JTypeMirror extends JTypeVisitable {
         return Collections.emptyList();
     }
 
-
-    /**
-     * Returns true if this is an interface type. Annotations are also
-     * interface types.
-     */
-    default boolean isInterface() {
-        JTypeDeclSymbol sym = getSymbol();
-        return sym != null && sym.isInterface();
-    }
 
 
     @Override

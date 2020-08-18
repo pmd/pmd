@@ -132,9 +132,9 @@ class C {
                     named = "min",
                     declaredIn = t_C,
                     withFormals = listOf(gen.t_Collection[`?` extends gen.t_Comparable]), // Comparable is raw
-                    returning = ts.OBJECT
+                    returning = gen.t_Comparable // not Object
             )
-            call.typeMirror shouldBe ts.OBJECT
+            call.typeMirror shouldBe gen.t_Comparable
         }
         assert(logGetter().isEmpty())
 

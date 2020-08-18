@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -49,6 +48,11 @@ public final class JArrayType implements JTypeMirror {
             symbol = new ArraySymbolImpl(ts, comp); // will nullcheck
         }
         return symbol;
+    }
+
+    @Override
+    public boolean isInterface() {
+        return false;
     }
 
     @Override
@@ -120,7 +124,8 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public JArrayType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newComp = getComponentType().subst(subst);
-        return newComp == component ? this : getTypeSystem().arrayType(newComp);
+        return newComp == component ? this // NOPMD UseEqualsToCompareObjectReferences
+                                    : getTypeSystem().arrayType(newComp);
     }
 
     @Override
@@ -137,7 +142,7 @@ public final class JArrayType implements JTypeMirror {
 
     @Override
     public int hashCode() {
-        return Objects.hash(component);
+        return component.hashCode() * 3;
     }
 
     @Override
