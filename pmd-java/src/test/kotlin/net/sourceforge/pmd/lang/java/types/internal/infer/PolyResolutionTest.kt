@@ -186,14 +186,14 @@ class O {
                         if (askOuterFirst)
                             it::getTypeMirror shouldBe double
 
-                        it::getQualifier shouldBe unspecifiedChild()
+                        skipQualifier()
                         argList {
                             variableAccess("magnitude")
                             child<ASTConditionalExpression> {
                                 methodCall("isNaN") {
                                     it::getTypeMirror shouldBe boolean
 
-                                    it::getQualifier shouldBe unspecifiedChild()
+                                    skipQualifier()
                                     argList(1)
                                 }
 

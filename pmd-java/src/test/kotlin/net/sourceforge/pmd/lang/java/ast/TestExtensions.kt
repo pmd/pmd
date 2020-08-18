@@ -541,6 +541,9 @@ fun TreeNodeWrapper<Node, *>.methodCall(methodName: String, assertions: NodeSpec
             assertions()
         }
 
+fun TreeNodeWrapper<Node, out QualifiableExpression>.skipQualifier() =
+        it::getQualifier shouldBe unspecifiedChild()
+
 fun TreeNodeWrapper<Node, *>.argList(assertions: NodeSpec<ASTArgumentList> = EmptyAssertions) =
         child<ASTArgumentList> {
             assertions()

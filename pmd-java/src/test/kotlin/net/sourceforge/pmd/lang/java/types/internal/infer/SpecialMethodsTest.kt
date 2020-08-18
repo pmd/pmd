@@ -130,7 +130,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
                     gen.t_Stream[t_Foo]
                 }
 
-                it::getQualifier shouldBe unspecifiedChild()
+                skipQualifier()
 
                 argList {
                     methodCall("values") {

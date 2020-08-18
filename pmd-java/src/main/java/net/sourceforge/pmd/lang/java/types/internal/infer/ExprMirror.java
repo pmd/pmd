@@ -318,11 +318,15 @@ public interface ExprMirror {
             // package-private:
 
             MethodCtDecl withMethod(JMethodSig method) {
-                return withMethod(method, false);
+                return withMethod(method, failed);
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
                 return new MethodCtDecl(method, resolvePhase, argsAreAllRelevant, needsUncheckedConversion, failed);
+            }
+
+            MethodCtDecl asFailed() {
+                return withMethod(methodType, true);
             }
 
             boolean areAllArgsRelevant() {

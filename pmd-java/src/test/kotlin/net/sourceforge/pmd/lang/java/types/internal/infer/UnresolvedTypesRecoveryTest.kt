@@ -7,6 +7,8 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
+import io.kotest.matchers.string.shouldContainIgnoringCase
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -237,9 +239,9 @@ class C {
         }
     }
 
+    parserTest("f:Recovery when there are several applicable overloads") {
 
-    // TODO note this is ignored
-    parserTest("!Recovery when there are several applicable overloads") {
+        val logGetter = logTypeInference()
 
         val acu = parser.parse(
                 """
@@ -247,9 +249,15 @@ import ooo.Unresolved;
 
 class C {
 
-    static void id(int i) { }
-
     static {
+        // What should be the correct behavior?
+        // Select the most general overload, append(Object)?
+        // Just inverting the specificity relation, to select the most general,
+        // would not work well when there are several parameters.
+        // Note that /*unresolved*/ and /*error*/ are the only types for which 
+        // there is ambiguity
+        
+        // For now, report an ambiguity error
         new StringBuilder().append(Unresolved.SOMETHING);
     }
 }
@@ -257,19 +265,18 @@ class C {
                 """.trimIndent()
         )
 
-
-        val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
-
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
+        logGetter().shouldBeEmpty()
         call.shouldMatchN {
-            methodCall("id") {
+            methodCall("append") {
 
                 with (it.typeDsl) {
-                    it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
-                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                    it.methodType.symbol shouldBe idMethod
+                    it.methodType.shouldMatchMethod("append", withFormals = listOf(ts.OBJECT), returning = gen.t_StringBuilder)
+                    it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
                 }
+
+                skipQualifier()
 
                 argList {
                     fieldAccess("SOMETHING") {
@@ -281,6 +288,7 @@ class C {
                 }
             }
         }
+        logGetter().shouldContainIgnoringCase("ambiguity")
     }
 
 })

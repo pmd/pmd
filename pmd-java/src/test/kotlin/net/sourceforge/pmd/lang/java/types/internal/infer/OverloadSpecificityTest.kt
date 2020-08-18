@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
-import net.sourceforge.pmd.lang.java.types.TypeOps.shouldTakePrecedence
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 import net.sourceforge.pmd.util.OptionalBool
 import kotlin.test.assertFalse
 

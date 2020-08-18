@@ -48,7 +48,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class Infer {
 
     final ExprOps exprOps;
-    private final OverloadComparator overloadComparator;
 
     final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
@@ -77,7 +76,6 @@ public final class Infer {
         this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts);
 
         this.exprOps = new ExprOps(this);
-        this.overloadComparator = new OverloadComparator(this);
     }
 
     public TypeSystem getTypeSystem() {
@@ -266,18 +264,20 @@ public final class Infer {
             return NO_CTDECL;
         }
 
-        MethodCtDecl bestApplicable = FAILED_INVOCATION;
-
         for (MethodResolutionPhase phase : MethodResolutionPhase.APPLICABILITY_TESTS) {
+            PhaseOverloadSet applicable = new PhaseOverloadSet(this, phase, site);
             for (JMethodSig m : potentiallyApplicable) {
                 site.resetInferenceData();
 
                 MethodCtDecl candidate = logInference(site, phase, m);
 
-                bestApplicable = overloadComparator.selectMoreSpecific(bestApplicable, candidate, site, phase);
+                if (!candidate.isFailed()) {
+                    applicable.add(candidate);
+                }
             }
 
-            if (bestApplicable != FAILED_INVOCATION) { // NOPMD
+            if (!applicable.isEmpty()) {
+                MethodCtDecl bestApplicable = applicable.getMostSpecificOrLogAmbiguity(LOG);
                 JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
                                                            site.getExpr().getErasedReceiverType());
                 return bestApplicable.withMethod(adapted);

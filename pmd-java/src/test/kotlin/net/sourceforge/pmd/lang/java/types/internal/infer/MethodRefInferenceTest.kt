@@ -54,7 +54,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                         it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[t_Archive] }
 
                         methodCall("of") {
-                            it::getQualifier shouldBe unspecifiedChild()
+                            skipQualifier()
 
                             it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
 
@@ -466,7 +466,7 @@ abstract class NodeStream<T> implements Iterable<T> {
                             it.typeMirror shouldBe gen.t_Function[captureOfT, gen.t_Iterator[`?` extends rvar]]
                         }
 
-                        it::getQualifier shouldBe unspecifiedChild()
+                        skipQualifier()
 
                         argList {
                             methodRef("safeMap") {
@@ -483,7 +483,7 @@ abstract class NodeStream<T> implements Iterable<T> {
                                     )
                                 }
 
-                                it::getQualifier shouldBe unspecifiedChild()
+                                skipQualifier()
 
 //                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
                                 argList {

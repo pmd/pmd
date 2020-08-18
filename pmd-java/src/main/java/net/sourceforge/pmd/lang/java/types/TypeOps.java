@@ -7,10 +7,6 @@ package net.sourceforge.pmd.lang.java.types;
 import static net.sourceforge.pmd.lang.java.types.Substitution.EMPTY;
 import static net.sourceforge.pmd.lang.java.types.Substitution.mapping;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
-import static net.sourceforge.pmd.util.OptionalBool.NO;
-import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
-import static net.sourceforge.pmd.util.OptionalBool.YES;
-import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -27,10 +23,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -44,8 +38,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Common operations on types.
@@ -1328,7 +1322,7 @@ public final class TypeOps {
 
         Map<String, List<JMethodSig>> relevantMethods = candidateSam.streamMethods(it -> !Modifier.isStatic(it.getModifiers()))
                                                                     .filter(TypeOps::isNotDeclaredInClassObject)
-                                                                    .collect(Collectors.groupingBy(JMethodSig::getName, collectMostSpecific(candidateSam)));
+                                                                    .collect(Collectors.groupingBy(JMethodSig::getName, OverloadSet.collectMostSpecific(candidateSam)));
 
 
         List<JMethodSig> candidates = new ArrayList<>();
@@ -1628,7 +1622,7 @@ public final class TypeOps {
             it -> (!staticOnly || Modifier.isStatic(it.getModifiers()))
                 && it.getSimpleName().equals(name)
                 && isAccessible(it, enclosing)
-        ).collect(collectMostSpecific(type));
+        ).collect(OverloadSet.collectMostSpecific(type));
     }
 
     private static boolean isAccessible(JExecutableSymbol method, JClassSymbol ctx) {
@@ -1719,115 +1713,6 @@ public final class TypeOps {
     // </editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Specificity utils">
-
-
-    /**
-     * Returns a collector that can apply to a stream of method signatures,
-     * and that collects them into a set of method, where none override one another.
-     * Do not use this in a parallel stream. Do not use this to collect constructors.
-     * Do not use this if your stream contains methods that have different names.
-     *
-     * @param commonSubtype Site where the signatures are observed. The owner of every method
-     *                      in the stream must be a supertype of this type
-     *
-     * @return A collector
-     */
-    public static Collector<JMethodSig, ?, List<JMethodSig>> collectMostSpecific(JTypeMirror commonSubtype) {
-        return Collector.of(
-            OverloadSet::new,
-            (set, sig) -> set.add(sig, commonSubtype),
-            (left, right) -> {
-                throw new NotImplementedException("Cannot use this in a parallel stream");
-            },
-            OverloadSet::getOverloads
-        );
-    }
-
-
-    /**
-     * Given that m1 and m2 are override-equivalent, should m1 be chosen
-     * over m2 (YES/NO), or should an ambiguity error arise (UNKNOWN). This
-     * handles a few cases about shadowing/overriding/hiding that are not
-     * covered strictly by the definition of "specificity".
-     *
-     * <p>If m1 and m2 are equal, returns the first one by convention.
-     */
-    public static OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2, JTypeMirror commonSubtype) {
-        // select
-        // 1. the non-bridge
-        // 2. the one that overrides the other
-        // 3. the non-abstract method
-
-        // Symbols don't reflect bridge methods anymore
-        // if (m1.isBridge() != m2.isBridge()) {
-        //      return definitely(!m1.isBridge());
-        // } else
-        if (overrides(m1, m2, commonSubtype)) {
-            return YES;
-        } else if (overrides(m2, m1, commonSubtype)) {
-            return NO;
-        } else if (m1.isAbstract() ^ m2.isAbstract()) {
-            return definitely(!m1.isAbstract());
-        } else if (m1.isAbstract() && m2.isAbstract()) { // last ditch effort
-            // both are unrelated abstract, inherited into 'site'
-            // their signature would be merged into the site
-            // if exactly one is declared in a class, prefer it
-            // if both are declared in a class, ambiguity error (recall, neither overrides the other)
-            // if both are declared in an interface, select any of them
-            boolean m1InClass = m1.getSymbol().getEnclosingClass().isClass();
-            boolean m2Class = m2.getSymbol().getEnclosingClass().isClass();
-
-            return m1InClass && m2Class ? UNKNOWN : definitely(m1InClass);
-        }
-
-        if (Modifier.isPrivate(m1.getModifiers() | m2.getModifiers())
-            && commonSubtype instanceof JClassType) {
-            // One of them is private, which means, they can't be overridden,
-            // so they failed the above test
-            // Maybe it's shadowing then
-            return shadows(m1, m2, (JClassType) commonSubtype);
-        }
-
-        return UNKNOWN;
-    }
-
-
-    /**
-     * Returns whether m1 shadows m2 in the body of the given site, ie
-     * m1 is declared in a class C1 that encloses the site, and m2 is declared
-     * in a type that strictly encloses C1.
-     *
-     * <p>Assumes m1 and m2 are override-equivalent, and declared in different
-     * classes.
-     */
-    static OptionalBool shadows(JMethodSig m1, JMethodSig m2, JClassType site) {
-        final JClassSymbol c1 = m1.getSymbol().getEnclosingClass();
-        final JClassSymbol c2 = m2.getSymbol().getEnclosingClass();
-
-        // We go outward from the `site`. The height measure is the distance
-        // from the site (ie, the reverted depth of each class)
-
-        int height = 0;
-        int c1Height = -1;
-        int c2Height = -1;
-        JClassSymbol c = site.getSymbol();
-
-        while (c != null) {
-            if (c.equals(c1)) {
-                c1Height = height;
-            }
-            if (c.equals(c2)) {
-                c2Height = height;
-            }
-            c = c.getEnclosingClass();
-            height++;
-        }
-
-        if (c1Height < 0 || c2Height < 0 || c1Height == c2Height) {
-            return UNKNOWN;
-        }
-        return definitely(c1Height < c2Height);
-    }
 
 
     // </editor-fold>

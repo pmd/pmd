@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -45,7 +47,7 @@ public interface TypeInferenceLogger {
 
     default void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) { }
 
-    default void ambiguityError(MethodCallSite site, JMethodSig m1, JMethodSig m2) { }
+    default void ambiguityError(MethodCallSite site, @Nullable MethodCtDecl selected, List<MethodCtDecl> m1) { }
 
     // instantiateImpl
 
@@ -230,13 +232,19 @@ public interface TypeInferenceLogger {
         }
 
         @Override
-        public void ambiguityError(MethodCallSite site, JMethodSig m1, JMethodSig m2) {
+        public void ambiguityError(MethodCallSite site, @Nullable MethodCtDecl selected, List<MethodCtDecl> methods) {
             println("");
             printExpr(site.getExpr());
-            startSection("[WARNING] Ambiguity error: both methods are maximally specific");
-            println(color(m1, ANSI_RED));
-            println(color(m2, ANSI_RED));
-            endSection("");
+            startSection("[WARNING] Ambiguity error: all methods are maximally specific");
+            for (MethodCtDecl m : methods) {
+                println(color(m.getMethodType(), ANSI_RED));
+            }
+
+            if (selected != null) {
+                endSection("Will select " + color(selected.getMethodType(), ANSI_BLUE));
+            } else {
+                endSection(""); // no fallback?
+            }
         }
 
         protected void printExpr(ExprMirror expr) {

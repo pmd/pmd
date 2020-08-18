@@ -47,7 +47,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                         it::getTypeParameters shouldBe asList.typeParameters // not substituted
                     }
 
-                    it::getQualifier shouldBe unspecifiedChild()
+                    skipQualifier()
                     argList(1)
                 }
             }
@@ -490,7 +490,7 @@ class Scratch {
                                         it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
                                     }
 
-                                    it::getQualifier shouldBe unspecifiedChild()
+                                    skipQualifier()
                                 }
                             }
                         }

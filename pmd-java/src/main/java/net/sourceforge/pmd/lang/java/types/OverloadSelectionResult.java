@@ -73,7 +73,9 @@ public interface OverloadSelectionResult {
     /**
      * Returns true if the invocation of this method failed. This
      * means, the presented method type is a fallback, whose type
-     * parameters might not have been fully instantiated.
+     * parameters might not have been fully instantiated. This may
+     * also mean several methods were ambiguous, and an arbitrary
+     * one was chosen.
      */
     boolean isFailed();
 }

@@ -208,7 +208,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                             it.methodType.shouldMatchMethod(named = "requireNonNull", declaredIn = Objects::class.raw)
                         }
 
-                        it::getQualifier shouldBe unspecifiedChild()
+                        skipQualifier()
 
                         argList {
                             variableAccess("c") {
@@ -275,7 +275,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                     )
                 }
 
-                it::getQualifier shouldBe unspecifiedChild()
+                skipQualifier()
 
                 argList {
                     variableAccess("classifier")
