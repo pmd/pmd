@@ -22,7 +22,6 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -422,18 +421,17 @@ final class InferenceContext {
         return sb.toString();
     }
 
-    @Nullable JClassType asClassType(JTypeMirror t) {
-        if (t instanceof JClassType) {
-            return (JClassType) t;
-        } else if (t instanceof JIntersectionType) {
-            return ((JIntersectionType) t).getInducedClassType();
-        }
-        return null;
-    }
-
+    /** A callback called when a set of variables have been solved. */
     public interface InstantiationListener {
 
-
+        /**
+         * Called when the set of dependencies provided to {@link #addInstantiationListener(Set, InstantiationListener)}
+         * have been solved. The parameter is not necessarily the context
+         * on which this has been registered, because contexts adopt the
+         * inference variables of their children in some cases, to solve
+         * them together. Use {@link #ground(JClassType)} with the context
+         * parameter, not the context on which the callback was registered.
+         */
         void onInstantiation(InferenceContext solvedCtx);
 
     }

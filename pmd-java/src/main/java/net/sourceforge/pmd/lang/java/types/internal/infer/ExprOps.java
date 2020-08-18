@@ -70,10 +70,7 @@ final class ExprOps {
             //  a type variable if the type variable is a type parameter of the candidate method.
             return m.getTypeParameters().contains(t);
         } else if (isLambdaOrRef) {
-            if (!(t instanceof JClassType)) {
-                return false;
-            }
-            JMethodSig fun = TypeOps.findFunctionalInterfaceMethod((JClassType) t);
+            JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(t);
             if (fun == null) {
                 // t is not a functional interface
                 return false;

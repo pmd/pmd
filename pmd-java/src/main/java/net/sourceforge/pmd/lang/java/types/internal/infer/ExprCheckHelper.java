@@ -139,14 +139,14 @@ final class ExprCheckHelper {
 
     private @Nullable JClassType getFunTypeOrDefer(JTypeMirror targetType, ExprMirror expr) {
         if (targetType instanceof JInferenceVar) {
-            JClassType earlyBound = infCtx.asClassType(ts.glb(((JInferenceVar) targetType).getBounds(BoundKind.UPPER)));
+            JClassType earlyBound = TypeOps.asClassType(ts.glb(((JInferenceVar) targetType).getBounds(BoundKind.UPPER)));
             if (earlyBound == null) {
                 infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
                 return null;
             }
             return earlyBound;
         } else {
-            return infCtx.asClassType(targetType);
+            return TypeOps.asClassType(targetType);
         }
     }
 

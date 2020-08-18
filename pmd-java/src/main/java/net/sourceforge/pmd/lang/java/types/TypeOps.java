@@ -1276,8 +1276,12 @@ public final class TypeOps {
      * of the SAM at once.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-9.html#jls-9.9
+     *
+     * <p>If the parameter is not mappable to a class type with {@link #asClassType(JTypeMirror)},
+     * or if the functional method does not exist, returns null.
      */
-    public static @Nullable JMethodSig findFunctionalInterfaceMethod(JClassType candidateSam) {
+    public static @Nullable JMethodSig findFunctionalInterfaceMethod(@Nullable JTypeMirror type) {
+        JClassType candidateSam = asClassType(type);
         if (candidateSam == null) {
             return null;
         }
@@ -1292,10 +1296,20 @@ public final class TypeOps {
         } else {
             return findFunctionTypeImpl(candidateSam);
         }
+    }
 
-        // TODO
-        //  The function type of an intersection type that induces a notional functional
-        //  interface is the function type of the notional functional interface.
+    /**
+     * Returns t if it is a class or interface type. If it is an intersection type,
+     * returns the induced class or interface type. Returns null otherwise, including
+     * if the parameter is null.
+     */
+    public static @Nullable JClassType asClassType(@Nullable JTypeMirror t) {
+        if (t instanceof JClassType) {
+            return (JClassType) t;
+        } else if (t instanceof JIntersectionType) {
+            return ((JIntersectionType) t).getInducedClassType();
+        }
+        return null;
     }
 
     private static @Nullable JMethodSig findFunctionTypeImpl(@Nullable JClassType candidateSam) {

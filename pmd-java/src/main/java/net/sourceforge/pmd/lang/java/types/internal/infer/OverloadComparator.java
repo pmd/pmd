@@ -215,7 +215,7 @@ public final class OverloadComparator {
 
             // Otherwise, if Ti is not a functional interface type, the
             // constraint formula ‹Si <: Ti› is generated.
-            JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(ctx.asClassType(ti));
+            JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(ti);
             if (fun == null) {
                 // not a functional interface
                 infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
