@@ -187,13 +187,13 @@ public interface ExprMirror {
 
         /**
          * Returns true if the body is value-compatible, ie it is either
-         * an expression, or a block whose return statements return an
-         * expression.
+         * an expression, or a block for which at least one return statement
+         * returns an expression.
          */
         boolean isValueCompatible();
 
         /**
-         * Returns true if the body is value-compatible, ie it is either
+         * Returns true if the body is void-compatible, ie it is either
          * an expression which "may" have type void (eg, not {@code a + 1}),
          * or a block whose return statements return no expression.
          */

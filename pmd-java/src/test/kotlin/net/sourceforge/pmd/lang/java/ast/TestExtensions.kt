@@ -255,6 +255,11 @@ fun TreeNodeWrapper<Node, *>.ifStatement(contents: NodeSpec<ASTIfStatement> = Em
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.returnStatement(contents: ValuedNodeSpec<ASTReturnStatement, ASTExpression>) =
+        child<ASTReturnStatement> {
+            it::getExpr shouldBe contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
         child<ASTForStatement> {
             val body = body()

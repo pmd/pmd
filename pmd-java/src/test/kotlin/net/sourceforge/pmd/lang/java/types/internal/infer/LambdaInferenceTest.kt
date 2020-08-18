@@ -5,15 +5,16 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
+import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
-import net.sourceforge.pmd.lang.java.types.typeDsl
-import net.sourceforge.pmd.lang.java.types.withNewBounds
+import kotlin.test.assertEquals
 
 class LambdaInferenceTest : ProcessorTestSpec({
 
@@ -249,7 +250,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
                 void main(String[] args) {
                     // Symbol resolution for .i must not fail, even though its
-                    // LHS depends on the lambda parameter, and it is a return 
+                    // LHS depends on the lambda parameter, and it is a return
                     // expression of the lambda, so is used by compatibility check
 
                     foo(s -> s.new WithField().i);
@@ -302,7 +303,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
                 void main(String[] args) {
                     // Symbol resolution for .i must not fail, even though its
-                    // LHS depends on the lambda parameter, and it is a return 
+                    // LHS depends on the lambda parameter, and it is a return
                     // expression of the lambda, so is used by compatibility check
 
                     foo(s -> s.fetch().i);
@@ -336,9 +337,6 @@ class LambdaInferenceTest : ProcessorTestSpec({
         }
     }
 
-
-
-
     parserTest("Method invocation selection in lambda return") {
 
         val acu = parser.parse("""
@@ -363,7 +361,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val (t_Scratch, t_Foo, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
@@ -391,6 +389,104 @@ class Scratch {
                 }
             }
         }
+    }
+
+
+    parserTest("Block lambda") {
+
+        val acu = parser.parse("""
+class Scratch {
+
+    interface Foo<T, R> {
+
+        R accept(T t);
+    }
+
+    static <R> R ctx(Foo<G<R>, R> t) { return null; }
+
+    interface G<I> {
+
+        I fetch();
+    }
+
+    static {
+        String r = ctx(g -> { return g.fetch(); });
+    }
+}
+
+        """.trimIndent())
+
+        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("ctx") {
+
+                argList {
+                    blockLambda {
+                        lambdaFormals(1)
+                        block {
+                            returnStatement {
+                                methodCall("fetch") {
+                                    variableAccess("g")
+
+                                    with(it.typeDsl) {
+                                        it.methodType.shouldMatchMethod(
+                                                named = "fetch",
+                                                declaredIn = t_G[gen.t_String],
+                                                withFormals = emptyList(),
+                                                returning = gen.t_String
+                                        )
+                                    }
+
+                                    argList(0)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    parserTest("Value compatibility unit tests") {
+
+        val acu = parser.parse("""
+class Scratch {
+
+    static {
+        Object a = g -> { return g.fetch(); };  // val
+        Object b = g -> { return; };            // void
+        Object c = g -> { };                    // void
+        Object d = g -> g + 2;                  // val
+        Object e = g -> o(g + 2);               // val + void
+        Object f = g -> new O(g + 2);           // val + void
+    }
+}
+
+        """.trimIndent())
+
+        val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+        val mirrors = JavaExprMirrors(infer)
+        val (a, b, c, d, e, f) = acu.descendants(ASTLambdaExpression::class.java).toList { mirrors.getMirror(it) as ExprMirror.LambdaExprMirror }
+
+        fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
+            withClue(this) {
+                assertEquals(void, this.isVoidCompatible, "void compatible")
+                assertEquals(value, this.isValueCompatible, "value compatible")
+            }
+        }
+
+
+        a.shouldBeCompat(value = true)
+        b.shouldBeCompat(void = true)
+        c.shouldBeCompat(void = true)
+        d.shouldBeCompat(value = true)
+        e.shouldBeCompat(value = true, void = true)
+        f.shouldBeCompat(value = true, void = true)
+
     }
 
 

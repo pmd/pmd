@@ -318,12 +318,8 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public int hashCode() {
-        if (hash == 0) {
-            hash = Objects.hash(typeArgs, symbol);
-            if (hash == 0) {
-                // don't collide on the sentinel value 0
-                hash = 1;
-            }
+        if (hash == 0) { // hash collision is harmless
+            hash = Objects.hash(typeArgs, symbol, isDecl);
         }
         return hash;
     }
@@ -356,8 +352,7 @@ class ClassTypeImpl implements JClassType {
     private static void checkTypeArg(JClassSymbol symbol, List<JTypeMirror> typeArgs, JTypeMirror arg) {
         if (arg == null) {
             throw new IllegalArgumentException("Null type argument for " + symbol + " in " + typeArgs);
-        }
-        if (arg.isPrimitive()) {
+        } else if (arg.isPrimitive()) {
             throw new IllegalArgumentException("Primitive type argument for " + symbol + " in " + typeArgs);
         }
     }
