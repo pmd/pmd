@@ -869,7 +869,7 @@ public final class Infer {
 
         ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, this);
         if (!helper.isCompatible(formalType, arg)) {
-            throw ResolutionFailedException.unsolvableDependency(LOG);
+            throw ResolutionFailedException.incompatibleFormalExprNoReason(LOG, arg, formalType);
         }
     }
 

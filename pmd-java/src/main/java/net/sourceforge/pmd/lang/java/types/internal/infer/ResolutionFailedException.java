@@ -102,6 +102,15 @@ final class ResolutionFailedException extends RuntimeException {
         return fs + " is not convertible to " + rs;
     }
 
+
+    static ResolutionFailedException incompatibleFormalExprNoReason(TypeInferenceLogger logger, ExprMirror arg, JTypeMirror required) {
+        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
+            arg.getLocation(),
+            "Argument expression is not compatible with " + required
+        ));
+    }
+
+
     static ResolutionFailedException notAVarargsMethod(TypeInferenceLogger logger, ExprMirror expr) {
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             expr.getLocation(),

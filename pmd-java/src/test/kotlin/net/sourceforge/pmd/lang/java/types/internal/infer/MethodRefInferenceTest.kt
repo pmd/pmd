@@ -621,16 +621,16 @@ class Scratch {
 import java.util.function.IntConsumer;
 
 class Scratch {
-    
+
     static void foo(int i) {}        // this one
     static void foo() {}
 
     static void bar(int i) {}        // this one
     static void bar(int a, int b) {}
-    
+
     static void baz(int i) {}        // this one
     void baz(int a, int b) {}
-    
+
 
     static  {
         IntConsumer ic = Scratch::foo;
@@ -860,9 +860,9 @@ class Scratch {
             import java.util.Map;
             import java.util.Map.Entry;
             import java.util.function.Function;
-            
+
             class Scratch {
-            
+
                 private static final Map<String, Function<Integer, Integer>> canonicalMap
                     = ofEntries(entry("c1", Scratch::add),
                                 entry("c2", Scratch::add));
@@ -999,6 +999,63 @@ class Scratch {
                     methodRef("empty")
                 }
             }
+        }
+    }
+
+
+
+    parserTest("Test incompatibility with formal interface") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+            package scratch;
+
+            import static java.util.stream.Collectors.joining;
+
+            import java.util.List;
+            import java.util.function.*;
+
+            class Archive {
+
+                interface Comparator<T> { // subset of java.util.Comparator
+
+                     int compare(T o1, T o2);
+
+                     // Both Comparator and Function are functional interfaces, but the method ref
+                     // is exact and not compatible with Comparator
+
+                     default Comparator<T>
+                        thenComparing(Comparator<? super T> other) { return null; }
+
+                     default <U extends Comparable<? super U>> Comparator<T>
+                        thenComparing(Function<? super T, ? extends U> keyExtractor) { return null; }
+
+                     static <U> Comparator<U> comparingInt(ToIntFunction<? super U> fun) { return null; }
+                }
+
+                private String getName() { return "foo"; }
+
+                private String hashList(List<Archive> path) { return null; }
+
+                private Comparator<List<Archive>> comparator() {
+                    return Comparator.<List<Archive>>comparingInt(List::size)
+                                     .thenComparing(this::hashList);            // we test this one
+                }
+
+            }
+        """.trimIndent())
+
+        val t_Archive = acu.firstEnclosingType()
+
+        val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
+
+        spy.shouldBeOk {
+            mref.functionalMethod.shouldMatchMethod(
+                    named = "apply",
+                    declaredIn = gen.t_Function[gen.t_List[t_Archive], gen.t_String],
+                    withFormals = listOf(gen.t_List[t_Archive]),
+                    returning = gen.t_String
+            )
         }
     }
 
