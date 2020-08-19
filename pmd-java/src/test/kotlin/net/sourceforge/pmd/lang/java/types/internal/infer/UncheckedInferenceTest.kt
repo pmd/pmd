@@ -7,20 +7,15 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
-import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.*
 
-/**
- */
 class UncheckedInferenceTest : ProcessorTestSpec({
 
     parserTest("Test raw type in argument erases result") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C {
@@ -40,8 +35,7 @@ class C {
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
 
-        assert(logGetter().isEmpty())
-        with(call.typeDsl) {
+        spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
                     named = "valueOf",
                     declaredIn = t_C,
@@ -49,18 +43,14 @@ class C {
                     returning = gen.t_Comparable
             )
             call.typeMirror shouldBe gen.t_Comparable
-        }
-        assert(logGetter().isEmpty())
-
-        with(call.typeDsl) {
             id.typeMirror shouldBe gen.t_Comparable
+            call.shouldUseUncheckedConversion()
         }
     }
 
     parserTest("Test raw type erases result (return type is Class<T>)") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C {
@@ -77,11 +67,10 @@ class C {
 
         val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.firstMethodCall()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
 
-        assert(logGetter().isEmpty())
-        with(call.typeDsl) {
+        spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
                     named = "valueOf",
                     declaredIn = t_C,
@@ -89,18 +78,14 @@ class C {
                     returning = Class::class.raw
             )
             call.typeMirror shouldBe Class::class.raw
-        }
-        assert(logGetter().isEmpty())
-
-        with(call.typeDsl) {
             id.typeMirror shouldBe Class::class[`?`]
+            call.shouldUseUncheckedConversion()
         }
     }
 
     parserTest("Test f-bound on raw type, explicit Object bound") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import java.util.*;
 
@@ -124,8 +109,7 @@ class C {
         val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
-        with(call.typeDsl) {
+        spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
                     named = "min",
                     declaredIn = t_C,
@@ -133,15 +117,13 @@ class C {
                     returning = gen.t_Comparable // not Object
             )
             call.typeMirror shouldBe gen.t_Comparable
+            call.shouldUseUncheckedConversion()
         }
-        assert(logGetter().isEmpty())
-
     }
 
     parserTest("Test f-bound on raw type") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C {
@@ -161,8 +143,8 @@ class C {
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
 
-        assert(logGetter().isEmpty())
-        with(call.typeDsl) {
+
+        spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
                     named = "valueOf",
                     declaredIn = t_C,
@@ -170,18 +152,15 @@ class C {
                     returning = gen.t_Enum
             )
             call.typeMirror shouldBe gen.t_Enum
-        }
-        assert(logGetter().isEmpty())
-
-        with(call.typeDsl) {
             id.typeMirror shouldBe gen.t_Enum
+            call.shouldUseUncheckedConversion()
         }
     }
 
 
     parserTest("TODO unchecked assignment for intersection") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 class Scratch<N extends Number> {
 
     interface I {}
@@ -192,29 +171,21 @@ class Scratch<N extends Number> {
         N n = getN(); // unchecked assignment Scratch.I to N
     }
 }
-        """.trimIndent())
+        """)
 
         val (t_Scratch, t_I) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
         val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        call.shouldMatchN {
-            methodCall("getN") {
-                with(it.typeDsl) {
-
-                    it.methodType.shouldMatchMethod(
-                            named = "getN",
-                            declaredIn = t_Scratch,
-                            withFormals = emptyList(),
-                            returning = nvar * t_I
-                    )
-                }
-
-                argList(0)
-            }
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                    named = "getN",
+                    declaredIn = t_Scratch,
+                    withFormals = emptyList(),
+                    returning = nvar * t_I
+            )
         }
-
     }
 
 })

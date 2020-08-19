@@ -6,21 +6,15 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldBeEmpty
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl
-import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 import net.sourceforge.pmd.util.OptionalBool
-import org.mockito.Mockito
-import kotlin.test.assertFalse
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 
-private val RefTypeGen.t_Overloads : JClassType
+private val RefTypeGen.t_Overloads: JClassType
     get() = ts.declaration(ts.getClassSymbol("net.sourceforge.pmd.lang.java.types.testdata.Overloads")!!) as JClassType
 
 class OverloadSpecificityTest : ProcessorTestSpec({
@@ -101,7 +95,7 @@ class Other {
                 """.trimIndent()
         )
 
-        val (m1, m2, m3) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val (m1, m2, m3) = acu.methodDeclarations().toList { it.sig }
 
 
         // precondition
@@ -131,220 +125,10 @@ class Other {
         }
     }
 
-    fun overridingSetup(name: String, mod: String) {
-
-        parserTest(name) {
-            val acu = parser.parse(
-                    """
-class Scratch {
-   $mod void m(Throwable t) { }
-}
-
-class Other extends Scratch {
-    $mod void m(Throwable t) { }
-    $mod void m(Exception t) { }
-}
-
-                """.trimIndent()
-            )
-
-            val (scratchM, otherM, otherOverload) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-            assert(areOverrideEquivalent(scratchM, otherM)) {
-                "Precondition: override-equivalence"
-            }
-
-            fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
-                    TypeOps.overrides(m1, m2, otherM.declaringType)
-
-            doTest("Other::m should override Scratch::m") {
-                doesOverride(otherM, scratchM) shouldBe true
-            }
-
-            doTest("Scratch::m should not override Other::m") {
-                doesOverride(scratchM, otherM) shouldBe false
-            }
-
-            doTest("Overloads don't override each other") {
-                doesOverride(otherM, otherOverload) shouldBe false
-                doesOverride(otherOverload, otherM) shouldBe false
-                doesOverride(otherOverload, scratchM) shouldBe false
-                doesOverride(scratchM, otherOverload) shouldBe false
-            }
-
-            doTest("The overriding method should be preferred") {
-                val ctx = otherM.declaringType as JClassType
-                shouldTakePrecedence(otherM, scratchM, ctx) shouldBe OptionalBool.YES
-                shouldTakePrecedence(scratchM, otherM, ctx) shouldBe OptionalBool.NO
-
-            }
-
-            doTest("A method should override itself by convention") {
-                listOf(scratchM, otherM, otherOverload).forEach {
-                    doesOverride(it, it) shouldBe true
-                }
-            }
-        }
-    }
-
-    overridingSetup("Test public static method hiding", "public static")
-    overridingSetup("Test protected static method hiding", "protected static")
-    overridingSetup("Test package-private static method hiding", "static")
-
-    overridingSetup("Test public method overriding", "public")
-    overridingSetup("Test protected method overriding", "protected")
-    overridingSetup("Test package-private method overriding", "")
-
-
-    parserTest("Both inherited and visible from outer class") {
-        val acu = parser.parse(
-                """
-class Scratch {
-   static void m(Throwable t) { }
-   
-   static class Inner extends Scratch {
-      static void m(Throwable t) { } 
-   }
-}
-                """.trimIndent()
-        )
-
-        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-        assert(areOverrideEquivalent(scratchM, otherM)) {
-            "Precondition: override-equivalence"
-        }
-
-        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
-                TypeOps.overrides(m1, m2, otherM.declaringType)
-
-        doTest("Other::m should override Scratch::m") {
-            doesOverride(otherM, scratchM) shouldBe true
-        }
-
-        doTest("Scratch::m should not override Other::m") {
-            doesOverride(scratchM, otherM) shouldBe false
-        }
-    }
-
-
-    parserTest("Primitive signatures do not merge") {
-        val acu = parser.parse(
-                """
-class Scratch {
-   void m(long t) { }
-
-   static class Inner extends Scratch {
-      void m(int t) { }
-   }
-}
-                """.trimIndent()
-        )
-
-        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-        assertFalse("Methods are not override-equivalent") {
-            areOverrideEquivalent(scratchM, otherM)
-        }
-    }
-
-    parserTest("Primitive signatures do not merge 2") {
-        val acu = parser.parse(
-                """
-class Scratch {
-   void m(int t) { }
-
-   static class Inner extends Scratch {
-      void m(long t) { }
-   }
-}
-                """.trimIndent()
-        )
-
-        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-        assertFalse("Methods are not override-equivalent") {
-            areOverrideEquivalent(scratchM, otherM)
-        }
-    }
-
-
-
-    parserTest("Private method shadowed in inner class") {
-        val acu = parser.parse(
-                """
-class Scratch {
-   private void m(Throwable t) { } // private methods are not overridden
-
-   static class Inner extends Scratch {
-      private void m(Throwable t) { }
-   }
-}
-                """.trimIndent()
-        )
-
-        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-        assert(areOverrideEquivalent(scratchM, otherM)) {
-            "Precondition: override-equivalence"
-        }
-
-        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
-                TypeOps.overrides(m1, m2, otherM.declaringType)
-
-        doTest("Neither should override the other, they're private") {
-            doesOverride(otherM, scratchM) shouldBe false
-            doesOverride(scratchM, otherM) shouldBe false
-        }
-
-        doTest("But precedence should still be decided") {
-            shouldTakePrecedence(scratchM, otherM, otherM.declaringType) shouldBe OptionalBool.NO
-            shouldTakePrecedence(otherM, scratchM, otherM.declaringType) shouldBe OptionalBool.YES
-        }
-    }
-
-    parserTest("Merged abstract signature in class") {
-        val acu = parser.parse(
-                """
-class Scratch {
-   static void m(Throwable t) { }
-   
-   static class Inner extends Scratch {
-      static void m(Throwable t) { } 
-   }
-}
-                """.trimIndent()
-        )
-
-        val (scratchM, otherM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-
-
-        assert(areOverrideEquivalent(scratchM, otherM)) {
-            "Precondition: override-equivalence"
-        }
-
-
-        fun doesOverride(m1: JMethodSig, m2: JMethodSig) =
-                TypeOps.overrides(m1, m2, otherM.declaringType)
-
-        doTest("Other::m should override Scratch::m") {
-            doesOverride(otherM, scratchM) shouldBe true
-        }
-
-        doTest("Scratch::m should not override Other::m") {
-            doesOverride(scratchM, otherM) shouldBe false
-        }
-    }
 
     parserTest("Test override from outside class") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 class Sup { 
     void m() {}
@@ -365,18 +149,17 @@ class F {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val (_, subM) = acu.methodDeclarations().toList { it.sig }
 
-        logGetter().shouldBeEmpty()
-        call.methodType.symbol shouldBe subM.symbol
-        logGetter().shouldBeEmpty()
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+        }
     }
 
     parserTest("Test hidden method from outside class") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+
                 """
 class Sup { 
     static void m() {}
@@ -395,18 +178,16 @@ class F {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val (_, subM) = acu.methodDeclarations().toList { it.sig }
 
-        logGetter().shouldBeEmpty()
-        call.methodType.symbol shouldBe subM.symbol
-        logGetter().shouldBeEmpty()
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+        }
     }
 
     parserTest("Test hidden method inside class") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Sup {
@@ -423,18 +204,16 @@ class Sub extends Sup {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val (_, subM) = acu.methodDeclarations().toList { it.sig }
 
-        logGetter().shouldBeEmpty()
-        call.methodType.symbol shouldBe subM.symbol
-        logGetter().shouldBeEmpty()
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+        }
     }
 
     parserTest("Test hidden method inside hiding method") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Sup {
@@ -450,18 +229,16 @@ class Sub extends Sup {
                 """.trimIndent()
         )
 
-        val (supM, _) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val (supM, _) = acu.methodDeclarations().toList { it.sig }
 
-        logGetter().shouldBeEmpty()
-        call.methodType.symbol shouldBe supM.symbol
-        logGetter().shouldBeEmpty()
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(supM)
+        }
     }
 
     parserTest("Test distinct primitive overloads from import") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import static java.lang.Integer.reverseBytes; // (int) -> int
 import static java.lang.Long.reverseBytes; // (long) -> long
@@ -475,10 +252,9 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.firstMethodCall()
 
-        logGetter().shouldBeEmpty()
-        with(call.typeDsl) {
+        spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
                     named = "reverseBytes",
                     declaredIn = long.box(),
@@ -486,13 +262,11 @@ class Scratch {
                     returning = long
             )
         }
-        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test specificity between generic ctors") {
 
-        val logGetter = logTypeInference()
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C<U> {
@@ -508,42 +282,27 @@ class C<U> {
 
                 """.trimIndent()
         )
+        val genericCtor = acu.ctorDeclarations().get(1)!!.sig // new(C<U>)
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
-
-        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
-
-        logGetter().shouldBeEmpty()
-        with(call.typeDsl) {
-            call.methodType.shouldMatchMethod(
-                    named = JConstructorSymbol.CTOR_NAME,
-                    declaredIn = t_C[gen.t_String],
-                    withFormals = listOf(t_C[gen.t_String]),
-                    returning = t_C[gen.t_String]
-            )
+        spy.shouldBeOk {
+            acu.firstCtorCall().methodType.shouldBeSomeInstantiationOf(genericCtor)
         }
-        logGetter().shouldBeEmpty()
     }
+
 
     parserTest("Test specificity between generic and non-generic method") {
 
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Scratch<N extends Number> {
+    class ScratchOfInt extends Scratch<Integer> {}
 
+    <N2 extends Number> N2 getN(Scratch<? extends N2> s) {return null;}
 
-    static <N2 extends Number> N2 getN(Scratch<? extends N2> s) {
-        return null;
-    }
+    int getN(ScratchOfInt s) { return 0; }
 
-    static int getN(ScratchOfInt s) {
-        return 0;
-    }
-
-    static class ScratchOfInt extends Scratch<Integer> {}
-
-    public void main() {
+    static {
         getN(new ScratchOfInt());
     }
 }
@@ -551,43 +310,10 @@ class Scratch<N extends Number> {
                 """.trimIndent()
         )
 
-        val (generic, specific) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val (_, specific) = acu.methodDeclarations().toList { it.sig }
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-        acu.infer.newOverloadSet(call).apply {
-            addSigs(generic, specific)
-            verifyNotAmbiguous(specific)
-        }
-
-        acu.infer.newOverloadSet(call).apply {
-            addSigs(specific, generic)
-            verifyNotAmbiguous(specific)
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
         }
     }
-
 })
-
-internal val JavaNode.infer get() = Infer(this.typeSystem, 8, TypeInferenceLogger.noop())
-
-internal fun Infer.newOverloadSet(call: InvocationNode, phase: MethodResolutionPhase = MethodResolutionPhase.STRICT): PhaseOverloadSet {
-    val site = newCallSite(JavaExprMirrors(this).getInvocationMirror(call), null)
-    return PhaseOverloadSet(this, phase, site)
-}
-
-internal fun PhaseOverloadSet.addSigs(vararg sig: JMethodSig) {
-    sig.forEach { addSig(it) }
-}
-
-internal fun PhaseOverloadSet.addSig(sig: JMethodSig) {
-    val decl = MethodCtDecl(sig, this.phase, true, false, false)
-    add(decl)
-}
-
-internal fun PhaseOverloadSet.verifyNotAmbiguous(sig: JMethodSig) {
-    val logger = Mockito.spy(TypeInferenceLogger.noop())
-
-    getMostSpecificOrLogAmbiguity(logger).methodType.shouldBe(sig)
-
-    Mockito.verifyZeroInteractions(logger)
-}

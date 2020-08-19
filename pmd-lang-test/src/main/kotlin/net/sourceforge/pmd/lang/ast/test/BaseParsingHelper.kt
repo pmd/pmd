@@ -7,10 +7,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ParserOptions
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.ast.*
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.io.StringReader

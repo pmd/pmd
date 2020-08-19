@@ -490,4 +490,21 @@ class Scratch {
     }
 
 
+
+    parserTest("Test void compatible lambda") {
+
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {{
+                 final Runnable pr = 0 == null ? null : () -> id(true);
+            }}
+        """.trimIndent())
+
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType java.lang.Runnable::class.raw
+        }
+    }
+
 })

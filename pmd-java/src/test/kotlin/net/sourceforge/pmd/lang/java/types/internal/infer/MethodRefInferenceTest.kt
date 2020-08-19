@@ -43,20 +43,20 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
         anyMatch.shouldMatchN {
             methodCall("anyMatch") {
-                it::getTypeMirror shouldBe it.typeSystem.BOOLEAN
+                it shouldHaveType it.typeSystem.BOOLEAN
 
                 methodCall("filter") {
 
-                    it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[t_Archive] }
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[t_Archive] }
 
                     methodCall("flatMap") {
 
-                        it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[t_Archive] }
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[t_Archive] }
 
                         methodCall("of") {
                             skipQualifier()
 
-                            it::getTypeMirror shouldBe with (it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
 
                             argList(3)
                         }
@@ -85,13 +85,13 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
             chain should parseAs {
                 methodCall("collect") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] }
+                    it shouldHaveType with(it.typeDsl) { gen.t_List[boolean.box()] }
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "map"
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[boolean.box()] }
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[boolean.box()] }
                         it::getQualifier shouldBe child<ASTMethodCall> {
                             it::getMethodName shouldBe "of"
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] }
                             it::getQualifier shouldBe typeExpr {
                                 classType("Stream")
                             }
@@ -108,7 +108,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                                 with(it.typeDsl) {
                                     val `t_Function{String, Boolean}` = gen.t_Function[gen.t_String, boolean.box()]
 
-                                    it.typeMirror shouldBe `t_Function{String, Boolean}`
+                                    it shouldHaveType `t_Function{String, Boolean}`
                                     it.referencedMethod.shouldMatchMethod(named = "isEmpty", declaredIn = gen.t_String, withFormals = emptyList(), returning = boolean)
                                     // Function<String, Boolean>.apply(String) -> Boolean
                                     it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{String, Boolean}`, withFormals = listOf(gen.t_String), returning = boolean.box())
@@ -139,13 +139,13 @@ class MethodRefInferenceTest : ProcessorTestSpec({
             chain should parseAs {
                 methodCall("collect") {
 
-                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[int.toArray() ]} // List<int[]>
+                    it shouldHaveType with(it.typeDsl) { gen.t_List[int.toArray()] } // List<int[]>
 
                     it::getQualifier shouldBe methodCall("map") {
-                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.toArray() ]} // Stream<int[]>
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.toArray()] } // Stream<int[]>
 
                         it::getQualifier shouldBe methodCall("of") {
-                            it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()]} // Stream<Integer>
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
 
                             it::getQualifier shouldBe typeExpr {
                                 classType("Stream")
@@ -163,7 +163,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                             val `t_Function{Integer, Array{int}}` = with(it.typeDsl) { gen.t_Function[int.box(), int.toArray()] }
 
                             constructorRef {
-                                it.typeMirror shouldBe `t_Function{Integer, Array{int}}`
+                                it shouldHaveType `t_Function{Integer, Array{int}}`
                                 with(it.typeDsl) {
                                     it.referencedMethod.shouldMatchMethod(named = "new", declaredIn = int.toArray(), /* int[]*/ withFormals = listOf(int), returning = int.toArray())
                                     it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{Integer, Array{int}}`, withFormals = listOf(int.box()), returning = int.toArray())
@@ -198,10 +198,10 @@ class MethodRefInferenceTest : ProcessorTestSpec({
             chain should parseAs {
                 methodCall("map") {
 
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.toArray()] }
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.toArray()] }
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.toArray()] }
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.toArray()] }
 
                         it::getQualifier shouldBe typeExpr {
                             classType("Stream")
@@ -224,7 +224,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                                 // Function<int[], int[]>
                                 val `t_Function{Array{int}, Array{int}}` = gen.t_Function[int.toArray(), int.toArray()]
 
-                                it.typeMirror shouldBe `t_Function{Array{int}, Array{int}}`
+                                it shouldHaveType `t_Function{Array{int}, Array{int}}`
                                 it.referencedMethod.shouldMatchMethod(named = "clone", declaredIn = int.toArray(), withFormals = emptyList(), returning = int.toArray())
                                 it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = `t_Function{Array{int}, Array{int}}`, withFormals = listOf(int.toArray()), returning = int.toArray())
                             }
@@ -256,17 +256,17 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
                     // we can't hardcode the lub because it is jdk specific
-                    val serialLub = with (it.typeDsl) {
+                    val serialLub = with(it.typeDsl) {
                         ts.lub(gen.t_String, gen.t_Integer)
                     }
 
-                    val t_BiFunction = with (it.typeDsl) { ts.getClassSymbol(BiFunction::class.java)!! }
-                    val t_BinaryOperator = with (it.typeDsl) { ts.getClassSymbol(BinaryOperator::class.java)!! }
-                    val t_Sb = with (it.typeDsl) { gen.t_StringBuilder }
+                    val t_BiFunction = with(it.typeDsl) { ts.getClassSymbol(BiFunction::class.java)!! }
+                    val t_BinaryOperator = with(it.typeDsl) { ts.getClassSymbol(BinaryOperator::class.java)!! }
+                    val t_Sb = with(it.typeDsl) { gen.t_StringBuilder }
 
-                    with (it.typeDsl) {
+                    with(it.typeDsl) {
 
-                        it.typeMirror shouldBe t_Sb
+                        it shouldHaveType t_Sb
                         it.methodType.shouldMatchMethod(
                                 named = "reduce",
                                 declaredIn = gen.t_Stream[serialLub],
@@ -281,7 +281,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getMethodName shouldBe "of"
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[serialLub] }
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[serialLub] }
 
                         it::getQualifier shouldBe typeExpr {
                             classType("Stream")
@@ -297,10 +297,10 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                         }
 
                         methodRef("append") {
-                            with (it.typeDsl) {
+                            with(it.typeDsl) {
                                 val myBifunction = t_BiFunction[t_Sb, serialLub, t_Sb]
 
-                                it.typeMirror shouldBe myBifunction
+                                it shouldHaveType myBifunction
                                 it.referencedMethod.shouldMatchMethod(named = "append", declaredIn = t_Sb, withFormals = listOf(ts.OBJECT), returning = t_Sb)
                                 it.functionalMethod.shouldMatchMethod(named = "apply", declaredIn = myBifunction, withFormals = listOf(t_Sb, serialLub), returning = t_Sb)
                             }
@@ -312,10 +312,10 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
                         methodRef("append") {
 
-                            with (it.typeDsl) {
+                            with(it.typeDsl) {
                                 val myBifunction = t_BiFunction[t_Sb, t_Sb, t_Sb]
 
-                                it.typeMirror shouldBe t_BinaryOperator[t_Sb]
+                                it shouldHaveType t_BinaryOperator[t_Sb]
                                 // notice it's more specific than the first append (CharSequence formal)
                                 it.referencedMethod.shouldMatchMethod(named = "append", declaredIn = t_Sb, withFormals = listOf(gen.t_CharSequence), returning = t_Sb)
                                 // notice the owner of the function is BiFunction and not BinaryOperator. It's inherited by BinaryOperator
@@ -337,7 +337,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
     parserTest("Test method ref with this as LHS") {
 
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             
             package scratch;
 
@@ -352,36 +352,36 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                     return "foo";
                 }
 
-                private String toInversePath(Deque<Archive> path) {
-                    return path.stream()
-                               .map(Archive::getName)
-                               .collect(joining(" <- "));
-                }
+                private String toInversePath(Deque<Archive> path) { return null; }
 
                 private Comparator<Deque<Archive>> comparator() {
                     return Comparator.<Deque<Archive>, String>
                         comparing(deque -> deque.peekFirst().getName())
                         .thenComparingInt(Deque::size)
-                        .thenComparing(this::toInversePath);
+                        .thenComparing(this::toInversePath);            // <-- we test this one
                 }
 
             }
         """.trimIndent())
 
-        val thisToInversePath = acu.descendants(ASTMethodReference::class.java)[2]!!
+        val t_Archive = acu.firstEnclosingType()
 
-        thisToInversePath.shouldMatchN {
-            methodRef("toInversePath") {
-                it.functionalMethod.toString() shouldBe "java.util.function.Function<java.util.Deque<scratch.Archive>, java.lang.String>.apply(java.util.Deque<scratch.Archive>) -> java.lang.String"
-                thisExpr()
-            }
+        val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
+
+        spy.shouldBeOk {
+            mref.functionalMethod.shouldMatchMethod(
+                    named = "apply",
+                    declaredIn = gen.t_Function[java.util.Deque::class[t_Archive], gen.t_String],
+                    withFormals = listOf(java.util.Deque::class[t_Archive]),
+                    returning = gen.t_String
+            )
         }
     }
 
     parserTest("Test method ref with void return type") {
 
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             import java.util.Optional;
             class Archive {
 
@@ -393,16 +393,16 @@ class MethodRefInferenceTest : ProcessorTestSpec({
         """.trimIndent())
 
 
-        val t_Archive = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).firstOrThrow().typeMirror
-        val getName = acu.descendants(ASTMethodDeclaration::class.java).first()!!
-        val thisToInversePath = acu.descendants(ASTMethodCall::class.java).first()!!
+        val t_Archive = acu.firstEnclosingType()
+        val getName = acu.methodDeclarations().firstOrThrow()
+        val ifPresentCall = acu.firstMethodCall()
 
-        thisToInversePath.shouldMatchN {
-            methodCall("ifPresent") {
-                unspecifiedChild()
-                argList {
-                    methodRef("getName") {
-                        with (it.typeDsl) {
+        spy.shouldBeOk {
+            ifPresentCall.shouldMatchN {
+                methodCall("ifPresent") {
+                    unspecifiedChild()
+                    argList {
+                        methodRef("getName") {
                             it.functionalMethod.shouldMatchMethod(
                                     named = "accept",
                                     declaredIn = Consumer::class[t_Archive],
@@ -411,10 +411,10 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                             )
 
                             it.referencedMethod.symbol shouldBe getName.symbol
-                        }
 
-                        typeExpr {
-                            classType("Archive")
+                            typeExpr {
+                                classType("Archive")
+                            }
                         }
                     }
                 }
@@ -461,7 +461,7 @@ abstract class NodeStream<T> implements Iterable<T> {
                         val captureOfT: JTypeVar
                         with(it.typeDsl) {
                             captureOfT = captureMatcher(`?` `super` tvar)
-                            it.typeMirror shouldBe gen.t_Function[captureOfT, gen.t_Iterator[`?` extends rvar]]
+                            it shouldHaveType gen.t_Function[captureOfT, gen.t_Iterator[`?` extends rvar]]
                         }
 
                         skipQualifier()
@@ -483,7 +483,7 @@ abstract class NodeStream<T> implements Iterable<T> {
 
                                 skipQualifier()
 
-//                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+//                                it shouldHaveType with(it.typeDsl) { gen.t_String }
                                 argList {
                                     variableAccess("t")
                                 }
@@ -515,18 +515,17 @@ class Scratch {
 }
         """.trimIndent())
 
-        val (t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
         val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
 
         collectCall.shouldMatchN {
             methodCall("collect") {
                 with(it.typeDsl) {
-                    it.typeMirror shouldBe gen.`t_List{String}`
+                    it shouldHaveType gen.`t_List{String}`
                 }
 
                 methodCall("distinct") {
                     with(it.typeDsl) {
-                        it.typeMirror shouldBe gen.t_Stream[gen.t_String]
+                        it shouldHaveType gen.t_Stream[gen.t_String]
                     }
 
                     unspecifiedChildren(2)
@@ -535,7 +534,7 @@ class Scratch {
                 argList {
                     methodCall("collectingAndThen") {
                         with(it.typeDsl) {
-                            it.typeMirror shouldBe Collector::class[gen.t_String, ts.OBJECT, gen.`t_List{String}`]
+                            it shouldHaveType Collector::class[gen.t_String, ts.OBJECT, gen.`t_List{String}`]
                         }
 
                         argList {
@@ -543,7 +542,7 @@ class Scratch {
                             methodRef("unmodifiableList") {
                                 unspecifiedChild()
                                 with(it.typeDsl) {
-                                    it.typeMirror shouldBe gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
+                                    it shouldHaveType gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
                                     it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "apply" }.findFirst().get()
                                 }
                             }
@@ -590,7 +589,7 @@ class Scratch {
                 methodRef("accept") {
                     unspecifiedChild()
                     with(it.typeDsl) {
-                        it.typeMirror shouldBe LongConsumer::class.decl
+                        it shouldHaveType LongConsumer::class.decl
                         it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "accept" }.findFirst().get()
                         it.referencedMethod.shouldMatchMethod(
                                 named = "accept",
@@ -611,7 +610,7 @@ class Scratch {
                 methodRef("accept") {
                     unspecifiedChild()
                     with(it.typeDsl) {
-                        it.typeMirror shouldBe IntConsumer::class.decl
+                        it shouldHaveType IntConsumer::class.decl
                         it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "accept" }.findFirst().get()
                         it.referencedMethod.shouldMatchMethod(
                                 named = "accept",
@@ -654,11 +653,11 @@ class Scratch {
 
         val (fooRef, barRef, bazRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        val t_IntConsumer = with (acu.typeDsl) { IntConsumer::class.decl }
+        val t_IntConsumer = with(acu.typeDsl) { IntConsumer::class.decl }
 
         fooRef.shouldMatchN {
             methodRef("foo") {
-                it.typeMirror shouldBe t_IntConsumer
+                it shouldHaveType t_IntConsumer
                 it.referencedMethod.arity shouldBe 1
 
                 unspecifiedChild()
@@ -667,7 +666,7 @@ class Scratch {
 
         barRef.shouldMatchN {
             methodRef("bar") {
-                it.typeMirror shouldBe t_IntConsumer
+                it shouldHaveType t_IntConsumer
                 it.referencedMethod.arity shouldBe 1
 
                 unspecifiedChild()
@@ -676,7 +675,7 @@ class Scratch {
 
         bazRef.shouldMatchN {
             methodRef("baz") {
-                it.typeMirror shouldBe t_IntConsumer
+                it shouldHaveType t_IntConsumer
                 it.referencedMethod.arity shouldBe 1
 
                 unspecifiedChild()
@@ -704,13 +703,13 @@ class Scratch {
 
         collectCall.shouldMatchN {
             methodCall("collect") {
-                with (it.typeDsl) {
-                    it.typeMirror shouldBe gen.t_String
+                with(it.typeDsl) {
+                    it shouldHaveType gen.t_String
                 }
 
                 methodCall("mapToObj") {
-                    with (it.typeDsl) {
-                        it.typeMirror shouldBe gen.t_Stream[gen.t_String]
+                    with(it.typeDsl) {
+                        it shouldHaveType gen.t_Stream[gen.t_String]
                     }
 
                     unspecifiedChildren(2)
@@ -742,13 +741,13 @@ class Scratch {
 
         collectCall.shouldMatchN {
             methodCall("collect") {
-                with (it.typeDsl) {
-                    it.typeMirror shouldBe gen.t_String
+                with(it.typeDsl) {
+                    it shouldHaveType gen.t_String
                 }
 
                 methodCall("mapToObj") {
-                    with (it.typeDsl) {
-                        it.typeMirror shouldBe gen.t_Stream[gen.t_String]
+                    with(it.typeDsl) {
+                        it shouldHaveType gen.t_Stream[gen.t_String]
                     }
 
                     unspecifiedChildren(2)
@@ -777,8 +776,8 @@ class Scratch {
 
         collectCall.shouldMatchN {
             methodCall("mapToObj") {
-                with (it.typeDsl) {
-                    it.typeMirror shouldBe ts.UNRESOLVED_TYPE
+                with(it.typeDsl) {
+                    it shouldHaveType ts.UNRESOLVED_TYPE
                 }
 
                 unspecifiedChildren(2)
@@ -804,7 +803,7 @@ class Scratch {
 
         fooRef.shouldMatchN {
             methodRef("foo") {
-                it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                it shouldHaveType it.typeSystem.UNRESOLVED_TYPE
                 it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
 
                 unspecifiedChild()
@@ -834,12 +833,12 @@ class Scratch {
 
         call.shouldMatchN {
             methodCall("map") {
-                it.typeMirror shouldBe with(it.typeDsl) {
+                it shouldHaveType with(it.typeDsl) {
                     gen.t_Stream[gen.t_String]
                 }
 
                 it::getQualifier shouldBe methodCall("stream") {
-                    it.typeMirror shouldBe with(it.typeDsl) {
+                    it shouldHaveType with(it.typeDsl) {
                         gen.t_Stream[ts.OBJECT]
                     }
 
@@ -849,7 +848,7 @@ class Scratch {
                 argList {
 
                     methodRef("toString") {
-                        with (it.typeDsl) {
+                        with(it.typeDsl) {
                             it.referencedMethod.shouldMatchMethod(
                                     named = "toString",
                                     declaredIn = java.util.Objects::class.raw,

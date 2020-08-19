@@ -26,134 +26,81 @@ import java.io.OutputStream
 class PolyResolutionTest : ProcessorTestSpec({
 
 
-    parserTest("Test context passing") {
+    parserTest("Test context passing overcomes null lower bound") {
 
-        inContext(StatementParsingCtx) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
 
-            """
-            java.util.List<Integer> c = java.util.Arrays.asList(null);
+                <T> java.util.List<T> asList(T[] arr) { return null; }
 
-        """ should parseAs {
-                localVarDecl {
-                    with(it.typeDsl) {
-                        modifiers { }
-                        classType("List") {
-                            // it.typeMirror shouldBe RefTypeGen.`t_List{Integer}`
-                            typeArgList()
-                        }
-
-                        child<ASTVariableDeclarator> {
-                            variableId("c") {
-                                it.typeMirror shouldBe gen.`t_List{Integer}`
-                            }
-                            child<ASTMethodCall> {
-                                it.typeMirror shouldBe gen.`t_List{Integer}`
-                                it.qualifier shouldBe typeExpr {
-                                    classType("Arrays") {
-                                        it.typeMirror shouldBe java.util.Arrays::class.decl
-                                    }
-                                }
-                                argList {
-                                    child<ASTNullLiteral> {
-                                        it.typeMirror shouldBe ts.NULL_TYPE
-                                    }
-                                }
-                            }
-                        }
-                    }
+                {
+                    java.util.List<Integer> c = asList(null);
                 }
             }
+        """)
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_List{Integer}`
         }
     }
 
     parserTest("Test nested ternaries in invoc ctx") {
-        asIfIn(TypeInferenceTestCases::class.java)
 
-        inContext(StatementParsingCtx) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
 
-            """
-                id(x > 0 ? Double.POSITIVE_INFINITY : x < 0 ? Double.NEGATIVE_INFINITY : Double.NaN);
-            """ should parseAs {
-                exprStatement {
-                    methodCall("id") {
-                        argList {
-                            child<ASTConditionalExpression> {
-                                infixExpr(BinaryOp.GT) {
-                                    variableAccess("x")
-                                    int(0)
-                                }
-                                fieldAccess("POSITIVE_INFINITY")
-                                child<ASTConditionalExpression> {
-                                    it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                static <T> T id(T t) { return t; }
 
-                                    infixExpr(BinaryOp.LT) {
-                                        variableAccess("x")
-                                        int(0)
-                                    }
-                                    fieldAccess("NEGATIVE_INFINITY")
-                                    fieldAccess("NaN")
-                                }
+                {
+                    id(x > 0 ? Double.POSITIVE_INFINITY
+                             : x < 0 ? Double.NEGATIVE_INFINITY
+                                     : Double.NaN);
+                }
+            }
+        """)
 
-                                it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("id") {
+                    argList {
+                        ternaryExpr {
+                            it shouldHaveType double
+
+                            unspecifiedChildren(2)
+                            ternaryExpr {
+                                it shouldHaveType double
+
+                                unspecifiedChildren(3)
                             }
                         }
-
-                        it::getTypeMirror shouldBe it.typeSystem.DOUBLE.box()
                     }
                 }
             }
 
-
+            call shouldHaveType double.box()
         }
-
     }
 
     parserTest("Test standalonable ternary in invoc ctx") {
 
-        inContext(StatementParsingCtx) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {{
+                String.format("L%s%s%s;",
+                              binaryToInternal(packageName),
+                              (packageName.length() > 0 ? "/" : ""),
+                              className);
+            }}
+        """)
 
-            """
-            String.format("L%s%s%s;",
-                          binaryToInternal(packageName),
-                          (packageName.length() > 0 ? "/" : ""),
-                          className);
-        """ should parseAs {
+        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
-                exprStatement {
-                    methodCall("format") {
-
-                        typeExpr {
-                            classType("String")
-                        }
-                        argList {
-                            stringLit("\"L%s%s%s;\"")
-                            methodCall("binaryToInternal") {
-                                argList {
-                                    variableAccess("packageName")
-                                }
-                            }
-                            ternaryExpr {
-
-                                // not String (this is a not standalone, just in an invocation ctx)
-                                it.typeMirror shouldBe it.typeSystem.OBJECT
-
-                                infixExpr(BinaryOp.GT) {
-                                    methodCall("length") {
-                                        ambiguousName("packageName")
-                                        argList {}
-                                    }
-
-                                    int(0)
-                                }
-
-                                stringLit("\"/\"")
-                                stringLit("\"\"")
-                            }
-                            variableAccess("className")
-                        }
-                    }
-                }
-            }
+        spy.shouldBeOk {
+            // not String (this is not a standalone, just in an invocation ctx)
+            ternary shouldHaveType ts.OBJECT
         }
     }
 
@@ -184,14 +131,14 @@ class O {
                     methodCall("copySign") {
 
                         if (askOuterFirst)
-                            it::getTypeMirror shouldBe double
+                            it shouldHaveType double
 
                         skipQualifier()
                         argList {
                             variableAccess("magnitude")
                             child<ASTConditionalExpression> {
                                 methodCall("isNaN") {
-                                    it::getTypeMirror shouldBe boolean
+                                    it shouldHaveType boolean
 
                                     skipQualifier()
                                     argList(1)
@@ -203,7 +150,7 @@ class O {
                         }
 
                         if (!askOuterFirst)
-                            it::getTypeMirror shouldBe double
+                            it shouldHaveType double
 
                     }
                 }
@@ -218,58 +165,29 @@ class O {
 
     parserTest("Ternaries with an additive expr as context") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class O {
 
-class O {
-
-    public static String toString(Class c) {
-        return (c.isInterface() ? "interface " : (c.isPrimitive() ? "" : "class "))
-            + c.getName();
-    }
-}
-        """.trimIndent())
-
-
-        val additive =
-                acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
-
-        additive.shouldMatchN {
-            infixExpr(BinaryOp.ADD) {
-                it::getTypeMirror shouldBe it.typeSystem.STRING
-
-                ternaryExpr {
-                    it::getCondition shouldBe methodCall("isInterface") {
-                        variableAccess("c")
-                        argList(0)
-                    }
-
-                    it::getThenBranch shouldBe stringLit("\"interface \"")
-
-                    it::getElseBranch shouldBe ternaryExpr {
-                        it::getCondition shouldBe methodCall("isPrimitive") {
-                            variableAccess("c")
-                            argList(0)
-                        }
-                        it::getThenBranch shouldBe stringLit("\"\"")
-
-                        it::getElseBranch shouldBe stringLit("\"class \"")
-                    }
-                }
-
-                methodCall("getName") {
-                    variableAccess("c")
-                    argList(0)
+                public static String toString(Class c) {
+                    return (c.isInterface() ? "interface " : (c.isPrimitive() ? "" : "class "))
+                        + c.getName();
                 }
             }
-        }
+            """.trimIndent())
 
+
+        val additive = acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
+
+        spy.shouldBeOk {
+            additive shouldHaveType ts.STRING
+        }
     }
 
 
 
     parserTest("Standalone ctor in invocation ctx") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.io.*;
 
 class O {
@@ -280,46 +198,23 @@ class O {
         """.trimIndent())
 
 
-        val outerCtor =
-                acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val (outerCtor, innerCtor) = acu.ctorCalls().toList()
 
-        outerCtor.shouldMatchN {
-            constructorCall {
-                it::getTypeMirror shouldBe with(it.typeDsl) {
-                    DataOutputStream::class.raw
-                }
+        spy.shouldBeOk {
+            outerCtor shouldHaveType DataOutputStream::class.raw
+            innerCtor shouldHaveType BufferedOutputStream::class.raw
 
-                it::getTypeNode shouldBe unspecifiedChild()
-
-                argList {
-                    constructorCall {
-                        with(it.typeDsl) {
-                            it::getTypeMirror shouldBe BufferedOutputStream::class.raw
-
-                            it.methodType.shouldMatchMethod(
-                                    named = JConstructorSymbol.CTOR_NAME,
-                                    declaredIn = BufferedOutputStream::class.raw,
-                                    withFormals = listOf(OutputStream::class.raw),
-                                    returning = BufferedOutputStream::class.raw
-                            )
-                        }
-
-                        it::getTypeNode shouldBe unspecifiedChild()
-
-                        argList {
-                            variableAccess("out")
-                        }
-                    }
-                }
+            innerCtor.overloadSelectionInfo.let {
+                it::isFailed shouldBe false
+                it::needsUncheckedConversion shouldBe false
             }
         }
-
     }
 
 
     parserTest("Method call in invocation ctx of standalone ctor") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.io.*;
 
 class O {
@@ -327,38 +222,24 @@ class O {
     public static void doSt(OutputStream out) {
         new DataOutputStream(wrap(out));
     }
-    
+
     static OutputStream wrap(OutputStream out) { return out; }
 
 }
         """.trimIndent())
 
 
-        val outerCtor =
-                acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val (outerCtor, wrapCall) = acu.descendants(InvocationNode::class.java).toList()
 
-        outerCtor.shouldMatchN {
-            constructorCall {
-                it::getTypeMirror shouldBe with(it.typeDsl) {
-                    DataOutputStream::class.raw
-                }
+        spy.shouldBeOk {
+            outerCtor shouldHaveType DataOutputStream::class.raw
+            wrapCall shouldHaveType OutputStream::class.raw
 
-                it::getTypeNode shouldBe unspecifiedChild()
-
-                argList {
-                    methodCall("wrap") {
-                        it::getTypeMirror shouldBe with(it.typeDsl) {
-                            OutputStream::class.raw
-                        }
-
-                        argList {
-                            variableAccess("out")
-                        }
-                    }
-                }
+            wrapCall.overloadSelectionInfo.let {
+                it::isFailed shouldBe false
+                it::needsUncheckedConversion shouldBe false
             }
         }
-
     }
 
 
@@ -407,7 +288,7 @@ class Scratch {
     static <T> T id(T t) {
         return t;
     }
-    
+
     static {
         Comparable o = null;
         // T := Object, and there's no error
@@ -438,4 +319,32 @@ class Scratch {
     }
 
 
+    parserTest("Test C-style array dimensions as target type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+import java.util.Iterator;
+import java.util.Map;
+
+class Scratch {
+
+    static <T> T[] getArr(T[] a) { return null; }
+
+    {
+        String arr[] = getArr(new String[0]);
+    }
+}
+
+        """.trimIndent())
+
+        val t_Scratch = acu.firstEnclosingType()
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                    named = "getArr",
+                    declaredIn = t_Scratch,
+                    withFormals = listOf(ts.STRING.toArray()),
+                    returning = ts.STRING.toArray()
+            )
+        }
+    }
 })

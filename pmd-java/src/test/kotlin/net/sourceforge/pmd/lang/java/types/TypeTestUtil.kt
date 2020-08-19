@@ -14,11 +14,9 @@ import io.kotest.property.*
 import io.kotest.property.forAll as ktForAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
-import net.sourceforge.pmd.lang.java.ast.JavaNode
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
@@ -54,6 +52,21 @@ fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
             it.symbol::getCanonicalName shouldBe canonicalName
         }
 
+infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror)  {
+    this::getTypeMirror shouldBe jTypeMirror
+}
+
+infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
+    if (this == null)
+        fail("Expected some instantiation of $m")
+
+    this::getSymbol shouldBe m.symbol
+    this::getArity shouldBe m.arity
+    this::getName shouldBe m.name
+
+    return this
+}
+
 fun JMethodSig?.shouldMatchMethod(
         named: String,
         declaredIn: JTypeMirror? = null,
@@ -85,8 +98,8 @@ fun JMethodSig?.shouldMatchMethod(
     return this
 }
 
-fun JTypeVar.withNewBounds(upper: JTypeMirror? = null, lower:JTypeMirror? = null) {
-    this.cloneWithBounds(upper ?: this.upperBound, lower ?: this.lowerBound)
+fun InvocationNode.shouldUseUncheckedConversion() {
+    overloadSelectionInfo::needsUncheckedConversion shouldBe true
 }
 
 fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =

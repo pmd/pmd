@@ -109,10 +109,10 @@ class TypeInferenceTest : ProcessorTestSpec({
 
                 it::getArguments shouldBe child {
                     stringLit("\"a\"") {
-                        it::getTypeMirror shouldBe it.typeSystem.STRING
+                        it shouldHaveType it.typeSystem.STRING
                     }
                     stringLit("\"b\"") {
-                        it::getTypeMirror shouldBe it.typeSystem.STRING
+                        it shouldHaveType it.typeSystem.STRING
                     }
                 }
             }
@@ -139,7 +139,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                         }
                     }
                     it::getExpression shouldBe child<ASTMethodCall> {
-                        it::getTypeMirror shouldBe it.typeSystem.BOOLEAN
+                        it shouldHaveType it.typeSystem.BOOLEAN
                         it::getQualifier shouldBe variableAccess("it") {
                             it.typeMirror shouldBe it.typeSystem.STRING
                         }
@@ -188,62 +188,25 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test local var inference") {
 
-        val chain = """
-            {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {{
                 var map = new java.util.HashMap<Object, int[]>(((4 * convCount) / 3) + 1);
                 for (var entry : map.entrySet()) {
                     int[] positions = entry.getValue();
                 }
-            }
-        """.trimIndent()
+            }}
+        """)
 
+        val (entrySet, getValue) = acu.methodCalls().toList()
 
-        inContext(StatementParsingCtx) {
-            chain should parseAs {
-                block {
+        spy.shouldBeOk {
+            val entryType = java.util.Map.Entry::class[ts.OBJECT, int.toArray()]
+            entrySet shouldHaveType java.util.Set::class[entryType]
+            getValue shouldHaveType int.toArray()
+            getValue.qualifier!!.shouldMatchN {
+                variableAccess("entry") {
+                    it shouldHaveType entryType
 
-                    localVarDecl {
-                        localVarModifiers {  }
-                        variableDeclarator("map") {
-                            constructorCall()
-                        }
-                    }
-
-                    foreachLoop {
-                        localVarDecl {
-                            localVarModifiers {  }
-                            variableDeclarator("entry") {
-                            }
-                        }
-                        methodCall("entrySet") {
-                            variableAccess("map") {
-                                it::getTypeMirror shouldBe with (it.typeDsl) {
-                                    java.util.HashMap::class[ts.OBJECT, ts.INT.toArray(1)]
-                                }
-                            }
-                            argList(0)
-                        }
-                        block {
-                            localVarDecl {
-                                localVarModifiers {  }
-                                arrayType { primitiveType(INT); arrayDimList() }
-                                variableDeclarator("positions") {
-                                    methodCall("getValue") {
-                                        it::getTypeMirror shouldBe with (it.typeDsl) {
-                                            ts.INT.toArray(1)
-                                        }
-
-                                        variableAccess("entry") {
-                                            it::getTypeMirror shouldBe with (it.typeDsl) {
-                                                java.util.Map.Entry::class[ts.OBJECT, ts.INT.toArray(1)]
-                                            }
-                                        }
-                                        argList(0)
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -251,65 +214,21 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test for var inference projection") {
 
-        inContext(TypeBodyParsingCtx) {
-            """
-            static <T> void take5(Iterable<? extends T> iter) {
-                for (var entry : iter) { } // entry is projected to `T`, not `? extends T`
-            }
-        """.trimIndent() should parseAs {
-                methodDecl {
-                    modifiers()
-                    val tparams = typeParamList(1)
-                    val tvar = tparams.getChild(0)!!.typeMirror
-
-                    voidResult()
-                    formalsList(1)
-                    block {
-                        foreachLoop {
-                            localVarDecl {
-                                localVarModifiers {  }
-                                child<ASTVariableDeclarator> {
-                                    variableId("entry") {
-                                        it.typeMirror shouldBe tvar // not ? extends T
-                                    }
-                                }
-                            }
-                            variableAccess("iter") {
-                                it.typeMirror shouldBe with(it.typeDsl) {
-                                    gen.t_Iterable[captureMatcher(`?` extends tvar)]
-                                }
-                            }
-                            block {}
-                        }
-                    }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                static <T> void take5(Iterable<? extends T> iter) {
+                    for (var entry : iter) { } // entry is projected to `T`, not `? extends T`
                 }
             }
-        }
-    }
+        """.trimIndent())
 
-    parserTest("Test void compatible lambda") {
+        val tvar = acu.typeVariables()[0]
+        val entryId = acu.varId("entry")
+        val iterAccess = acu.varAccesses("iter")[0]!!
 
-        inContext(StatementParsingCtx) {
-
-            """
-             final Runnable pr = 0 == null ? null : () -> id(true);
-        """ should parseAs {
-                localVarDecl {
-                    localVarModifiers {  }
-                    classType("Runnable")
-                    variableDeclarator("pr") {
-                        child<ASTConditionalExpression> {
-                            unspecifiedChildren(2)
-                            exprLambda {
-                                it.typeMirror shouldBe with(it.typeDsl) { java.lang.Runnable::class.decl }
-
-                                lambdaFormals(0)
-                                methodCall("id")
-                            }
-                        }
-                    }
-                }
-            }
+        spy.shouldBeOk {
+            entryId shouldHaveType tvar // not ? extends T
+            iterAccess shouldHaveType gen.t_Iterable[captureMatcher(`?` extends tvar)]
         }
     }
 
@@ -358,17 +277,13 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test type var bound substitution in inherited members") {
 
-
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.ArrayList;
 import java.util.List;
 
 class Scratch<O> {
-    
-    
-    <K extends List<O>> K inherited(K k) {
-        return k;
-    }
+
+    <K extends List<O>> K inherited(K k) { return k; }
     
     static class Inner<T> extends Scratch<T> {
         {
@@ -379,37 +294,26 @@ class Scratch<O> {
 }
         """.trimIndent())
 
-        val tParam = acu.descendants(ASTTypeParameter::class.java).first { it.parameterName == "T" }!!.typeMirror
+        val tParam = acu.typeVariables().first { it.name == "T" }
 
-        acu.descendants(ASTMethodCall::class.java)
-                .firstOrThrow()
-                .shouldMatchN {
-                    methodCall("inherited") {
-                        it.typeMirror shouldBe with(it.typeDsl) { java.util.ArrayList::class[tParam] }
-                        argList {
-                            variableAccess("t")
-                        }
-                    }
-                }
-
+        spy.shouldBeOk {
+            // fixme this test could be better
+            acu.firstMethodCall() shouldHaveType gen.t_ArrayList[tParam] // of T, not of O
+        }
     }
 
 
     parserTest("Test inference var inst substitution in enclosing ctx") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.ArrayList;
 import java.util.List;
 
 class Scratch {
 
-    static <K> K m(List<? extends K> k) {
-        return null;
-    }
+    static <K> K m(List<? extends K> k) { return null; }
 
-    static <T> List<T> of(T k) {
-        return null;
-    }
+    static <T> List<T> of(T k) { return null; }
 
     {
         List<String> t = new ArrayList<>();
@@ -418,88 +322,15 @@ class Scratch {
 }
         """.trimIndent())
 
-        acu.descendants(ASTMethodCall::class.java)
-                .firstOrThrow()
-                .shouldMatchN {
-                    methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.`t_List{String}` }
-                        argList {
-                            methodCall("m") {
-                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
-                                argList {
-                                    variableAccess("t")
-                                }
-                            }
-                        }
-                    }
-                }
+        val (ofCall, mCall) = acu.methodCalls().toList()
+        val (m, of) = acu.methodDeclarations().toList { it.sig }
 
-    }
+        spy.shouldBeOk {
+            ofCall shouldHaveType gen.`t_List{String}`
+            ofCall.methodType shouldBeSomeInstantiationOf of
 
-
-    parserTest("Overload selection must identify fallbacks if any") {
-
-        val acu = parser.parse("""
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.lang.reflect.Type;
-
-class Scratch {
-
-    static void foo(int notOk) {}
-    static void foo(long notOk) {}
-    static void foo(String ok) {}
-    static void foo(Object ok) {}
-
-    static {
-        Class<?>[] genArray = null;
-        foo(Arrays.stream(genArray)
-                  .map(Type::getTypeName)
-                  .collect(Collectors.joining(", ")));
-    }
-}
-        """.trimIndent())
-
-        val fooCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-        fooCall.shouldMatchN {
-            methodCall("foo") {
-                argList {
-                    methodCall("collect") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
-
-                        methodCall("map") {
-
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
-
-                            it::getQualifier shouldBe methodCall("stream") {
-                                it.overloadSelectionInfo.isVarargsCall shouldBe false
-                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
-                                unspecifiedChild()
-                                argList {
-                                    variableAccess("genArray") {
-                                        it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
-                                    }
-                                }
-                            }
-
-
-                            argList {
-                                methodRef("getTypeName") {
-                                    with(it.typeDsl) {
-                                        it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
-                                    }
-
-                                    skipQualifier()
-                                }
-                            }
-                        }
-
-
-                        argList(1)
-                    }
-                }
-            }
+            mCall shouldHaveType gen.t_String
+            mCall.methodType shouldBeSomeInstantiationOf m
         }
     }
 
@@ -571,43 +402,5 @@ class MyMap<K, V> {
 
     }
 
-    parserTest("Test C-style array dimensions as target type") {
-
-        val acu = parser.parse("""
-import java.util.Iterator;
-import java.util.Map;
-
-class Scratch {
-
-    static <T> T[] getArr(T[] a) { return null; }
-
-    { 
-        String arr[] = getArr(new String[0]);
-    }
-}
-
-        """.trimIndent())
-
-        val (t_Scratch) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
-
-        val ctorCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-        ctorCall.shouldMatchN {
-            methodCall("getArr") {
-                with(it.typeDsl) {
-
-                    it.methodType.shouldMatchMethod(
-                            named = "getArr",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(ts.STRING.toArray()),
-                            returning = ts.STRING.toArray()
-                    )
-                }
-
-                argList(1)
-            }
-        }
-
-    }
 
 })

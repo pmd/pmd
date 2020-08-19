@@ -306,4 +306,73 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         }
     }
+
+
+    parserTest("Overload selection must identify fallbacks if any") {
+
+        val acu = parser.parse("""
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.lang.reflect.Type;
+
+class Scratch {
+
+    static void foo(int notOk) {}
+    static void foo(long notOk) {}
+    static void foo(String ok) {}
+    static void foo(Object ok) {}
+
+    static {
+        Class<?>[] genArray = null;
+        foo(Arrays.stream(genArray)
+                  .map(Type::getTypeName)
+                  .collect(Collectors.joining(", ")));
+    }
+}
+        """.trimIndent())
+
+        val fooCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        fooCall.shouldMatchN {
+            methodCall("foo") {
+                argList {
+                    methodCall("collect") {
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+
+                        methodCall("map") {
+
+                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+
+                            it::getQualifier shouldBe methodCall("stream") {
+                                it.overloadSelectionInfo.isVarargsCall shouldBe false
+                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                                unspecifiedChild()
+                                argList {
+                                    variableAccess("genArray") {
+                                        it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                    }
+                                }
+                            }
+
+
+                            argList {
+                                methodRef("getTypeName") {
+                                    with(it.typeDsl) {
+                                        it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
+                                    }
+
+                                    skipQualifier()
+                                }
+                            }
+                        }
+
+
+                        argList(1)
+                    }
+                }
+            }
+        }
+    }
+
+
 })

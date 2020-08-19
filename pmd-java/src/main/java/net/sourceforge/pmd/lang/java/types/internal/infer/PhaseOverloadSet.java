@@ -42,6 +42,14 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return phase;
     }
 
+    public MethodCallSite getSite() {
+        return site;
+    }
+
+    public Infer getInfer() {
+        return infer;
+    }
+
     /**
      * It's a given that the method is applicable to the site.
      *
@@ -140,19 +148,12 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JTypeMirror si = phase.ithFormal(m1Formals, i);
             ExprMirror ei = es.get(i);
 
-            if (ctx.isGround(ti) && isTypeMoreSpecificForArg(si, ti, ei) == NO) {
-                return true;
-            }
-
-            // Otherwise, if Ti is not a functional interface type, the
-            // constraint formula ‹Si <: Ti› is generated.
-            JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(ti);
-            if (fun == null) {
-                // not a functional interface
-                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
+            if (isTypeMoreSpecificForArg(si, ti, ei) == NO) {
+                return false;
             }
 
             // todo special conditions for lambdas/ mrefs
+            infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
 
         }
 
@@ -213,7 +214,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return UNKNOWN;
     }
 
-
     // YES if si is more specific than ti
     // NO if ti is more specific than si
     // UNKNOWN if neither is more specific than the other.
@@ -222,6 +222,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     //  compatible with any type and doesn't contribute information
     //  for specificity.
     private OptionalBool isTypeMoreSpecificForArg(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
+        if (si.equals(ti)) {
+            return UNKNOWN;
+        }
+
         JTypeMirror standalone = argExpr.getStandaloneType();
         if (standalone != null && TypeOps.isUnresolved(standalone)) {
             if (standalone.equals(si)) {
@@ -229,8 +233,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             } else if (standalone.equals(ti)) {
                 return NO;
             }
-            return UNKNOWN;
-        } else if (si.equals(ti)) {
             return UNKNOWN;
         }
 

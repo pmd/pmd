@@ -235,6 +235,19 @@ public final class Infer {
     }
 
 
+    // test only
+    // assumes the method is accessible
+    // errors are on the call site, if logging is enabled
+    boolean isApplicable(MethodCallSite site, JMethodSig m, MethodResolutionPhase phase) {
+        if (!isPotentiallyApplicable(m, site.getExpr())) {
+            return false;
+        }
+
+        MethodCtDecl decl = logInference(site, phase, m);
+        return decl != FAILED_INVOCATION;
+    }
+
+
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
         if (site.getExpr().getMethodType() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
@@ -919,7 +932,7 @@ public final class Infer {
      * Returns true if the method is potentially applicable to the invocation
      * expression expr, as specified in JLS§15.12.2.1.
      *
-     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.1
+     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.2.1
      *
      * <p>This assumes the name of the method matches the expression, and
      * the method is accessible.
