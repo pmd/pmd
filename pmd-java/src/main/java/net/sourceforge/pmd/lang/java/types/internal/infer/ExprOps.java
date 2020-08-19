@@ -64,7 +64,9 @@ final class ExprOps {
 
         }
 
-        if (e instanceof FunctionalExprMirror) {
+        boolean isLambdaOrRef = e instanceof FunctionalExprMirror;
+
+        if (isLambdaOrRef) {
             if (t instanceof JTypeVar) {
                 //  A lambda expression or a method reference expression is potentially compatible with
                 //  a type variable if the type variable is a type parameter of the candidate method.

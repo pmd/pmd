@@ -868,7 +868,9 @@ public final class Infer {
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
 
         ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, this);
-        helper.isCompatible(formalType, arg);
+        if (!helper.isCompatible(formalType, arg)) {
+            throw ResolutionFailedException.unsolvableDependency(LOG);
+        }
     }
 
     /**

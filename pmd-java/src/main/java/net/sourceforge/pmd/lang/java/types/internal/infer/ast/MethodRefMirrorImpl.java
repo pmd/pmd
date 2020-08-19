@@ -21,13 +21,20 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements MethodRefMirror {
+final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements MethodRefMirror {
 
     private JMethodSig exactMethod;
 
     MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda) {
         super(mirrors, lambda);
         exactMethod = mirrors.ts.UNRESOLVED_METHOD;
+
+        // this is in case of failure: if the inference doesn't succeed
+        // and doesn't end up calling those, then we still have a non-null
+        // result in there.
+        setFunctionalMethod(mirrors.ts.UNRESOLVED_METHOD);
+        setCompileTimeDecl(mirrors.ts.UNRESOLVED_METHOD);
+        setInferredType(mirrors.ts.UNRESOLVED_TYPE);
     }
 
     @Override

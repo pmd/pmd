@@ -334,7 +334,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
 
-    parserTest("f:Test failing method ref with this as LHS") {
+    parserTest("Test failing method ref with this as LHS") {
 
         logTypeInference(true)
 
@@ -352,19 +352,18 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                 private String getName() { return "foo"; }
 
                 private Comparator<Archive> comparator() {
-                    return Comparator.comparing(this::getName); // this should fail, but the data should not be null
+                    return Comparator.comparing(this::getName); // this should fail
                 }
 
             }
         """.trimIndent())
 
         val t_Archive = acu.firstEnclosingType()
-        val getName = acu.methodDeclarations().first { it.name == "getName" }!!.sig
         val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
         spy.shouldBeOk {
-            mref.referencedMethod shouldBeSomeInstantiationOf getName
-            mref shouldHaveType gen.t_Function[t_Archive, gen.t_String]
+            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref shouldHaveType ts.UNRESOLVED_TYPE
         }
     }
 
