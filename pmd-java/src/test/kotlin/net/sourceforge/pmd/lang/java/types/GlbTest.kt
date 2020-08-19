@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
+import io.kotest.property.PropTestConfig
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
@@ -31,36 +32,43 @@ class GlbTest : FunSpec({
                 }
 
                 // in particular
-                forAll(ts.allTypesGen) { t ->
-                    glb(t, t) == t // regardless of what kind of type t is
+                checkAll(ts.allTypesGen) { t ->
+                    glb(t, t) shouldBe t // regardless of what kind of type t is
                 }
             }
 
             test("Test intersection symmetry") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    canIntersect(t, s) implies {
-                        glb(t, s) == glb(s, t)
+                checkAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
+                    if (canIntersect(t, s)) {
+                        glb(t, s) shouldBe glb(s, t)
                     }
                 }
             }
 
             test("Test intersection left associativity") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
-                    canIntersect(t, s, r) implies {
-                        glb(glb(t, s), r) == glb(t, s, r)
+                checkAll(PropTestConfig(-1697903442944791680), ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
+                    if (canIntersect(t, s, r)) {
+                        glb(glb(t, s), r) shouldBe glb(t, s, r)
                     }
                 }
             }
 
             test("Test intersection right associativity") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
-                    canIntersect(t, s, r) implies {
-                        glb(s, glb(s, r)) == glb(t, s, r)
+                checkAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
+                    if (canIntersect(t, s, r)) {
+                        glb(t, glb(s, r)) shouldBe glb(t, s, r)
                     }
                 }
+            }
+
+            test("Test GLB min") {
+
+                glb(ts.SERIALIZABLE, t_ArrayList) shouldBe t_ArrayList
+                glb(t_ArrayList, ts.SERIALIZABLE) shouldBe t_ArrayList
+
             }
         }
     }

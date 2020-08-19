@@ -1253,7 +1253,7 @@ public final class TypeOps {
             if (ai instanceof JWildcardType) {
                 JTypeVar pi = tparams.get(i);
                 JTypeMirror bi = pi.getUpperBound();
-                if (mentionsAny(bi, new HashSet<JTypeVar>(tparams))) {
+                if (mentionsAny(bi, new HashSet<>(tparams))) {
                     return null;
                 }
 
@@ -1485,12 +1485,12 @@ public final class TypeOps {
      * S = { V | V in set, and for all W ≠ V in set, it is not the case that W <: V }
      * }</pre>
      */
-    public static Set<JTypeMirror> mostSpecific(Set<? extends JTypeMirror> set) {
+    public static Set<JTypeMirror> mostSpecific(Collection<? extends JTypeMirror> set) {
         LinkedHashSet<JTypeMirror> result = new LinkedHashSet<>(set.size());
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && w.isSubtypeOf(v, true)) {
+                if (!w.equals(v) && (!(w instanceof JInferenceVar) || v.isTop()) && w.isSubtypeOf(v, true)) {
                     continue vLoop;
                 }
             }

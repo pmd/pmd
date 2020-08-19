@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
 import kotlin.String
 import kotlin.reflect.KClass
@@ -187,7 +188,19 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
     override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
 
     override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> =
-            pool.asSequence().map { Sample(it, shrinks = RTree({ it.toArray() })) }
+            pool.shuffled(rs.random).asSequence().map { Sample(it, shrinks = TypeShrinker.rtree(it)) }
+
+    object TypeShrinker : Shrinker<JTypeMirror> {
+
+        override fun shrink(t: JTypeMirror): List<JTypeMirror> =
+                when (t) {
+                    is JArrayType -> listOf(t.componentType)
+                    is JClassType -> SuperTypesEnumerator.ALL_STRICT_SUPERTYPES.iterable(t).toList()
+                    is JIntersectionType -> t.components
+                    else                 -> emptyList()
+                }
+
+    }
 
 
     private val pool = listOf(
@@ -199,6 +212,7 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
             `t_Collection{Integer}`,
             `t_List{? extends Number}`,
             `t_List{?}`,
+            t_ArrayList,
             t_MapEntry,
             `t_Array{Object}`
 
@@ -376,11 +390,10 @@ fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
     this shouldBe typeSystem.getPrimitive(kind)
 }
 
-fun canIntersect(t: JTypeMirror, s: JTypeMirror) = t.isExlusiveIntersectionBound xor s.isExlusiveIntersectionBound
-fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others:JTypeMirror) : Boolean{
+fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others:JTypeMirror) : Boolean {
     val comps = listOf(t, s, *others)
     return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
-            && comps.none { it.isPrimitive }
+            && comps.none { it.isPrimitive  || it.isGenericTypeDeclaration }
 }
 
 /** If so, there can only be one in a well formed intersection. */

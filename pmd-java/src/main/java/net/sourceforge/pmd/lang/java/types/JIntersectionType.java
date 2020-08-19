@@ -171,6 +171,7 @@ public final class JIntersectionType implements JTypeMirror {
     }
 
     private static void checkWellFormed(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
+        assert flattened.get(0) == primary || primary == primary.getTypeSystem().OBJECT;
         for (int i = 0; i < flattened.size(); i++) {
             JTypeMirror ci = flattened.get(i);
             Objects.requireNonNull(ci, "Null intersection component");

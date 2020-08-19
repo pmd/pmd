@@ -8,10 +8,8 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTMethodCall
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
@@ -19,7 +17,7 @@ import net.sourceforge.pmd.lang.java.types.typeDsl
  */
 class UncheckedInferenceTest : ProcessorTestSpec({
 
-    parserTest("f:Test raw type in argument erases result") {
+    parserTest("Test raw type in argument erases result") {
 
         val logGetter = logTypeInference()
         val acu = parser.parse(
@@ -178,6 +176,45 @@ class C {
         with(call.typeDsl) {
             id.typeMirror shouldBe gen.t_Enum
         }
+    }
+
+
+    parserTest("TODO unchecked assignment for intersection") {
+
+        val acu = parser.parse("""
+class Scratch<N extends Number> {
+
+    interface I {}
+
+    static <N2 extends Number & I> N2 getN() {return null;}
+
+    public void main() {
+        N n = getN(); // unchecked assignment Scratch.I to N
+    }
+}
+        """.trimIndent())
+
+        val (t_Scratch, t_I) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("getN") {
+                with(it.typeDsl) {
+
+                    it.methodType.shouldMatchMethod(
+                            named = "getN",
+                            declaredIn = t_Scratch,
+                            withFormals = emptyList(),
+                            returning = nvar * t_I
+                    )
+                }
+
+                argList(0)
+            }
+        }
+
     }
 
 })

@@ -246,8 +246,6 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
         otherImports += "java.util.stream.*"
 
-        val stringBuilder = "java.lang.StringBuilder"
-
         val chain = "Stream.of(\"\", 4).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)"
 
         inContext(ExpressionParsingCtx) {

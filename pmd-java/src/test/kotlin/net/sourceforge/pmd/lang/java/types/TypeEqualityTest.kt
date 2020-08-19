@@ -6,8 +6,11 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.property.checkAll
 import io.kotest.property.forAll
+import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**
  * @author Clément Fournier
@@ -38,15 +41,15 @@ class TypeEqualityTest : FunSpec({
 
             test("Test array equality") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    (t == s) == (t.toArray(1) == t.toArray(1))
+                checkAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
+                    (t == s) shouldBe (t.toArray(1) == s.toArray(1))
                 }
             }
 
             test("Test equality symmetry") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    (t == s) == (s == t)
+                checkAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
+                    (t == s) shouldBe (s == t)
                 }
             }
 

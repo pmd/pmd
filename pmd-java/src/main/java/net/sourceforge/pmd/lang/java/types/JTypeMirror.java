@@ -278,6 +278,13 @@ public interface JTypeMirror extends JTypeVisitable {
         return sym != null && sym.isInterface();
     }
 
+    /**
+     * Returns true if this is {@link TypeSystem#OBJECT}.
+     */
+    default boolean isTop() {
+        return this == getTypeSystem().OBJECT;
+    }
+
     /** Returns true if this is an {@linkplain JArrayType array type}. */
     default boolean isArray() {
         return this instanceof JArrayType;

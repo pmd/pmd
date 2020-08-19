@@ -12,11 +12,11 @@ import static net.sourceforge.pmd.util.OptionalBool.YES;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -317,32 +317,31 @@ final class Lub {
         }
 
 
-        ArrayList<JTypeMirror> allBounds = new ArrayList<>(types.size());
+        ArrayList<JTypeMirror> flat = flattenRemoveTrivialBound(types);
 
-        for (JTypeMirror type : types) {
-            // flatten intersections: (A & (B & C)) => (A & B & C)
-            if (type instanceof JIntersectionType) {
-                allBounds.addAll(((JIntersectionType) type).getComponents());
-            } else {
-                allBounds.add(type);
-            }
+        if (flat.size() == 1) {
+            return flat.get(0);
+        } else if (flat.isEmpty()) {
+            return ts.OBJECT;
         }
 
-        allBounds = new ArrayList<>(new LinkedHashSet<>(allBounds)); // prune duplicates, A & A == A
+        Set<JTypeMirror> mostSpecific = TypeOps.mostSpecific(flat);
 
-        if (allBounds.size() == 1) {
-            return allBounds.get(0);
+        if (mostSpecific.size() == 1) {
+            return mostSpecific.iterator().next();
         }
 
-        JTypeMirror ck = ts.OBJECT; // Ck is the primary bound
+        ArrayList<JTypeMirror> bounds = new ArrayList<>(mostSpecific);
+
+        JTypeMirror ck = null; // Ck is the primary bound
+        int primaryIdx = 0;
 
         OptionalBool retryWithCaptureBounds = NO;
         PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
         PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
         JTypeMirror lastBadClass = null;
-        for (ListIterator<JTypeMirror> iterator = allBounds.listIterator(); iterator.hasNext();) {
-            JTypeMirror ci = iterator.next();
-
+        for (int i = 0; i < bounds.size(); i++) {
+            JTypeMirror ci = bounds.get(i);
             if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
                 throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
             }
@@ -350,13 +349,9 @@ final class Lub {
             if (isExclusiveIntersectionBound(ci)) {
                 // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
                 // Ci is not unresolved
-
-                if (ci.isSubtypeOf(ck)) {
-                    ck = ci; // Ci is more specific than Ck
-                    iterator.remove(); // remove bound
-                } else if (ck.isSubtypeOf(ci)) {
-                    // then our Ck is already more specific than Ci
-                    iterator.remove();
+                if (ck == null) {
+                    ck = ci;
+                    primaryIdx = i;
                 } else {
                     JTypeMirror lower = cvarLowerBound(ci);
                     if (lower != ci && lower != ts.NULL_TYPE) { // NOPMD CompareObjectsWithEquals
@@ -369,17 +364,14 @@ final class Lub {
                     }
                     lastBadClass = ci;
                 }
-            } else if (!(ci instanceof JInferenceVar) && ck.isSubtypeOf(ci)) {
-                // then our Ck is already more specific than Ci
-                iterator.remove();
             }
         }
 
-        switch (retryWithCaptureBounds) {
+        switch (retryWithCaptureBounds) { // when several capture variables were found
         case YES:
-            allBounds.removeAll(cvarsToRemove);
-            allBounds.addAll(cvarLowers);
-            return glb(ts, allBounds);
+            bounds.removeAll(cvarsToRemove);
+            bounds.addAll(cvarLowers);
+            return glb(ts, bounds);
         case NO:
             break;
         default:
@@ -387,31 +379,60 @@ final class Lub {
                 "Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
 
-        // now we have a most specific primary bound
-
-        if (allBounds.isEmpty()) {
-            return ck;
-        }
-
-        if (ck == ts.OBJECT && allBounds.size() == 1) {
-            return allBounds.get(0);
-        }
-
-        // we still need to check for duplicate parameterizations of the same thing
-
-
-        // TODO this is order dependent: Arr[] & Serializable is ok, but Serializable & Arr[] is not
-        //   Possibly use TypeOps::mostSpecific to merge them
-        if (ck instanceof JArrayType) {
+        if (ck instanceof JArrayType && bounds.size() > 0) {
             // If we get here, then the intersection looks like `A[] & B1 & .. & Bn`,
             // where some Bi is not a subtype of A[], else it would have
-            // been pruned by the loop above. Note that this means some `Bi`
+            // been pruned by mostSpecific above. Note that this means some `Bi`
             // is not in { Serializable, Cloneable, Object }. Since arrays
-            // cannot be extended, such a bound produces a type which cannot contain anything.
+            // cannot be extended, such a bound produces an uninhabited type.
+            return ts.NULL_TYPE;
+        } else if (containsDuplicateParameterizations(bounds)) {
+            // assuming no two elements of the collection are subtypes of one
+            // another, an intersection `G<A> & G<B>` cannot have any instances.
             return ts.NULL_TYPE;
         }
 
-        return new JIntersectionType(ts, ck, allBounds);
+        if (ck == null) {
+            if (bounds.size() == 1) {
+                return bounds.get(0);
+            }
+            ck = ts.OBJECT;
+        } else {
+            // move primary bound first
+            Collections.swap(bounds, 0, primaryIdx);
+        }
+
+        return new JIntersectionType(ts, ck, bounds);
+    }
+
+    private static boolean containsDuplicateParameterizations(ArrayList<JTypeMirror> bounds) {
+        for (int i = 0; i < bounds.size(); i++) {
+            JTypeMirror bi = bounds.get(i);
+            for (int j = i + 1; j < bounds.size(); j++) {
+                JTypeMirror bj = bounds.get(j);
+                if (bi.getErasure().equals(bj.getErasure())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @NonNull
+    private static ArrayList<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
+        ArrayList<JTypeMirror> bounds = new ArrayList<>(types.size());
+
+        for (JTypeMirror type : types) {
+            // flatten intersections: (A & (B & C)) => (A & B & C)
+            if (type instanceof JIntersectionType) {
+                bounds.addAll(((JIntersectionType) type).getComponents());
+            } else {
+                if (!type.isTop()) {
+                    bounds.add(type);
+                }
+            }
+        }
+        return bounds;
     }
 
 
