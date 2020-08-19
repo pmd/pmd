@@ -350,6 +350,15 @@ public final class TypeOps {
 
     // <editor-fold  defaultstate="collapsed" desc="Subtyping">
 
+
+    public static Subtyping isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return isSubtype(t, s, true);
+    }
+
+    public static Subtyping isSubtypeNoCapture(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return isSubtype(t, s, false);
+    }
+
     /**
      * Returns whether if {@code T <: S}, ie T is a subtype of S.
      *
@@ -359,7 +368,10 @@ public final class TypeOps {
      * @param t A type T
      * @param s A type S
      */
-    public static Subtyping isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+    public static Subtyping isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
+        assert !(t instanceof JWildcardType || s instanceof JWildcardType)
+            : "Wildcards do not support subtyping";
+
         if (t == s) {
             Objects.requireNonNull(t);
             return Subtyping.YES;
@@ -371,6 +383,8 @@ public final class TypeOps {
             // it's possible to add a bound to UNRESOLVED
             ((JInferenceVar) s).addBound(BoundKind.LOWER, t);
             return Subtyping.YES;
+        } else if (isTypeRange(s)) {
+            return isSubtype(t, lowerBoundRec(s), capture);
         } else if (isSpecialUnresolved(t)) {
             // error type or unresolved type
             return Subtyping.YES;
@@ -381,7 +395,10 @@ public final class TypeOps {
             return Subtyping.definitely(s instanceof JClassType); // excludes array or so
         }
 
-        return capture(t).acceptVisitor(SubtypeVisitor.INSTANCE, s);
+        if (capture) {
+            t = capture(t);
+        }
+        return t.acceptVisitor(SubtypeVisitor.INSTANCE, s);
     }
 
     // does not perform side effects on inference vars
@@ -517,6 +534,7 @@ public final class TypeOps {
      *
      * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
      */
+    // todo make package-private, lub has been moved
     public static Subtyping typeArgContains(JTypeMirror t, JTypeMirror s) {
         // the contains relation can be understood intuitively if we
         // represent types as ranges on a line:
@@ -549,10 +567,10 @@ public final class TypeOps {
         if (t instanceof JWildcardType) {
             JWildcardType tw = (JWildcardType) t;
             if (tw.isUpperBound()) {
-                //  U(S) <: U(T) if T is "super" bound (U(T) is top)
+                //  U(S) <: U(T), L(T) is bottom
                 return isSubtype(upperBound(s), tw.asUpperBound());
             } else {
-                // L(T) <: L(S) if T is "extends" bound (L(T) is bottom)
+                // L(T) <: L(S), U(T) is top
                 return isSubtype(tw.asLowerBound(), lowerBound(s));
             }
         }
@@ -615,10 +633,6 @@ public final class TypeOps {
                 // Symmetrically, if T is an intersection, T <: S requires only that
                 // at least one bound of T is a subtype of S.
                 return Subtyping.subtypesAll(t, asList(s));
-            }
-
-            if (isTypeRange(s)) {
-                return isSubtype(t, lowerBoundRec(s));
             }
 
             if (!(s instanceof JClassType)) {
@@ -966,7 +980,7 @@ public final class TypeOps {
                 JTypeMirror ci = comps.get(i);
                 JTypeMirror proj = ci.acceptVisitor(this, null);
                 if (proj == NO_DOWN_PROJECTION) {
-                    return proj;
+                    return NO_DOWN_PROJECTION;
                 } else {
                     comps.set(i, proj);
                     if (ci != proj) {

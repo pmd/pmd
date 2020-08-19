@@ -316,7 +316,8 @@ class Scratch<N extends Number> {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
         }
     }
-    parserTest("Weird capture bug") {
+
+    parserTest("f:Weird capture bug") {
 
         logTypeInference(true)
 

@@ -13,11 +13,13 @@ import io.kotest.inspectors.forNone
 import io.kotest.matchers.shouldBe
 import io.kotest.properties.forNone
 import io.kotest.property.Exhaustive
+import io.kotest.property.PropTestConfig
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.types.TypeConversion.*
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
 import kotlin.test.assertTrue
@@ -142,7 +144,7 @@ class SubtypingTest : FunSpec({
                 val (k, f, c) = ParserTestCtx().makeDummyTVars("K", "F", "C")
 
                 val wild = `?` `super` k
-                val superList = TypeConversion.capture(List::class[wild])
+                val superList = capture(List::class[wild])
 
                 superList.typeArgs[0].shouldBeA<JTypeVar> {
                     it.isCaptured shouldBe true
@@ -207,6 +209,27 @@ class SubtypingTest : FunSpec({
 
             }
 
+            test("Test wildcard subtyping (property-based)") {
+
+                checkAll(ts.refTypeGen, ts.refTypeGen) { t, s ->
+                    if (t.isSubtypeOf(s, false)) {
+                        t_List[t] shouldBeSubtypeOf t_List[`?` extends s]
+                        t_List[t] shouldBeSubtypeOf t_List[`?` `super` s]
+                    } else if (!s.isSubtypeOf(t, false)) {
+                        t_List[t] shouldNotBeSubtypeOf t_List[`?` extends s]
+                        t_List[t] shouldNotBeSubtypeOf t_List[`?` `super` s]
+                    }
+                }
+            }
+
+            test("Test containment") {
+
+                checkAll(ts.refTypeGen, ts.refTypeGen) { t, s ->
+                    if (t != s) // remember, t and s are types, never wildcards with this generator
+                        t_List[t] shouldBeUnrelatedTo t_List[s]
+                }
+            }
+
             test("Test primitive supertype set") {
 
                 boolean.superTypeSet shouldBe setOf(boolean)
@@ -255,6 +278,38 @@ class SubtypingTest : FunSpec({
                         t shouldNotBeSubtypeOf s
                     else
                         t shouldBeSubtypeOf s
+                }
+            }
+
+            test("Captured subtyping tests") {
+
+
+                checkAll(ts.refTypeGen) { t ->
+
+                    withClue("Upper captures") {
+                        capture(t_List[`?` extends t]) shouldSubtypeNoCapture t_List[`?` extends t]
+                        t_List[`?` extends t] shouldNotSubtypeNoCapture capture(t_List[`?` extends t])
+                    }
+
+                    withClue("Lower captures") {
+                        capture(t_List[`?` `super` t]) shouldSubtypeNoCapture t_List[`?` `super` t]
+                        t_List[`?` `super` t] shouldNotSubtypeNoCapture capture(t_List[`?` `super` t])
+                    }
+                }
+
+            }
+
+            test("Some negs for captures") {
+
+
+                checkAll(ts.refTypeGen) { t ->
+                    val someCapture = capture(t_List[`?` extends t]).typeArgs[0]
+
+                    someCapture shouldBe captureMatcher(`?` extends t)
+
+                    // List<? extends T>   VS   List<? extends capture#809 of ? extends T>
+                    // not a subtype
+                    t_List[`?` extends t] shouldNotSubtypeNoCapture t_List[`?` extends someCapture]
                 }
             }
         }

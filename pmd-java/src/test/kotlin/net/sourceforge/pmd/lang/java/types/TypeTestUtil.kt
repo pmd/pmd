@@ -14,6 +14,7 @@ import io.kotest.property.*
 import io.kotest.property.forAll as ktForAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
@@ -31,6 +32,8 @@ import kotlin.streams.toList
     Remember to getTypeMirror() / getMethodType() somewhere as the inference
     is done lazily.
  */
+
+val javaParser = JavaParsingHelper.WITH_PROCESSING
 
 fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
 val testTypeSystem: TypeSystem = newTypeSystem()
@@ -245,11 +248,19 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
 
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
-private fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Subtyping) {
-    val res = isSubtype(t , s)
+fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Subtyping, capture: Boolean = true) {
+    val res = isSubtype(t, s, capture)
     withClue("$t \n\t\t<: $s") {
         res shouldBe expected
     }
+}
+
+infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
+    assertSubtype(this, s, Subtyping.YES, false)
+}
+
+infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
+    assertSubtype(this, s, Subtyping.NO, false)
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
@@ -376,13 +387,14 @@ class WildcardDsl(override val ts: TypeSystem) : JWildcardType by ts.UNBOUNDED_W
 }
 
 
+fun ParserTestCtx.makeDummyTVars(vararg names: String): List<JTypeVar> =
+        parser.makeDummyTVars(*names)
 
-
-fun ParserTestCtx.makeDummyTVars(vararg names: String): List<JTypeVar> {
+fun JavaParsingHelper.makeDummyTVars(vararg names: String): List<JTypeVar> {
 
     val txt = names.joinToString(separator = ", ", prefix = "class Foo< ", postfix = " > {}")
 
-    return parser.withProcessing()
+    return this.withProcessing()
             .parse(txt)
             .descendants(ASTTypeParameters::class.java)
             .take(1)
