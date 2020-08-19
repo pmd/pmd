@@ -73,6 +73,8 @@ final class ExprCheckHelper {
      * @param expr       Expression
      *
      * @return true if it's compatible (or we don't have enough info, and the check is deferred)
+     *
+     * @throws ResolutionFailedException If the expr is not compatible, and we want to add a message for the reason
      */
     boolean isCompatible(JTypeMirror targetType, ExprMirror expr) {
         {
@@ -156,11 +158,15 @@ final class ExprCheckHelper {
             }
             return earlyBound;
         } else {
-            return TypeOps.asClassType(targetType);
+            JClassType asClass = TypeOps.asClassType(targetType);
+            if (asClass == null) {
+                throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
+            }
+            return asClass;
         }
     }
 
-    private boolean isMethodRefCompatible(@Nullable JClassType functionalItf, MethodRefMirror mref) {
+    private boolean isMethodRefCompatible(@NonNull JClassType functionalItf, MethodRefMirror mref) {
         // See JLS§18.2.1. Expression Compatibility Constraints
 
         // A constraint formula of the form ‹MethodReference → T›,
@@ -168,19 +174,15 @@ final class ExprCheckHelper {
 
         // If T is not a functional interface type, or if T is a functional interface
         // type that does not have a function type (§9.9), the constraint reduces to false.
-        if (functionalItf == null) {
-            return false;
-        }
 
         JClassType nonWildcard = nonWildcardParameterization(functionalItf);
         if (nonWildcard == null) {
-            return false;
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref);
         }
 
         JMethodSig fun = findFunctionalInterfaceMethod(nonWildcard);
         if (fun == null) {
-            // throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref.getLocation());
-            return false;
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref);
         }
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);
@@ -208,7 +210,7 @@ final class ExprCheckHelper {
                 // The receiver may not be boxed
                 JTypeMirror receiver = ps.get(0);
                 if (receiver.isPrimitive()) {
-                    throw ResolutionFailedException.cannotInvokeInstanceMethodOnPrimitive(infer.LOG, receiver, mref.getLocation());
+                    throw ResolutionFailedException.cannotInvokeInstanceMethodOnPrimitive(infer.LOG, receiver, mref);
                 }
                 checker.checkExprConstraint(infCtx, receiver, lhs);
 
@@ -216,7 +218,7 @@ final class ExprCheckHelper {
                     checker.checkExprConstraint(infCtx, ps.get(i), fs.get(i - 1));
                 }
             } else if (n != k) {
-                return false;
+                throw ResolutionFailedException.incompatibleArity(infer.LOG, k, n, mref);
             } else {
                 // n == k
                 for (int i = 0; i < n; i++) {
@@ -341,20 +343,16 @@ final class ExprCheckHelper {
      * Only executed if {@link MethodResolutionPhase#isInvocation()},
      * as per {@link ExprOps#isPertinentToApplicability(ExprMirror, JMethodSig, JTypeMirror, InvocationMirror)}.
      */
-    private boolean isLambdaCompatible(@Nullable JClassType functionalItf, LambdaExprMirror lambda) {
-        if (functionalItf == null) {
-            return false;
-        }
+    private boolean isLambdaCompatible(@NonNull JClassType functionalItf, LambdaExprMirror lambda) {
 
         JClassType groundTargetType = groundTargetType(functionalItf, lambda);
         if (groundTargetType == null) {
-            return false;
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, lambda);
         }
 
         JMethodSig groundFun = findFunctionalInterfaceMethod(groundTargetType);
         if (groundFun == null) {
-            // not a funct interface
-            return false;
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, lambda);
         }
 
 
@@ -387,18 +385,18 @@ final class ExprCheckHelper {
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isLambdaCongruent(@NonNull JClassType functionalItf,
                                       @NonNull JClassType groundTargetType,
-                                      JMethodSig groundFun,
+                                      @NonNull JMethodSig groundFun,
                                       LambdaExprMirror lambda) {
 
-        if (groundFun == null || groundFun.isGeneric()) {
-            return false;
+        if (groundFun.isGeneric()) {
+            throw ResolutionFailedException.lambdaCannotTargetGenericFunction(infer.LOG, groundFun, lambda);
         }
 
         //  If the number of lambda parameters differs from the number
         //  of parameter types of the function type, the constraint
         //  reduces to false.
         if (groundFun.getArity() != lambda.getParamCount()) {
-            return false;
+            throw ResolutionFailedException.incompatibleArity(infer.LOG, lambda.getParamCount(), groundFun.getArity(), lambda);
         }
 
         // If the function type's result is void and the lambda body is
@@ -406,14 +404,14 @@ final class ExprCheckHelper {
         // the constraint reduces to false.
         JTypeMirror result = groundFun.getReturnType();
         if (result == ts.NO_TYPE && !lambda.isVoidCompatible()) {
-            return false;
+            throw ResolutionFailedException.lambdaCannotTargetVoidMethod(infer.LOG, lambda);
         }
 
         // If the function type's result is not void and the lambda
         // body is a block that is not value-compatible, the constraint
         // reduces to false.
         if (result != ts.NO_TYPE && !lambda.isValueCompatible()) {
-            return false;
+            throw ResolutionFailedException.lambdaCannotTargetValueMethod(infer.LOG, lambda);
         }
 
         // If the lambda parameters have explicitly declared types F1, ..., Fn

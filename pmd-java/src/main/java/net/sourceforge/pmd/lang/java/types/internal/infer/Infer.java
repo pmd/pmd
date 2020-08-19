@@ -797,7 +797,7 @@ public final class Infer {
         boolean varargsRequired = phase.requiresVarargs();
 
         if (!varargsRequired && m.getArity() != expr.getArgumentCount()) {
-            throw ResolutionFailedException.incompatibleArity(LOG, expr.getArgumentCount(), m.getArity(), expr.getLocation());
+            throw ResolutionFailedException.incompatibleArity(LOG, expr.getArgumentCount(), m.getArity(), expr);
         }
 
         List<JTypeMirror> fs = m.getFormalParameters();

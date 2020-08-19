@@ -124,30 +124,64 @@ final class ResolutionFailedException extends RuntimeException {
                                                                  "Unsolvable inference variable dependency"));
     }
 
-    static ResolutionFailedException incompatibleArity(TypeInferenceLogger logger, int found, int required, JavaNode location) {
+    static ResolutionFailedException incompatibleArity(TypeInferenceLogger logger, int found, int required, ExprMirror location) {
         return getShared(logger.isNoop() ? UNKNOWN
-                                         : new ResolutionFailure(location,
+                                         : new ResolutionFailure(location.getLocation(),
                                                                  "Incompatible arity: " + found + " != " + required));
     }
 
-    static ResolutionFailedException cannotInvokeInstanceMethodOnPrimitive(TypeInferenceLogger logger, JTypeMirror actual, JavaNode location) {
+    static ResolutionFailedException lambdaCannotTargetVoidMethod(TypeInferenceLogger logger, ExprMirror location) {
         return getShared(logger.isNoop() ? UNKNOWN
-                                         : new ResolutionFailure(location,
-                                                                 "Cannot invoke instance method on primitive: " + actual));
+                                         : new ResolutionFailure(location.getLocation(),
+                                                                 "Lambda cannot target void method"));
+    }
+
+    static ResolutionFailedException lambdaCannotTargetValueMethod(TypeInferenceLogger logger, ExprMirror location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location.getLocation(),
+                                                                 "Lambda cannot target non-void method"));
+    }
+
+    static ResolutionFailedException boundMethodRef(TypeInferenceLogger logger, ExprMirror location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location.getLocation(),
+                                                                 "Lambda cannot target non-void method"));
+    }
+
+    static ResolutionFailedException cannotInvokeInstanceMethodOnPrimitive(TypeInferenceLogger logger, JTypeMirror actual, ExprMirror location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location.getLocation(),
+                                                                 "Cannot invoke instance method on primitive: "
+                                                                     + actual));
     }
 
     static ResolutionFailedException noCtDeclaration(TypeInferenceLogger logger, JMethodSig fun, MethodRefMirror mref) {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(mref.getLocation(),
-                                                                 "No compile time declaration found conforming to: " + fun));
+                                                                 "No compile time declaration found conforming to: "
+                                                                     + fun));
     }
 
-    static ResolutionFailedException notAFunctionalInterface(TypeInferenceLogger logger, JTypeMirror failedCandidate, JavaNode loc) {
+    static ResolutionFailedException notAFunctionalInterface(TypeInferenceLogger logger, JTypeMirror failedCandidate, ExprMirror loc) {
         return getShared(logger.isNoop() ? UNKNOWN
-                                         : new ResolutionFailure(loc,
+                                         : new ResolutionFailure(loc.getLocation(),
                                                                  "Not a functional interface: " + failedCandidate));
     }
 
+
+    static ResolutionFailedException lambdaCannotTargetGenericFunction(TypeInferenceLogger logger, JMethodSig fun, ExprMirror loc) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(loc.getLocation(),
+                                                                 "Lambda expression cannot target a generic method: "
+                                                                     + fun));
+    }
+
+    static ResolutionFailedException boundCallableReference(TypeInferenceLogger logger, JMethodSig fun, ExprMirror loc) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(loc.getLocation(),
+                                                                 "Lambda expression cannot target a generic method: "
+                                                                     + fun));
+    }
 
     private static @NonNull ResolutionFailedException getShared(ResolutionFailure failure) {
         ResolutionFailedException instance = SHARE_EXCEPTION ? getSharedInstance()
