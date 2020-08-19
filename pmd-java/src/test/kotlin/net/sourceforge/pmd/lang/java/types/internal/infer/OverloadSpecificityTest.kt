@@ -316,4 +316,34 @@ class Scratch<N extends Number> {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
         }
     }
+    parserTest("Weird capture bug") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+
+import java.util.Arrays;
+
+interface NodeStream<T> {
+
+    static <T> NodeStream<T> union(NodeStream<? extends T>... streams) {
+        return union(Arrays.asList(streams));
+    }
+
+    static <T> NodeStream<T> union(Iterable<? extends NodeStream<? extends T>> streams) {
+        return null;
+    }
+
+}
+
+                """.trimIndent()
+        )
+
+        val (_, unionOfIter) = acu.methodDeclarations().toList { it.sig }
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(unionOfIter)
+        }
+    }
 })
