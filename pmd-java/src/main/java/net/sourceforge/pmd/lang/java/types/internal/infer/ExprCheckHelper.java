@@ -412,7 +412,7 @@ final class ExprCheckHelper {
         // If the function type's result is not void and the lambda
         // body is a block that is not value-compatible, the constraint
         // reduces to false.
-        if (!lambda.isValueCompatible()) {
+        if (result != ts.NO_TYPE && !lambda.isValueCompatible()) {
             return false;
         }
 

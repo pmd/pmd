@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
+import java.util.function.DoubleConsumer
 import kotlin.test.assertEquals
 
 class LambdaInferenceTest : ProcessorTestSpec({
@@ -491,7 +492,7 @@ class Scratch {
 
 
 
-    parserTest("Test void compatible lambda") {
+    parserTest("Test void compatible lambda with value compatible body") {
 
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
@@ -504,6 +505,26 @@ class Scratch {
 
         spy.shouldBeOk {
             lambda shouldHaveType java.lang.Runnable::class.raw
+        }
+    }
+
+    parserTest("Test void compatible lambda with void body") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.function.DoubleConsumer;
+            class Foo {
+                protected DoubleConsumer emptyConsumer() {
+                    return e -> {};
+                }
+            }
+        """.trimIndent())
+
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType DoubleConsumer::class.raw
         }
     }
 
