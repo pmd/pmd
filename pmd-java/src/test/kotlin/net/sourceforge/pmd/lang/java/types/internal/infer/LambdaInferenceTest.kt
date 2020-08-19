@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
+import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -42,13 +43,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
+                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
 
                 it::getQualifier shouldBe methodCall("peek") {
-                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -101,34 +102,34 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with (it.typeDsl) { gen.t_List[ts.UNRESOLVED_TYPE] } // List</*unresolved*/>
+                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[ts.UNRESOLVED_TYPE] } // List</*unresolved*/>
 
                 it::getQualifier shouldBe methodCall("map") {
-                    it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[ts.UNRESOLVED_TYPE] } // Stream</*unresolved*/>
+                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[ts.UNRESOLVED_TYPE] } // Stream</*unresolved*/>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with (it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
 
                         it::getArguments shouldBe child {
-                        int(1)
+                            int(1)
+                        }
                     }
-                }
 
-                it::getArguments shouldBe child {
+                    it::getArguments shouldBe child {
 
-                    child<ASTLambdaExpression> {
-                        unspecifiedChild() // params
+                        child<ASTLambdaExpression> {
+                            unspecifiedChild() // params
 
-                        methodCall("wild") {
-                            argList {
-                                variableAccess("i")
+                            methodCall("wild") {
+                                argList {
+                                    variableAccess("i")
+                                }
                             }
                         }
                     }
-                }
                 }
                 it::getArguments shouldBe child {
                     unspecifiedChild()
@@ -164,7 +165,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
 
-                with (it.typeDsl) {
+                with(it.typeDsl) {
                     // Function<String, Integer> & java.io.Serializable
                     val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
 
@@ -215,7 +216,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             methodCall("f") {
                 it.methodType.symbol shouldBe f.symbol
 
-                with (it.typeDsl) {
+                with(it.typeDsl) {
                     // Function<String, Integer> & java.io.Serializable
                     val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
 
@@ -464,6 +465,7 @@ class Scratch {
         Object d = g -> g + 2;                  // val
         Object e = g -> o(g + 2);               // val + void
         Object f = g -> new O(g + 2);           // val + void
+        Object h = g -> { throw new E(); };     // val + void 
     }
 }
 
@@ -471,7 +473,7 @@ class Scratch {
 
         val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
         val mirrors = JavaExprMirrors(infer)
-        val (a, b, c, d, e, f) = acu.descendants(ASTLambdaExpression::class.java).toList { mirrors.getMirror(it) as ExprMirror.LambdaExprMirror }
+        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java).toList { mirrors.getMirror(it) as ExprMirror.LambdaExprMirror }
 
         fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
             withClue(this) {
@@ -487,6 +489,7 @@ class Scratch {
         d.shouldBeCompat(value = true)
         e.shouldBeCompat(value = true, void = true)
         f.shouldBeCompat(value = true, void = true)
+        h.shouldBeCompat(value = true, void = true)
 
     }
 

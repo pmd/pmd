@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -81,14 +82,15 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
 
 
     /**
-     * Returns true if the body of the lambda is void compatible,
-     * or value compatible depending on the parameter.
-     *
      * Malformed bodies may be neither (it's a compile error)
      */
     private static boolean isLambdaBodyCompatible(ASTBlock body, boolean voidCompatible) {
-        return body.descendants(ASTReturnStatement.class)
-                   .none(it -> it.getExpr() != null) == voidCompatible;
+        boolean noReturnsWithExpr = body.descendants(ASTReturnStatement.class).none(it -> it.getExpr() != null);
+        if (noReturnsWithExpr && !voidCompatible) {
+            // normally we should be determining whether the block must complete abruptly on all paths
+            return body.descendants(ASTThrowStatement.class).nonEmpty();
+        }
+        return noReturnsWithExpr == voidCompatible;
     }
 
     /**

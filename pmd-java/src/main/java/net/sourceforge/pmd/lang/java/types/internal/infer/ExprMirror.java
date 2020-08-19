@@ -205,16 +205,21 @@ public interface ExprMirror {
 
 
         /**
-         * Returns true if the body is value-compatible, ie it is either
-         * an expression, or a block for which at least one return statement
-         * returns an expression.
+         * Returns true if the body is value-compatible {@literal (JLS§15.27.2)}.
+         * <blockquote>
+         *     A block lambda body is value-compatible if it cannot complete
+         *     normally (§14.21) and every return statement in the block
+         *     has the form return Expression;.
+         * </blockquote>
          */
         boolean isValueCompatible();
 
         /**
-         * Returns true if the body is void-compatible, ie it is either
-         * an expression which "may" have type void (eg, not {@code a + 1}),
-         * or a block whose return statements return no expression.
+         * Returns true if the body is void-compatible {@literal (JLS§15.27.2)}.
+         * <blockquote>
+         *     A block lambda body is void-compatible if every return
+         *     statement in the block has the form return;.
+         * </blockquote>
          */
         boolean isVoidCompatible();
     }
