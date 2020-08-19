@@ -84,7 +84,14 @@ public interface JMethodSig extends JTypeVisitable {
 
     /**
      * The erasure of a method is a new, non-generic method, whose
-     * parameters, owner, and return type, are erased.
+     * parameters, owner, and return type, are erased. For example:
+     * <pre>{@code
+     *     <N extends Number, U> U fun(N, Supplier<U>, U);
+     * }</pre>
+     * erases to
+     * <pre>
+     *     Object fun(Number, Supplier, Object);
+     * </pre>
      */
     JMethodSig getErasure();
 

@@ -128,7 +128,7 @@ public class Date {
  */
 
 /* TODO possibly, the type node for a diamond should have the parameterized
-    type, for now it's a raw type (and untested)
+    type, for now it's a raw type
     See TypesFromAst
 
 import java.util.ArrayList;
@@ -186,8 +186,6 @@ class Scratch {
 
 
 /* TODO qualified anonymous constructor
-    - define hooks on JClassType (isAnonymous/projectAnonymous)
-    - handle this in projectUpwards
 
 class Scratch {
 
@@ -202,4 +200,53 @@ class Scratch {
 
 
 
+ */
+
+/*
+
+In: /home/clifrr/Bureau/jdk13-src/jdk.hotspot.agent/sun/jvm/hotspot/gc/z/ZPageTable.java:74:23
+org.apache.commons.lang3.exception.ContextedRuntimeException: java.lang.ClassCastException: class net.sourceforge.pmd.lang.java.types.SentinelType cannot be cast to class net.sourceforge.pmd.lang.java.types.JClassType (net.sourceforge.pmd.lang.java.types.SentinelType and net.sourceforge.pmd.lang.java.types.JClassType are in unnamed module of loader 'app')
+Exception Context:
+	[1:Resolving type of=[ConstructorCall:74:23]map().new Iterator()]
+---------------------------------
+	at net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode.addContextValue(AbstractJavaTypeNode.java:49)
+	at net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode.getTypeMirror(AbstractJavaTypeNode.java:41)
+	at net.sourceforge.pmd.lang.java.ast.ASTConstructorCall.getTypeMirror(ASTConstructorCall.java:25)
+	at net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule.visit(TypeResTestRule.java:83)
+	at net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule.visit(TypeResTestRule.java:73)
+	at net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit.acceptVisitor(ASTCompilationUnit.java:44)
+	at net.sourceforge.pmd.lang.java.ast.AbstractJavaNode.acceptVisitor(AbstractJavaNode.java:40)
+	at net.sourceforge.pmd.lang.java.ast.JavaNode.jjtAccept(JavaNode.java:34)
+	at net.sourceforge.pmd.lang.java.rule.AbstractJavaRule.apply(AbstractJavaRule.java:67)
+	at net.sourceforge.pmd.lang.rule.internal.RuleApplicator.applyOnIndex(RuleApplicator.java:61)
+	at net.sourceforge.pmd.lang.rule.internal.RuleApplicator.apply(RuleApplicator.java:47)
+	at net.sourceforge.pmd.RuleSets.apply(RuleSets.java:145)
+	at net.sourceforge.pmd.SourceCodeProcessor.processSource(SourceCodeProcessor.java:165)
+	at net.sourceforge.pmd.SourceCodeProcessor.processSourceCodeWithoutCache(SourceCodeProcessor.java:108)
+	at net.sourceforge.pmd.SourceCodeProcessor.processSourceCode(SourceCodeProcessor.java:90)
+	at net.sourceforge.pmd.SourceCodeProcessor.processSourceCode(SourceCodeProcessor.java:52)
+	at net.sourceforge.pmd.processor.PmdRunnable.call(PmdRunnable.java:78)
+	at net.sourceforge.pmd.processor.PmdRunnable.call(PmdRunnable.java:24)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:830)
+Caused by: java.lang.ClassCastException: class net.sourceforge.pmd.lang.java.types.SentinelType cannot be cast to class net.sourceforge.pmd.lang.java.types.JClassType (net.sourceforge.pmd.lang.java.types.SentinelType and net.sourceforge.pmd.lang.java.types.JClassType are in unnamed module of loader 'app')
+	at net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.getNewType(CtorInvocMirror.java:81)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.getVisibleCandidates(CtorInvocMirror.java:64)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.getAccessibleCandidates(CtorInvocMirror.java:76)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.computeCompileTimeDecl(Infer.java:262)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.getCompileTimeDecl(Infer.java:240)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.goToInvocationWithFallback(Infer.java:173)
+	at net.sourceforge.pmd.lang.java.types.internal.infer.Infer.inferInvocationRecursively(Infer.java:162)
+	at net.sourceforge.pmd.lang.java.ast.PolyResolution.inferInvocation(PolyResolution.java:176)
+	at net.sourceforge.pmd.lang.java.ast.PolyResolution.computePolyType(PolyResolution.java:111)
+	at net.sourceforge.pmd.lang.java.ast.LazyTypeResolver.handlePoly(LazyTypeResolver.java:200)
+	at net.sourceforge.pmd.lang.java.ast.LazyTypeResolver.visit(LazyTypeResolver.java:230)
+	at net.sourceforge.pmd.lang.java.ast.LazyTypeResolver.visit(LazyTypeResolver.java:43)
+	at net.sourceforge.pmd.lang.java.ast.ASTConstructorCall.acceptVisitor(ASTConstructorCall.java:38)
+	at net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode.getTypeMirror(AbstractJavaTypeNode.java:37)
+	... 22 more
  */
