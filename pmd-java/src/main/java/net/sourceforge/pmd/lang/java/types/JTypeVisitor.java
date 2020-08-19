@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 
 /**
  * Visits a type. This allows implementing many algorithms simply.
@@ -37,7 +37,7 @@ public interface JTypeVisitor<R, P> {
     }
 
 
-    default R visitInferenceVar(JInferenceVar t, P p) {
+    default R visitInferenceVar(InferenceVar t, P p) {
         return visit(t, p);
     }
 

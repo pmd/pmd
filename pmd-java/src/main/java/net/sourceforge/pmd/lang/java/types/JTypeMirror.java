@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -51,7 +51,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
  * <li>{@linkplain TypeSystem#UNRESOLVED_TYPE The unresolved type}
  * </ul>
  *
- * <p>Lastly, types may be {@linkplain JInferenceVar inference variables},
+ * <p>Lastly, types may be {@linkplain InferenceVar inference variables},
  * which <i>never</i> occur outside of a type inference run and can be ignored
  * when querying the AST.
  */

@@ -36,8 +36,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -88,7 +88,7 @@ public final class TypeOps {
         }
 
         // reorder
-        if (t instanceof JInferenceVar) {
+        if (t instanceof InferenceVar) {
             return t.acceptVisitor(SameTypeVisitor.INFERENCE, s);
         } else {
             return s.acceptVisitor(SameTypeVisitor.INFERENCE, t);
@@ -168,7 +168,7 @@ public final class TypeOps {
         }
 
         @Override
-        public Boolean visitInferenceVar(JInferenceVar t, JTypeMirror s) {
+        public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (!inInference) {
                 return t == s;
             }
@@ -284,7 +284,7 @@ public final class TypeOps {
         }
 
         @Override
-        public Void visitInferenceVar(JInferenceVar t, Set<JTypeMirror> result) {
+        public Void visitInferenceVar(InferenceVar t, Set<JTypeMirror> result) {
             result.add(t);
             return null;
         }
@@ -379,9 +379,9 @@ public final class TypeOps {
             return Subtyping.definitely(!t.isPrimitive());
         }
 
-        if (s instanceof JInferenceVar) {
+        if (s instanceof InferenceVar) {
             // it's possible to add a bound to UNRESOLVED
-            ((JInferenceVar) s).addBound(BoundKind.LOWER, t);
+            ((InferenceVar) s).addBound(BoundKind.LOWER, t);
             return Subtyping.YES;
         } else if (isTypeRange(s)) {
             return isSubtype(t, lowerBoundRec(s), capture);
@@ -403,7 +403,7 @@ public final class TypeOps {
 
     // does not perform side effects on inference vars
     public static Subtyping isSubtypePure(JTypeMirror t, JTypeMirror s) {
-        if (t instanceof JInferenceVar) {
+        if (t instanceof InferenceVar) {
             return Subtyping.definitely(t.equals(s) || s.isTop());
         }
 
@@ -607,7 +607,7 @@ public final class TypeOps {
         }
 
         @Override
-        public Subtyping visitInferenceVar(JInferenceVar t, JTypeMirror s) {
+        public Subtyping visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (s == t.getTypeSystem().NULL_TYPE || s instanceof JPrimitiveType) {
                 return Subtyping.NO;
             }
@@ -1544,7 +1544,7 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Mentions">
 
 
-    public static boolean mentions(@NonNull JTypeVisitable type, @NonNull JInferenceVar parent) {
+    public static boolean mentions(@NonNull JTypeVisitable type, @NonNull InferenceVar parent) {
         return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
     }
 
@@ -1568,7 +1568,7 @@ public final class TypeOps {
         }
 
         @Override
-        public Boolean visitInferenceVar(JInferenceVar t, Collection<? extends JTypeMirror> targets) {
+        public Boolean visitInferenceVar(InferenceVar t, Collection<? extends JTypeMirror> targets) {
             return targets.contains(t);
         }
 

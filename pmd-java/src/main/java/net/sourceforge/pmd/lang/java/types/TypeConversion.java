@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -97,7 +97,7 @@ public final class TypeConversion {
             return true;
         }
 
-        if (t instanceof JInferenceVar || s instanceof JInferenceVar) {
+        if (t instanceof InferenceVar || s instanceof InferenceVar) {
             return t.box().isSubtypeOf(s.box());
         }
 

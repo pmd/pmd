@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -73,11 +73,11 @@ public interface TypeInferenceLogger {
     // ivar events
 
 
-    default void boundAdded(InferenceContext ctx, JInferenceVar var, BoundKind kind, JTypeMirror bound, boolean isSubstitution) { }
+    default void boundAdded(InferenceContext ctx, InferenceVar var, BoundKind kind, JTypeMirror bound, boolean isSubstitution) { }
 
-    default void ivarMerged(InferenceContext ctx, JInferenceVar var, JInferenceVar delegate) { }
+    default void ivarMerged(InferenceContext ctx, InferenceVar var, InferenceVar delegate) { }
 
-    default void ivarInstantiated(InferenceContext ctx, JInferenceVar var, JTypeMirror inst) { }
+    default void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) { }
 
 
     /**
@@ -359,18 +359,18 @@ public interface TypeInferenceLogger {
         }
 
         @Override
-        public void boundAdded(InferenceContext ctx, JInferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+        public void boundAdded(InferenceContext ctx, InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
             String message = isSubstitution ? "Changed bound" : "New bound";
             println(addCtxInfo(ctx, message) + kind.format(ivar, bound));
         }
 
         @Override
-        public void ivarMerged(InferenceContext ctx, JInferenceVar var, JInferenceVar delegate) {
+        public void ivarMerged(InferenceContext ctx, InferenceVar var, InferenceVar delegate) {
             println(addCtxInfo(ctx, "Ivar merged") + var + " -> " + delegate);
         }
 
         @Override
-        public void ivarInstantiated(InferenceContext ctx, JInferenceVar var, JTypeMirror inst) {
+        public void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) {
             println(addCtxInfo(ctx, "Ivar instantiated") + var + " := " + inst);
         }
 

@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * After type inference they should have been erased and hence this
  * type is of no importance outside the implementation of this framework.
  */
-public final class JInferenceVar implements JTypeMirror, SubstVar {
+public final class InferenceVar implements JTypeMirror, SubstVar {
 
     private static final String[] NAMES = {
         "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν",
@@ -39,12 +39,12 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
 
     private final InferenceContext ctx;
     private final JTypeVar tvar;
-    private int id;
+    private final int id;
     private Map<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
     private JTypeMirror inst;
-    private JInferenceVar delegate;
+    private InferenceVar delegate;
 
-    JInferenceVar(InferenceContext ctx, JTypeVar tvar, int id) {
+    InferenceVar(InferenceContext ctx, JTypeVar tvar, int id) {
         this.ctx = ctx;
         this.tvar = tvar;
         this.id = id;
@@ -93,8 +93,8 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
             return;
         }
 
-        if (type instanceof JInferenceVar && ((JInferenceVar) type).getDelegate() != null) {
-            addBound(kind, ((JInferenceVar) type).getDelegate());
+        if (type instanceof InferenceVar && ((InferenceVar) type).getDelegate() != null) {
+            addBound(kind, ((InferenceVar) type).getDelegate());
             return;
         }
 
@@ -103,8 +103,8 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
             return;
         }
 
-        if (type instanceof JInferenceVar) {
-            JInferenceVar var = (JInferenceVar) type;
+        if (type instanceof InferenceVar) {
+            InferenceVar var = (InferenceVar) type;
 
             if (kind == BoundKind.EQ
                 // A <: B && B <: A => A = B
@@ -116,7 +116,7 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
             }
         }
 
-        if (type instanceof JInferenceVar && ((JInferenceVar) type).getDelegate() == this) {
+        if (type instanceof InferenceVar && ((InferenceVar) type).getDelegate() == this) {
 
             Set<JTypeMirror> bounds = this.bounds.get(kind);
             if (bounds == null || bounds.isEmpty()) {
@@ -185,7 +185,7 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
         return tvar.isCaptured();
     }
 
-    JInferenceVar getDelegate() {
+    InferenceVar getDelegate() {
         return delegate;
     }
 
@@ -199,8 +199,8 @@ public final class JInferenceVar implements JTypeMirror, SubstVar {
      * <p>The inference engine subsequently only works on the delegate.
      * Proofs about the delegate are reflected by this ivar.
      */
-    void merge(JInferenceVar candidate) {
-        JInferenceVar realDelegate = candidate.getDelegate() != null ? candidate.getDelegate() : candidate;
+    void merge(InferenceVar candidate) {
+        InferenceVar realDelegate = candidate.getDelegate() != null ? candidate.getDelegate() : candidate;
         if (realDelegate == this) {
             return;
         }

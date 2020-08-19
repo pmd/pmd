@@ -15,9 +15,9 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 class InferenceVarSym implements JTypeDeclSymbol {
 
     private final TypeSystem ts;
-    private final JInferenceVar var;
+    private final InferenceVar var;
 
-    InferenceVarSym(TypeSystem ts, JInferenceVar var) {
+    InferenceVarSym(TypeSystem ts, InferenceVar var) {
         this.ts = ts;
         this.var = var;
     }

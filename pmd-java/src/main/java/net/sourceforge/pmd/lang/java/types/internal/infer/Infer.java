@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -354,7 +354,7 @@ public final class Infer {
     // this is skipped when running without assertions
     private boolean assertReturnIsGround(JMethodSig t) {
         subst(t.getReturnType(), var -> {
-            assert !(var instanceof JInferenceVar) : "Expected a ground type " + t;
+            assert !(var instanceof InferenceVar) : "Expected a ground type " + t;
             return var;
         });
 
@@ -605,8 +605,8 @@ public final class Infer {
 
         return !target.getInferenceContext().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
-            && !(resultType instanceof JInferenceVar    //no eager instantiation is required (as per 18.5.2)
-            && needsEagerInstantiation((JInferenceVar) resultType, target.getExpectedType(), inferenceContext));
+            && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
+            && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
     }
 
     /**
@@ -652,8 +652,8 @@ public final class Infer {
             actualRes = ts.OBJECT;
         }
 
-        if (mapped instanceof JInferenceVar) {
-            JInferenceVar retVar = (JInferenceVar) mapped;
+        if (mapped instanceof InferenceVar) {
+            InferenceVar retVar = (InferenceVar) mapped;
             if (needsEagerInstantiation(retVar, actualRes, infCtx)) {
                 infCtx.solve(retVar);
                 infCtx.callListeners();
@@ -683,7 +683,7 @@ public final class Infer {
      * @param t      Target type of the invocation
      * @param infCtx Inference context
      */
-    private boolean needsEagerInstantiation(JInferenceVar alpha, JTypeMirror t, InferenceContext infCtx) {
+    private boolean needsEagerInstantiation(InferenceVar alpha, JTypeMirror t, InferenceContext infCtx) {
         if (t == null) {
             return false;
         }

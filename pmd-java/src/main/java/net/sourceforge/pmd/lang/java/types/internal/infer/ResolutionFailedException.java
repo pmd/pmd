@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
  * Carrier for {@link ResolutionFailure}. Throwing an exception is the
@@ -52,7 +52,7 @@ final class ResolutionFailedException extends RuntimeException {
     // If the logger is noop we don't even create the failure.
     // These failures are extremely frequent (and normal), and type pretty-printing is expensive
 
-    static ResolutionFailedException incompatibleBound(TypeInferenceLogger logger, JInferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
+    static ResolutionFailedException incompatibleBound(TypeInferenceLogger logger, InferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
         // in javac it's "no instance of type variables exist ..."
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
             null,

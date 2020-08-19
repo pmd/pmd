@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.Ch
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateAllBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.SubstituteInst;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
 
 /**
@@ -47,10 +47,10 @@ final class InferenceContext {
     private static int varId = 0;
     private static int ctxId = 0;
 
-    private final Map<InstantiationListener, Set<JInferenceVar>> instantiationListeners = new HashMap<>();
+    private final Map<InstantiationListener, Set<InferenceVar>> instantiationListeners = new HashMap<>();
 
-    private final Set<JInferenceVar> freeVars = new LinkedHashSet<>();
-    private final Set<JInferenceVar> inferenceVars = new LinkedHashSet<>();
+    private final Set<InferenceVar> freeVars = new LinkedHashSet<>();
+    private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
     final TypeInferenceLogger logger;
@@ -76,7 +76,7 @@ final class InferenceContext {
             addVarImpl(p);
         }
 
-        for (JInferenceVar ivar : inferenceVars) {
+        for (InferenceVar ivar : inferenceVars) {
             addPrimaryBound(ivar);
         }
     }
@@ -85,7 +85,7 @@ final class InferenceContext {
         return id;
     }
 
-    private void addPrimaryBound(JInferenceVar ivar) {
+    private void addPrimaryBound(InferenceVar ivar) {
         for (JTypeMirror ui : asList(ivar.getBaseVar().getUpperBound())) {
             ivar.addBound(BoundKind.UPPER, mapToIVars(ui));
         }
@@ -93,18 +93,18 @@ final class InferenceContext {
 
     /** Add a variable to this context. */
     void addVar(JTypeVar tvar) {
-        JInferenceVar ivar = addVarImpl(tvar);
+        InferenceVar ivar = addVarImpl(tvar);
         addPrimaryBound(ivar);
 
-        for (JInferenceVar otherIvar : inferenceVars) {
+        for (InferenceVar otherIvar : inferenceVars) {
             // remove remaining occurrences of type params
             otherIvar.substBounds(this::mapToIVars);
         }
     }
 
     /** Add a variable to this context. */
-    private JInferenceVar addVarImpl(JTypeVar tvar) {
-        JInferenceVar ivar = new JInferenceVar(this, tvar, varId++);
+    private InferenceVar addVarImpl(JTypeVar tvar) {
+        InferenceVar ivar = new InferenceVar(this, tvar, varId++);
         freeVars.add(ivar);
         inferenceVars.add(ivar);
         mapping = mapping.plus(tvar, ivar);
@@ -147,9 +147,9 @@ final class InferenceContext {
         return true;
     }
 
-    Set<JInferenceVar> freeVarsIn(Iterable<? extends JTypeVisitable> types) {
-        Set<JInferenceVar> vars = new LinkedHashSet<>();
-        for (JInferenceVar ivar : freeVars) {
+    Set<InferenceVar> freeVarsIn(Iterable<? extends JTypeVisitable> types) {
+        Set<InferenceVar> vars = new LinkedHashSet<>();
+        for (InferenceVar ivar : freeVars) {
             for (JTypeVisitable t : types) {
                 if (TypeOps.mentions(t, ivar)) {
                     vars.add(ivar);
@@ -159,7 +159,7 @@ final class InferenceContext {
         return vars;
     }
 
-    Set<JInferenceVar> freeVarsIn(JTypeVisitable t) {
+    Set<InferenceVar> freeVarsIn(JTypeVisitable t) {
         return freeVarsIn(Collections.singleton(t));
     }
 
@@ -183,8 +183,8 @@ final class InferenceContext {
 
 
     private static JTypeMirror groundSubst(SubstVar var) {
-        if (var instanceof JInferenceVar) {
-            JTypeMirror inst = ((JInferenceVar) var).getInst();
+        if (var instanceof InferenceVar) {
+            JTypeMirror inst = ((InferenceVar) var).getInst();
             if (inst != null) {
                 return inst;
             }
@@ -198,10 +198,10 @@ final class InferenceContext {
      */
     static JMethodSig finalGround(JMethodSig t) {
         return t.subst(s -> {
-            if (!(s instanceof JInferenceVar)) {
+            if (!(s instanceof InferenceVar)) {
                 return s;
             } else {
-                JInferenceVar ivar = (JInferenceVar) s;
+                InferenceVar ivar = (InferenceVar) s;
                 return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR_TYPE;
             }
         });
@@ -219,14 +219,14 @@ final class InferenceContext {
         this.parent = that;
 
         // propagate existing bounds into the new context
-        for (JInferenceVar freeVar : this.freeVars) {
+        for (InferenceVar freeVar : this.freeVars) {
             that.incorporationActions.add(new PropagateAllBounds(freeVar));
         }
     }
 
 
     void addInstantiationListener(Set<? extends JTypeMirror> relevantTypes, InstantiationListener listener) {
-        Set<JInferenceVar> free = freeVarsIn(relevantTypes);
+        Set<InferenceVar> free = freeVarsIn(relevantTypes);
         if (free.isEmpty()) {
             listener.onInstantiation(this);
             return;
@@ -241,11 +241,11 @@ final class InferenceContext {
      * formal parameter is not ground.
      */
     void callListeners() {
-        Set<JInferenceVar> solved = new LinkedHashSet<>(inferenceVars);
+        Set<InferenceVar> solved = new LinkedHashSet<>(inferenceVars);
         solved.removeAll(freeVars);
 
 
-        for (Entry<InstantiationListener, Set<JInferenceVar>> entry : new LinkedHashSet<>(instantiationListeners.entrySet())) {
+        for (Entry<InstantiationListener, Set<InferenceVar>> entry : new LinkedHashSet<>(instantiationListeners.entrySet())) {
             if (solved.containsAll(entry.getValue())) {
                 try {
                     entry.getKey().onInstantiation(this);
@@ -265,11 +265,11 @@ final class InferenceContext {
         }
     }
 
-    Set<JInferenceVar> getFreeVars() {
+    Set<InferenceVar> getFreeVars() {
         return Collections.unmodifiableSet(freeVars);
     }
 
-    private void onVarInstantiated(JInferenceVar ivar) {
+    private void onVarInstantiated(InferenceVar ivar) {
         if (parent != null) {
             parent.onVarInstantiated(ivar);
             return;
@@ -287,7 +287,7 @@ final class InferenceContext {
     }
 
 
-    void onBoundAdded(JInferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
         if (ivar.getDelegate() != null) {
             return;
         }
@@ -306,7 +306,7 @@ final class InferenceContext {
         }
     }
 
-    void onIvarMerged(JInferenceVar prev, JInferenceVar delegate) {
+    void onIvarMerged(InferenceVar prev, InferenceVar delegate) {
         if (parent != null) {
             parent.onIvarMerged(prev, delegate);
             return;
@@ -349,7 +349,7 @@ final class InferenceContext {
         solve(new GraphWalk(this));
     }
 
-    void solve(JInferenceVar var) {
+    void solve(InferenceVar var) {
         solve(new GraphWalk(var));
     }
 
@@ -358,7 +358,7 @@ final class InferenceContext {
 
         while (walker.hasNext()) {
 
-            Set<JInferenceVar> varsToSolve = walker.next();
+            Set<InferenceVar> varsToSolve = walker.next();
 
             boolean progress = true;
             //repeat until all variables are solved
@@ -377,9 +377,9 @@ final class InferenceContext {
      * Tries to solve as much of varsToSolve as possible using some reduction steps.
      * Returns the set of solved variables during this step.
      */
-    private Set<JInferenceVar> solveBasic(Set<JInferenceVar> varsToSolve) {
-        Set<JInferenceVar> solvedVars = new LinkedHashSet<>();
-        for (JInferenceVar ivar : intersect(varsToSolve, freeVars)) {
+    private Set<InferenceVar> solveBasic(Set<InferenceVar> varsToSolve) {
+        Set<InferenceVar> solvedVars = new LinkedHashSet<>();
+        for (InferenceVar ivar : intersect(varsToSolve, freeVars)) {
             for (ReductionStep step : ReductionStep.WAVES) {
                 if (step.accepts(ivar, this)) {
                     ivar.setInst(step.solve(ivar, this));
@@ -399,7 +399,7 @@ final class InferenceContext {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Inference context " + getId()).append('\n');
-        for (JInferenceVar ivar : inferenceVars) {
+        for (InferenceVar ivar : inferenceVars) {
             sb.append(ivar);
             if (ivar.getInst() != null) {
                 sb.append(" := ").append(ivar.getInst()).append('\n');

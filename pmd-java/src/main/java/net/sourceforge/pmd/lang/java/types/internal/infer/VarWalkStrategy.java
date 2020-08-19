@@ -11,20 +11,20 @@ import java.util.Set;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.UniqueGraph;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.Vertex;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
  * Strategy to walk the set of remaining free variables. Interdependent
  * variables must be solved together.
  */
-interface VarWalkStrategy extends Iterator<Set<JInferenceVar>> {
+interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
 
     /**
      * Picks the next batch of inference vars to resolve.
      * Interdependent variables must be solved together.
      */
     @Override
-    Set<JInferenceVar> next();
+    Set<InferenceVar> next();
 
 
     /**
@@ -40,13 +40,13 @@ interface VarWalkStrategy extends Iterator<Set<JInferenceVar>> {
      */
     class GraphWalk implements VarWalkStrategy {
 
-        private final Iterator<Set<JInferenceVar>> iterator;
+        private final Iterator<Set<InferenceVar>> iterator;
 
         GraphWalk(InferenceContext infCtx) {
             this.iterator = buildGraphIterator(infCtx);
         }
 
-        GraphWalk(JInferenceVar var) {
+        GraphWalk(InferenceVar var) {
             this.iterator = IteratorUtil.singletonIterator(Collections.singleton(var));
         }
 
@@ -56,13 +56,13 @@ interface VarWalkStrategy extends Iterator<Set<JInferenceVar>> {
         }
 
         @Override
-        public Set<JInferenceVar> next() {
+        public Set<InferenceVar> next() {
             return iterator.next();
         }
 
-        Iterator<Set<JInferenceVar>> buildGraphIterator(InferenceContext ctx) {
+        Iterator<Set<InferenceVar>> buildGraphIterator(InferenceContext ctx) {
 
-            Set<JInferenceVar> freeVars = ctx.getFreeVars();
+            Set<InferenceVar> freeVars = ctx.getFreeVars();
             if (freeVars.size() == 1) {
                 // common case
                 return IteratorUtil.singletonIterator(freeVars);
@@ -71,17 +71,17 @@ interface VarWalkStrategy extends Iterator<Set<JInferenceVar>> {
             // Builds a graph representing the dependencies
             // between free ivars in the context.
 
-            Graph<JInferenceVar> graph = new UniqueGraph<>();
+            Graph<InferenceVar> graph = new UniqueGraph<>();
 
-            for (JInferenceVar ivar : freeVars) {
-                Vertex<JInferenceVar> vertex = graph.addLeaf(ivar);
-                Set<JInferenceVar> dependencies = ctx.freeVarsIn(ivar.getBounds(BoundKind.ALL));
-                for (JInferenceVar dep : dependencies) {
-                    Vertex<JInferenceVar> target = graph.addLeaf(dep);
+            for (InferenceVar ivar : freeVars) {
+                Vertex<InferenceVar> vertex = graph.addLeaf(ivar);
+                Set<InferenceVar> dependencies = ctx.freeVarsIn(ivar.getBounds(BoundKind.ALL));
+                for (InferenceVar dep : dependencies) {
+                    Vertex<InferenceVar> target = graph.addLeaf(dep);
                     graph.addEdge(vertex, target);
                 }
                 if (ivar.getDelegate() != null) {
-                    Vertex<JInferenceVar> target = graph.addLeaf(ivar.getDelegate());
+                    Vertex<InferenceVar> target = graph.addLeaf(ivar.getDelegate());
                     graph.addEdge(vertex, target);
                 }
             }

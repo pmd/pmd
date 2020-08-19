@@ -12,7 +12,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -26,7 +26,7 @@ enum ReductionStep {
      */
     EQ(BoundKind.EQ) {
         @Override
-        JTypeMirror solve(JInferenceVar uv, InferenceContext inferenceContext) {
+        JTypeMirror solve(InferenceVar uv, InferenceContext inferenceContext) {
             return filterBounds(uv, inferenceContext).get(0);
         }
     },
@@ -37,7 +37,7 @@ enum ReductionStep {
      */
     LOWER(BoundKind.LOWER) {
         @Override
-        JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
+        JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
             return infCtx.ts.lub(filterBounds(uv, infCtx));
         }
     },
@@ -48,7 +48,7 @@ enum ReductionStep {
      */
     UPPER(BoundKind.UPPER) {
         @Override
-        JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
+        JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
             return infCtx.ts.glb(filterBounds(uv, infCtx));
         }
     },
@@ -58,14 +58,14 @@ enum ReductionStep {
      */
     CAPTURED(BoundKind.UPPER) {
         @Override
-        public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
+        public boolean accepts(InferenceVar t, InferenceContext inferenceContext) {
             return t.isCaptured()
                 && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
                 && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
         }
 
         @Override
-        JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
+        JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
             JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty()
                                 ? UPPER.solve(uv, infCtx)
                                 : infCtx.ts.OBJECT;
@@ -91,14 +91,14 @@ enum ReductionStep {
     FBOUND(BoundKind.UPPER) {
 
         @Override
-        public boolean accepts(JInferenceVar t, InferenceContext inferenceContext) {
+        public boolean accepts(InferenceVar t, InferenceContext inferenceContext) {
             Set<JTypeMirror> ubounds = t.getBounds(BoundKind.UPPER);
-            Set<JInferenceVar> freeVars = inferenceContext.freeVarsIn(ubounds);
+            Set<InferenceVar> freeVars = inferenceContext.freeVarsIn(ubounds);
             return CollectionUtil.asSingle(freeVars) == t; // contains only itself in its upper bounds
         }
 
         @Override
-        JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx) {
+        JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
             return infCtx.ts.glb(TypeOps.erase(uv.getBounds(BoundKind.UPPER)));
         }
     };
@@ -121,12 +121,12 @@ enum ReductionStep {
      * Find an instantiated type for a given inference variable within
      * a given inference context
      */
-    abstract JTypeMirror solve(JInferenceVar uv, InferenceContext infCtx);
+    abstract JTypeMirror solve(InferenceVar uv, InferenceContext infCtx);
 
     /**
      * Can the inference variable be instantiated using this step?
      */
-    public boolean accepts(JInferenceVar t, InferenceContext infCtx) {
+    public boolean accepts(InferenceVar t, InferenceContext infCtx) {
         return !t.isCaptured() && !filterBounds(t, infCtx).isEmpty();
     }
 
@@ -137,7 +137,7 @@ enum ReductionStep {
     /**
      * Return the subset of ground bounds in a given bound set (i.e. eq/lower/upper)
      */
-    List<JTypeMirror> filterBounds(JInferenceVar ivar, InferenceContext infCtx) {
+    List<JTypeMirror> filterBounds(InferenceVar ivar, InferenceContext infCtx) {
         List<JTypeMirror> res = new ArrayList<>();
 
         for (JTypeMirror bound : ivar.getBounds(kind)) {

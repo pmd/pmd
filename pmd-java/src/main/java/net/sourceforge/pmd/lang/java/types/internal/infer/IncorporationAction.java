@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
  * An action to execute during the incorporation phase.
@@ -26,14 +26,14 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKin
  */
 abstract class IncorporationAction {
 
-    final JInferenceVar ivar;
+    final InferenceVar ivar;
     final boolean doApplyToInstVar;
 
-    IncorporationAction(JInferenceVar ivar) {
+    IncorporationAction(InferenceVar ivar) {
         this(ivar, false);
     }
 
-    IncorporationAction(JInferenceVar ivar, boolean doApplyToInstVar) {
+    IncorporationAction(InferenceVar ivar, boolean doApplyToInstVar) {
         this.ivar = ivar;
         this.doApplyToInstVar = doApplyToInstVar;
     }
@@ -63,7 +63,7 @@ abstract class IncorporationAction {
         private final BoundKind myKind;
         private final JTypeMirror myBound;
 
-        CheckBound(JInferenceVar ivar, BoundKind kind, JTypeMirror bound) {
+        CheckBound(InferenceVar ivar, BoundKind kind, JTypeMirror bound) {
             super(ivar);
             myKind = kind;
             this.myBound = bound;
@@ -138,7 +138,7 @@ abstract class IncorporationAction {
         }
 
         private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
-            if (t instanceof JInferenceVar) {
+            if (t instanceof InferenceVar) {
                 return null; // don't cache inference vars
             } else if (t instanceof JTypeVar) {
                 JTypeVar tvar = (JTypeVar) t;
@@ -167,7 +167,7 @@ abstract class IncorporationAction {
 
         private final JTypeMirror inst;
 
-        SubstituteInst(JInferenceVar ivar, JTypeMirror inst) {
+        SubstituteInst(InferenceVar ivar, JTypeMirror inst) {
             super(ivar, true);
             this.inst = inst;
         }
@@ -175,7 +175,7 @@ abstract class IncorporationAction {
         @Override
         public void apply(InferenceContext ctx) {
             if (inst != null) {
-                for (JInferenceVar freeVar : ctx.getFreeVars()) {
+                for (InferenceVar freeVar : ctx.getFreeVars()) {
                     freeVar.substBounds(it -> isInstanceOfThisVar(it) ? inst : it);
                 }
                 // check instantiation is compatible
@@ -185,7 +185,7 @@ abstract class IncorporationAction {
 
         private boolean isInstanceOfThisVar(JTypeMirror it) {
             return it == ivar // NOPMD CompareObjectsWithEquals
-                || it instanceof JInferenceVar && ((JInferenceVar) it).getDelegate() == ivar;
+                || it instanceof InferenceVar && ((InferenceVar) it).getDelegate() == ivar;
         }
 
         @Override
@@ -197,7 +197,7 @@ abstract class IncorporationAction {
     /** Propagate all bounds of an ivar. */
     static class PropagateAllBounds extends IncorporationAction {
 
-        PropagateAllBounds(JInferenceVar ivar) {
+        PropagateAllBounds(InferenceVar ivar) {
             super(ivar);
         }
 
@@ -227,7 +227,7 @@ abstract class IncorporationAction {
         private final BoundKind kind;
         private final JTypeMirror bound;
 
-        PropagateBounds(JInferenceVar ivar, BoundKind kind, JTypeMirror bound) {
+        PropagateBounds(InferenceVar ivar, BoundKind kind, JTypeMirror bound) {
             super(ivar);
             this.kind = kind;
             this.bound = bound;
@@ -235,11 +235,11 @@ abstract class IncorporationAction {
 
         @Override
         public void apply(InferenceContext ctx) {
-            JInferenceVar alpha = ivar;
+            InferenceVar alpha = ivar;
 
             // beta = alpha, merge beta into alpha
-            if (kind == BoundKind.EQ && bound instanceof JInferenceVar) {
-                ((JInferenceVar) bound).merge(alpha);
+            if (kind == BoundKind.EQ && bound instanceof InferenceVar) {
+                ((InferenceVar) bound).merge(alpha);
                 return;
             }
 
@@ -252,15 +252,15 @@ abstract class IncorporationAction {
             // it's symmetric for upper bounds
             for (BoundKind k : kind.complementSet(false)) {
                 for (JTypeMirror b : alpha.getBounds(k)) {
-                    if (b instanceof JInferenceVar) {
-                        JInferenceVar beta = (JInferenceVar) b;
+                    if (b instanceof InferenceVar) {
+                        InferenceVar beta = (InferenceVar) b;
                         beta.addBound(kind, ctx.ground(bound));
                     }
                 }
             }
 
-            if (bound instanceof JInferenceVar) {
-                JInferenceVar beta = (JInferenceVar) bound;
+            if (bound instanceof InferenceVar) {
+                InferenceVar beta = (InferenceVar) bound;
                 // symmetric propagation
                 // Eg propagates alpha <: beta to beta >: alpha
                 beta.addBound(kind.complement(), alpha);

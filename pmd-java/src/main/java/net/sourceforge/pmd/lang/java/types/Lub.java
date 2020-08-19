@@ -27,7 +27,7 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.pcollections.PStack;
 
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -437,7 +437,7 @@ final class Lub {
 
     static boolean isExclusiveIntersectionBound(JTypeMirror ci) {
         return !ci.isInterface()
-            && !(ci instanceof JInferenceVar)
+            && !(ci instanceof InferenceVar)
             && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
     }
 

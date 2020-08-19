@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.JInferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 final class ExprCheckHelper {
 
@@ -150,8 +150,8 @@ final class ExprCheckHelper {
     }
 
     private @Nullable JClassType getFunTypeOrDefer(JTypeMirror targetType, ExprMirror expr) {
-        if (targetType instanceof JInferenceVar) {
-            JClassType earlyBound = TypeOps.asClassType(ts.glb(((JInferenceVar) targetType).getBounds(BoundKind.UPPER)));
+        if (targetType instanceof InferenceVar) {
+            JClassType earlyBound = TypeOps.asClassType(ts.glb(((InferenceVar) targetType).getBounds(BoundKind.UPPER)));
             if (earlyBound == null) {
                 infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
                 return null;
