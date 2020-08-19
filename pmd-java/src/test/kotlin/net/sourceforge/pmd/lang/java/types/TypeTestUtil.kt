@@ -58,7 +58,7 @@ infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror)  {
 
 infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
     if (this == null)
-        fail("Expected some instantiation of $m")
+        fail("Got null, expected some instantiation of $m")
 
     this::getSymbol shouldBe m.symbol
     this::getArity shouldBe m.arity

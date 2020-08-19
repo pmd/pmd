@@ -334,11 +334,12 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
 
-    parserTest("Test method ref with this as LHS") {
+    parserTest("f:Test method ref with this as LHS") {
 
+        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            
+
             package scratch;
 
             import static java.util.stream.Collectors.joining;
@@ -347,34 +348,23 @@ class MethodRefInferenceTest : ProcessorTestSpec({
             import java.util.Deque;
 
             class Archive {
-                
-                private String getName() {
-                    return "foo";
-                }
 
-                private String toInversePath(Deque<Archive> path) { return null; }
+                private String getName() { return "foo"; }
 
-                private Comparator<Deque<Archive>> comparator() {
-                    return Comparator.<Deque<Archive>, String>
-                        comparing(deque -> deque.peekFirst().getName())
-                        .thenComparingInt(Deque::size)
-                        .thenComparing(this::toInversePath);            // <-- we test this one
+                private Comparator<Archive> comparator() {
+                    return Comparator.comparing(this::getName); // this should fail
                 }
 
             }
         """.trimIndent())
 
         val t_Archive = acu.firstEnclosingType()
-
-        val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
+        val getName = acu.methodDeclarations().first { it.name == "getName" }!!.sig
+        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
         spy.shouldBeOk {
-            mref.functionalMethod.shouldMatchMethod(
-                    named = "apply",
-                    declaredIn = gen.t_Function[java.util.Deque::class[t_Archive], gen.t_String],
-                    withFormals = listOf(java.util.Deque::class[t_Archive]),
-                    returning = gen.t_String
-            )
+            mref.referencedMethod shouldBeSomeInstantiationOf getName
+            mref shouldHaveType gen.t_Function[t_Archive, gen.t_String]
         }
     }
 

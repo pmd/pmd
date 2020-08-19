@@ -316,4 +316,53 @@ class Scratch<N extends Number> {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
         }
     }
+
+
+
+    parserTest("Test specificity for functional interface") {
+
+        // todo refactor test to not depend on Comparator
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            
+            package scratch;
+
+            import static java.util.stream.Collectors.joining;
+
+            import java.util.Comparator;
+            import java.util.Deque;
+
+            class Archive {
+                
+                private String getName() {
+                    return "foo";
+                }
+
+                private String toInversePath(Deque<Archive> path) { return null; }
+
+                private Comparator<Deque<Archive>> comparator() {
+                    return Comparator.<Deque<Archive>, String>
+                        comparing(deque -> deque.peekFirst().getName())
+                        .thenComparingInt(Deque::size)
+                        .thenComparing(this::toInversePath);        // TODO both Comparator and Function are functional interfaces
+                }
+
+            }
+        """.trimIndent())
+
+        val t_Archive = acu.firstEnclosingType()
+
+        val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
+
+        spy.shouldBeOk {
+            mref.functionalMethod.shouldMatchMethod(
+                    named = "apply",
+                    declaredIn = gen.t_Function[java.util.Deque::class[t_Archive], gen.t_String],
+                    withFormals = listOf(java.util.Deque::class[t_Archive]),
+                    returning = gen.t_String
+            )
+        }
+    }
+
 })
