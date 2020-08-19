@@ -375,7 +375,7 @@ public final class TypeOps {
         if (t == s) {
             Objects.requireNonNull(t);
             return Subtyping.YES;
-        } else if (s == t.getTypeSystem().OBJECT) {
+        } else if (s.isTop()) {
             return Subtyping.definitely(!t.isPrimitive());
         }
 
@@ -384,7 +384,10 @@ public final class TypeOps {
             ((InferenceVar) s).addBound(BoundKind.LOWER, t);
             return Subtyping.YES;
         } else if (isTypeRange(s)) {
-            return isSubtype(t, lowerBoundRec(s), capture);
+            JTypeMirror lower = lowerBoundRec(s);
+            if (lower != t.getTypeSystem().NULL_TYPE) {
+                return isSubtype(t, lower, capture);
+            }
         } else if (isSpecialUnresolved(t)) {
             // error type or unresolved type
             return Subtyping.YES;
@@ -393,6 +396,11 @@ public final class TypeOps {
             // subtypes of anything. This allows them to pass bound
             // checks on type variables.
             return Subtyping.definitely(s instanceof JClassType); // excludes array or so
+        } else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
+            // If S is an intersection, then T must conform to *all* bounds of S
+            // Symmetrically, if T is an intersection, T <: S requires only that
+            // at least one bound of T is a subtype of S.
+            return Subtyping.subtypesAll(t, asList(s));
         }
 
         if (capture) {
@@ -491,16 +499,16 @@ public final class TypeOps {
         }
     }
 
-    private static JTypeMirror upperBound(JTypeMirror type) {
+    private static JTypeMirror wildUpperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return upperBound(((JWildcardType) type).asUpperBound());
+            return wildUpperBound(((JWildcardType) type).asUpperBound());
         }
         return type;
     }
 
-    private static JTypeMirror lowerBound(JTypeMirror type) {
+    private static JTypeMirror wildLowerBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return lowerBound(((JWildcardType) type).asLowerBound());
+            return wildLowerBound(((JWildcardType) type).asLowerBound());
         }
         return type;
     }
@@ -567,11 +575,11 @@ public final class TypeOps {
         if (t instanceof JWildcardType) {
             JWildcardType tw = (JWildcardType) t;
             if (tw.isUpperBound()) {
-                //  U(S) <: U(T), L(T) is bottom
-                return isSubtype(upperBound(s), tw.asUpperBound());
+                //  U(S) <: U(T),  we already know L(T) <: L(S), because L(T) is bottom
+                return isSubtype(wildUpperBound(s), tw.asUpperBound());
             } else {
-                // L(T) <: L(S), U(T) is top
-                return isSubtype(tw.asLowerBound(), lowerBound(s));
+                // L(T) <: L(S), we already know U(S) <: U(T), because U(T) is top
+                return isSubtype(tw.asLowerBound(), wildLowerBound(s));
             }
         }
 
@@ -624,17 +632,6 @@ public final class TypeOps {
 
         @Override
         public Subtyping visitClass(JClassType t, JTypeMirror s) {
-            if (s == t.getTypeSystem().OBJECT) {
-                return Subtyping.YES;
-            }
-
-            if (s instanceof JIntersectionType) {
-                // If S is an intersection, then T must conform to *all* bounds of S
-                // Symmetrically, if T is an intersection, T <: S requires only that
-                // at least one bound of T is a subtype of S.
-                return Subtyping.subtypesAll(t, asList(s));
-            }
-
             if (!(s instanceof JClassType)) {
                 // note, that this ignores wildcard types,
                 // because they're only compared through

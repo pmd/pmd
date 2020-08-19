@@ -14,6 +14,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.properties.forNone
 import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
+import io.kotest.property.arbitrary.pair
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
@@ -211,14 +212,9 @@ class SubtypingTest : FunSpec({
 
             test("Test wildcard subtyping (property-based)") {
 
-                checkAll(ts.refTypeGen, ts.refTypeGen) { t, s ->
-                    if (t.isSubtypeOf(s, false)) {
-                        t_List[t] shouldBeSubtypeOf t_List[`?` extends s]
-                        t_List[t] shouldBeSubtypeOf t_List[`?` `super` s]
-                    } else if (!s.isSubtypeOf(t, false)) {
-                        t_List[t] shouldNotBeSubtypeOf t_List[`?` extends s]
-                        t_List[t] shouldNotBeSubtypeOf t_List[`?` `super` s]
-                    }
+                checkAll(ts.subtypesArb(false)) { (t, s) ->
+                    t_List[t] shouldBeSubtypeOf t_List[`?` extends s]
+                    t_List[s] shouldBeSubtypeOf t_List[`?` `super` t]
                 }
             }
 
@@ -295,6 +291,16 @@ class SubtypingTest : FunSpec({
                         capture(t_List[`?` `super` t]) shouldSubtypeNoCapture t_List[`?` `super` t]
                         t_List[`?` `super` t] shouldNotSubtypeNoCapture capture(t_List[`?` `super` t])
                     }
+                }
+
+            }
+
+            test("Captured subtyping wild vs wild") {
+
+                checkAll(ts.subtypesArb(unchecked = false)) { (t, s) ->
+                    println("$t <: $s")
+
+                    capture(t_List[`?` extends t]) shouldSubtypeNoCapture t_List[`?` extends s]
                 }
 
             }

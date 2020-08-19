@@ -11,15 +11,16 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.*
-import io.kotest.property.forAll as ktForAll
+import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.pair
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.TestClassesGen
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
 import kotlin.String
 import kotlin.reflect.KClass
@@ -118,6 +119,12 @@ val TypeSystem.primitiveGen get() = PrimitiveTypeGen(this)
 val TypeSystem.refTypeGen get() = RefTypeGen(this)
 val TypeSystem.allTypesGen get() = AllTypesGen(this)
 
+fun TypeSystem.subtypesArb(unchecked: Boolean = false) =
+        Arb.pair(refTypeGen, refTypeGen)
+                .filter { (t, s) ->
+                    t.isSubtypeOf(s, unchecked)
+                }
+
 infix fun Boolean.implies(v: () -> Boolean): Boolean = !this || v()
 
 class PrimitiveTypeGen(val ts: TypeSystem) : Exhaustive<JPrimitiveType>() {
@@ -201,27 +208,28 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
 
     val t_EnumSet: JClassType get() = java.util.EnumSet::class.raw
 
-    override fun edgecases(): List<JTypeMirror> = listOf(testTypeSystem.OBJECT, testTypeSystem.STRING)
+    override fun edgecases(): List<JTypeMirror> =
+            listOf(ts.OBJECT,
+                    // we exclude the null type because it's not ok as an array component
+                    ts.SERIALIZABLE,
+                    ts.CLONEABLE)
 
-    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> =
-            pool.shuffled(rs.random).asSequence().map { Sample(it, shrinks = TypeShrinker.rtree(it)) }
+    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> {
+        val testClasses: List<JTypeMirror> = TestClassesGen.map { ts.typeOf(ts.getClassSymbol(it)!!, true) }.values(rs).map { it.value }.toList()
+        val fullPool = pool.plus(testClasses).shuffled(rs.random)
+        val withParameterized = fullPool.flatMap {
+            if (it is JClassType && it.isRaw) {
+                val numparams= it.formalTypeParams.size
+                List(numparams) { fullPool.random(rs.random)} + it
+            }
+            listOf(it)
+        }
 
-    object TypeShrinker : Shrinker<JTypeMirror> {
-
-        override fun shrink(t: JTypeMirror): List<JTypeMirror> =
-                when (t) {
-                    is JArrayType -> listOf(t.componentType)
-                    is JClassType -> SuperTypesEnumerator.ALL_STRICT_SUPERTYPES.iterable(t).toList()
-                    is JIntersectionType -> t.components
-                    else                 -> emptyList()
-                }
-
+        return withParameterized.shuffled(rs.random).asSequence().map { Sample(it) }
     }
 
-
-    private val pool = listOf(
+    private val pool: List<JTypeMirror> = listOf(
             `t_List{String}`,
-            `t_Enum{E}`,
             t_Enum,
             t_JPrimitiveType,
             `t_Enum{JPrimitiveType}`,
@@ -229,10 +237,15 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
             `t_List{? extends Number}`,
             `t_List{?}`,
             t_ArrayList,
+            `t_ArrayList{Integer}`,
+            t_String,
+            t_CharSequence,
+            t_StringBuilder,
             t_MapEntry,
             `t_Array{Object}`
-
-    )
+    ).flatMap {
+        it.superTypeSet.toList() + it + it.erasure + it.toArray()
+    }
 
 }
 
