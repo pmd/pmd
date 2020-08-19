@@ -371,9 +371,14 @@ public final class TypeOps {
             // it's possible to add a bound to UNRESOLVED
             ((JInferenceVar) s).addBound(BoundKind.LOWER, t);
             return Subtyping.YES;
-        } else if (t == t.getTypeSystem().ERROR_TYPE) {
-            // don't check both, because subtyping must be asymmetric
+        } else if (isSpecialUnresolved(t)) {
+            // error type or unresolved type
             return Subtyping.YES;
+        } else if (hasUnresolvedSymbol(t)) {
+            // This also considers types with an unresolved symbol
+            // subtypes of anything. This allows them to pass bound
+            // checks on type variables.
+            return Subtyping.definitely(s instanceof JClassType); // excludes array or so
         }
 
         return capture(t).acceptVisitor(SubtypeVisitor.INSTANCE, s);
@@ -1729,8 +1734,12 @@ public final class TypeOps {
      * @throws NullPointerException if the parameter is null
      */
     public static boolean isUnresolved(@NonNull JTypeMirror t) {
+        return isSpecialUnresolved(t) || hasUnresolvedSymbol(t);
+    }
+
+    public static boolean isSpecialUnresolved(@NonNull JTypeMirror t) {
         TypeSystem ts = t.getTypeSystem();
-        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE || hasUnresolvedSymbol(t);
+        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE;
     }
 
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {

@@ -13,6 +13,7 @@ import io.kotest.inspectors.forNone
 import io.kotest.matchers.shouldBe
 import io.kotest.properties.forNone
 import io.kotest.property.Exhaustive
+import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -238,6 +239,22 @@ class SubtypingTest : FunSpec({
             test("Unresolved type is compatible with anything") {
                 forAll(ts.allTypesGen) {
                     ts.UNRESOLVED_TYPE.isSubtypeOf(it)
+                }
+            }
+
+            test("Unresolved symbol is compatible with any class/interface") {
+                val t = ts.declaration(ts.symbols().makeUnresolvedReference("obj.foo", 0))
+                        .shouldBeUnresolvedClass("obj.foo")
+
+                checkAll(ts.primitiveGen) { s ->
+                    t shouldNotBeSubtypeOf s
+                }
+
+                checkAll(ts.refTypeGen) { s ->
+                    if (s.isArray)
+                        t shouldNotBeSubtypeOf s
+                    else
+                        t shouldBeSubtypeOf s
                 }
             }
         }

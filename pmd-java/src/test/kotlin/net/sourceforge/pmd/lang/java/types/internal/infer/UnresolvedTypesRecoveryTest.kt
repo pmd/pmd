@@ -9,6 +9,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldContainIgnoringCase
+import io.kotest.matchers.string.shouldNotContainIgnoringCase
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -278,6 +279,50 @@ class C {
                 argList(1)
             }
         }
+    }
+
+    parserTest("Unresolved types are used in overload specificity tests") {
+        val logGetter = logTypeInference()
+
+        val acu = parser.parse(
+                """
+
+class C {
+
+    static void foo(U1 u) { }
+    static void foo(U2 u) { }
+
+    static {
+        U1 u = null;
+        foo(u);
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val (t_U1, t_U2) = acu.descendants(ASTClassOrInterfaceType::class.java).toList { it.typeMirror }
+
+        t_U1.shouldBeUnresolvedClass("U1")
+        t_U2.shouldBeUnresolvedClass("U2")
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        logGetter().shouldBeEmpty()
+        call.shouldMatchN {
+            methodCall("foo") {
+
+                it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                it.methodType.symbol shouldBe foo1
+
+                argList(1)
+            }
+        }
+        logGetter().shouldNotContainIgnoringCase("ambiguity")
+
     }
 
     parserTest("Recovery when there are several applicable overloads") {

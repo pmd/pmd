@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.List;
@@ -164,10 +165,16 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private OptionalBool isTypeMoreSpecificForArg(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
-        // A type S is more specific than a type T for any expression if S <: T (§4.10).
-        if (argExpr.getStandaloneType() == ts.UNRESOLVED_TYPE) {
+        JTypeMirror standalone = argExpr.getStandaloneType();
+        if (standalone != null && TypeOps.isUnresolved(standalone)) {
+            if (standalone.equals(si)) {
+                return YES;
+            } else if (standalone.equals(ti)) {
+                return NO;
+            }
             return UNKNOWN;
         }
+        // A type S is more specific than a type T for any expression if S <: T (§4.10).
         // TODO checks for lambdas/method refs are much more complicated
         return definitely(si.isSubtypeOf(ti, true));
     }
