@@ -317,7 +317,7 @@ final class Lub {
         }
 
 
-        ArrayList<JTypeMirror> flat = flattenRemoveTrivialBound(types);
+        List<JTypeMirror> flat = flattenRemoveTrivialBound(types);
 
         if (flat.size() == 1) {
             return flat.get(0);
@@ -418,8 +418,7 @@ final class Lub {
         return false;
     }
 
-    @NonNull
-    private static ArrayList<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
+    private static @NonNull List<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
         ArrayList<JTypeMirror> bounds = new ArrayList<>(types.size());
 
         for (JTypeMirror type : types) {

@@ -17,25 +17,29 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.util.OptionalBool;
 
+/**
+ * An {@link OverloadSet} that is specific to an invocation expression
+ * and resolution phase. It selects the most specific methods using the
+ * actual values of arguments, as specified in https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5.
+ */
 final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     private final Infer infer;
-    private final TypeSystem ts;
-    private final TypeInferenceLogger log;
     private final MethodResolutionPhase phase;
     private final MethodCallSite site;
 
 
     PhaseOverloadSet(Infer infer, MethodResolutionPhase phase, MethodCallSite site) {
         this.infer = infer;
-        this.ts = infer.getTypeSystem();
-        this.log = infer.getLogger();
         this.phase = phase;
         this.site = site;
+    }
+
+    public MethodResolutionPhase getPhase() {
+        return phase;
     }
 
     /**
@@ -95,7 +99,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         if (m2.isGeneric()) {
             return inferMoreSpecific(m1, m2, m1OverM2);
         } else {
-            return inferMoreSpecific(m2, m1, m1OverM2.complement());
+            return inferMoreSpecific(m2, m1, m1OverM2.complement()).complement();
         }
     }
 
@@ -209,7 +213,14 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return UNKNOWN;
     }
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
+
+    // YES if si is more specific than ti
+    // NO if ti is more specific than si
+    // UNKNOWN if neither is more specific than the other.
+    //  Note that this includes the case where the argument
+    //  expression's type was unresolved, which means it is
+    //  compatible with any type and doesn't contribute information
+    //  for specificity.
     private OptionalBool isTypeMoreSpecificForArg(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
         JTypeMirror standalone = argExpr.getStandaloneType();
         if (standalone != null && TypeOps.isUnresolved(standalone)) {
@@ -219,7 +230,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return NO;
             }
             return UNKNOWN;
+        } else if (si.equals(ti)) {
+            return UNKNOWN;
         }
+
         // A type S is more specific than a type T for any expression if S <: T (§4.10).
         // TODO checks for lambdas/method refs are much more complicated
         return definitely(si.isSubtypeOf(ti, true));

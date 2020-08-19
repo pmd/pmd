@@ -6,14 +6,18 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 import net.sourceforge.pmd.util.OptionalBool
+import org.mockito.Mockito
 import kotlin.test.assertFalse
 
 private val RefTypeGen.t_Overloads : JClassType
@@ -57,7 +61,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
 
             "genericOf(new String[] {\"\"})" should parseAs {
                 methodCall("genericOf") {
-                    with (it.typeDsl) {
+                    with(it.typeDsl) {
                         it.methodType.shouldMatchMethod(
                                 named = "genericOf",
                                 declaredIn = gen.t_Overloads,
@@ -364,9 +368,9 @@ class F {
         val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         call.methodType.symbol shouldBe subM.symbol
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test hidden method from outside class") {
@@ -394,9 +398,9 @@ class F {
         val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         call.methodType.symbol shouldBe subM.symbol
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test hidden method inside class") {
@@ -422,9 +426,9 @@ class Sub extends Sup {
         val (_, subM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         call.methodType.symbol shouldBe subM.symbol
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test hidden method inside hiding method") {
@@ -449,9 +453,9 @@ class Sub extends Sup {
         val (supM, _) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         call.methodType.symbol shouldBe supM.symbol
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test distinct primitive overloads from import") {
@@ -473,7 +477,7 @@ class Scratch {
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         with(call.typeDsl) {
             call.methodType.shouldMatchMethod(
                     named = "reverseBytes",
@@ -482,7 +486,7 @@ class Scratch {
                     returning = long
             )
         }
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
     }
 
     parserTest("Test specificity between generic ctors") {
@@ -509,7 +513,7 @@ class C<U> {
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
         with(call.typeDsl) {
             call.methodType.shouldMatchMethod(
                     named = JConstructorSymbol.CTOR_NAME,
@@ -518,7 +522,72 @@ class C<U> {
                     returning = t_C[gen.t_String]
             )
         }
-        assert(logGetter().isEmpty())
+        logGetter().shouldBeEmpty()
+    }
+
+    parserTest("Test specificity between generic and non-generic method") {
+
+        val acu = parser.parse(
+                """
+
+class Scratch<N extends Number> {
+
+
+    static <N2 extends Number> N2 getN(Scratch<? extends N2> s) {
+        return null;
+    }
+
+    static int getN(ScratchOfInt s) {
+        return 0;
+    }
+
+    static class ScratchOfInt extends Scratch<Integer> {}
+
+    public void main() {
+        getN(new ScratchOfInt());
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (generic, specific) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        acu.infer.newOverloadSet(call).apply {
+            addSigs(generic, specific)
+            verifyNotAmbiguous(specific)
+        }
+
+        acu.infer.newOverloadSet(call).apply {
+            addSigs(specific, generic)
+            verifyNotAmbiguous(specific)
+        }
     }
 
 })
+
+internal val JavaNode.infer get() = Infer(this.typeSystem, 8, TypeInferenceLogger.noop())
+
+internal fun Infer.newOverloadSet(call: InvocationNode, phase: MethodResolutionPhase = MethodResolutionPhase.STRICT): PhaseOverloadSet {
+    val site = newCallSite(JavaExprMirrors(this).getInvocationMirror(call), null)
+    return PhaseOverloadSet(this, phase, site)
+}
+
+internal fun PhaseOverloadSet.addSigs(vararg sig: JMethodSig) {
+    sig.forEach { addSig(it) }
+}
+
+internal fun PhaseOverloadSet.addSig(sig: JMethodSig) {
+    val decl = MethodCtDecl(sig, this.phase, true, false, false)
+    add(decl)
+}
+
+internal fun PhaseOverloadSet.verifyNotAmbiguous(sig: JMethodSig) {
+    val logger = Mockito.spy(TypeInferenceLogger.noop())
+
+    getMostSpecificOrLogAmbiguity(logger).methodType.shouldBe(sig)
+
+    Mockito.verifyZeroInteractions(logger)
+}

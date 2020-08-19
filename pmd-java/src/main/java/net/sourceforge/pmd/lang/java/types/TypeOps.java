@@ -384,6 +384,15 @@ public final class TypeOps {
         return capture(t).acceptVisitor(SubtypeVisitor.INSTANCE, s);
     }
 
+    // does not perform side effects on inference vars
+    public static Subtyping isSubtypePure(JTypeMirror t, JTypeMirror s) {
+        if (t instanceof JInferenceVar) {
+            return Subtyping.definitely(t.equals(s) || s.isTop());
+        }
+
+        return isSubtype(t, s);
+    }
+
     /**
      * A result for a subtyping check. The subtyping routines here are
      * more general than the strict definition of the JLS. For example,
@@ -1490,7 +1499,7 @@ public final class TypeOps {
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && (!(w instanceof JInferenceVar) || v.isTop()) && w.isSubtypeOf(v, true)) {
+                if (!w.equals(v) && isSubtypePure(w, v).evenUnchecked()) {
                     continue vLoop;
                 }
             }

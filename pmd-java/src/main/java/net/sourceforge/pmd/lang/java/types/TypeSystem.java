@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -632,6 +633,11 @@ public final class TypeSystem {
      */
     public JTypeMirror glb(Collection<? extends JTypeMirror> types) {
         return Lub.glb(this, types);
+    }
+
+    // todo specialized overload
+    public JTypeMirror glb(JTypeMirror t1, JTypeMirror t2) {
+        return glb(Arrays.asList(t1, t2));
     }
 
     // package-private
