@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
@@ -88,21 +89,17 @@ final class ExprCheckHelper {
             }
         }
 
-        if (expr instanceof LambdaExprMirror) {
+        if (expr instanceof FunctionalExprMirror) {
             JClassType funType = getFunTypeOrDefer(targetType, expr);
             if (funType == null) {
-                return true;
+                return true; // deferred
             }
 
-            return isLambdaCompatible(funType, (LambdaExprMirror) expr);
-
-        } else if (expr instanceof MethodRefMirror) {
-            JClassType funType = getFunTypeOrDefer(targetType, expr);
-            if (funType == null) {
-                return true;
+            if (expr instanceof LambdaExprMirror) {
+                return isLambdaCompatible(funType, (LambdaExprMirror) expr);
+            } else {
+                return isMethodRefCompatible(funType, (MethodRefMirror) expr);
             }
-
-            return isMethodRefCompatible(funType, (MethodRefMirror) expr);
 
         } else if (expr instanceof InvocationMirror) {
 
@@ -258,15 +255,16 @@ final class ExprCheckHelper {
             // here we defer the check until the variables are ground
             infCtx.addInstantiationListener(
                 infCtx.freeVarsIn(fun.getFormalParameters()),
-                solvedCtx -> solveCtdeclCompatibility(mref, solvedCtx.ground(nonWildcard), solvedCtx.ground(fun))
+                solvedCtx -> solveInexactMethodRefCompatibility(mref, solvedCtx.ground(nonWildcard), solvedCtx.ground(fun))
             );
         }
         return true;
     }
 
-    private void solveCtdeclCompatibility(MethodRefMirror mref, JClassType nonWildcard, JMethodSig fun) {
+    // only for inexact method refs
+    private void solveInexactMethodRefCompatibility(MethodRefMirror mref, JClassType nonWildcard, JMethodSig fun) {
         // Otherwise, a search for a compile-time declaration is performed, as specified in §15.13.1.
-        @Nullable MethodCtDecl ctdecl0 = infer.exprOps.findRefCompileTimeDecl(mref, fun);
+        @Nullable MethodCtDecl ctdecl0 = infer.exprOps.findInexactMethodRefCompileTimeDecl(mref, fun);
 
         // If there is no compile-time declaration for the method reference, the constraint reduces to false.
         if (ctdecl0 == null) {

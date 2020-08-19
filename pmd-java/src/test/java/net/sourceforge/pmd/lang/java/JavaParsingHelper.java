@@ -53,6 +53,10 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
                         .process(rootNode);
     }
 
+    public TypeInferenceLogger getTypeInfLogger() {
+        return typeInfLogger;
+    }
+
     public JavaParsingHelper withLogger(SemanticChecksLogger logger) {
         return new JavaParsingHelper(this.getParams(), logger, typeInfLogger);
     }

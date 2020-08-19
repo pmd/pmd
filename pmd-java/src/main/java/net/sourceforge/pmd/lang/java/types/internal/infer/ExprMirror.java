@@ -76,10 +76,47 @@ public interface ExprMirror {
         }
     }
 
+
+
+    /** Mirrors a conditional or switch expression. */
+    interface BranchingMirror extends PolyExprMirror {
+
+        /**
+         * Returns true if every result expression matches the given
+         * predicate.
+         */
+        boolean branchesMatch(Predicate<? super ExprMirror> condition);
+
+    }
+
+    /**
+     * Mirror of some expression that targets a functional interface type:
+     * lambda or method reference.
+     */
+    interface FunctionalExprMirror extends PolyExprMirror {
+
+        /**
+         * For a method ref or lambda, this is the type of the functional interface.
+         * E.g. in {@code stringStream.map(String::isEmpty)}, this is
+         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}
+         */
+        @Override
+        void setInferredType(JTypeMirror mirror);
+
+
+        /**
+         * This is the method that is overridden in getInferredType.
+         * E.g. in {@code stringStream.map(String::isEmpty)}, this is
+         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) -> java.lang.Boolean}
+         */
+        void setFunctionalMethod(JMethodSig methodType);
+
+    }
+
     /**
      * Mirror of a method reference expression.
      */
-    interface MethodRefMirror extends PolyExprMirror {
+    interface MethodRefMirror extends FunctionalExprMirror {
 
         /** True if this references a ctor. */
         boolean isConstructorRef();
@@ -117,24 +154,6 @@ public interface ExprMirror {
         /** Returns the explicit type arguments (the ones to the right of the "::"). */
         @NonNull List<JTypeMirror> getExplicitTypeArguments();
 
-
-        /**
-         * For a method ref, this is the type of the functional interface.
-         * E.g. in {@code stringStream.map(String::isEmpty)}, this is
-         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}
-         */
-        @Override
-        void setInferredType(JTypeMirror mirror);
-
-
-        /**
-         * For a method ref, this is the method that is overridden in getInferredType.
-         * E.g. in {@code stringStream.map(String::isEmpty)}, this is
-         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) -> java.lang.Boolean}
-         */
-        void setFunctionalMethod(JMethodSig methodType);
-
-
         /**
          * This is the method that is referenced.
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
@@ -155,19 +174,8 @@ public interface ExprMirror {
 
     }
 
-    /** Mirrors a conditional or switch expression. */
-    interface BranchingMirror extends PolyExprMirror {
-
-        /**
-         * Returns true if every result expression matches the given
-         * predicate.
-         */
-        boolean branchesMatch(Predicate<? super ExprMirror> condition);
-
-    }
-
     /** Mirrors a lambda expression. */
-    interface LambdaExprMirror extends PolyExprMirror {
+    interface LambdaExprMirror extends FunctionalExprMirror {
 
         /**
          * Returns the types of the explicit parameters. If the lambda
@@ -209,9 +217,6 @@ public interface ExprMirror {
          * or a block whose return statements return no expression.
          */
         boolean isVoidCompatible();
-
-
-        void setFunctionalMethod(JMethodSig methodType);
     }
 
     /**

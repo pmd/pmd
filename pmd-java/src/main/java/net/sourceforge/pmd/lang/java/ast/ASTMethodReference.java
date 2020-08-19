@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Method or constructor reference expression.
@@ -138,6 +139,8 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      *
      * <p>This is called the <i>compile-time declaration</i> of the
      * method reference in the JLS.
+     *
+     * <p>If no such method can be found, returns {@link TypeSystem#UNRESOLVED_METHOD}.
      *
      * @see #getFunctionalMethod()
      * @see #getTypeMirror()

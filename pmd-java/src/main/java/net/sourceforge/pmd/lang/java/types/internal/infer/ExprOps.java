@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
@@ -63,13 +64,12 @@ final class ExprOps {
 
         }
 
-        boolean isLambdaOrRef = e instanceof LambdaExprMirror || e instanceof MethodRefMirror;
-
-        if (isLambdaOrRef && t instanceof JTypeVar) {
-            //  A lambda expression or a method reference expression is potentially compatible with
-            //  a type variable if the type variable is a type parameter of the candidate method.
-            return m.getTypeParameters().contains(t);
-        } else if (isLambdaOrRef) {
+        if (e instanceof FunctionalExprMirror) {
+            if (t instanceof JTypeVar) {
+                //  A lambda expression or a method reference expression is potentially compatible with
+                //  a type variable if the type variable is a type parameter of the candidate method.
+                return m.getTypeParameters().contains(t);
+            }
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(t);
             if (fun == null) {
                 // t is not a functional interface
@@ -205,7 +205,8 @@ final class ExprOps {
                 // must denote a type that is reifiable (§4.7), or a compile-time error occurs.
                 if (lhs.isReifiable()) {
                     JTypeDeclSymbol symbol = lhs.getSymbol();
-                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray() : "Reifiable array should present a symbol! " + lhs;
+                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray() :
+                        "Reifiable array should present a symbol! " + lhs;
                     return lhs.getConstructors().get(0);
                 } else {
                     // todo compile time error
@@ -261,7 +262,7 @@ final class ExprOps {
     }
 
     // for inexact method refs
-    @Nullable MethodCtDecl findRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
+    @Nullable MethodCtDecl findInexactMethodRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-15.html#jls-15.13.1
 
         JTypeMirror lhsIfType = mref.getLhsIfType();

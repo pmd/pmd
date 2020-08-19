@@ -13,7 +13,7 @@ import org.mockito.Mockito.*
 
 
 fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilationUnit, TypeInferenceSpy> {
-    val spy = spy(TypeInferenceLogger.noop())
+    val spy = spy(typeInfLogger)
     val acu = this.logTypeInference(spy).parse(code)
     return Pair(acu, TypeInferenceSpy(spy, acu.typeSystem))
 }

@@ -334,7 +334,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
 
-    parserTest("f:Test method ref with this as LHS") {
+    parserTest("f:Test failing method ref with this as LHS") {
 
         logTypeInference(true)
 
@@ -352,7 +352,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                 private String getName() { return "foo"; }
 
                 private Comparator<Archive> comparator() {
-                    return Comparator.comparing(this::getName); // this should fail
+                    return Comparator.comparing(this::getName); // this should fail, but the data should not be null
                 }
 
             }
