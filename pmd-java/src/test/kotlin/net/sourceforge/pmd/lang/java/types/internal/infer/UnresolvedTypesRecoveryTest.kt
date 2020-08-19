@@ -325,6 +325,48 @@ class C {
 
     }
 
+    parserTest("Superclass type is known in the subclass") {
+        val logGetter = logTypeInference()
+
+        val acu = parser.parse(
+                """
+
+class C extends U1 {
+
+    static void foo(U1 u) { }
+    static void foo(String u) { }
+
+    static {
+        foo(this);
+    }
+}
+
+                """.trimIndent()
+        )
+
+
+        val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val (t_U1) = acu.descendants(ASTClassOrInterfaceType::class.java).toList { it.typeMirror }
+
+        t_U1.shouldBeUnresolvedClass("U1")
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        logGetter().shouldBeEmpty()
+        call.shouldMatchN {
+            methodCall("foo") {
+
+                it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                it.methodType.symbol shouldBe foo1
+
+                argList(1)
+            }
+        }
+        logGetter().shouldNotContainIgnoringCase("ambiguity")
+
+    }
+
     parserTest("Recovery when there are several applicable overloads") {
 
         val logGetter = logTypeInference()

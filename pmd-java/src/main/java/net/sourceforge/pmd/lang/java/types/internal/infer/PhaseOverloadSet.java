@@ -68,12 +68,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     private OptionalBool isMoreSpecific(@NonNull JMethodSig m1, @NonNull JMethodSig m2) {
 
-        boolean m1OverM2 = isMoreSpecificImpl(m1, m2, site, phase);
-        boolean m2OverM1 = isMoreSpecificImpl(m2, m1, site, phase);
+        OptionalBool m1OverM2 = isMoreSpecificForExpr(m1, m2);
 
-        if (m1OverM2 ^ m2OverM1) {
-            // then one of them is strictly more specific than the other
-            return definitely(m1OverM2);
+        if (m1OverM2.isKnown()) {
+            return m1OverM2;
         } else if (areOverrideEquivalent(m1, m2)) {
             return OverloadSet.shouldAlwaysTakePrecedence(m1, m2, site.getExpr().getReceiverType());
         }
@@ -81,22 +79,46 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return UNKNOWN;
     }
 
-    private boolean isMoreSpecificImpl(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
-        return m2.isGeneric() ? isInferredMoreSpecific(m1, m2, site, phase)
-                              : isMoreSpecificNonGeneric(m1, m2, site, phase);
+    private OptionalBool isMoreSpecificForExpr(JMethodSig m1, JMethodSig m2) {
+        if (!m1.isGeneric() && !m2.isGeneric()) {
+            return isMoreSpecificNonGeneric(m1, m2);
+        } else if (m1.isGeneric() && m2.isGeneric()) {
+            boolean m1OverM2 = isInferredMoreSpecific(m1, m2);
+            boolean m2OverM1 = isInferredMoreSpecific(m2, m1);
+            if (m1OverM2 ^ m2OverM1) {
+                return definitely(m1OverM2);
+            }
+            return UNKNOWN;
+        }
+
+        OptionalBool m1OverM2 = isMoreSpecificNonGeneric(m1, m2);
+        if (m2.isGeneric()) {
+            return inferMoreSpecific(m1, m2, m1OverM2);
+        } else {
+            return inferMoreSpecific(m2, m1, m1OverM2.complement());
+        }
+    }
+
+    private OptionalBool inferMoreSpecific(JMethodSig m1, JMethodSig m2, OptionalBool m1OverM2) {
+        assert m2.isGeneric();
+        boolean m1MoreSpecific = isInferredMoreSpecific(m1, m2);
+        if (m1MoreSpecific && m1OverM2 != NO) {
+            return YES;
+        }
+        return UNKNOWN;
     }
 
 
-    private boolean isInferredMoreSpecific(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
+    private boolean isInferredMoreSpecific(JMethodSig m1, JMethodSig m2) {
         // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.4
         try {
-            return doInfer(m1, m2, site, phase);
+            return doInfer(m1, m2);
         } catch (ResolutionFailedException e) {
             return false;
         }
     }
 
-    private boolean doInfer(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
+    private boolean doInfer(JMethodSig m1, JMethodSig m2) {
         InferenceContext ctx = infer.newContextFor(m2);
 
         // even if m1 is generic, the type parameters of m1 are treated as type variables, not inference variables.
@@ -141,26 +163,50 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return true;
     }
 
-    private boolean isMoreSpecificNonGeneric(JMethodSig m1, JMethodSig m2, MethodCallSite site, MethodResolutionPhase phase) {
+    // YES if m1 is more specific than m2
+    // NO if m2 is more specific than m1
+    // UNKNOWN if neither is more specific than the other
+    private OptionalBool isMoreSpecificNonGeneric(JMethodSig m1, JMethodSig m2) {
         List<JTypeMirror> m1Formals = m1.getFormalParameters();
         List<JTypeMirror> m2Formals = m2.getFormalParameters();
         List<ExprMirror> args = site.getExpr().getArgumentExpressions();
         int k = args.size();
+        int numKnownForM1 = 0;
+        int numKnownForM2 = 0;
         for (int i = 0; i < k; i++) {
             JTypeMirror si = phase.ithFormal(m1Formals, i);
             JTypeMirror ti = phase.ithFormal(m2Formals, i);
-            if (isTypeMoreSpecificForArg(si, ti, args.get(i)) == NO) {
-                return false;
+            ExprMirror argi = args.get(i);
+
+            OptionalBool sOverT = isTypeMoreSpecificForArg(si, ti, argi);
+            OptionalBool tOverS = isTypeMoreSpecificForArg(ti, si, argi);
+            if (sOverT.isKnown() && tOverS.isKnown() && sOverT != tOverS) {
+                return sOverT;
             }
+            if (sOverT == YES) {
+                numKnownForM1++;
+            } // no else
+            if (tOverS == YES) {
+                numKnownForM2++;
+            }
+        }
+
+        if (numKnownForM1 != numKnownForM2) {
+            return definitely(numKnownForM1 > numKnownForM2);
         }
 
         if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
             // if the varargs argument has length 0, then the last
             // formal of m1 must be more specific than the last formal of m2
-            return phase.ithFormal(m1Formals, k).isSubtypeOf(m2Formals.get(k));
+            JTypeMirror last1 = phase.ithFormal(m1Formals, k);
+            JTypeMirror last2 = m2Formals.get(k);
+            if (last1.equals(last2)) { // only check for strict subtype
+                return UNKNOWN;
+            }
+            return definitely(last1.isSubtypeOf(last2));
         }
 
-        return true;
+        return UNKNOWN;
     }
 
     @SuppressWarnings("PMD.UnusedFormalParameter")

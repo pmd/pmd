@@ -119,16 +119,16 @@ public class TypeResTestRule extends AbstractJavaRule {
     public void end(RuleContext ctx) {
         super.end(ctx);
         state.fileId++;
-        if (true) {
+        if (state.fileId % 200 == 0) {
             int fid;
             synchronized (STATIC) {
                 fid = STATIC.absorb(state);
             }
             state = new State();
 
-            if (true) {
+            if (fid % 400 == 0) {
                 synchronized (STATIC) {
-                    if (true) {
+                    if (STATIC.fileId % 400 == 0) {
                         STATIC.print();
                     }
                 }
