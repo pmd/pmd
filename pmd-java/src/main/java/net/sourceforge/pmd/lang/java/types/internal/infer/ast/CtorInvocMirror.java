@@ -145,10 +145,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         @Override
         public JClassType getNewType() {
             JClassType encl = getEnclosingType();
-            return myNode.isThis()
-                   ? encl
-                   // this may cause NPE, but only if a super ctor call occurs in class Object
-                   : encl.getSuperClass().getGenericTypeDeclaration();
+            return myNode.isThis() ? encl : encl.getSuperClass();
         }
 
         @Override

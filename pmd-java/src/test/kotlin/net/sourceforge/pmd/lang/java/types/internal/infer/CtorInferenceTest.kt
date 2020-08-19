@@ -7,6 +7,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
+import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
@@ -154,6 +155,44 @@ class CtorInferenceTest : ProcessorTestSpec({
                 withFormals = emptyList(),
                 returning = t_E // not the anonymous type
         )
+
+    }
+    parserTest("Generic superclass ctor") {
+
+        logTypeInference(true)
+
+        val acu = parser.parse(
+                """
+
+            class Sup<T> {
+                public Sup(T referent, String cleaner) { }
+            }
+
+            class Sub extends Sup<String> {
+                Sub(String s) {
+                    super(s, s);
+                }
+            }
+
+            """)
+
+        val (t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val (supCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList()
+        val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
+
+
+        with (ctor.typeDsl) {
+            ctor.methodType.shouldMatchMethod(
+                    named = JConstructorSymbol.CTOR_NAME,
+                    declaredIn = t_Sup[ts.STRING],
+                    withFormals = listOf(ts.STRING, ts.STRING),
+                    returning = t_Sup[ts.STRING] // the superclass type
+            ).also {
+                it.symbol shouldBe supCtor.symbol
+                it.symbol.tryGetNode() shouldBe supCtor
+            }
+        }
 
     }
 
