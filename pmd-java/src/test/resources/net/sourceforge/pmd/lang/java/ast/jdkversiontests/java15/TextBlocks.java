@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
