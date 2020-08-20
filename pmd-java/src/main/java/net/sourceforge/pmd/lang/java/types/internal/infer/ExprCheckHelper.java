@@ -107,44 +107,9 @@ final class ExprCheckHelper {
             }
 
         } else if (expr instanceof InvocationMirror) {
-
             // then the argument is a poly invoc expression itself
             // in that case we need to infer that as well
-            InvocationMirror invoc = (InvocationMirror) expr;
-            MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
-            MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
-            JMethodSig mostSpecific = argCtDecl.getMethodType();
-
-            JTypeMirror actualType = mostSpecific.getReturnType();
-
-            if (argCtDecl == infer.FAILED_INVOCATION) {
-                throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
-            } else if (argCtDecl == infer.NO_CTDECL) {
-                JTypeMirror fallback = invoc.unresolvedType();
-                if (fallback != null) {
-                    actualType = fallback;
-                }
-                // else it's ts.UNRESOLVED
-                invoc.setInferredType(fallback);
-                invoc.setMethodType(infer.NO_CTDECL);
-            }
-
-            // now if the return type of the arg is polymorphic and unsolved,
-            // there are some additional bounds on our own infCtx
-
-            checker.checkExprConstraint(infCtx, actualType, targetType);
-
-            if (argCtDecl != infer.NO_CTDECL) {
-                infCtx.addInstantiationListener(
-                    infCtx.freeVarsIn(actualType),
-                    solved -> {
-                        JMethodSig ground = solved.ground(mostSpecific);
-                        invoc.setInferredType(ground.getReturnType());
-                        invoc.setMethodType(argCtDecl.withMethod(ground));
-                    }
-                );
-            }
-            return true;
+            return isInvocationCompatible(targetType, (InvocationMirror) expr);
         } else if (expr instanceof BranchingMirror) {
             return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
         }
@@ -152,10 +117,47 @@ final class ExprCheckHelper {
         return false;
     }
 
+    private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc) {
+        MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
+        MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
+        JMethodSig mostSpecific = argCtDecl.getMethodType();
+
+        JTypeMirror actualType = mostSpecific.getReturnType();
+
+        if (argCtDecl == infer.FAILED_INVOCATION && this.phase.isInvocation()) {
+            throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
+        } else if (argCtDecl == infer.NO_CTDECL) {
+            JTypeMirror fallback = invoc.unresolvedType();
+            if (fallback != null) {
+                actualType = fallback;
+            }
+            // else it's ts.UNRESOLVED
+            invoc.setInferredType(fallback);
+            invoc.setMethodType(infer.NO_CTDECL);
+        }
+
+        // now if the return type of the arg is polymorphic and unsolved,
+        // there are some additional bounds on our own infCtx
+
+        checker.checkExprConstraint(infCtx, actualType, targetType);
+
+        if (!argCtDecl.isFailed()) {
+            infCtx.addInstantiationListener(
+                infCtx.freeVarsIn(actualType),
+                solved -> {
+                    JMethodSig ground = solved.ground(mostSpecific);
+                    invoc.setInferredType(ground.getReturnType());
+                    invoc.setMethodType(argCtDecl.withMethod(ground));
+                }
+            );
+        }
+        return true;
+    }
+
     private @NonNull JClassType getProbablyFunctItfType(final JTypeMirror targetType, ExprMirror expr) {
         JClassType asClass;
         if (targetType instanceof InferenceVar) {
-            asClass = asClassType(softSolve((InferenceVar) targetType));
+            asClass = asClassType(softSolve(targetType));
         } else {
             asClass = asClassType(targetType);
         }
@@ -172,18 +174,24 @@ final class ExprCheckHelper {
     // Eg Function<String, R>, where R is not yet instantiated at the time
     // we check the argument, should not be ground: we want the lambda to
     // add a constraint on R according to its return expressions.
-    private @Nullable JTypeMirror softSolve(InferenceVar ivar) {
+    private @Nullable JTypeMirror softSolve(JTypeMirror t) {
+        if (!(t instanceof InferenceVar)) {
+            return t;
+        }
+        InferenceVar ivar = (InferenceVar) t;
         Set<JTypeMirror> bounds = ivar.getBounds(EQ);
         if (bounds.size() == 1) {
             return bounds.iterator().next();
         }
         bounds = ivar.getBounds(LOWER);
         if (bounds.size() > 0) {
-            return ts.lub(bounds);
+            JTypeMirror lub = ts.lub(bounds);
+            return lub != ivar ? softSolve(lub) : null;
         }
         bounds = ivar.getBounds(UPPER);
         if (bounds.size() > 0) {
-            return ts.glb(bounds);
+            JTypeMirror glb = ts.glb(bounds);
+            return glb != ivar ? softSolve(glb) : null;
         }
         return null;
     }

@@ -235,19 +235,6 @@ public final class Infer {
     }
 
 
-    // test only
-    // assumes the method is accessible
-    // errors are on the call site, if logging is enabled
-    boolean isApplicable(MethodCallSite site, JMethodSig m, MethodResolutionPhase phase) {
-        if (!isPotentiallyApplicable(m, site.getExpr())) {
-            return false;
-        }
-
-        MethodCtDecl decl = logInference(site, phase, m);
-        return decl != FAILED_INVOCATION;
-    }
-
-
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
         if (site.getExpr().getMethodType() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);

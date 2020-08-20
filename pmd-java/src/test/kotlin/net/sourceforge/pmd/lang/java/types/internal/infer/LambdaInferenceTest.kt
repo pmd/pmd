@@ -189,7 +189,6 @@ class LambdaInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test functional interface induced by intersection 2") {
-        // more dependencies between variables here
         logTypeInference(true)
 
         val acu = parser.parse("""
