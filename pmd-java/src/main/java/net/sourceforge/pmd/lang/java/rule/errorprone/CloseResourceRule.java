@@ -69,10 +69,6 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final String WRAPPING_TRY_WITH_RES_VAR_MESSAGE = "it is recommended to wrap resource in try-with-resource declaration directly";
     private static final String CLOSE_IN_FINALLY_BLOCK_MESSAGE = "'' is not closed within a finally block, thus might not be closed at all in case of exceptions";
 
-    private final Set<String> types = new HashSet<>();
-    private final Set<String> simpleTypes = new HashSet<>();
-
-    private final Set<String> closeTargets = new HashSet<>();
     private static final PropertyDescriptor<List<String>> CLOSE_TARGETS_DESCRIPTOR =
             stringListProperty("closeTargets")
                            .desc("Methods which may close this resource")
@@ -96,6 +92,13 @@ public class CloseResourceRule extends AbstractJavaRule {
                     "java.io.CharArrayWriter", "java.util.stream.Stream", "java.util.stream.IntStream", "java.util.stream.LongStream",
                     "java.util.stream.DoubleStream")
             .build();
+
+    private final Set<String> types = new HashSet<>();
+    private final Set<String> simpleTypes = new HashSet<>();
+    private final Set<String> closeTargets = new HashSet<>();
+
+    // keeps track of already reported violations to avoid duplicated violations for the same variable
+    private final Set<String> reportedVarNames = new HashSet<>();
 
 
     public CloseResourceRule() {
@@ -147,13 +150,16 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private void checkForResources(ASTMethodOrConstructorDeclaration methodOrConstructor, Object data) {
+        reportedVarNames.clear();
         Map<ASTVariableDeclarator, TypeNode> resVars = getResourceVariables(methodOrConstructor);
         for (Map.Entry<ASTVariableDeclarator, TypeNode> resVarEntry : resVars.entrySet()) {
             ASTVariableDeclarator resVar = resVarEntry.getKey();
             TypeNode resVarType = resVarEntry.getValue();
             if (isWrappingResourceSpecifiedInTry(resVar)) {
+                reportedVarNames.add(resVar.getVariableId().getName());
                 addViolationWithMessage(data, resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE);
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
+                reportedVarNames.add(resVar.getVariableId().getName());
                 addCloseResourceViolation(resVar.getVariableId(), resVarType, data);
             }
         }
@@ -619,7 +625,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         ASTName methodCall = prefix.getFirstChildOfType(ASTName.class);
         if (methodCall != null) {
             String closedVar = getVariableClosedByMethodCall(methodCall);
-            if (closedVar != null && isNotInFinallyBlock(prefix)) {
+            if (closedVar != null && isNotInFinallyBlock(prefix) && !reportedVarNames.contains(closedVar)) {
                 String violationMsg = closeInFinallyBlockMessageForVar(closedVar);
                 addViolationWithMessage(data, prefix, violationMsg);
             }

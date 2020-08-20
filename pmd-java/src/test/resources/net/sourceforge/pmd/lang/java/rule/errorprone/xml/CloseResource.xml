@@ -377,7 +377,12 @@ public class Test {
 
     <test-code>
         <description>#947 CloseResource rule fails if field is marked with annotation</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this Connection object are closed after use</message>
+            <message>Ensure that resources like this Statement object are closed after use</message>
+        </expected-messages>
         <code><![CDATA[
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -543,7 +548,11 @@ public class Bar {
 
     <test-code>
         <description>#1375 CloseResource not detected properly - ok</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this ResultSet object are closed after use</message>
+        </expected-messages>
         <code><![CDATA[
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -567,7 +576,11 @@ public class Foo {
 
     <test-code>
         <description>#1375 CloseResource not detected properly - false negative</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this ResultSet object are closed after use</message>
+        </expected-messages>
         <code><![CDATA[
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -1312,7 +1325,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>lambda doesn't close resource false-negative test</description>
         <expected-problems>1</expected-problems>
@@ -1333,7 +1346,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>don't wrap try-with-resource variable test</description>
         <expected-problems>1</expected-problems>
