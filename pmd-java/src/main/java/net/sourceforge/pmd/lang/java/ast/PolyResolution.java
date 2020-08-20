@@ -472,7 +472,7 @@ final class PolyResolution {
         List<JTypeMirror> unboxed = map(branchTypes, JTypeMirror::unbox);
         if (all(unboxed, JTypeMirror::isPrimitive)) {
             for (JPrimitiveType a : ts.allPrimitives) {
-                if (all(unboxed, it -> it.isSubtypeOf(a))) {
+                if (all(unboxed, it -> it.isConvertibleTo(a).bySubtyping())) {
                     // then all types are convertible to a
                     return a;
                 }

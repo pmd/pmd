@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 
 /**
@@ -66,22 +67,14 @@ public interface JTypeMirror extends JTypeVisitable {
 
     /**
      * Returns true if this type is the same type or a subtype of the given type.
-     *
-     * @param unchecked Whether unchecked conversion may be used to make
-     *                  the types conform. A raw type may be converted
-     *                  to any parameterized type of the same family
-     *                  via unchecked conversion.
      */
-    default boolean isSubtypeOf(JTypeMirror other, boolean unchecked) {
-        return other != null && TypeOps.isSubtype(this, other).toBoolean(unchecked);
+    default boolean isSubtypeOf(JTypeMirror other) {
+        return isConvertibleTo(other).bySubtyping();
     }
 
 
-    /**
-     * Returns true if this type is the same type or a subtype of the given type.
-     */
-    default boolean isSubtypeOf(JTypeMirror other) {
-        return isSubtypeOf(other, false);
+    default Convertibility isConvertibleTo(JTypeMirror other) {
+        return other == null ? Convertibility.NO : TypeOps.isSubtype(this, other);
     }
 
 

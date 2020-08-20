@@ -238,7 +238,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         // A type S is more specific than a type T for any expression if S <: T (§4.10).
         // TODO checks for lambdas/method refs are much more complicated
-        return definitely(si.isSubtypeOf(ti, true));
+        return definitely(si.isConvertibleTo(ti).somehow());
     }
 
 }

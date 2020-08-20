@@ -79,11 +79,6 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     @Override
-    public boolean isSubtypeOf(JTypeMirror other, boolean unchecked) {
-        return getSuperTypeSet().contains(other);
-    }
-
-    @Override
     public Set<JTypeMirror> getSuperTypeSet() {
         return superTypes;
     }

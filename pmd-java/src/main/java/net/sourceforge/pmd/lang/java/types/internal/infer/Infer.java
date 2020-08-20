@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeOps.Subtyping;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprCheckHelper.ExprChecker;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
@@ -532,7 +532,7 @@ public final class Infer {
                 JTypeMirror explicit = explicitTargs.get(i);
                 JTypeMirror upperBound = tparams.get(i).getUpperBound().subst(explicitSubst);
 
-                if (!explicit.isSubtypeOf(upperBound, true)) {
+                if (explicit.isConvertibleTo(upperBound).never()) {
                     throw ResolutionFailedException.incompatibleBound(LOG, explicit, upperBound, expr.getExplicitTargLoc(i));
                 }
             }
@@ -657,7 +657,7 @@ public final class Infer {
             if (needsEagerInstantiation(retVar, actualRes, infCtx)) {
                 infCtx.solve(retVar);
                 infCtx.callListeners();
-                if (!isConvertible(retVar.getInst(), actualRes, true).evenUnchecked()) {
+                if (isConvertible(retVar.getInst(), actualRes, true).never()) {
                     actualRes = ts.OBJECT;
                 }
             } else if (actualRes.isPrimitive()) {
@@ -665,7 +665,7 @@ public final class Infer {
             }
         }
 
-        if (!isConvertible(resultType, outerInfCtx.mapToIVars(actualRes), true).evenUnchecked()) {
+        if (isConvertible(resultType, outerInfCtx.mapToIVars(actualRes), true).never()) {
             throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), resultType, actualRes);
         }
 
@@ -897,10 +897,10 @@ public final class Infer {
 
         // If they are ground, then they must conform to each other else
         // the exception stops the resolution process.
-        Subtyping conversionResult = isConvertible(groundE, groundF, phase.canBox());
-        if (conversionResult == Subtyping.NO) {
+        Convertibility conversionResult = isConvertible(groundE, groundF, phase.canBox());
+        if (conversionResult == Convertibility.NO) {
             throw ResolutionFailedException.incompatibleFormal(LOG, arg, groundE, groundF);
-        } else if (conversionResult == Subtyping.UNCHECKED_WARNING && site != null) {
+        } else if (conversionResult == Convertibility.UNCHECKED_WARNING && site != null) {
             site.setNeedsUncheckedConversion();
         }
     }
@@ -910,16 +910,16 @@ public final class Infer {
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
-    static Subtyping isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
+    static Convertibility isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
         if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
             // fast path
-            return Subtyping.YES;
+            return Convertibility.SUBTYPING;
         }
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
             // then boxing conversions may be useful
-            Subtyping result = TypeOps.isSubtype(exprType.box(), formalType.box());
-            if (result != Subtyping.NO) {
+            Convertibility result = TypeOps.isSubtype(exprType.box(), formalType.box());
+            if (result != Convertibility.NO) {
                 return result;
             } else {
                 return TypeOps.isSubtype(exprType.unbox(), formalType.unbox());

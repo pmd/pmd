@@ -25,10 +25,8 @@ class GlbTest : FunSpec({
 
             test("Test intersection minimization") {
 
-                forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    t.isSubtypeOf(s) implies {
-                        glb(t, s) == t
-                    }
+                forAll(ts.subtypesArb()) { (t, s) ->
+                    glb(t, s) == t
                 }
 
                 // in particular

@@ -24,7 +24,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         fun assertConvertible(types: Pair<JTypeMirror, JTypeMirror>, pos: Boolean, canBox: Boolean = true) {
             val (t, s) = types
-            val res = Infer.isConvertible(t, s, canBox).evenUnchecked()
+            val res = Infer.isConvertible(t, s, canBox).somehow()
             assert(if (pos) res else !res) {
                 "Failure, expected\n\t${if (pos) "" else " not"} $t \n\t\t<: $s"
             }

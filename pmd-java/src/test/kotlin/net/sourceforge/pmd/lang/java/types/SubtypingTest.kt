@@ -21,6 +21,7 @@ import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.types.TypeConversion.*
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility.*
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
 import kotlin.test.assertTrue
@@ -36,8 +37,8 @@ class SubtypingTest : FunSpec({
 
             test("Test primitive subtyping") {
 
-                assertSubtypeOrdering(double, float, long, int, short, byte)
-                assertSubtypeOrdering(double, float, long, int, char)
+                assertSubtypeOrdering(PRIMITIVE_WIDENING, double, float, long, int, short, byte)
+                assertSubtypeOrdering(PRIMITIVE_WIDENING, double, float, long, int, char)
 
                 short shouldBeUnrelatedTo char
                 byte shouldBeUnrelatedTo char
@@ -185,7 +186,7 @@ class SubtypingTest : FunSpec({
                 `Class{String}` shouldBeSubtypeOf `Class{?}`
                 `Class{?}` shouldNotBeSubtypeOf `Class{String}`
 
-                Class shouldBeSubtypeOf `Class{?}` // no warning
+                assertSubtype(Class, `Class{?}`, expected = UNCHECKED_NO_WARNING)
                 Class shouldBeUncheckedSubtypeOf `Class{String}`
 
                 ts.STRING shouldBeSubtypeOf `Comparable{?}`
@@ -196,10 +197,10 @@ class SubtypingTest : FunSpec({
                 // this is the tree on this page:
                 // https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
 
-                assertSubtypeOrdering(`t_List{?}`, `t_List{? extends Number}`, `t_List{? extends Integer}`, `t_List{Integer}`)
-                assertSubtypeOrdering(`t_List{?}`, `t_List{? super Integer}`, `t_List{? super Number}`, `t_List{Number}`)
-                assertSubtypeOrdering(`t_List{?}`, `t_List{? extends Number}`, `t_List{Number}`)
-                assertSubtypeOrdering(`t_List{?}`, `t_List{? super Integer}`, `t_List{Integer}`)
+                assertSubtypeOrdering(SUBTYPING, `t_List{?}`, `t_List{? extends Number}`, `t_List{? extends Integer}`, `t_List{Integer}`)
+                assertSubtypeOrdering(SUBTYPING, `t_List{?}`, `t_List{? super Integer}`, `t_List{? super Number}`, `t_List{Number}`)
+                assertSubtypeOrdering(SUBTYPING, `t_List{?}`, `t_List{? extends Number}`, `t_List{Number}`)
+                assertSubtypeOrdering(SUBTYPING, `t_List{?}`, `t_List{? super Integer}`, `t_List{Integer}`)
 
                 `t_List{Number}` shouldBeUnrelatedTo `t_List{? extends Integer}`
                 `t_List{Integer}` shouldBeUnrelatedTo `t_List{? super Number}`

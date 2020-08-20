@@ -104,10 +104,11 @@ public final class TypeConversion {
         }
 
         if (t.isPrimitive() == s.isPrimitive()) {
-            return t.isSubtypeOf(s);
+            return t.isConvertibleTo(s).bySubtyping();
         }
 
-        return t.isPrimitive() ? t.box().isSubtypeOf(s) : t.unbox().isSubtypeOf(s);
+        return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow()
+                               : t.unbox().isConvertibleTo(s).somehow();
     }
 
 

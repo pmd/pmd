@@ -35,7 +35,7 @@ val TypeSystem.allTypesGen: Arb<JTypeMirror>
 
 fun TypeSystem.subtypesArb(unchecked: Boolean = false) =
         Arb.pair(refTypeGen, refTypeGen)
-                .filter { (t, s) -> t.isSubtypeOf(s, unchecked) }
+                .filter { (t, s) -> t.isConvertibleTo(s).bySubtyping() }
 
 infix fun Boolean.implies(v: () -> Boolean): Boolean = !this || v()
 

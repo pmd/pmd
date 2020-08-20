@@ -14,8 +14,10 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
@@ -124,13 +126,13 @@ abstract class IncorporationAction {
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
             JTypeMirror key = cacheKey(t);
             if (key == null) { // don't cache result
-                return t.isSubtypeOf(s, true);
+                return t.isConvertibleTo(s).somehow();
             }
 
             Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
             if (supertypesOfT.contains(s)) {
                 return true;
-            } else if (t.isSubtypeOf(s, true)) {
+            } else if (t.isConvertibleTo(s).somehow()) {
                 supertypesOfT.add(s);
                 return true;
             }
@@ -138,8 +140,8 @@ abstract class IncorporationAction {
         }
 
         private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
-            if (t instanceof InferenceVar) {
-                return null; // don't cache inference vars
+            if (t instanceof InferenceVar || t instanceof JPrimitiveType) {
+                return null; // don't cache those
             } else if (t instanceof JTypeVar) {
                 JTypeVar tvar = (JTypeVar) t;
                 if (tvar.isCaptured()) {

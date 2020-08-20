@@ -9,22 +9,13 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import io.kotest.property.*
-import io.kotest.property.arbitrary.arb
-import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.pair
-import io.kotest.property.exhaustive.exhaustive
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.TestClassesGen
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
 import kotlin.String
-import kotlin.reflect.KClass
 import kotlin.streams.toList
 
 /*
@@ -115,15 +106,15 @@ fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =
  * assertSubtypeOrdering(a, b, c) asserts that a >: b >: c
  * In other words, the supertypes are on the left, subtypes on the right
  */
-fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
+fun assertSubtypeOrdering(result: Convertibility, vararg ts: JTypeMirror) {
     for ((a, b) in ts.zip(ts.asList().drop(1))) {
-        b shouldBeSubtypeOf a
+        assertSubtype(b, a, result)
     }
 }
 
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
-fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Subtyping, capture: Boolean = true) {
+fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Convertibility, capture: Boolean = true) {
     val res = isSubtype(t, s, capture)
     withClue("$t \n\t\t<: $s") {
         res shouldBe expected
@@ -131,30 +122,30 @@ fun assertSubtype(t: JTypeMirror, s: JTypeMirror, expected: Subtyping, capture: 
 }
 
 infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, Subtyping.YES, false)
+    assertSubtype(this, s, Convertibility.SUBTYPING, false)
 }
 
 infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, Subtyping.NO, false)
+    assertSubtype(this, s, Convertibility.NO, false)
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other, Subtyping.YES)
+    assertSubtype(this, other, Convertibility.SUBTYPING)
     // assertSubtype(other, this, SubtypeResult.definitely(this == other))
 }
 
 infix fun JTypeMirror.shouldNotBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other, Subtyping.NO)
+    assertSubtype(this, other, Convertibility.NO)
 }
 
 infix fun JTypeMirror.shouldBeUncheckedSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other, Subtyping.UNCHECKED_WARNING)
+    assertSubtype(this, other, Convertibility.UNCHECKED_WARNING)
 }
 
 infix fun JTypeMirror.shouldBeUnrelatedTo(other: JTypeMirror) {
     if (this == other) return
-    assertSubtype(this, other, Subtyping.NO)
-    assertSubtype(other, this, Subtyping.NO)
+    assertSubtype(this, other, Convertibility.NO)
+    assertSubtype(other, this, Convertibility.NO)
 }
 
 /** A type that binds to a capture variable for the given wildcard. */

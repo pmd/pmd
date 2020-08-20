@@ -219,9 +219,9 @@ final class Lub {
          */
         private JTypeMirror lcta(JTypeMirror t, JTypeMirror s) {
 
-            if (typeArgContains(t, s).evenUnchecked()) {
+            if (typeArgContains(t, s).somehow()) {
                 return t;
-            } else if (typeArgContains(s, t).evenUnchecked()) {
+            } else if (typeArgContains(s, t).somehow()) {
                 return s;
             }
 
