@@ -10,9 +10,12 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asClassType;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAny;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.EQ;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.LOWER;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.UPPER;
 
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -92,7 +95,7 @@ final class ExprCheckHelper {
         }
 
         if (expr instanceof FunctionalExprMirror) {
-            JClassType funType = getFunTypeOrDefer(targetType, expr);
+            JClassType funType = getProbablyFunctItfType(targetType, expr);
             if (funType == null) {
                 return true; // deferred
             }
@@ -149,16 +152,10 @@ final class ExprCheckHelper {
         return false;
     }
 
-    private @Nullable JClassType getFunTypeOrDefer(final JTypeMirror targetType, ExprMirror expr) {
-
+    private @NonNull JClassType getProbablyFunctItfType(final JTypeMirror targetType, ExprMirror expr) {
         JClassType asClass;
         if (targetType instanceof InferenceVar) {
-            InferenceVar ivar = (InferenceVar) targetType;
-            if (ivar.getInst() == null) {
-                infCtx.addInstantiationListener(setOf(ivar), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
-                return null;
-            }
-            asClass = asClassType(ivar.getInst());
+            asClass = asClassType(softSolve((InferenceVar) targetType));
         } else {
             asClass = asClassType(targetType);
         }
@@ -167,6 +164,28 @@ final class ExprCheckHelper {
             throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
         }
         return asClass;
+    }
+
+    // we can't ask the infctx to solve the ivar, as that would require all bounds to be ground
+    // We want however to be able to add constraints on the functional interface type's inference variables
+    // This is useful to infer lambdas generic in their return type
+    // Eg Function<String, R>, where R is not yet instantiated at the time
+    // we check the argument, should not be ground: we want the lambda to
+    // add a constraint on R according to its return expressions.
+    private @Nullable JTypeMirror softSolve(InferenceVar ivar) {
+        Set<JTypeMirror> bounds = ivar.getBounds(EQ);
+        if (bounds.size() == 1) {
+            return bounds.iterator().next();
+        }
+        bounds = ivar.getBounds(LOWER);
+        if (bounds.size() > 0) {
+            return ts.lub(bounds);
+        }
+        bounds = ivar.getBounds(UPPER);
+        if (bounds.size() > 0) {
+            return ts.glb(bounds);
+        }
+        return null;
     }
 
     private boolean isMethodRefCompatible(@NonNull JClassType functionalItf, MethodRefMirror mref) {

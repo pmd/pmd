@@ -188,7 +188,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
     }
 
-    parserTest("f:Test functional interface induced by intersection 2") {
+    parserTest("Test functional interface induced by intersection 2") {
         // more dependencies between variables here
         logTypeInference(true)
 
@@ -204,6 +204,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
                 }
 
                 public static void main(String... args) {
+                    // Note that R is dangling until we add the return constraint R >: Integer
                     f(s -> s.length());
                 }
             }
