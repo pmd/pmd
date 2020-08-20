@@ -36,7 +36,7 @@ public interface JWildcardType extends JTypeMirror {
 
     /** Returns true if this is an "extends" wildcard, with no bound ("?"). */
     default boolean isUnbounded() {
-        return isUpperBound() && getBound() == getTypeSystem().OBJECT;
+        return isUpperBound() && getBound().isTop();
     }
 
 

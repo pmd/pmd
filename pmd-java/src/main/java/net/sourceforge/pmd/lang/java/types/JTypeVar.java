@@ -75,7 +75,6 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
 
     /**
      * Returns true if this is a capture variable for the given wildcard.
-     * Reference identity is used there.
      */
     boolean isCaptureOf(JWildcardType wildcard);
 

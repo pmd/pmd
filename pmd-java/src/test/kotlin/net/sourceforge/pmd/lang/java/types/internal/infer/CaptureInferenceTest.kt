@@ -281,7 +281,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         NodeStream<? extends T> <: NodeStream<? extends δ>
 
-        Previously the subtyping check captured the LHS. So we'd actually test
+        The LHS is captured, so we'd actually test
 
         NodeStream<capture#103 of ? extends T> <: NodeStream<? extends δ>
 

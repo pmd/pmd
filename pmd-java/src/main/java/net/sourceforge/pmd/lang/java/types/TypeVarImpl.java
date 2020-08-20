@@ -173,7 +173,7 @@ class TypeVarImpl implements FreshTypeVar {
 
         @Override
         public boolean isCaptureOf(JWildcardType wildcard) {
-            return this.wildcard == wildcard;
+            return this.wildcard.equals(wildcard);
         }
 
         @Override

@@ -592,7 +592,14 @@ public final class TypeOps {
 
     private static JTypeMirror wildUpperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
-            return wildUpperBound(((JWildcardType) type).asUpperBound());
+            JWildcardType wild = (JWildcardType) type;
+            if (wild.isUpperBound()) {
+                return wildUpperBound(wild.asUpperBound());
+            } else if (wild.asLowerBound() instanceof JTypeVar) {
+                return ((JTypeVar) wild.asLowerBound()).getUpperBound();
+            }
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+            return wildUpperBound(((JTypeVar) type).getCapturedOrigin());
         }
         return type;
     }
@@ -609,15 +616,6 @@ public final class TypeOps {
             return lowerBoundRec(((JWildcardType) type).asLowerBound());
         } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
             return lowerBoundRec(((JTypeVar) type).getLowerBound());
-        }
-        return type;
-    }
-
-    private static JTypeMirror upperBoundRec(JTypeMirror type) {
-        if (type instanceof JWildcardType) {
-            return upperBoundRec(((JWildcardType) type).asUpperBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return upperBoundRec(((JTypeVar) type).getUpperBound());
         }
         return type;
     }
@@ -660,24 +658,26 @@ public final class TypeOps {
         //      ⊥ -------U(T)-----U(S)------> Object   (L(T) = L(S) = ⊥)
         //      ⊥ -------L(S)-----L(T)------> Object   (U(T) = U(S) = Object)
 
-        if (isSameType(s, s, true)) {
+        if (isSameType(s, t, true)) {
             // S <= S
             return Convertibility.IDENTITY;
         }
 
         if (s instanceof JWildcardType) {
-            JWildcardType tw = (JWildcardType) s;
+            JWildcardType sw = (JWildcardType) s;
 
-            // if (s instanceof JTypeVar && ((JTypeVar) s).isCaptureOf(tw)) {
-            //     return Convertibility.SUBTYPING;
-            // }
+            // capt(? extends T) <= ? extends T
+            // capt(? super T) <= ? super T
+            if (t instanceof JTypeVar && ((JTypeVar) t).isCaptureOf(sw)) {
+                return Convertibility.SUBTYPING;
+            }
 
-            if (tw.isUpperBound()) {
-                //  U(T) <: U(S),  we already know L(S) <: L(T), because L(S) is bottom
-                return isConvertible(upperBoundRec(s), tw.asUpperBound());
+            if (sw.isUpperBound()) {
+                // Test U(T) <: U(S),  we already know L(S) <: L(T), because L(S) is bottom
+                return isConvertible(wildUpperBound(t), sw.asUpperBound());
             } else {
-                // L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
-                return isConvertible(tw.asLowerBound(), lowerBoundRec(s));
+                // Test L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
+                return isConvertible(sw.asLowerBound(), wildLowerBound(t));
             }
         }
 
