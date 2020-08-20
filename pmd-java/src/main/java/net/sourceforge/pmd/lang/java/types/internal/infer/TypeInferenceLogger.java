@@ -60,6 +60,8 @@ public interface TypeInferenceLogger {
 
     default void skipArgAsNonPertinent(int i, ExprMirror expr) { }
 
+    default void functionalExprNeedsInvocationCtx(JTypeMirror targetT, ExprMirror expr) { }
+
     default void endArg() { }
 
     default void endArgsChecks() { }
@@ -341,6 +343,12 @@ public interface TypeInferenceLogger {
             startSection("Argument " + i + " is not pertinent to applicability");
             printExpr(expr);
             endSection("");
+        }
+
+        @Override
+        public void functionalExprNeedsInvocationCtx(JTypeMirror targetT, ExprMirror expr) {
+            println("Target type is not a functional interface yet: " + targetT);
+            println("Will wait for invocation phase before discarding.");
         }
 
         @Override

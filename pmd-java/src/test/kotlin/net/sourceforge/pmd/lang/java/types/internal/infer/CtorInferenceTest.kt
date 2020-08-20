@@ -159,8 +159,6 @@ class CtorInferenceTest : ProcessorTestSpec({
     }
     parserTest("Generic superclass ctor") {
 
-        logTypeInference(true)
-
         val acu = parser.parse(
                 """
 

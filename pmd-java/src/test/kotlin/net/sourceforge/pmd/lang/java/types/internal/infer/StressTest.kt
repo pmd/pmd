@@ -275,7 +275,7 @@ class StressTest : ProcessorTestSpec({
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              ))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+              )))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))); */
 
         """ should parseAs {
                 localVarDecl {

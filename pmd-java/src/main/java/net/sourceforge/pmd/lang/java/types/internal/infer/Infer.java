@@ -93,15 +93,16 @@ public final class Infer {
 
     public MethodCallSite newCallSite(InvocationMirror expr,
                                       @Nullable JTypeMirror expectedType) {
-        return newCallSite(expr, expectedType, emptyContext());
+        return newCallSite(expr, expectedType, null, null);
     }
 
     /** Site for a nested poly expr. */
     // package
     MethodCallSite newCallSite(InvocationMirror expr,
                                @Nullable JTypeMirror expectedType,
-                               @NonNull InferenceContext infCtx) {
-        return new MethodCallSite(expr, expectedType, infCtx);
+                               @Nullable MethodCallSite outerSite,
+                               @Nullable InferenceContext outerCtx) {
+        return new MethodCallSite(expr, expectedType, outerSite, outerCtx != null ? outerCtx : emptyContext());
     }
 
     InferenceContext emptyContext() {
@@ -300,25 +301,23 @@ public final class Infer {
         JMethodSig m = ctdecl.getMethodType();
         InvocationMirror expr = site.getExpr();
 
+        site.loadInferenceData(ctdecl);
+        site.setInInvocation(true);
+
         // todo remove this check for site.getExpectedType
         //  apparently removing it messes up anonymous class inference
-        if (isReturnTypeFinished(m, site) && site.getExpectedType() == null) {
+        if (site.canSkipInvocation()) {
             assert assertReturnIsGround(m);
 
             expr.setInferredType(m.getReturnType());
-
-            if (site.areAllArgsRelevantToApplicability()) {
-                LOG.skipInstantiation(m, site);
-                // then all have been inferred
-                return ctdecl;
-            }
+            LOG.skipInstantiation(m, site);
+            return ctdecl;
         }
 
         // start the inference over with the original method, including
         // arguments that are not pertinent to applicability (lambdas)
         // to instantiate all tvars
 
-        site.loadInferenceData(ctdecl);
         return logInference(site,
                             ctdecl.getResolvePhase().asInvoc(),
                             ctdecl.getMethodType().internalApi().adaptedMethod());
@@ -328,7 +327,7 @@ public final class Infer {
         return !isAdaptedConsType(m)
             // this means that the invocation type cannot be affected by context type
             && !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters())
-            && site.getInferenceContext().isGround(m.getReturnType());
+            && site.getOuterCtx().isGround(m.getReturnType());
     }
 
     private boolean isAdaptedConsType(JMethodSig m) {
@@ -362,7 +361,7 @@ public final class Infer {
         } else {
             return new MethodCtDecl(candidate,
                                     phase,
-                                    site.areAllArgsRelevantToApplicability(),
+                                    site.canSkipInvocation(),
                                     site.needsUncheckedConversion(),
                                     false);
         }
@@ -408,6 +407,8 @@ public final class Infer {
         JMethodSig adapted = isAdapted
                              ? adaptGenericConstructor(cons, newType, expr)
                              : cons;
+
+        site.maySkipInvocation(!isAdapted);
 
         JMethodSig result = instantiateMethod(adapted, site, phase);
         if (isAdapted && result != null) {
@@ -535,6 +536,10 @@ public final class Infer {
         }
 
 
+        site.maySkipInvocation(
+            !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters())
+                && site.getOuterCtx().isGround(m.getReturnType()));
+
         return instantiateImpl(m, site, phase);
     }
 
@@ -572,8 +577,8 @@ public final class Infer {
                     // propagate inference context outwards and exit
                     // the outer context will solve the variables and call listeners
                     // of this context
-                    LOG.propagateAndAbort(infCtx, site.getInferenceContext());
-                    infCtx.duplicateInto(site.getInferenceContext());
+                    LOG.propagateAndAbort(infCtx, site.getOuterCtx());
+                    infCtx.duplicateInto(site.getOuterCtx());
                     return infCtx.mapToIVars(m);
                 }
             }
@@ -590,7 +595,7 @@ public final class Infer {
 
     private boolean shouldPropagateOutwards(JTypeMirror resultType, MethodCallSite target, InferenceContext inferenceContext) {
 
-        return !target.getInferenceContext().isEmpty()  //enclosing context is a generic method
+        return !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
             && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
             && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
@@ -620,7 +625,7 @@ public final class Infer {
             resultType = resultType.getErasure();
         }
         resultType = infCtx.mapToIVars(resultType);
-        InferenceContext outerInfCtx = site.getInferenceContext();
+        InferenceContext outerInfCtx = site.getOuterCtx();
 
         if (!infCtx.isGround(resultType) && !outerInfCtx.isEmpty() && resultType instanceof JClassType) {
             JClassType resClass = capture((JClassType) resultType);
@@ -817,7 +822,7 @@ public final class Infer {
                 LOG.endArg();
             } else {
                 // then the final reinvocation is necessary
-                site.setSomeArgsAreNotPertinent();
+                site.maySkipInvocation(false);
                 LOG.skipArgAsNonPertinent(i, ei);
             }
         }
@@ -834,7 +839,7 @@ public final class Infer {
                     addBoundOrDefer(site, infCtx, phase, ei, varargsComponent);
                     LOG.endArg();
                 } else {
-                    site.setSomeArgsAreNotPertinent();
+                    site.maySkipInvocation(false);
                     LOG.skipArgAsNonPertinent(i, ei);
                 }
             }
@@ -854,7 +859,7 @@ public final class Infer {
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
 
-        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, this);
+        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, site, this);
         if (!helper.isCompatible(formalType, arg)) {
             throw ResolutionFailedException.incompatibleFormalExprNoReason(LOG, arg, formalType);
         }

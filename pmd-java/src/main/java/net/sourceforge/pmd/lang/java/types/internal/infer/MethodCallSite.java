@@ -27,19 +27,22 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Si
 public class MethodCallSite extends PolySite {
 
     private final InferenceContext localInferenceContext;
+    private final MethodCallSite outerSite;
 
     private boolean logEnabled = true;
     private final Map<MethodResolutionPhase, List<ResolutionFailure>> errors = new EnumMap<>(MethodResolutionPhase.class);
 
-    private boolean areAllArgsRelevant = true;
+    private boolean isInInvocation = false;
+    private boolean canSkipInvocation = true;
+
     private boolean needsUncheckedConversion = false;
 
-    public MethodCallSite(InvocationMirror expr,
-                          @Nullable JTypeMirror expectedType,
-                          @NonNull InferenceContext infCtx) {
+    MethodCallSite(InvocationMirror expr,
+                   @Nullable JTypeMirror expectedType,
+                   @Nullable MethodCallSite outerSite,
+                   @NonNull InferenceContext infCtx) {
         super(expr, expectedType);
-        assert infCtx != null : "Null inference context";
-
+        this.outerSite = outerSite;
         this.localInferenceContext = infCtx;
     }
 
@@ -57,6 +60,26 @@ public class MethodCallSite extends PolySite {
         logEnabled = enabled;
     }
 
+    void setInInvocation(boolean inInvocation) {
+        isInInvocation = inInvocation;
+    }
+
+    void setCanSkipInvocation(boolean canSkipInvocation) {
+        this.canSkipInvocation = canSkipInvocation;
+    }
+
+    void maySkipInvocation(boolean canSkipInvocation) {
+        this.canSkipInvocation &= canSkipInvocation;
+    }
+
+    boolean canSkipInvocation() {
+        return canSkipInvocation;
+    }
+
+    boolean isInFinalInvocation() {
+        return (outerSite == null || outerSite.isInFinalInvocation()) && isInInvocation;
+    }
+
     /**
      * Returns a list of error messages encountered during the inference.
      * For this list to be populated, the {@link Infer} must use
@@ -72,14 +95,6 @@ public class MethodCallSite extends PolySite {
         errors.clear();
     }
 
-    boolean areAllArgsRelevantToApplicability() {
-        return areAllArgsRelevant;
-    }
-
-    void setSomeArgsAreNotPertinent() {
-        areAllArgsRelevant = false;
-    }
-
     boolean needsUncheckedConversion() {
         return needsUncheckedConversion;
     }
@@ -89,12 +104,12 @@ public class MethodCallSite extends PolySite {
     }
 
     void resetInferenceData() {
-        areAllArgsRelevant = true;
+        canSkipInvocation = true;
         needsUncheckedConversion = false;
     }
 
     void loadInferenceData(MethodCtDecl ctdecl) {
-        areAllArgsRelevant = ctdecl.areAllArgsRelevant();
+        canSkipInvocation = ctdecl.canSkipInvocation();
         needsUncheckedConversion = ctdecl.needsUncheckedConversion();
     }
 
@@ -104,7 +119,7 @@ public class MethodCallSite extends PolySite {
      * needs to be propagated to the outer context.
      */
     @NonNull
-    InferenceContext getInferenceContext() {
+    InferenceContext getOuterCtx() {
         return localInferenceContext;
     }
 

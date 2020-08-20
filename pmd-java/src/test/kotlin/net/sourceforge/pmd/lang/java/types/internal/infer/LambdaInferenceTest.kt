@@ -189,8 +189,6 @@ class LambdaInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test functional interface induced by intersection 2") {
-        logTypeInference(true)
-
         val acu = parser.parse("""
             import java.io.Serializable;
             import java.util.function.Function;
@@ -514,8 +512,6 @@ class Scratch {
 
     parserTest("Test void compatible lambda with void body") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             import java.util.function.DoubleConsumer;
             class Foo {
@@ -533,8 +529,6 @@ class Scratch {
     }
 
     parserTest("Test early solved functional interface") {
-
-        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             import java.util.function.DoubleConsumer;

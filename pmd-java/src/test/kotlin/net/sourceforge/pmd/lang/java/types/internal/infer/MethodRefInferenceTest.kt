@@ -336,8 +336,6 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     parserTest("Test failing method ref with this as LHS") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 
             package scratch;
@@ -414,8 +412,6 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     // disabled for now
     parserTest("!Test inference var inst substitution in enclosing ctx") {
-
-        logTypeInference(true)
 
         val acu = parser.parse("""
 import java.util.Collections;

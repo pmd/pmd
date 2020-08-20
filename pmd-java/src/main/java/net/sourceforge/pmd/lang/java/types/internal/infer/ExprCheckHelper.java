@@ -37,17 +37,20 @@ final class ExprCheckHelper {
     private final InferenceContext infCtx;
     private final MethodResolutionPhase phase;
     private final ExprChecker checker;
+    private final @Nullable MethodCallSite site;
     private final Infer infer;
     private final TypeSystem ts;
 
     ExprCheckHelper(InferenceContext infCtx,
                     MethodResolutionPhase phase,
                     ExprChecker checker,
+                    @Nullable MethodCallSite site,
                     Infer infer) {
 
         this.infCtx = infCtx;
         this.phase = phase;
         this.checker = checker;
+        this.site = site;
         this.infer = infer;
         this.ts = infer.getTypeSystem();
     }
@@ -97,7 +100,16 @@ final class ExprCheckHelper {
         if (expr instanceof FunctionalExprMirror) {
             JClassType funType = getProbablyFunctItfType(targetType, expr);
             if (funType == null) {
-                return true; // deferred
+                /*
+                 * The functional expression has an inference variable as a target type,
+                 * and that ivar does not have enough bounds to be resolved to a functional interface type yet.
+                 *
+                 * <p>This should not prevent ctdecl resolution to proceed. The additional
+                 * bounds may be contributed by the invocation constraints of an enclosing
+                 * inference process.
+                 */
+                infer.LOG.functionalExprNeedsInvocationCtx(targetType, expr);
+                return true; // deferred to invocation
             }
 
             if (expr instanceof LambdaExprMirror) {
@@ -118,13 +130,13 @@ final class ExprCheckHelper {
     }
 
     private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc) {
-        MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, infCtx);
+        MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, this.site, this.infCtx);
         MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
         JMethodSig mostSpecific = argCtDecl.getMethodType();
 
         JTypeMirror actualType = mostSpecific.getReturnType();
 
-        if (argCtDecl == infer.FAILED_INVOCATION && this.phase.isInvocation()) {
+        if (argCtDecl == infer.FAILED_INVOCATION) {
             throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
         } else if (argCtDecl == infer.NO_CTDECL) {
             JTypeMirror fallback = invoc.unresolvedType();
@@ -134,6 +146,10 @@ final class ExprCheckHelper {
             // else it's ts.UNRESOLVED
             invoc.setInferredType(fallback);
             invoc.setMethodType(infer.NO_CTDECL);
+        }
+
+        if (site != null) {
+            site.maySkipInvocation(nestedSite.canSkipInvocation());
         }
 
         // now if the return type of the arg is polymorphic and unsolved,
@@ -154,10 +170,14 @@ final class ExprCheckHelper {
         return true;
     }
 
-    private @NonNull JClassType getProbablyFunctItfType(final JTypeMirror targetType, ExprMirror expr) {
+    private @Nullable JClassType getProbablyFunctItfType(final JTypeMirror targetType, ExprMirror expr) {
         JClassType asClass;
-        if (targetType instanceof InferenceVar) {
-            asClass = asClassType(softSolve(targetType));
+        if (targetType instanceof InferenceVar && site != null) {
+            if (site.isInFinalInvocation()) {
+                asClass = asClassType(softSolve(targetType)); // null if not funct itf
+            } else {
+                return null; // defer
+            }
         } else {
             asClass = asClassType(targetType);
         }
@@ -337,7 +357,7 @@ final class ExprCheckHelper {
                 // as dependencies between these new variables and the inference variables in T.
 
                 if (phase.isInvocation()) {
-                    JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, infCtx);
+                    JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, site, infCtx);
                     completeMethodRefInference(mref, nonWildcard, fun, sig, false);
                 }
             }

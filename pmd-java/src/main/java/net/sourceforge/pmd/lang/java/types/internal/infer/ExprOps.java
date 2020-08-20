@@ -258,10 +258,10 @@ final class ExprOps {
         }
     }
 
-    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl, InferenceContext outerCtx) {
+    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl, MethodCallSite outerSite, @Nullable InferenceContext outerCtx) {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
         wrapper.setMethodType(ctdecl);
-        MethodCallSite site = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), outerCtx);
+        MethodCallSite site = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), outerSite, outerCtx);
         return infer.determineInvocationTypeOrFail(site).getMethodType();
     }
 

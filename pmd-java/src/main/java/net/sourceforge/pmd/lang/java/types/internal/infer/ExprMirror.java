@@ -309,18 +309,18 @@ public interface ExprMirror {
 
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
-            private final boolean argsAreAllRelevant;
+            private final boolean canSkipInvocation;
             private final boolean needsUncheckedConversion;
             private final boolean failed;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
-                         boolean argsAreAllRelevant,
+                         boolean canSkipInvocation,
                          boolean needsUncheckedConversion,
                          boolean failed) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
-                this.argsAreAllRelevant = argsAreAllRelevant;
+                this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
             }
@@ -332,15 +332,15 @@ public interface ExprMirror {
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, argsAreAllRelevant, needsUncheckedConversion, failed);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed);
             }
 
             MethodCtDecl asFailed() {
                 return withMethod(methodType, true);
             }
 
-            boolean areAllArgsRelevant() {
-                return argsAreAllRelevant;
+            boolean canSkipInvocation() {
+                return canSkipInvocation;
             }
 
             MethodResolutionPhase getResolvePhase() {
