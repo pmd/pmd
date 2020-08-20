@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
 import org.mockito.Mockito.*
+import org.mockito.Mockito
 
+
+// kept out of TypeTestUtil so as not to import Mockito there
 
 fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilationUnit, TypeInferenceSpy> {
     val spy = spy(typeInfLogger)
@@ -18,9 +21,16 @@ fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilati
     return Pair(acu, TypeInferenceSpy(spy, acu.typeSystem))
 }
 
-data class TypeInferenceSpy(val spy: TypeInferenceLogger, val ts: TypeSystem) {
+/**
+ * Spies on the logger.
+ *
+ * @property spy A [Mockito.spy], you can call methods of mockito there
+ */
+data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSystem) {
     private fun shouldHaveNoErrors() {
         verify(spy, never()).ambiguityError(any(), any(), any())
+        verify(spy, never()).noApplicableCandidates(any())
+        verify(spy, never()).noCompileTimeDeclaration(any())
         verify(spy, never()).fallbackInvocation(any(), any())
     }
 
@@ -28,6 +38,12 @@ data class TypeInferenceSpy(val spy: TypeInferenceLogger, val ts: TypeSystem) {
         this.shouldHaveNoErrors()
         TypeDslOf(ts).block()
         this.shouldHaveNoErrors()
+    }
+
+    fun shouldTriggerMissingCtDecl(block: TypeDslMixin.() -> Unit) {
+        this.shouldHaveNoErrors()
+        TypeDslOf(ts).block()
+        verify(spy, times(1)).noCompileTimeDeclaration(any())
     }
 }
 

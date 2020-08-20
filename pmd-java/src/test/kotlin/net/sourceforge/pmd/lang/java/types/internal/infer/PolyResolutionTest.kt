@@ -89,8 +89,9 @@ class PolyResolutionTest : ProcessorTestSpec({
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             class Foo {{
+                String packageName = "", className = "";
                 String.format("L%s%s%s;",
-                              binaryToInternal(packageName),
+                              packageName,
                               (packageName.length() > 0 ? "/" : ""),
                               className);
             }}

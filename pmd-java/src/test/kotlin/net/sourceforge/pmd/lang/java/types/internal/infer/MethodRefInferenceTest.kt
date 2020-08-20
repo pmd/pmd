@@ -359,9 +359,13 @@ class MethodRefInferenceTest : ProcessorTestSpec({
         val t_Archive = acu.firstEnclosingType()
         val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
-        spy.shouldBeOk {
+        spy.shouldTriggerMissingCtDecl {
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
             mref shouldHaveType ts.UNRESOLVED_TYPE
+            acu.firstMethodCall().methodType shouldBe ts.UNRESOLVED_METHOD
+            acu.firstMethodCall().overloadSelectionInfo.apply {
+                isFailed shouldBe true
+            }
         }
     }
 
