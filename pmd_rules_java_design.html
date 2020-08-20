@@ -3463,7 +3463,7 @@ within those methods.</p>
   <tbody>
     <tr>
       <td>ignoredAnnotations</td>
-      <td>lombok.Setter | lombok.Getter | lombok.Builder | lombok.Data | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor | lombok.Value | lombok.NoArgsConstructor | lombok.experimental.Delegate</td>
+      <td>lombok.Setter | lombok.Getter | lombok.Builder | lombok.Data | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor | lombok.Value | lombok.NoArgsConstructor | lombok.experimental.Delegate | lombok.EqualsAndHashCode</td>
       <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
@@ -3489,7 +3489,7 @@ within those methods.</p>
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/SingularField"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredAnnotations"</span> <span class="na">value=</span><span class="s">"lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|lombok.experimental.Delegate"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredAnnotations"</span> <span class="na">value=</span><span class="s">"lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|lombok.experimental.Delegate|lombok.EqualsAndHashCode"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkInnerClasses"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"disallowNotAssignment"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>

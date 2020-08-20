@@ -1459,6 +1459,7 @@ which was introduced in PMD 6.26.0.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2471">#2471</a>: [java] New Rule: AvoidReassigningCatchVariables</li>
       <li><a href="https://github.com/pmd/pmd/issues/2668">#2668</a>: [java] UnusedAssignment false positives</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2673">#2673</a>: [java] UnusedPrivateField and SingularField false positive with lombok annotation EqualsAndHashCode</li>
       <li><a href="https://github.com/pmd/pmd/issues/2684">#2684</a>: [java] UnusedAssignment FP in try/catch</li>
       <li><a href="https://github.com/pmd/pmd/issues/2686">#2686</a>: [java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes</li>
     </ul>
@@ -1534,6 +1535,7 @@ includes all code in the following packages, and their subpackages:
   <li><a href="https://github.com/pmd/pmd/pull/2656">#2656</a>: [all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2659">#2659</a>: [java] StringToString can not detect the case: getStringMethod().toString() - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2662">#2662</a>: [java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase()) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2674">#2674</a>: [java] add lombok.EqualsAndHashCode in AbstractLombokAwareRule - <a href="https://github.com/berkam">berkam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
