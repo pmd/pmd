@@ -1,0 +1,35 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [classdef]                              1         8
+    [LC]                                    10        11
+L2
+    [methods]                               2         8
+L3
+    [function]                              3         10
+    [\[]                                    12        12
+    [obj]                                   13        15
+    [,]                                     16        16
+    [c]                                     18        18
+    [,]                                     19        19
+    [t]                                     20        20
+    [,]                                     21        21
+    [s]                                     23        23
+    [\]]                                    25        25
+    [=]                                     27        27
+    [Classification]                        29        42
+    [(]                                     43        43
+    [obj]                                   45        47
+    [,]                                     48        48
+    [m]                                     49        49
+    [,]                                     50        50
+    [t]                                     51        51
+    [,]                                     52        52
+    [cm]                                    54        55
+    [)]                                     57        57
+L4
+    [end]                                   3         5
+L5
+    [end]                                   2         4
+L6
+    [end]                                   1         3
+EOF
