@@ -105,11 +105,12 @@ enum ReductionStep {
 
     /**
      * Sequence of steps to use in order when solving.
-     * This is for compatibility with Javac, they implement it this way,
-     * though I don't know why..
      */
-    static final List<ReductionStep> WAVES =
-            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED);
+    static final List<List<ReductionStep>> WAVES =
+        listOf(
+            listOf(EQ, LOWER, UPPER, CAPTURED),
+            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
+    //                        ^^^^^^
 
     final BoundKind kind;
 

@@ -362,12 +362,16 @@ final class InferenceContext {
 
             boolean progress = true;
             //repeat until all variables are solved
+            outer:
             while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
                 progress = false;
-                if (!solveBasic(varsToSolve).isEmpty()) {
-                    incorporate();
-                    progress = true;
-                    callListeners();
+                for (List<ReductionStep> wave : ReductionStep.WAVES) {
+                    if (solveBatchProgressed(varsToSolve, wave)) {
+                        incorporate();
+                        progress = true;
+                        callListeners();
+                        continue outer;
+                    }
                 }
             }
         }
@@ -377,19 +381,20 @@ final class InferenceContext {
      * Tries to solve as much of varsToSolve as possible using some reduction steps.
      * Returns the set of solved variables during this step.
      */
-    private Set<InferenceVar> solveBasic(Set<InferenceVar> varsToSolve) {
-        Set<InferenceVar> solvedVars = new LinkedHashSet<>();
+    private boolean solveBatchProgressed(Set<InferenceVar> varsToSolve, List<ReductionStep> wave) {
+        boolean progress = false;
         for (InferenceVar ivar : intersect(varsToSolve, freeVars)) {
-            for (ReductionStep step : ReductionStep.WAVES) {
+            for (ReductionStep step : wave) {
                 if (step.accepts(ivar, this)) {
                     ivar.setInst(step.solve(ivar, this));
                     onVarInstantiated(ivar);
-                    solvedVars.add(ivar);
+                    progress = true;
                     break;
                 }
             }
         }
-        return solvedVars;
+
+        return progress;
     }
 
     public boolean isEmpty() {

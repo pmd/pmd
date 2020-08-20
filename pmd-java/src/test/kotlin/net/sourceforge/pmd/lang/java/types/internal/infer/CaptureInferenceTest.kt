@@ -295,6 +295,8 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
     parserTest("Weird capture bug") {
 
+        logTypeInference(true)
+
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
