@@ -448,7 +448,7 @@ public final class TypeOps {
         /**
          * T and S are primitive types, and T is convertible to S by
          * widening conversion. For example, {@code int} can be widened
-         * to {@code long}
+         * to {@code long}.
          */
         PRIMITIVE_WIDENING,
 
@@ -570,8 +570,7 @@ public final class TypeOps {
      *
      * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
      */
-    // todo make package-private, lub has been moved
-    public static Convertibility typeArgContains(JTypeMirror t, JTypeMirror s) {
+    static Convertibility typeArgContains(JTypeMirror t, JTypeMirror s) {
         // the contains relation can be understood intuitively if we
         // represent types as ranges on a line:
 
@@ -594,14 +593,13 @@ public final class TypeOps {
             return Convertibility.SUBTYPING;
         }
 
-        //        if (t instanceof JWildcardType && s instanceof JTypeVar) {
-        //            if (((JTypeVar) s).isCaptureOf((JWildcardType) t)) {
-        //                return true;
-        //            }
-        //        }
-
         if (t instanceof JWildcardType) {
             JWildcardType tw = (JWildcardType) t;
+
+            // if (s instanceof JTypeVar && ((JTypeVar) s).isCaptureOf(tw)) {
+            //     return Convertibility.SUBTYPING;
+            // }
+
             if (tw.isUpperBound()) {
                 //  U(S) <: U(T),  we already know L(T) <: L(S), because L(T) is bottom
                 return isSubtype(wildUpperBound(s), tw.asUpperBound());

@@ -19,8 +19,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
  * <p>This implements JTypeMirror for convenience, however, it may only
  * occur as a type argument, and as such some of the behaviour of JTypeMirror
  * is undefined: {@link #isSubtypeOf(JTypeMirror) subtyping} and {@link #getErasure() erasure}.
- * A restricted form of subtyping, called {@link TypeOps#typeArgContains(JTypeMirror, JTypeMirror) containment},
- * exists for wildcard types.
  */
 public interface JWildcardType extends JTypeMirror {
 
