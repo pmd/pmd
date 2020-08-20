@@ -313,7 +313,6 @@ final class ExprCheckHelper {
         return true;
     }
 
-    // only for inexact method refs
     private void solveInexactMethodRefCompatibility(MethodRefMirror mref, JClassType nonWildcard, JMethodSig fun) {
         // Otherwise, a search for a compile-time declaration is performed, as specified in §15.13.1.
         @Nullable MethodCtDecl ctdecl0 = infer.exprOps.findInexactMethodRefCompileTimeDecl(mref, fun);
@@ -469,7 +468,7 @@ final class ExprCheckHelper {
         // i) for all i (1 ≤ i ≤ n), ‹Fi = Gi›
         if (lambda.isExplicitlyTyped()
             && !areSameTypes(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes(), true)) {
-            return false;
+            throw ResolutionFailedException.mismatchedLambdaParameters(infer.LOG, groundFun, lambda.getExplicitParameterTypes(), lambda);
         }
 
         // and ii) ‹T' <: T›.

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ResolutionFailure.UNKNOWN;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -146,6 +148,12 @@ final class ResolutionFailedException extends RuntimeException {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(location.getLocation(),
                                                                  "Lambda cannot target non-void method"));
+    }
+
+    static ResolutionFailedException mismatchedLambdaParameters(TypeInferenceLogger logger, JMethodSig expected, List<JTypeMirror> found, ExprMirror location) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(location.getLocation(),
+                                                                 "Mismatched lambda parameter types: found " + found + " cannot be parameters of " + expected));
     }
 
     static ResolutionFailedException cannotInvokeInstanceMethodOnPrimitive(TypeInferenceLogger logger, JTypeMirror actual, ExprMirror location) {
