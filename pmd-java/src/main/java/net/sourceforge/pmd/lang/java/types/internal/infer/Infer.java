@@ -583,11 +583,15 @@ public final class Infer {
                 }
             }
 
-            infCtx.solve();
+            infCtx.solve(); // this may throw for incompatible bounds
 
             // instantiate vars and return
             return InferenceContext.finalGround(infCtx.mapToIVars(m));
         } finally {
+            // Note that even if solve succeeded, listeners checking deferred
+            // bounds may still throw ResolutionFailedException, in which case
+            // by the laws of finally, this exception will be thrown and the
+            // return value will be ignored.
             infCtx.callListeners();
         }
     }

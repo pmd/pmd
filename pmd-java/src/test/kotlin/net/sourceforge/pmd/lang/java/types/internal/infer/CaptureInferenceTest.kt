@@ -78,6 +78,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test method ref on captured thing") {
+        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
            import java.util.List;

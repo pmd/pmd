@@ -321,6 +321,8 @@ final class InferenceContext {
 
     /**
      * Runs the incorporation hooks registered for the free vars.
+     *
+     * @throws ResolutionFailedException If some propagated bounds are incompatible
      */
     void incorporate() {
         if (incorporationActions.isEmpty()) {
@@ -345,10 +347,17 @@ final class InferenceContext {
         }
     }
 
+    /**
+     * @throws ResolutionFailedException Because it calls {@link #incorporate()}
+     */
     void solve() {
         solve(new GraphWalk(this));
     }
 
+    /**
+     * Solve a single var, this does not solve its dependencies, so that
+     * if some bounds are not ground, instantiation will be wrong.
+     */
     void solve(InferenceVar var) {
         solve(new GraphWalk(var));
     }

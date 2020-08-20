@@ -629,54 +629,54 @@ public final class TypeOps {
 
 
     /**
-     * Returns true if {@code S <= T}, ie "T contains S".
+     * Returns true if {@code T <= S}, ie "S contains T".
      *
-     * <p>T contains S if:
+     * <p>S contains T if:
      *
-     * <p>{@code L(T) <: L(S) && U(S) <: U(T)}
+     * <p>{@code L(S) <: L(T) && U(T) <: U(S)}
      *
      * <p>This only makes sense for type arguments, it's a component of
      * subtype checks for parameterized types:
      *
-     * <p>{@code C<T> <: C<S> if T <= S}
+     * <p>{@code C<S> <: C<T> if S <= T}
      *
      * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
      */
-    static Convertibility typeArgContains(JTypeMirror t, JTypeMirror s) {
+    static Convertibility typeArgContains(JTypeMirror s, JTypeMirror t) {
         // the contains relation can be understood intuitively if we
         // represent types as ranges on a line:
 
-        // ⊥ ---------L(T)---L(S)------U(S)-----U(T)---> Object
-        // range of T   [-------------------------]
-        // range of S          [---------]
+        // ⊥ ---------L(S)---L(T)------U(T)-----U(S)---> Object
+        // range of S   [-------------------------]
+        // range of T          [---------]
 
-        // here T contains S because its range is greater
+        // here S contains T because its range is greater
 
         // since a wildcard is either "super" or "extends", in reality
-        // either L(T) = ⊥, or U(T) = Object.
+        // either L(S) = ⊥, or U(S) = Object.
 
-        // meaning when T != S, we only have two scenarios where S <= T:
+        // meaning when S != T, we only have two scenarios where T <= S:
 
-        //      ⊥ -------U(S)-----U(T)------> Object   (L(S) = L(T) = ⊥)
-        //      ⊥ -------L(T)-----L(S)------> Object   (U(S) = U(T) = Object)
+        //      ⊥ -------U(T)-----U(S)------> Object   (L(T) = L(S) = ⊥)
+        //      ⊥ -------L(S)-----L(T)------> Object   (U(T) = U(S) = Object)
 
-        if (isSameType(t, s, true)) {
-            // T <= T
+        if (isSameType(s, s, true)) {
+            // S <= S
             return Convertibility.IDENTITY;
         }
 
-        if (t instanceof JWildcardType) {
-            JWildcardType tw = (JWildcardType) t;
+        if (s instanceof JWildcardType) {
+            JWildcardType tw = (JWildcardType) s;
 
             // if (s instanceof JTypeVar && ((JTypeVar) s).isCaptureOf(tw)) {
             //     return Convertibility.SUBTYPING;
             // }
 
             if (tw.isUpperBound()) {
-                //  U(S) <: U(T),  we already know L(T) <: L(S), because L(T) is bottom
+                //  U(T) <: U(S),  we already know L(S) <: L(T), because L(S) is bottom
                 return isConvertible(upperBoundRec(s), tw.asUpperBound());
             } else {
-                // L(T) <: L(S), we already know U(S) <: U(T), because U(T) is top
+                // L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
                 return isConvertible(tw.asLowerBound(), lowerBoundRec(s));
             }
         }
