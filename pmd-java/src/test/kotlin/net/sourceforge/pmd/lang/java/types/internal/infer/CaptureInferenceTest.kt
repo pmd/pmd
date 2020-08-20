@@ -239,9 +239,60 @@ class CaptureInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Weird capture bug") {
+    parserTest("Capture vars should be exploded in typeArgsContains") {
 
-        logTypeInference(true)
+        /*
+        Phase STRICT, NodeStream<T>.<T> union(java.lang.Iterable<? extends NodeStream<? extends T>>) -> NodeStream<T>
+            Context 4,			union(java.lang.Iterable<? extends NodeStream<? extends δ>>) -> NodeStream<δ>
+            ARGUMENTS
+                Checking arg 0 against java.lang.Iterable<? extends NodeStream<? extends δ>>
+                    At:   /*unknown*/:7 :22..7:44
+                    Expr: Arrays.asList(streams)
+                    Phase INVOC_STRICT, java.util.Arrays.<T> asList(T...) -> java.util.List<T>
+                        Context 5,			asList(ε...) -> java.util.List<ε>
+                        RETURN
+                            New bound           (ctx 5):   ε <: NodeStream<? extends δ>
+
+                        ARGUMENTS
+                            Checking arg 0 against ε[]
+                                At:   /*unknown*/:7 :36..7:43
+                                Expr: streams
+                                New bound           (ctx 5):   ε >: NodeStream<? extends T>
+
+
+                        New bound           (ctx 4):   δ >: capture#103 of ? extends T
+                        Ctx 4 adopts [ε] from ctx 5
+                    Success: asList(ε...) -> java.util.List<ε>
+
+
+            Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
+            Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
+            New bound           (ctx 4):   ε <: NodeStream<? extends capture#103 of ? extends T>
+            Failed: Incompatible bounds: ε <: NodeStream<? extends capture#103 of ? extends T> and ε >: NodeStream<? extends T>
+        FAILED! SAD!
+
+        The problem here is that we have
+
+        ε <: NodeStream<? extends δ>
+        ε >: NodeStream<? extends T>
+
+        For these bounds to be compatible, we must have
+
+        NodeStream<? extends T> <: NodeStream<? extends δ>
+
+        Previously the subtyping check captured the LHS. So we'd actually test
+
+        NodeStream<capture#103 of ? extends T> <: NodeStream<? extends δ>
+
+        This reduces to
+
+        capture#103 of ? extends T <= ? extends δ
+        T <: δ
+
+        This means we must crack the cvar in TypeOps::typeArgContains.
+
+        Possibly, this could be recursive and lead to stackoverflow? Idk
+         */
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """

@@ -613,6 +613,15 @@ public final class TypeOps {
         return type;
     }
 
+    private static JTypeMirror upperBoundRec(JTypeMirror type) {
+        if (type instanceof JWildcardType) {
+            return upperBoundRec(((JWildcardType) type).asUpperBound());
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+            return upperBoundRec(((JTypeVar) type).getUpperBound());
+        }
+        return type;
+    }
+
     private static boolean isTypeRange(JTypeMirror s) {
         return s instanceof JWildcardType
             || s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
@@ -665,10 +674,10 @@ public final class TypeOps {
 
             if (tw.isUpperBound()) {
                 //  U(S) <: U(T),  we already know L(T) <: L(S), because L(T) is bottom
-                return isConvertible(wildUpperBound(s), tw.asUpperBound());
+                return isConvertible(upperBoundRec(s), tw.asUpperBound());
             } else {
                 // L(T) <: L(S), we already know U(S) <: U(T), because U(T) is top
-                return isConvertible(tw.asLowerBound(), wildLowerBound(s));
+                return isConvertible(tw.asLowerBound(), lowerBoundRec(s));
             }
         }
 

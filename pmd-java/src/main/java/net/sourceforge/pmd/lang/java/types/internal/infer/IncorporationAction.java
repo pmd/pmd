@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
+import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameType;
 
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
@@ -123,16 +123,16 @@ abstract class IncorporationAction {
                       : checkSubtype(t, s);
         }
 
-        private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
+        private static boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
             JTypeMirror key = cacheKey(t);
             if (key == null) { // don't cache result
-                return t.isConvertibleTo(s).somehow();
+                return isConvertible(t, s).somehow();
             }
 
             Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
             if (supertypesOfT.contains(s)) {
                 return true;
-            } else if (t.isConvertibleTo(s).somehow()) {
+            } else if (isConvertible(t, s).somehow()) {
                 supertypesOfT.add(s);
                 return true;
             }
