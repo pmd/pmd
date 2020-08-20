@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areSameTypes;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.asClassType;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAny;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -19,7 +21,6 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
@@ -27,7 +28,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 final class ExprCheckHelper {
 
@@ -149,21 +149,25 @@ final class ExprCheckHelper {
         return false;
     }
 
-    private @Nullable JClassType getFunTypeOrDefer(JTypeMirror targetType, ExprMirror expr) {
+    private @Nullable JClassType getFunTypeOrDefer(final JTypeMirror targetType, ExprMirror expr) {
+
+        JClassType asClass;
         if (targetType instanceof InferenceVar) {
-            JClassType earlyBound = TypeOps.asClassType(ts.glb(((InferenceVar) targetType).getBounds(BoundKind.UPPER)));
-            if (earlyBound == null) {
-                infCtx.addInstantiationListener(setOf(targetType), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
+            InferenceVar ivar = (InferenceVar) targetType;
+            ivar.getCtx().solve(ivar);
+            if (ivar.getInst() == null) {
+                infCtx.addInstantiationListener(setOf(ivar), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
                 return null;
             }
-            return earlyBound;
+            asClass = asClassType(ivar.getInst());
         } else {
-            JClassType asClass = TypeOps.asClassType(targetType);
-            if (asClass == null) {
-                throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
-            }
-            return asClass;
+            asClass = asClassType(targetType);
         }
+
+        if (asClass == null) {
+            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
+        }
+        return asClass;
     }
 
     private boolean isMethodRefCompatible(@NonNull JClassType functionalItf, MethodRefMirror mref) {
@@ -288,10 +292,10 @@ final class ExprCheckHelper {
         // at least one of the method's type parameters, then:
         if (mref.getExplicitTypeArguments().isEmpty()
             && ctdecl.isGeneric()
-            && TypeOps.mentionsAny(ctdecl.internalApi().adaptedMethod().getReturnType(), ctdecl.getTypeParameters())) {
+            && mentionsAny(ctdecl.internalApi().adaptedMethod().getReturnType(), ctdecl.getTypeParameters())) {
 
             // If R mentions one of the type parameters of the function type, the constraint reduces to false.
-            if (TypeOps.mentionsAny(r, fun.getTypeParameters())) {
+            if (mentionsAny(r, fun.getTypeParameters())) {
                 // Rationale from JLS
                 // In this case, a constraint in terms of R might lead an inference variable to
                 // be bound by an out-of-scope type variable. Since instantiating an inference
