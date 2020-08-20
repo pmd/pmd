@@ -1507,17 +1507,26 @@ public final class TypeOps {
      * }</pre>
      */
     public static Set<JTypeMirror> mostSpecific(Collection<? extends JTypeMirror> set) {
-        LinkedHashSet<JTypeMirror> result = new LinkedHashSet<>(set.size());
+        Set<JTypeMirror> result = new LinkedHashSet<>(set.size());
+
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (w != v && isSubtypePure(w, v).toBoolean(false)) {
+                if (!w.equals(v) && isSubtypePure(w, v).toBoolean(false)
+                    && !isUncheckedNoWarning(v, w)) {
                     continue vLoop;
                 }
             }
             result.add(v);
         }
         return result;
+    }
+
+    // List -> List<?>
+    // This is not subtyping, strictly speaking, and should be avoided in mostSpecific
+    // This assumes isSubtype(w, v) != NO
+    private static boolean isUncheckedNoWarning(JTypeMirror v, JTypeMirror w) {
+        return w.isRaw() && Objects.equals(w.getSymbol(), v.getSymbol());
     }
 
     // </editor-fold>

@@ -32,15 +32,15 @@ class TypeOpsTest : FunSpec({
             test("Test most specific") {
 
                 checkAll(ts.subtypesArb(false)) { (t, s) ->
-                    TypeOps.mostSpecific(setOf(t, s)).shouldContainExactly(s)
+                    TypeOps.mostSpecific(setOf(t, s)).shouldContainExactly(t)
                 }
             }
 
             test("Test most when types are equal") {
 
-                checkAll(ts.subtypesArb(false)) { (t, s) ->
-                    TypeOps.mostSpecific(setOf(t, s)).shouldContainExactly(s)
-                }
+                checkMostSpecific(
+                        input = listOf(t_AbstractList, t_AbstractList),
+                        output = listOf(t_AbstractList))
             }
 
             test("Test most specific unchecked") {
