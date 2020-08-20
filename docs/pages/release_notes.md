@@ -57,6 +57,8 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
+##### For removal
+
 *   {% jdoc !!core::Rule#getParserOptions() %}
 *   {% jdoc !!core::lang.Parser#getParserOptions() %}
 *   {% jdoc !!core::lang.AbstractParser %}
@@ -83,6 +85,8 @@ This is a {{ site.pmd.release_type }} release.
     *   {% jdoc_package java::lang.java.dfa %}
     *   {% jdoc_package core::lang.dfa %}
     *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
+
+*   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
 
 ### External Contributions
 
