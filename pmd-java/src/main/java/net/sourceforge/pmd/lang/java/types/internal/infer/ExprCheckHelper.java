@@ -154,7 +154,6 @@ final class ExprCheckHelper {
         JClassType asClass;
         if (targetType instanceof InferenceVar) {
             InferenceVar ivar = (InferenceVar) targetType;
-            ivar.getCtx().solve(ivar);
             if (ivar.getInst() == null) {
                 infCtx.addInstantiationListener(setOf(ivar), solvedCtx -> isCompatible(solvedCtx.ground(targetType), expr));
                 return null;
