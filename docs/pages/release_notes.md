@@ -48,6 +48,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   [#724](https://github.com/pmd/pmd/issues/724): \[core] Avoid parsing rulesets multiple times
     *   [#1962](https://github.com/pmd/pmd/issues/1962): \[core] Simplify Report API
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
+    *   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently
     *   [#2690](https://github.com/pmd/pmd/pull/2690): \[core] Fix java7 compatibility
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
