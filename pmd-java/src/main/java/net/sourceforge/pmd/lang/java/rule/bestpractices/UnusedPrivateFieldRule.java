@@ -51,7 +51,8 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
-                || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
+                || hasIgnoredAnnotation((Annotatable) accessNodeParent)
+                || hasIgnoredAnnotation(node)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
