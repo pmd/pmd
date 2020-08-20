@@ -1,5 +1,5 @@
     [Image] or [Truncated image[            Bcol      Ecol
-L3
+L7
     [var]                                   1         3
     [x]                                     5         5
     [=]                                     7         7

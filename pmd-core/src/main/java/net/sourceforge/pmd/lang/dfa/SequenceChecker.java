@@ -19,7 +19,9 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class SequenceChecker {
     private static final Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
     private static Status root;

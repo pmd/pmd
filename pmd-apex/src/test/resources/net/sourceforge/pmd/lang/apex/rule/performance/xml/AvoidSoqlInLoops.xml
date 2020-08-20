@@ -101,4 +101,19 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] AvoidSoqlInLoops false positive for SOQL with in For-Loop #2598</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for(NAMESPACE__CustomObject__c customObject : DatabaseUtility.query([Select Id FROM NAMESPACE__CustomObject__c where id IN :setIds])) // <-- violation is reported here
+        {
+            // …
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

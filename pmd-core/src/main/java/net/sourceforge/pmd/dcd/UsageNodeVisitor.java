@@ -145,7 +145,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
             if (options.isIgnoreFieldInlinable()) {
                 if (Modifier.isFinal(fieldNode.getMember().getModifiers())
                         && fieldNode.getMember().getType().isPrimitive()
-                        || fieldNode.getMember().getType().getName().equals("java.lang.String")) {
+                        || "java.lang.String".equals(fieldNode.getMember().getType().getName())) {
                     ignore("field inlinable", fieldNode);
                     log = false;
                 }
@@ -190,7 +190,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 
         final Method method = node.getMember();
 
-        return method.getName().equals("main") && Modifier.isPublic(method.getModifiers())
+        return "main".equals(method.getName()) && Modifier.isPublic(method.getModifiers())
                 && Modifier.isStatic(method.getModifiers()) && method.getReturnType() == Void.TYPE
                 && method.getParameterTypes().length == 1 && method.getParameterTypes()[0].isArray()
                 && method.getParameterTypes()[0].getComponentType().equals(java.lang.String.class);

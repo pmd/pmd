@@ -26,7 +26,7 @@ object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */
 typealias NodeSpec<N> = TreeNodeWrapper<Node, N>.() -> Unit
 
-/** A function feedable to [io.kotlintest.should], which fails the test if an [AssertionError] is thrown. */
+/** A function feedable to [io.kotest.matchers.should], which fails the test if an [AssertionError] is thrown. */
 typealias Assertions<M> = (M) -> Unit
 
 /** A shorthand for [baseShouldMatchSubtree] providing the [NodeTreeLikeAdapter]. */
@@ -37,7 +37,7 @@ inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = fa
 /**
  * Returns [an assertion function][Assertions] asserting that its parameter conforms to the given [NodeSpec].
  *
- * Use it with [io.kotlintest.should], e.g. `node should matchNode<ASTExpression> {}`.
+ * Use it with [io.kotest.matchers.should], e.g. `node should matchNode<ASTExpression> {}`.
  *
  * See also the samples on [TreeNodeWrapper].
  *
@@ -50,7 +50,7 @@ inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = fa
  *                 Assertions may consist of [NWrapper.child] calls, which perform the same type of node
  *                 matching on a child of the tested node.
  *
- * @return A matcher for AST nodes, suitable for use by [io.kotlintest.should].
+ * @return A matcher for AST nodes, suitable for use by [io.kotest.matchers.should].
  */
 inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>)
         : Assertions<Node?> = { it.shouldMatchNode(ignoreChildren, nodeSpec) }

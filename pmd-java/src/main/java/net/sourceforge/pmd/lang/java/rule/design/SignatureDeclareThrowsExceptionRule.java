@@ -98,7 +98,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     private boolean isJUnitTest(Class<?> clazz) {
-        return clazz.getName().equals("junit.framework.Test");
+        return "junit.framework.Test".equals(clazz.getName());
     }
 
     @Override
@@ -137,8 +137,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
             return true;
         } else {
-            return methodDeclaration.getName().equals("setUp")
-                    || methodDeclaration.getName().equals("tearDown");
+            return "setUp".equals(methodDeclaration.getName())
+                    || "tearDown".equals(methodDeclaration.getName());
         }
     }
 

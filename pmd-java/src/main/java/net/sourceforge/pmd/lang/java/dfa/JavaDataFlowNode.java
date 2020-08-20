@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
+/**
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class JavaDataFlowNode extends AbstractDataFlowNode {
 
     public JavaDataFlowNode(List<DataFlowNode> dataFlow, Node node) {

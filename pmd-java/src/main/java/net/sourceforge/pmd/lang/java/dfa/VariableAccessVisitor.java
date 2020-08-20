@@ -36,7 +36,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * @since Created on 14.07.2004
  * @author raik, Sven Jacob
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     public void compute(ASTMethodDeclaration node) {
