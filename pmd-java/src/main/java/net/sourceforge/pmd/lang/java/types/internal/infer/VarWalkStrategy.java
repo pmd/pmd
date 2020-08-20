@@ -63,7 +63,9 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
         Iterator<Set<InferenceVar>> buildGraphIterator(InferenceContext ctx) {
 
             Set<InferenceVar> freeVars = ctx.getFreeVars();
-            if (freeVars.size() == 1) {
+            if (freeVars.isEmpty()) {
+                return Collections.emptyIterator();
+            } else if (freeVars.size() == 1) {
                 // common case
                 return IteratorUtil.singletonIterator(freeVars);
             }

@@ -644,16 +644,16 @@ public final class Infer {
                     infCtx.addVar((JTypeVar) targ);
                 }
             }
+            resultType = infCtx.mapToIVars(resultType);
         }
 
-        JTypeMirror mapped = infCtx.mapToIVars(resultType);
         JTypeMirror actualRes = site.getExpectedType();
         if (actualRes == null) {
             actualRes = ts.OBJECT;
         }
 
-        if (mapped instanceof InferenceVar) {
-            InferenceVar retVar = (InferenceVar) mapped;
+        if (resultType instanceof InferenceVar) {
+            InferenceVar retVar = (InferenceVar) resultType;
             if (needsEagerInstantiation(retVar, actualRes, infCtx)) {
                 infCtx.solve(retVar);
                 infCtx.callListeners();
@@ -665,8 +665,8 @@ public final class Infer {
             }
         }
 
-        if (!isConvertible(mapped, outerInfCtx.mapToIVars(actualRes), true).evenUnchecked()) {
-            throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), mapped, actualRes);
+        if (!isConvertible(resultType, outerInfCtx.mapToIVars(actualRes), true).evenUnchecked()) {
+            throw ResolutionFailedException.incompatibleReturn(LOG, site.getExpr(), resultType, actualRes);
         }
 
         return resultType;
