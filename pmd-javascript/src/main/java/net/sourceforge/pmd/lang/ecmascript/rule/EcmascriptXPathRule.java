@@ -12,7 +12,10 @@ import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
+/**
+ * @deprecated Parser options are deprecated, use {@link XPathRule} directly
+ */
+@Deprecated
 public class EcmascriptXPathRule extends XPathRule {
 
     private static final PropertyDescriptor<Boolean> RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;

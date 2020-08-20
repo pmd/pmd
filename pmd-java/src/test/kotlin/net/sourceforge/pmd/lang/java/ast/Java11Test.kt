@@ -1,5 +1,8 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest

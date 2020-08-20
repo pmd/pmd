@@ -18,7 +18,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * data flow and 2 stacks to link the nodes to each other.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class Structure {
     private static final Logger LOGGER = Logger.getLogger(Structure.class.getName());
 

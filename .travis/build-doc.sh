@@ -88,6 +88,7 @@ function generate_jekyll_doc() {
 
     echo -e "\n\n"
     log_info "Building documentation using jekyll..."
+    bundle config set --local path vendor/bundle
     bundle install
     bundle exec jekyll build
 

@@ -25,12 +25,19 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  */
 public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
+    @Deprecated
     public static final BooleanProperty COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty EXPAND_ENTITY_REFERENCES_DESCRIPTOR = XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty IGNORING_COMMENTS_DESCRIPTOR = XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty NAMESPACE_AWARE_DESCRIPTOR = XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty VALIDATING_DESCRIPTOR = XmlParserOptions.VALIDATING_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public AbstractXmlRule() {

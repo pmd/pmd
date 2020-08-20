@@ -85,6 +85,11 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
         doTest("usingDirectives", "_ignored", ignoreUsings());
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
     private Properties ignoreUsings() {
         return properties(true);
     }

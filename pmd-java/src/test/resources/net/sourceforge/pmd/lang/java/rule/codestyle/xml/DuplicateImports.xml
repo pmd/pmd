@@ -106,4 +106,15 @@ public class DuplicateImports {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] DuplicateImports reported for the same import... and import static... #2546</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import charles.X.*;
+import static charles.X.*;
+
+public class DuplicateImports {}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -36,7 +36,7 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
      * in {@code <? extends Integer>}.
      */
     public boolean isUpperBound() {
-        return jjtGetFirstToken().toString().equals("extends");
+        return "extends".equals(jjtGetFirstToken().toString());
     }
 
 
