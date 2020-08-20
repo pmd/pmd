@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertible;
+import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleThroughBoxing;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
@@ -455,7 +455,7 @@ final class PolyResolution {
      * rules for ternary operators to an arbitrary number of branches.
      */
     private static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes) {
-        // There is a corner case with constant values
+        // There is a corner case with constant values, which we don't handle.
 
         if (branchTypes.isEmpty()) {
             return ts.OBJECT;
@@ -472,7 +472,7 @@ final class PolyResolution {
         List<JTypeMirror> unboxed = map(branchTypes, JTypeMirror::unbox);
         if (all(unboxed, JTypeMirror::isPrimitive)) {
             for (JPrimitiveType a : ts.allPrimitives) {
-                if (all(unboxed, it -> it.isConvertibleTo(a).bySubtyping())) {
+                if (all(unboxed, it -> it.isConvertibleTo(a).naturally())) {
                     // then all types are convertible to a
                     return a;
                 }
@@ -481,8 +481,8 @@ final class PolyResolution {
 
         List<JTypeMirror> boxed = map(branchTypes, JTypeMirror::box);
         for (JTypeMirror a : boxed) {
-            if (all(unboxed, it -> isConvertible(it, a))) {
-                // then all types are convertible to a
+            if (all(unboxed, it -> isConvertibleThroughBoxing(it, a))) {
+                // then all types are convertible to a through boxing
                 return a;
             }
         }

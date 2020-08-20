@@ -66,23 +66,38 @@ public interface JTypeMirror extends JTypeVisitable {
 
 
     /**
-     * Returns true if this type is the same type or a subtype of the given type.
+     * Returns true if this type is the same type or a subtype of the
+     * given type. Note that for convenience, this returns true if both
+     * types are primitive, and this type is convertible to the other
+     * through primitive widening. See {@link Convertibility#bySubtyping()}.
+     *
+     * @throws NullPointerException If the argument is null
      */
-    default boolean isSubtypeOf(JTypeMirror other) {
-        return isConvertibleTo(other).bySubtyping();
+    default boolean isSubtypeOf(@NonNull JTypeMirror other) {
+        return isConvertibleTo(other).naturally();
     }
 
-
-    default Convertibility isConvertibleTo(JTypeMirror other) {
-        return other == null ? Convertibility.NO : TypeOps.isSubtype(this, other);
+    /**
+     * Tests this type's convertibility to the other type. See
+     * {@link Convertibility} for a description of the results.
+     *
+     * <p>Note that this does not check for boxing/unboxing conversions.
+     * But notice that a type {@code t} is convertible by boxing conversion
+     * to another type {@code s}, if {@code t.box().isConvertibleTo(s).somehow()}.
+     * The same story goes for
+     *
+     * @throws NullPointerException If the argument is null
+     */
+    default Convertibility isConvertibleTo(@NonNull JTypeMirror other) {
+        return TypeOps.isConvertible(this, other);
     }
 
 
     /**
      * Returns the set of (nominal) supertypes of this type.
      * If this is a primitive type, returns the set of other
-     * primitives to which this type is convertible (eg for
-     * {@code long} returns {@code {long, float, double}}.
+     * primitives to which this type is convertible by widening
+     * conversion (eg for {@code long} returns {@code {long, float, double}}).
      *
      * <p>The returned set always contains this type, so is
      * never empty. Ordering is stable, though unspecified.

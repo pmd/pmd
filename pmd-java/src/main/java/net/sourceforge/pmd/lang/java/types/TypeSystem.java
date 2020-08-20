@@ -102,7 +102,7 @@ public final class TypeSystem {
      * was attempted but failed and shouldn't be tried again. The symbol
      * is a {@link JClassSymbol}.
      *
-     * <p>Note that {@link TypeOps#isSubtype(JTypeMirror, JTypeMirror)}
+     * <p>Note that {@link TypeOps#isConvertible(JTypeMirror, JTypeMirror)}
      * considers this type a subtype of anything, even primitive types.
      */
     public final JTypeMirror UNRESOLVED_TYPE;
@@ -118,7 +118,7 @@ public final class TypeSystem {
      * A constant to represent a typing error. This would have been
      * reported by a compiler, and is used to propagate errors.
      *
-     * <p>Note that {@link TypeOps#isSubtype(JTypeMirror, JTypeMirror)}
+     * <p>Note that {@link TypeOps#isConvertible(JTypeMirror, JTypeMirror)}
      * considers this type a subtype of anything, even primitive types.
      */
     public final JTypeMirror ERROR_TYPE;

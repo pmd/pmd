@@ -889,10 +889,10 @@ public final class Infer {
 
         // If they are ground, then they must conform to each other else
         // the exception stops the resolution process.
-        Convertibility conversionResult = isConvertible(groundE, groundF, phase.canBox());
-        if (conversionResult == Convertibility.NO) {
+        Convertibility isConvertible = isConvertible(groundE, groundF, phase.canBox());
+        if (isConvertible.never()) {
             throw ResolutionFailedException.incompatibleFormal(LOG, arg, groundE, groundF);
-        } else if (conversionResult == Convertibility.UNCHECKED_WARNING && site != null) {
+        } else if (isConvertible.withUncheckedWarning() && site != null) {
             site.setNeedsUncheckedConversion();
         }
     }
@@ -905,21 +905,20 @@ public final class Infer {
     static Convertibility isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
         if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
             // fast path
-            return Convertibility.SUBTYPING;
+            return Convertibility.IDENTITY;
         }
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
             // then boxing conversions may be useful
-            Convertibility result = TypeOps.isSubtype(exprType.box(), formalType.box());
-            if (result != Convertibility.NO) {
+            Convertibility result = TypeOps.isConvertible(exprType.box(), formalType.box());
+            if (!result.never()) {
                 return result;
             } else {
-                return TypeOps.isSubtype(exprType.unbox(), formalType.unbox());
+                return TypeOps.isConvertible(exprType.unbox(), formalType.unbox());
             }
         }
 
-        // unchecked conversion is allowed even in STRICT
-        return TypeOps.isSubtype(exprType, formalType);
+        return TypeOps.isConvertible(exprType, formalType);
     }
 
     /**
