@@ -188,8 +188,9 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
     }
 
-    parserTest("Test functional interface induced by intersection 2") {
+    parserTest("f:Test functional interface induced by intersection 2") {
         // more dependencies between variables here
+        logTypeInference(true)
 
         val acu = parser.parse("""
             import java.io.Serializable;
@@ -520,6 +521,31 @@ class Scratch {
             class Foo {
                 protected DoubleConsumer emptyConsumer() {
                     return e -> {};
+                }
+            }
+        """.trimIndent())
+
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType DoubleConsumer::class.raw
+        }
+    }
+
+    parserTest("Test early solved functional interface") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.function.DoubleConsumer;
+            import java.util.List;
+            class Foo {
+                public static <T> List<T> singletonList(T o) { return null; }
+                static void ok(List<DoubleConsumer> cs) { }
+                static {
+                    // T must be instantiated to DoubleConsumer during the argument checks,
+                    // otherwise the param `d` has no type and we can't process the body
+                    ok(singletonList(d -> { }));
                 }
             }
         """.trimIndent())

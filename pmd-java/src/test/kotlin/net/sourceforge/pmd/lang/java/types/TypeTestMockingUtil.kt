@@ -46,3 +46,4 @@ fun JavaNode.firstCtorCall() = descendants(ASTConstructorCall::class.java).first
 fun JavaNode.typeVariables(): MutableList<JTypeVar> = descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 fun JavaNode.varAccesses(name: String): NodeStream<ASTVariableAccess> = descendants(ASTVariableAccess::class.java).filter { it.name == name }
 fun JavaNode.varId(name: String) = descendants(ASTVariableDeclaratorId::class.java).filter { it.name == name }.firstOrThrow()
+fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).filter { it.parameterName == name }.firstOrThrow().typeMirror

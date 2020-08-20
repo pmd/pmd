@@ -142,7 +142,7 @@ class InnerTypesTest : ProcessorTestSpec({
                 }
                 argList {
                     variableAccess("notRaw") {
-                        it.typeMirror shouldBe with(it.typeDsl) {
+                        it shouldHaveType with(it.typeDsl) {
                             t_Scratch[ts.STRING].selectInner(inner.symbol, emptyList())
                         }
                     }
@@ -194,14 +194,38 @@ class O {
 
         doTest("Can call ctor on the real enclosing class") {
 
-            supCtor.typeMirror shouldBe `t_Scratch{String}`
-            innerCtor.typeMirror shouldBe `t_Scratch{String}Inner`
+            supCtor shouldHaveType `t_Scratch{String}`
+            innerCtor shouldHaveType `t_Scratch{String}Inner`
 
         }
 
         doTest("Can call ctor on some subclass") {
-            subCtor.typeMirror shouldBe `t_Sub{String}` // sub
-            innerCtor2.typeMirror shouldBe `t_Scratch{String}Inner` // but scratch
+            subCtor shouldHaveType `t_Sub{String}` // sub
+            innerCtor2 shouldHaveType `t_Scratch{String}Inner` // but scratch
+        }
+
+    }
+
+    parserTest("Capturing an inner type captures the enclosing type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+class Scratch<T> {
+    class Inner {
+        T getT() { return null; }
+    }
+    
+    static <K> K foo(Scratch<? extends K>.Inner i) { 
+        var k = i.getT();
+    }
+}
+        """.trimIndent())
+
+        val kvar = acu.typeVar("K")
+
+        spy.shouldBeOk {
+            // not <? extends K>
+            acu.varId("k") shouldHaveType kvar
         }
 
     }

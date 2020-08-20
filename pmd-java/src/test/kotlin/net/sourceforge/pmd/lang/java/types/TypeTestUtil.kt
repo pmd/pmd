@@ -56,7 +56,7 @@ fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
             it.symbol::getCanonicalName shouldBe canonicalName
         }
 
-infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror)  {
+infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror) {
     this::getTypeMirror shouldBe jTypeMirror
 }
 
@@ -80,24 +80,18 @@ fun JMethodSig?.shouldMatchMethod(
     if (this == null)
         fail("Expected non-null result")
 
-    assertSoftly {
-        withClue(this) {
-            withClue("name") {
-                this::getName shouldBe named
-            }
-            if (declaredIn != null)
-                withClue("Declaring type") {
-                    this::getDeclaringType shouldBe declaredIn
-                }
-            if (withFormals != null)
-                withClue("Formals") {
-                    this::getFormalParameters shouldBe withFormals
-                }
-            if (returning != null)
-                withClue("Return type") {
-                    this::getReturnType shouldBe returning
-                }
-        }
+    withClue(this) {
+        this::getName shouldBe named
+
+        if (declaredIn != null)
+            this::getDeclaringType shouldBe declaredIn
+
+        if (withFormals != null)
+            this::getFormalParameters shouldBe withFormals
+
+        if (returning != null)
+            this::getReturnType shouldBe returning
+
     }
     return this
 }
@@ -219,8 +213,8 @@ class RefTypeGen(override val ts: TypeSystem) : Arb<JTypeMirror>(), TypeDslMixin
         val fullPool = pool.plus(testClasses).shuffled(rs.random)
         val withParameterized = fullPool.flatMap {
             if (it is JClassType && it.isRaw) {
-                val numparams= it.formalTypeParams.size
-                List(numparams) { fullPool.random(rs.random)} + it
+                val numparams = it.formalTypeParams.size
+                List(numparams) { fullPool.random(rs.random) } + it
             }
             listOf(it)
         }
@@ -428,10 +422,10 @@ fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
     this shouldBe typeSystem.getPrimitive(kind)
 }
 
-fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others:JTypeMirror) : Boolean {
+fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others: JTypeMirror): Boolean {
     val comps = listOf(t, s, *others)
     return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
-            && comps.none { it.isPrimitive  || it.isGenericTypeDeclaration }
+            && comps.none { it.isPrimitive || it.isGenericTypeDeclaration }
 }
 
 /** If so, there can only be one in a well formed intersection. */

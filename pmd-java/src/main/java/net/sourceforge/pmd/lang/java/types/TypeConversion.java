@@ -9,6 +9,8 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -130,7 +132,11 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JClassType capture(JClassType type) {
-        if (!isWilcardParameterized(type)) {
+        if (type == null) {
+            return null;
+        }
+        @Nullable JClassType enclosing = capture(type.getEnclosingType());
+        if (enclosing == type.getEnclosingType() && !isWilcardParameterized(type)) {
             return type; // 99% take this path
         }
 
@@ -198,7 +204,11 @@ public final class TypeConversion {
             }
         }
 
-        return type.withTypeArguments(freshVars);
+        if (enclosing != null) {
+            return enclosing.selectInner(type.getSymbol(), freshVars);
+        } else {
+            return type.withTypeArguments(freshVars);
+        }
     }
 
     /**
