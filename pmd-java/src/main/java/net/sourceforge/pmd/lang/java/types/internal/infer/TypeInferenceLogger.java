@@ -237,11 +237,11 @@ public interface TypeInferenceLogger {
             printExpr(site.getExpr());
             startSection("[WARNING] Ambiguity error: all methods are maximally specific");
             for (MethodCtDecl m : methods) {
-                println(color(m.getMethodType(), ANSI_RED));
+                println(color(m.getMethodType().internalApi().originalMethod(), ANSI_RED));
             }
 
             if (selected != null) {
-                endSection("Will select " + color(selected.getMethodType(), ANSI_BLUE));
+                endSection("Will select " + color(selected.getMethodType().internalApi().originalMethod(), ANSI_BLUE));
             } else {
                 endSection(""); // no fallback?
             }

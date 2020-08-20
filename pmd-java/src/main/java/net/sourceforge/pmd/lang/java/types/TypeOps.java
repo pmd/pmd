@@ -369,17 +369,17 @@ public final class TypeOps {
      * @param s A type S
      */
     public static Subtyping isSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
-        assert !(t instanceof JWildcardType || s instanceof JWildcardType)
-            : "Wildcards do not support subtyping";
+        // This is commented out as it makes JTypeMirror#isSubtypeOf partial,
+        // which is not nice for the API... But this assert caught a bug and
+        // should probably be enabled.
+        // assert !(t instanceof JWildcardType || s instanceof JWildcardType) : "Wildcards do not support subtyping";
 
         if (t == s) {
             Objects.requireNonNull(t);
             return Subtyping.YES;
         } else if (s.isTop()) {
             return Subtyping.definitely(!t.isPrimitive());
-        }
-
-        if (s instanceof InferenceVar) {
+        } else if (s instanceof InferenceVar) {
             // it's possible to add a bound to UNRESOLVED
             ((InferenceVar) s).addBound(BoundKind.LOWER, t);
             return Subtyping.YES;
@@ -388,13 +388,14 @@ public final class TypeOps {
             if (lower != t.getTypeSystem().NULL_TYPE) {
                 return isSubtype(t, lower, capture);
             }
+            // otherwise fallthrough
         } else if (isSpecialUnresolved(t)) {
             // error type or unresolved type
             return Subtyping.YES;
         } else if (hasUnresolvedSymbol(t)) {
             // This also considers types with an unresolved symbol
-            // subtypes of anything. This allows them to pass bound
-            // checks on type variables.
+            // subtypes of (nearly) anything. This allows them to
+            // pass bound checks on type variables.
             return Subtyping.definitely(s instanceof JClassType); // excludes array or so
         } else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
             // If S is an intersection, then T must conform to *all* bounds of S

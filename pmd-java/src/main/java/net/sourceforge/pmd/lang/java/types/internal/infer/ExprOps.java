@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -17,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -456,9 +458,9 @@ final class ExprOps {
 
             boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
 
-            return actualTypeToSearch.streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol()))
-                                     .filter(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods)
-                                     .collect(Collectors.toList());
+            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
+                                                        .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
+            return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }
 
