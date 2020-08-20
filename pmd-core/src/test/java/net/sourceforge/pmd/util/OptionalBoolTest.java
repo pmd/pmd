@@ -23,7 +23,7 @@ public class OptionalBoolTest {
     }
 
     @Test
-    public void testIsKnow() {
+    public void testIsKnown() {
         assertTrue(YES.isKnown());
         assertTrue(NO.isKnown());
         assertFalse(UNKNOWN.isKnown());
@@ -34,5 +34,12 @@ public class OptionalBoolTest {
         assertTrue(YES.isTrue());
         assertFalse(NO.isTrue());
         assertFalse(UNKNOWN.isTrue());
+    }
+
+    @Test
+    public void testComplement() {
+        assertEquals(YES, NO.complement());
+        assertEquals(NO, YES.complement());
+        assertEquals(UNKNOWN, UNKNOWN.complement());
     }
 }

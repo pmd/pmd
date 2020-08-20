@@ -203,7 +203,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertNoError(s2)
     }
 
-    parserTest("f:Unresolved inner types") {
+    parserTest("Unresolved inner types") {
         enableProcessing()
 
         val acu = parser.parse("""

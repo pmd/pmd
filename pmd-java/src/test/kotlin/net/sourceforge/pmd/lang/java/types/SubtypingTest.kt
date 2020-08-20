@@ -67,7 +67,7 @@ class SubtypingTest : FunSpec({
             }
 
             test("Test reference arrays subtype Object[]") {
-                forAll(gen, Exhaustive.ints(1..5)) { t, i ->
+                forAll(ts.refTypeGen, Exhaustive.ints(1..5)) { t, i ->
                     val arrayType = ts.arrayType(t, i)
                     arrayType shouldBeSubtypeOf `t_Array{Object}`
                     arrayType shouldBeSubtypeOf ts.OBJECT

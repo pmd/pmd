@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -330,6 +331,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * @param prefilter Filter selecting symbols for which a signature
      *                  should be created and yielded by the stream
      */
+    @Experimental
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return Stream.empty();
     }
@@ -339,6 +341,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns a list of all the declared constructors for this type.
      * Abstract types like type variables and interfaces have no constructors.
      */
+    @Experimental
     default List<JMethodSig> getConstructors() {
         return Collections.emptyList();
     }

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.testdata.Overloads
 import net.sourceforge.pmd.util.OptionalBool
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 
-private val RefTypeGen.t_Overloads: JClassType
+private val RefTypeConstants.t_Overloads: JClassType
     get() = ts.declaration(ts.getClassSymbol("net.sourceforge.pmd.lang.java.types.testdata.Overloads")!!) as JClassType
 
 class OverloadSpecificityTest : ProcessorTestSpec({

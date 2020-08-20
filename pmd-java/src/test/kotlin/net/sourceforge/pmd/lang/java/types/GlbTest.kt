@@ -26,7 +26,7 @@ class GlbTest : FunSpec({
             test("Test intersection minimization") {
 
                 forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    canIntersect(t, s) and t.isSubtypeOf(s) implies {
+                    t.isSubtypeOf(s) implies {
                         glb(t, s) == t
                     }
                 }
@@ -68,6 +68,7 @@ class GlbTest : FunSpec({
 
                 glb(ts.SERIALIZABLE, t_ArrayList) shouldBe t_ArrayList
                 glb(t_ArrayList, ts.SERIALIZABLE) shouldBe t_ArrayList
+                glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
 
             }
         }

@@ -34,7 +34,7 @@ class TypeEqualityTest : FunSpec({
                 char shouldNotBe byte
                 char shouldNotBe ts.OBJECT
 
-                forAll(gen, ts.primitiveGen) { ref, prim ->
+                forAll(ts.refTypeGen, ts.primitiveGen) { ref, prim ->
                     ref != prim
                 }
             }

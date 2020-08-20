@@ -326,12 +326,13 @@ final class Lub {
         }
 
         Set<JTypeMirror> mostSpecific = TypeOps.mostSpecific(flat);
+        assert !mostSpecific.isEmpty() : "Empty most specific for bounds " + flat;
 
         if (mostSpecific.size() == 1) {
             return mostSpecific.iterator().next();
         }
 
-        ArrayList<JTypeMirror> bounds = new ArrayList<>(mostSpecific);
+        List<JTypeMirror> bounds = new ArrayList<>(mostSpecific);
 
         JTypeMirror ck = null; // Ck is the primary bound
         int primaryIdx = 0;
@@ -405,7 +406,7 @@ final class Lub {
         return new JIntersectionType(ts, ck, bounds);
     }
 
-    private static boolean containsDuplicateParameterizations(ArrayList<JTypeMirror> bounds) {
+    private static boolean containsDuplicateParameterizations(List<JTypeMirror> bounds) {
         for (int i = 0; i < bounds.size(); i++) {
             JTypeMirror bi = bounds.get(i);
             for (int j = i + 1; j < bounds.size(); j++) {

@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import java.util.*
 
 /**
@@ -43,7 +42,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                         it.formalParameters[0].shouldBeA<JArrayType> {
                             it.componentType shouldBe it.typeSystem.STRING
                         }
-                        it::getReturnType shouldBe RefTypeGen(it.typeSystem).`t_List{String}`
+                        it::getReturnType shouldBe RefTypeConstants(it.typeSystem).`t_List{String}`
                         it::getTypeParameters shouldBe asList.typeParameters // not substituted
                     }
 

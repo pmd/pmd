@@ -1511,7 +1511,7 @@ public final class TypeOps {
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && isSubtypePure(w, v).evenUnchecked()) {
+                if (w != v && isSubtypePure(w, v).toBoolean(false)) {
                     continue vLoop;
                 }
             }
