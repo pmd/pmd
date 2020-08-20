@@ -22,44 +22,27 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
     parserTest("Test capture incompatibility recovery") {
 
-        otherImports += "java.util.List"
-
-        inContext(TypeBodyParsingCtx) {
-
-            val getCall = doParse("""
-                void something(List<?> l) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Archive {
+                void something(java.util.List<?> l) {
                     l.set(1, l.get(0)); // captured, fails
                 }
-            """).descendants(ASTMethodCall::class.java).get(1)!!
-
-
-            // todo now we don't recover, we get UNRESOLVED
-            //  this is related to the commented out code in TypeOps#typeArgsContains
-            //  I think current behavior is best for now
-            // normalizer.normalizeCaptures(getCall.typeMirror.toString()) shouldBe "capture#1 of ?"
-            with (getCall.typeDsl) {
-                val capture1 = captureMatcher(`?`)
-                getCall.methodType.shouldMatchMethod(
-                        named = "get",
-                        declaredIn = gen.t_List[capture1],
-                        withFormals = listOf(int),
-                        returning = capture1
-                )
             }
+        """.trimIndent())
 
-            val setCall = getCall.ancestors(ASTMethodCall::class.java).first()!!
+        val setCall = acu.firstMethodCall()
+        val getCall = setCall.arguments[1] as ASTMethodCall
 
-            with (setCall.typeDsl) {
-                setCall.methodType shouldBe ts.UNRESOLVED_METHOD
-                // there is also no fallback for this anymore
-                // val capture2 = captureMatcher(`?`)
-                // setCall.methodType.shouldMatchMethod(
-                //         named = "set",
-                //         declaredIn = gen.t_List[capture2],
-                //         withFormals = listOf(int, capture2),
-                //         returning = capture2
-                // )
-            }
+        spy.shouldTriggerMissingCtDecl {
+            val capture1 = captureMatcher(`?`)
+            getCall.methodType.shouldMatchMethod(
+                    named = "get",
+                    declaredIn = gen.t_List[capture1],
+                    withFormals = listOf(int),
+                    returning = capture1
+            )
+
+            setCall.methodType shouldBe ts.UNRESOLVED_METHOD
         }
     }
 
@@ -67,7 +50,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
     parserTest("Test lower wildcard compatibility") {
 
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
            package java.lang;
 
            import java.util.Iterator;
@@ -85,27 +68,18 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val tVar = acu.descendants(ASTTypeParameter::class.java).first()!!.symbol.typeMirror
+        val tVar = acu.typeVar("T")
+        val call = acu.firstMethodCall()
 
-        val call = acu.descendants(ASTMethodCall::class.java).first()!!
-
-        call.shouldMatchN {
-            methodCall("accept") {
-                it::getTypeMirror shouldBe with(it.typeDsl) { ts.NO_TYPE }
-
-                variableAccess("action") {}
-                argList {
-                    variableAccess("t") {
-                        it.typeMirror shouldBe tVar
-                    }
-                }
-            }
+        spy.shouldBeOk {
+            call shouldHaveType void
+            call.arguments[0] shouldHaveType tVar
         }
     }
 
     parserTest("Test method ref on captured thing") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
            import java.util.List;
            import java.util.ArrayList;
            import java.util.Comparator;
@@ -120,20 +94,19 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+        val call = acu.firstMethodCall()
 
-        call.shouldMatchN {
-            methodCall("sort") {
-                it::getTypeMirror shouldBe with(it.typeDsl) { ts.NO_TYPE }
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("sort") {
+                    it shouldHaveType void
 
-                variableAccess("statList") {}
-                argList {
-                    methodCall("comparingInt") {
-                        // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
-                        val captureOfString: JTypeVar
+                    variableAccess("statList") {}
+                    argList {
+                        methodCall("comparingInt") {
+                            // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
 
-                        with(it.typeDsl) {
-                            captureOfString = captureMatcher(`?` extends gen.t_String)
+                            val captureOfString = captureMatcher(`?` extends gen.t_String)
 
                             it.typeMirror shouldBe gen.t_Comparator[captureOfString]
 
@@ -143,20 +116,13 @@ class CaptureInferenceTest : ProcessorTestSpec({
                                     withFormals = listOf(ToIntFunction::class[`?` `super` captureOfString]),
                                     returning = gen.t_Comparator[captureOfString]
                             )
-                        }
 
+                            unspecifiedChild()
 
-                        typeExpr {
-                            classType("Comparator")
-                        }
+                            argList {
+                                methodRef("hashCode") {
+                                    unspecifiedChild()
 
-                        argList {
-                            methodRef("hashCode") {
-                                typeExpr {
-                                    classType("Object")
-                                }
-
-                                with(it.typeDsl) {
                                     it.referencedMethod shouldBe ts.OBJECT.getMethodsByName("hashCode").single()
                                     it.typeMirror shouldBe ToIntFunction::class[captureOfString]
                                 }
@@ -170,12 +136,12 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
     parserTest("Test independent captures merging") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
            import java.util.*;
 
            class Scratch {
 
-               private <T> Spliterator<T> spliterator0(Collection<? extends T> collection, int characteristics) {
+               private <K> Spliterator<K> spliterator0(Collection<? extends K> collection, int characteristics) {
                    return null;
                }
 
@@ -187,42 +153,22 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }.single()
-        val tvar = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }[1]
-        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+        val tvar = acu.typeVar("T")
+        val call = acu.firstMethodCall()
+        val reqnonnull = call.arguments[0] as ASTMethodCall
 
-        call.shouldMatchN {
-            methodCall("spliterator0") {
-                with (it.typeDsl) {
-                    it.methodType.shouldMatchMethod(
-                            named = "spliterator0",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(gen.t_Collection[`?` extends tvar], int),
-                            returning = Spliterator::class[tvar]
-                    )
-                }
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                    named = "spliterator0",
+                    withFormals = listOf(gen.t_Collection[`?` extends tvar], int),
+                    returning = Spliterator::class[tvar]
+            )
 
-                argList {
-                    methodCall("requireNonNull") {
-                        with (it.typeDsl) {
-                            it.methodType.shouldMatchMethod(named = "requireNonNull", declaredIn = Objects::class.raw)
-                        }
+            val capture = captureMatcher(`?` extends tvar)
+            reqnonnull shouldHaveType gen.t_Collection[capture]
+            reqnonnull.methodType.shouldMatchMethod(named = "requireNonNull", declaredIn = Objects::class.raw)
 
-                        skipQualifier()
-
-                        argList {
-                            variableAccess("c") {
-                                with(it.typeDsl) {
-                                    gen.t_Collection[captureMatcher(`?` extends tvar)]
-                                }
-                            }
-
-                        }
-                    }
-
-                    variableAccess("characteristics")
-                }
-            }
+            reqnonnull.arguments[0] shouldHaveType gen.t_Collection[capture]
         }
     }
 
@@ -271,7 +217,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                                     Supplier::class[gen.t_Map[kvar, dvar]],
                                     Collector::class[`?` `super` tvar, avar, dvar]
                             ),
-                            returning =  Collector::class[tvar, `?`, gen.t_Map[kvar, dvar]]
+                            returning = Collector::class[tvar, `?`, gen.t_Map[kvar, dvar]]
                     )
                 }
 
