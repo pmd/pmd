@@ -19,33 +19,31 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
-    // Todo these tests should use primitives too, but the type system of the AST != testTypeSystem,
-    // so that primitives compare unequal.
-    val arrayComponentGen = testTypeSystem.refTypeGen.filterNot { it.isGenericTypeDeclaration || it.isArray }
-
-    // fixme these tests depend on the toString!
-
     parserTest("Test array clone") {
 
         inContext(ExpressionParsingCtx) {
-            arrayComponentGen.checkAll { t ->
 
-                "new $t[0].clone()" should parseAs {
-                    methodCall("clone") {
-                        with (it.typeDsl) {
-                            val tArray = t.toArray()
-                            it.methodType.shouldMatchMethod(named = "clone", declaredIn = tArray, withFormals = emptyList(), returning = tArray)
-                            it.typeMirror shouldBe tArray
-
-                            it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
+            fun matchArrayClone(compType: TypeDslMixin.() -> JTypeMirror) =
+                    parseAs {
+                        methodCall("clone") {
+                            with(it.typeDsl) {
+                                val t = compType()
+                                val tArray = t.toArray()
+                                it.methodType.shouldMatchMethod(named = "clone", declaredIn = tArray, withFormals = emptyList(), returning = tArray)
                                 it.typeMirror shouldBe tArray
-                            }
 
-                            it::getArguments shouldBe argList(0)
+                                it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
+                                    it.typeMirror shouldBe tArray
+                                }
+
+                                it::getArguments shouldBe argList(0)
+                            }
                         }
                     }
-                }
-            }
+
+            "new int[0].clone()" should matchArrayClone { int }
+            "new String[0].clone()" should matchArrayClone { gen.t_String }
+            "new String[0][].clone()" should matchArrayClone { gen.t_String.toArray() }
         }
     }
 
@@ -53,18 +51,23 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            arrayComponentGen.checkAll { t ->
 
-                "new $t[0].length" should parseAs {
-                    fieldAccess("length") {
-                        it.typeMirror shouldBe it.typeSystem.INT
+            fun matchArrayLength(compType: TypeDslMixin.() -> JTypeMirror) =
+                    parseAs {
+                        fieldAccess("length") {
+                            it.typeMirror shouldBe it.typeSystem.INT
 
-                        it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                            it.typeMirror shouldBe it.typeSystem.arrayType(t) // t[]
+                            val component = with (it.typeDsl) { compType() }
+
+                            it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
+                                it.typeMirror shouldBe it.typeSystem.arrayType(component) // t[]
+                            }
                         }
                     }
-                }
-            }
+
+            "new int[0].length" should matchArrayLength { int }
+            "new String[0].length" should matchArrayLength { gen.t_String }
+            "new String[0][].length" should matchArrayLength { gen.t_String.toArray() }
         }
     }
 
@@ -95,7 +98,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
         val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
-        with (block.typeDsl) {
+        with(block.typeDsl) {
             oneDim.typeMirror shouldBe int.toArray()
 
             withClue("Multi dim array") {
@@ -109,7 +112,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         val block = StatementParsingCtx.parseNode("{ Object is = new int[0]; is = new String[0][]; }", ctx = this)
         val (intArray, stringArray) = block.descendants(ASTArrayAllocation::class.java).toList()
-        with (block.typeDsl) {
+        with(block.typeDsl) {
             intArray.typeMirror shouldBe int.toArray()
             stringArray.typeMirror shouldBe ts.STRING.toArray(2)
         }
@@ -250,10 +253,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
     parserTest("Test field access on type variable") {
 
-        val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx=this)
+        val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx = this)
 
         val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
-        val fieldAccess= method.descendants(ASTFieldAccess::class.java).firstOrThrow()
+        val fieldAccess = method.descendants(ASTFieldAccess::class.java).firstOrThrow()
 
         fieldAccess.shouldMatchN {
             fieldAccess("length") {
@@ -286,11 +289,11 @@ class StandaloneTypesTest : ProcessorTestSpec({
                 e.printStackTrace();
             }
         """ should parseAs {
-                tryStmt{
+                tryStmt {
                     block()
                     catchClause("e") {
                         catchFormal("e") {
-                            modifiers {  }
+                            modifiers { }
                             unionType {
                                 classType("IllegalArgumentException") {
                                     it::getTypeMirror shouldBe with(it.typeDsl) { IllegalArgumentException::class.decl }
