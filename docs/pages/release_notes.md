@@ -53,7 +53,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 
 #### Deprecated Rules
 
-*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)
+*   The Java rule [`DataFlowAnomalyAnalysis`](https://pmd.github.io/latest/pmd_rules_java_errorprone.html#dataflowanomalyanalysis) (`java-errorprone`)
     is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
     which was introduced in PMD 6.26.0.
 
