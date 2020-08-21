@@ -652,7 +652,7 @@ public final class TypeSystem {
      * Returns a new type variable for the given symbol. This is only
      * intended to be used by the implementor of {@link JTypeParameterSymbol}.
      */
-    public JTypeVar.FreshTypeVar newTypeVar(JTypeParameterSymbol symbol) {
+    public JTypeVar newTypeVar(JTypeParameterSymbol symbol) {
         return new TypeVarImpl(this, symbol);
     }
 

@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
 
 /**
  * Represents a wildcard type. Such types are converted to {@link JTypeVar}
@@ -22,12 +21,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
  * is undefined: {@link #isSubtypeOf(JTypeMirror) subtyping} and {@link #getErasure() erasure}.
  */
 public interface JWildcardType extends JTypeMirror {
-
-
-    /**
-     * Returns a fresh type variable, for use during capture conversion.
-     */
-    FreshTypeVar captureWildcard();
 
 
     /** Returns the bound. Interpretation is given by {@link #isUpperBound()}. */

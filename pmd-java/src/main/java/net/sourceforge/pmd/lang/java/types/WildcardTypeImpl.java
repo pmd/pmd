@@ -10,8 +10,6 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
-
 
 final class WildcardTypeImpl implements JWildcardType {
 
@@ -36,11 +34,6 @@ final class WildcardTypeImpl implements JWildcardType {
     @Override
     public TypeSystem getTypeSystem() {
         return ts;
-    }
-
-    @Override
-    public FreshTypeVar captureWildcard() {
-        return TypeVarImpl.freshCapture(this);
     }
 
     @Override

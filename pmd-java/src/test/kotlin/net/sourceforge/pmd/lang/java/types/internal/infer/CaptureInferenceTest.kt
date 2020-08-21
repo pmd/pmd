@@ -362,10 +362,7 @@ interface MostlySingularMultimap<K, V> {
     }
 
 
-    parserTest("Unbounded wild has bound of its underlying tvar") {
-
-        // todo unbounded wild projection:
-        // check that S getS(), when called on Scratch<?>, does not return ? but its upper bound
+    parserTest("f:Unbounded wild has bound of its underlying tvar") {
 
         logTypeInference(true)
 

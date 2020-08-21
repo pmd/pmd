@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -176,7 +175,7 @@ public final class TypeConversion {
 
             if (arg instanceof JWildcardType) {
                 JWildcardType w = (JWildcardType) arg;        // Ti alias
-                FreshTypeVar freshVar = (FreshTypeVar) fresh; // Si alias
+                TypeVarImpl freshVar = (TypeVarImpl) fresh; // Si alias
 
                 JTypeMirror prevUpper = param.getUpperBound(); // Ui
                 JTypeMirror substituted = TypeOps.subst(prevUpper, subst);
@@ -229,7 +228,7 @@ public final class TypeConversion {
         List<JTypeMirror> freshVars = new ArrayList<>(type.getTypeArgs().size());
         for (JTypeMirror typeArg : type.getTypeArgs()) {
             if (typeArg instanceof JWildcardType) {
-                freshVars.add(((JWildcardType) typeArg).captureWildcard());
+                freshVars.add(TypeVarImpl.freshCapture((JWildcardType) typeArg));
             } else {
                 freshVars.add(typeArg);
             }

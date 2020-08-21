@@ -10,9 +10,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.types.JTypeVar.FreshTypeVar;
 
-class TypeVarImpl implements FreshTypeVar {
+class TypeVarImpl implements JTypeVar {
 
 
     private final @Nullable JTypeParameterSymbol origin;
@@ -53,13 +52,12 @@ class TypeVarImpl implements FreshTypeVar {
         return origin;
     }
 
-    @Override
-    public void setUpperBound(@NonNull JTypeMirror upperBound) {
+    void setUpperBound(@NonNull JTypeMirror upperBound) {
         this.upperBound = upperBound;
     }
 
-    @Override
-    public void setLowerBound(@NonNull JTypeMirror lowerBound) {
+
+    void setLowerBound(@NonNull JTypeMirror lowerBound) {
         this.lowerBound = lowerBound;
     }
 
@@ -111,7 +109,7 @@ class TypeVarImpl implements FreshTypeVar {
      * the capture conversion algo in {@link TypeConversion#capture(JTypeMirror)}.
      * Captured variables use reference identity as equality relation.
      */
-    static FreshTypeVar freshCapture(JWildcardType wildcard) {
+    static TypeVarImpl freshCapture(JWildcardType wildcard) {
         return new CapturedTypeVarImpl(wildcard);
     }
 

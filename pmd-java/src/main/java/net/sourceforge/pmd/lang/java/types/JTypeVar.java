@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -53,6 +54,14 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
     /**
      * Gets the upper bound. This defaults to Object, and may be an
      * {@linkplain JIntersectionType intersection type}.
+     *
+     * <p>Note that the upper bound of a capture variable is not necessarily
+     * the upper bound of the {@linkplain #getCapturedOrigin() captured wildcard}.
+     * The declared bound of each variable is {@link TypeSystem#glb(Collection) glb}ed with the declared
+     * bound of the wildcard. For example, given {@code class Foo<T extends List<T>>},
+     * then {@code Foo<?>} will have {@link TypeSystem#UNBOUNDED_WILD} as a type
+     * argument. But the capture of {@code Foo<?>} will look like {@code Foo<capture#.. of ?>},
+     * where the capture var's upper bound is actually {@code List<?>}.
      */
     @NonNull JTypeMirror getUpperBound();
 
@@ -107,20 +116,5 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
         return getUpperBound().streamMethods(prefilter);
     }
 
-
-    /**
-     * An intermediary type variable used during capture conversion.
-     * Because type parameters can mention themselves in their bound
-     * we have to somehow mutate the bounds after the substitution in
-     * the bound.
-     */
-    interface FreshTypeVar extends JTypeVar {
-
-        void setUpperBound(@NonNull JTypeMirror upperBound);
-
-
-        void setLowerBound(@NonNull JTypeMirror lowerBound);
-
-    }
 
 }
