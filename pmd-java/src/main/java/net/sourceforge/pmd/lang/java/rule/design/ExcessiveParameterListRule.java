@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * This rule detects an abnormally long parameter list. Note: This counts Nodes,
@@ -14,14 +15,34 @@ import net.sourceforge.pmd.util.NumericConstants;
  * topcount and sigma should work.)
  */
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
+
+    private static final Integer COUNT = 1;
+    private static final Integer SKIP = 0;
+
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
         setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
-    // Count these nodes, but no others.
     @Override
-    public Object visit(ASTFormalParameter node, Object data) {
-        return NumericConstants.ONE;
+    public Object visit(ASTFormalParameters params, Object data) {
+        if (areParametersOfPrivateConstructor(params)) {
+            return SKIP;
+        }
+        return super.visit(params, data);
+    }
+
+    private boolean areParametersOfPrivateConstructor(ASTFormalParameters params) {
+        Node parent = params.getParent();
+        if (parent instanceof ASTConstructorDeclaration) {
+            ASTConstructorDeclaration constructor = (ASTConstructorDeclaration) parent;
+            return constructor.isPrivate();
+        }
+        return false;
+    }
+
+    @Override
+    public Object visit(ASTFormalParameter param, Object data) {
+        return COUNT;
     }
 }
