@@ -783,6 +783,36 @@ class Scratch {
     }
 
 
+
+    parserTest("Method ref inside conditional") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+import java.util.Objects;
+
+class Scratch {
+    interface Predicate<Q> { boolean test(Q q); }
+
+    static <T> Predicate<T> isEqual(Object targetRef) {
+        return (null == targetRef)
+                ? Objects::isNull
+                : object -> targetRef.equals(object);
+    }
+}
+        """.trimIndent())
+
+
+        val t_Predicate = acu.descendants(ASTAnyTypeDeclaration::class.java)[1]!!.typeMirror
+        val testMethod = acu.methodDeclarations().get(0)!!
+        val tvar = acu.typeVar("T")
+        val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldBeOk {
+            fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.sig)
+            fooRef shouldHaveType t_Predicate[tvar]
+        }
+    }
+
+
     parserTest("Method ref on static class") {
 
         val acu = parser.parse("""

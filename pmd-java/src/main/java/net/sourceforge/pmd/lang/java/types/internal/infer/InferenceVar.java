@@ -170,7 +170,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
                 JTypeMirror newBound = prev.subst(substitution);
                 if (newBound == prev || prevBounds.contains(newBound)) { // NOPMD CompareObjectsWithEquals
                     // not actually new, don't call listeners, etc
-                    newBounds.add(prev);
+                    newBounds.add(newBound);
                 } else {
                     addBound(kind, newBound);
                 }

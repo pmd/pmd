@@ -321,6 +321,49 @@ interface NodeStream<T> {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(unionOfIter)
         }
     }
+
+
+    parserTest("Ivar should be instantiated with lower not upper bound") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+
+interface MostlySingularMultimap<K, V> {
+
+    public static class Builder<K, V> {  }
+
+    public static class Function<I, O> {
+        static <S> Function<S, S> identity();
+    }
+
+
+    public Builder<K, V> groupBy(Iterable<? extends V> values,
+                                 Function<? super V, ? extends K> keyExtractor) {
+        return groupBy(values, keyExtractor, Function.identity());
+    }
+
+
+    public <I> Builder<K, V> groupBy(Iterable<? extends I> values,
+                                     Function<? super I, ? extends K> keyExtractor,
+                                     Function<? super I, ? extends V> valueExtractor) {
+        return null;
+    }
+
+}
+
+                """.trimIndent()
+        )
+
+        val (_, _, lastGroupBy) = acu.methodDeclarations().toList { it.sig }
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(lastGroupBy)
+        }
+    }
+
+
 })
 
 

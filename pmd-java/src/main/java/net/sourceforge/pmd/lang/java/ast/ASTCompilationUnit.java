@@ -75,7 +75,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     /**
      * Returns the type declarations declared in this compilation unit.
      * This may be empty if this a package-info.java, or a modular
-     * compilation unit.
+     * compilation unit. Note that this only cares for top-level types
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
