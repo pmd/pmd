@@ -369,9 +369,7 @@ class C extends U1 {
 
     parserTest("Recovery when there are several applicable overloads") {
 
-        val logGetter = logTypeInference()
-
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import ooo.Unresolved;
 
@@ -393,30 +391,30 @@ class C {
                 """.trimIndent()
         )
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.firstMethodCall()
 
-        logGetter().shouldBeEmpty()
-        call.shouldMatchN {
-            methodCall("append") {
+        spy.shouldBeAmbiguous {
+            call.shouldMatchN {
+                methodCall("append") {
 
-                with(it.typeDsl) {
-                    it.methodType.shouldMatchMethod("append", withFormals = listOf(ts.OBJECT), returning = gen.t_StringBuilder)
-                    it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
-                }
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod("append", returning = gen.t_StringBuilder)
+                        it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
+                    }
 
-                skipQualifier()
+                    skipQualifier()
 
-                argList {
-                    fieldAccess("SOMETHING") {
-                        it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
-                        typeExpr {
-                            classType("Unresolved")
+                    argList {
+                        fieldAccess("SOMETHING") {
+                            it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                            typeExpr {
+                                classType("Unresolved")
+                            }
                         }
                     }
                 }
             }
         }
-        logGetter().shouldContainIgnoringCase("ambiguity")
     }
 
     parserTest("Recovery of unknown field using invocation context") {
@@ -426,9 +424,7 @@ class C {
         // exprs are used for disambiguation. So we'd probably have to split getTypeMirror
         // into a top-down only and a user-facing one.
 
-        val logGetter = logTypeInference()
-
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import ooo.Unresolved;
 
@@ -444,31 +440,31 @@ class C {
                 """.trimIndent()
         )
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.firstMethodCall()
 
-        logGetter().shouldBeEmpty()
-        call.shouldMatchN {
-            methodCall("foo") {
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-                with(it.typeDsl) {
-                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(int), returning = void)
-                    it.overloadSelectionInfo.isFailed shouldBe false
-                }
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod("foo", withFormals = listOf(int), returning = void)
+                        it.overloadSelectionInfo.isFailed shouldBe false
+                    }
 
-                argList {
-                    fieldAccess("SOMETHING") {
-                        with(it.typeDsl) {
-                            it.typeMirror shouldBe ts.UNRESOLVED_TYPE
-                            it.referencedSym shouldBe null
-                        }
-                        typeExpr {
-                            classType("Unresolved")
+                    argList {
+                        fieldAccess("SOMETHING") {
+                            with(it.typeDsl) {
+                                it.typeMirror shouldBe ts.UNRESOLVED_TYPE
+                                it.referencedSym shouldBe null
+                            }
+                            typeExpr {
+                                classType("Unresolved")
+                            }
                         }
                     }
                 }
             }
         }
-        logGetter().shouldBeEmpty()
     }
 
     parserTest("Recovery of unknown field/var using assignment context") {

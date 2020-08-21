@@ -60,6 +60,14 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         return newT;
     }
 
+    @Override
+    public JTypeMirror getStandaloneTypeAux() {
+        if (isDiamond()) {
+            return null;
+        }
+        return getNewType();
+    }
+
     private List<JMethodSig> getVisibleCandidates() {
         JClassType newType = getNewType();
         if (newType == null) {

@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 final class ExprCheckHelper {
 
@@ -517,12 +518,12 @@ final class ExprCheckHelper {
 
 
         List<JTypeMirror> targs = type.getTypeArgs();
-        if (targs.stream().noneMatch(it -> it instanceof JWildcardType)) {
+        if (CollectionUtil.none(targs, it -> it instanceof JWildcardType)) {
             return type;
         }
 
-        if (lambda.isExplicitlyTyped()) {
-            // TODO infer
+        if (lambda.isExplicitlyTyped() && lambda.getParamCount() > 0) {
+            // TODO infer, normally also for lambdas with no param, i'm just lazy
             //  https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.3
             return null;
         } else {

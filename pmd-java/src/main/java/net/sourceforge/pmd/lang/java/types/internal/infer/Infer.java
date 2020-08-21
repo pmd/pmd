@@ -111,7 +111,11 @@ public final class Infer {
 
     @NonNull
     InferenceContext newContextFor(JMethodSig m) {
-        return new InferenceContext(ts, m.getTypeParameters(), LOG);
+        return newContextFor(m.getTypeParameters());
+    }
+
+    InferenceContext newContextFor(List<JTypeVar> tvars) {
+        return new InferenceContext(ts, tvars, LOG);
     }
 
     /**

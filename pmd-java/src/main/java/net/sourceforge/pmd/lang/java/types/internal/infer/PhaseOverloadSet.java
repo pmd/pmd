@@ -98,122 +98,13 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     }
 
     private OptionalBool isMoreSpecificForExpr(JMethodSig m1, JMethodSig m2) {
-        if (!m1.isGeneric() && !m2.isGeneric()) {
-            return isMoreSpecificNonGeneric(m1, m2);
-        } else if (m1.isGeneric() && m2.isGeneric()) {
-            boolean m1OverM2 = isInferredMoreSpecific(m1, m2);
-            boolean m2OverM1 = isInferredMoreSpecific(m2, m1);
-            if (m1OverM2 ^ m2OverM1) {
-                return definitely(m1OverM2);
-            }
-            return UNKNOWN;
-        }
-
-        OptionalBool m1OverM2 = isMoreSpecificNonGeneric(m1, m2);
-        if (m2.isGeneric()) {
-            return inferMoreSpecific(m1, m2, m1OverM2);
-        } else {
-            return inferMoreSpecific(m2, m1, m1OverM2.complement()).complement();
-        }
-    }
-
-
-    // YES if m1 is more specific than m2
-    // NO if m2 is more specific than m1
-    // UNKNOWN if neither is more specific than the other
-    private OptionalBool isMoreSpecificNonGeneric(JMethodSig m1, JMethodSig m2) {
-        List<JTypeMirror> m1Formals = m1.getFormalParameters();
-        List<JTypeMirror> m2Formals = m2.getFormalParameters();
-        List<ExprMirror> args = site.getExpr().getArgumentExpressions();
-        int k = args.size();
-        int numKnownForM1 = 0;
-        int numKnownForM2 = 0;
-        for (int i = 0; i < k; i++) {
-            JTypeMirror si = phase.ithFormal(m1Formals, i);
-            JTypeMirror ti = phase.ithFormal(m2Formals, i);
-            ExprMirror argi = args.get(i);
-
-            // todo no need to do this twice, the method is asymmetric
-            OptionalBool sOverT = isTypeMoreSpecificForArg(si, ti, argi);
-            OptionalBool tOverS = isTypeMoreSpecificForArg(ti, si, argi);
-            if (sOverT.isKnown() && tOverS.isKnown() && sOverT != tOverS) {
-                return sOverT;
-            }
-            if (sOverT == YES) {
-                numKnownForM1++;
-            } // no else
-            if (tOverS == YES) {
-                numKnownForM2++;
-            }
-        }
-
-        if (numKnownForM1 != numKnownForM2) {
-            return definitely(numKnownForM1 > numKnownForM2);
-        }
-
-        if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
-            // if the varargs argument has length 0, then the last
-            // formal of m1 must be more specific than the last formal of m2
-            JTypeMirror last1 = phase.ithFormal(m1Formals, k);
-            JTypeMirror last2 = m2Formals.get(k);
-            if (last1.equals(last2)) { // only check for strict subtype
-                return UNKNOWN;
-            }
-            return definitely(last1.isSubtypeOf(last2));
-        }
-
-        return UNKNOWN;
-    }
-
-    // YES if si is more specific than ti
-    // NO if ti is more specific than si
-    // UNKNOWN if neither is more specific than the other.
-    //  Note that this includes the case where the argument
-    //  expression's type was unresolved, which means it is
-    //  compatible with any type and doesn't contribute information
-    //  for specificity.
-    private OptionalBool isTypeMoreSpecificForArg(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
-        if (si.equals(ti)) {
-            return UNKNOWN;
-        }
-
-        JTypeMirror standalone = argExpr.getStandaloneType();
-        if (standalone != null && TypeOps.isUnresolved(standalone)) {
-            if (standalone.equals(si)) {
-                return YES;
-            } else if (standalone.equals(ti)) {
-                return NO;
-            }
-            return UNKNOWN;
-        }
-
-        // A type S is more specific than a type T for any expression if S <: T (§4.10).
-        {
-            // we know that both cannot be true at the same time as si != ti
-            boolean isSubtype = si.isConvertibleTo(ti).somehow();
-            if (isSubtype) {
-                return YES;
-            }
-            isSubtype = ti.isConvertibleTo(si).somehow();
-            if (isSubtype) {
-                return NO;
-            }
-        }
-
-        // TODO checks for lambdas/method refs are much more complicated
-        return UNKNOWN;
-    }
-
-
-    private OptionalBool inferMoreSpecific(JMethodSig m1, JMethodSig m2, OptionalBool m1OverM2) {
-        assert m2.isGeneric();
-        boolean m1MoreSpecific = isInferredMoreSpecific(m1, m2);
-        if (m1MoreSpecific && m1OverM2 != NO) {
-            return YES;
+        boolean m1OverM2 = isInferredMoreSpecific(m1, m2);
+        boolean m2OverM1 = isInferredMoreSpecific(m2, m1);
+        if (m1OverM2 ^ m2OverM1) {
+            return definitely(m1OverM2);
         }
         return UNKNOWN;
     }
-
 
     private boolean isInferredMoreSpecific(JMethodSig m1, JMethodSig m2) {
         // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.4
@@ -242,22 +133,31 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JTypeMirror si = phase.ithFormal(m1Formals, i);
             ExprMirror ei = es.get(i);
 
-            OptionalBool siOverTi = isTypeMoreSpecificForArg(si, ti, ei);
-            if (siOverTi == NO) {
+            if (si.equals(ti)) {
+                continue;
+            }
+
+            // needs to go before subtyping checks, because those will always succeed
+            if (unresolvedTypeFallback(si, ti, ei) == NO) {
                 return false;
-            } else if (siOverTi == UNKNOWN) {
-                JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
-                JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
-                if (sfun == null || tfun == null) {
-                    infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
-                    continue;
-                }
+            }
 
+            if (si.isSubtypeOf(ti)) {
+                return true;
+            } else if (ti.isSubtypeOf(si)) {
+                return false;
+            }
 
-                // otherwise they're both functional interfaces
-                if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun, ei)) {
-                    return false;
-                }
+            JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
+            JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
+            if (sfun == null || tfun == null) {
+                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
+                continue;
+            }
+
+            // otherwise they're both functional interfaces
+            if (!isFunctionTypeMoreSpecific(ctx, si, ti, sfun, tfun, ei)) {
+                return false;
             }
         }
 
@@ -272,8 +172,22 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return true;
     }
 
+
+    private @NonNull OptionalBool unresolvedTypeFallback(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
+        JTypeMirror standalone = argExpr.getStandaloneType();
+        if (standalone != null && TypeOps.isUnresolved(standalone)) {
+            if (standalone.equals(si)) {
+                return YES;
+            } else if (standalone.equals(ti)) {
+                return NO;
+            }
+        }
+        return UNKNOWN;
+    }
+
     private boolean isFunctionTypeMoreSpecific(InferenceContext ctx,
                                                JTypeMirror si,
+                                               JTypeMirror ti,
                                                JMethodSig sfun,
                                                JMethodSig tfun,
                                                ExprMirror ei) {
@@ -342,8 +256,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
             if (rt.isVoid()) {
                 return true;
-            } else if (rs.isVoid()) {
-                return false;
             }
 
             if (rt.isPrimitive() ^ rs.isPrimitive()) {
@@ -352,7 +264,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 boolean atLeastOne = false;
                 for (ExprMirror rexpr : lambda.getResultExpressions()) {
                     atLeastOne = true;
-                    JTypeMirror std = rexpr.getStandaloneType();
+                    JTypeMirror std = rexpr.getStandaloneTypeAux();
                     // polys are treated as ref types
                     boolean hasPrimitive = std != null && std.isPrimitive();
                     ok &= needsPrimitive == hasPrimitive;
@@ -383,8 +295,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
             if (rt.isVoid()) {
                 return true;
-            } else if (rs.isVoid()) {
-                return false;
             }
 
             if (rs.isPrimitive() ^ rt.isPrimitive()) {

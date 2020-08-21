@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.util.function.DoubleConsumer
+import java.util.function.Supplier
 import kotlin.test.assertEquals
 
 class LambdaInferenceTest : ProcessorTestSpec({
@@ -548,6 +549,28 @@ class Scratch {
 
         spy.shouldBeOk {
             lambda shouldHaveType DoubleConsumer::class.raw
+        }
+    }
+
+    parserTest("Test explicitly typed lambda with zero params, ground-target type inference") {
+        // note that this is not actually implemented, we just special-case the case "zero parameters"
+        // this is todo for future, doesn't appear too useful
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.function.Supplier;
+            class Foo<S> {
+
+                public static <S> Foo<S> withInitial(Supplier<? extends S> supplier) { return null; }
+
+                public static final Foo<String> FILENAME = Foo.withInitial(() -> "/*unknown*/");
+
+            }
+        """.trimIndent())
+
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType Supplier::class[gen.t_String]
         }
     }
 

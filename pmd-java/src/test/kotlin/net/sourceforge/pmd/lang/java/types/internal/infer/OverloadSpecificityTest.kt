@@ -317,7 +317,7 @@ class Scratch<N extends Number> {
         }
     }
 
-    parserTest("f:Test specificity between lamdbas") {
+    parserTest("!Test specificity between lamdbas") {
 
         logTypeInference(true)
 

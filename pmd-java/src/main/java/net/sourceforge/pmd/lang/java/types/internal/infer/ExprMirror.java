@@ -36,8 +36,11 @@ public interface ExprMirror {
      *
      * @return The type of the expression if it is standalone
      */
-    @Nullable
-    JTypeMirror getStandaloneType();
+    @Nullable JTypeMirror getStandaloneType();
+
+    default @Nullable JTypeMirror getStandaloneTypeAux() {
+        return getStandaloneType();
+    }
 
 
     interface PolyExprMirror extends ExprMirror {
