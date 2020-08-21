@@ -623,7 +623,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTPrimaryPrefix prefix, Object data) {
         ASTName methodCall = prefix.getFirstChildOfType(ASTName.class);
-        if (methodCall != null) {
+        if (methodCall != null && isNodeInstanceOfResourceType(methodCall)) {
             String closedVar = getVariableClosedByMethodCall(methodCall);
             if (closedVar != null && isNotInFinallyBlock(prefix) && !reportedVarNames.contains(closedVar)) {
                 String violationMsg = closeInFinallyBlockMessageForVar(closedVar);

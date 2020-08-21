@@ -1366,4 +1366,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false positive with close on not closeable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+import com.google.common.io.Closeables;
+import com.google.common.io.Flushables;
+
+public class Foo {
+    private static void flushAndCloseOutStream(OutputStream stream) throws IOException {
+        if (stream != null) {
+            Flushables.flush(stream, false);
+        }
+        Closeables.close(stream, false);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
