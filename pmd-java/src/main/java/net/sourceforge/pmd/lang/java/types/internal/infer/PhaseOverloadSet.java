@@ -16,6 +16,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.util.OptionalBool;
@@ -148,13 +151,23 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JTypeMirror si = phase.ithFormal(m1Formals, i);
             ExprMirror ei = es.get(i);
 
-            if (isTypeMoreSpecificForArg(si, ti, ei) == NO) {
+            OptionalBool siOverTi = isTypeMoreSpecificForArg(si, ti, ei);
+            if (siOverTi == NO) {
                 return false;
+            } else if (siOverTi == UNKNOWN) {
+                JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
+                JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
+                if (sfun == null || tfun == null) {
+                    infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
+                    continue;
+                }
+
+
+                // otherwise they're both functional interfaces
+                if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun)) {
+                    return false;
+                }
             }
-
-            // todo special conditions for lambdas/ mrefs
-            infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
-
         }
 
         if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
@@ -164,6 +177,53 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         ctx.solve();         // throws ResolutionFailedException
         ctx.callListeners(); // may throw ResolutionFailedException
+
+        return true;
+    }
+
+    private boolean isFunctionTypeMoreSpecific(InferenceContext ctx, JTypeMirror si, JMethodSig sfun, JMethodSig tfun) {
+        if (sfun.getArity() != tfun.getArity()
+            || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
+            return false;
+        }
+
+        // Note that the following is not implemented entirely
+
+        // The rest is described in https://docs.oracle.com/javase/specs/jls/se13/html/jls-18.html#jls-18.5.4
+
+        JMethodSig capturedSFun = TypeOps.findFunctionalInterfaceMethod(TypeConversion.capture(si));
+        assert capturedSFun != null;
+
+        if (!TypeOps.haveSameTypeParams(capturedSFun, sfun)) {
+            return false;
+        }
+
+
+        List<JTypeVar> sparams = sfun.getTypeParameters();
+        List<JTypeVar> tparams = tfun.getTypeParameters();
+        Substitution subst = Substitution.mapping(tparams, sparams);
+        for (int j = 0; j < sparams.size(); j++) {
+            JTypeVar aj = sparams.get(j);
+            JTypeVar bj = tparams.get(j);
+
+            JTypeMirror x = aj.getUpperBound();
+            JTypeMirror y = bj.getUpperBound();
+            if (TypeOps.mentionsAny(x, sfun.getTypeParameters()) && !ctx.isGround(y)) {
+                return false;
+            } else {
+                TypeOps.isSameType(x, y.subst(subst), true); // adds an equality constraint
+            }
+        }
+
+        // todo something about formal params
+
+        JTypeMirror rs = sfun.getReturnType();
+        JTypeMirror rt = tfun.getReturnType();
+        if (TypeOps.mentionsAny(rs, sparams) && !ctx.isGround(rt)) {
+            return false;
+        }
+
+        // todo stuff about explicitly typed lambdas/ exact mrefs
 
         return true;
     }
@@ -237,8 +297,20 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         }
 
         // A type S is more specific than a type T for any expression if S <: T (§4.10).
+        {
+            // we know that both cannot be true at the same time as si != ti
+            boolean isSubtype = si.isConvertibleTo(ti).somehow();
+            if (isSubtype) {
+                return YES;
+            }
+            isSubtype = ti.isConvertibleTo(si).somehow();
+            if (isSubtype) {
+                return NO;
+            }
+        }
+
         // TODO checks for lambdas/method refs are much more complicated
-        return definitely(si.isConvertibleTo(ti).somehow());
+        return UNKNOWN;
     }
 
 }

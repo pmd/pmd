@@ -325,9 +325,14 @@ public interface TypeInferenceLogger {
             marks.push(getLevel());
         }
 
-        void rollback() {
+        void rollback(String lastWords) {
             int pop = marks.pop();
-            updateLevel(pop - getLevel());
+            updateLevel(pop - getLevel()); // back to normal
+            if (!lastWords.isEmpty()) {
+                updateLevel(+LEVEL_INCREMENT);
+                println(lastWords);
+                updateLevel(-LEVEL_INCREMENT);
+            }
         }
 
         @Override
@@ -344,9 +349,8 @@ public interface TypeInferenceLogger {
 
         @Override
         public void endInference(@Nullable JMethodSig result) {
-            rollback();
-            println(result != null ? "Success: " + ppHighlight(result)
-                                   : "FAILED! SAD!");
+            rollback(result != null ? "Success: " + ppHighlight(result)
+                                    : "FAILED! SAD!");
         }
 
         @Override

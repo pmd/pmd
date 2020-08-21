@@ -317,4 +317,41 @@ class Scratch<N extends Number> {
         }
     }
 
+    parserTest("f:Test specificity between lamdbas") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+class Scratch {
+
+    interface Runnable { void run(); }
+    interface Supplier<E> { E get(); }
+
+    static void bench(String label, Runnable runnable) {  }
+    static <T> T bench(String label, Supplier<T> runnable) { return null; }
+
+    static void voidMethod() {}
+
+    static {
+        bench("foo", () -> new Scratch());  // selects the supplier
+        bench("foo", () -> voidMethod());   // selects the runnable
+    }
+}
+                """.trimIndent()
+        )
+
+        val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
+
+        val (supplierCall, runnableCall) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            supplierCall.methodType.shouldBeSomeInstantiationOf(withSupplier)
+        }
+
+        spy.shouldBeOk {
+            runnableCall.methodType.shouldBeSomeInstantiationOf(withRunnable)
+        }
+    }
+
 })

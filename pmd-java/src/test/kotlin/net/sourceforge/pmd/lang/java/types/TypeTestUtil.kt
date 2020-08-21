@@ -70,6 +70,7 @@ infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
     this::getSymbol shouldBe m.symbol
     this::getArity shouldBe m.arity
     this::getName shouldBe m.name
+    this::getTypeParameters shouldBe m.typeParameters
 
     return this
 }
