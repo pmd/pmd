@@ -19,11 +19,43 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Changes in how tab characters are handled
+
+In the past, tab characters in source files has been handled differently in different languages by PMD.
+For instance in Java, tab characters had a width of 8 columns, while C# used only 1 column. Visualforce instead
+used 4 columns.
+
+This has been unified now so that tab characters are consistently now always 1 column wide.
+
+This however might be a **incompatible** change, if you're using the properties "BeginColumn" or "EndColumn"
+additionally to "BeginLine" and "EndLine" of a Token/AST node in order to highlight
+where a rule violation occurred in the source file. If you have logic there that deals with tab characters,
+you most likely can remove this logic now, since tab characters are now just "normal" characters
+in terms of string processing.
+
+See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](https://github.com/pmd/pmd/pull/2656).
+
 #### New Rules
 
 *   The new Java rule {% rule "java/bestpractices/AvoidReassigningCatchVariables" %} (`java-bestpractices`) finds
     cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
     further evolution of the code like multi-catch.
+
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) has a new property
+    `closeNotInFinally`. With this property set to `true` the rule will also find calls to close a
+    resource, which are not in a finally-block of a try-statement. If a resource is not closed within a
+    finally block, it might not be closed at all in case of exceptions.
+    
+    As this new detection would yield many new violations, it is disabled by default. It might be
+    enabled in a later version of PMD.
+
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)
+    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
+    which was introduced in PMD 6.26.0.
 
 ### Fixed Issues
 
@@ -31,15 +63,22 @@ This is a {{ site.pmd.release_type }} release.
     *   [#724](https://github.com/pmd/pmd/issues/724): \[core] Avoid parsing rulesets multiple times
     *   [#1962](https://github.com/pmd/pmd/issues/1962): \[core] Simplify Report API
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
+    *   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently
     *   [#2690](https://github.com/pmd/pmd/pull/2690): \[core] Fix java7 compatibility
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
+    *   [#2663](https://github.com/pmd/pmd/issues/2663): \[java] NoClassDefFoundError on upgrade from 6.25.0 to 6.26.0
     *   [#2668](https://github.com/pmd/pmd/issues/2668): \[java] UnusedAssignment false positives
+    *   [#2673](https://github.com/pmd/pmd/issues/2673): \[java] UnusedPrivateField and SingularField false positive with lombok annotation EqualsAndHashCode
     *   [#2684](https://github.com/pmd/pmd/issues/2684): \[java] UnusedAssignment FP in try/catch
     *   [#2686](https://github.com/pmd/pmd/issues/2686): \[java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes
+*   java-design
+    *   [#2461](https://github.com/pmd/pmd/issues/2461): \[java] ExcessiveParameterListRule must ignore a private constructor
 *   java-errorprone
+    *   [#2410](https://github.com/pmd/pmd/issues/2410): \[java] ProperCloneImplementation not valid for final class
     *   [#2431](https://github.com/pmd/pmd/issues/2431): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message
     *   [#2439](https://github.com/pmd/pmd/issues/2439): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)
+    *   [#2470](https://github.com/pmd/pmd/issues/2470): \[java] CloseResource false positive when resource included in return value
     *   [#2531](https://github.com/pmd/pmd/issues/2531): \[java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase())
     *   [#2647](https://github.com/pmd/pmd/issues/2647): \[java] Deprecate rule DataFlowAnomalyAnalysis
 *   java-performance
@@ -55,6 +94,8 @@ This is a {{ site.pmd.release_type }} release.
     reported as a forward compatibility warning.
 
 #### Deprecated API
+
+##### For removal
 
 *   {% jdoc !!core::Rule#getParserOptions() %}
 *   {% jdoc !!core::lang.Parser#getParserOptions() %}
@@ -83,14 +124,22 @@ This is a {{ site.pmd.release_type }} release.
     *   {% jdoc_package core::lang.dfa %}
     *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
 
+*   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
+
 ### External Contributions
 
+*   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2659](https://github.com/pmd/pmd/pull/2659): \[java] StringToString can not detect the case: getStringMethod().toString() - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2662](https://github.com/pmd/pmd/pull/2662): \[java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase()) - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2671](https://github.com/pmd/pmd/pull/2671): \[java] CloseResource false positive when resource included in return value - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2674](https://github.com/pmd/pmd/pull/2674): \[java] add lombok.EqualsAndHashCode in AbstractLombokAwareRule - [berkam](https://github.com/berkam)
 *   [#2677](https://github.com/pmd/pmd/pull/2677): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';` - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2678](https://github.com/pmd/pmd/pull/2678): \[java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2679](https://github.com/pmd/pmd/pull/2679): \[java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2682](https://github.com/pmd/pmd/pull/2682): \[java] New Rule: AvoidReassigningCatchVariables - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2697](https://github.com/pmd/pmd/pull/2697): \[java] ExcessiveParameterListRule must ignore a private constructor - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2699](https://github.com/pmd/pmd/pull/2699): \[java] ProperCloneImplementation not valid for final class - [Mykhailo Palahuta](https://github.com/Drofff)
+*   [#2700](https://github.com/pmd/pmd/pull/2700): \[java] Fix OnlyOneReturn code example - [Jan-Lukas Else](https://github.com/jlelse)
 
 
 {% endtocmaker %}
