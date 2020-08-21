@@ -58,6 +58,22 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
  * when querying the AST.
  */
 public interface JTypeMirror extends JTypeVisitable {
+    // TODO: unstable stuff (@Experimental)
+    //  - Member access:
+    //    - #streamMethods
+    //    - #getDeclaredField
+    //    - #getDeclaredClass
+    //  - #isConvertibleTo: Convertibility is unstable today, eg could
+    //  we merge primitive widening, subtyping & identity? The distinction
+    //  doesn't appear very useful, I don't remember why it was needed at
+    //  some point. Note that #isSubtypeOf is stable, as it returns a boolean.
+    //  - In JWildcardType, the specification of some methods is unstable:
+    //    - #isSubtypeOf/#isConvertibleTo
+    //    - #getErasure
+
+    // TODO figure out what parts of TypeOps/TypeConversion are internal
+    //  - problem is that parts of those access package-private API, eg
+    //  to implement capture.
 
     /**
      * Returns the type system that built this type.
@@ -363,16 +379,22 @@ public interface JTypeMirror extends JTypeVisitable {
     /**
      * Returns true if the object is a type equivalent to this one. A
      * few kinds of types use reference identity, like captured type
-     * variables, or the null type. Apart from those, types should always
-     * be compared using this method. A few special types are represented
-     * by constants (see {@link TypeSystem}).
+     * variables, or the null type. A few special types are represented
+     * by constants (see {@link TypeSystem}). Apart from those, types
+     * should always be compared using this method. or {@link TypeOps#isSameType(JTypeMirror, JTypeMirror)}
+     * (which is null-safe).
      *
-     * <p>This method should be implemented with {@link TypeOps#isSameType(JTypeMirror, JTypeMirror)},
-     * and perform no side-effects on inference variables.
+     * <p>Note that types belonging to different type systems do <i>not</i>
+     * test equal. The type system object is global to the analysis though,
+     * so this should not ever happen in rules.
      *
      * @param o {@inheritDoc}
      *
      * @return {@inheritDoc}
+     *
+     * @implSpec This method should be implemented with
+     *     {@link TypeOps#isSameType(JTypeMirror, JTypeMirror)},
+     *     and perform no side-effects on inference variables.
      */
     @Override
     boolean equals(Object o);
@@ -380,9 +402,8 @@ public interface JTypeMirror extends JTypeVisitable {
 
     /**
      * The toString of type mirrors prints useful debug information,
-     * but shouldn't be relied on anywhere.
-     *
-     * FIXME this is relied on in many tests...
+     * but shouldn't be relied on anywhere, as it may change anytime.
+     * Use {@link TypePrettyPrint} to display types.
      */
     @Override
     String toString();

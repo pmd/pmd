@@ -146,7 +146,7 @@ public final class TypeOps {
         public Boolean visitClass(JClassType t, JTypeMirror s) {
             if (s instanceof JClassType) {
                 JClassType s2 = (JClassType) s;
-                return t.getSymbol().equals(s2.getSymbol())
+                return t.getSymbol().equals(s2.getSymbol()) // maybe compare the type system as well.
                     && t.hasErasedSuperTypes() == s2.hasErasedSuperTypes()
                     && isSameType(t.getEnclosingType(), s2.getEnclosingType(), inInference)
                     && areSameTypes(t.getTypeArgs(), s2.getTypeArgs(), inInference);

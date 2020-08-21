@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 val javaParser = JavaParsingHelper.WITH_PROCESSING
 
 fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
-val testTypeSystem: TypeSystem = newTypeSystem()
+val testTypeSystem: TypeSystem = JavaParsingHelper.TEST_TYPE_SYSTEM
 
 // bc the method is package private
 val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver

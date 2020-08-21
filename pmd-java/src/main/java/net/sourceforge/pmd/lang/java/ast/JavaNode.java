@@ -69,6 +69,11 @@ public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
     @NonNull
     JSymbolTable getSymbolTable();
 
+    /**
+     * Returns the type system with which this node was created. This is
+     * the object responsible for representing types in the compilation
+     * unit.
+     */
     TypeSystem getTypeSystem();
 
 }

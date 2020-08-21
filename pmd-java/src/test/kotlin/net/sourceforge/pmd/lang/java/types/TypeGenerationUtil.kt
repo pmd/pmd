@@ -174,3 +174,7 @@ fun JavaParsingHelper.makeDummyTVars(vararg names: String): List<JTypeVar> {
             }.toList()
 
 }
+
+fun JavaParsingHelper.parseSomeClass(code: String): JClassType {
+    return this.withProcessing().parse(code).firstEnclosingType()
+}

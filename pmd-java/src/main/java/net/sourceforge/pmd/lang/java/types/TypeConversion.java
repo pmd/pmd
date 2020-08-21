@@ -136,7 +136,8 @@ public final class TypeConversion {
         if (type == null) {
             return null;
         }
-        @Nullable JClassType enclosing = capture(type.getEnclosingType());
+
+        final @Nullable JClassType enclosing = capture(type.getEnclosingType());
         if (enclosing == type.getEnclosingType() && !isWilcardParameterized(type)) {
             return type; // 99% take this path
         }

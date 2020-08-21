@@ -182,6 +182,19 @@ public final class JavaAstProcessor {
         );
     }
 
+    public static JavaAstProcessor create(TypeSystem typeSystem,
+                                          LanguageVersion languageVersion,
+                                          SemanticChecksLogger semanticLogger,
+                                          TypeInferenceLogger typeInfLogger) {
+        return new JavaAstProcessor(
+            typeSystem,
+            typeSystem.bootstrapResolver(),
+            semanticLogger,
+            typeInfLogger,
+            languageVersion
+        );
+    }
+
     public static void bench(String label, Runnable runnable) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();

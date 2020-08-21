@@ -24,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -52,6 +53,8 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
  * TODO this is hacked together by comparing the ClassLoader, but this
  *  should be in the language instance
  *
+ * <p>Nodes have a reference to the type system they were created for:
+ * {@link JavaNode#getTypeSystem()}.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeSystem {
