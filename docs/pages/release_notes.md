@@ -36,6 +36,16 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
     further evolution of the code like multi-catch.
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) has a new property
+    `closeNotInFinally`. With this property set to `true` the rule will also find calls to close a
+    resource, which are not in a finally-block of a try-statement. If a resource is not closed within a
+    finally block, it might not be closed at all in case of exceptions.
+    
+    As this new detection would yield many new violations, it is disabled by default. It might be
+    enabled in a later version of PMD.
+
 #### Deprecated Rules
 
 *   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`)

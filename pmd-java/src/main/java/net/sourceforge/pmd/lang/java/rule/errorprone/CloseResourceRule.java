@@ -93,6 +93,10 @@ public class CloseResourceRule extends AbstractJavaRule {
                     "java.util.stream.DoubleStream")
             .build();
 
+    private static final PropertyDescriptor<Boolean> DETECT_CLOSE_NOT_IN_FINALLY =
+            booleanProperty("closeNotInFinally")
+                .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
+
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
     private final Set<String> closeTargets = new HashSet<>();
@@ -106,6 +110,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         definePropertyDescriptor(TYPES_DESCRIPTOR);
         definePropertyDescriptor(USE_CLOSE_AS_DEFAULT_TARGET);
         definePropertyDescriptor(ALLOWED_RESOURCE_TYPES);
+        definePropertyDescriptor(DETECT_CLOSE_NOT_IN_FINALLY);
     }
 
     @Override
@@ -622,6 +627,10 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryPrefix prefix, Object data) {
+        if (!getProperty(DETECT_CLOSE_NOT_IN_FINALLY)) {
+            return super.visit(prefix, data);
+        }
+
         ASTName methodCall = prefix.getFirstChildOfType(ASTName.class);
         if (methodCall != null && isNodeInstanceOfResourceType(methodCall)) {
             String closedVar = getVariableClosedByMethodCall(methodCall);

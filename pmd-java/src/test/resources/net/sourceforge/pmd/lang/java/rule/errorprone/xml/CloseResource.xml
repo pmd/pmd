@@ -377,6 +377,7 @@ public class Test {
 
     <test-code>
         <description>#947 CloseResource rule fails if field is marked with annotation</description>
+        <rule-property name="closeNotInFinally">true</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>8,9</expected-linenumbers>
         <expected-messages>
@@ -548,6 +549,7 @@ public class Bar {
 
     <test-code>
         <description>#1375 CloseResource not detected properly - ok</description>
+        <rule-property name="closeNotInFinally">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
@@ -1308,6 +1310,7 @@ public class Foo {
 
     <test-code>
         <description>wrapped ByteArrayInputStream false-negative test</description>
+        <rule-property name="closeNotInFinally">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
