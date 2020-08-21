@@ -1,0 +1,48 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [function]                              1         9
+    [switchToRealPassword]                  10        30
+    [(]                                     30        31
+    [)]                                     31        32
+    [{]                                     33        34
+L2
+    [var]                                   2         5
+    [real]                                  6         10
+    [=]                                     11        12
+    [$]                                     13        14
+    [(]                                     14        15
+    ['realPass']                            15        25
+    [)]                                     25        26
+L3
+    [var]                                   2         5
+    [prompt]                                6         12
+    [=]                                     13        14
+    [$]                                     15        16
+    [(]                                     16        17
+    ['promptPass']                          17        29
+    [)]                                     29        30
+L4
+    [real]                                  2         6
+    [.]                                     6         7
+    [style]                                 7         12
+    [.]                                     12        13
+    [display]                               13        20
+    [=]                                     21        22
+    ['inline']                              23        31
+L5
+    [prompt]                                2         8
+    [.]                                     8         9
+    [style]                                 9         14
+    [.]                                     14        15
+    [display]                               15        22
+    [=]                                     23        24
+    ['none']                                25        31
+L6
+    [real]                                  2         6
+    [.]                                     6         7
+    [focus]                                 7         12
+    [(]                                     12        13
+    [)]                                     13        14
+L7
+    [}]                                     1         2
+EOF

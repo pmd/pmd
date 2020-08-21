@@ -41,4 +41,9 @@ public class ScalaTokenizerTest extends CpdTextComparisonTest {
         ex.expect(TokenMgrError.class);
         doTest("unlexable_sample");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

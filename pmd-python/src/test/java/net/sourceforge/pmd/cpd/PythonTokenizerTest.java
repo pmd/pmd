@@ -41,4 +41,9 @@ public class PythonTokenizerTest extends CpdTextComparisonTest {
     public void testBackticks() {
         doTest("backticks");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

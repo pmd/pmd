@@ -505,8 +505,9 @@ public final class MethodTypeResolution {
                     result.add(getTypeDefOfMethod(context, method, typeArguments));
                 }
             }
-        } catch (final LinkageError ignored) {
-            // TODO : This is an incomplete classpath, report the missing class
+        } catch (final LinkageError e) {
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
         }
 
         // search it's supertype

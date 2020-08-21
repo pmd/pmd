@@ -8,9 +8,12 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -19,11 +22,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
  * Helper class to analyze {@link ASTImportDeclaration}s.
  */
 public class ImportWrapper {
-    private ASTImportDeclaration node;
-    private String name;
-    private String fullname;
-    private boolean isStaticDemand;
-    private Set<String> allDemands = new HashSet<>();
+    private static final Logger LOG = Logger.getLogger(ImportWrapper.class.getName());
+
+    private final ASTImportDeclaration node;
+    private final String name;
+    private final String fullname;
+    private final boolean isStaticDemand;
+    private final Set<String> allStaticDemands;
 
     public ImportWrapper(String fullname, String name) {
         this(fullname, name, null);
@@ -38,6 +43,17 @@ public class ImportWrapper {
         this.name = name;
         this.node = node;
         this.isStaticDemand = isStaticDemand;
+        this.allStaticDemands = collectStaticFieldsAndMethods(node);
+
+    }
+
+    /**
+     * @param node
+     */
+    private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node) {
+        if (!this.isStaticDemand || node == null) {
+            return Collections.emptySet();
+        }
 
         // This was edited during the grammar updating process, because
         // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
@@ -48,25 +64,29 @@ public class ImportWrapper {
             type = node.getRoot().getClassTypeResolver().loadClass(node.getImportedName());
         }
 
-        if (type != null) {
-            for (Method m : type.getMethods()) {
-                allDemands.add(m.getName());
-            }
-            for (Field f : type.getFields()) {
-                allDemands.add(f.getName());
-            }
-            // also consider static fields, that are not public
+        if (type == null) {
+            return Collections.emptySet();
+        }
+
+        try {
+            Set<String> names = new HashSet<>();
+            // consider static fields, public and non-public
             for (Field f : type.getDeclaredFields()) {
                 if (Modifier.isStatic(f.getModifiers())) {
-                    allDemands.add(f.getName());
+                    names.add(f.getName());
                 }
             }
             // and methods, too
             for (Method m : type.getDeclaredMethods()) {
                 if (Modifier.isStatic(m.getModifiers())) {
-                    allDemands.add(m.getName());
+                    names.add(m.getName());
                 }
             }
+            return names;
+        } catch (LinkageError e) {
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing imports", e);
+            return Collections.emptySet();
         }
     }
 
@@ -94,7 +114,7 @@ public class ImportWrapper {
 
     public boolean matches(ImportWrapper i) {
         if (isStaticDemand) {
-            if (allDemands.contains(i.fullname)) {
+            if (allStaticDemands.contains(i.fullname)) {
                 return true;
             }
         }
