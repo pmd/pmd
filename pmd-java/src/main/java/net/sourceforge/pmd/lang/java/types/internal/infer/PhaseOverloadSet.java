@@ -20,7 +20,10 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -114,119 +117,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         }
     }
 
-    private OptionalBool inferMoreSpecific(JMethodSig m1, JMethodSig m2, OptionalBool m1OverM2) {
-        assert m2.isGeneric();
-        boolean m1MoreSpecific = isInferredMoreSpecific(m1, m2);
-        if (m1MoreSpecific && m1OverM2 != NO) {
-            return YES;
-        }
-        return UNKNOWN;
-    }
-
-
-    private boolean isInferredMoreSpecific(JMethodSig m1, JMethodSig m2) {
-        // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.4
-        try {
-            return doInfer(m1, m2);
-        } catch (ResolutionFailedException e) {
-            return false;
-        }
-    }
-
-    private boolean doInfer(JMethodSig m1, JMethodSig m2) {
-        InferenceContext ctx = infer.newContextFor(m2);
-
-        // even if m1 is generic, the type parameters of m1 are treated as type variables, not inference variables.
-
-        JMethodSig m2p = ctx.mapToIVars(m2);
-
-        List<ExprMirror> es = site.getExpr().getArgumentExpressions();
-        List<JTypeMirror> m1Formals = m1.getFormalParameters();
-        List<JTypeMirror> m2Formals = m2p.getFormalParameters();
-
-        int k = es.size();
-
-        for (int i = 0; i < k; i++) {
-            JTypeMirror ti = phase.ithFormal(m2Formals, i);
-            JTypeMirror si = phase.ithFormal(m1Formals, i);
-            ExprMirror ei = es.get(i);
-
-            OptionalBool siOverTi = isTypeMoreSpecificForArg(si, ti, ei);
-            if (siOverTi == NO) {
-                return false;
-            } else if (siOverTi == UNKNOWN) {
-                JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
-                JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
-                if (sfun == null || tfun == null) {
-                    infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
-                    continue;
-                }
-
-
-                // otherwise they're both functional interfaces
-                if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun)) {
-                    return false;
-                }
-            }
-        }
-
-        if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
-            // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, null);
-        }
-
-        ctx.solve();         // throws ResolutionFailedException
-        ctx.callListeners(); // may throw ResolutionFailedException
-
-        return true;
-    }
-
-    private boolean isFunctionTypeMoreSpecific(InferenceContext ctx, JTypeMirror si, JMethodSig sfun, JMethodSig tfun) {
-        if (sfun.getArity() != tfun.getArity()
-            || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
-            return false;
-        }
-
-        // Note that the following is not implemented entirely
-
-        // The rest is described in https://docs.oracle.com/javase/specs/jls/se13/html/jls-18.html#jls-18.5.4
-
-        JMethodSig capturedSFun = TypeOps.findFunctionalInterfaceMethod(TypeConversion.capture(si));
-        assert capturedSFun != null;
-
-        if (!TypeOps.haveSameTypeParams(capturedSFun, sfun)) {
-            return false;
-        }
-
-
-        List<JTypeVar> sparams = sfun.getTypeParameters();
-        List<JTypeVar> tparams = tfun.getTypeParameters();
-        Substitution subst = Substitution.mapping(tparams, sparams);
-        for (int j = 0; j < sparams.size(); j++) {
-            JTypeVar aj = sparams.get(j);
-            JTypeVar bj = tparams.get(j);
-
-            JTypeMirror x = aj.getUpperBound();
-            JTypeMirror y = bj.getUpperBound();
-            if (TypeOps.mentionsAny(x, sfun.getTypeParameters()) && !ctx.isGround(y)) {
-                return false;
-            } else {
-                TypeOps.isSameType(x, y.subst(subst), true); // adds an equality constraint
-            }
-        }
-
-        // todo something about formal params
-
-        JTypeMirror rs = sfun.getReturnType();
-        JTypeMirror rt = tfun.getReturnType();
-        if (TypeOps.mentionsAny(rs, sparams) && !ctx.isGround(rt)) {
-            return false;
-        }
-
-        // todo stuff about explicitly typed lambdas/ exact mrefs
-
-        return true;
-    }
 
     // YES if m1 is more specific than m2
     // NO if m2 is more specific than m1
@@ -243,6 +133,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JTypeMirror ti = phase.ithFormal(m2Formals, i);
             ExprMirror argi = args.get(i);
 
+            // todo no need to do this twice, the method is asymmetric
             OptionalBool sOverT = isTypeMoreSpecificForArg(si, ti, argi);
             OptionalBool tOverS = isTypeMoreSpecificForArg(ti, si, argi);
             if (sOverT.isKnown() && tOverS.isKnown() && sOverT != tOverS) {
@@ -311,6 +202,202 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         // TODO checks for lambdas/method refs are much more complicated
         return UNKNOWN;
+    }
+
+
+    private OptionalBool inferMoreSpecific(JMethodSig m1, JMethodSig m2, OptionalBool m1OverM2) {
+        assert m2.isGeneric();
+        boolean m1MoreSpecific = isInferredMoreSpecific(m1, m2);
+        if (m1MoreSpecific && m1OverM2 != NO) {
+            return YES;
+        }
+        return UNKNOWN;
+    }
+
+
+    private boolean isInferredMoreSpecific(JMethodSig m1, JMethodSig m2) {
+        // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.4
+        try {
+            return doInfer(m1, m2);
+        } catch (ResolutionFailedException e) {
+            return false;
+        }
+    }
+
+    private boolean doInfer(JMethodSig m1, JMethodSig m2) {
+        InferenceContext ctx = infer.newContextFor(m2);
+
+        // even if m1 is generic, the type parameters of m1 are treated as type variables, not inference variables.
+
+        JMethodSig m2p = ctx.mapToIVars(m2);
+
+        List<ExprMirror> es = site.getExpr().getArgumentExpressions();
+        List<JTypeMirror> m1Formals = m1.getFormalParameters();
+        List<JTypeMirror> m2Formals = m2p.getFormalParameters();
+
+        int k = es.size();
+
+        for (int i = 0; i < k; i++) {
+            JTypeMirror ti = phase.ithFormal(m2Formals, i);
+            JTypeMirror si = phase.ithFormal(m1Formals, i);
+            ExprMirror ei = es.get(i);
+
+            OptionalBool siOverTi = isTypeMoreSpecificForArg(si, ti, ei);
+            if (siOverTi == NO) {
+                return false;
+            } else if (siOverTi == UNKNOWN) {
+                JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
+                JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
+                if (sfun == null || tfun == null) {
+                    infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
+                    continue;
+                }
+
+
+                // otherwise they're both functional interfaces
+                if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun, ei)) {
+                    return false;
+                }
+            }
+        }
+
+        if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
+            // that is, the invocation has no arguments for the varargs, eg Stream.of()
+            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, null);
+        }
+
+        ctx.solve();
+        ctx.callListeners();
+
+        return true;
+    }
+
+    private boolean isFunctionTypeMoreSpecific(InferenceContext ctx,
+                                               JTypeMirror si,
+                                               JMethodSig sfun,
+                                               JMethodSig tfun,
+                                               ExprMirror ei) {
+        if (sfun.getArity() != tfun.getArity()
+            || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
+            return false;
+        }
+
+        // Note that the following is not implemented entirely
+
+        // The rest is described in https://docs.oracle.com/javase/specs/jls/se13/html/jls-18.html#jls-18.5.4
+
+        JMethodSig capturedSFun = TypeOps.findFunctionalInterfaceMethod(TypeConversion.capture(si));
+        assert capturedSFun != null;
+
+        if (!TypeOps.haveSameTypeParams(capturedSFun, sfun)) {
+            return false;
+        }
+
+
+        List<JTypeVar> sparams = sfun.getTypeParameters();
+        List<JTypeVar> tparams = tfun.getTypeParameters();
+        Substitution tToS = Substitution.mapping(tparams, sparams);
+        for (int j = 0; j < sparams.size(); j++) {
+            JTypeVar aj = sparams.get(j);
+            JTypeVar bj = tparams.get(j);
+
+            JTypeMirror x = aj.getUpperBound();
+            JTypeMirror y = bj.getUpperBound();
+            if (TypeOps.mentionsAny(x, sfun.getTypeParameters()) && !ctx.isGround(y)) {
+                return false;
+            } else {
+                TypeOps.isSameType(x, y.subst(tToS), true); // adds an equality constraint
+            }
+        }
+
+        // todo something about formal params
+
+        JTypeMirror rs = sfun.getReturnType();
+        JTypeMirror rt = tfun.getReturnType();
+        if (TypeOps.mentionsAny(rs, sparams) && !ctx.isGround(rt)) {
+            return false;
+        }
+
+        return addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS);
+    }
+
+    private boolean addGenericExprConstraintsRecursive(InferenceContext ctx, ExprMirror ei, JTypeMirror rs, JTypeMirror rt, Substitution tToS) {
+        if (ei instanceof LambdaExprMirror) {
+            // Otherwise, if ei is an explicitly typed lambda expression:
+            //
+            //    If RT is void, true.
+            //
+            //    todo: Otherwise, if RS and RT are functional interface types, and ei has at least one result expression, then for each result expression in ei, this entire second step is repeated to infer constraints under which RS is more specific than RT θ' for the given result expression.
+            //
+            //    Otherwise, if RS is a primitive type and RT is not, and ei has at least one result expression, and each result expression of ei is a standalone expression (§15.2) of a primitive type, true.
+            //
+            //    Otherwise, if RT is a primitive type and RS is not, and ei has at least one result expression, and each result expression of ei is either a standalone expression of a reference type or a poly expression, true.
+            //
+            //    Otherwise, ‹RS <: RT θ'›.
+
+            LambdaExprMirror lambda = (LambdaExprMirror) ei;
+            if (!lambda.isExplicitlyTyped()) {
+                return false;
+            }
+
+            if (rt.isVoid()) {
+                return true;
+            } else if (rs.isVoid()) {
+                return false;
+            }
+
+            if (rt.isPrimitive() ^ rs.isPrimitive()) {
+                final boolean needsPrimitive = rs.isPrimitive();
+                boolean ok = true;
+                boolean atLeastOne = false;
+                for (ExprMirror rexpr : lambda.getResultExpressions()) {
+                    atLeastOne = true;
+                    JTypeMirror std = rexpr.getStandaloneType();
+                    // polys are treated as ref types
+                    boolean hasPrimitive = std != null && std.isPrimitive();
+                    ok &= needsPrimitive == hasPrimitive;
+                }
+
+                if (ok && atLeastOne) {
+                    return true;
+                }
+            }
+
+            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, null);
+            return true;
+        } else if (ei instanceof MethodRefMirror) {
+            //  Otherwise, if ei is an exact method reference:
+            //
+            //    If RT is void, true.
+            //
+            //    Otherwise, if RS is a primitive type and RT is not, and the compile-time declaration for ei has a primitive return type, true.
+            //
+            //    Otherwise if RT is a primitive type and RS is not, and the compile-time declaration for ei has a reference return type, true.
+            //
+            //    Otherwise, ‹RS <: RT θ'›.
+
+            JMethodSig exact = ExprOps.getExactMethod((MethodRefMirror) ei);
+            if (exact == null) {
+                return false;
+            }
+
+            if (rt.isVoid()) {
+                return true;
+            } else if (rs.isVoid()) {
+                return false;
+            }
+
+            if (rs.isPrimitive() ^ rt.isPrimitive()) {
+                return exact.getReturnType().isPrimitive() == rs.isPrimitive();
+            }
+
+            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, null);
+            return true;
+        } else if (ei instanceof BranchingMirror) {
+            return ((BranchingMirror) ei).branchesMatch(e -> addGenericExprConstraintsRecursive(ctx, e, rs, rt, tToS));
+        }
+
+        return false;
     }
 
 }

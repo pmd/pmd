@@ -403,6 +403,8 @@ public final class TypeOps {
             // Symmetrically, if T is an intersection, T <: S requires only that
             // at least one bound of T is a subtype of S.
             return Convertibility.subtypesAll(t, asList(s));
+        } else if (s.isVoid()) { // t != s
+            return Convertibility.NEVER;
         }
 
         if (capture) {
@@ -714,7 +716,9 @@ public final class TypeOps {
 
         @Override
         public Convertibility visitSentinel(JTypeMirror t, JTypeMirror s) {
-            return Convertibility.SUBTYPING;
+            // we know t != s
+            return t.isVoid() ? Convertibility.NEVER
+                              : Convertibility.SUBTYPING;
         }
 
         @Override

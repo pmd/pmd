@@ -179,21 +179,25 @@ public interface ExprMirror {
 
         /**
          * Returns the types of the explicit parameters. If the lambda
-         * is implicitly typed, then return an empty list.
+         * is implicitly typed, then returns null.
+         *
+         * <p>Note that a degenerate case of explicitly typed lambda
+         * expression is a lambda with zero formal parameters.
          */
-        List<JTypeMirror> getExplicitParameterTypes();
+        @Nullable List<JTypeMirror> getExplicitParameterTypes();
 
+        /**
+         * See {@link #getExplicitParameterTypes()}.
+         */
+        default boolean isExplicitlyTyped() {
+            return getExplicitParameterTypes() != null;
+        }
 
         /**
          * Return the number of parameters of the lambda, regardless of
          * whether it's explicitly typed or not.
          */
         int getParamCount();
-
-
-        default boolean isExplicitlyTyped() {
-            return getParamCount() != 0 && getParamCount() == getExplicitParameterTypes().size();
-        }
 
 
         /**

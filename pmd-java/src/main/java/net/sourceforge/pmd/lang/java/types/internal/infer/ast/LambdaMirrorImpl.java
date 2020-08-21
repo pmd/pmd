@@ -7,12 +7,15 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -32,10 +35,16 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     }
 
     @Override
-    public List<JTypeMirror> getExplicitParameterTypes() {
-        return myNode.getParameters().toStream()
-                     .map(ASTLambdaParameter::getTypeNode)
-                     .toList(TypeNode::getTypeMirror);
+    public @Nullable List<JTypeMirror> getExplicitParameterTypes() {
+        ASTLambdaParameterList parameters = myNode.getParameters();
+        if (parameters.size() == 0) {
+            return Collections.emptyList();
+        }
+
+        List<JTypeMirror> types = parameters.toStream()
+                                            .map(ASTLambdaParameter::getTypeNode)
+                                            .toList(TypeNode::getTypeMirror);
+        return types.size() == 0 ? null : types;
     }
 
     @Override
