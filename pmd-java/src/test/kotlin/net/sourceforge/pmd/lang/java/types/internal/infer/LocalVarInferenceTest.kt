@@ -62,8 +62,6 @@ class LocalVarInferenceTest : ProcessorTestSpec({
 
     parserTest("Unbounded wild is projected to upper bound of its underlying tvar") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 class Scratch<S extends Scratch<S>> {

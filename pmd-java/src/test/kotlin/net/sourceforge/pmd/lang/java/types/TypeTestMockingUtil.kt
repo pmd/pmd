@@ -54,6 +54,9 @@ fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = d
 fun JavaNode.firstEnclosingType() = descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
 fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java)
 
+fun JavaNode.declaredTypeSignatures() = descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+fun JavaNode.declaredMethodSignatures() = methodDeclarations().toList { it.sig }
+
 fun JavaNode.methodCalls(): DescendantNodeStream<ASTMethodCall> = descendants(ASTMethodCall::class.java)
 fun JavaNode.firstMethodCall() = descendants(ASTMethodCall::class.java).firstOrThrow()
 

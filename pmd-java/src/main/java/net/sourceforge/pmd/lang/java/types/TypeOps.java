@@ -1183,8 +1183,11 @@ public final class TypeOps {
      * Adapt m1 to the type parameters of m2. Returns null if that's not possible.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.4
+     *
+     * <p>Note that the type parameters of m1 are not replaced, only
+     * their occurrences in the rest of the signature.
      */
-    private static @Nullable JMethodSig adaptForTypeParameters(JMethodSig m1, JMethodSig m2) {
+    static @Nullable JMethodSig adaptForTypeParameters(JMethodSig m1, JMethodSig m2) {
         if (haveSameTypeParams(m1, m2)) {
             return m1.subst(mapping(m1.getTypeParameters(), m2.getTypeParameters()));
         }
@@ -1192,7 +1195,7 @@ public final class TypeOps {
         return null;
     }
 
-    private static boolean haveSameTypeParams(JMethodSig m1, JMethodSig m2) {
+    public static boolean haveSameTypeParams(JMethodSig m1, JMethodSig m2) {
         List<JTypeVar> tp1 = m1.getTypeParameters();
         List<JTypeVar> tp2 = m2.getTypeParameters();
         if (tp1.size() != tp2.size()) {

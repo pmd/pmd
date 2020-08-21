@@ -53,6 +53,16 @@ infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror) {
     this::getTypeMirror shouldBe jTypeMirror
 }
 
+// pairs of type param name to value
+fun JMethodSig.subst(vararg mapping: Pair<String, JTypeMirror>): JMethodSig {
+    var subst = Substitution.EMPTY
+    for ((name, t) in mapping) {
+        val tvar = this.typeParameters.firstOrNull { it.name == name }
+        subst = subst.plus(tvar, t)
+    }
+    return this.subst(subst)
+}
+
 infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
     if (this == null)
         fail("Got null, expected some instantiation of $m")

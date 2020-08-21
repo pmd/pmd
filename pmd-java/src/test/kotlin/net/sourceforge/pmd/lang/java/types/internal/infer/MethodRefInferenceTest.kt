@@ -1072,4 +1072,39 @@ class Scratch {
     }
 
 
+
+    parserTest("Exact mref with this as lhs, referencing generic instance method, with type params mentioned in the return type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+            class Scratch {
+
+                private final MapMaker<String> mapMaker = this::copyToMutable;
+
+                protected <V> Map<String, V> copyToMutable(Map<String, V> m) {
+                    return null;
+                }
+
+
+                public interface Map<K0, V0> {}
+
+                public interface MapMaker<K> {
+
+                    <R> Map<K, R> copy(Map<K, R> m);
+                }
+            }
+        """.trimIndent())
+
+        val (t_Scratch, t_Map, t_MapMaker) = acu.declaredTypeSignatures()
+        val (copyToMutable, copy) = acu.declaredMethodSignatures()
+
+        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            mref.functionalMethod shouldBe t_MapMaker[gen.t_String].getDeclaredMethod(copy.symbol)
+            mref.referencedMethod shouldBe copyToMutable // exactly, ie V was not substituted
+        }
+    }
+
+
 })

@@ -24,6 +24,8 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
@@ -332,6 +334,8 @@ final class ExprCheckHelper {
             return;
         }
 
+        boolean fixInstantiation = false;
+
         // Otherwise, if the method reference expression elides TypeArguments, and the compile-time
         // declaration is a generic method, and the return type of the compile-time declaration mentions
         // at least one of the method's type parameters, then:
@@ -346,19 +350,34 @@ final class ExprCheckHelper {
                 // be bound by an out-of-scope type variable. Since instantiating an inference
                 // variable with an out-of-scope type variable is nonsensical, we prefer to
                 // avoid the situation by giving up immediately whenever the possibility arises.
-                throw ResolutionFailedException.unsolvableDependency(infer.LOG);
-            } else {
-                // JLS:
-                // If R does not mention one of the type parameters of the function type, then the
-                // constraint reduces to the bound set B3 which would be used to determine the
-                // method reference's compatibility when targeting the return type of the function
-                // type, as defined in §18.5.2.1. B3 may contain new inference variables, as well
-                // as dependencies between these new variables and the inference variables in T.
 
-                if (phase.isInvocation()) {
-                    JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, site, infCtx);
-                    completeMethodRefInference(mref, nonWildcard, fun, sig, false);
+                // Apparently javac allows compiling stuff like that. There's a test case in
+                // MethodRefInferenceTest, which was found in our codebase.
+                // We try one last thing to avoid the possibility of referencing out-of-scope stuff
+
+                if (!TypeOps.haveSameTypeParams(ctdecl, fun)) {
+                    // then we really can't do anything
+                    throw ResolutionFailedException.unsolvableDependency(infer.LOG);
+                } else {
+                    fixInstantiation = true;
                 }
+            }
+
+            // JLS:
+            // If R does not mention one of the type parameters of the function type, then the
+            // constraint reduces to the bound set B3 which would be used to determine the
+            // method reference's compatibility when targeting the return type of the function
+            // type, as defined in §18.5.2.1. B3 may contain new inference variables, as well
+            // as dependencies between these new variables and the inference variables in T.
+
+            if (phase.isInvocation()) {
+                JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, site, infCtx);
+                if (fixInstantiation) {
+                    // We know that fun & sig have the same type params
+                    // We need to fix those that are out-of-scope
+                    sig = sig.subst(Substitution.mapping(fun.getTypeParameters(), sig.getTypeParameters()));
+                }
+                completeMethodRefInference(mref, nonWildcard, fun, sig, false);
             }
         } else {
             // Otherwise, let R' be the result of applying capture conversion (§5.1.10) to the return
