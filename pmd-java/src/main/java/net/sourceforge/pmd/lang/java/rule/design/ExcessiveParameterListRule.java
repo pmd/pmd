@@ -27,10 +27,7 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
 
     @Override
     protected boolean isIgnored(ASTFormalParameters node) {
-        if (areParametersOfPrivateConstructor(node)) {
-            return true;
-        }
-        return false;
+        return areParametersOfPrivateConstructor(node);
     }
 
     private boolean areParametersOfPrivateConstructor(ASTFormalParameters params) {
