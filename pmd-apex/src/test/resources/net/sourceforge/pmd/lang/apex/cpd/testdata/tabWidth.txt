@@ -1,35 +1,35 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L4
-    [public]                                1         6
-    [with]                                  8         11
-    [sharing]                               13        19
-    [class]                                 21        25
-    [simple]                                27        32
-    [{]                                     34        34
+    [public]                                1         7
+    [with]                                  8         12
+    [sharing]                               13        20
+    [class]                                 21        26
+    [simple]                                27        33
+    [{]                                     34        35
 L5
-    [public]                                2         7
-    [string]                                9         14
-    [someparam]                             16        24
-    [{]                                     26        26
-    [get]                                   28        30
-    [;]                                     31        31
-    [set]                                   33        35
-    [;]                                     36        36
-    [}]                                     38        38
+    [public]                                2         8
+    [string]                                9         15
+    [someparam]                             16        25
+    [{]                                     26        27
+    [get]                                   28        31
+    [;]                                     31        32
+    [set]                                   33        36
+    [;]                                     36        37
+    [}]                                     38        39
 L7
-    [public]                                2         7
-    [void]                                  9         12
-    [getinit]                               14        20
-    [(]                                     21        21
-    [)]                                     22        22
-    [{]                                     24        24
+    [public]                                2         8
+    [void]                                  9         13
+    [getinit]                               14        21
+    [(]                                     21        22
+    [)]                                     22        23
+    [{]                                     24        25
 L8
-    [someparam]                             3         11
-    [=]                                     13        13
-    [test]                                  16        19
-    [;]                                     21        21
+    [someparam]                             3         12
+    [=]                                     13        14
+    [test]                                  16        20
+    [;]                                     21        22
 L9
-    [}]                                     2         2
+    [}]                                     2         3
 L10
-    [}]                                     1         1
+    [}]                                     1         2
 EOF
