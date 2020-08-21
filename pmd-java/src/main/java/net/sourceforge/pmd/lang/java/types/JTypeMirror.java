@@ -54,8 +54,13 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
  * </ul>
  *
  * <p>Lastly, types may be {@linkplain InferenceVar inference variables},
- * which <i>never</i> occur outside of a type inference run and can be ignored
- * when querying the AST.
+ * which <i>should not ever occur</i> outside of a type inference
+ * run and should be ignored when querying the AST. If you find an ivar,
+ * report a bug.
+ *
+ * <p>Note that implementing this type hierarchy outside of this package
+ * is not a supported usage of this API. The API is built to work with any
+ * symbol implementation, and that is its extension point.
  */
 public interface JTypeMirror extends JTypeVisitable {
     // TODO: unstable stuff (@Experimental)

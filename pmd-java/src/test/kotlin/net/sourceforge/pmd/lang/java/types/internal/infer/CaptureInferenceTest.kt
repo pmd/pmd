@@ -362,7 +362,7 @@ interface MostlySingularMultimap<K, V> {
     }
 
 
-    parserTest("f:Unbounded wild has bound of its underlying tvar") {
+    parserTest("Unbounded wild has bound of its underlying tvar") {
 
         logTypeInference(true)
 
@@ -371,8 +371,6 @@ interface MostlySingularMultimap<K, V> {
 import java.util.List;
 
 class Scratch<S extends Scratch<S>> {
-
-    public static <T extends Scratch<T>> void accept(Scratch<T> s) {}
 
     public List<S> getS() {return null;}
 
@@ -385,16 +383,6 @@ class Scratch<S extends Scratch<S>> {
                 """.trimIndent()
         )
 
-        // used to report
-        // Incompatible formals: java.util.List<capture#756 of ?> is not convertible to java.util.Collection<? extends Scratch<?>>
-
-        // Possible ways out:
-        // - withTypeArguments substitutes ? with a bounded wildcard with the correct bound transparently
-        //   - downside: we couldn't ever get a Scratch<?>, only Scratch<? extends Scratch<?>>
-        //   - downside: withTypeArguments becomes very difficult to implement as it has to handle recursion
-        //   - downside: interacts badly with unchecked conversion, as the warning is suppressed if we have no bound
-        //   - upside: "easy"
-        // - the capture of unbounded merges the declared bound and the missing boudn
         spy.shouldBeOk {
             acu.firstMethodCall().methodType
         }

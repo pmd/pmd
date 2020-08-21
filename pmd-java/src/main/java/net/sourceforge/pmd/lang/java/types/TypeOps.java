@@ -600,7 +600,8 @@ public final class TypeOps {
                 return ((JTypeVar) wild.asLowerBound()).getUpperBound();
             }
         } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return wildUpperBound(((JTypeVar) type).getCapturedOrigin());
+            // note: tvar.getUpperBound() != tvar.getCapturedOrigin().asUpperBound()
+            return wildUpperBound(((JTypeVar) type).getUpperBound());
         }
         return type;
     }
