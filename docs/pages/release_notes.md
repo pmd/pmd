@@ -62,6 +62,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   [#2690](https://github.com/pmd/pmd/pull/2690): \[core] Fix java7 compatibility
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
+    *   [#2663](https://github.com/pmd/pmd/issues/2663): \[java] NoClassDefFoundError on upgrade from 6.25.0 to 6.26.0
     *   [#2668](https://github.com/pmd/pmd/issues/2668): \[java] UnusedAssignment false positives
     *   [#2673](https://github.com/pmd/pmd/issues/2673): \[java] UnusedPrivateField and SingularField false positive with lombok annotation EqualsAndHashCode
     *   [#2684](https://github.com/pmd/pmd/issues/2684): \[java] UnusedAssignment FP in try/catch

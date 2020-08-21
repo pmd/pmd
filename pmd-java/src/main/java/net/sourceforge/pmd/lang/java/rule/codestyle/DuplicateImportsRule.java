@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DuplicateImportsRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(DuplicateImportsRule.class.getName());
 
     private Set<ImportWrapper> singleTypeImports;
     private Set<ImportWrapper> importOnDemandImports;
@@ -68,11 +71,16 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                 } else {
                     Class<?> importClass = node.getClassTypeResolver().loadClassOrNull(thisImportOnDemand.getName());
                     if (importClass != null) {
-                        for (Method m : importClass.getMethods()) {
-                            if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
-                                // static method in another imported class
-                                return true;
+                        try {
+                            for (Method m : importClass.getMethods()) {
+                                if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
+                                    // static method in another imported class
+                                    return true;
+                                }
                             }
+                        } catch (LinkageError e) {
+                            // This is an incomplete classpath, report the missing class
+                            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                         }
                     }
                 }
