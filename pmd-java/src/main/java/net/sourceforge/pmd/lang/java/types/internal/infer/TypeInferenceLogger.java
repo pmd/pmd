@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -122,11 +124,36 @@ public interface TypeInferenceLogger {
         protected static final String ANSI_RESET = "\u001B[0m";
         protected static final String ANSI_BLUE = "\u001B[34m";
         protected static final String ANSI_PURPLE = "\u001B[35m";
+        protected static final String ANSI_GRAY = "\u001B[37m";
         protected static final String ANSI_RED = "\u001B[31m";
         protected static final String ANSI_YELLOW = "\u001B[33m";
 
+        private static final String TO_BLUE =
+            Matcher.quoteReplacement(ANSI_BLUE) + "$0" + Matcher.quoteReplacement(ANSI_RESET);
+
+        private static final String TO_WHITE =
+            Matcher.quoteReplacement(ANSI_GRAY) + "$0" + Matcher.quoteReplacement(ANSI_RESET);
+
+        private static final Pattern IVAR_PATTERN = Pattern.compile("[α-ω]\\d*");
+        private static final Pattern IDENT_PATTERN = Pattern.compile("\\b(?!extends|super|capture|of)[\\w&&[^α-ω]]++(?!\\.)<?|-?>++");
+
         protected String color(Object str, String color) {
             return SystemUtils.IS_OS_UNIX ? color + str + ANSI_RESET : str.toString();
+        }
+
+        protected static String colorIvars(Object str) {
+            return doColor(str, IVAR_PATTERN, TO_BLUE);
+        }
+
+        protected static String colorPunct(Object str) {
+            return doColor(str, IDENT_PATTERN, TO_WHITE);
+        }
+
+        protected static String doColor(Object str, Pattern pattern, String replacement) {
+            if (SystemUtils.IS_OS_UNIX) {
+                return pattern.matcher(str.toString()).replaceAll(replacement);
+            }
+            return str.toString();
         }
 
         public SimpleLogger(PrintStream out) {
@@ -228,8 +255,8 @@ public interface TypeInferenceLogger {
             startSection("[WARNING] Invocation type resolution failed");
             printExpr(site.getExpr());
             summarizeFailures(site);
-            println("-> Falling back on " + color(ctdecl, ANSI_BLUE)
-                           + " (this may cause future mistakes)");
+            println("-> Falling back on " + ppHighlight(ctdecl)
+                        + " (this may cause future mistakes)");
             endSection("");
         }
 
@@ -267,6 +294,18 @@ public interface TypeInferenceLogger {
             return TypePrettyPrint.prettyPrint(sig, false);
         }
 
+        protected @NonNull String ppHighlight(JMethodSig sig) {
+            String s = ppMethod(sig);
+            int paramStart = s.indexOf('(');
+            String name = s.substring(0, paramStart);
+            String rest = s.substring(paramStart);
+            return color(name, ANSI_BLUE) + colorIvars(colorPunct(rest));
+        }
+
+        protected @NonNull String ppBound(InferenceVar ivar, BoundKind kind, JTypeMirror bound) {
+            return ivar + kind.getSym() + colorIvars(colorPunct(bound));
+        }
+
     }
 
     /**
@@ -294,24 +333,25 @@ public interface TypeInferenceLogger {
         @Override
         public void startInference(JMethodSig sig, MethodCallSite site, MethodResolutionPhase phase) {
             mark();
-            startSection("Phase " + phase + ", " + sig);
+            startSection(String.format("Phase %-17s%s", phase, ppHighlight(sig)));
+        }
+
+
+        @Override
+        public void ctxInitialization(InferenceContext ctx, JMethodSig sig) {
+            println(String.format("Context %-11d%s", ctx.getId(), ppHighlight(ctx.mapToIVars(sig))));
         }
 
         @Override
         public void endInference(@Nullable JMethodSig result) {
             rollback();
-            println(result != null ? "Success: " + color(ppMethod(result), ANSI_RED)
+            println(result != null ? "Success: " + ppHighlight(result)
                                    : "FAILED! SAD!");
         }
 
         @Override
         public void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) {
             println("Skipping instantiation of " + partiallyInferred + ", it's already complete");
-        }
-
-        @Override
-        public void ctxInitialization(InferenceContext ctx, JMethodSig sig) {
-            println("Context " + ctx.getId() + ",\t\t\t" + color(ppMethod(ctx.mapToIVars(sig)), ANSI_BLUE));
         }
 
 
@@ -369,7 +409,7 @@ public interface TypeInferenceLogger {
         @Override
         public void boundAdded(InferenceContext ctx, InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
             String message = isSubstitution ? "Changed bound" : "New bound";
-            println(addCtxInfo(ctx, message) + kind.format(ivar, bound));
+            println(addCtxInfo(ctx, message) + ppBound(ivar, kind, bound));
         }
 
         @Override
@@ -379,7 +419,7 @@ public interface TypeInferenceLogger {
 
         @Override
         public void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) {
-            println(addCtxInfo(ctx, "Ivar instantiated") + var + " := " + inst);
+            println(addCtxInfo(ctx, "Ivar instantiated") + color(var+ " := ", ANSI_BLUE)  + colorIvars(inst));
         }
 
         private @NonNull String addCtxInfo(InferenceContext ctx, String event) {

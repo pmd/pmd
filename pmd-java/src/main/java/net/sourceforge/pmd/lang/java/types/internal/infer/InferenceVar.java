@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,7 +23,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
 import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Represents an inference variable. Inference variables are just
@@ -171,7 +169,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
             for (JTypeMirror prev : prevBounds) {
                 // add substituted bound
                 JTypeMirror newBound = prev.subst(substitution);
-                if (newBound == prev) { // NOPMD CompareObjectsWithEquals
+                if (newBound == prev || prevBounds.contains(newBound)) { // NOPMD CompareObjectsWithEquals
                     // not actually new, don't call listeners, etc
                     newBounds.add(prev);
                 } else {
@@ -321,6 +319,10 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
          * - Otherwise this returns just EQ.
          */
         public abstract Set<BoundKind> complementSet(boolean eqIsAll);
+
+        String getSym() {
+            return sym;
+        }
 
         @Override
         public String toString() {

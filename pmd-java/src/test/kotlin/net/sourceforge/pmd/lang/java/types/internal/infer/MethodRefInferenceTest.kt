@@ -415,7 +415,9 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
     // disabled for now
-    parserTest("!Test inference var inst substitution in enclosing ctx") {
+    parserTest("f:Test inference var inst substitution in enclosing ctx") {
+
+        logTypeInference(true)
 
         val acu = parser.parse("""
 import java.util.Collections;
