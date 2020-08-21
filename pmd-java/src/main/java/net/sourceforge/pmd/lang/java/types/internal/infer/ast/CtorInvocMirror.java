@@ -51,6 +51,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
+    public TypeSpecies getStandaloneSpecies() {
+        return TypeSpecies.REFERENCE;
+    }
+
+    @Override
     public @Nullable JTypeMirror unresolvedType() {
         JClassType newT = getNewType();
         if (myNode.isDiamond()) {

@@ -287,7 +287,7 @@ public final class Infer {
                 }
             }
 
-            if (!applicable.isEmpty()) {
+            if (applicable.nonEmpty()) {
                 MethodCtDecl bestApplicable = applicable.getMostSpecificOrLogAmbiguity(LOG);
                 JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
                                                            site.getExpr().getErasedReceiverType());

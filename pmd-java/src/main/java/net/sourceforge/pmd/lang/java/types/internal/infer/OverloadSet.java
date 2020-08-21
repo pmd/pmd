@@ -68,8 +68,8 @@ public abstract class OverloadSet<T> {
         return overloads;
     }
 
-    boolean isEmpty() {
-        return overloads.isEmpty();
+    boolean nonEmpty() {
+        return !overloads.isEmpty();
     }
 
     /**
@@ -177,6 +177,7 @@ public abstract class OverloadSet<T> {
      * <p>Assumes m1 and m2 are override-equivalent, and declared in different
      * classes.
      */
+    // test only
     static OptionalBool shadows(JMethodSig m1, JMethodSig m2, JClassType site) {
         final JClassSymbol c1 = m1.getSymbol().getEnclosingClass();
         final JClassSymbol c2 = m2.getSymbol().getEnclosingClass();

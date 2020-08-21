@@ -380,6 +380,8 @@ public final class TypeOps {
             return Convertibility.IDENTITY;
         } else if (s.isTop()) {
             return Convertibility.subtypeIf(!t.isPrimitive());
+        } else if (s.isVoid() || t.isVoid()) { // t != s
+            return Convertibility.NEVER;
         } else if (s instanceof InferenceVar) {
             // it's possible to add a bound to UNRESOLVED
             ((InferenceVar) s).addBound(BoundKind.LOWER, t);
@@ -403,8 +405,6 @@ public final class TypeOps {
             // Symmetrically, if T is an intersection, T <: S requires only that
             // at least one bound of T is a subtype of S.
             return Convertibility.subtypesAll(t, asList(s));
-        } else if (s.isVoid()) { // t != s
-            return Convertibility.NEVER;
         }
 
         if (capture) {

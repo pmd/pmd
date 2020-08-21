@@ -317,7 +317,7 @@ class Scratch<N extends Number> {
         }
     }
 
-    parserTest("!Test specificity between lamdbas") {
+    parserTest("Test specificity between lamdbas") {
 
         logTypeInference(true)
 
@@ -332,25 +332,38 @@ class Scratch {
     static <T> T bench(String label, Supplier<T> runnable) { return null; }
 
     static void voidMethod() {}
+    static Scratch standaloneMethod() { return null; }
+    static <T> T polyMethod() { return null; }
 
     static {
         bench("foo", () -> new Scratch());  // selects the supplier
         bench("foo", () -> voidMethod());   // selects the runnable
+        bench("foo", () -> standaloneMethod());  // selects the supplier
+        bench("foo", () -> polyMethod());  // selects the supplier
     }
 }
+
                 """.trimIndent()
         )
 
         val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
 
-        val (supplierCall, runnableCall) = acu.methodCalls().toList()
+        val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
 
         spy.shouldBeOk {
-            supplierCall.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
         }
 
         spy.shouldBeOk {
-            runnableCall.methodType.shouldBeSomeInstantiationOf(withRunnable)
+            voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
+        }
+
+        spy.shouldBeOk {
+            stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+        }
+
+        spy.shouldBeOk {
+            polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
         }
     }
 

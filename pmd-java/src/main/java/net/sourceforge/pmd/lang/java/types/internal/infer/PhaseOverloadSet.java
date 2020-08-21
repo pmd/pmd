@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.getSpecies;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMi
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -32,6 +34,9 @@ import net.sourceforge.pmd.util.OptionalBool;
  * actual values of arguments, as specified in https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5.
  */
 final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
+    // TODO by mocking a call site we may be able to remove that logic
+    //  Basically infer m1 against m2 with the same core routines as the
+    //  main Infer.
 
     private final Infer infer;
     private final MethodResolutionPhase phase;
@@ -67,7 +72,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     }
 
     public @NonNull MethodCtDecl getMostSpecificOrLogAmbiguity(TypeInferenceLogger logger) {
-        assert !isEmpty();
+        assert nonEmpty();
         List<MethodCtDecl> overloads = getOverloadsMutable();
         MethodCtDecl main = overloads.get(0);
         if (overloads.size() != 1) {
@@ -254,23 +259,16 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return false;
             }
 
-            if (rt.isVoid()) {
-                return true;
-            }
-
-            if (rt.isPrimitive() ^ rs.isPrimitive()) {
-                final boolean needsPrimitive = rs.isPrimitive();
-                boolean ok = true;
+            if (getSpecies(rt) != getSpecies(rs)) {
+                TypeSpecies requiredSpecies = getSpecies(rs);
+                boolean sameSpecies = true;
                 boolean atLeastOne = false;
                 for (ExprMirror rexpr : lambda.getResultExpressions()) {
                     atLeastOne = true;
-                    JTypeMirror std = rexpr.getStandaloneTypeAux();
-                    // polys are treated as ref types
-                    boolean hasPrimitive = std != null && std.isPrimitive();
-                    ok &= needsPrimitive == hasPrimitive;
+                    sameSpecies &= requiredSpecies == rexpr.getStandaloneSpecies();
                 }
 
-                if (ok && atLeastOne) {
+                if (sameSpecies && atLeastOne) {
                     return true;
                 }
             }
@@ -293,12 +291,9 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return false;
             }
 
-            if (rt.isVoid()) {
+            if (getSpecies(rs) != getSpecies(rt)
+                && getSpecies(exact.getReturnType()) == getSpecies(rs)) {
                 return true;
-            }
-
-            if (rs.isPrimitive() ^ rt.isPrimitive()) {
-                return exact.getReturnType().isPrimitive() == rs.isPrimitive();
             }
 
             infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, null);
@@ -309,5 +304,4 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         return false;
     }
-
 }

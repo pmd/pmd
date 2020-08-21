@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
+import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.*;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -38,8 +40,30 @@ public interface ExprMirror {
      */
     @Nullable JTypeMirror getStandaloneType();
 
-    default @Nullable JTypeMirror getStandaloneTypeAux() {
-        return getStandaloneType();
+
+    default TypeSpecies getStandaloneSpecies() {
+        JTypeMirror std = getStandaloneType();
+        return std == null ? UNKNOWN : getSpecies(std);
+    }
+
+    /** A general category of types. */
+    enum TypeSpecies {
+        PRIMITIVE,
+        REFERENCE,
+        VOID,
+        UNKNOWN;
+
+
+        public static TypeSpecies getSpecies(JTypeMirror t) {
+            if (t.isPrimitive()) {
+                return PRIMITIVE;
+            } else if (t.isVoid()) {
+                return VOID;
+            } else if (TypeOps.isSpecialUnresolved(t)) {
+                return UNKNOWN;
+            }
+            return REFERENCE;
+        }
     }
 
 
