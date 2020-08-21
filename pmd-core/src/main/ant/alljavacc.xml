@@ -102,7 +102,7 @@
                  token="throw new Error(t.getMessage())"
                  value="throw t" />
         <!-- Set tab size of JavaCC to 1 -->
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
                  token="int tabSize = 8;"
                  value="int tabSize = 1;" />
 
