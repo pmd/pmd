@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -621,8 +622,11 @@ public final class TypeOps {
     }
 
     private static boolean isTypeRange(JTypeMirror s) {
-        return s instanceof JWildcardType
-            || s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
+        return s instanceof JWildcardType || isCvar(s);
+    }
+
+    private static boolean isCvar(JTypeMirror s) {
+        return s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
     }
 
 
@@ -906,40 +910,40 @@ public final class TypeOps {
      * https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.10.5
      */
     public static JTypeMirror projectUpwards(JTypeMirror t) {
-        return t.acceptVisitor(UPWARDS_PROJECTOR, null);
+        return t.acceptVisitor(UPWARDS_PROJECTOR, new RecursionStop());
     }
 
     private static final JTypeMirror NO_DOWN_PROJECTION = null;
     private static final ProjectionVisitor UPWARDS_PROJECTOR = new ProjectionVisitor(true) {
 
         @Override
-        public JTypeMirror visitTypeVar(JTypeVar t, Void v) {
+        public JTypeMirror visitTypeVar(JTypeVar t, RecursionStop recursionStop) {
             if (t.isCaptured()) {
-                return t.getUpperBound().acceptVisitor(UPWARDS_PROJECTOR, null);
+                return t.getUpperBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
             }
             return t;
         }
 
 
         @Override
-        public JTypeMirror visitWildcard(JWildcardType t, Void v) {
-            JTypeMirror u = t.getBound().acceptVisitor(UPWARDS_PROJECTOR, null);
+        public JTypeMirror visitWildcard(JWildcardType t, RecursionStop recursionStop) {
+            JTypeMirror u = t.getBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
+            TypeSystem ts = t.getTypeSystem();
             if (u == t.getBound()) {
                 return t;
             }
-            TypeSystem ts = t.getTypeSystem();
 
             if (t.isUpperBound()) {
                 return ts.wildcard(true, u);
             } else {
-                JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, null);
+                JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                 return down == NO_DOWN_PROJECTION ? ts.UNBOUNDED_WILD : ts.wildcard(false, down);
             }
         }
 
 
         @Override
-        public JTypeMirror visitNullType(JTypeMirror t, Void v) {
+        public JTypeMirror visitNullType(JTypeMirror t, RecursionStop recursionStop) {
             return t;
         }
 
@@ -949,15 +953,15 @@ public final class TypeOps {
     private static final ProjectionVisitor DOWNWARDS_PROJECTOR = new ProjectionVisitor(false) {
 
         @Override
-        public JTypeMirror visitWildcard(JWildcardType t, Void v) {
-            JTypeMirror u = t.getBound().acceptVisitor(UPWARDS_PROJECTOR, null);
+        public JTypeMirror visitWildcard(JWildcardType t, RecursionStop recursionStop) {
+            JTypeMirror u = t.getBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
             if (u == t.getBound()) {
                 return t;
             }
             TypeSystem ts = t.getTypeSystem();
 
             if (t.isUpperBound()) {
-                JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, null);
+                JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                 return down == NO_DOWN_PROJECTION ? NO_DOWN_PROJECTION
                                                   : ts.wildcard(true, down);
             } else {
@@ -967,18 +971,47 @@ public final class TypeOps {
 
 
         @Override
-        public JTypeMirror visitTypeVar(JTypeVar t, Void v) {
+        public JTypeMirror visitTypeVar(JTypeVar t, RecursionStop recursionStop) {
             if (t.isCaptured()) {
-                return t.getLowerBound().acceptVisitor(DOWNWARDS_PROJECTOR, null);
+                return t.getLowerBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
             }
             return t;
         }
 
         @Override
-        public JTypeMirror visitNullType(JTypeMirror t, Void v) {
+        public JTypeMirror visitNullType(JTypeMirror t, RecursionStop recursionStop) {
             return NO_DOWN_PROJECTION;
         }
     };
+
+    static final class RecursionStop {
+
+        private Set<JTypeVar> set;
+
+        boolean isAbsent(JTypeVar tvar) {
+            if (set == null) {
+                set = new LinkedHashSet<>(1);
+            }
+            return set.add(tvar);
+        }
+
+        <T extends JTypeMirror> JTypeMirror recurseIfNotDone(T t, BiFunction<T, RecursionStop, JTypeMirror> body) {
+            if (t instanceof JTypeVar) {
+                JTypeVar var = (JTypeVar) t;
+                try {
+                    if (isAbsent(var)) {
+                        return body.apply(t, this);
+                    } else {
+                        return t;
+                    }
+                } finally {
+                    set.remove(var);
+                }
+            } else {
+                return body.apply(t, this);
+            }
+        }
+    }
 
     /**
      * Restricted type variables are:
@@ -998,7 +1031,7 @@ public final class TypeOps {
      * "If Ai does not mention any restricted type variable, then Ai' = Ai."
      * </blockquote>
      */
-    private abstract static class ProjectionVisitor implements JTypeVisitor<JTypeMirror, Void> {
+    private abstract static class ProjectionVisitor implements JTypeVisitor<JTypeMirror, RecursionStop> {
 
         private final boolean upwards;
 
@@ -1008,25 +1041,27 @@ public final class TypeOps {
 
 
         @Override
-        public abstract JTypeMirror visitNullType(JTypeMirror t, Void v);
+        public abstract JTypeMirror visitNullType(JTypeMirror t, RecursionStop recursionStop);
 
 
         @Override
-        public abstract JTypeMirror visitWildcard(JWildcardType t, Void v);
+        public abstract JTypeMirror visitWildcard(JWildcardType t, RecursionStop recursionStop);
 
 
         @Override
-        public abstract JTypeMirror visitTypeVar(JTypeVar t, Void v);
+        public abstract JTypeMirror visitTypeVar(JTypeVar t, RecursionStop recursionStop);
 
 
         @Override
-        public JTypeMirror visit(JTypeMirror t, Void v) {
+        public JTypeMirror visit(JTypeMirror t, RecursionStop recursionStop) {
             return t;
         }
 
         @Override
-        public JTypeMirror visitClass(JClassType t, Void v) {
+        public JTypeMirror visitClass(JClassType t, RecursionStop recursionStop) {
             if (t.isParameterizedType()) {
+                TypeSystem ts = t.getTypeSystem();
+
                 List<JTypeMirror> targs = t.getTypeArgs();
                 List<JTypeMirror> newTargs = new ArrayList<>(targs.size());
                 List<JTypeVar> formals = t.getFormalTypeParams();
@@ -1034,8 +1069,12 @@ public final class TypeOps {
 
                 for (int i = 0; i < targs.size(); i++) {
                     JTypeMirror ai = targs.get(i);
-                    JTypeMirror u = ai.acceptVisitor(this, null);
-                    if (u == ai || ai instanceof JWildcardType) {
+                    JTypeMirror u = recursionStop.recurseIfNotDone(ai, (s, stop) -> s.acceptVisitor(this, stop));
+                    if (u == ai) {
+                        if (isCvar(ai)) { // cvar hit recursion stop
+                            u = ts.UNBOUNDED_WILD;
+                            change = true;
+                        }
                         // no change, or handled by the visitWildcard
                         newTargs.add(u);
                         continue;
@@ -1051,12 +1090,11 @@ public final class TypeOps {
                      */
                     JTypeMirror bi = formals.get(i).getUpperBound();
 
-                    TypeSystem ts = t.getTypeSystem();
                     if (u != ts.OBJECT
                         && (mentionsAny(bi, formals) || !bi.isSubtypeOf(u))) {
                         newTargs.add(ts.wildcard(true, u));
                     } else {
-                        JTypeMirror down = ai.acceptVisitor(DOWNWARDS_PROJECTOR, null);
+                        JTypeMirror down = ai.acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                         if (down == NO_DOWN_PROJECTION) {
                             newTargs.add(ts.UNBOUNDED_WILD);
                         } else {
@@ -1072,12 +1110,12 @@ public final class TypeOps {
         }
 
         @Override
-        public JTypeMirror visitIntersection(JIntersectionType t, Void v) {
+        public JTypeMirror visitIntersection(JIntersectionType t, RecursionStop recursionStop) {
             List<JTypeMirror> comps = new ArrayList<>(t.getComponents());
             boolean change = false;
             for (int i = 0; i < comps.size(); i++) {
                 JTypeMirror ci = comps.get(i);
-                JTypeMirror proj = ci.acceptVisitor(this, null);
+                JTypeMirror proj = ci.acceptVisitor(this, recursionStop);
                 if (proj == NO_DOWN_PROJECTION) {
                     return NO_DOWN_PROJECTION;
                 } else {
@@ -1091,8 +1129,8 @@ public final class TypeOps {
         }
 
         @Override
-        public JTypeMirror visitArray(JArrayType t, Void v) {
-            JTypeMirror comp2 = t.getComponentType().acceptVisitor(this, null);
+        public JTypeMirror visitArray(JArrayType t, RecursionStop recursionStop) {
+            JTypeMirror comp2 = t.getComponentType().acceptVisitor(this, recursionStop);
             return comp2 == NO_DOWN_PROJECTION
                    ? NO_DOWN_PROJECTION
                    : comp2 == t.getComponentType()
@@ -1100,7 +1138,7 @@ public final class TypeOps {
         }
 
         @Override
-        public JTypeMirror visitSentinel(JTypeMirror t, Void v) {
+        public JTypeMirror visitSentinel(JTypeMirror t, RecursionStop recursionStop) {
             return t;
         }
     }

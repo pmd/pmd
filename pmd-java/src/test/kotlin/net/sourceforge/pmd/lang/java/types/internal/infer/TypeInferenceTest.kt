@@ -185,52 +185,6 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test local var inference") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {{
-                var map = new java.util.HashMap<Object, int[]>(((4 * convCount) / 3) + 1);
-                for (var entry : map.entrySet()) {
-                    int[] positions = entry.getValue();
-                }
-            }}
-        """)
-
-        val (entrySet, getValue) = acu.methodCalls().toList()
-
-        spy.shouldBeOk {
-            val entryType = java.util.Map.Entry::class[ts.OBJECT, int.toArray()]
-            entrySet shouldHaveType java.util.Set::class[entryType]
-            getValue shouldHaveType int.toArray()
-            getValue.qualifier!!.shouldMatchN {
-                variableAccess("entry") {
-                    it shouldHaveType entryType
-
-                }
-            }
-        }
-    }
-
-    parserTest("Test for var inference projection") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                static <T> void take5(Iterable<? extends T> iter) {
-                    for (var entry : iter) { } // entry is projected to `T`, not `? extends T`
-                }
-            }
-        """.trimIndent())
-
-        val tvar = acu.typeVariables()[0]
-        val entryId = acu.varId("entry")
-        val iterAccess = acu.varAccesses("iter")[0]!!
-
-        spy.shouldBeOk {
-            entryId shouldHaveType tvar // not ? extends T
-            iterAccess shouldHaveType gen.t_Iterable[captureMatcher(`?` extends tvar)]
-        }
-    }
-
     parserTest("Test many dependencies") {
 
         inContext(StatementParsingCtx) {

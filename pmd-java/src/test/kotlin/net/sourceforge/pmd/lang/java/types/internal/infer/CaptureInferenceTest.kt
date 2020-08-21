@@ -325,8 +325,6 @@ interface NodeStream<T> {
 
     parserTest("Ivar should be instantiated with lower not upper bound") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
@@ -363,6 +361,40 @@ interface MostlySingularMultimap<K, V> {
         }
     }
 
+
+    parserTest("Unbounded wild has bound of its underlying tvar") {
+
+        // todo unbounded wild projection:
+        // check that S getS(), when called on Scratch<?>, does not return ? but its upper bound
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+import java.util.List;
+
+class Scratch<S extends Scratch<S>> {
+
+    public static <T extends Scratch<T>> void accept(Scratch<T> s) {}
+
+    public List<S> getS() {return null;}
+
+    static {
+        List<Scratch<?>> l = null;
+        Scratch<?> unbounded = null;
+        l.addAll(unbounded.getS());
+    }
+}
+                """.trimIndent()
+        )
+
+        // used to report
+        // Incompatible formals: java.util.List<capture#756 of ?> is not convertible to java.util.Collection<? extends Scratch<?>>
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType
+        }
+    }
 
 })
 
