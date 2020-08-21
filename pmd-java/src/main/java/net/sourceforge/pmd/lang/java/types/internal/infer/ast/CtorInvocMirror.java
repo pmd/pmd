@@ -35,11 +35,19 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     public @NonNull JClassType getEnclosingType() {
         if (myNode.isAnonymousClass()) {
             // protected constructors are visible when building
-            // an anonymous class instance
+            // an anonymous class instance todo is that tested?
             return myNode.getAnonymousClassDeclaration().getTypeMirror();
         }
 
         return super.getEnclosingType();
+    }
+
+    @Override
+    public JTypeMirror getStandaloneType() {
+        if (isDiamond()) {
+            return null;
+        }
+        return getNewType();
     }
 
     @Override
@@ -60,13 +68,6 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         return newT;
     }
 
-    @Override
-    public JTypeMirror getStandaloneTypeAux() {
-        if (isDiamond()) {
-            return null;
-        }
-        return getNewType();
-    }
 
     private List<JMethodSig> getVisibleCandidates() {
         JClassType newType = getNewType();

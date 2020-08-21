@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -17,12 +18,27 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 
 
     MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call) {
         super(mirrors, call);
+    }
+
+    @Override
+    public @Nullable JTypeMirror getStandaloneType() {
+        if (myNode.getExplicitTypeArguments() == null) {
+            return null;
+        }
+
+        MethodCallSite site = factory.infer.newCallSite(this, null);
+
+        // this is cached for later anyway
+        JMethodSig ctdecl = factory.infer.getCompileTimeDecl(site).getMethodType();
+
+        return TypeOps.isContextDependent(ctdecl) ? null : ctdecl.getReturnType();
     }
 
     @Override

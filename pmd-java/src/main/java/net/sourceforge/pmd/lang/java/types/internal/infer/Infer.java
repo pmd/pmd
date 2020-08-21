@@ -308,8 +308,6 @@ public final class Infer {
         site.loadInferenceData(ctdecl);
         site.setInInvocation(true);
 
-        // todo remove this check for site.getExpectedType
-        //  apparently removing it messes up anonymous class inference
         if (site.canSkipInvocation()) {
             assert assertReturnIsGround(m);
 
@@ -327,30 +325,15 @@ public final class Infer {
                             ctdecl.getMethodType().internalApi().adaptedMethod());
     }
 
-    private boolean isReturnTypeFinished(JMethodSig m, MethodCallSite site) {
-        return !isAdaptedConsType(m)
-            // this means that the invocation type cannot be affected by context type
-            && !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters())
-            && site.getOuterCtx().isGround(m.getReturnType());
-    }
-
-    private boolean isAdaptedConsType(JMethodSig m) {
-        return m.isConstructor()
-            && m.getDeclaringType().isClassOrInterface()
-            && m.getDeclaringType().isGeneric()
-            && !m.getDeclaringType().isRaw();
-    }
-
     // this is skipped when running without assertions
     private boolean assertReturnIsGround(JMethodSig t) {
         subst(t.getReturnType(), var -> {
-            assert !(var instanceof InferenceVar) : "Expected a ground type " + t;
+            assert !(var instanceof InferenceVar)
+                : "Expected a ground type " + t;
+            assert !(var instanceof JTypeVar) || !(t.getTypeParameters().contains(var))
+                : "Some type parameters have not been instantiated";
             return var;
         });
-
-        assert !TypeOps.mentionsAny(t.getReturnType(), t.getTypeParameters())
-            : " Method return type mentions type params: " + t;
-
         return true;
     }
 
@@ -540,9 +523,7 @@ public final class Infer {
         }
 
 
-        site.maySkipInvocation(
-            !TypeOps.mentionsAny(m.internalApi().originalMethod().getReturnType(), m.getTypeParameters())
-                && site.getOuterCtx().isGround(m.getReturnType()));
+        site.maySkipInvocation(!TypeOps.isContextDependent(m) && site.getOuterCtx().isGround(m.getReturnType()));
 
         return instantiateImpl(m, site, phase);
     }

@@ -1109,8 +1109,7 @@ public final class TypeOps {
                      */
                     JTypeMirror bi = formals.get(i).getUpperBound();
 
-                    if (u != ts.OBJECT
-                        && (mentionsAny(bi, formals) || !bi.isSubtypeOf(u))) {
+                    if (u != ts.OBJECT && (mentionsAny(bi, formals) || !bi.isSubtypeOf(u))) {
                         newTargs.add(ts.wildcard(true, u));
                     } else {
                         JTypeMirror down = ai.acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
@@ -1910,6 +1909,10 @@ public final class TypeOps {
 
     // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
 
+    public static boolean isContextDependent(JMethodSig m) {
+        m = m.internalApi().adaptedMethod();
+        return m.isGeneric() && mentionsAny(m.getReturnType(), m.getTypeParameters());
+    }
 
     /**
      * Returns true if the type is {@link TypeSystem#UNRESOLVED_TYPE},
