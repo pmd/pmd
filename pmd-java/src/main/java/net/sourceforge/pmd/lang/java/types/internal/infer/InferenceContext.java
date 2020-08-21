@@ -241,6 +241,9 @@ final class InferenceContext {
      * formal parameter is not ground.
      */
     void callListeners() {
+        if (instantiationListeners.isEmpty()) {
+            return;
+        }
         Set<InferenceVar> solved = new LinkedHashSet<>(inferenceVars);
         solved.removeAll(freeVars);
 
@@ -391,19 +394,17 @@ final class InferenceContext {
      * Returns the set of solved variables during this step.
      */
     private boolean solveBatchProgressed(Set<InferenceVar> varsToSolve, List<ReductionStep> wave) {
-        boolean progress = false;
         for (InferenceVar ivar : intersect(varsToSolve, freeVars)) {
             for (ReductionStep step : wave) {
                 if (step.accepts(ivar, this)) {
                     ivar.setInst(step.solve(ivar, this));
                     onVarInstantiated(ivar);
-                    progress = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        return progress;
+        return false;
     }
 
     public boolean isEmpty() {

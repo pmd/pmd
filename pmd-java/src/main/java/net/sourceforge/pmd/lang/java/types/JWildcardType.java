@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -77,6 +78,8 @@ public interface JWildcardType extends JTypeMirror {
         return asUpperBound().streamMethods(prefilter);
     }
 
+    @Override
+    JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {

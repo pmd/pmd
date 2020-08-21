@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.function.Function;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -179,6 +181,15 @@ class TypeVarImpl implements FreshTypeVar {
         @Override
         public @Nullable JWildcardType getCapturedOrigin() {
             return wildcard;
+        }
+
+        @Override
+        public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
+            return new CapturedTypeVarImpl(
+                this.wildcard.subst(substitution),
+                getLowerBound().subst(substitution),
+                getUpperBound().subst(substitution)
+            );
         }
 
         @Override

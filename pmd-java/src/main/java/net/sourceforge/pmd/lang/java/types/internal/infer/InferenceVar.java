@@ -38,7 +38,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     };
 
     private final InferenceContext ctx;
-    private final JTypeVar tvar;
+    private JTypeVar tvar;
     private final int id;
     private Map<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
     private JTypeMirror inst;
@@ -107,14 +107,12 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         }
 
         if (type instanceof InferenceVar) {
-            InferenceVar var = (InferenceVar) type;
-
             if (kind == BoundKind.EQ
                 // A <: B && B <: A => A = B
                 // this is early propagation
                 || getBounds(kind.complement()).contains(type)) {
 
-                var.merge(this);
+                ((InferenceVar) type).merge(this);
                 return;
             }
         }
@@ -151,11 +149,12 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     }
 
     /**
-     * Apply a substitution to the bounds of this variable.
+     * Apply a substitution to the bounds of this variable. Called when
+     * an ivar is instantiated.
      *
      * @param substitution The substitution to apply
      */
-    void substBounds(Function<JTypeMirror, JTypeMirror> substitution) {
+    void substBounds(Function<? super SubstVar, ? extends JTypeMirror> substitution) {
 
         for (Entry<BoundKind, Set<JTypeMirror>> entry : bounds.entrySet()) {
             BoundKind kind = entry.getKey();
@@ -177,6 +176,10 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
                 }
             }
         }
+
+        if (tvar.isCaptured()) {
+            tvar = tvar.substInBounds(substitution);
+        }
     }
 
     JTypeVar getBaseVar() {
@@ -192,6 +195,9 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return delegate;
     }
 
+    public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {
+        return this == other || delegate == other || other.isTop();
+    }
 
     /**
      * Set this ivar's delegate to the given ivar. This

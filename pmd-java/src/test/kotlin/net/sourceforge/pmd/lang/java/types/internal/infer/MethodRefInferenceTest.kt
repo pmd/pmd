@@ -415,11 +415,9 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
     // disabled for now
-    parserTest("f:Test inference var inst substitution in enclosing ctx") {
+    parserTest("Test inference var inst substitution in enclosing ctx") {
 
-        logTypeInference(true)
-
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Function;
@@ -432,7 +430,7 @@ abstract class NodeStream<T> implements Iterable<T> {
     }
 
     private static <K> Iterator<? extends K> safeMap(NodeStream<? extends K> ns) {
-        return ns == null ? Collections.emptyIterator() : ns.iterator();
+        return null;
     }
 
     abstract <I, O> Iterator<O> doFlatMap(Iterator<? extends I> iter, Function<? super I, ? extends Iterator<? extends O>> f);
@@ -445,44 +443,26 @@ abstract class NodeStream<T> implements Iterable<T> {
         val (t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
         val (tvar, rvar, kvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
-        acu.descendants(ASTMethodCall::class.java)
-                .firstOrThrow()
-                .shouldMatchN {
-                    methodCall("andThen") {
-                        val captureOfT: JTypeVar
-                        with(it.typeDsl) {
-                            captureOfT = captureMatcher(`?` `super` tvar)
-                            it shouldHaveType gen.t_Function[captureOfT, gen.t_Iterator[`?` extends rvar]]
-                        }
+        val call = acu.firstMethodCall()
 
-                        skipQualifier()
-
-                        argList {
-                            methodRef("safeMap") {
-                                with(it.typeDsl) {
-//                                    val captureOfR: JTypeVar
-//                                    captureOfR = captureMatcher(`?` extends rvar)
-
-                                    // safeMap#K must have been instantiated to some variation of R
-                                    it.referencedMethod.shouldMatchMethod(
-                                            named = "safeMap",
-                                            declaredIn = t_NodeStream.erasure,
-                                            withFormals = listOf(t_NodeStream[`?` extends rvar]),
-                                            returning = gen.t_Iterator[`?` extends rvar]
-                                    )
-                                }
-
-                                skipQualifier()
-
-//                                it shouldHaveType with(it.typeDsl) { gen.t_String }
-                                argList {
-                                    variableAccess("t")
-                                }
-                            }
-                        }
+        spy.shouldBeOk {
+            call shouldHaveType gen.t_Function[captureMatcher(`?` `super` tvar), gen.t_Iterator[`?` extends rvar]]
+            call.arguments[0].shouldMatchN {
+                methodRef("safeMap") {
+                    with(it.typeDsl) {
+                        // safeMap#K must have been instantiated to some variation of R
+                        it.referencedMethod.shouldMatchMethod(
+                                named = "safeMap",
+                                declaredIn = t_NodeStream.erasure,
+                                withFormals = listOf(t_NodeStream[`?` extends rvar]),
+                                returning = gen.t_Iterator[captureMatcher(`?` extends rvar)]
+                        )
                     }
-                }
 
+                    skipQualifier()
+                }
+            }
+        }
     }
 
     parserTest("Fix method ref non-wildcard parameterization not being ground in listener") {

@@ -554,7 +554,7 @@ public final class TypeSystem {
      * @throws IllegalArgumentException If the bound is OBJECT and this
      *                                  is a lower-bounded wildcard (? super Object)
      */
-    public JTypeMirror wildcard(boolean isUpperBound, @NonNull JTypeMirror bound) {
+    public JWildcardType wildcard(boolean isUpperBound, @NonNull JTypeMirror bound) {
         Objects.requireNonNull(bound, "Argument shouldn't be null");
         if (bound.isPrimitive() || bound instanceof JWildcardType) {
             throw new IllegalArgumentException("<" + bound + "> cannot be a wildcard bound");

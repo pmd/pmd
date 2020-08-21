@@ -413,7 +413,7 @@ public final class TypeOps {
     // does not perform side effects on inference vars
     private static Convertibility isSubtypePure(JTypeMirror t, JTypeMirror s) {
         if (t instanceof InferenceVar) {
-            return Convertibility.subtypeIf(t.equals(s) || s.isTop());
+            return Convertibility.subtypeIf(((InferenceVar) t).isSubtypeNoSideEffect(s));
         }
 
         return isConvertible(t, s);
@@ -1610,6 +1610,9 @@ public final class TypeOps {
     public static Set<JTypeMirror> mostSpecific(Collection<? extends JTypeMirror> set) {
         Set<JTypeMirror> result = new LinkedHashSet<>(set.size());
 
+        // Notice that this loop needs a well-behaved subtyping relation,
+        // i.e. antisymmetric: A <: B && A != B implies not(B <: A)
+        // This is not the case if we include unchecked conversion in there.
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {

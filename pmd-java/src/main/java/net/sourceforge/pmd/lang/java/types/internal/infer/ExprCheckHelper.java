@@ -382,7 +382,7 @@ final class ExprCheckHelper {
                 solved -> {
                     mref.setInferredType(solved.ground(groundTargetType));
                     mref.setFunctionalMethod(solved.ground(functionalMethod).internalApi().withOwner(solved.ground(functionalMethod.getDeclaringType())));
-                    mref.setCompileTimeDecl(ctDecl);
+                    mref.setCompileTimeDecl(solved.ground(ctDecl));
                 }
             );
         }
