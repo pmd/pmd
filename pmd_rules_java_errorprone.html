@@ -2723,6 +2723,12 @@ just remove "AutoCloseable" from the types.</p>
       <td>Exact class names that do not need to be closed</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
+    <tr>
+      <td>closeNotInFinally</td>
+      <td>false</td>
+      <td>Detect if ‘close’ (or other closeTargets) is called outside of a finally-block</td>
+      <td>no</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2737,6 +2743,7 @@ just remove "AutoCloseable" from the types.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"types"</span> <span class="na">value=</span><span class="s">"java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeAsDefaultTarget"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceTypes"</span> <span class="na">value=</span><span class="s">"java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringWriter|java.io.CharArrayWriter|java.util.stream.Stream|java.util.stream.IntStream|java.util.stream.LongStream|java.util.stream.DoubleStream"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeNotInFinally"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5174,7 +5181,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 20, 2020 <br />
+ Site last generated: Aug 21, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

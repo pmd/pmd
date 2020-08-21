@@ -1417,30 +1417,50 @@ Block-level synchronization helps to ensure that only the code that needs synchr
 gets it.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="c1">// Try to avoid this:</span>
-  <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-  <span class="o">}</span>
-  <span class="c1">// Prefer this:</span>
-  <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Try to avoid this:</span>
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// code, that requires synchronization</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">sharedData</span><span class="o">.</span><span class="na">has</span><span class="o">(</span><span class="s">"bar"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">sharedData</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
     <span class="o">}</span>
-  <span class="o">}</span>
-
-  <span class="c1">// Try to avoid this for static methods:</span>
-  <span class="kd">static</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">fooStatic</span><span class="o">()</span> <span class="o">{</span>
-  <span class="o">}</span>
-
-  <span class="c1">// Prefer this:</span>
-  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">barStatic</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Prefer this:</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">sharedData</span><span class="o">.</span><span class="na">has</span><span class="o">(</span><span class="s">"bar"</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">sharedData</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
     <span class="o">}</span>
-  <span class="o">}</span>
+
+    <span class="c1">// Try to avoid this for static methods:</span>
+    <span class="kd">static</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">fooStatic</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Prefer this:</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">barStatic</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// code, that requires synchronization</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1911,7 +1931,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 20, 2020 <br />
+ Site last generated: Aug 21, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

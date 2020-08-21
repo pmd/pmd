@@ -1435,6 +1435,20 @@ cases where the variable of the caught exception is reassigned. This practice is
 further evolution of the code like multi-catch.</li>
 </ul>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="language-plaintext highlighter-rouge">CloseResource</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>) has a new property
+<code class="language-plaintext highlighter-rouge">closeNotInFinally</code>. With this property set to <code class="language-plaintext highlighter-rouge">true</code> the rule will also find calls to close a
+resource, which are not in a finally-block of a try-statement. If a resource is not closed within a
+finally block, it might not be closed at all in case of exceptions.</p>
+
+    <p>As this new detection would yield many new violations, it is disabled by default. It might be
+enabled in a later version of PMD.</p>
+  </li>
+</ul>
+
 <h4 id="deprecated-rules">Deprecated Rules</h4>
 
 <ul>
@@ -1458,16 +1472,24 @@ which was introduced in PMD 6.26.0.</li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2471">#2471</a>: [java] New Rule: AvoidReassigningCatchVariables</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2663">#2663</a>: [java] NoClassDefFoundError on upgrade from 6.25.0 to 6.26.0</li>
       <li><a href="https://github.com/pmd/pmd/issues/2668">#2668</a>: [java] UnusedAssignment false positives</li>
       <li><a href="https://github.com/pmd/pmd/issues/2673">#2673</a>: [java] UnusedPrivateField and SingularField false positive with lombok annotation EqualsAndHashCode</li>
       <li><a href="https://github.com/pmd/pmd/issues/2684">#2684</a>: [java] UnusedAssignment FP in try/catch</li>
       <li><a href="https://github.com/pmd/pmd/issues/2686">#2686</a>: [java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes</li>
     </ul>
   </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2461">#2461</a>: [java] ExcessiveParameterListRule must ignore a private constructor</li>
+    </ul>
+  </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2410">#2410</a>: [java] ProperCloneImplementation not valid for final class</li>
       <li><a href="https://github.com/pmd/pmd/issues/2431">#2431</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message</li>
       <li><a href="https://github.com/pmd/pmd/issues/2439">#2439</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2470">#2470</a>: [java] CloseResource false positive when resource included in return value</li>
       <li><a href="https://github.com/pmd/pmd/issues/2531">#2531</a>: [java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase())</li>
       <li><a href="https://github.com/pmd/pmd/issues/2647">#2647</a>: [java] Deprecate rule DataFlowAnomalyAnalysis</li>
     </ul>
@@ -1535,11 +1557,15 @@ includes all code in the following packages, and their subpackages:
   <li><a href="https://github.com/pmd/pmd/pull/2656">#2656</a>: [all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2659">#2659</a>: [java] StringToString can not detect the case: getStringMethod().toString() - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2662">#2662</a>: [java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase()) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2671">#2671</a>: [java] CloseResource false positive when resource included in return value - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2674">#2674</a>: [java] add lombok.EqualsAndHashCode in AbstractLombokAwareRule - <a href="https://github.com/berkam">berkam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2682">#2682</a>: [java] New Rule: AvoidReassigningCatchVariables - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2697">#2697</a>: [java] ExcessiveParameterListRule must ignore a private constructor - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2699">#2699</a>: [java] ProperCloneImplementation not valid for final class - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2700">#2700</a>: [java] Fix OnlyOneReturn code example - <a href="https://github.com/jlelse">Jan-Lukas Else</a></li>
 </ul>
 
 
@@ -1558,7 +1584,7 @@ includes all code in the following packages, and their subpackages:
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 20, 2020 <br />
+ Site last generated: Aug 21, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
