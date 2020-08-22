@@ -91,7 +91,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this type is the same type or a subtype of the
      * given type. Note that for convenience, this returns true if both
      * types are primitive, and this type is convertible to the other
-     * through primitive widening. See {@link Convertibility#bySubtyping()}.
+     * through primitive widening. See {@link Convertibility#naturally()}.
      *
      * @throws NullPointerException If the argument is null
      */

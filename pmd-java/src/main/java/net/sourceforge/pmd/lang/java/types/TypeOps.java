@@ -378,7 +378,7 @@ public final class TypeOps {
 
         if (t == s) {
             Objects.requireNonNull(t);
-            return Convertibility.IDENTITY;
+            return Convertibility.SUBTYPING;
         } else if (s.isTop()) {
             return Convertibility.subtypeIf(!t.isPrimitive());
         } else if (s.isVoid() || t.isVoid()) { // t != s
@@ -427,17 +427,10 @@ public final class TypeOps {
      * A result for a convertibility check. This is a generalization of
      * a subtyping check.
      *
-     * <p>For primitive types, there is no subtyping, but
-     * instead a widening primitive conversion:
-     *
-     * {@link #byPrimitiveWidening() t.isConvertibleTo(s).byPrimitiveWidening()}
-     *
-     * <p>For reference types, subtyping implies convertibility (the
-     * conversion is technically called "widening reference conversion"):
-     *
-     * {@link #bySubtyping() t.isConvertibleTo(s).bySubtyping()}
-     *
-     * <p>If you don't care or know whether your t and s are primitive:
+     * <p>Primitive types are implicitly convertible to each other by
+     * widening primitive conversion. For reference types, subtyping
+     * implies convertibility (the conversion is technically called
+     * "widening reference conversion"). You can check those cases using:
      *
      * {@link #naturally() t.isConvertibleTo(s).naturally()}
      *
@@ -460,9 +453,6 @@ public final class TypeOps {
      * <p>the negation of which being
      *
      * {@link #somehow() t.isConvertibleTo(s).somehow()}
-     *
-     * <p>Finally, two equal types are always convertible through identity
-     * conversion.
      *
      * <p>Note that this does not check for boxing or unboxing conversions,
      * nor for narrowing conversions, which may happen through casts.
@@ -488,26 +478,18 @@ public final class TypeOps {
         UNCHECKED_NO_WARNING,
 
         /**
-         * T and S are primitive types, and T is convertible to S by
-         * widening conversion. For example, {@code int} can be widened
-         * to {@code long}.
+         * Subtyping, but generalized to cover also primitives:
+         * <ul>
+         * <li>T and S are reference types, and T is a subtype of S ({@code T <: S}).
+         * <li>T and S are primitive types, and T can be widened to S.
+         * For example, {@code int} can be widened to {@code long} implicitly.
+         * </ul>
+         * In particular, two equal types are always convertible to each
+         * other. Note also that {@code T <: T} for any reference type {@code T}.
          */
-        PRIMITIVE_WIDENING,
+        SUBTYPING;
 
-        /**
-         * T is a subtype of S ({@code T <: S}). In particular,
-         * {@code T <: T} for all {@code T} (even primitive).
-         */
-        SUBTYPING,
-
-        /**
-         * T is the same type as S. This is only marginally useful, use
-         * {@link #isSameType(JTypeMirror, JTypeMirror) isSameType}
-         * (which is an alias for {@link JTypeMirror#equals(Object)})
-         * if you want to test equality of types.
-         */
-        IDENTITY;
-
+        // public:
 
         /** Returns true if this is {@link #NEVER}. */
         public boolean never() {
@@ -522,30 +504,16 @@ public final class TypeOps {
         }
 
         /**
-         * Returns true if this is {@link #SUBTYPING} OR {@link #IDENTITY}.
-         * Note that this wouldn't work form primitive types. Use either
-         * {@link #byPrimitiveWidening()} or {@link #naturally()} if you
-         * want to care
-         */
-        public boolean bySubtyping() {
-            return this == SUBTYPING || this == IDENTITY;
-        }
-
-        /**
-         * True if this is either primitive widening, or identity.
-         */
-        public boolean byPrimitiveWidening() {
-            return this == PRIMITIVE_WIDENING || this == IDENTITY;
-        }
-
-
-        /**
-         * True if this is either primitive widening, subtyping, or identity.
+         * True if this is {@link #SUBTYPING}, note also
          * This is a "subtyping" check that ignores whether the operands
          * are primitive or reference types.
+         *
+         * TODO choose the name:
+         * - bySubtyping, to be consistent w/ isSubtypeOf,
+         * - or naturally, now that we don't have other kinds of conversions anymore
          */
         public boolean naturally() {
-            return this == PRIMITIVE_WIDENING || this == SUBTYPING || this == IDENTITY;
+            return this == SUBTYPING;
         }
 
         /**
@@ -554,6 +522,8 @@ public final class TypeOps {
         public boolean withUncheckedWarning() {
             return this == UNCHECKED_WARNING;
         }
+
+        // package:
 
 
         /** Preserves an unchecked warning. */
@@ -668,7 +638,7 @@ public final class TypeOps {
 
         if (isSameType(s, t, true)) {
             // S <= S
-            return Convertibility.IDENTITY;
+            return Convertibility.SUBTYPING;
         }
 
         if (s instanceof JWildcardType) {
@@ -777,8 +747,6 @@ public final class TypeOps {
                     boolean sRaw = s.hasErasedSuperTypes();
                     if (tRaw && !sRaw) {
                         return Convertibility.UNCHECKED_NO_WARNING;
-                    } else if (tRaw == sRaw) {
-                        return Convertibility.IDENTITY;
                     } else {
                         return Convertibility.SUBTYPING;
                     }
@@ -791,7 +759,7 @@ public final class TypeOps {
                                                            : Convertibility.UNCHECKED_WARNING;
             }
 
-            Convertibility result = Convertibility.IDENTITY;
+            Convertibility result = Convertibility.SUBTYPING;
             for (int i = 0; i < targs.size(); i++) {
                 Convertibility sub = typeArgContains(sargs.get(i), targs.get(i));
                 if (sub == Convertibility.NEVER) {
@@ -851,7 +819,7 @@ public final class TypeOps {
         @Override
         public Convertibility visitPrimitive(JPrimitiveType t, JTypeMirror s) {
             if (s instanceof JPrimitiveType) {
-                return t.superTypes.contains(s) ? Convertibility.PRIMITIVE_WIDENING
+                return t.superTypes.contains(s) ? Convertibility.SUBTYPING
                                                 : Convertibility.NEVER;
             }
             return Convertibility.NEVER;

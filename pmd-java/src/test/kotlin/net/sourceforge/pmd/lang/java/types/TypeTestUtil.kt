@@ -134,7 +134,7 @@ fun assertSubtype(t: JTypeMirror, s: JTypeMirror, capture: Boolean = true, passe
 }
 
 infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, false) { bySubtyping() }
+    assertSubtype(this, s, false) { naturally() }
 }
 
 infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {

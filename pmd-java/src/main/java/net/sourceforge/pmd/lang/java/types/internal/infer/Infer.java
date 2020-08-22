@@ -889,7 +889,7 @@ public final class Infer {
     static Convertibility isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
         if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
             // fast path
-            return Convertibility.IDENTITY;
+            return Convertibility.SUBTYPING;
         }
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
