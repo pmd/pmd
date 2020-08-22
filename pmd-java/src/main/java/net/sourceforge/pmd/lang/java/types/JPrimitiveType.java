@@ -49,6 +49,11 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     @Override
+    public JPrimitiveType unbox() {
+        return this;
+    }
+
+    @Override
     public JTypeMirror getErasure() {
         return this;
     }

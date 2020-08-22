@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
@@ -142,12 +141,6 @@ abstract class IncorporationAction {
         private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
             if (t instanceof InferenceVar || t instanceof JPrimitiveType) {
                 return null; // don't cache those
-            } else if (t instanceof JTypeVar) {
-                JTypeVar tvar = (JTypeVar) t;
-                if (tvar.isCaptured()) {
-                    // don't cache captures of the same wildcard separately
-                    return tvar.getCapturedOrigin();
-                }
             }
             return t;
         }

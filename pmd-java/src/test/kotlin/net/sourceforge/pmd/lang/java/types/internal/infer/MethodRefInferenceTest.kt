@@ -784,7 +784,7 @@ class Scratch {
 
 
 
-    parserTest("f:Method ref inside conditional") {
+    parserTest("Method ref inside poly conditional, conditional type is fetched first") {
 
         logTypeInference(true)
 

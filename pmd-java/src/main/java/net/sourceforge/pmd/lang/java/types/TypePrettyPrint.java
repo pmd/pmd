@@ -154,11 +154,11 @@ public final class TypePrettyPrint {
 
             if (sb.printTypeVarBounds == YES) {
                 sb.printTypeVarBounds = NO;
-                if (t.getUpperBound() != t.getTypeSystem().OBJECT) {
+                if (!t.getUpperBound().isTop()) {
                     sb.append(" extends ");
                     t.getUpperBound().acceptVisitor(this, sb);
                 }
-                if (t.getLowerBound() != t.getTypeSystem().NULL_TYPE) {
+                if (!t.getLowerBound().isBottom()) {
                     sb.append(" super ");
                     t.getLowerBound().acceptVisitor(this, sb);
                 }

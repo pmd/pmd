@@ -721,7 +721,7 @@ public final class Infer {
 
     private boolean commonSuperWithDiffParameterization(JTypeMirror t, JTypeMirror s) {
         JTypeMirror lubResult = ts.lub(listOf(t, s));
-        if (lubResult == ts.NULL_TYPE || lubResult == ts.OBJECT) {
+        if (lubResult.isBottom() || lubResult.isTop()) {
             return false;
         }
         for (JTypeMirror sup : asList(lubResult)) {

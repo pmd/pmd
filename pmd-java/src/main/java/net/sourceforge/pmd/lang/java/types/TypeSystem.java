@@ -47,6 +47,9 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
  *
  * <p>Some special types are presented as constant fields, eg {@link #OBJECT}
  * or {@link #NULL_TYPE}. These are always comparable by reference.
+ * Note that the primitive wrapper types are not exposed as constants
+ * here, but can be accessed by using the {@link JTypeMirror#box() box}
+ * method on some primitive constant.
  *
  * <p>The lifetime of a type system is the analysis: it is shared by
  * all compilation units.
@@ -74,14 +77,21 @@ public final class TypeSystem {
     public final JTypeMirror NULL_TYPE = new NullType(this);
 
 
-    // primitives
+    /** Primitive type {@code boolean}. */
     public final JPrimitiveType BOOLEAN;
+    /** Primitive type {@code char}. */
     public final JPrimitiveType CHAR;
+    /** Primitive type {@code byte}. */
     public final JPrimitiveType BYTE;
+    /** Primitive type {@code short}. */
     public final JPrimitiveType SHORT;
+    /** Primitive type {@code int}. */
     public final JPrimitiveType INT;
+    /** Primitive type {@code long}. */
     public final JPrimitiveType LONG;
+    /** Primitive type {@code float}. */
     public final JPrimitiveType FLOAT;
+    /** Primitive type {@code double}. */
     public final JPrimitiveType DOUBLE;
 
     /**
@@ -671,6 +681,11 @@ public final class TypeSystem {
         @Override
         public TypeSystem getTypeSystem() {
             return ts;
+        }
+
+        @Override
+        public boolean isBottom() {
+            return true;
         }
 
         @Override
