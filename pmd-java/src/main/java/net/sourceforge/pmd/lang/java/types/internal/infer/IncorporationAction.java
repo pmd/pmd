@@ -73,8 +73,8 @@ abstract class IncorporationAction {
         /**
          * The list of bound kinds to be checked. If the new bound is
          * equality, then all other bounds need to be checked. Otherwise,
-         * if eg the bound is {@literal alpha <: T}, then we must check
-         * that {@literal S <: T} holds for all bounds {@literal S <: alpha}.
+         * if eg the bound is {@code alpha <: T}, then we must check
+         * that {@code S <: T} holds for all bounds {@code S <: alpha}.
          */
         Set<BoundKind> boundsToCheck() {
             return myKind.complementSet(true);
@@ -232,40 +232,49 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             InferenceVar alpha = ivar;
 
-            // beta = alpha, merge beta into alpha
+            // alpha = beta, merge beta into alpha
             if (kind == BoundKind.EQ && bound instanceof InferenceVar) {
                 ((InferenceVar) bound).merge(alpha);
                 return;
             }
 
-            // The following is the hottest spot in the inference framework
-            // (10% of runtime on the stress tests)
-
             // forward propagation
-            // alpha <: T and beta <: alpha => beta <: T
-            //            and beta = alpha => beta <: T
-            // it's symmetric for upper bounds
-            for (BoundKind k : kind.complementSet(false)) {
-                for (JTypeMirror b : alpha.getBounds(k)) {
-                    if (b instanceof InferenceVar) {
-                        InferenceVar beta = (InferenceVar) b;
-                        beta.addBound(kind, ctx.ground(bound));
-                    }
+            // alpha <: T
+            //   && alpha >: beta ~> beta <: T      |  beta <: alpha <: T
+            //   && alpha = beta  ~> beta <: T      |  beta =  alpha <: T
+
+            // alpha >: T
+            //   && alpha <: beta ~> beta >: T      |  T <: alpha <: beta
+            //   && alpha = beta  ~> beta >: T      |  T <: alpha =  beta
+
+            for (JTypeMirror b : alpha.getBounds(kind.complement())) {
+                if (b instanceof InferenceVar) {
+                    InferenceVar beta = (InferenceVar) b;
+                    beta.addBound(kind, ctx.ground(bound));
                 }
             }
 
             if (bound instanceof InferenceVar) {
                 InferenceVar beta = (InferenceVar) bound;
+                // note that kind is never EQ at this point
+
                 // symmetric propagation
-                // Eg propagates alpha <: beta to beta >: alpha
+
+                // alpha <: beta ~> beta >: alpha
+                // alpha >: beta ~> beta <: alpha
                 beta.addBound(kind.complement(), alpha);
 
                 // backwards propagation
-                // alpha <: beta causes alpha to adopt all the upper bounds of beta
-                for (BoundKind k : kind.complementSet(true)) {
-                    for (JTypeMirror b : beta.getBounds(k)) {
-                        alpha.addBound(k, b);
-                    }
+                // alpha <: beta
+                //   && beta = T  ~> alpha <: T
+                //   && beta <: T ~> alpha <: T
+
+                // alpha >: beta
+                //   && beta = T  ~> alpha >: T
+                //   && beta >: T ~> alpha >: T
+
+                for (JTypeMirror b : beta.getBounds(kind)) {
+                    alpha.addBound(kind, b);
                 }
             }
         }

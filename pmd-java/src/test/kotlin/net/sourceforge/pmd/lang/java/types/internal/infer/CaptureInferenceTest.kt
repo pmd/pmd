@@ -324,6 +324,8 @@ interface NodeStream<T> {
 
     parserTest("Ivar should be instantiated with lower not upper bound") {
 
+        logTypeInference(true)
+
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
@@ -388,7 +390,7 @@ class Scratch<S extends Scratch<S>> {
     }
 
 
-    parserTest("f:Some capture problem with ctx type incompatible with cvar") {
+    parserTest("Some capture problem with ctx type incompatible with cvar") {
         // todo
 
         logTypeInference(true)

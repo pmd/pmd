@@ -262,6 +262,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
             public Set<BoundKind> complementSet(boolean eqIsAll) {
                 return EQ_LOWER;
             }
+
         },
         EQ(" = ") {
             @Override
