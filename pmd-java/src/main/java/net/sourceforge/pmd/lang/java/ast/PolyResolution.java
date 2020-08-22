@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.PolySite;
@@ -122,9 +122,9 @@ final class PolyResolution {
             } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
                 // these may use a cast as a target type
                 JTypeMirror targetType = getTargetType(ctx, true);
-                PolyExprMirror mirror = (PolyExprMirror) exprMirrors.getMirror((ASTExpression) e);
-                PolySite site = infer.newPolySite(mirror, targetType);
-                infer.inferLambdaOrMrefInUnambiguousContext(site);
+                FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror((ASTExpression) e);
+                PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
+                infer.inferFunctionalExprInUnambiguousContext(site);
                 return fetchCascaded(e);
             } else {
                 throw new IllegalStateException("Unknown poly?" + e);
@@ -193,10 +193,11 @@ final class PolyResolution {
             // if we called getTypeMirror, and the field is null,
             // will recurse into this method (so use internal fetch method)
             JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
-            if (type == ts.UNRESOLVED_TYPE || type == ts.ERROR_TYPE || type == null) {
-                // The type is set if the overload resolution ended correctly
-                // If not the process may have been aborted early
-                return fallbackIfCtxFailed(e, type == null);
+            // Note: a value of null here means overload resolution of
+            // the enclosing invocation failed. In that case, we can start
+            // over for the subexpression, ignoring context type.
+            if (type == null) {
+                return fallbackIfCtxDidntSet(e, type == null);
             }
             return type;
         }
@@ -235,7 +236,7 @@ final class PolyResolution {
      * treat them as if they occur as standalone expressions.
      * TODO would using error-type as a target type be better?
      */
-    private @NonNull JTypeMirror fallbackIfCtxFailed(@Nullable TypeNode e, boolean canRetry) {
+    private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e, boolean canRetry) {
         if (canRetry && e instanceof InvocationNode) {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }

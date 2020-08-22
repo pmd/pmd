@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprCheckHelper.ExprChecker;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
@@ -86,13 +87,11 @@ public final class Infer {
         return LOG;
     }
 
-    public PolySite newPolySite(PolyExprMirror mirror, @Nullable JTypeMirror expectedType) {
-        return mirror instanceof InvocationMirror ? newCallSite((InvocationMirror) mirror, expectedType)
-                                                  : new PolySite(mirror, expectedType);
+    public PolySite<FunctionalExprMirror> newFunctionalSite(FunctionalExprMirror mirror, @Nullable JTypeMirror expectedType) {
+        return new PolySite<>(mirror, expectedType);
     }
 
-    public MethodCallSite newCallSite(InvocationMirror expr,
-                                      @Nullable JTypeMirror expectedType) {
+    public MethodCallSite newCallSite(InvocationMirror expr, @Nullable JTypeMirror expectedType) {
         return newCallSite(expr, expectedType, null, null);
     }
 
@@ -122,28 +121,24 @@ public final class Infer {
      * Infer lambdas and method references that have a target type: cast contexts,
      * and some assignment contexts (not inferred, not return from lambda).
      */
-    public void inferLambdaOrMrefInUnambiguousContext(PolySite site) {
+    public void inferFunctionalExprInUnambiguousContext(PolySite<FunctionalExprMirror> site) {
         Objects.requireNonNull(site);
         Objects.requireNonNull(site.getExpectedType(), "Cannot proceed without a target type");
-        PolyExprMirror expr = site.getExpr();
-        if (expr instanceof MethodRefMirror || expr instanceof LambdaExprMirror) {
-            try {
-                addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
-            } catch (ResolutionFailedException rfe) {
-                rfe.getFailure().addContext(null, site, null);
-                LOG.logResolutionFail(rfe.getFailure());
-                expr.setInferredType(getTypeSystem().UNRESOLVED_TYPE);
-                if (expr instanceof MethodRefMirror) {
-                    MethodRefMirror mref = (MethodRefMirror) expr;
-                    mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);
-                    mref.setCompileTimeDecl(ts.UNRESOLVED_METHOD);
-                } else {
-                    LambdaExprMirror lambda = (LambdaExprMirror) expr;
-                    lambda.setFunctionalMethod(ts.UNRESOLVED_METHOD);
-                }
+        FunctionalExprMirror expr = site.getExpr();
+        try {
+            addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
+        } catch (ResolutionFailedException rfe) {
+            rfe.getFailure().addContext(null, site, null);
+            LOG.logResolutionFail(rfe.getFailure());
+            expr.setInferredType(getTypeSystem().UNRESOLVED_TYPE);
+            if (expr instanceof MethodRefMirror) {
+                MethodRefMirror mref = (MethodRefMirror) expr;
+                mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+                mref.setCompileTimeDecl(ts.UNRESOLVED_METHOD);
+            } else {
+                LambdaExprMirror lambda = (LambdaExprMirror) expr;
+                lambda.setFunctionalMethod(ts.UNRESOLVED_METHOD);
             }
-        } else {
-            throw new IllegalArgumentException(expr + " should be lambda or method ref");
         }
     }
 

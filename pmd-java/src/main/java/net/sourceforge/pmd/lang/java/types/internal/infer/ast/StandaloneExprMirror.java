@@ -20,4 +20,9 @@ class StandaloneExprMirror extends BaseExprMirror<ASTExpression> implements Expr
     public @Nullable JTypeMirror getStandaloneType() {
         return myNode.getTypeMirror();
     }
+
+    @Override
+    public void setInferredType(JTypeMirror mirror) {
+        // do nothing
+    }
 }

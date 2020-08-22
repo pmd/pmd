@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.EnumCtorInvocMirror;
@@ -34,10 +35,8 @@ public final class JavaExprMirrors {
     public ExprMirror getMirror(ASTExpression e) {
         if (e instanceof InvocationNode) {
             return getInvocationMirror((InvocationNode) e);
-        } else if (e instanceof ASTLambdaExpression) {
-            return new LambdaMirrorImpl(this, (ASTLambdaExpression) e);
-        } else if (e instanceof ASTMethodReference) {
-            return new MethodRefMirrorImpl(this, (ASTMethodReference) e);
+        } else if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
+            return getFunctionalMirror(e);
         } else if (e instanceof ASTConditionalExpression) {
             return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e);
         } else if (e instanceof ASTSwitchExpression) {
@@ -48,17 +47,26 @@ public final class JavaExprMirrors {
         }
     }
 
-    public InvocationMirror getInvocationMirror(InvocationNode node) {
-        if (node instanceof ASTMethodCall) {
-            return new MethodInvocMirror(this, (ASTMethodCall) node);
-        } else if (node instanceof ASTConstructorCall) {
-            return new CtorInvocMirror(this, (ASTConstructorCall) node);
-        } else if (node instanceof ASTExplicitConstructorInvocation) {
-            return new CtorInvocMirror.ExplicitCtorInvocMirror(this, (ASTExplicitConstructorInvocation) node);
-        } else if (node instanceof ASTEnumConstant) {
-            return new EnumCtorInvocMirror(this, (ASTEnumConstant) node);
+    public InvocationMirror getInvocationMirror(InvocationNode e) {
+        if (e instanceof ASTMethodCall) {
+            return new MethodInvocMirror(this, (ASTMethodCall) e);
+        } else if (e instanceof ASTConstructorCall) {
+            return new CtorInvocMirror(this, (ASTConstructorCall) e);
+        } else if (e instanceof ASTExplicitConstructorInvocation) {
+            return new CtorInvocMirror.ExplicitCtorInvocMirror(this, (ASTExplicitConstructorInvocation) e);
+        } else if (e instanceof ASTEnumConstant) {
+            return new EnumCtorInvocMirror(this, (ASTEnumConstant) e);
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException("" + e);
+    }
+
+    public FunctionalExprMirror getFunctionalMirror(ASTExpression e) {
+        if (e instanceof ASTLambdaExpression) {
+            return new LambdaMirrorImpl(this, (ASTLambdaExpression) e);
+        } else if (e instanceof ASTMethodReference) {
+            return new MethodRefMirrorImpl(this, (ASTMethodReference) e);
+        }
+        throw new IllegalArgumentException("" + e);
     }
 
 

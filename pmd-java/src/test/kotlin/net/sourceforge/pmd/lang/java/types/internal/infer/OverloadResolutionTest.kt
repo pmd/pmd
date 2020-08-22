@@ -310,6 +310,8 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
     parserTest("Overload selection must identify fallbacks if any") {
 
+        logTypeInference(true)
+
         val acu = parser.parse("""
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -324,6 +326,8 @@ class Scratch {
 
     static {
         Class<?>[] genArray = null;
+// notice the context
+//      vvv
         foo(Arrays.stream(genArray)
                   .map(Type::getTypeName)
                   .collect(Collectors.joining(", ")));

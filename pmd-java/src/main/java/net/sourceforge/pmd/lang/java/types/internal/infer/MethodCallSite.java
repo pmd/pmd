@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Si
  * The target type might depend on inference of the outer context, by
  * mentioning free type variables. In that case they're resolved together.
  */
-public class MethodCallSite extends PolySite {
+public class MethodCallSite extends PolySite<InvocationMirror> {
 
     private final InferenceContext localInferenceContext;
     private final MethodCallSite outerSite;
@@ -121,11 +121,6 @@ public class MethodCallSite extends PolySite {
     @NonNull
     InferenceContext getOuterCtx() {
         return localInferenceContext;
-    }
-
-    @Override
-    InvocationMirror getExpr() {
-        return (InvocationMirror) super.getExpr();
     }
 
     @Override

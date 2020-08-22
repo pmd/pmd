@@ -13,13 +13,13 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMir
  * Context of a poly expression. Includes info about an expected target
  * type, and the expression mirror.
  */
-public class PolySite {
+public class PolySite<E extends PolyExprMirror> {
 
     private final JTypeMirror expectedType;
-    private final PolyExprMirror expr;
+    private final E expr;
 
 
-    PolySite(PolyExprMirror expr, @Nullable JTypeMirror expectedType) {
+    PolySite(E expr, @Nullable JTypeMirror expectedType) {
         this.expectedType = expectedType;
         this.expr = expr;
     }
@@ -29,7 +29,7 @@ public class PolySite {
         return expectedType;
     }
 
-    PolyExprMirror getExpr() {
+    E getExpr() {
         return expr;
     }
 

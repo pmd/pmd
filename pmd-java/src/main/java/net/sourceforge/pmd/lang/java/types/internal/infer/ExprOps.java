@@ -322,6 +322,12 @@ final class ExprOps {
         List<ExprMirror> arguments = CollectionUtil.map(
             formals,
             fi -> new ExprMirror() {
+
+                @Override
+                public void setInferredType(JTypeMirror mirror) {
+                    // do nothing
+                }
+
                 @Override
                 public JavaNode getLocation() {
                     return mref.getLocation();

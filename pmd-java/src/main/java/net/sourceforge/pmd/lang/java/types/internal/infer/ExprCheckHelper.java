@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 final class ExprCheckHelper {
@@ -86,21 +87,26 @@ final class ExprCheckHelper {
      * @throws ResolutionFailedException If the expr is not compatible, and we want to add a message for the reason
      */
     boolean isCompatible(JTypeMirror targetType, ExprMirror expr) {
+        final boolean isStandalone;
         {
             JTypeMirror standalone = expr.getStandaloneType();
             if (standalone != null) {
+                expr.setInferredType(standalone);
+                isStandalone = true;
 
                 // defer check if fi is not ground
                 checker.checkExprConstraint(infCtx, standalone, targetType);
-                if (!(expr instanceof BranchingMirror)) {
+                if (!(expr instanceof PolyExprMirror)) {
                     return true;
                 }
                 // otherwise fallthrough, we potentially need to finish
-                // inferring the branches.
+                // inferring some things on the polys
+            } else {
+                isStandalone = false;
             }
         }
 
-        if (expr instanceof FunctionalExprMirror) {
+        if (expr instanceof FunctionalExprMirror) { // those are never standalone
             JClassType funType = getProbablyFunctItfType(targetType, expr);
             if (funType == null) {
                 /*
@@ -124,7 +130,7 @@ final class ExprCheckHelper {
         } else if (expr instanceof InvocationMirror) {
             // then the argument is a poly invoc expression itself
             // in that case we need to infer that as well
-            return isInvocationCompatible(targetType, (InvocationMirror) expr);
+            return isInvocationCompatible(targetType, (InvocationMirror) expr, isStandalone);
         } else if (expr instanceof BranchingMirror) {
             return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
         }
@@ -132,7 +138,7 @@ final class ExprCheckHelper {
         return false;
     }
 
-    private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc) {
+    private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc, boolean isStandalone) {
         MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, this.site, this.infCtx);
         MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
         JMethodSig mostSpecific = argCtDecl.getMethodType();
@@ -158,7 +164,13 @@ final class ExprCheckHelper {
         // now if the return type of the arg is polymorphic and unsolved,
         // there are some additional bounds on our own infCtx
 
-        checker.checkExprConstraint(infCtx, actualType, targetType);
+        if (!isStandalone) {
+            // If the expr was standalone, the constraint was already added.
+            // We must take care not to duplicate the constraint, because if
+            // it's eg checking a wildcard parameterized type, we could have
+            // two equality constraints on separate captures of the same wild -> incompatible
+            checker.checkExprConstraint(infCtx, actualType, targetType);
+        }
 
         if (!argCtDecl.isFailed()) {
             infCtx.addInstantiationListener(

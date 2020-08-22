@@ -36,6 +36,9 @@ public interface ExprMirror {
      * If this expression is of a standalone form, returns the type of
      * the expression. Otherwise returns null.
      *
+     * <p>Note that standalone types can directly be set on the type
+     * node.
+     *
      * @return The type of the expression if it is standalone
      */
     @Nullable JTypeMirror getStandaloneType();
@@ -67,14 +70,15 @@ public interface ExprMirror {
     }
 
 
-    interface PolyExprMirror extends ExprMirror {
+    /**
+     * Set the type of the underlying ast node. Used when we need
+     * to find out the type of a poly to infer the type of another,
+     * that way, we don't repeat computation.
+     */
+    void setInferredType(JTypeMirror mirror);
 
-        /**
-         * Set the type of the underlying ast node. Used when we need
-         * to find out the type of a poly to infer the type of another,
-         * that way, we don't repeat computation.
-         */
-        void setInferredType(JTypeMirror mirror);
+
+    interface PolyExprMirror extends ExprMirror {
 
 
         /**
@@ -119,6 +123,8 @@ public interface ExprMirror {
     /**
      * Mirror of some expression that targets a functional interface type:
      * lambda or method reference.
+     *
+     * todo possibly, introduce the same kind of interface in the AST
      */
     interface FunctionalExprMirror extends PolyExprMirror {
 

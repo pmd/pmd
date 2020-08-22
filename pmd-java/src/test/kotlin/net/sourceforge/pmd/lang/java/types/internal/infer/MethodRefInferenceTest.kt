@@ -784,7 +784,9 @@ class Scratch {
 
 
 
-    parserTest("f:Method ref inside conditional") {
+    parserTest("Method ref inside conditional") {
+
+        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.Objects;
