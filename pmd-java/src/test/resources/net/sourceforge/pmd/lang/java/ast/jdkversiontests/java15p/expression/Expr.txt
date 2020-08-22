@@ -3,7 +3,7 @@
    |  +- Name[@Image = "com.example.expression"]
    +- TypeDeclaration[]
       +- ClassOrInterfaceDeclaration[@Abstract = false, @BinaryName = "com.example.expression.Expr", @Default = false, @Final = false, @Image = "Expr", @Interface = true, @Local = false, @Modifiers = 16385, @Native = false, @Nested = false, @NonSealed = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Sealed = true, @SimpleName = "Expr", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.INTERFACE, @Volatile = false]
-         +- PermittedSubclasses[]
+         +- PermitsList[]
          |  +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "ConstantExpr", @ReferenceToClassSameCompilationUnit = false]
          |  +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "PlusExpr", @ReferenceToClassSameCompilationUnit = false]
          |  +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "TimesExpr", @ReferenceToClassSameCompilationUnit = false]
