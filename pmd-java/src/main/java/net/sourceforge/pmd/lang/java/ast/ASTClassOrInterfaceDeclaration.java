@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -65,6 +70,12 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
 
         ASTExtendsList extendsList = getFirstChildOfType(ASTExtendsList.class);
         return extendsList == null ? null : extendsList.iterator().next();
+    }
+
+
+    @Experimental
+    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+        return ASTList.orEmpty(children(ASTPermitsList.class));
     }
 
 }

@@ -27,7 +27,6 @@ public interface ASTLiteral extends ASTPrimaryExpression {
         return this instanceof ASTStringLiteral;
     }
 
-
     /**
      * Returns true if this is a {@linkplain ASTCharLiteral character literal}.
      */
