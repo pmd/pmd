@@ -195,11 +195,12 @@ public final class TypeSystem {
         primitivesByKind.put(PrimitiveTypeKind.FLOAT, FLOAT);
         primitivesByKind.put(PrimitiveTypeKind.DOUBLE, DOUBLE);
 
-        JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("/*unresolved*/", 0);
-        UNKNOWN = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
+        // note that those intentionally have names that are invalid as java identifiers
+        JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("(*unknown*)", 0);
+        UNKNOWN = new SentinelType(this, "(*unknown*)", unresolvedTypeSym);
 
-        JClassSymbol errorTypeSym = symbolFactory.makeUnresolvedReference("/*error*/", 0);
-        ERROR = new SentinelType(this, "/*error*/", errorTypeSym);
+        JClassSymbol errorTypeSym = symbolFactory.makeUnresolvedReference("(*error*)", 0);
+        ERROR = new SentinelType(this, "(*error*)", errorTypeSym);
 
         JClassSymbol primitiveVoidSym = new VoidSymbol(this);
         NO_TYPE = new SentinelType(this, "void", primitiveVoidSym);

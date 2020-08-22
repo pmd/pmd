@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
@@ -61,51 +62,16 @@ final class PolyResolution {
         // - a CastExpression -> cast context
         final JavaNode ctx = contextOf(e, false);
 
-
         if (ctx == null) {
-            // no surrounding context
-            if (e instanceof InvocationNode) {
-                JTypeMirror targetType = null;
-                if (e instanceof ASTExplicitConstructorInvocation) {
-                    // target type is superclass type
-                    targetType = e.getEnclosingType().getTypeMirror().getSuperClass();
-                }
-                // Invocation context: infer the called method, which will cascade down this node.
-                // This branch is also taken, if e is an invocation and has no surrounding context (ctx == e).
-                return inferInvocation((InvocationNode) e, e, targetType);
-            }
-
-            // no context for a poly that's not an invocation? This could either mean
-            // - a lambda or mref that occurs outside of a cast, invoc, or assignment context
-            //   -> semantic error
-            // - a conditional or switch that is outside an assignment or invocation context,
-            // in which case either
-            //   - it occurs outside of the contexts where it is allowed, eg a conditional as
-            //   an expression statement (for switch it's ok, simply a SwitchStatement in this case)
-            //      -> parsing error, cannot occur at this stage
-            //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
-            // - a poly in a var assignment context: var f = a ? b : c;
-            if (e instanceof ASTConditionalExpression) {
-                return computeStandaloneConditionalType((ASTConditionalExpression) e);
-            } else if (e instanceof ASTSwitchExpression) {
-                List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-                return computeStandaloneConditionalType(ts, branches);
-            } else {
-                return ts.ERROR;
-            }
+            return polyTypeNoContext(e);
         } else if (ctx instanceof InvocationNode) {
-            // an outer invocation ctx
-            if (ctx instanceof ASTExpression) {
-                // method call or regular constructor call
-                // recurse, that will fetch the outer context
-                // FIXME this is not true if resolution of the context failed
-                ((ASTExpression) ctx).getTypeMirror();
-                return fetchCascaded(e);
-            } else {
-                return inferInvocation((InvocationNode) ctx, e, null);
-            }
+            return polyTypeInvocationCtx(e, ctx);
         }
 
+        return polyTypeOtherCtx(e, ctx);
+    }
+
+    private JTypeMirror polyTypeOtherCtx(TypeNode e, JavaNode ctx) {
         // we have a context, that is not an invocation
         if (e instanceof InvocationNode) {
             // The original expr was an invocation, but we have
@@ -115,7 +81,14 @@ final class PolyResolution {
         } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
             // Those are standalone if possible, otherwise they take
             // the target type
-            JTypeMirror standalone = exprMirrors.getMirror((ASTExpression) e).getStandaloneType();
+
+            // Note that this creates expr mirrors for all subexpressions,
+            // and may trigger inference on them (which does not go through PolyResolution).
+            // Because this process may fail if the conditional is not standalone,
+            // of this the ctors for expr mirrors must have only trivial side-effects.
+            // See comment in MethodRefMirrorImpl
+            BranchingMirror branchingMirror = (BranchingMirror) exprMirrors.getMirror((ASTExpression) e);
+            JTypeMirror standalone = branchingMirror.getStandaloneType();
             if (standalone != null) {
                 return standalone;
             }
@@ -131,6 +104,52 @@ final class PolyResolution {
             return fetchCascaded(e);
         } else {
             throw new IllegalStateException("Unknown poly?" + e);
+        }
+    }
+
+    @NonNull
+    private JTypeMirror polyTypeInvocationCtx(TypeNode e, JavaNode ctx) {
+        // an outer invocation ctx
+        if (ctx instanceof ASTExpression) {
+            // method call or regular constructor call
+            // recurse, that will fetch the outer context
+            ((ASTExpression) ctx).getTypeMirror();
+            return fetchCascaded(e);
+        } else {
+            return inferInvocation((InvocationNode) ctx, e, null);
+        }
+    }
+
+    private JTypeMirror polyTypeNoContext(TypeNode e) {
+        // no surrounding context
+        if (e instanceof InvocationNode) {
+            JTypeMirror targetType = null;
+            if (e instanceof ASTExplicitConstructorInvocation) {
+                // target type is superclass type
+                targetType = e.getEnclosingType().getTypeMirror().getSuperClass();
+            }
+            // Invocation context: infer the called method, which will cascade down this node.
+            // This branch is also taken, if e is an invocation and has no surrounding context (ctx == e).
+            return inferInvocation((InvocationNode) e, e, targetType);
+        }
+
+        // no context for a poly that's not an invocation? This could either mean
+        // - a lambda or mref that occurs outside of a cast, invoc, or assignment context
+        //   -> semantic error
+        // - a conditional or switch that is outside an assignment or invocation context,
+        // in which case either
+        //   - it occurs outside of the contexts where it is allowed, eg a conditional as
+        //   an expression statement (for switch it's ok, simply a SwitchStatement in this case)
+        //      -> parsing error, cannot occur at this stage
+        //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
+        // - a poly in a var assignment context: var f = a ? b : c;
+        if (e instanceof ASTConditionalExpression) {
+            return computeStandaloneConditionalType((ASTConditionalExpression) e);
+        } else if (e instanceof ASTSwitchExpression) {
+            List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
+            return computeStandaloneConditionalType(ts, branches);
+        } else {
+            return ts.ERROR;
         }
     }
 
@@ -197,7 +216,7 @@ final class PolyResolution {
             // the enclosing invocation failed. In that case, we can start
             // over for the subexpression, ignoring context type.
             if (type == null) {
-                return fallbackIfCtxDidntSet(e, type == null);
+                return fallbackIfCtxDidntSet(e);
             }
             return type;
         }
@@ -236,8 +255,8 @@ final class PolyResolution {
      * treat them as if they occur as standalone expressions.
      * TODO would using error-type as a target type be better?
      */
-    private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e, boolean canRetry) {
-        if (canRetry && e instanceof InvocationNode) {
+    private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e) {
+        if (e instanceof InvocationNode) {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
         return ts.UNKNOWN;
@@ -280,7 +299,7 @@ final class PolyResolution {
         } else if (ctx instanceof InvocationNode) {
             // This is the case mentioned in the doc
             // TODO we could do that by setting a sentinel value to prevent
-            //  reentry (most likely, unresolved).
+            //  reentry (most likely, UNKNOWN).
 
             // OverloadSelectionResult ctxInvoc = ((InvocationNode) ctx).getOverloadSelectionInfo();
             // return getFormalTypeForArgument(e, ctxInvoc);

@@ -38,6 +38,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
     @Override
     public @Nullable JTypeMirror getStandaloneType() {
+        // may have been set by an earlier call
         JTypeMirror current = InternalApiBridge.getTypeMirrorInternal(myNode);
         if (current != null && current.unbox().isPrimitive()) {
             // standalone

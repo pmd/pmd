@@ -34,7 +34,9 @@ final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> imple
         // result in there.
         setFunctionalMethod(mirrors.ts.UNRESOLVED_METHOD);
         setCompileTimeDecl(mirrors.ts.UNRESOLVED_METHOD);
-        setInferredType(mirrors.ts.UNKNOWN);
+        // don't call this one as it would mean to the node "don't recompute my type"
+        // even if a parent conditional failed its standalone test
+        // setInferredType(mirrors.ts.UNKNOWN);
     }
 
     @Override
