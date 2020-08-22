@@ -51,6 +51,8 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
             .joinTo(buffer = out, prefix = "[", postfix = "]") {
                 "@${it.name} = ${valueToString(it.value)}"
             }
+
+        out.append("\n")
     }
 
     protected open fun valueToString(value: Any?): String? {

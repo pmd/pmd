@@ -10,7 +10,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
  *
  * <pre class="grammar">
  *

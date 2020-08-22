@@ -204,6 +204,11 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
             return true;
         }
 
+        if (getParent() instanceof ASTRecordComponent) {
+            // the field corresponding to this record component is declared final
+            return true;
+        }
+
         if (getParent() instanceof ASTFormalParameter) {
             // This accounts for exception parameters too for now
             return ((ASTFormalParameter) getParent()).isFinal();

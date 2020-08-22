@@ -1,0 +1,510 @@
++- CompilationUnit[@PackageName = "", @declarationsAreInDefaultPackage = true]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngine", @ImportedSimpleName = "ScriptEngine", @PackageName = "javax.script", @Static = false]
+   |  +- Name[@Image = "javax.script.ScriptEngine"]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngineManager", @ImportedSimpleName = "ScriptEngineManager", @PackageName = "javax.script", @Static = false]
+   |  +- Name[@Image = "javax.script.ScriptEngineManager"]
+   +- TypeDeclaration[]
+      +- ClassOrInterfaceDeclaration[@Abstract = false, @BinaryName = "TextBlocks", @Default = false, @Final = false, @Image = "TextBlocks", @Interface = false, @Local = false, @Modifiers = 1, @Native = false, @Nested = false, @NonSealed = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Sealed = false, @SimpleName = "TextBlocks", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.CLASS, @Volatile = false]
+         +- ClassOrInterfaceBody[@AnonymousInnerClass = false, @EnumChild = false]
+            +- ClassOrInterfaceBodyDeclaration[@AnonymousInnerClass = false, @EnumChild = false, @Kind = DeclarationKind.METHOD]
+               +- MethodDeclaration[@Abstract = false, @Arity = 1, @Default = false, @Final = false, @InterfaceMember = false, @Kind = MethodLikeKind.METHOD, @MethodName = "main", @Modifiers = 17, @Name = "main", @Native = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Static = true, @Strictfp = false, @Synchronized = false, @SyntacticallyAbstract = false, @SyntacticallyPublic = true, @Transient = false, @Void = true, @Volatile = false]
+                  +- ResultType[@Void = true, @returnsArray = false]
+                  +- MethodDeclarator[@Image = "main", @ParameterCount = 1]
+                  |  +- FormalParameters[@ParameterCount = 1, @Size = 1]
+                  |     +- FormalParameter[@Abstract = false, @Array = true, @ArrayDepth = 1, @Default = false, @ExplicitReceiverParameter = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @Varargs = false, @Volatile = false]
+                  |        +- Type[@Array = true, @ArrayDepth = 1, @ArrayType = true, @TypeImage = "String"]
+                  |        |  +- ReferenceType[@Array = true, @ArrayDepth = 1]
+                  |        |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = true, @ArrayDepth = 1, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                  |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = true, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = true, @Image = "args", @LambdaParameter = false, @LocalVariable = false, @Name = "args", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "args"]
+                  +- NameList[]
+                  |  +- Name[@Image = "Exception"]
+                  +- Block[@containsComment = false]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "html", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "html"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "html", @LambdaParameter = false, @LocalVariable = true, @Name = "html", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "html"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                      <html>   
+                          <body>
+                              <p>Hello, world</p>    
+                          </body> 
+                      </html>   
+                      """", @FloatLiteral = false, @Image = """"
+                      <html>   
+                          <body>
+                              <p>Hello, world</p>    
+                          </body> 
+                      </html>   
+                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>
+    <body>
+        <p>Hello, world</p>
+    </body>
+</html>
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                             +- Name[@Image = "html"]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "query", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "query"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "query", @LambdaParameter = false, @LocalVariable = true, @Name = "query", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "query"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
+                       WHERE `CITY` = 'INDIANAPOLIS'
+                       ORDER BY `EMP_ID`, `LAST_NAME`;
+                       """", @FloatLiteral = false, @Image = """"
+                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
+                       WHERE `CITY` = 'INDIANAPOLIS'
+                       ORDER BY `EMP_ID`, `LAST_NAME`;
+                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
+WHERE `CITY` = 'INDIANAPOLIS'
+ORDER BY `EMP_ID`, `LAST_NAME`;
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                             +- Name[@Image = "query"]
+                     +- BlockStatement[@Allocation = true]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "engine", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "ScriptEngine"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "ScriptEngine", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "engine"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "engine", @LambdaParameter = false, @LocalVariable = true, @Name = "engine", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "engine"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                 |  +- AllocationExpression[@AnonymousClass = false]
+                     |                 |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "ScriptEngineManager", @ReferenceToClassSameCompilationUnit = false]
+                     |                 |     +- Arguments[@ArgumentCount = 0, @Size = 0]
+                     |                 +- PrimarySuffix[@ArgumentCount = -1, @Arguments = false, @ArrayDereference = false, @Image = "getEngineByName"]
+                     |                 +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |                    +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                       +- ArgumentList[@Size = 1]
+                     |                          +- Expression[@StandAlonePrimitive = false]
+                     |                             +- PrimaryExpression[]
+                     |                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""js"", @FloatLiteral = false, @Image = ""js"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""js"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "obj", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "Object"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "Object", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "obj"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "obj", @LambdaParameter = false, @LocalVariable = true, @Name = "obj", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "obj"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                 |  +- Name[@Image = "engine.eval"]
+                     |                 +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |                    +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                       +- ArgumentList[@Size = 1]
+                     |                          +- Expression[@StandAlonePrimitive = false]
+                     |                             +- PrimaryExpression[]
+                     |                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                                 function hello() {
+                                     print('"Hello, world"');
+                                 }
+                                 
+                                 hello();
+                                 """", @FloatLiteral = false, @Image = """"
+                                 function hello() {
+                                     print('"Hello, world"');
+                                 }
+                                 
+                                 hello();
+                                 """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "function hello() {
+    print('"Hello, world"');
+}
+
+hello();
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "htmlWithEscapes", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "htmlWithEscapes"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "htmlWithEscapes", @LambdaParameter = false, @LocalVariable = true, @Name = "htmlWithEscapes", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "htmlWithEscapes"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                      <html>
+                          <body>
+                              <p>Hello, world</p>
+                          </body>
+                      </html>
+                      """", @FloatLiteral = false, @Image = """"
+                      <html>
+                          <body>
+                              <p>Hello, world</p>
+                          </body>
+                      </html>
+                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>
+    <body>
+        <p>Hello, world</p>
+    </body>
+</html>
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                             +- Name[@Image = "htmlWithEscapes"]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "season", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "season"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "season", @LambdaParameter = false, @LocalVariable = true, @Name = "season", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "season"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                winter"""", @FloatLiteral = false, @Image = """"
+                winter"""", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "period", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "period"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "period", @LambdaParameter = false, @LocalVariable = true, @Name = "period", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "period"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                        winter
+                        """", @FloatLiteral = false, @Image = """"
+                        winter
+                        """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "greeting", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "greeting"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "greeting", @LambdaParameter = false, @LocalVariable = true, @Name = "greeting", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "greeting"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+            Hi, "Bob"
+            """", @FloatLiteral = false, @Image = """"
+            Hi, "Bob"
+            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi, "Bob"
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "salutation", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "salutation"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "salutation", @LambdaParameter = false, @LocalVariable = true, @Name = "salutation", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "salutation"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+            Hi,
+             "Bob"
+            """", @FloatLiteral = false, @Image = """"
+            Hi,
+             "Bob"
+            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi,
+ "Bob"
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "empty", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "empty"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "empty", @LambdaParameter = false, @LocalVariable = true, @Name = "empty", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "empty"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                       """", @FloatLiteral = false, @Image = """"
+                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "quote", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "quote"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "quote", @LambdaParameter = false, @LocalVariable = true, @Name = "quote", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "quote"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                       "
+                       """", @FloatLiteral = false, @Image = """"
+                       "
+                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = ""
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "backslash", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "backslash"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "backslash", @LambdaParameter = false, @LocalVariable = true, @Name = "backslash", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "backslash"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                           \
+                           """", @FloatLiteral = false, @Image = """"
+                           \
+                           """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "normalStringLiteral", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "normalStringLiteral"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "normalStringLiteral", @LambdaParameter = false, @LocalVariable = true, @Name = "normalStringLiteral", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "normalStringLiteral"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""test"", @FloatLiteral = false, @Image = ""test"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""test"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "code", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "code"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "code", @LambdaParameter = false, @LocalVariable = true, @Name = "code", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "code"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+            String text = """
+                A text block inside a text block
+            """;
+            """", @FloatLiteral = false, @Image = """"
+            String text = """
+                A text block inside a text block
+            """;
+            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "String text = """
+    A text block inside a text block
+""";
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "text", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "text"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "text", @LambdaParameter = false, @LocalVariable = true, @Name = "text", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "text"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                      Lorem ipsum dolor sit amet, consectetur adipiscing 
+                      elit, sed do eiusmod tempor incididunt ut labore 
+                      et dolore magna aliqua.
+                      """", @FloatLiteral = false, @Image = """"
+                      Lorem ipsum dolor sit amet, consectetur adipiscing 
+                      elit, sed do eiusmod tempor incididunt ut labore 
+                      et dolore magna aliqua.
+                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                             +- Name[@Image = "text"]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "colors", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "colors"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "colors", @LambdaParameter = false, @LocalVariable = true, @Name = "colors", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "colors"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                        red  s
+                        greens
+                        blue s
+                        """", @FloatLiteral = false, @Image = """"
+                        red  s
+                        greens
+                        blue s
+                        """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "red   
+green 
+blue  
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                             +- Name[@Image = "colors"]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "emptyLine", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "emptyLine"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "emptyLine", @LambdaParameter = false, @LocalVariable = true, @Name = "emptyLine", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "emptyLine"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+
+test
+"""", @FloatLiteral = false, @Image = """"
+
+test
+"""", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "
+test
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- Statement[]
+                     |     +- StatementExpression[]
+                     |        +- PrimaryExpression[]
+                     |           +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |           |  +- Name[@Image = "System.out.println"]
+                     |           +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                     |              +- Arguments[@ArgumentCount = 1, @Size = 1]
+                     |                 +- ArgumentList[@Size = 1]
+                     |                    +- Expression[@StandAlonePrimitive = false]
+                     |                       +- PrimaryExpression[]
+                     |                          +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                          |  +- Name[@Image = "emptyLine.replaceAll"]
+                     |                          +- PrimarySuffix[@ArgumentCount = 2, @Arguments = true, @ArrayDereference = false]
+                     |                             +- Arguments[@ArgumentCount = 2, @Size = 2]
+                     |                                +- ArgumentList[@Size = 2]
+                     |                                   +- Expression[@StandAlonePrimitive = false]
+                     |                                   |  +- PrimaryExpression[]
+                     |                                   |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                                   |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""
+"", @FloatLiteral = false, @Image = ""
+"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""
+"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                                   +- Expression[@StandAlonePrimitive = false]
+                     |                                      +- PrimaryExpression[]
+                     |                                         +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                                            +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""<LF>"", @FloatLiteral = false, @Image = ""<LF>"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""<LF>"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                     |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "bs", @Volatile = false]
+                     |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
+                     |     |  +- ReferenceType[@Array = false, @ArrayDepth = 0]
+                     |     |     +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "String", @ReferenceToClassSameCompilationUnit = false]
+                     |     +- VariableDeclarator[@Initializer = true, @Name = "bs"]
+                     |        +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = false, @FormalParameter = false, @Image = "bs", @LambdaParameter = false, @LocalVariable = true, @Name = "bs", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "bs"]
+                     |        +- VariableInitializer[]
+                     |           +- Expression[@StandAlonePrimitive = false]
+                     |              +- PrimaryExpression[]
+                     |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
+                \test
+                """", @FloatLiteral = false, @Image = """"
+                \test
+                """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "	est
+", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     +- BlockStatement[@Allocation = false]
+                        +- Statement[]
+                           +- StatementExpression[]
+                              +- PrimaryExpression[]
+                                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                                 |  +- Name[@Image = "System.out.println"]
+                                 +- PrimarySuffix[@ArgumentCount = 1, @Arguments = true, @ArrayDereference = false]
+                                    +- Arguments[@ArgumentCount = 1, @Size = 1]
+                                       +- ArgumentList[@Size = 1]
+                                          +- Expression[@StandAlonePrimitive = false]
+                                             +- PrimaryExpression[]
+                                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                                                |  +- Name[@Image = "bs.replaceAll"]
+                                                +- PrimarySuffix[@ArgumentCount = 2, @Arguments = true, @ArrayDereference = false]
+                                                   +- Arguments[@ArgumentCount = 2, @Size = 2]
+                                                      +- ArgumentList[@Size = 2]
+                                                         +- Expression[@StandAlonePrimitive = false]
+                                                         |  +- PrimaryExpression[]
+                                                         |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                                                         |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""
+"", @FloatLiteral = false, @Image = ""
+"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""
+"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                                                         +- Expression[@StandAlonePrimitive = false]
+                                                            +- PrimaryExpression[]
+                                                               +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
+                                                                  +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""<LF>"", @FloatLiteral = false, @Image = ""<LF>"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""<LF>"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 public class ASTLiteral extends AbstractJavaTypeNode {
@@ -265,10 +264,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * Returns the content of the text block after normalizing line endings to LF,
      * removing incidental white space surrounding the text block and interpreting
      * escape sequences.
-     *
-     * <p>Note: This is a Java 14 Preview Feature.
      */
-    @Experimental
     public String getTextBlockContent() {
         if (!isTextBlock()) {
             return getImage();

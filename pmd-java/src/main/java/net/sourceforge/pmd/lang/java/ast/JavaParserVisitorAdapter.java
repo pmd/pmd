@@ -663,4 +663,10 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTRecordConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    @Override
+    @Experimental
+    public Object visit(ASTPermitsList node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 }
