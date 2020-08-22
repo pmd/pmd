@@ -85,6 +85,11 @@ public class JavaTokenizerTest extends CpdTextComparisonTest {
         doTest("ignoreLiterals", "_noignore");
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
 
     private static Properties ignoreAnnotations() {
         return properties(true, false, false);

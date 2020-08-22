@@ -124,6 +124,11 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("issue-1784");
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
 
     private static Properties skipBlocks(String skipPattern) {
         return properties(true, skipPattern);

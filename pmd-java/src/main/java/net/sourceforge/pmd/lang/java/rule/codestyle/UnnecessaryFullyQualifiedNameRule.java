@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +33,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(UnnecessaryFullyQualifiedNameRule.class.getName());
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private String currentPackage;
@@ -337,6 +340,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                     if (importDeclaration.isImportOnDemand()) {
                         // We need type resolution to make sure there is a
                         // conflicting method
+
                         // TODO we need a symbol table
 
                         // This was edited during the grammar updating process, because
@@ -346,10 +350,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
                         Class<?> importedType = importDeclaration.getRoot().getClassTypeResolver().loadClassOrNull(importDeclaration.getImportedName());
                         if (importedType != null) {
-                            for (final Method m : importedType.getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
+                            try {
+                                for (final Method m : importedType.getMethods()) {
+                                    if (m.getName().equals(methodCalled)) {
+                                        return true;
+                                    }
                                 }
+                            } catch (LinkageError e) {
+                                // This is an incomplete classpath, report the missing class
+                                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                             }
                         }
                     } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {

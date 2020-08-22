@@ -1,0 +1,49 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [int]                                   1         4
+    [main]                                  5         9
+    [(]                                     10        11
+    [int]                                   11        14
+    [argc]                                  15        19
+    [,]                                     19        20
+    [const]                                 21        26
+    [char]                                  27        31
+    [*]                                     32        33
+    [argv]                                  34        38
+    [\[]                                    38        39
+    [\]]                                    39        40
+    [)]                                     40        41
+L4
+    [{]                                     1         2
+L5
+    [NSAutoreleasePool]                     2         19
+    [*]                                     20        21
+    [pool]                                  21        25
+    [=]                                     26        27
+    [\[]                                    28        29
+    [\[]                                    29        30
+    [NSAutoreleasePool]                     30        47
+    [alloc]                                 48        53
+    [\]]                                    53        54
+    [init]                                  55        59
+    [\]]                                    59        60
+    [;]                                     60        61
+L6
+    [NSLog]                                 2         7
+    [(]                                     8         9
+    [@"Hello, World!"]                      9         25
+    [)]                                     25        26
+    [;]                                     26        27
+L7
+    [\[]                                    2         3
+    [pool]                                  3         7
+    [drain]                                 8         13
+    [\]]                                    13        14
+    [;]                                     14        15
+L8
+    [return]                                2         8
+    [0]                                     9         10
+    [;]                                     10        11
+L9
+    [}]                                     1         2
+EOF
