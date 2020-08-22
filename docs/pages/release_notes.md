@@ -125,6 +125,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 *   {% jdoc !!jsp::lang.jsp.ast.ASTJspDocument %}
 *   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#zero() %}
 *   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#combine(Object, Object) %}
+*   {% jdoc !!apex::lang.apex.ast.ApexParserVisitorReducedAdapter %}
 
 ### External Contributions
 
