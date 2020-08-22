@@ -22,7 +22,6 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -33,17 +32,17 @@ import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.SymbolFactory;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 /**
- * Root context object for type analysis. Type systems own a {@link SymbolFactory},
- * which creates and caches symbols. Methods of this class promote symbols
- * to types, and compose types together. {@link TypeOps} and {@link TypeConversion}
- * have some more operations on types.
+ * Root context object for type analysis. Type systems own a global
+ * {@link SymbolResolver}, which creates and caches external symbols.
+ * Methods of this class promote symbols to types, and compose types together.
+ * {@link TypeOps} and {@link TypeConversion} have some more operations on types.
  *
  * <p>Some special types are presented as constant fields, eg {@link #OBJECT}
  * or {@link #NULL_TYPE}. These are always comparable by reference.
@@ -62,7 +61,11 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeSystem {
 
-    /** Top type of the reference type system. */
+    /**
+     * Top type of the reference type system. This is the type for the
+     * {@link Object} class. Note that even interfaces have this type
+     * as a supertype ({@link JTypeMirror#getSuperTypeSet()}).
+     */
     public final JClassType OBJECT;
 
     /**
@@ -107,6 +110,12 @@ public final class TypeSystem {
      *
      * <p>Note that the type of the class literal {@code void.class}
      * is {@code Class<java.lang.Void>}, not NO_TYPE.
+     *
+     * <p>{@code java.lang.Void} is represented by {@link #BOXED_VOID}.
+     * Note that {@code BOXED_VOID.unbox() != NO_TYPE}, {@code NO_TYPE.box() != BOXED_VOID}.
+     *
+     * <p>{@code NO_TYPE.isPrimitive()} returns false, even though
+     * {@code void.class.isPrimitive()} returns true.
      */
     public final JTypeMirror NO_TYPE;
 
@@ -142,24 +151,25 @@ public final class TypeSystem {
     /** The unbounded wildcard, "?". */
     public final JWildcardType UNBOUNDED_WILD;
 
-    // array supertypes
+    /** The interface Cloneable. This is included because it is a supertype of array types. */
     public final JClassType CLONEABLE;
+    /** The interface Serializable. This is included because it is a supertype of array types. */
     public final JClassType SERIALIZABLE;
 
     /**
      * This is the boxed type of {@code Void.class}, not to be confused with
      * {@code void.class}, which in this framework is represented by
      * {@link #NO_TYPE}.
+     *
+     * <p>Note that {@code BOXED_VOID.unbox() != NO_TYPE}, {@code NO_TYPE.box() != BOXED_VOID}.
      */
     public final JClassType BOXED_VOID;
 
 
-    private final SymbolFactory symbolFactory;
-
     /** Contains special types, that must be shared to be comparable by reference. */
     private final Map<JTypeDeclSymbol, JTypeMirror> sharedTypes;
     // test only
-    final AsmSymbolResolver resolver;
+    final SymbolResolver resolver;
 
     /**
      * Builds a new type system. Its public fields will be initialized
@@ -170,8 +180,26 @@ public final class TypeSystem {
      *                                system
      */
     public TypeSystem(ClassLoader bootstrapResourceLoader) {
-        this.resolver = new AsmSymbolResolver(this, bootstrapResourceLoader);
-        this.symbolFactory = new SymbolFactory(this);
+        this(ts -> new AsmSymbolResolver(ts, bootstrapResourceLoader));
+    }
+
+    /**
+     * Builds a new type system. Its public fields will be initialized
+     * with fresh types, unrelated to other types.
+     *
+     * @param symResolverMaker A function that creates a new symbol
+     *                         resolver, which will be owned by the
+     *                         new type system. Because of cyclic
+     *                         dependencies, the new type system
+     *                         is leaked before its initialization
+     *                         completes, so fields of the type system
+     *                         are unusable at that time.
+     *                         The resolver is used to create some shared
+     *                         types: {@link #OBJECT}, {@link #CLONEABLE},
+     *                         {@link #SERIALIZABLE}, {@link #BOXED_VOID}.
+     */
+    public TypeSystem(Function<TypeSystem, ? extends SymbolResolver> symResolverMaker) {
+        this.resolver = symResolverMaker.apply(this); // leak the this
 
         // initialize primitives. their constructor also initializes their box + box erasure
 
@@ -206,10 +234,12 @@ public final class TypeSystem {
         primitivesByKind.put(PrimitiveTypeKind.DOUBLE, DOUBLE);
 
         // note that those intentionally have names that are invalid as java identifiers
-        JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("(*unknown*)", 0);
+        // todo those special types should probably have a special implementation here
+        UnresolvedClassStore unresolvedSyms = new UnresolvedClassStore(this);
+        JClassSymbol unresolvedTypeSym = unresolvedSyms.makeUnresolvedReference("(*unknown*)", 0);
         UNKNOWN = new SentinelType(this, "(*unknown*)", unresolvedTypeSym);
 
-        JClassSymbol errorTypeSym = symbolFactory.makeUnresolvedReference("(*error*)", 0);
+        JClassSymbol errorTypeSym = unresolvedSyms.makeUnresolvedReference("(*error*)", 0);
         ERROR = new SentinelType(this, "(*error*)", errorTypeSym);
 
         JClassSymbol primitiveVoidSym = new VoidSymbol(this);
@@ -244,16 +274,6 @@ public final class TypeSystem {
         this.sharedTypes = Collections.unmodifiableMap(new HashMap<>(shared));
 
         UNBOUNDED_WILD = new WildcardTypeImpl(this, true, OBJECT);
-    }
-
-    /**
-     * Returns the symbol factory associated with this type system.
-     * This is internal API, symbols are low-level abstractions that
-     * should not be created manually.
-     */
-    @InternalApi
-    public SymbolFactory symbols() {
-        return symbolFactory;
     }
 
     /**

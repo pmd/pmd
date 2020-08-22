@@ -29,19 +29,19 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 abstract class UnresolvedClassImpl implements JClassSymbol {
 
+    private final TypeSystem ts;
     private final @Nullable JClassSymbol enclosing;
     private final String canonicalName;
-    protected final SymbolFactory factory;
 
-    UnresolvedClassImpl(SymbolFactory factory, @Nullable JClassSymbol enclosing, String canonicalName) {
+    UnresolvedClassImpl(TypeSystem ts, @Nullable JClassSymbol enclosing, String canonicalName) {
+        this.ts = ts;
         this.enclosing = enclosing;
         this.canonicalName = canonicalName;
-        this.factory = factory;
     }
 
     @Override
     public TypeSystem getTypeSystem() {
-        return factory.getTypeSystem();
+        return ts;
     }
 
     /**

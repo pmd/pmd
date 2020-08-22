@@ -121,6 +121,9 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>The returned set always contains this type, so is
      * never empty. Ordering is stable, though unspecified.
      *
+     * <p>Note that this set contains {@link TypeSystem#OBJECT}
+     * for interfaces too.
+     *
      * @throws UnsupportedOperationException If this is the null type
      */
     default Set<JTypeMirror> getSuperTypeSet() {

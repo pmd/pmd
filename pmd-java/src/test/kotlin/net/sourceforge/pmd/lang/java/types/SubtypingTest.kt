@@ -15,6 +15,7 @@ import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore
 import net.sourceforge.pmd.lang.java.types.TypeConversion.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility.*
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
@@ -258,7 +259,7 @@ class SubtypingTest : FunSpec({
             }
 
             test("Unresolved symbol is compatible with any class/interface") {
-                val t = ts.declaration(ts.symbols().makeUnresolvedReference("obj.foo", 0))
+                val t = ts.declaration(UnresolvedClassStore(ts).makeUnresolvedReference("obj.foo", 0))
                         .shouldBeUnresolvedClass("obj.foo")
 
                 checkAll(ts.primitiveGen) { s ->

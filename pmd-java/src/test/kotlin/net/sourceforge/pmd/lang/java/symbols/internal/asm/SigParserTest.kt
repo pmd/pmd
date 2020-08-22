@@ -42,7 +42,7 @@ class SigParserTest : FunSpec({
 
     test("Test type sig parsing with type vars") {
 
-        with(newTypeSystem()) {
+        with(testTypeSystem) {
             val scope = mockLexicalScope("T", "V")
 
             shouldParseType(scope, "Ljava/util/Map<TT;Ljava/util/List<TV;>;>;") {
@@ -53,7 +53,7 @@ class SigParserTest : FunSpec({
 
     test("Test wildcards") {
 
-        with(newTypeSystem()) {
+        with(testTypeSystem) {
             val scope = mockLexicalScope("T", "V")
 
             shouldParseType(scope, "Ljava/util/Map<TT;Ljava/util/List<TV;>;>;") {

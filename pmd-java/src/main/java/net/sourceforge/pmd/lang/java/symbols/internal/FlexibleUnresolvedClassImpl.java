@@ -31,10 +31,10 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     private List<JTypeVar> tparams = Collections.emptyList();
     private List<UnresolvedClassImpl> childClasses = Collections.emptyList();
 
-    FlexibleUnresolvedClassImpl(SymbolFactory core,
+    FlexibleUnresolvedClassImpl(TypeSystem ts,
                                 @Nullable JClassSymbol enclosing,
                                 String canonicalName) {
-        super(core, enclosing, canonicalName);
+        super(ts, enclosing, canonicalName);
     }
 
     /**
@@ -51,7 +51,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
             this.arity = newArity;
             ArrayList<JTypeVar> newParams = new ArrayList<>(newArity);
             for (int i = 0; i < newArity; i++) {
-                newParams.add(new FakeTypeParam("T" + i, factory, this).getTypeMirror());
+                newParams.add(new FakeTypeParam("T" + i, getTypeSystem(), this).getTypeMirror());
             }
             this.tparams = Collections.unmodifiableList(newParams);
         }
@@ -66,7 +66,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
                 return childClass;
         }
         FlexibleUnresolvedClassImpl newChild =
-            new FlexibleUnresolvedClassImpl(factory, this, getCanonicalName() + '.' + simpleName);
+            new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
         childClasses.add(newChild);
         return newChild;
     }
@@ -88,10 +88,10 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
         private final JTypeParameterOwnerSymbol owner;
         private final JTypeVar tvar;
 
-        private FakeTypeParam(String name, SymbolFactory factory, JTypeParameterOwnerSymbol owner) {
+        private FakeTypeParam(String name, TypeSystem ts, JTypeParameterOwnerSymbol owner) {
             this.name = name;
             this.owner = owner;
-            this.tvar = factory.getTypeSystem().newTypeVar(this);
+            this.tvar = ts.newTypeVar(this);
         }
 
         @Override

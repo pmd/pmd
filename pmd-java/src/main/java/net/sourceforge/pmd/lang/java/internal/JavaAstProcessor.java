@@ -33,6 +33,10 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
 /**
  * Processes the output of the parser before rules get access to the AST.
  * This performs all semantic analyses in layered passes.
+ *
+ * <p>This is the root context object for file-specific context. Instances
+ * do not need to be thread-safe. Global information about eg the classpath
+ * is held in a {@link TypeSystem} instance.
  */
 public final class JavaAstProcessor {
 
@@ -75,7 +79,7 @@ public final class JavaAstProcessor {
         this.languageVersion = languageVersion;
 
         this.typeSystem = typeSystem;
-        unresolvedTypes = new UnresolvedClassStore(typeSystem.symbols());
+        unresolvedTypes = new UnresolvedClassStore(typeSystem);
     }
 
     static TypeInferenceLogger defaultTypeInfLogger() {

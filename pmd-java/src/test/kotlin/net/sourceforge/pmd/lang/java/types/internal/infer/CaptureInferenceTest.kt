@@ -388,7 +388,7 @@ class Scratch<S extends Scratch<S>> {
     }
 
 
-    parserTest("!Some capture problem with ctx type incompatible with cvar") {
+    parserTest("f:Some capture problem with ctx type incompatible with cvar") {
         // todo
 
         logTypeInference(true)
@@ -426,7 +426,7 @@ class CompletableFuture<T> {
     public static CompletableFuture<Object> anyOf(CompletableFuture<?>... cfs) {
         return (cfs.length == 0)
                ? new CompletableFuture<Object>()
-               : uniCopyStage(cfs[0]); // here. I'm not sure what the 
+               : uniCopyStage(cfs[0]); // here. I'm not sure how this should behave
     }
 }
 

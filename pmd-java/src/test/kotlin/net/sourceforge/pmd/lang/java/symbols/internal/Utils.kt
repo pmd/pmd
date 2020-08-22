@@ -18,7 +18,6 @@ import java.util.*
 /** Testing utilities */
 
 
-val testSymFactory: SymbolFactory = testTypeSystem.symbols()
 val testSymResolver: SymbolResolver = testTypeSystem.bootstrapResolver()
 
 fun classSym(klass: Class<*>?) = testTypeSystem.getClassSymbol(klass)

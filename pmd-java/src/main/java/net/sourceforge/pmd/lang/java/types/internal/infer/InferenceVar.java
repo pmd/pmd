@@ -219,8 +219,6 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
             }
         }
 
-        // TODO remove bounds mentioning this var in the delegate
-
         ctx.onIvarMerged(this, this.delegate);
     }
 

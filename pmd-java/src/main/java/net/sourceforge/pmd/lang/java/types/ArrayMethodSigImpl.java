@@ -92,7 +92,7 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
     @Override
     public JMethodSig withTypeParams(@Nullable List<JTypeVar> tparams) {
-        if (!tparams.isEmpty()) {
+        if (tparams != null && !tparams.isEmpty()) {
             throw new UnsupportedOperationException("Something went wrong");
         }
         return this;

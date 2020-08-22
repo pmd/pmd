@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
-import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 
 /**
  * @author Clément Fournier

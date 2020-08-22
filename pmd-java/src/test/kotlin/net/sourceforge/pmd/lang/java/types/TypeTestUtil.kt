@@ -27,13 +27,12 @@ import kotlin.test.assertTrue
     is done lazily.
  */
 
-val javaParser = JavaParsingHelper.WITH_PROCESSING
+val javaParser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING
 
-fun newTypeSystem(): TypeSystem = TypeSystem(Thread.currentThread().contextClassLoader)
-val testTypeSystem: TypeSystem = JavaParsingHelper.TEST_TYPE_SYSTEM
+val testTypeSystem: TypeSystem get() = JavaParsingHelper.TEST_TYPE_SYSTEM
 
 // bc the method is package private
-val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver
+val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver as AsmSymbolResolver
 
 fun TypeSystem.lub(vararg us: JTypeMirror): JTypeMirror = lub(us.toList())
 
