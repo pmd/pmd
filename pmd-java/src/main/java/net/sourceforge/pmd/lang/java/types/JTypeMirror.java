@@ -91,12 +91,12 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this type is the same type or a subtype of the
      * given type. Note that for convenience, this returns true if both
      * types are primitive, and this type is convertible to the other
-     * through primitive widening. See {@link Convertibility#naturally()}.
+     * through primitive widening. See {@link Convertibility#bySubtyping()}.
      *
      * @throws NullPointerException If the argument is null
      */
     default boolean isSubtypeOf(@NonNull JTypeMirror other) {
-        return isConvertibleTo(other).naturally();
+        return isConvertibleTo(other).bySubtyping();
     }
 
     /**
@@ -104,9 +104,6 @@ public interface JTypeMirror extends JTypeVisitable {
      * {@link Convertibility} for a description of the results.
      *
      * <p>Note that this does not check for boxing/unboxing conversions.
-     * But notice that a type {@code t} is convertible by boxing conversion
-     * to another type {@code s}, if {@code t.box().isConvertibleTo(s).somehow()}.
-     * The same story goes for
      *
      * @throws NullPointerException If the argument is null
      */
@@ -124,7 +121,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>The returned set always contains this type, so is
      * never empty. Ordering is stable, though unspecified.
      *
-     * @throws IllegalArgumentException If this is the null type
+     * @throws UnsupportedOperationException If this is the null type
      */
     default Set<JTypeMirror> getSuperTypeSet() {
         return TypeOps.getSuperTypeSet(this);
@@ -245,20 +242,6 @@ public interface JTypeMirror extends JTypeVisitable {
         return this instanceof JTypeVar;
     }
 
-
-    /**
-     * Returns true if this type is generic, and it it neither {@linkplain #isRaw() raw},
-     * nor a {@linkplain JClassType#isGenericTypeDeclaration() generic type declaration}.
-     *
-     * <p>E.g. returns true for {@code List<String>} or {@code Enum<KeyCode>},
-     * but not for {@code List} (raw type), {@code List<T>} (generic type declaration),
-     * or {@code KeyCode} (not a generic type).
-     */
-    default boolean isParameterizedType() {
-        return false;
-    }
-
-
     /**
      * Returns true if this type is a boxed primitive type. This is a {@link JClassType},
      * whose {@link #unbox()} method returns a {@link JPrimitiveType}.
@@ -280,6 +263,78 @@ public interface JTypeMirror extends JTypeVisitable {
     /** Returns true if this is a {@linkplain JClassType class or interface type}. */
     default boolean isClassOrInterface() {
         return this instanceof JClassType;
+    }
+
+    /**
+     * Returns true if this is {@link TypeSystem#OBJECT}.
+     */
+    default boolean isTop() {
+        return this == getTypeSystem().OBJECT;
+    }
+
+
+    /**
+     * Returns true if this is {@link TypeSystem#NULL_TYPE}.
+     */
+    default boolean isBottom() {
+        return false; // overridden
+    }
+
+    /**
+     * Returns true if this is {@link TypeSystem#NO_TYPE}, ie {@code void}.
+     */
+    default boolean isVoid() {
+        return this == getTypeSystem().NO_TYPE;
+    }
+
+    /** Returns true if this is an {@linkplain JArrayType array type}. */
+    default boolean isArray() {
+        return this instanceof JArrayType;
+    }
+
+    /**
+     * Returns true if this represents the *declaration* of a generic
+     * class or interface and not some parameterization. This is the
+     * "canonical" form of a parameterized type.
+     *
+     * <p>In that case, the {@link JClassType#getTypeArgs()} is the same
+     * as {@link JClassType#getFormalTypeParams()}.
+     *
+     * <p>The generic type declaration of a generic type may be obtained
+     * with {@link JClassType#getGenericTypeDeclaration()}.
+     */
+    default boolean isGenericTypeDeclaration() {
+        return false;
+    }
+
+
+
+    /**
+     * Returns true if this type is a generic class type.
+     * This means, the symbol declares some type parameters,
+     * which is also true for erased types, including raw types.
+     *
+     * <p>For example, {@code List}, {@code List<T>}, and {@code List<String>}
+     * are generic, but {@code String} is not.
+     *
+     * @see JClassType#isGeneric().
+     */
+    default boolean isGeneric() {
+        return false;
+    }
+
+
+
+    /**
+     * Returns true if this type is generic, and it it neither {@linkplain #isRaw() raw},
+     * nor a {@linkplain JClassType#isGenericTypeDeclaration() generic type declaration}.
+     *
+     * <p>E.g. returns true for {@code List<String>} or {@code Enum<KeyCode>},
+     * but not for {@code List} (raw type), {@code List<T>} (generic type declaration),
+     * or {@code KeyCode} (not a generic type).
+     */
+    default boolean isParameterizedType() {
+        return false;
     }
 
 
@@ -307,55 +362,6 @@ public interface JTypeMirror extends JTypeVisitable {
     default boolean isInterface() {
         JTypeDeclSymbol sym = getSymbol();
         return sym != null && sym.isInterface();
-    }
-
-    /**
-     * Returns true if this is {@link TypeSystem#OBJECT}.
-     */
-    default boolean isTop() {
-        return this == getTypeSystem().OBJECT;
-    }
-
-    /**
-     * Returns true if this is {@link TypeSystem#NO_TYPE}, ie {@code void}.
-     */
-    default boolean isVoid() {
-        return this == getTypeSystem().NO_TYPE;
-    }
-
-    /** Returns true if this is an {@linkplain JArrayType array type}. */
-    default boolean isArray() {
-        return this instanceof JArrayType;
-    }
-
-    /**
-     * Returns true if this represents the *declaration* of a generic
-     * class or interface and not some parameterization. This is the
-     * "canonical" form of a parameterized type.
-     *
-     * <p>In that case, the {@link JClassType#getTypeArgs()} is the same as {@link JClassType#getFormalTypeParams()}.
-     *
-     * <p>The generic type declaration of a generic type may be obtained
-     * with {@link JClassType#getGenericTypeDeclaration()}.
-     */
-    default boolean isGenericTypeDeclaration() {
-        return false;
-    }
-
-
-
-    /**
-     * Returns true if this type is a generic class type.
-     * This means, the symbol declares some type parameters,
-     * and is also true for erased types, including raw types.
-     *
-     * <p>For example, {@code List}, {@code List<T>}, and {@code List<String>}
-     * are generic, but {@code String} is not.
-     *
-     * @see JClassType#isGeneric().
-     */
-    default boolean isGeneric() {
-        return false;
     }
 
 

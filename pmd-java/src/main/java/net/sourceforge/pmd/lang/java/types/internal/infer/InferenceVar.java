@@ -60,10 +60,6 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return ctx.ts;
     }
 
-    InferenceContext getCtx() {
-        return ctx;
-    }
-
     /**
      * Returns the bounds of a certain kind that apply to
      * this variable.

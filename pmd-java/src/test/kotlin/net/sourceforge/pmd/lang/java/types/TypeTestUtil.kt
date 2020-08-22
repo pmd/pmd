@@ -120,7 +120,7 @@ fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =
  */
 fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
     for ((a, b) in ts.zip(ts.asList().drop(1))) {
-        assertSubtype(b, a) { naturally() }
+        assertSubtype(b, a) { bySubtyping() }
     }
 }
 
@@ -134,7 +134,7 @@ fun assertSubtype(t: JTypeMirror, s: JTypeMirror, capture: Boolean = true, passe
 }
 
 infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, false) { naturally() }
+    assertSubtype(this, s, false) { bySubtyping() }
 }
 
 infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
@@ -142,7 +142,7 @@ infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other)  { naturally() }
+    assertSubtype(this, other)  { bySubtyping() }
     // assertSubtype(other, this, SubtypeResult.definitely(this == other))
 }
 

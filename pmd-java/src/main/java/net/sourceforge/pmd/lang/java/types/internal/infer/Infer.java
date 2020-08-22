@@ -301,7 +301,7 @@ public final class Infer {
         InvocationMirror expr = site.getExpr();
 
         site.loadInferenceData(ctdecl);
-        site.setInInvocation(true);
+        site.setInInvocation();
 
         if (site.canSkipInvocation()) {
             assert assertReturnIsGround(m);
@@ -368,6 +368,9 @@ public final class Infer {
     private JMethodSig instantiateMethod(JMethodSig m,
                                          MethodCallSite site,
                                          MethodResolutionPhase phase) {
+        if (phase.requiresVarargs() && !m.isVarargs()) {
+            return null; // don't log such a dumb mistake
+        }
         try {
             return instantiateMaybeNoInfer(m, site, phase);
         } catch (ResolutionFailedException e) {
@@ -470,9 +473,6 @@ public final class Infer {
      * Catch the easy cases before starting inference.
      */
     private JMethodSig instantiateMaybeNoInfer(JMethodSig m, MethodCallSite site, MethodResolutionPhase phase) {
-        if (phase.requiresVarargs() && !m.isVarargs()) {
-            throw ResolutionFailedException.notAVarargsMethod(LOG, site.getExpr());
-        }
 
         if (!m.isGeneric()) {
             // non-generic methods may mention explicit type arguments

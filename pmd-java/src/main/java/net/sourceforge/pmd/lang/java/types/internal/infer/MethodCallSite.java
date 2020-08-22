@@ -34,7 +34,6 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
 
     private boolean isInInvocation = false;
     private boolean canSkipInvocation = true;
-
     private boolean needsUncheckedConversion = false;
 
     MethodCallSite(InvocationMirror expr,
@@ -60,12 +59,8 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
         logEnabled = enabled;
     }
 
-    void setInInvocation(boolean inInvocation) {
-        isInInvocation = inInvocation;
-    }
-
-    void setCanSkipInvocation(boolean canSkipInvocation) {
-        this.canSkipInvocation = canSkipInvocation;
+    void setInInvocation() {
+        isInInvocation = true;
     }
 
     void maySkipInvocation(boolean canSkipInvocation) {
@@ -106,6 +101,7 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     void resetInferenceData() {
         canSkipInvocation = true;
         needsUncheckedConversion = false;
+        isInInvocation = false;
     }
 
     void loadInferenceData(MethodCtDecl ctdecl) {

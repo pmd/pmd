@@ -22,7 +22,7 @@ public class ResolutionFailure {
     static final ResolutionFailure UNKNOWN = new ResolutionFailure(null, "log is disabled");
 
     private JMethodSig failedMethod;
-    private PolySite callSite;
+    private PolySite<?> callSite;
     private MethodResolutionPhase phase;
     private final String reason;
 
@@ -34,7 +34,7 @@ public class ResolutionFailure {
         this.reason = reason;
     }
 
-    void addContext(JMethodSig m, PolySite callSite, MethodResolutionPhase phase) {
+    void addContext(JMethodSig m, PolySite<?> callSite, MethodResolutionPhase phase) {
         this.failedMethod = m;
         this.callSite = callSite;
         this.phase = phase;
@@ -70,7 +70,7 @@ public class ResolutionFailure {
     }
 
     /** Returns the call site for the failure. */
-    public PolySite getCallSite() {
+    public PolySite<?> getCallSite() {
         return callSite;
     }
 

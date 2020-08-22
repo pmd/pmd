@@ -784,7 +784,7 @@ class Scratch {
 
 
 
-    parserTest("Method ref inside conditional") {
+    parserTest("f:Method ref inside conditional") {
 
         logTypeInference(true)
 
@@ -806,9 +806,11 @@ interface Predicate<Q> {
         val t_Predicate = acu.firstEnclosingType()
         val testMethod = acu.methodDeclarations().get(0)!!
         val tvar = acu.typeVar("T")
+        val (ternary) = acu.descendants(ASTConditionalExpression::class.java).toList()
         val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
         spy.shouldBeOk {
+            ternary shouldHaveType t_Predicate[tvar]
             fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.sig)
             fooRef shouldHaveType t_Predicate[tvar]
         }

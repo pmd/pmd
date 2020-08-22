@@ -117,15 +117,6 @@ public final class TypeOps {
         return true;
     }
 
-    public static boolean allArgsAreUnboundedWildcards(List<JTypeMirror> sargs) {
-        for (JTypeMirror sarg : sargs) {
-            if (!(sarg instanceof JWildcardType) || !((JWildcardType) sarg).isUnbounded()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
         static final SameTypeVisitor INFERENCE = new SameTypeVisitor(true);
@@ -276,7 +267,7 @@ public final class TypeOps {
         @Override
         public Void visitNullType(JTypeMirror t, Set<JTypeMirror> result) {
             // too many types
-            throw new IllegalArgumentException("The null type has all reference types as supertype");
+            throw new UnsupportedOperationException("The null type has all reference types as supertype");
         }
 
         @Override
@@ -384,12 +375,12 @@ public final class TypeOps {
         } else if (s.isVoid() || t.isVoid()) { // t != s
             return Convertibility.NEVER;
         } else if (s instanceof InferenceVar) {
-            // it's possible to add a bound to UNRESOLVED
+            // it's possible to add a bound to UNKNOWN or ERROR
             ((InferenceVar) s).addBound(BoundKind.LOWER, t);
             return Convertibility.SUBTYPING;
         } else if (isTypeRange(s)) {
             JTypeMirror lower = lowerBoundRec(s);
-            if (lower != t.getTypeSystem().NULL_TYPE) {
+            if (!lower.isBottom()) {
                 return isConvertible(t, lower, capture);
             }
             // otherwise fallthrough
@@ -423,8 +414,17 @@ public final class TypeOps {
         return isConvertible(t, s);
     }
 
+    public static boolean allArgsAreUnboundedWildcards(List<JTypeMirror> sargs) {
+        for (JTypeMirror sarg : sargs) {
+            if (!(sarg instanceof JWildcardType) || !((JWildcardType) sarg).isUnbounded()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
-     * A result for a convertibility check. This is a generalization of
+     * A result for a convertibility check. This is a tiny generalization of
      * a subtyping check.
      *
      * <p>Primitive types are implicitly convertible to each other by
@@ -432,7 +432,7 @@ public final class TypeOps {
      * implies convertibility (the conversion is technically called
      * "widening reference conversion"). You can check those cases using:
      *
-     * {@link #naturally() t.isConvertibleTo(s).naturally()}
+     * {@link #bySubtyping() t.isConvertibleTo(s).naturally()}
      *
      * <p>Unchecked conversion may go backwards from subtyping. For example,
      * {@code List<String>} is a subtype of the raw type {@code List}, and
@@ -441,7 +441,7 @@ public final class TypeOps {
      *
      * {@link #withUncheckedWarning() t.isConvertibleTo(s).withUncheckedWarning()}
      *
-     * <p>If both the parameterized type only has wildcard type arguments,
+     * <p>If the parameterized type only has wildcard type arguments,
      * then the conversion produces no warning.
      *
      * {@link #UNCHECKED_NO_WARNING t.isConvertibleTo(s) == UNCHECKED_NO_WARNING}
@@ -470,28 +470,24 @@ public final class TypeOps {
         UNCHECKED_WARNING,
 
         /**
-         * T is a raw type, which is a subtype of |S|, but S is
+         * {@code T <: |S|} and {@code T </: S}, but S is
          * parameterized with only unbounded wildcards. This is a special
-         * case of unchecked conversion that produces no warning. For example,
-         * {@code Class<String>} is convertible to {@code Class<?>}.
+         * case of unchecked conversion that produces no warning. We keep
+         * it distinct from subtyping to help some algorithms that subtyping
+         * to be a partial order.
+         *
+         * <p>For example, {@code List<String>} is a subtype of the raw
+         * {@code Collection}, not a subtype of {@code Collection<?>},
+         * but it is still convertible without warning.
          */
         UNCHECKED_NO_WARNING,
 
         /**
-         * Subtyping, but extended to cover also primitive widening:
-         * <ul>
-         * <li>T and S are reference types, and T is a subtype of S ({@code T <: S}).
-         * <li>T and S are primitive types, and T can be widened to S.
-         * For example, {@code int} can be widened to {@code long} implicitly.
-         * </ul>
-         * In particular, two equal types are always convertible to each
-         * other ({@code T <: T}).
+         * T is a subtype of S ({@code T <: S}). In particular, any type
+         * is a subtype of itself ({@code T <: T}).
          *
-         * <p>If using these rules, we have {@code T <: S}, then either
-         * {@code T = S} is true, or {@code S <: T} is false. That is,
-         * this relation is a partial order. This breaks down when you
-         * introduce unchecked conversion, which is why they're kept
-         * separate (this greatly simplifies routines like {@link #mostSpecific(Collection)}).
+         * <p>For example, {@code int} can be widened to {@code long},
+         * so we consider {@code int <: long}.
          */
         SUBTYPING;
 
@@ -510,15 +506,9 @@ public final class TypeOps {
         }
 
         /**
-         * True if this is {@link #SUBTYPING}, note also
-         * This is a "subtyping" check that ignores whether the operands
-         * are primitive or reference types.
-         *
-         * TODO choose the name:
-         * - bySubtyping, to be consistent w/ isSubtypeOf,
-         * - or naturally, now that we don't have other kinds of conversions anymore
+         * True if this is {@link #SUBTYPING}.
          */
-        public boolean naturally() {
+        public boolean bySubtyping() {
             return this == SUBTYPING;
         }
 
@@ -1677,7 +1667,7 @@ public final class TypeOps {
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && isSubtypePure(w, v).naturally()) {
+                if (!w.equals(v) && isSubtypePure(w, v).bySubtyping()) {
                     continue vLoop;
                 }
             }
@@ -1923,11 +1913,6 @@ public final class TypeOps {
             return CoreResolvers.emptyResolver();
         }
     }
-
-    // </editor-fold>
-
-    // <editor-fold  defaultstate="collapsed" desc="Specificity utils">
-
 
     // </editor-fold>
 
