@@ -1411,6 +1411,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-15-support">Java 15 Support</h4>
+
+<p>This release of PMD brings support for Java 15. PMD can parse <a href="https://openjdk.java.net/jeps/378">Text Blocks</a>
+which have been promoted to be a standard language feature of Java.</p>
+
+<p>PMD also supports <a href="https://openjdk.java.net/jeps/375">Pattern Matching for instanceof</a>,
+<a href="https://openjdk.java.net/jeps/384">Records</a>, and <a href="https://openjdk.java.net/jeps/360">Sealed Classes</a>.</p>
+
+<p>Note: The Pattern Matching for instanceof, Records, and Sealed Classes are all preview language features of OpenJDK 15
+and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you’ll need to enable it via the environment
+variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="language-plaintext highlighter-rouge">15-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 15-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 13 preview language features have been removed. The version “13-preview” is no longer available.</p>
+
 <h4 id="changes-in-how-tab-characters-are-handled">Changes in how tab characters are handled</h4>
 
 <p>In the past, tab characters in source files has been handled differently in different languages by PMD.
@@ -1467,6 +1486,11 @@ which was introduced in PMD 6.26.0.</li>
       <li><a href="https://github.com/pmd/pmd/issues/2653">#2653</a>: [lang-test] Upgrade kotlintest to Kotest</li>
       <li><a href="https://github.com/pmd/pmd/pull/2656">#2656</a>: [all] Ensure PMD/CPD uses tab width of 1 for tabs consistently</li>
       <li><a href="https://github.com/pmd/pmd/pull/2690">#2690</a>: [core] Fix java7 compatibility</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2646">#2646</a>: [java] Support JDK 15</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -1584,7 +1608,7 @@ includes all code in the following packages, and their subpackages:
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 21, 2020 <br />
+ Site last generated: Aug 22, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
