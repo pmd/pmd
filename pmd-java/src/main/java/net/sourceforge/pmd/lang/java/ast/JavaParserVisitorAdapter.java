@@ -666,7 +666,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
     @Experimental
-    public Object visit(ASTPermittedSubclasses node, Object data) {
+    public Object visit(ASTPermitsList node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

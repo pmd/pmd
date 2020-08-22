@@ -87,7 +87,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPermittedSubclasses;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
@@ -875,7 +875,7 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Override
     @Experimental
-    public Object visit(ASTPermittedSubclasses node, Object data) {
+    public Object visit(ASTPermitsList node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

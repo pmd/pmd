@@ -144,7 +144,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     @Experimental
     public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
-        ASTPermittedSubclasses permitted = getFirstChildOfType(ASTPermittedSubclasses.class);
+        ASTPermitsList permitted = getFirstChildOfType(ASTPermitsList.class);
         return permitted == null
                 ? Collections.<ASTClassOrInterfaceType>emptyList()
                 : CollectionUtil.toList(permitted.iterator());

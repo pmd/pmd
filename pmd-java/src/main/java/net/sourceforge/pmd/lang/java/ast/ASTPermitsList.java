@@ -17,18 +17,19 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <p>See https://openjdk.java.net/jeps/360
  *
  * <pre class="grammar">
+ *
  *  PermittedSubclasses ::= "permits" (TypeAnnotation)* ClassOrInterfaceType
  *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
  * </pre>
  */
 @Experimental
-public final class ASTPermittedSubclasses extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTPermitsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
 
-    ASTPermittedSubclasses(int id) {
+    ASTPermitsList(int id) {
         super(id);
     }
 
-    ASTPermittedSubclasses(JavaParser p, int id) {
+    ASTPermitsList(JavaParser p, int id) {
         super(p, id);
     }
 

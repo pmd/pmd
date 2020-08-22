@@ -1205,7 +1205,7 @@ void ImplementsList():
    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
 }
 
-void PermittedSubclasses():
+void PermittedSubclasses() #PermitsList:
 {
     Token t;
     checkForSealedClassUsage();
