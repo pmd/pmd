@@ -121,6 +121,9 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 
 *   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
 
+*   {% jdoc !!jsp::lang.jsp.ast.ASTJspDeclarations %}
+*   {% jdoc !!jsp::lang.jsp.ast.ASTJspDocument %}
+
 ### External Contributions
 
 *   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - [Maikel Steneker](https://github.com/maikelsteneker)
