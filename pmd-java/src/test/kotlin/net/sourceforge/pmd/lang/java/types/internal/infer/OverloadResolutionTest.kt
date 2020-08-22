@@ -310,8 +310,6 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
     parserTest("Overload selection must identify fallbacks if any") {
 
-        logTypeInference(true)
-
         val acu = parser.parse("""
 import java.util.Arrays;
 import java.util.stream.Collectors;

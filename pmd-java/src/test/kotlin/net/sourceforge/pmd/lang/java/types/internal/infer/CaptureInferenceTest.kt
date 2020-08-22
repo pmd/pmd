@@ -324,8 +324,6 @@ interface NodeStream<T> {
 
     parserTest("Ivar should be instantiated with lower not upper bound") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
@@ -391,9 +389,6 @@ class Scratch<S extends Scratch<S>> {
 
 
     parserTest("Some capture problem with ctx type incompatible with cvar") {
-        // todo
-
-        logTypeInference(true)
         /*
     .... ctdecl resolution succeeds
     Success: uniCopyStage(CompletableFuture<capture#228 of ?>) -> CompletableFuture<capture#228 of ?>

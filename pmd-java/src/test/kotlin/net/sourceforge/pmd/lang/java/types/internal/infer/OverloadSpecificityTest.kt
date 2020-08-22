@@ -348,8 +348,6 @@ class Scratch<N extends Number> {
 
     parserTest("Test specificity between lamdbas") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 class Scratch {

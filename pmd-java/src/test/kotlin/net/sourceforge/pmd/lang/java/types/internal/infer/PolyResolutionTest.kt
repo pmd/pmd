@@ -215,8 +215,6 @@ class O {
 
     parserTest("Method call in invocation ctx of standalone ctor") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.io.*;
 

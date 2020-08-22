@@ -190,9 +190,7 @@ class F<G> {
         }
     }
 
-    parserTest("Static method with different bound") {
-
-        logTypeInference(true)
+   parserTest("Static method with different bound") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
@@ -236,8 +234,6 @@ class F<G> {
 
    parserTest("Static method of interface is not inherited!") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
@@ -275,8 +271,6 @@ class F<G> {
 
 
    parserTest("Static method of interface is not inherited in subinterfaces either") {
-
-        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 

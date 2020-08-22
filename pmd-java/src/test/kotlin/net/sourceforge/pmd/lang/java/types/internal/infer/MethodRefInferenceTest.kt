@@ -786,8 +786,6 @@ class Scratch {
 
     parserTest("Method ref inside poly conditional, conditional type is fetched first") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.Objects;
 
