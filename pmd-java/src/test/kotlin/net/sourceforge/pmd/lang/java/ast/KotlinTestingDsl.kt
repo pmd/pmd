@@ -56,6 +56,8 @@ enum class JavaVersion : Comparable<JavaVersion> {
         val Latest = values().last()
         val Earliest = values().first()
 
+        fun since(v: JavaVersion) = v.rangeTo(Latest)
+
         fun except(v1: JavaVersion, vararg versions: JavaVersion) =
                 values().toList() - v1 - versions
 

@@ -15,7 +15,6 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -45,7 +44,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -478,9 +476,9 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTAnyTypeDeclaration node, T data) {
-            if ((node.getModifiers() & (AccessNode.SEALED | AccessNode.NON_SEALED)) != 0) {
+            if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, PreviewFeature.SEALED_CLASSES, data);
-            } else if (node.isLocal() && node.getTypeKind() != TypeKind.CLASS) {
+            } else if (node.isLocal() && node.isInterface() || node.isEnum()) {
                 check(node, PreviewFeature.SEALED_CLASSES, data);
             }
 

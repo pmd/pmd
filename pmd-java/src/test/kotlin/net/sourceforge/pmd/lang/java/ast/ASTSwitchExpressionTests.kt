@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
  */
 class ASTSwitchExpressionTests : ParserTestSpec({
 
-    val switchVersions = listOf(J13__PREVIEW, J14, J14__PREVIEW)
+    val switchVersions = JavaVersion.since(J14)
     val notSwitchVersions = JavaVersion.except(switchVersions)
 
     parserTest("No switch expr before j13 preview", javaVersions = notSwitchVersions) {

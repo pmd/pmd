@@ -9,6 +9,8 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+
 /**
  * A Java modifier. The ordering of constants respects the ordering
  * recommended by the JLS.
@@ -20,6 +22,11 @@ public enum JModifier {
     PUBLIC(Modifier.PUBLIC),
     PROTECTED(Modifier.PROTECTED),
     PRIVATE(Modifier.PRIVATE),
+
+    /** Modifier {@code "sealed"} (preview feature of JDK 15). */
+    SEALED(0),
+    /** Modifier {@code "non-sealed"} (preview feature of JDK 15). */
+    NON_SEALED("non-sealed", 0),
 
     ABSTRACT(Modifier.ABSTRACT),
     STATIC(Modifier.STATIC),
@@ -38,17 +45,34 @@ public enum JModifier {
     VOLATILE(Modifier.VOLATILE);
 
 
-    private final String token = name().toLowerCase(Locale.ROOT);
+    private final String token;
     private final int reflect;
 
     JModifier(int reflect) {
+        this.token = name().toLowerCase(Locale.ROOT);
+        this.reflect = reflect;
+    }
+
+    JModifier(String token, int reflect) {
+        this.token = token;
         this.reflect = reflect;
     }
 
     /**
      * Returns the constant of java.lang.reflect.Modifier that this
-     * modifier corresponds to. Be aware that {@link #DEFAULT} has
-     * no equivalent in {@link Modifier}.
+     * modifier corresponds to. Be aware that the following constants
+     * are source-level modifiers only, for which this method returns 0:
+     * <ul>
+     * <li>{@link #DEFAULT}: this doesn't exist at the class file level.
+     * A default method is a non-static non-abstract public method declared
+     * in an interface ({@link JMethodSymbol#isDefault()}).
+     * <li>{@link #SEALED}: a sealed class has an attribute {@code PermittedSubclasses}
+     * with a non-zero length (in the compiled class file)
+     * <li>{@link #NON_SEALED}: this doesn't exist at the class file level at all.
+     * But a class must have the non-sealed modifier in source if it
+     * is neither sealed, nor final, and appears in the {@code PermittedSubclasses}
+     * attribute of some direct supertype.
+     * </ul>
      */
     public int getReflectMod() {
         return reflect;

@@ -167,6 +167,7 @@ public final class ASTModifierList extends AbstractJavaNode {
         private static final EffectiveModifierVisitor INSTANCE = new EffectiveModifierVisitor();
 
         // TODO strictfp modifier is also implicitly given to descendants
+        // TODO final modifier is implicitly given to direct subclasses of sealed interface/class
 
         @Override
         public Void visit(ASTAnyTypeDeclaration node, Set<JModifier> effective) {

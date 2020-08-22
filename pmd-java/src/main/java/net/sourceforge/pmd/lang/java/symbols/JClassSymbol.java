@@ -173,6 +173,11 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
+    // todo isSealed + getPermittedSubclasses
+    //  (isNonSealed is not so useful I think)
+
+    // todo getEnumConstants
+
     /**
      * This returns true if this is not an interface, primitive or array.
      */

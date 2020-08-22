@@ -951,8 +951,8 @@ void ModifierList():
   | "volatile"      { modifiers.add(JModifier.VOLATILE); }
   | "strictfp"      { modifiers.add(JModifier.STRICTFP); }
   | "default"       { modifiers.add(JModifier.DEFAULT); }
-  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; }
-  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; }
+  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers.add(JModifier.SEALED); }
+  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers.add(JModifier.NON_SEALED); }
   | Annotation()
   )
  )*
@@ -2162,7 +2162,7 @@ void Block() :
 }
 
 void BlockStatement() #void:
-{int mods = 0;}
+{}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
@@ -2171,34 +2171,14 @@ void BlockStatement() #void:
     // or a local variable declaration follows.
     // This allows more modifiers for local variables than actually allowed
     // and the annotations for local variables need to be moved in the AST down again.
-    mods=Modifiers()
+    ModifierList()
     (
-        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl(mods)
+        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl()
         |
-        {
-            List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
-            while (jjtree.peekNode() instanceof ASTAnnotation) {
-              annotations.add((ASTAnnotation) jjtree.popNode());
-            }
-        }
-        LocalVariableDeclaration()
-        {
-            ASTLocalVariableDeclaration localVarDecl = (ASTLocalVariableDeclaration) jjtree.peekNode();
-            if ((mods & AccessNode.FINAL) == AccessNode.FINAL) {
-                localVarDecl.setFinal(true);
-            }
-            if (!annotations.isEmpty()) {
-                Collections.reverse(annotations);
-                for (ASTAnnotation a : annotations) {
-                    localVarDecl.insertChild(a, 0);
-                }
-            }
-        }
-        ";"
+        LocalVariableDeclaration() ";"
     )
 | LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
-    mods=Modifiers()
-    LocalTypeDecl(mods)
+    ModifierList() LocalTypeDecl()
 | LOOKAHEAD(Type() <IDENTIFIER>)
     LocalVariableDeclaration() ";" {
       // make it so that the LocalVariableDeclaration's last token is the semicolon
@@ -2214,16 +2194,13 @@ void BlockStatement() #void:
   Statement()
 }
 
-void LocalTypeDecl(int mods) #LocalClassStatement:
+void LocalTypeDecl() #LocalClassStatement:
 {}
 {
-    (
-          LOOKAHEAD(<CLASS>) ClassOrInterfaceDeclaration(mods)
-        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods)
-        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods)
-        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods)
-        | AnnotationTypeDeclaration(mods)
-    )
+    ClassOrInterfaceDeclaration()
+  | AnnotationTypeDeclaration()
+  | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
+  | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
 }
 
 /*
