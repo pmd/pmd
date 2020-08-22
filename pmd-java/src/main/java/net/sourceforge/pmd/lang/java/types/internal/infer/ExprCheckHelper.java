@@ -209,6 +209,7 @@ final class ExprCheckHelper {
     // Eg Function<String, R>, where R is not yet instantiated at the time
     // we check the argument, should not be ground: we want the lambda to
     // add a constraint on R according to its return expressions.
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     private @Nullable JTypeMirror softSolve(JTypeMirror t) {
         if (!(t instanceof InferenceVar)) {
             return t;
@@ -219,12 +220,12 @@ final class ExprCheckHelper {
             return bounds.iterator().next();
         }
         bounds = ivar.getBounds(LOWER);
-        if (bounds.size() > 0) {
+        if (!bounds.isEmpty()) {
             JTypeMirror lub = ts.lub(bounds);
             return lub != ivar ? softSolve(lub) : null;
         }
         bounds = ivar.getBounds(UPPER);
-        if (bounds.size() > 0) {
+        if (!bounds.isEmpty()) {
             JTypeMirror glb = ts.glb(bounds);
             return glb != ivar ? softSolve(glb) : null;
         }

@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 
 abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> implements PolyExprMirror {

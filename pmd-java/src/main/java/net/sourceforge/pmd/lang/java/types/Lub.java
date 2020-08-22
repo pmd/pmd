@@ -380,7 +380,7 @@ final class Lub {
                 "Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
 
-        if (ck instanceof JArrayType && bounds.size() > 0) {
+        if (ck instanceof JArrayType && !bounds.isEmpty()) {
             // If we get here, then the intersection looks like `A[] & B1 & .. & Bn`,
             // where some Bi is not a subtype of A[], else it would have
             // been pruned by mostSpecific above. Note that this means some `Bi`

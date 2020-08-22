@@ -44,7 +44,7 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
         List<JTypeMirror> types = parameters.toStream()
                                             .map(ASTLambdaParameter::getTypeNode)
                                             .toList(TypeNode::getTypeMirror);
-        return types.size() == 0 ? null : types;
+        return types.isEmpty() ? null : types;
     }
 
     @Override

@@ -423,7 +423,7 @@ public interface TypeInferenceLogger {
 
         @Override
         public void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) {
-            println(addCtxInfo(ctx, "Ivar instantiated") + color(var+ " := ", ANSI_BLUE)  + colorIvars(inst));
+            println(addCtxInfo(ctx, "Ivar instantiated") + color(var + " := ", ANSI_BLUE) + colorIvars(inst));
         }
 
         private @NonNull String addCtxInfo(InferenceContext ctx, String event) {

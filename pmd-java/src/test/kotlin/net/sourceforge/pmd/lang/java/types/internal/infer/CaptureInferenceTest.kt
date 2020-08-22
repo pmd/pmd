@@ -243,13 +243,13 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
         /*
         Phase STRICT, NodeStream<T>.<T> union(java.lang.Iterable<? extends NodeStream<? extends T>>) -> NodeStream<T>
-            Context 4,			union(java.lang.Iterable<? extends NodeStream<? extends δ>>) -> NodeStream<δ>
+            Context 4,          union(java.lang.Iterable<? extends NodeStream<? extends δ>>) -> NodeStream<δ>
             ARGUMENTS
                 Checking arg 0 against java.lang.Iterable<? extends NodeStream<? extends δ>>
                     At:   /*unknown*/:7 :22..7:44
                     Expr: Arrays.asList(streams)
                     Phase INVOC_STRICT, java.util.Arrays.<T> asList(T...) -> java.util.List<T>
-                        Context 5,			asList(ε...) -> java.util.List<ε>
+                        Context 5,          asList(ε...) -> java.util.List<ε>
                         RETURN
                             New bound           (ctx 5):   ε <: NodeStream<? extends δ>
 

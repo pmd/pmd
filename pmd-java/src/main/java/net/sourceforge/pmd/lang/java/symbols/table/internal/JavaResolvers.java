@@ -40,8 +40,8 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {

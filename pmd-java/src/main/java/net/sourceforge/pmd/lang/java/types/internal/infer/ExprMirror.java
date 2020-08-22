@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.*;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.UNKNOWN;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.getSpecies;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
 
 import java.util.List;

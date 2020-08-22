@@ -67,6 +67,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
      * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5
      */
     @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     void add(MethodCtDecl sig) {
         super.add(sig);
     }
@@ -161,7 +162,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             }
 
             // otherwise they're both functional interfaces
-            if (!isFunctionTypeMoreSpecific(ctx, si, ti, sfun, tfun, ei)) {
+            if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun, ei)) {
                 return false;
             }
         }
@@ -192,7 +193,6 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     private boolean isFunctionTypeMoreSpecific(InferenceContext ctx,
                                                JTypeMirror si,
-                                               JTypeMirror ti,
                                                JMethodSig sfun,
                                                JMethodSig tfun,
                                                ExprMirror ei) {

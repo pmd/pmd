@@ -209,8 +209,10 @@ final class ExprOps {
                 // must denote a type that is reifiable (§4.7), or a compile-time error occurs.
                 if (lhs.isReifiable()) {
                     JTypeDeclSymbol symbol = lhs.getSymbol();
-                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray() :
-                        "Reifiable array should present a symbol! " + lhs;
+
+                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray()
+                        : "Reifiable array should present a symbol! " + lhs;
+
                     return lhs.getConstructors().get(0);
                 } else {
                     // todo compile time error

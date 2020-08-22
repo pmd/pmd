@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * After type inference they should have been erased and hence this
  * type is of no importance outside the implementation of this framework.
  */
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class InferenceVar implements JTypeMirror, SubstVar {
 
     private static final String[] NAMES = {

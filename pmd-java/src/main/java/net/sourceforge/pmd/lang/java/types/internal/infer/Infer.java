@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Main entry point for type inference.
  */
-@SuppressWarnings("PMD.FieldNamingConventions")
+@SuppressWarnings({"PMD.FieldNamingConventions", "PMD.CompareObjectsWithEquals"})
 public final class Infer {
 
     final ExprOps exprOps;

@@ -104,6 +104,7 @@ public abstract class OverloadSet<T> {
         }
 
 
+        @Override
         protected OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2) {
             return areOverrideEquivalentFast(m1, m2)
                    ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)

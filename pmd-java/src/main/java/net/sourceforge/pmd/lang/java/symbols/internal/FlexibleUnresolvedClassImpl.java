@@ -59,11 +59,13 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
 
     @Override
     UnresolvedClassImpl getOrCreateUnresolvedChildClass(String simpleName) {
-        if (childClasses.isEmpty())
+        if (childClasses.isEmpty()) {
             childClasses = new ArrayList<>(); // make it mutable
+        }
         for (UnresolvedClassImpl childClass : childClasses) {
-            if (childClass.nameEquals(simpleName))
+            if (childClass.nameEquals(simpleName)) {
                 return childClass;
+            }
         }
         FlexibleUnresolvedClassImpl newChild =
             new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
@@ -72,9 +74,8 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<JClassSymbol> getDeclaredClasses() {
-        return (List) childClasses;
+        return Collections.unmodifiableList(childClasses);
     }
 
     @Override
