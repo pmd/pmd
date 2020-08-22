@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 class Java15KotlinTest: ParserTestSpec( {
 
@@ -21,16 +20,16 @@ class Java15KotlinTest: ParserTestSpec( {
                 child<ASTPrimaryExpression> {
                     child<ASTPrimaryPrefix> {
                         child<ASTLiteral> {
-                            it.isTextBlock shouldBe true
-                            it.escapedStringLiteral shouldBe
+                            it::isTextBlock shouldBe true
+                            it::getEscapedStringLiteral shouldBe
                                     "\"\"\"\n" +
-                                    "            <html>   \n" +
-                                    "                <body>\n" +
-                                    "                    <p>Hello, world</p>    \n" +
-                                    "                </body> \n" +
-                                    "            </html>   \n" +
-                                    "            \"\"\""
-                            it.textBlockContent shouldBe
+                                    "                            <html>   \n" +
+                                    "                                <body>\n" +
+                                    "                                    <p>Hello, world</p>    \n" +
+                                    "                                </body> \n" +
+                                    "                            </html>   \n" +
+                                    "                            \"\"\""
+                            it::getTextBlockContent shouldBe
                                     "<html>\n" +
                                     "    <body>\n" +
                                     "        <p>Hello, world</p>\n" +

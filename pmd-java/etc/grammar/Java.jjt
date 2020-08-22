@@ -257,6 +257,16 @@ class JavaParserImpl {
     this.preview = preview;
   }
 
+
+  private boolean isRecordTypeSupported() {
+    return (jdkVersion == 14 || jdkVersion == 15) && preview;
+  }
+
+  private boolean isSealedClassSupported() {
+      return jdkVersion == 15 && preview;
+  }
+
+
   /**
    * Keeps track during tree construction, whether we are currently building a switch label.
    * A switch label must not contain a LambdaExpression.
@@ -321,11 +331,11 @@ class JavaParserImpl {
    */
   private boolean isNonSealedModifier() {
       if (isKeyword(1, "non") && isToken(2, MINUS) && isKeyword(3, "sealed")) {
-          Token nonToken = getToken(1);
-          Token minusToken = getToken(2);
-          Token sealedToken = getToken(3);
-          return nonToken.endColumn + 1 == minusToken.beginColumn
-            && minusToken.endColumn + 1 == sealedToken.beginColumn;
+          JavaccToken nonToken = getToken(1);
+          JavaccToken minusToken = getToken(2);
+          JavaccToken sealedToken = getToken(3);
+          return nonToken.getEndColumn() == minusToken.getBeginColumn()
+            && minusToken.getEndColumn() == sealedToken.getBeginColumn();
       }
       return false;
   }
@@ -894,8 +904,8 @@ int Modifiers() #void:
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; }
-  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; checkForSealedClassUsage(); }
-  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; checkForSealedClassUsage(); }
+  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; }
+  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; }
   | Annotation()
   )
  )*
@@ -958,7 +968,6 @@ void ImplementsList():
 void PermittedSubclasses() #PermitsList:
 {
     Token t;
-    checkForSealedClassUsage();
 }
 {
     t = <IDENTIFIER> {
@@ -1721,9 +1730,9 @@ void BlockStatement():
         LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl(mods)
         |
         {
-            List<Node> annotationsAndChildren = new ArrayList<Node>();
+            List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
             while (jjtree.peekNode() instanceof ASTAnnotation) {
-              annotationsAndChildren.add(jjtree.popNode());
+              annotations.add((ASTAnnotation) jjtree.popNode());
             }
         }
         LocalVariableDeclaration()
@@ -1732,15 +1741,10 @@ void BlockStatement():
             if ((mods & AccessNode.FINAL) == AccessNode.FINAL) {
                 localVarDecl.setFinal(true);
             }
-            if (!annotationsAndChildren.isEmpty()) {
-                Collections.reverse(annotationsAndChildren);
-                for (int i = 0; i < localVarDecl.getNumChildren(); i++) {
-                    annotationsAndChildren.add(localVarDecl.getChild(i));
-                }
-                for (int i = 0; i < annotationsAndChildren.size(); i++) {
-                    Node child = annotationsAndChildren.get(i);
-                    child.jjtSetParent(localVarDecl);
-                    localVarDecl.jjtAddChild(child, i);
+            if (!annotations.isEmpty()) {
+                Collections.reverse(annotations);
+                for (ASTAnnotation a : annotations) {
+                    localVarDecl.insertChild(a, 0);
                 }
             }
         }
@@ -1760,10 +1764,10 @@ void LocalTypeDecl(int mods) #void:
 {
     (
           LOOKAHEAD(<CLASS>) ClassOrInterfaceDeclaration(mods)
-        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
-        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
-        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
-        | AnnotationTypeDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods)
+        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods)
+        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods)
+        | AnnotationTypeDeclaration(mods)
     )
 }
 

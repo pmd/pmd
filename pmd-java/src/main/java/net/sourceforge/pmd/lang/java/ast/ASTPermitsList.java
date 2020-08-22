@@ -29,18 +29,13 @@ public final class ASTPermitsList extends AbstractJavaNode implements Iterable<A
         super(id);
     }
 
-    ASTPermitsList(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
     @Override
     public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
+        return children(ASTClassOrInterfaceType.class).iterator();
     }
 }

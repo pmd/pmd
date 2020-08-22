@@ -13,12 +13,12 @@ import java.io.IOException
 
 class ASTPatternTest : ParserTestSpec({
 
-    parserTest("Test patterns only available on JDK 14+15 (preview)", javaVersions = JavaVersion.values().asList().minus(J14__PREVIEW).minus(J15__PREVIEW)) {
+    parserTest("Test patterns only available on JDK 14+15 (preview)", javaVersions = JavaVersion.except(J14__PREVIEW, J15__PREVIEW)) {
 
 
         inContext(ExpressionParsingCtx) {
             "obj instanceof Class c" should throwParseException {
-                it.message.shouldContain("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview")
+                it.message.shouldContain("Type test patterns in instanceof is a preview feature of JDK")
             }
         }
     }

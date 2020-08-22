@@ -107,10 +107,6 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 
-    /**
-     * Returns true if this type is declared locally, e.g. in the context of a method block.
-     */
-    boolean isLocal();
 
     /**
      * The kind of type this node declares.
