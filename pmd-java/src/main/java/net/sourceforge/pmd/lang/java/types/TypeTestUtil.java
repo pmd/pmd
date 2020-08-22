@@ -222,7 +222,7 @@ public final class TypeTestUtil {
 
         if (n instanceof ASTAnyTypeDeclaration) {
             ASTAnyTypeDeclaration decl = (ASTAnyTypeDeclaration) n;
-            if ((decl).getBinaryName().equals(canonicalName)) {
+            if (decl.getBinaryName().equals(canonicalName)) {
                 return true;
             } else if (!considerSubtype) { // otherwise fallthrough
                 return false;

@@ -95,15 +95,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
-        if (cid == null) {
-            return false;
-        }
-
-        if (TypeTestUtil.isA(JUNIT3_CLASS_NAME, node)) {
-            return true;
-        } else {
-            return cid.getSimpleName().endsWith("Test");
-        }
+        return TypeTestUtil.isA(JUNIT3_CLASS_NAME, cid);
     }
 
     private boolean isJUnit4Class(ASTCompilationUnit node) {

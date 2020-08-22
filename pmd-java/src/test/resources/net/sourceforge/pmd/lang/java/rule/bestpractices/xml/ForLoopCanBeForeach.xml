@@ -135,6 +135,7 @@ class Foo {
         <description>Consider iterators</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
 class Foo {
     void loop() {
         Iterable<DataFlowNode> path = null;
@@ -225,6 +226,7 @@ class StringPropertyTest {
         <description>Consider iterators only if safe</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
 class Foo {
     void loop() {
         Iterable<DataFlowNode> path = null;
@@ -245,6 +247,7 @@ class Foo {
         <description>Do not report iterator loop if we can't find iterator decl</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
 class Foo {
     void loop() {
         for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
@@ -284,6 +287,7 @@ class Foo<T> implements Iterable<T> {
         <description>Iterating on multiple iterators should whitelist the loop, refs #784</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
 class Foo {
     void loop() {
         Iterable<E> it;

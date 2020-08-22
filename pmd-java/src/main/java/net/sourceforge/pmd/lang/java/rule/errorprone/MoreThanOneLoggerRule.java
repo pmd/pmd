@@ -71,10 +71,10 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
                 Node classOrIntType = reftypeNode.getChild(0);
                 if (classOrIntType instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType classType = (ASTClassOrInterfaceType) classOrIntType;
-                    if ((TypeTestUtil.isA(LOG4J_LOGGER_NAME, classType)
+                    if (TypeTestUtil.isA(LOG4J_LOGGER_NAME, classType)
                         || TypeTestUtil.isA(LOG4J2_LOGGER_NAME, classType)
                         || TypeTestUtil.isA(JAVA_LOGGER_NAME, classType)
-                        || TypeTestUtil.isA(SLF4J_LOGGER_NAME, classType))
+                        || TypeTestUtil.isA(SLF4J_LOGGER_NAME, classType)
                         || "Logger".equals(classOrIntType.getImage())) {
                         ++count;
                     }
