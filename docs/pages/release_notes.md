@@ -121,6 +121,13 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 
 *   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
 
+* {% jdoc java::lang.java.typeresolution.TypeHelper %} is deprecated in
+ favor of {% jdoc java::lang.java.types.TypeTestUtil %}, which has the
+same functionality, but a slightly changed API.
+* Many of the classes in {% jdoc_package java::lang.java.symboltable %}
+are deprecated as internal API.
+
+
 ### External Contributions
 
 *   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - [Maikel Steneker](https://github.com/maikelsteneker)
