@@ -95,7 +95,7 @@ final class AstClassSym
             } else if (dnode instanceof ASTMethodDeclaration) {
                 if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
                     // filter out record component, so that the accessor is not generated
-                    recordComponents.removeIf(f -> f.getSimpleName().equals(((ASTMethodDeclaration) dnode).getName()));
+                    recordComponents.removeIf(f -> f.nameEquals(((ASTMethodDeclaration) dnode).getName()));
                 }
                 myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTConstructorDeclaration) {

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.EnumCtorInvocMirror;
 
+/** Façade that creates {@link ExprMirror} instances. */
 public final class JavaExprMirrors {
 
     final Infer infer;

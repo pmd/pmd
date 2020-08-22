@@ -85,7 +85,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Nullable
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
-            if (klass.getSimpleName().equals(name)) {
+            if (klass.nameEquals(name)) {
                 return klass;
             }
         }
@@ -137,7 +137,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Nullable
     default JFieldSymbol getDeclaredField(String name) {
         for (JFieldSymbol field : getDeclaredFields()) {
-            if (field.getSimpleName().equals(name)) {
+            if (field.nameEquals(name)) {
                 return field;
             }
         }

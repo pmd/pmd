@@ -185,6 +185,35 @@ class F {
         }
     }
 
+    parserTest("Test hidden method from outside class, when generic") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+
+                """
+class Sup { 
+    static <E> void m(Collection<? extends E> e) {}
+}
+
+class Sub extends Sup { 
+    static void m() {}
+}
+
+class F {
+    {
+        Sub.m(); // should be Sub::m, no ambiguity
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, subM) = acu.methodDeclarations().toList { it.sig }
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+        }
+    }
+
     parserTest("Test hidden method inside class") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(

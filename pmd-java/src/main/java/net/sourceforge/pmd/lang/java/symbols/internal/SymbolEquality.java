@@ -48,7 +48,7 @@ public final class SymbolEquality {
             }
             JTypeParameterSymbol m2 = (JTypeParameterSymbol) o;
 
-            return m1.getSimpleName().equals(m2.getSimpleName())
+            return m1.nameEquals(m2.getSimpleName())
                 && m1.getDeclaringSymbol().equals(m2.getDeclaringSymbol());
         }
     };
@@ -134,7 +134,7 @@ public final class SymbolEquality {
                 return false;
             }
             JFieldSymbol f2 = (JFieldSymbol) o;
-            return f1.getSimpleName().equals(f2.getSimpleName())
+            return f1.nameEquals(f2.getSimpleName())
                 && f1.getEnclosingClass().equals(f2.getEnclosingClass());
 
         }
@@ -152,7 +152,7 @@ public final class SymbolEquality {
                 return false;
             }
             JFormalParamSymbol f2 = (JFormalParamSymbol) o;
-            return f1.getSimpleName().equals(f2.getSimpleName())
+            return f1.nameEquals(f2.getSimpleName())
                 && f1.getDeclaringSymbol().equals(f2.getDeclaringSymbol());
 
         }

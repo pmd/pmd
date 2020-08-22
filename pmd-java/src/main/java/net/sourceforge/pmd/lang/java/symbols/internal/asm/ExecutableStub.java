@@ -43,7 +43,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     boolean matches(String name, String descriptor) {
-        return this.getSimpleName().equals(name) && descriptor.equals(this.descriptor);
+        return this.nameEquals(name) && descriptor.equals(this.descriptor);
     }
 
 

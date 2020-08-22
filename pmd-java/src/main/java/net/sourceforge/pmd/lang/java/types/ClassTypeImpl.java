@@ -274,13 +274,15 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
+        return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF.stream(this)
+                                                                 .flatMap(sup -> sup.streamDeclaredMethods(prefilter));
+    }
 
-        return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF
-                                   .stream(this)
-                                   .flatMap(sup -> sup.getSymbol().getDeclaredMethods().stream()
-                                                      .filter(prefilter)
-                                                      .map(m -> new ClassMethodSigImpl(sup, m))
-                                   );
+    @Override
+    public Stream<JMethodSig> streamDeclaredMethods(Predicate<? super JMethodSymbol> prefilter) {
+        return getSymbol().getDeclaredMethods().stream()
+                          .filter(prefilter)
+                          .map(m -> new ClassMethodSigImpl(this, m));
     }
 
     @Override

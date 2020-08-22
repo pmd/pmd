@@ -33,6 +33,7 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
@@ -1223,11 +1224,12 @@ public final class TypeOps {
             return true;
         }
 
+        Substitution mapping = mapping(tp2, tp1);
         for (int i = 0; i < tp1.size(); i++) {
             JTypeVar p1 = tp1.get(i);
             JTypeVar p2 = tp2.get(i);
 
-            if (!isSameType(p1, subst(p2, mapping(tp2, tp1)))) {
+            if (!isSameType(p1.getUpperBound(), subst(p2.getUpperBound(), mapping))) {
                 return false;
             }
         }
@@ -1264,6 +1266,31 @@ public final class TypeOps {
             }
         }
         return haveSameSignature(m1, m2);
+    }
+
+    public static boolean areOverrideEquivalentFast(JMethodSig m1, JMethodSig m2) {
+        // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
+        // methods from overload candidates before overload resolution.
+        // Any optimization makes a big impact.
+        if (m1.getArity() != m2.getArity()) {
+            return false; // easy case
+        } else if (m1 == m2) {
+            return true;
+        } else if (!m1.getName().equals(m2.getName())) {
+            return false;
+        }
+
+        List<JTypeMirror> formals1 = m1.getFormalParameters();
+        List<JTypeMirror> formals2 = m2.getFormalParameters();
+        for (int i = 0; i < formals1.size(); i++) {
+            JTypeMirror fi1 = formals1.get(i);
+            JTypeMirror fi2 = formals2.get(i);
+
+            if (!isSameType(fi1.getErasure(), fi2.getErasure())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1330,7 +1357,7 @@ public final class TypeOps {
         JTypeMirror m1Owner = m1.getDeclaringType();
         JClassType m2Owner = (JClassType) m2.getDeclaringType();
 
-        if (isOverridableIn(m2, m2Owner.getSymbol(), (JClassSymbol) m1Owner.getSymbol())) {
+        if (isOverridableIn(m2, m2Owner.getSymbol(), m1Owner.getSymbol())) {
             JClassType m2AsM1Supertype = (JClassType) m1Owner.getAsSuper(m2Owner.getSymbol());
             if (m2AsM1Supertype != null) {
                 JMethodSig m2Prime = m2AsM1Supertype.getDeclaredMethod(m2.getSymbol());
@@ -1344,7 +1371,7 @@ public final class TypeOps {
         // todo that is very weird
         if (m1.isAbstract()
             || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
-            || !isOverridableIn(m2, m2Owner.getSymbol(), (JClassSymbol) origin.getSymbol())
+            || !isOverridableIn(m2, m2Owner.getSymbol(), origin.getSymbol())
             || !(m1Owner instanceof JClassType)) {
             return false;
         }
@@ -1375,7 +1402,7 @@ public final class TypeOps {
      * @param declaring Symbol of the declaring type of m
      * @param origin    Site of the potential override
      */
-    private static boolean isOverridableIn(JMethodSig m, JClassSymbol declaring, JClassSymbol origin) {
+    private static boolean isOverridableIn(JMethodSig m, JClassSymbol declaring, JTypeDeclSymbol origin) {
         final int accessFlags = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
         // JLS 8.4.6.1
@@ -1552,7 +1579,8 @@ public final class TypeOps {
 
     private static boolean isNotDeclaredInClassObject(JMethodSig it) {
         TypeSystem ts = it.getDeclaringType().getTypeSystem();
-        return ts.OBJECT.streamMethods(om -> Modifier.isPublic(om.getModifiers()) && om.getSimpleName().equals(it.getName()))
+        return ts.OBJECT.streamDeclaredMethods(om -> Modifier.isPublic(om.getModifiers())
+            && om.nameEquals(it.getName()))
                         .noneMatch(om -> haveSameSignature(it, om));
     }
 
@@ -1795,7 +1823,7 @@ public final class TypeOps {
 
 
     public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
-        return it -> it.getSimpleName().equals(name) && isAccessible(it, symbol);
+        return it -> it.nameEquals(name) && isAccessible(it, symbol);
     }
 
     public static Iterable<JMethodSig> lazyFilterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
@@ -1808,12 +1836,34 @@ public final class TypeOps {
 
 
     public static List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly, @NonNull JClassSymbol enclosing) {
-        return type.streamMethods(
-            it -> (!staticOnly || Modifier.isStatic(it.getModifiers()))
-                && it.getSimpleName().equals(name)
-                && isAccessible(it, enclosing)
-        ).collect(OverloadSet.collectMostSpecific(type));
+        if (staticOnly && type.isInterface()) {
+            // static methods, start on interface
+            // static interface methods are not inherited
+            return type.streamDeclaredMethods(staticMethodFilter(name, true, enclosing)).collect(Collectors.toList());
+        } else if (staticOnly) {
+            // static methods, doesn't start on interface
+            // -> ignore non-static, ignore any that are interfaces
+            return type.streamMethods(staticMethodFilter(name, false, enclosing)).collect(OverloadSet.collectMostSpecific(type));
+        } else {
+            return type.streamMethods(methodFilter(name, enclosing))
+                       .collect(OverloadSet.collectMostSpecific(type));
+        }
     }
+
+    private static @NonNull Predicate<JMethodSymbol> methodFilter(String name, @NonNull JClassSymbol enclosing) {
+        return it -> isAccessibleWithName(name, enclosing, it);
+    }
+
+    private static @NonNull Predicate<JMethodSymbol> staticMethodFilter(String name, boolean acceptItfs, @NonNull JClassSymbol enclosing) {
+        return it -> Modifier.isStatic(it.getModifiers())
+            && (acceptItfs || !it.getEnclosingClass().isInterface())
+            && isAccessibleWithName(name, enclosing, it);
+    }
+
+    private static boolean isAccessibleWithName(String name, @NonNull JClassSymbol enclosing, JMethodSymbol m) {
+        return m.nameEquals(name) && isAccessible(m, enclosing);
+    }
+
 
     private static boolean isAccessible(JExecutableSymbol method, JClassSymbol ctx) {
         Objects.requireNonNull(ctx, "Cannot check a null symbol");

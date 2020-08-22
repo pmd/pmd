@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -94,18 +93,17 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
             return mirror.getStandaloneType();
         }
 
-        if (e instanceof ASTConstructorCall) {
+        if (mirror instanceof CtorInvocationMirror) {
             // A class instance creation expression (§15.9) for class Boolean.
             // A class instance creation expression (§15.9) for a class that is convertible to a numeric type.
-            return ((ASTConstructorCall) e).getTypeNode().getTypeMirror().unbox();
+            return ((CtorInvocationMirror) mirror).getNewType().unbox();
         }
 
-        if (mirror instanceof ConditionalMirrorImpl) {
+        if (mirror instanceof BranchingMirror) {
             // A boolean conditional expression.
             // A numeric conditional expression.
             return mirror.getStandaloneType();
         }
-
 
         if (e instanceof ASTMethodCall) {
             /*
@@ -126,7 +124,6 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
                                 .getMethodType()
                                 .getReturnType();
         }
-
 
         return null;
     }

@@ -125,7 +125,7 @@ public final class JavaResolvers {
             @Override
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
                 return t.streamMethods(
-                    it -> it.getSimpleName().equals(simpleName)
+                    it -> it.nameEquals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
                 ).collect(OverloadSet.collectMostSpecific(t)); // remove overridden, hidden methods
             }
@@ -149,7 +149,7 @@ public final class JavaResolvers {
                 }
                 return container.streamMethods(
                     it -> Modifier.isStatic(it.getModifiers())
-                        && it.getSimpleName().equals(simpleName)
+                        && it.nameEquals(simpleName)
                         // Technically, importing a static protected method may be valid
                         // inside some of the classes in the compilation unit. This test
                         // makes it not in scope in those classes. But it's also visible
@@ -173,7 +173,7 @@ public final class JavaResolvers {
             public @NonNull List<JMethodSig> resolveHere(String simpleName) {
                 return container.streamMethods(
                     it -> Modifier.isStatic(it.getModifiers())
-                        && it.getSimpleName().equals(simpleName)
+                        && it.nameEquals(simpleName)
                         && canBeImportedIn(accessPackageName, it)
                 ).collect(OverloadSet.collectMostSpecific(container)); // remove overridden, hidden methods
             }

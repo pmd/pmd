@@ -97,13 +97,17 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return Stream.concat(
-            getSymbol().getDeclaredMethods().stream()
-                       .filter(prefilter)
-                       .map(it -> new ArrayMethodSigImpl(this, it)),
-
+            streamDeclaredMethods(prefilter),
             // inherited object methods
             ts.OBJECT.streamMethods(prefilter)
         );
+    }
+
+    @Override
+    public Stream<JMethodSig> streamDeclaredMethods(Predicate<? super JMethodSymbol> prefilter) {
+        return getSymbol().getDeclaredMethods().stream()
+                          .filter(prefilter)
+                          .map(it -> new ArrayMethodSigImpl(this, it));
     }
 
     @Override

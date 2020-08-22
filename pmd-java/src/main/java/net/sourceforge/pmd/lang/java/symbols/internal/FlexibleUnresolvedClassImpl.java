@@ -62,7 +62,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
         if (childClasses.isEmpty())
             childClasses = new ArrayList<>(); // make it mutable
         for (UnresolvedClassImpl childClass : childClasses) {
-            if (childClass.getSimpleName().equals(simpleName))
+            if (childClass.nameEquals(simpleName))
                 return childClass;
         }
         FlexibleUnresolvedClassImpl newChild =

@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -36,6 +37,19 @@ public interface JElementSymbol {
      * @return the name
      */
     String getSimpleName();
+
+    /**
+     * Returns true if the simple name of this symbol is the same as the given
+     * name.
+     *
+     * @param name Simple name
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    default boolean nameEquals(@NonNull String name) {
+        // implicit null check of the parameter
+        return name.equals(getSimpleName());
+    }
 
 
     /**

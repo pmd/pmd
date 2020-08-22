@@ -453,9 +453,11 @@ final class PolyResolution {
      * Compute the type of a conditional or switch expression. This is
      * how Javac does it for now, and it's exactly an extension of the
      * rules for ternary operators to an arbitrary number of branches.
+     *
+     * todo can we merge this into the logic of the BranchingMirror implementations?
      */
     private static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, List<JTypeMirror> branchTypes) {
-        // There is a corner case with constant values, which we don't handle.
+        // There is a corner case with constant values & ternaries, which we don't handle.
 
         if (branchTypes.isEmpty()) {
             return ts.OBJECT;

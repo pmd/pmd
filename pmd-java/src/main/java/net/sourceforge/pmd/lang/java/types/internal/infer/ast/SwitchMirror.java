@@ -14,10 +14,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 class SwitchMirror extends BasePolyMirror<ASTSwitchExpression> implements BranchingMirror {
 
-    // This doesn't require an impl for getStandaloneType
-    // If we explore it during overload resolution/ type inference, it's
-    // because it's in an invocation ctx (or assignment, as the return of a lambda)
-    // Rules are more complicated for ternary exprs, and they require this.
+    // todo this is undertested for invocation contexts
 
     private final List<ExprMirror> branches;
 
@@ -25,7 +22,6 @@ class SwitchMirror extends BasePolyMirror<ASTSwitchExpression> implements Branch
         super(mirrors, myNode);
         branches = myNode.getYieldExpressions().toList(factory::getMirror);
     }
-
 
     @Override
     public boolean branchesMatch(Predicate<? super ExprMirror> condition) {

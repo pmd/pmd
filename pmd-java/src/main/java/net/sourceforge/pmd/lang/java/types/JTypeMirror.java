@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -364,11 +365,32 @@ public interface JTypeMirror extends JTypeVisitable {
      * method, they're not reused between calls. This stream does not
      * include constructors.
      *
+     * <p>Experimental: streams are a bit impractical when it comes to
+     * configuring the filter. Possibly a specialized API should be introduced.
+     * We need to support the use cases of the symbol table, ie filter by name + accessibility + staticity,
+     * and also possibly use cases for rules, like getting a method from
+     * a known signature. See also {@link JClassType#getDeclaredMethod(JExecutableSymbol)},
+     * which looks like this. Unifying this API would be nice.
+     *
      * @param prefilter Filter selecting symbols for which a signature
      *                  should be created and yielded by the stream
      */
     @Experimental
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
+        return Stream.empty();
+    }
+
+    /**
+     * Like {@link #streamMethods(Predicate) streamMethods}, but does
+     * not recurse into supertypes. Note that only class and array types
+     * declare methods themselves.
+     *
+     * <p>Experimental: see {@link #streamMethods(Predicate)}
+     *
+     * @see #streamMethods(Predicate)
+     */
+    @Experimental
+    default Stream<JMethodSig> streamDeclaredMethods(Predicate<? super JMethodSymbol> prefilter) {
         return Stream.empty();
     }
 

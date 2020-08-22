@@ -784,13 +784,13 @@ class Scratch {
 
 
 
-    parserTest("Method ref inside conditional") {
+    parserTest("f:Method ref inside conditional") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.Objects;
 
-class Scratch {
-    interface Predicate<Q> { boolean test(Q q); }
+interface Predicate<Q> {
+    boolean test(Q q);
 
     static <T> Predicate<T> isEqual(Object targetRef) {
         return (null == targetRef)
@@ -801,7 +801,7 @@ class Scratch {
         """.trimIndent())
 
 
-        val t_Predicate = acu.descendants(ASTAnyTypeDeclaration::class.java)[1]!!.typeMirror
+        val t_Predicate = acu.firstEnclosingType()
         val testMethod = acu.methodDeclarations().get(0)!!
         val tvar = acu.typeVar("T")
         val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()

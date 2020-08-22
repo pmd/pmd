@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  */
@@ -157,6 +158,157 @@ class Scratch {
 
         assertFalse("Methods are not override-equivalent") {
             TypeOps.areOverrideEquivalent(scratchM, otherM)
+        }
+    }
+
+
+    parserTest("Static generic method") {
+
+        val acu = parser.parse(
+                """
+class Sup { 
+    static <E> E m(F<? extends E> e) { return null; }
+}
+
+class Sub extends Sup { 
+    static <S> S m(F<? extends S> e) { return null; }
+}
+
+class F<G> {
+    {
+        Sub.m(); // should be Sub::m, no ambiguity
+    }
+}
+   """.trimIndent()
+        )
+
+        val (supE, subE) = acu.declaredMethodSignatures()
+
+
+        assertTrue("Methods are override-equivalent") {
+            TypeOps.areOverrideEquivalent(supE, subE)
+        }
+    }
+
+    parserTest("Static method with different bound") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+
+                """
+class Sup { 
+    static <E> E m(F<? extends E> e) { return null; }
+}
+
+class Sub extends Sup { 
+    static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
+}
+
+class F<G> {
+    {
+        // Well it is ambiguous, though a nice compiler 
+        // wouldn't say it is, and rather consider the method hidden,
+        // and report an error on the declaration of Sub
+        Sub.m(new F<List<G>>()); 
+    }
+}
+   """.trimIndent()
+        )
+
+        val (supE, subE) = acu.declaredMethodSignatures()
+
+
+        // their type parameters have a different bound
+        // technically this is a compile-time error:
+        // both methods have the same erasure but neither hides the other
+        assertFalse("Methods are override-equivalent") {
+            TypeOps.overrides(subE, supE, subE.declaringType)
+        }
+
+        spy.shouldBeAmbiguous {
+            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+        }
+    }
+
+
+
+
+   parserTest("Static method of interface is not inherited!") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+
+                """
+interface Sup { 
+    static <E> E m(F<? extends E> e) { return null; }
+}
+
+class Sub implements Sup { 
+    static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
+}
+
+class F<G> {
+    {
+        // This is not ambiguous. The interface static method
+        // may only be called with the interface as qualifier.
+        Sub.m(new F<List<G>>()); 
+    }
+}
+   """.trimIndent()
+        )
+
+        val (supE, subE) = acu.declaredMethodSignatures()
+
+
+        // their type parameters have a different bound
+        assertFalse("Methods should not be override-equivalent") {
+            TypeOps.overrides(subE, supE, subE.declaringType)
+        }
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+        }
+    }
+
+
+
+   parserTest("Static method of interface is not inherited in subinterfaces either") {
+
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+
+                """
+interface Sup { 
+    static <E> E m(F<? extends E> e) { return null; }
+}
+
+interface Sub extends Sup { // note now, that it is an interface
+    static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
+}
+
+class F<G> {
+    {
+        // This is not ambiguous. The interface static method
+        // may only be called with the interface as qualifier.
+        Sub.m(new F<List<G>>()); 
+    }
+}
+   """.trimIndent()
+        )
+
+        val (supE, subE) = acu.declaredMethodSignatures()
+
+
+        // their type parameters have a different bound
+        assertFalse("Methods should not be override-equivalent") {
+            TypeOps.overrides(subE, supE, subE.declaringType)
+        }
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
         }
     }
 
