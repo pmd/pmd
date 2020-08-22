@@ -40,4 +40,9 @@ public class KotlinTokenizerTest extends CpdTextComparisonTest {
     public void testImportsIgnored() {
         doTest("imports");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }
