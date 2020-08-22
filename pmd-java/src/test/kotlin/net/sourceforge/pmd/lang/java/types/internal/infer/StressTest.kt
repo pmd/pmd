@@ -140,7 +140,7 @@ class StressTest : ProcessorTestSpec({
                 .map { it.varIds[0]!!.initializer!! }
                 .forEachIndexed { i, expr ->
                     val t = measureTimeMillis {
-                        expr.typeMirror shouldNotBe expr.typeSystem.UNRESOLVED_TYPE
+                        expr.typeMirror shouldNotBe expr.typeSystem.UNKNOWN
                     }
                     myLog("c${i + 2}: $t ms")
                 }
@@ -235,7 +235,7 @@ class StressTest : ProcessorTestSpec({
                 .forEachIndexed { i, expr ->
                     val t = measureTimeMillis {
                         assertFalse {
-                            expr.typeMirror == expr.typeSystem.UNRESOLVED_TYPE
+                            expr.typeMirror == expr.typeSystem.UNKNOWN
                         }
                     }
                     myLog("asList$i: $t ms")

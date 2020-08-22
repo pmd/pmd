@@ -45,12 +45,12 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
 
     @Override
     public JTypeMirror getDeclaringType() {
-        return ts.UNRESOLVED_TYPE;
+        return ts.UNKNOWN;
     }
 
     @Override
     public JTypeMirror getReturnType() {
-        return ts.UNRESOLVED_TYPE;
+        return ts.UNKNOWN;
     }
 
     @Override
@@ -158,7 +158,7 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
 
         @Override
         public @NonNull JClassSymbol getEnclosingClass() {
-            return (JClassSymbol) ts.UNRESOLVED_TYPE.getSymbol();
+            return (JClassSymbol) ts.UNKNOWN.getSymbol();
         }
 
         @Override

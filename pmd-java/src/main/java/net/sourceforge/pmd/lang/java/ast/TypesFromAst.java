@@ -75,7 +75,7 @@ final class TypesFromAst {
             try {
                 return ts.glb(components);
             } catch (IllegalArgumentException e) {
-                return ts.ERROR_TYPE;
+                return ts.ERROR;
             }
         } else if (node instanceof ASTArrayType) {
 
@@ -89,7 +89,7 @@ final class TypesFromAst {
 
         } else if (node instanceof ASTAmbiguousName) {
 
-            return ts.UNRESOLVED_TYPE;
+            return ts.UNKNOWN;
 
         } else if (node instanceof ASTUnionType) {
 
@@ -198,7 +198,7 @@ final class TypesFromAst {
                     JClassSymbol symbol;
                     if (resolved == null) {
                         // compile-time error
-                        symbol = (JClassSymbol) node.getTypeSystem().UNRESOLVED_TYPE.getSymbol();
+                        symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();
                     } else {
                         symbol = resolved.getSymbol();
                         JClassType actualEnclosing = enclosing.getAsSuper(symbol.getEnclosingClass());

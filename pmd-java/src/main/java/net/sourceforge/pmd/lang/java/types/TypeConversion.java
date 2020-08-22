@@ -36,8 +36,8 @@ public final class TypeConversion {
      * <li>Each operand, separately, of a shift operator &lt;&lt;, &gt;&gt;, or &gt;&gt;&gt; (§15.19).
      * </ul>
      *
-     * <p>Returns {@link TypeSystem#ERROR_TYPE} if the given type is
-     * not a numeric type, {@link TypeSystem#UNRESOLVED_TYPE} if the type
+     * <p>Returns {@link TypeSystem#ERROR} if the given type is
+     * not a numeric type, {@link TypeSystem#UNKNOWN} if the type
      * is unresolved.
      */
     public static JTypeMirror unaryNumericPromotion(JTypeMirror t) {
@@ -49,7 +49,7 @@ public final class TypeConversion {
             return ts.INT;
         }
 
-        return t.isNumeric() || t == ts.UNRESOLVED_TYPE ? t : ts.ERROR_TYPE;
+        return t.isNumeric() || t == ts.UNKNOWN ? t : ts.ERROR;
     }
 
     /**
@@ -65,7 +65,7 @@ public final class TypeConversion {
      * <li>The integer bitwise operators &amp;, ^, and | (§15.22.1)
      * <li>In certain cases, the conditional operator ? : (§15.25)
      * </ul>
-     * <p>Returns {@link TypeSystem#ERROR_TYPE} if either of the parameters
+     * <p>Returns {@link TypeSystem#ERROR} if either of the parameters
      * is not numeric. This DOES NOT care for unresolved types.
      */
     public static JTypeMirror binaryNumericPromotion(JTypeMirror t, JTypeMirror s) {
@@ -84,7 +84,7 @@ public final class TypeConversion {
             return ts.INT;
         } else {
             // this is a typing error, both types should be referring to a numeric type
-            return ts.ERROR_TYPE;
+            return ts.ERROR;
         }
     }
 
@@ -94,7 +94,7 @@ public final class TypeConversion {
      */
     public static boolean isConvertibleThroughBoxing(JTypeMirror t, JTypeMirror s) {
         TypeSystem ts = t.getTypeSystem();
-        if (t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE) {
+        if (t == ts.UNKNOWN || t == ts.ERROR) {
             return true;
         }
 

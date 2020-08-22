@@ -122,7 +122,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             // var k = foo()
 
             ASTExpression initializer = node.getInitializer();
-            return initializer == null ? ts.ERROR_TYPE : TypeOps.projectUpwards(initializer.getTypeMirror());
+            return initializer == null ? ts.ERROR : TypeOps.projectUpwards(initializer.getTypeMirror());
 
         } else if (isTypeInferred && node.ancestors().get(2) instanceof ASTForeachStatement) {
             // for (var k : map.keySet())
@@ -141,7 +141,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
                     JTypeMirror componentType = ((JClassType) asSuper).getTypeArgs().get(0);
                     return TypeOps.projectUpwards(componentType);
                 } else {
-                    return ts.ERROR_TYPE;
+                    return ts.ERROR;
                 }
             }
 
@@ -151,7 +151,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             // force resolution of the enclosing lambda
             JMethodSig mirror = lambda.getFunctionalMethod();
             if (mirror == null || mirror == ts.UNRESOLVED_METHOD) {
-                return ts.UNRESOLVED_TYPE;
+                return ts.UNKNOWN;
             }
             return mirror.getFormalParameters().get(param.getIndexInParent());
 
@@ -164,7 +164,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
         ASTType typeNode = node.getTypeNode();
         if (typeNode == null) {
-            return ts.ERROR_TYPE;
+            return ts.ERROR;
         }
 
         // Type common to all declarations in the same statement
@@ -308,7 +308,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     private boolean isUnresolved(JTypeMirror t) {
-        return t == ts.UNRESOLVED_TYPE;
+        return t == ts.UNKNOWN;
     }
 
     @Override
@@ -397,13 +397,13 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             return ((ASTArrayAllocation) parent).getTypeMirror();
         } else if (parent instanceof ASTVariableDeclarator) {
             ASTVariableDeclaratorId id = ((ASTVariableDeclarator) parent).getVarId();
-            return id.isTypeInferred() ? ts.ERROR_TYPE : id.getTypeMirror();
+            return id.isTypeInferred() ? ts.ERROR : id.getTypeMirror();
         } else if (parent instanceof ASTArrayInitializer) {
             JTypeMirror tm = ((ASTArrayInitializer) parent).getTypeMirror();
             return tm instanceof JArrayType ? ((JArrayType) tm).getComponentType()
-                                            : ts.ERROR_TYPE;
+                                            : ts.ERROR;
         }
-        return ts.ERROR_TYPE;
+        return ts.ERROR;
     }
 
 
@@ -455,7 +455,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
-        if (qualifierT == ts.UNRESOLVED_TYPE) {
+        if (qualifierT == ts.UNKNOWN) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
@@ -480,10 +480,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         JTypeMirror comp = node.getQualifier().getTypeMirror();
         if (comp instanceof JArrayType) {
             return ((JArrayType) comp).getComponentType();
-        } else if (comp == ts.UNRESOLVED_TYPE) {
+        } else if (comp == ts.UNKNOWN) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
         } else {
-            return ts.ERROR_TYPE;
+            return ts.ERROR;
         }
     }
 
@@ -505,6 +505,6 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     @Override
     public JTypeMirror visit(ASTAmbiguousName node, Void data) {
-        return ts.UNRESOLVED_TYPE;
+        return ts.UNKNOWN;
     }
 }

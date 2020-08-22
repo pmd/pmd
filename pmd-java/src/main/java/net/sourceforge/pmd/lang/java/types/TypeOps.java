@@ -364,7 +364,7 @@ public final class TypeOps {
     /**
      * Returns whether if {@code T <: S}, ie T is a subtype of S.
      *
-     * <p>Note that {@link TypeSystem#ERROR_TYPE} and {@link TypeSystem#UNRESOLVED_TYPE}
+     * <p>Note that {@link TypeSystem#ERROR} and {@link TypeSystem#UNKNOWN}
      * are considered subtypes of anything.
      *
      * @param t A type T
@@ -478,14 +478,20 @@ public final class TypeOps {
         UNCHECKED_NO_WARNING,
 
         /**
-         * Subtyping, but generalized to cover also primitives:
+         * Subtyping, but extended to cover also primitive widening:
          * <ul>
          * <li>T and S are reference types, and T is a subtype of S ({@code T <: S}).
          * <li>T and S are primitive types, and T can be widened to S.
          * For example, {@code int} can be widened to {@code long} implicitly.
          * </ul>
          * In particular, two equal types are always convertible to each
-         * other. Note also that {@code T <: T} for any reference type {@code T}.
+         * other ({@code T <: T}).
+         *
+         * <p>If using these rules, we have {@code T <: S}, then either
+         * {@code T = S} is true, or {@code S <: T} is false. That is,
+         * this relation is a partial order. This breaks down when you
+         * introduce unchecked conversion, which is why they're kept
+         * separate (this greatly simplifies routines like {@link #mostSpecific(Collection)}).
          */
         SUBTYPING;
 
@@ -1933,8 +1939,8 @@ public final class TypeOps {
     }
 
     /**
-     * Returns true if the type is {@link TypeSystem#UNRESOLVED_TYPE},
-     * {@link TypeSystem#ERROR_TYPE}, or its symbol is unresolved.
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * {@link TypeSystem#ERROR}, or its symbol is unresolved.
      *
      * @param t Non-null type
      *
@@ -1946,7 +1952,7 @@ public final class TypeOps {
 
     public static boolean isSpecialUnresolved(@NonNull JTypeMirror t) {
         TypeSystem ts = t.getTypeSystem();
-        return t == ts.UNRESOLVED_TYPE || t == ts.ERROR_TYPE;
+        return t == ts.UNKNOWN || t == ts.ERROR;
     }
 
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {

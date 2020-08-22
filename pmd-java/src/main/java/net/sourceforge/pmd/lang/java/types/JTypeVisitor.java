@@ -64,7 +64,7 @@ public interface JTypeVisitor<R, P> {
 
     /**
      * Visit a sentinel type. The argument may be one of
-     * {@link TypeSystem#UNRESOLVED_TYPE}, {@link TypeSystem#NO_TYPE},
+     * {@link TypeSystem#UNKNOWN}, {@link TypeSystem#NO_TYPE},
      * and {@link TypeSystem#NULL_TYPE}.
      */
     default R visitSentinel(JTypeMirror t, P p) {

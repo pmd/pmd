@@ -118,7 +118,7 @@ public interface JMethodSig extends JTypeVisitable {
      * occurrences of these type parameters are replaced by their instantiation
      * in formals, return type and thrown exceptions (but not type parameter bounds).
      * If instantiation failed, some variables might have been substituted
-     * with {@link TypeSystem#ERROR_TYPE}.
+     * with {@link TypeSystem#ERROR}.
      */
     List<JTypeVar> getTypeParameters();
 

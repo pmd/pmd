@@ -50,8 +50,8 @@ class TypeFactoryTest : FunSpec({
         ts.NULL_TYPE shouldNotBe null
         ts.UNBOUNDED_WILD shouldNotBe null
 
-        ts.ERROR_TYPE shouldNotBe null
-        ts.UNRESOLVED_TYPE shouldNotBe null
+        ts.ERROR shouldNotBe null
+        ts.UNKNOWN shouldNotBe null
         ts.NO_TYPE shouldNotBe null
 
     }

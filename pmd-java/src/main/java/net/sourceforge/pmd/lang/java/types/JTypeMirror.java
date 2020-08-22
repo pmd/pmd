@@ -50,8 +50,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
  * <p>A few other special types do not implement one of these public interfaces:
  * <ul>
  * <li>{@linkplain TypeSystem#NULL_TYPE The null type}
- * <li>{@linkplain TypeSystem#ERROR_TYPE The error type}
- * <li>{@linkplain TypeSystem#UNRESOLVED_TYPE The unresolved type}
+ * <li>{@linkplain TypeSystem#ERROR The error type}
+ * <li>{@linkplain TypeSystem#UNKNOWN The unresolved type}
  * </ul>
  *
  * <p>Lastly, types may be {@linkplain InferenceVar inference variables},

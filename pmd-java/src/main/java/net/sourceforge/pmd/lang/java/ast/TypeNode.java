@@ -33,7 +33,7 @@ public interface TypeNode extends JavaNode {
      * API will be added to expose this information.
      *
      * @return The type mirror. Never returns null; if the type is unresolved, returns
-     *         {@link TypeSystem#UNRESOLVED_TYPE}.
+     *         {@link TypeSystem#UNKNOWN}.
      */
     @NonNull
     JTypeMirror getTypeMirror();

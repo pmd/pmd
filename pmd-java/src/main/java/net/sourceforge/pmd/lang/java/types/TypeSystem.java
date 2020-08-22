@@ -108,14 +108,7 @@ public final class TypeSystem {
      * <p>Note that {@link TypeOps#isConvertible(JTypeMirror, JTypeMirror)}
      * considers this type a subtype of anything, even primitive types.
      */
-    public final JTypeMirror UNRESOLVED_TYPE;
-
-    /**
-     * Sentinel value for an unresolved method. This type corresponds to
-     * a method declaration in the type {@link #UNRESOLVED_TYPE},
-     * returning {@link #UNRESOLVED_TYPE}.
-     */
-    public final JMethodSig UNRESOLVED_METHOD = new UnresolvedMethodSig(this);
+    public final JTypeMirror UNKNOWN;
 
     /**
      * A constant to represent a typing error. This would have been
@@ -124,7 +117,13 @@ public final class TypeSystem {
      * <p>Note that {@link TypeOps#isConvertible(JTypeMirror, JTypeMirror)}
      * considers this type a subtype of anything, even primitive types.
      */
-    public final JTypeMirror ERROR_TYPE;
+    public final JTypeMirror ERROR;
+
+    /**
+     * Sentinel value for an unresolved method. This type corresponds to
+     * a method declaration in the type {@link #UNKNOWN}, returning {@link #UNKNOWN}.
+     */
+    public final JMethodSig UNRESOLVED_METHOD = new UnresolvedMethodSig(this);
 
     /*
      * Common, non-special types.
@@ -197,10 +196,10 @@ public final class TypeSystem {
         primitivesByKind.put(PrimitiveTypeKind.DOUBLE, DOUBLE);
 
         JClassSymbol unresolvedTypeSym = symbolFactory.makeUnresolvedReference("/*unresolved*/", 0);
-        UNRESOLVED_TYPE = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
+        UNKNOWN = new SentinelType(this, "/*unresolved*/", unresolvedTypeSym);
 
         JClassSymbol errorTypeSym = symbolFactory.makeUnresolvedReference("/*error*/", 0);
-        ERROR_TYPE = new SentinelType(this, "/*error*/", errorTypeSym);
+        ERROR = new SentinelType(this, "/*error*/", errorTypeSym);
 
         JClassSymbol primitiveVoidSym = new VoidSymbol(this);
         NO_TYPE = new SentinelType(this, "void", primitiveVoidSym);
@@ -221,8 +220,8 @@ public final class TypeSystem {
         BOXED_VOID = addSpecial(Void.class, shared);
 
         shared.put(primitiveVoidSym, NO_TYPE);
-        shared.put(unresolvedTypeSym, UNRESOLVED_TYPE);
-        shared.put(errorTypeSym, ERROR_TYPE);
+        shared.put(unresolvedTypeSym, UNKNOWN);
+        shared.put(errorTypeSym, ERROR);
 
         for (JPrimitiveType prim : allPrimitives) {
             // primitives have a special implementation for their box

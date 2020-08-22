@@ -361,7 +361,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
         spy.shouldTriggerMissingCtDecl {
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
-            mref shouldHaveType ts.UNRESOLVED_TYPE
+            mref shouldHaveType ts.UNKNOWN
             acu.firstMethodCall().methodType shouldBe ts.UNRESOLVED_METHOD
             acu.firstMethodCall().overloadSelectionInfo.apply {
                 isFailed shouldBe true
@@ -748,7 +748,7 @@ class Scratch {
         collectCall.shouldMatchN {
             methodCall("mapToObj") {
                 with(it.typeDsl) {
-                    it shouldHaveType ts.UNRESOLVED_TYPE
+                    it shouldHaveType ts.UNKNOWN
                 }
 
                 unspecifiedChildren(2)
@@ -774,7 +774,7 @@ class Scratch {
 
         fooRef.shouldMatchN {
             methodRef("foo") {
-                it shouldHaveType it.typeSystem.UNRESOLVED_TYPE
+                it shouldHaveType it.typeSystem.UNKNOWN
                 it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
 
                 unspecifiedChild()

@@ -113,13 +113,13 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 methodCall("of") {
                     with (it.typeDsl) {
                         // EnumSet</*unresolved*/>
-                        it::getTypeMirror shouldBe gen.t_EnumSet[ts.UNRESOLVED_TYPE]
+                        it::getTypeMirror shouldBe gen.t_EnumSet[ts.UNKNOWN]
                         // Overloads::of(/*unresolved*/) -> java.util.EnumSet</*unresolved*/>
                         it.methodType.shouldMatchMethod(
                                 named = "of",
                                 declaredIn = typeOf(t_Overloads_name),
-                                withFormals = listOf(ts.UNRESOLVED_TYPE),
-                                returning = gen.t_EnumSet[ts.UNRESOLVED_TYPE]
+                                withFormals = listOf(ts.UNKNOWN),
+                                returning = gen.t_EnumSet[ts.UNKNOWN]
                         )
                     }
 

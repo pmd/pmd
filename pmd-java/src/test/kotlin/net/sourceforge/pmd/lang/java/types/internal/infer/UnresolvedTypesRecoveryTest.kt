@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
-import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.kotest.matchers.string.shouldNotContainIgnoringCase
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
@@ -230,7 +229,7 @@ class C {
 
                 argList {
                     fieldAccess("SOME_INT") {
-                        it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                        it.typeMirror shouldBe it.typeSystem.UNKNOWN
                         typeExpr {
                             classType("Unresolved")
                         }
@@ -406,7 +405,7 @@ class C {
 
                     argList {
                         fieldAccess("SOMETHING") {
-                            it.typeMirror shouldBe it.typeSystem.UNRESOLVED_TYPE
+                            it.typeMirror shouldBe it.typeSystem.UNKNOWN
                             typeExpr {
                                 classType("Unresolved")
                             }
@@ -454,7 +453,7 @@ class C {
                     argList {
                         fieldAccess("SOMETHING") {
                             with(it.typeDsl) {
-                                it.typeMirror shouldBe ts.UNRESOLVED_TYPE
+                                it.typeMirror shouldBe ts.UNKNOWN
                                 it.referencedSym shouldBe null
                             }
                             typeExpr {

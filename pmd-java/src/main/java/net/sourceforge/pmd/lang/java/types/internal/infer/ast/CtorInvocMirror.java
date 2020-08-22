@@ -67,7 +67,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                 }
             }
             // eg new Foo<>() -> Foo</*error*/>
-            List<JTypeMirror> fakeTypeArgs = Collections.nCopies(newT.getSymbol().getTypeParameterCount(), factory.ts.ERROR_TYPE);
+            List<JTypeMirror> fakeTypeArgs = Collections.nCopies(newT.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
             newT = newT.withTypeArguments(fakeTypeArgs);
         }
         return newT;

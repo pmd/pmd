@@ -130,7 +130,7 @@ public final class Infer {
         } catch (ResolutionFailedException rfe) {
             rfe.getFailure().addContext(null, site, null);
             LOG.logResolutionFail(rfe.getFailure());
-            expr.setInferredType(getTypeSystem().UNRESOLVED_TYPE);
+            expr.setInferredType(getTypeSystem().UNKNOWN);
             if (expr instanceof MethodRefMirror) {
                 MethodRefMirror mref = (MethodRefMirror) expr;
                 mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);
@@ -195,7 +195,7 @@ public final class Infer {
 
     private JTypeMirror fallbackType(PolyExprMirror expr) {
         JTypeMirror t = expr.unresolvedType();
-        return t == null ? ts.UNRESOLVED_TYPE : t;
+        return t == null ? ts.UNKNOWN : t;
     }
 
     // If the invocation fails, replace type parameters with a placeholder,
@@ -205,7 +205,7 @@ public final class Infer {
             return m;
         }
         List<JTypeVar> tparams = m.getTypeParameters();
-        List<JTypeMirror> nErrors = Collections.nCopies(tparams.size(), ts.ERROR_TYPE);
+        List<JTypeMirror> nErrors = Collections.nCopies(tparams.size(), ts.ERROR);
         return m.subst(Substitution.mapping(tparams, nErrors));
     }
 
@@ -796,7 +796,7 @@ public final class Infer {
 
                 if (!phase.canBox()) {
                     // these are cases where applicability is impossible (in strict ctx)
-                    if (stdType != null && stdType.isPrimitive() != fi.isPrimitive() && stdType != ts.UNRESOLVED_TYPE) {
+                    if (stdType != null && stdType.isPrimitive() != fi.isPrimitive() && stdType != ts.UNKNOWN) {
                         throw ResolutionFailedException.incompatibleFormal(LOG, ei, stdType, fi);
                     }
                 }

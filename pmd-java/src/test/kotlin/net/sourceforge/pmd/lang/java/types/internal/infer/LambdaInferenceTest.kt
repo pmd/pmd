@@ -103,10 +103,10 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[ts.UNRESOLVED_TYPE] } // List</*unresolved*/>
+                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[ts.UNKNOWN] } // List</*unresolved*/>
 
                 it::getQualifier shouldBe methodCall("map") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[ts.UNRESOLVED_TYPE] } // Stream</*unresolved*/>
+                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[ts.UNKNOWN] } // Stream</*unresolved*/>
 
                     it::getQualifier shouldBe methodCall("of") {
                         it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>

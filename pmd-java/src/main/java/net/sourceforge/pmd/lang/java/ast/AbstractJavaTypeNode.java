@@ -31,7 +31,7 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
                     // To avoid reentry, harmful for lambdas (there's a special
                     // variable resolution strategy for lambda parameters)
                     // for branching polys (conditional, switch) it's ok to reenter
-                    typeMirror = getTypeSystem().ERROR_TYPE;
+                    typeMirror = getTypeSystem().ERROR;
                 }
                 LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
                 typeMirror = this.acceptVisitor(resolver, null);

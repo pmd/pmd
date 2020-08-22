@@ -247,13 +247,13 @@ class SubtypingTest : FunSpec({
 
             test("Error type is compatible with anything") {
                 forAll(ts.allTypesGen) {
-                    ts.ERROR_TYPE.isSubtypeOf(it)
+                    ts.ERROR.isSubtypeOf(it)
                 }
             }
 
             test("Unresolved type is compatible with anything") {
                 forAll(ts.allTypesGen) {
-                    ts.UNRESOLVED_TYPE.isSubtypeOf(it)
+                    ts.UNKNOWN.isSubtypeOf(it)
                 }
             }
 

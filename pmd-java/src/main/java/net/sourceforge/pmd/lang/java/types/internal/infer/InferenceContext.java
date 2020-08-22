@@ -202,7 +202,7 @@ final class InferenceContext {
                 return s;
             } else {
                 InferenceVar ivar = (InferenceVar) s;
-                return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR_TYPE;
+                return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR;
             }
         });
     }

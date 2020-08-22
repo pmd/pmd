@@ -79,7 +79,7 @@ public interface JElementSymbol {
      *
      * <p>Rules should care about unresolved symbols to avoid false
      * positives or logic errors. The equivalent for {@linkplain JTypeMirror types}
-     * is {@link TypeSystem#UNRESOLVED_TYPE}.
+     * is {@link TypeSystem#UNKNOWN}.
      *
      * <p>The following symbols are never unresolved, because they are
      * lexically scoped:

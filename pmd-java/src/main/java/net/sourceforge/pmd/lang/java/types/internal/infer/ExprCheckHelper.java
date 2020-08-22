@@ -146,7 +146,7 @@ final class ExprCheckHelper {
         JTypeMirror actualType = mostSpecific.getReturnType();
 
         if (argCtDecl == infer.FAILED_INVOCATION) {
-            throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR_TYPE, targetType);
+            throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR, targetType);
         } else if (argCtDecl == infer.NO_CTDECL) {
             JTypeMirror fallback = invoc.unresolvedType();
             if (fallback != null) {

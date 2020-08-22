@@ -82,7 +82,7 @@ public class TypeResTestRule extends AbstractJavaRule {
             try {
                 JTypeMirror t = ((TypeNode) node).getTypeMirror();
                 TypeSystem ts = t.getTypeSystem();
-                if (t == ts.ERROR_TYPE || t == ts.UNRESOLVED_TYPE) {
+                if (t == ts.ERROR || t == ts.UNKNOWN) {
                     if (true) {
                         System.err.println("Unresolved at " + position(node, data) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
@@ -107,7 +107,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     private static boolean isUnresolved(@NonNull JTypeMirror s) {
         TypeSystem ts = s.getTypeSystem();
-        return s == ts.UNRESOLVED_TYPE || s == ts.ERROR_TYPE || s.getSymbol() != null && s.getSymbol().isUnresolved();
+        return s == ts.UNKNOWN || s == ts.ERROR || s.getSymbol() != null && s.getSymbol().isUnresolved();
     }
 
     @NonNull

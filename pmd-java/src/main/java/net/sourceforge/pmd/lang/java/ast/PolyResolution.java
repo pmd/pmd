@@ -88,7 +88,7 @@ final class PolyResolution {
                     List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
                     return computeStandaloneConditionalType(ts, branches);
                 } else {
-                    return ts.ERROR_TYPE;
+                    return ts.ERROR;
                 }
             } else if (ctx instanceof InvocationNode) {
                 // an outer invocation ctx
@@ -118,7 +118,7 @@ final class PolyResolution {
                 }
                 // else use the target type (cast, or assignment)
                 JTypeMirror target = getTargetType(ctx, true);
-                return target == null ? ts.ERROR_TYPE : target;
+                return target == null ? ts.ERROR : target;
             } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
                 // these may use a cast as a target type
                 JTypeMirror targetType = getTargetType(ctx, true);
@@ -225,7 +225,7 @@ final class PolyResolution {
     private JTypeMirror getFormalTypeForArgument(ASTExpression arg, OverloadSelectionResult info) {
         if (info.isFailed()) {
             // TODO might log this
-            return ts.UNRESOLVED_TYPE;
+            return ts.UNKNOWN;
         }
         return info.ithFormalParam(arg.getIndexInParent());
     }
@@ -240,7 +240,7 @@ final class PolyResolution {
         if (canRetry && e instanceof InvocationNode) {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
-        return ts.UNRESOLVED_TYPE;
+        return ts.UNKNOWN;
     }
 
     /**
@@ -276,7 +276,7 @@ final class PolyResolution {
                 // as it is out of context
                 return switchLike.getTestedExpression().getTypeMirror();
             }
-            return ts.UNRESOLVED_TYPE;
+            return ts.UNKNOWN;
         } else if (ctx instanceof InvocationNode) {
             // This is the case mentioned in the doc
             // TODO we could do that by setting a sentinel value to prevent
@@ -284,10 +284,10 @@ final class PolyResolution {
 
             // OverloadSelectionResult ctxInvoc = ((InvocationNode) ctx).getOverloadSelectionInfo();
             // return getFormalTypeForArgument(e, ctxInvoc);
-            return ts.UNRESOLVED_TYPE;
+            return ts.UNKNOWN;
         } else {
             JTypeMirror targetType = getTargetType(ctx, false);
-            return targetType == null ? ts.UNRESOLVED_TYPE : targetType;
+            return targetType == null ? ts.UNKNOWN : targetType;
         }
     }
 
