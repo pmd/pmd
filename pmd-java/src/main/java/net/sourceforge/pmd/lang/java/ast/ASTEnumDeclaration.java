@@ -28,6 +28,10 @@ public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
         return TypeKind.ENUM;
     }
 
+    @Override
+    public boolean isLocal() {
+        return getParent() instanceof ASTBlockStatement;
+    }
 
     @Override
     public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {

@@ -19,6 +19,24 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 15 Support
+
+This release of PMD brings support for Java 15. PMD can parse [Text Blocks](https://openjdk.java.net/jeps/378)
+which have been promoted to be a standard language feature of Java.
+
+PMD also supports [Pattern Matching for instanceof](https://openjdk.java.net/jeps/375),
+[Records](https://openjdk.java.net/jeps/384), and [Sealed Classes](https://openjdk.java.net/jeps/360).
+
+Note: The Pattern Matching for instanceof, Records, and Sealed Classes are all preview language features of OpenJDK 15
+and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you'll need to enable it via the environment
+variable `PMD_JAVA_OPTS` and select the new language version `15-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 15-preview ...
+
+Note: Support for Java 13 preview language features have been removed. The version "13-preview" is no longer available.
+
 #### Changes in how tab characters are handled
 
 In the past, tab characters in source files has been handled differently in different languages by PMD.
@@ -65,6 +83,8 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   [#2653](https://github.com/pmd/pmd/issues/2653): \[lang-test] Upgrade kotlintest to Kotest
     *   [#2656](https://github.com/pmd/pmd/pull/2656): \[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently
     *   [#2690](https://github.com/pmd/pmd/pull/2690): \[core] Fix java7 compatibility
+*   java
+    *   [#2646](https://github.com/pmd/pmd/issues/2646): \[java] Support JDK 15
 *   java-bestpractices
     *   [#2471](https://github.com/pmd/pmd/issues/2471): \[java] New Rule: AvoidReassigningCatchVariables
     *   [#2663](https://github.com/pmd/pmd/issues/2663): \[java] NoClassDefFoundError on upgrade from 6.25.0 to 6.26.0
