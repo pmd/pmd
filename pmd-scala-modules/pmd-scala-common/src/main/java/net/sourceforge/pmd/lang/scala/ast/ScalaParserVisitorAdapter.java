@@ -35,12 +35,23 @@ import scala.meta.Type;
  */
 public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R> {
 
-    /** Initial value when combining values returned by children. */
+    /**
+     * Initial value when combining values returned by children.
+     *
+     * @deprecated This method will be removed with PMD 7. See {@link #combine(Object, Object)}.
+     */
+    @Deprecated
     protected R zero() {
         return null;
     }
 
-    /** Merge two values of type R, used to combine values returned by children. */
+    /**
+     * Merge two values of type R, used to combine values returned by children.
+     *
+     * @deprecated This method will be removed with PMD 7. This is just not so useful, most visitors use
+     *             side effects on the data input directly, or, return the data input again,
+     *             which is only possible if `D = R`, and so only known in the specific subclass.
+     */
     protected R combine(R acc, R r) {
         return r;
     }
