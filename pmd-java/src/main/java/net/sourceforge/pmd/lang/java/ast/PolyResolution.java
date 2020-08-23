@@ -335,9 +335,8 @@ final class PolyResolution {
                 JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
                 return fun == null ? null : fun.getReturnType();
             } else {
-                ASTResultType resultType = ((ASTMethodDeclaration) methodDecl).getResultType();
-                return resultType.getTypeNode() == null ? null
-                                                        : resultType.getTypeNode().getTypeMirror();
+                @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
+                return resultType instanceof ASTVoidType ? null : resultType.getTypeMirror();
             }
         } else if (context instanceof ASTAssignmentExpression) {
             // assignment context

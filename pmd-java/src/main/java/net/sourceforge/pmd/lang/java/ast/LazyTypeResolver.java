@@ -459,6 +459,18 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     @Override
+    public @NonNull JTypeMirror visit(ASTLambdaParameter node, Void data) {
+        ASTLambdaExpression lambda = node.ancestors(ASTLambdaExpression.class).firstOrThrow();
+        lambda.getTypeMirror(); // force evaluation
+
+        JMethodSig m = lambda.getFunctionalMethod();
+        if (m != getTypeSystem().UNRESOLVED_METHOD) {
+            return m.getFormalParameters().get(node.getIndexInParent());
+        }
+        return ts.UNKNOWN;
+    }
+
+    @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
         if (qualifierT == ts.UNKNOWN) {
