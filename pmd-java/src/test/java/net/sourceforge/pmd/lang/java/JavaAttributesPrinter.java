@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,19 +22,13 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
  */
 public class JavaAttributesPrinter extends RelevantAttributePrinter {
 
-
     @Override
-    protected @NonNull Iterable<AttributeInfo> getAttributes(@NonNull Node node) {
+    protected void fillAttributes(@NonNull Node node, @NonNull List<AttributeInfo> result) {
+        super.fillAttributes(node, result);
         if (node instanceof ASTModifierList) {
-            List<AttributeInfo> attributes = new ArrayList<>();
-            super.getAttributes(node).forEach(attributes::add);
-
-            attributes.add(getModifierAttr("EffectiveModifiers", ((ASTModifierList) node).getEffectiveModifiers()));
-            attributes.add(getModifierAttr("ExplicitModifiers", ((ASTModifierList) node).getExplicitModifiers()));
-
-            return attributes;
+            result.add(getModifierAttr("EffectiveModifiers", ((ASTModifierList) node).getEffectiveModifiers()));
+            result.add(getModifierAttr("ExplicitModifiers", ((ASTModifierList) node).getExplicitModifiers()));
         }
-        return super.getAttributes(node);
     }
 
     @Override
