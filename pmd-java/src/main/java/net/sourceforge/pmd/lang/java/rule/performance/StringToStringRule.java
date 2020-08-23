@@ -57,7 +57,7 @@ public class StringToStringRule extends AbstractJavaRule {
     public Object visit(ASTMethodCall node, Object data) {
         if ("toString".equals(node.getMethodName())
             && node.getArguments().size() == 0
-            && TypeTestUtil.symbolEquals(String.class, node.getQualifier())) {
+            && TypeTestUtil.isA(String.class, node.getQualifier())) {
             addViolation(data, node);
         }
 

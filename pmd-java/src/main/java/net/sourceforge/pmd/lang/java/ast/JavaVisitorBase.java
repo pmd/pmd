@@ -114,7 +114,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTUnionType node, P data) {
-        return visit((ASTReferenceType) node, data);
+        return visitReferenceType(node, data);
     }
 
     @Override

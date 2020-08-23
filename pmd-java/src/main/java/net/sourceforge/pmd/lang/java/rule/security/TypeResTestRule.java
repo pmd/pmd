@@ -70,13 +70,13 @@ public class TypeResTestRule extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         FILENAME.set(((RuleContext) data).getSourceCodeFile().toString());
         for (JavaNode descendant : node.descendants()) {
-            visit(descendant, data);
+            visitJavaNode(descendant, data);
         }
         return data;
     }
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object data) {
 
         if (node instanceof TypeNode) {
             try {

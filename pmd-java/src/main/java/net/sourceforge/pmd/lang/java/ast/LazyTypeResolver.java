@@ -64,7 +64,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     @Override
-    public JTypeMirror visit(JavaNode node, Void data) {
+    public JTypeMirror visitJavaNode(JavaNode node, Void data) {
         throw new IllegalArgumentException("Not a type node:" + node);
     }
 
@@ -114,6 +114,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTVoidType node, Void data) {
         return ts.NO_TYPE;
+    }
+
+    @Override
+    public JTypeMirror visit(ASTPrimitiveType node, Void data) {
+        return ts.getPrimitive(node.getKind());
     }
 
     @Override

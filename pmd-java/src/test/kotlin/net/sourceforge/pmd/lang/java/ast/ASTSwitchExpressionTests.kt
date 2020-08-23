@@ -232,7 +232,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
-    parserTest("Test yield expressions", javaVersions = listOf(J13__PREVIEW)) {
+    parserTest("Test yield expressions", javaVersions = JavaVersion.since(J14)) {
 
         inContext(ExpressionParsingCtx) {
 
