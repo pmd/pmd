@@ -124,6 +124,7 @@ public class LanguageLevelChecker<T> {
         RECORD_DECLARATIONS(14, 15, false),
         TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 15, false),
         SEALED_CLASSES(15, 15, false),
+        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, false), // part of the sealed classes JEP
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -478,8 +479,8 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTAnyTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, PreviewFeature.SEALED_CLASSES, data);
-            } else if (node.isLocal() && node.isInterface() || node.isEnum()) {
-                check(node, PreviewFeature.SEALED_CLASSES, data);
+            } else if (node.isLocal() && !node.isRegularClass()) {
+                check(node, PreviewFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
             }
 
             String simpleName = node.getSimpleName();

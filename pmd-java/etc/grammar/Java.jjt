@@ -2213,7 +2213,7 @@ void BlockStatement() #void:
     | LOOKAHEAD({ isAssertStart() })                 AssertStatement()
     | LOOKAHEAD({ isYieldStart() })                  YieldStatement()
     | LOOKAHEAD({ getToken(2).kind == COLON })       LabeledStatement()
-    | LOOKAHEAD(ClassOrInterfaceType() <IDENTIFIER>) LocalVariableDeclaration() ";"  { fixLastToken(); }
+    | LOOKAHEAD(ReferenceType() <IDENTIFIER>)        LocalVariableDeclaration() ";"  { fixLastToken(); }
     | LOOKAHEAD({true})                              ExpressionStatement()
  )
 | LOOKAHEAD(1, LocalTypeStartNoIdent()) ModifierList() LocalTypeDecl()

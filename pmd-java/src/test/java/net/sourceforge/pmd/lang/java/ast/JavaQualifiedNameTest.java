@@ -24,7 +24,7 @@ public class JavaQualifiedNameTest {
 
 
     private <T extends Node> List<T> getNodes(Class<T> target, String code) {
-        return JavaParsingHelper.WITH_PROCESSING.getNodes(target, code);
+        return JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("15-preview").getNodes(target, code);
     }
 
     @Test

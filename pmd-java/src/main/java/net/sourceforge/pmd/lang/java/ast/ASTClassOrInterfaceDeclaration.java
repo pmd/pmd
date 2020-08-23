@@ -49,6 +49,11 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         return this.isInterface;
     }
 
+    @Override
+    public boolean isRegularClass() {
+        return !isInterface;
+    }
+
     void setInterface() {
         this.isInterface = true;
     }

@@ -224,6 +224,16 @@ public interface ASTAnyTypeDeclaration
         return false;
     }
 
+    /**
+     * Returns true if this is a regular class declaration (not an enum,
+     * not a record, not an interface or annotation). Note that eg
+     * {@link JClassSymbol#isClass()} counts records and enums in, just
+     * like {@link #isInterface()} counts annotations in.
+     */
+    default boolean isRegularClass() {
+        return false;
+    }
+
 
     /** Returns true if this is an {@linkplain ASTAnnotationTypeDeclaration annotation type declaration}. */
     default boolean isAnnotation() {

@@ -26,6 +26,8 @@ public final class ASTLocalClassStatement extends AbstractStatement {
         super(JavaParserImplTreeConstants.JJTLOCALCLASSSTATEMENT);
         assert tdecl != null;
         addChild((AbstractJavaNode) tdecl, 0);
+        setFirstToken(tdecl.getFirstToken());
+        setLastToken(tdecl.getLastToken());
     }
 
     @Override
