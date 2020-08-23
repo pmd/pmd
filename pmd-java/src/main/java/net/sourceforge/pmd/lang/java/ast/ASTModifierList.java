@@ -104,8 +104,8 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /** Returns the node owning this modifier list. */
-    public AccessNode getOwner() {
-        return (AccessNode) getParent(); // TODO
+    public Annotatable getOwner() {
+        return (Annotatable) getParent(); // TODO
     }
 
     /**

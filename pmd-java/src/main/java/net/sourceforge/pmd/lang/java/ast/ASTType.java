@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 
 
@@ -43,16 +41,6 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
      */
     default int getArrayDepth() {
         return 0;
-    }
-
-    @Nullable
-    default ASTPrimitiveType asPrimitiveType() {
-        return isPrimitiveType() ? (ASTPrimitiveType) this : null;
-    }
-
-    @Nullable
-    default ASTReferenceType asReferenceType() {
-        return isReferenceType() ? (ASTReferenceType) this : null;
     }
 
 

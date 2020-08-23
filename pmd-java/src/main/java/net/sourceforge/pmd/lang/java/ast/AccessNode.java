@@ -11,6 +11,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
 
 /**
  * A node that owns a {@linkplain ASTModifierList modifier list}.
@@ -41,8 +42,7 @@ public interface AccessNode extends Annotatable {
     /**
      * Returns the node representing the modifier list of this node.
      */
-    @NonNull
-    default ASTModifierList getModifiers() {
+    default @NonNull ASTModifierList getModifiers() {
         return children(ASTModifierList.class).firstOrThrow();
     }
 
@@ -96,48 +96,56 @@ public interface AccessNode extends Annotatable {
 
 
     @Deprecated
+    @NoAttribute
     default boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isAbstract() {
         return hasModifiers(JModifier.ABSTRACT);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isStrictfp() {
         return hasModifiers(STRICTFP);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isSynchronized() {
         return hasModifiers(JModifier.SYNCHRONIZED);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isNative() {
         return hasModifiers(JModifier.NATIVE);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isStatic() {
         return hasModifiers(JModifier.STATIC);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isVolatile() {
         return hasModifiers(JModifier.VOLATILE);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isTransient() {
         return hasModifiers(JModifier.TRANSIENT);
     }
@@ -147,24 +155,28 @@ public interface AccessNode extends Annotatable {
 
 
     @Deprecated
+    @NoAttribute
     default boolean isPrivate() {
         return getVisibility() == Visibility.V_PRIVATE;
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isPublic() {
         return getVisibility() == Visibility.V_PUBLIC;
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isProtected() {
         return getVisibility() == Visibility.V_PROTECTED;
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isPackagePrivate() {
         return getVisibility() == Visibility.V_PACKAGE;
     }
@@ -173,24 +185,28 @@ public interface AccessNode extends Annotatable {
 
 
     @Deprecated
+    @NoAttribute
     default boolean isSyntacticallyAbstract() {
         return hasExplicitModifiers(JModifier.ABSTRACT);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isSyntacticallyPublic() {
         return hasExplicitModifiers(JModifier.PUBLIC);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isSyntacticallyStatic() {
         return hasExplicitModifiers(JModifier.STATIC);
     }
 
 
     @Deprecated
+    @NoAttribute
     default boolean isSyntacticallyFinal() {
         return hasExplicitModifiers(JModifier.FINAL);
     }
