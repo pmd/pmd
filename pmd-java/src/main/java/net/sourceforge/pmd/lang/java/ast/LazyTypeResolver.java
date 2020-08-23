@@ -84,10 +84,6 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         return ts.NO_TYPE; // TODO shouldn't be a typenode
     }
 
-    @Override
-    public JTypeMirror visit(ASTResultType node, Void data) {
-        return node.isVoid() ? ts.NO_TYPE : node.getTypeNode().getTypeMirror();
-    }
 
     @Override
     public JTypeMirror visit(ASTFormalParameter node, Void data) {
@@ -101,7 +97,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     @Override
-    public JTypeMirror visit(ASTAnyTypeDeclaration node, Void data) {
+    public JTypeMirror visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
         return ts.declaration(node.getSymbol());
     }
 
@@ -111,8 +107,13 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     @Override
-    public JTypeMirror visit(ASTType node, Void data) {
+    public JTypeMirror visitType(ASTType node, Void data) {
         return TypesFromAst.fromAst(ts, Substitution.EMPTY, node);
+    }
+
+    @Override
+    public JTypeMirror visit(ASTVoidType node, Void data) {
+        return ts.NO_TYPE;
     }
 
     @Override

@@ -80,6 +80,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     // <editor-fold defaultstate="collapsed" desc="Type & ReferenceType">
 
 
+    /** Note that VoidType does not delegate to here. */
     public R visitType(ASTType node, P data) {
         return visitJavaNode(node, data);
     }
