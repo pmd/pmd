@@ -44,6 +44,23 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Returns the binary name of this type, as specified by the JLS:
      * <a href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-13.html#jls-13.1">the JLS</a>.
      * For array types this returns the binary name of the component followed by "[]".
+     * This differs from {@link Class#getName()}, which for array types outputs an
+     * <i>internal name</i>.
+     *
+     * <p>For example:
+     * <pre>{@code
+     * int.class.getName() == "int"
+     * int[].class.getName() == "[I"
+     * String.class.getName() == "java.lang.String"
+     * String[].class.getName() == "[Ljava.lang.String;"
+     * }</pre>
+     * whereas
+     * <pre>{@code
+     * symbolOf(int.class).getBinaryName() == "int"
+     * symbolOf(int[].class).getBinaryName() == "int[]"
+     * symbolOf(String.class).getBinaryName() == "java.lang.String"
+     * symbolOf(String[].class).getBinaryName() == "java.lang.String[]"
+     * }</pre>
      */
     @NonNull
     String getBinaryName();

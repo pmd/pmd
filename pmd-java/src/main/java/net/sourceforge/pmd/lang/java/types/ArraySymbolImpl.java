@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -30,6 +31,10 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
  * reflection.
  */
 class ArraySymbolImpl implements JClassSymbol {
+
+    // Like Class::getModifiers, we preserve the public/private/protected flag
+    private static final int COMPONENT_MOD_MASK =
+        Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC;
 
     private final TypeSystem ts;
     private final JTypeDeclSymbol component;
@@ -153,8 +158,8 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public int getModifiers() {
-        int comp = getArrayComponent().getModifiers();
-        return Modifier.FINAL | Modifier.ABSTRACT | (comp & ~Modifier.STATIC);
+        int comp = getArrayComponent().getModifiers() & COMPONENT_MOD_MASK;
+        return Modifier.FINAL | Modifier.ABSTRACT | comp;
     }
 
     @Override

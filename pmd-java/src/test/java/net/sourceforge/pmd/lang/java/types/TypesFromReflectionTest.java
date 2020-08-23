@@ -68,6 +68,12 @@ public class TypesFromReflectionTest extends BaseNonParserTest {
         Assert.assertEquals("Annot", expected.isAnnotation(), actual.isAnnotation());
         Assert.assertEquals("Array", expected.isArray(), actual.isArray());
         Assert.assertEquals("Modifiers", expected.getModifiers(), actual.getModifiers());
+        if (actual.isArray()) {
+            assertReflects(expected.getComponentType(), (JClassSymbol) actual.getArrayComponent());
+            // don't test names, the spec of Class::getName and JClassSymbol::getBinaryName
+            // differ for arrays
+            return;
+        }
         Assert.assertEquals("Binary name", expected.getName(), actual.getBinaryName());
         Assert.assertEquals("Canonical name", expected.getCanonicalName(), actual.getCanonicalName());
         assertReflects(expected.getEnclosingClass(), actual.getEnclosingClass());
