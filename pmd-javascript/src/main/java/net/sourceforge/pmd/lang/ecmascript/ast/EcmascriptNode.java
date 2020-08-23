@@ -10,11 +10,6 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 
-    /**
-     * Accept the visitor. *
-     */
-    Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
-
 
     /**
      * Get the underlying Rhino AST node.

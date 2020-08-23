@@ -16,7 +16,8 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
 
     /**
      * Visit the children. By default the data parameter is passed unchanged
-     * to all descendants, and this returns null .
+     * to all descendants, and null is returned. Override this method to customize
+     * this behavior.
      *
      * @param node Node whose children should be visited
      * @param data Parameter of the visit
