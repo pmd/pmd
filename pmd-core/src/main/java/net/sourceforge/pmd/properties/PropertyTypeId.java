@@ -54,13 +54,7 @@ public enum PropertyTypeId {
     @Deprecated
     FLOAT_LIST("List[Float]", FloatMultiProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
     DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    //    ENUM("Enum", EnumeratedProperty.FACTORY),                     // TODO:cf we need new syntax in the xml to support that
-    //    ENUM_LIST("List[Enum]", EnumeratedMultiProperty.FACTORY),
-    @Deprecated
-    CLASS("Class", TypeProperty.extractor(), ValueParserConstants.CLASS_PARSER),
-    @Deprecated
-    CLASS_LIST("List[Class]", TypeMultiProperty.extractor(), ValueParserConstants.CLASS_PARSER);
+    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER);
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
@@ -116,19 +110,6 @@ public enum PropertyTypeId {
     public boolean isPropertyNumeric() {
         return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric
                || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric;
-    }
-
-
-    /**
-     * Returns true if the property corresponding to this factory is packaged,
-     * which means it can be safely cast to a {@link PackagedPropertyDescriptor}.
-     *
-     * @return whether the property is packaged
-     */
-    @Deprecated
-    public boolean isPropertyPackaged() {
-        return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Packaged
-               || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Packaged;
     }
 
 

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
@@ -92,9 +91,8 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     public void end() throws IOException {
         String outputDir = getProperty(OUTPUT_DIR);
 
-        Iterator<RuleViolation> violations = report.iterator();
-        while (violations.hasNext()) {
-            addViolation(violations.next());
+        for (RuleViolation ruleViolation : report.getViolations()) {
+            addViolation(ruleViolation);
         }
 
         renderIndex(outputDir);

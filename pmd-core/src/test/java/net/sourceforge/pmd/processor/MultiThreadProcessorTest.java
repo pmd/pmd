@@ -63,7 +63,7 @@ public class MultiThreadProcessorTest {
         processor.processFiles(ruleSetFactory, files, ctx, Collections.<Renderer>singletonList(renderer));
         renderer.end();
 
-        final Iterator<ConfigurationError> configErrors = renderer.getReport().configErrors();
+        final Iterator<ConfigurationError> configErrors = renderer.getReport().getConfigurationErrors().iterator();
         final ConfigurationError error = configErrors.next();
 
         Assert.assertEquals("Dysfunctional rule message not present",

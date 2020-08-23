@@ -112,7 +112,7 @@ public class AbstractRuleTest {
         s.setCoords(5, 1, 6, 1);
         s.setImage("TestImage");
         r.addViolation(ctx, s);
-        RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
+        RuleViolation rv = ctx.getReport().getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 
@@ -127,7 +127,7 @@ public class AbstractRuleTest {
         n.setCoords(5, 1, 6, 1);
         DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
 
-        assertTrue(ctx.getReport().isEmpty());
+        assertTrue(ctx.getReport().getViolations().isEmpty());
     }
 
     @Test

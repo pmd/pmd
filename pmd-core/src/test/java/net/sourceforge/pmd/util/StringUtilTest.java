@@ -11,11 +11,6 @@ import org.junit.Test;
 public class StringUtilTest {
 
     @Test
-    public void testReplaceWithOneChar() {
-        assertEquals("faa", StringUtil.replaceString("foo", 'o', "a"));
-    }
-
-    @Test
     public void testColumnNumber() {
         assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", -1));
         assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 0));
@@ -50,27 +45,6 @@ public class StringUtilTest {
     public void testColumnNumberEmpty() {
         assertEquals(1, StringUtil.columnNumberAt("", 0));
         assertEquals(-1, StringUtil.columnNumberAt("", 1));
-    }
-
-    @Test
-    public void testReplaceWithMultipleChars() {
-        assertEquals("faaaa", StringUtil.replaceString("foo", 'o', "aa"));
-    }
-
-    @Test
-    public void testReplaceStringWithString() {
-        assertEquals("foo]]&gt;bar", StringUtil.replaceString("foo]]>bar", "]]>", "]]&gt;"));
-    }
-
-    @Test
-    public void testReplaceStringWithString2() {
-        assertEquals("replaceString didn't work with a >", "foobar",
-                StringUtil.replaceString("foobar", "]]>", "]]&gt;"));
-    }
-
-    @Test
-    public void testReplaceWithNull() {
-        assertEquals("replaceString didn't work with a char", "f", StringUtil.replaceString("foo", 'o', null));
     }
 
     @Test

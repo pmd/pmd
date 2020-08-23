@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +38,8 @@ public class CommentSizeRule extends AbstractCommentRule {
 
     private static final String CR = "\n";
 
+    static final Set<String> IGNORED_LINES = setOf("//", "/*", "/**", "*", "*/");
+
     public CommentSizeRule() {
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
@@ -47,7 +51,7 @@ public class CommentSizeRule extends AbstractCommentRule {
             return false;
         }
 
-        return !StringUtil.isAnyOf(line.trim(), "//", "/*", "/**", "*", "*/");
+        return !IGNORED_LINES.contains(line.trim());
     }
 
     private boolean hasTooManyLines(Comment comment) {

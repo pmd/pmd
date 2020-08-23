@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -423,7 +422,7 @@ public class RuleSetTest {
         ctx.setSourceCodeFile(file);
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ruleSets.apply(makeCompilationUnits(), ctx);
-        assertEquals("Violations", 2, r.size());
+        assertEquals("Violations", 2, r.getViolations().size());
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
@@ -436,7 +435,7 @@ public class RuleSetTest {
         r = new Report();
         ctx.setReport(r);
         ruleSets.apply(makeCompilationUnits(), ctx);
-        assertEquals("Violations", 1, r.size());
+        assertEquals("Violations", 1, r.getViolations().size());
     }
 
     @Test
@@ -463,19 +462,14 @@ public class RuleSetTest {
         context.setReport(new Report());
         new RuleSets(ruleset).apply(makeCompilationUnits(), context);
 
-        assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
+        assertEquals("Invalid number of Violations Reported", size, context.getReport().getViolations().size());
 
-        Iterator<RuleViolation> violations = context.getReport().iterator();
-        while (violations.hasNext()) {
-            RuleViolation violation = violations.next();
-
+        for (RuleViolation violation : context.getReport().getViolations()) {
             reportedValues.add(violation);
             assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
         }
 
-        Iterator<RuleViolation> expected = values.iterator();
-        while (expected.hasNext()) {
-            RuleViolation violation = expected.next();
+        for (RuleViolation violation : values) {
             assertTrue("Expected Violation not Returned: " + violation, reportedValues.contains(violation));
         }
     }
@@ -551,13 +545,13 @@ public class RuleSetTest {
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
     }
 
     @Test
@@ -593,13 +587,12 @@ public class RuleSetTest {
         RuleSets rulesets = new RuleSets(ruleset);
         rulesets.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
     }
 
 }

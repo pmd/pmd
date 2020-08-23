@@ -11,7 +11,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
@@ -66,17 +65,13 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             final int endIndex = buf.indexOf("}", startIndex);
             if (endIndex >= 0) {
                 final String name = buf.substring(startIndex + 2, endIndex);
-                if (isVariable(name)) {
-                    buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+                String variableValue = getVariableValue(name);
+                if (variableValue != null) {
+                    buf.replace(startIndex, endIndex + 1, variableValue);
                 }
             }
         }
         return buf.toString();
-    }
-
-    protected boolean isVariable(String name) {
-        return StringUtil.isAnyOf(name, "variableName", "methodName", "className", "packageName")
-                || rule.getPropertyDescriptor(name) != null;
     }
 
     protected String getVariableValue(String name) {
@@ -90,7 +85,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             return packageName;
         } else {
             final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return String.valueOf(rule.getProperty(propertyDescriptor));
+            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
         }
     }
 
