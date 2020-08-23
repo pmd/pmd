@@ -2449,7 +2449,10 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.<
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Identifies private fields whose values never change once object initialization ends either in the declaration
-of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.</p>
+of the field or by a constructor. This helps in converting existing classes to becoming immutable ones.
+Note that this rule does not enforce referenced object to be immutable itself. A class can still be mutable, even
+if all its member fields are declared final. This is referred to as shallow immutability. For more information on
+mutability, see Effective Java, 3rd Edition, Item 17: Minimize mutability.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ImmutableFieldRule.java">net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule</a></p>
 
@@ -3963,7 +3966,7 @@ remember to add a private constructor to prevent instantiation.
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 22, 2020 <br />
+ Site last generated: Aug 23, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

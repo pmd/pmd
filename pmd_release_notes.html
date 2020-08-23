@@ -1505,6 +1505,7 @@ which was introduced in PMD 6.26.0.</li>
   </li>
   <li>java-design
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2108">#2108</a>: [java] [doc] ImmutableField rule: Description should clarify shallow immutability</li>
       <li><a href="https://github.com/pmd/pmd/issues/2461">#2461</a>: [java] ExcessiveParameterListRule must ignore a private constructor</li>
     </ul>
   </li>
@@ -1572,7 +1573,14 @@ includes all code in the following packages, and their subpackages:
       <li>and the class <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLDataFlowHandler.html#"><code>PLSQLDataFlowHandler</code></a></li>
     </ul>
   </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfSimpleCharStream.html#"><code>net.sourceforge.pmd.lang.vf.VfSimpleCharStream</code></a></li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfSimpleCharStream.html#"><code>net.sourceforge.pmd.lang.vf.VfSimpleCharStream</code></a></p>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a> is deprecated in
+ favor of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a>, which has the
+same functionality, but a slightly changed API.</li>
+  <li>Many of the classes in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symboltable/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symboltable</code></a>
+are deprecated as internal API.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1590,6 +1598,7 @@ includes all code in the following packages, and their subpackages:
   <li><a href="https://github.com/pmd/pmd/pull/2697">#2697</a>: [java] ExcessiveParameterListRule must ignore a private constructor - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2699">#2699</a>: [java] ProperCloneImplementation not valid for final class - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2700">#2700</a>: [java] Fix OnlyOneReturn code example - <a href="https://github.com/jlelse">Jan-Lukas Else</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2722">#2722</a>: [doc] [java] ImmutableField: extend description, fixes #2108 - <a href="https://github.com/mateusz-stefanski">Mateusz Stefanski</a></li>
 </ul>
 
 
@@ -1608,7 +1617,7 @@ includes all code in the following packages, and their subpackages:
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 22, 2020 <br />
+ Site last generated: Aug 23, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
