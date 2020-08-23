@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.util.NumericConstants;
 
 public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
@@ -47,7 +46,7 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
     private Object init(JavaNode node, Object data) {
         stack.push(count);
-        count = NumericConstants.ZERO;
+        count = 0;
 
         node.children().forEach(it -> it.acceptVisitor(this, data));
 

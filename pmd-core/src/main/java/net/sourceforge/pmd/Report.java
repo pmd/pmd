@@ -10,41 +10,23 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
-import net.sourceforge.pmd.util.DateTimeUtil;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
  */
-public class Report implements Iterable<RuleViolation> {
+public class Report {
 
-    /*
-     * The idea is to store the violations in a tree instead of a list, to do
-     * better and faster sort and filter mechanism and to visualize the result
-     * as tree. (ide plugins).
-     */
-    private final ReportTree violationTree = new ReportTree();
-
-    // Note that this and the above data structure are both being maintained for
-    // a bit
-    private final List<RuleViolation> violations = new ArrayList<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
+
+    private final List<RuleViolation> violations = new ArrayList<>();
+    private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
     private final List<ProcessingError> errors = new ArrayList<>();
     private final List<ConfigurationError> configErrors = new ArrayList<>();
-    private long start;
-    private long end;
-    private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
      * Creates a new, initialized, empty report for the given file name.
@@ -64,36 +46,6 @@ public class Report implements Iterable<RuleViolation> {
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File(fileName));
         return report;
-    }
-
-    /**
-     * Represents a duration. Useful for reporting processing time.
-     *
-     * @deprecated Not used within PMD. Rendering durations is format-specific.
-     */
-    @Deprecated
-    public static class ReadableDuration {
-        private final long duration;
-
-        /**
-         * Creates a new duration.
-         *
-         * @param duration
-         *            the duration in milliseconds.
-         */
-        public ReadableDuration(long duration) {
-            this.duration = duration;
-        }
-
-        /**
-         * Gets a human readable representation of the duration, such as "1h 3m
-         * 5s".
-         *
-         * @return human readable representation of the duration
-         */
-        public String getTime() {
-            return DateTimeUtil.asHoursMinutesSeconds(duration);
-        }
     }
 
     /**
@@ -179,83 +131,8 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-
-    private static String keyFor(RuleViolation rv) {
-
-        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
-    }
-
-    /**
-     * Calculate a summary of violation counts per fully classified class name.
-     *
-     * @return violations per class name
-     *
-     * @deprecated This is too specific. Not every violation has a qualified name.
-     */
-    @Deprecated
-    public Map<String, Integer> getCountSummary() {
-        Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : violationTree) {
-            String key = keyFor(rv);
-            Integer o = summary.get(key);
-            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
-        }
-        return summary;
-    }
-
-    /**
-     * @deprecated The {@link ReportTree} is deprecated
-     */
-    @Deprecated
-    public ReportTree getViolationTree() {
-        return this.violationTree;
-    }
-
-    /**
-     * Calculate a summary of violations per rule.
-     *
-     * @return a Map summarizing the Report: String (rule name) -&gt; Integer (count
-     *         of violations)
-     *
-     * @deprecated This is too specific, only used by one renderer.
-     */
-    @Deprecated
-    public Map<String, Integer> getSummary() {
-        Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : violations) {
-            String name = rv.getRule().getName();
-            if (!summary.containsKey(name)) {
-                summary.put(name, NumericConstants.ZERO);
-            }
-            Integer count = summary.get(name);
-            summary.put(name, count + 1);
-        }
-        return summary;
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
-     */
-    public void addListener(ThreadSafeReportListener listener) {
-        listeners.add(listener);
-    }
-
-    /**
-     * Returns the suppressed violations.
-     *
-     * @deprecated Use {@link #getSuppressedViolations()} (be aware, that that method returns an unmodifiable list)
-     */
-    @Deprecated
-    public List<SuppressedViolation> getSuppressedRuleViolations() {
-        return suppressedRuleViolations;
-    }
-
     /**
      * Represents a violation, that has been suppressed.
-     * TODO this should implement RuleViolation
      */
     public static class SuppressedViolation {
         private final RuleViolation rv;
@@ -288,31 +165,39 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-
-    public void addSuppressedViolation(SuppressedViolation sv) {
-        suppressedRuleViolations.add(sv);
+    /**
+     * Registers a report listener
+     *
+     * @param listener the listener
+     */
+    public void addListener(ThreadSafeReportListener listener) {
+        listeners.add(listener);
     }
 
     /**
      * Adds a new rule violation to the report and notify the listeners.
      *
-     * @param violation
-     *            the violation to add
+     * @param violation the violation to add
      */
     public void addRuleViolation(RuleViolation violation) {
         int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
         violations.add(index < 0 ? -index - 1 : index, violation);
-        violationTree.addRuleViolation(violation);
         for (ThreadSafeReportListener listener : listeners) {
             listener.ruleViolationAdded(violation);
         }
     }
 
     /**
+     * Adds a new suppressed violation.
+     */
+    public void addSuppressedViolation(SuppressedViolation sv) {
+        suppressedRuleViolations.add(sv);
+    }
+
+    /**
      * Adds a new configuration error to the report.
      *
-     * @param error
-     *            the error to add
+     * @param error the error to add
      */
     public void addConfigError(ConfigurationError error) {
         configErrors.add(error);
@@ -345,80 +230,7 @@ public class Report implements Iterable<RuleViolation> {
         for (RuleViolation violation : r.getViolations()) {
             int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
             violations.add(index < 0 ? -index - 1 : index, violation);
-            violationTree.addRuleViolation(violation);
         }
-    }
-
-
-    /**
-     * Checks whether there are no violations and no processing errors.
-     * That means, that PMD analysis yielded nothing to worry about.
-     *
-     * @deprecated Use {@link #getViolations()} or {@link #getProcessingErrors()}
-     */
-    @Deprecated
-    public boolean isEmpty() {
-        return !violations.iterator().hasNext() && !hasErrors();
-    }
-
-    /**
-     * Checks whether any processing errors have been reported.
-     *
-     * @return <code>true</code> if there were any processing errors,
-     *         <code>false</code> otherwise
-     *
-     * @deprecated Use {@link #getProcessingErrors()}.isEmpty()
-     */
-    @Deprecated
-    public boolean hasErrors() {
-        return !getProcessingErrors().isEmpty();
-    }
-
-    /**
-     * Checks whether any configuration errors have been reported.
-     *
-     * @return <code>true</code> if there were any configuration errors,
-     *         <code>false</code> otherwise
-     *
-     * @deprecated Use {@link #getConfigurationErrors()}.isEmpty()
-     */
-    @Deprecated
-    public boolean hasConfigErrors() {
-        return !getConfigurationErrors().isEmpty();
-    }
-
-    /**
-     * Checks whether no violations have been reported.
-     *
-     * @return <code>true</code> if no violations have been reported,
-     *         <code>false</code> otherwise
-     *
-     * @deprecated The {@link ReportTree} is deprecated, use {@link #getViolations()}.isEmpty() instead.
-     */
-    @Deprecated
-    public boolean treeIsEmpty() {
-        return !violationTree.iterator().hasNext();
-    }
-
-    /**
-     * Returns an iteration over the reported violations.
-     *
-     * @return an iterator
-     *
-     * @deprecated The {@link ReportTree} is deprecated
-     */
-    @Deprecated
-    public Iterator<RuleViolation> treeIterator() {
-        return violationTree.iterator();
-    }
-
-    /**
-     * @deprecated Use {@link #getViolations()}
-     */
-    @Deprecated
-    @Override
-    public Iterator<RuleViolation> iterator() {
-        return violations.iterator();
     }
 
 
@@ -457,85 +269,6 @@ public class Report implements Iterable<RuleViolation> {
         return Collections.unmodifiableList(configErrors);
     }
 
-
-    /**
-     * Returns an iterator of the reported processing errors.
-     *
-     * @return the iterator
-     *
-     * @deprecated Use {@link #getProcessingErrors()}
-     */
-    @Deprecated
-    public Iterator<ProcessingError> errors() {
-        return getProcessingErrors().iterator();
-    }
-
-    /**
-     * Returns an iterator of the reported configuration errors.
-     *
-     * @return the iterator
-     * @deprecated Use {@link #getConfigurationErrors()}
-     */
-    @Deprecated
-    public Iterator<ConfigurationError> configErrors() {
-        return getConfigurationErrors().iterator();
-    }
-
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     *
-     * @deprecated The {@link ReportTree} is deprecated
-     */
-    @Deprecated
-    public int treeSize() {
-        return violationTree.size();
-    }
-
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     *
-     * @deprecated Use {@link #getViolations()}
-     */
-    @Deprecated
-    public int size() {
-        return violations.size();
-    }
-
-    /**
-     * Mark the start time of the report. This is used to get the elapsed time
-     * in the end.
-     *
-     * @see #getElapsedTimeInMillis()
-     *
-     * @deprecated Not used, {@link #getElapsedTimeInMillis()} will be removed
-     */
-    @Deprecated
-    public void start() {
-        start = System.currentTimeMillis();
-    }
-
-    /**
-     * Mark the end time of the report. This is ued to get the elapsed time.
-     *
-     * @see #getElapsedTimeInMillis()
-     * @deprecated Not used, {@link #getElapsedTimeInMillis()} will be removed
-     */
-    @Deprecated
-    public void end() {
-        end = System.currentTimeMillis();
-    }
-
-    /**
-     * @deprecated Unused
-     */
-    @Deprecated
-    public long getElapsedTimeInMillis() {
-        return end - start;
-    }
 
     public List<ThreadSafeReportListener> getListeners() {
         return listeners;

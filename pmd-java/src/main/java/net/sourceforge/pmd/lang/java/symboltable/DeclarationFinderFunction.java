@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.function.Predicate;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.SearchFunction;
 
 @Deprecated
 @InternalApi
-public class DeclarationFinderFunction implements SearchFunction<NameDeclaration> {
+public class DeclarationFinderFunction implements Predicate<NameDeclaration> {
 
     private NameOccurrence occurrence;
     private NameDeclaration decl;
@@ -22,7 +23,7 @@ public class DeclarationFinderFunction implements SearchFunction<NameDeclaration
     }
 
     @Override
-    public boolean applyTo(NameDeclaration nameDeclaration) {
+    public boolean test(NameDeclaration nameDeclaration) {
         // do not match method references
         if (occurrence.getLocation() instanceof ASTMethodReference) {
             return false;

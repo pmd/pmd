@@ -47,7 +47,7 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
         ctx.setLanguageVersion(apex.getDefaultVersion());
         TopLevelRule rule = new TopLevelRule();
         rule.apply(node, ctx);
-        assertEquals(1, ctx.getReport().size());
+        assertEquals(1, ctx.getReport().getViolations().size());
     }
 
     private static class TopLevelRule extends AbstractApexRule {
