@@ -31,8 +31,8 @@ final class AstMethodSym
 
     @Override
     public JTypeMirror getReturnType(Substitution subst) {
-        ASTType rt = node.getResultType().getTypeNode();
-        return rt == null ? getTypeSystem().NO_TYPE : TypeOps.subst(rt.getTypeMirror(), subst);
+        ASTType rt = node.getResultTypeNode();
+        return TypeOps.subst(rt.getTypeMirror(), subst);
     }
 
     @Override

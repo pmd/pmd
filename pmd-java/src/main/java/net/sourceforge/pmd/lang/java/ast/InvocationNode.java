@@ -52,18 +52,9 @@ public interface InvocationNode extends TypeNode {
 
 
     /**
-     * Returns true if this is a varargs call. This means, that the
-     * called method is varargs, and was overload-selected in the varargs
-     * phase. For example:
-     * <pre>{@code
-     * Arrays.asList("a", "b");                     // this is a varargs call
-     * Arrays.asList(new String[] { "a", "b" });    // this is not a varargs call
-     * }</pre>
+     * Returns information about the overload selection for this call.
+     * Be aware, that selection might have failed ({@link OverloadSelectionResult#isFailed()}).
      */
-    default boolean isVarargsCall() {
-        return getOverloadSelectionInfo().isVarargsCall();
-    }
-
     OverloadSelectionResult getOverloadSelectionInfo();
 
     /**
