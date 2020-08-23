@@ -38,7 +38,7 @@ open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
  */
 open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
-    data class AttributeInfo(val name: String, val value: String?)
+    data class AttributeInfo(val name: String, val value: Any?)
 
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
 

@@ -67,6 +67,12 @@ abstract class BaseTextComparisonTest {
         return sourceText
     }
 
+    protected open fun String.normalize() = replace(
+            // \R on java 8+
+            regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"),
+            replacement = "\n"
+    )
+
     // Outputting a path makes for better error messages
     private val srcTestResources = let {
         // this is set from maven surefire
@@ -90,11 +96,6 @@ abstract class BaseTextComparisonTest {
     companion object {
         const val ExpectedExt = ".txt"
 
-        fun String.normalize() = replace(
-                // \R on java 8+
-                regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"),
-                replacement = "\n"
-        )
     }
 
 }
