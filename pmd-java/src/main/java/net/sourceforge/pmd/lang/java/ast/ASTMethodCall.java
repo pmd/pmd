@@ -57,12 +57,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr
     }
 
     @Override
-    @Deprecated
-    public String getImage() {
-        return null;
-    }
-
-    @Override
     @NonNull
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) getChild(getNumChildren() - 1);

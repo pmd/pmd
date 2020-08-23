@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
-
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
  * pass that taking care of obscuring rules and the current declarations
@@ -73,7 +71,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     }
 
 
-    String getName() {
+    public String getName() {
         return super.getImage();
     }
 

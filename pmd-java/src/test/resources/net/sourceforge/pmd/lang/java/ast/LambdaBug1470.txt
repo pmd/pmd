@@ -8,7 +8,7 @@
       +- ClassOrInterfaceBody[@Size = "3"]
          +- FieldDeclaration[@Visibility = "private"]
          |  +- ModifierList[@EffectiveModifiers = "{private}", @ExplicitModifiers = "{private}"]
-         |  +- PrimitiveType[@Boolean = "true", @Image = "boolean", @ModelConstant = "boolean"]
+         |  +- PrimitiveType[@Kind = "boolean"]
          |  +- VariableDeclarator[@Initializer = "false", @Name = "stuff"]
          |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "true", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "false", @Name = "stuff", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "private"]
          +- MethodDeclaration[@Abstract = "false", @Arity = "0", @Image = "testSuper", @Name = "testSuper", @Varargs = "false", @Visibility = "public", @Void = "false"]
