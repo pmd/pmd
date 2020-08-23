@@ -97,7 +97,11 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         if (m1OverM2.isKnown()) {
             return m1OverM2;
         } else if (areOverrideEquivalent(m1, m2)) {
-            return OverloadSet.shouldAlwaysTakePrecedence(m1, m2, site.getExpr().getReceiverType());
+            JTypeMirror observingSite = site.getExpr().getReceiverType();
+            if (observingSite == null) {
+                observingSite = site.getExpr().getEnclosingType();
+            }
+            return OverloadSet.shouldAlwaysTakePrecedence(m1, m2, observingSite);
         }
 
         return UNKNOWN;

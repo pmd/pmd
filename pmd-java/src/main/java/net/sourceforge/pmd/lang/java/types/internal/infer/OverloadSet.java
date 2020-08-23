@@ -19,6 +19,7 @@ import java.util.ListIterator;
 import java.util.stream.Collector;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -131,7 +132,7 @@ public abstract class OverloadSet<T> {
      *
      * <p>If m1 and m2 are equal, returns the first one by convention.
      */
-    static OptionalBool shouldAlwaysTakePrecedence(JMethodSig m1, JMethodSig m2, JTypeMirror commonSubtype) {
+    static OptionalBool shouldAlwaysTakePrecedence(@NonNull JMethodSig m1, @NonNull JMethodSig m2, @NonNull JTypeMirror commonSubtype) {
         // select
         // 1. the non-bridge
         // 2. the one that overrides the other

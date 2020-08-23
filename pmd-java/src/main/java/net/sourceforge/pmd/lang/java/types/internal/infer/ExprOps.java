@@ -368,6 +368,11 @@ final class ExprOps {
             }
 
             @Override
+            public @Nullable JTypeMirror getReceiverType() {
+                return mref.getTypeToSearch();
+            }
+
+            @Override
             public List<JTypeMirror> getExplicitTypeArguments() {
                 return mref.getExplicitTypeArguments();
             }

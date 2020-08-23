@@ -464,6 +464,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         lambda.getTypeMirror(); // force evaluation
 
         JMethodSig m = lambda.getFunctionalMethod();
+        if (m == null) {
+            // this is an error in our logic, should be logged somewhere
+            // todo add a test case, fix, and make this a hard assertion
+            return ts.ERROR;
+        }
         if (m != getTypeSystem().UNRESOLVED_METHOD) {
             return m.getFormalParameters().get(node.getIndexInParent());
         }

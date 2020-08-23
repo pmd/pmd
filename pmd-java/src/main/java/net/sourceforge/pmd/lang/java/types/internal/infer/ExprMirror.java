@@ -86,8 +86,7 @@ public interface ExprMirror {
          * Returns the class declaration wherein this invocation occurs.
          * Returns null if it's unresolved.
          */
-        @NonNull
-        JClassType getEnclosingType();
+        @NonNull JClassType getEnclosingType();
 
 
         @Override
@@ -293,9 +292,7 @@ public interface ExprMirror {
          * Returns the erased receiver type. This is only used for method
          * invocations.
          */
-        default @Nullable JTypeMirror getReceiverType() {
-            return null;
-        }
+        @Nullable JTypeMirror getReceiverType();
 
 
         /**

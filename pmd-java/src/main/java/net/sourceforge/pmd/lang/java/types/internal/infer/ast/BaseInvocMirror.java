@@ -68,4 +68,9 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     public @Nullable MethodCtDecl getMethodType() {
         return ctDecl;
     }
+
+    @Override
+    public @Nullable JTypeMirror getReceiverType() {
+        return null;
+    }
 }

@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.ast.test.component6
+import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
 import java.util.function.*
 import java.util.stream.Collector
+import kotlin.collections.LinkedHashSet
 import java.util.function.Function as JavaFunction
 
 /**
@@ -1105,6 +1108,61 @@ class Scratch {
         spy.shouldBeOk {
             mref.functionalMethod shouldBe t_MapMaker[gen.t_String].getDeclaredMethod(copy.symbol)
             mref.referencedMethod shouldBe copyToMutable // exactly, ie V was not substituted
+        }
+    }
+
+
+    parserTest("Inexact mref which must differentiate two overridden overloads") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+// reproduces what's in java.util, to not depend on JDK version
+
+interface Collection<E> {
+    boolean addAll(Collection<? extends E> c); // 0
+}
+
+interface Set<E> extends Collection<E> {
+    @Override
+    boolean addAll(Collection<? extends E> c); // 1
+}
+
+abstract class AbstractCollection<E> implements Collection<E> {
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) { // 2
+        return false;
+    }
+}
+
+abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
+
+}
+
+class MySet<E> extends AbstractSet<E> implements Set<E> { }
+
+
+class Scratch {
+
+    private final Additioner adder = MySet::addAll;
+
+    public interface Additioner {
+        <R> boolean plus(MySet<R> m, Collection<? extends R> other); // 3
+    }
+}
+
+
+        """.trimIndent())
+
+        val (_, _, abstractColl, _, _, _, t_Additioner) = acu.declaredTypeSignatures()
+        val (_, _, inAbstractColl, plus) = acu.declaredMethodSignatures()
+
+        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            mref.functionalMethod shouldBe plus
+            val rvar = plus.typeParameters[0]!!
+            mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
+            mref.typeMirror shouldBe t_Additioner
         }
     }
 
