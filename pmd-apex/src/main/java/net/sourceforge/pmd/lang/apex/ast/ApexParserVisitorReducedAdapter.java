@@ -6,7 +6,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 /**
  * @author Clément Fournier
+ *
+ * @deprecated The functionality of this adapter will be moved into the base apex visitor, so this class will
+ *             go away with PMD 7.
  */
+@Deprecated
 public class ApexParserVisitorReducedAdapter extends ApexParserVisitorAdapter {
 
 

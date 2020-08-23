@@ -120,7 +120,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 
 *   {% jdoc !!core::Rule#getParserOptions() %}
 *   {% jdoc !!core::lang.Parser#getParserOptions() %}
-*   {% jdoc !!core::lang.AbstractParser %}
+*   {% jdoc core::lang.AbstractParser %}
 *   {% jdoc !!core::RuleContext#removeAttribute(java.lang.String) %}
 *   {% jdoc !!core::RuleContext#getAttribute(java.lang.String) %}
 *   {% jdoc !!core::RuleContext#setAttribute(java.lang.String, java.lang.Object) %}
@@ -145,7 +145,14 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   {% jdoc_package core::lang.dfa %}
     *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
 
-*   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
+*   {% jdoc visualforce::lang.vf.VfSimpleCharStream %}
+
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDeclarations %}
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDocument %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#zero() %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#combine(Object, Object) %}
+*   {% jdoc apex::lang.apex.ast.ApexParserVisitorReducedAdapter %}
+*   {% jdoc java::lang.java.ast.JavaParserVisitorReducedAdapter %}
 
 * {% jdoc java::lang.java.typeresolution.TypeHelper %} is deprecated in
  favor of {% jdoc java::lang.java.types.TypeTestUtil %}, which has the
