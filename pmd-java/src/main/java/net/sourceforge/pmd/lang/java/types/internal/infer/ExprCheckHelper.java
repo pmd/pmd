@@ -122,7 +122,15 @@ final class ExprCheckHelper {
             }
 
             if (expr instanceof LambdaExprMirror) {
-                return isLambdaCompatible(funType, (LambdaExprMirror) expr);
+                LambdaExprMirror lambda = (LambdaExprMirror) expr;
+                try {
+                    return isLambdaCompatible(funType, lambda);
+                } catch (ResolutionFailedException e) {
+                    // need to cleanup the partial data
+                    lambda.setInferredType(null);
+                    lambda.setFunctionalMethod(null);
+                    throw e;
+                }
             } else {
                 return isMethodRefCompatible(funType, (MethodRefMirror) expr);
             }

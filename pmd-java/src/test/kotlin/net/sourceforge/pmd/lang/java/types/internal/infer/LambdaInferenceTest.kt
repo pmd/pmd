@@ -574,4 +574,69 @@ class Scratch {
         }
     }
 
+    parserTest("Nested lambda param resolution (in to out)") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+    interface Foreachable<T> {
+    
+        interface Action<T> {
+    
+            void consume(T t);
+        }
+
+        void foreach(Action<? super T> action);
+    
+        static <E> Foreachable<E> flatmapForeach(Foreachable<Foreachable<E>> f0) {
+            return action -> f0.foreach(f1 -> f1.foreach(f2 -> action.consume(f2)));
+        }
+    }
+    
+            """)
+
+        val (t_Foreachable, t_Action) = acu.declaredTypeSignatures()
+        val (action, f1, f2) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+        val evar = acu.typeVar("E")
+
+        spy.shouldBeOk {
+            f2 shouldHaveType evar
+            f1 shouldHaveType t_Foreachable[evar]
+            action shouldHaveType t_Action[`?` `super` evar]
+        }
+    }
+
+    parserTest("Nested lambda param resolution, when there are several overloads to give ctx") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+interface Runnable { void run(); }
+interface Supplier<E> { E get(); }
+interface Action<T> { void consume(T t); }
+interface Foreachable<T> { void foreach(Action<? super T> action); }
+
+class Scratch {
+
+    static void bench(String label, Runnable runnable) {  }
+    static <T> T bench(String label, Supplier<T> runnable) { return null; }
+
+    static void foo(Foreachable<String> foreachable) {
+        bench("label", () -> foreachable.foreach(s -> s.toString()));
+    }
+}
+        
+
+    
+            """)
+
+        val (t_Runnable, t_Supplier, t_Action, t_Foreachable) = acu.declaredTypeSignatures()
+        val (run, action) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (s) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            run shouldHaveType t_Runnable
+            action shouldHaveType t_Action[gen.t_String]
+            s shouldHaveType gen.t_String
+        }
+    }
+
 })

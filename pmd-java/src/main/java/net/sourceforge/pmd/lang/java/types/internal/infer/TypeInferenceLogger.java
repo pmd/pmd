@@ -37,6 +37,8 @@ public interface TypeInferenceLogger {
     // computeCompileTimeDecl
 
 
+    default void polyResolutionFailure(JavaNode node) { }
+
     default void noApplicableCandidates(MethodCallSite site) { }
 
     default void noCompileTimeDeclaration(MethodCallSite site) { }

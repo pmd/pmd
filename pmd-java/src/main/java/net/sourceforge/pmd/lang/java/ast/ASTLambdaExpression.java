@@ -56,7 +56,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
         return functionalMethod;
     }
 
-    void setFunctionalMethod(JMethodSig functionalMethod) {
+    void setFunctionalMethod(@Nullable JMethodSig functionalMethod) {
         this.functionalMethod = functionalMethod;
     }
 

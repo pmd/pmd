@@ -65,7 +65,7 @@ final class PolyResolution {
         if (ctx == null) {
             return polyTypeNoContext(e);
         } else if (ctx instanceof InvocationNode) {
-            return polyTypeInvocationCtx(e, ctx);
+            return polyTypeInvocationCtx(e, (InvocationNode) ctx);
         }
 
         return polyTypeOtherCtx(e, ctx);
@@ -98,25 +98,31 @@ final class PolyResolution {
         } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
             // these may use a cast as a target type
             JTypeMirror targetType = getTargetType(ctx, true);
-            FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror((ASTExpression) e);
-            PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
-            infer.inferFunctionalExprInUnambiguousContext(site);
-            return fetchCascaded(e);
+            return inferLambdaOrMref((ASTExpression) e, targetType);
         } else {
             throw new IllegalStateException("Unknown poly?" + e);
         }
     }
 
+    private JTypeMirror inferLambdaOrMref(ASTExpression e, JTypeMirror targetType) {
+        FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror(e);
+        PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
+        infer.inferFunctionalExprInUnambiguousContext(site);
+        JTypeMirror result = InternalApiBridge.getTypeMirrorInternal(e);
+        assert result != null : "Should be unknown";
+        return result;
+    }
+
     @NonNull
-    private JTypeMirror polyTypeInvocationCtx(TypeNode e, JavaNode ctx) {
+    private JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocationNode ctx) {
         // an outer invocation ctx
         if (ctx instanceof ASTExpression) {
             // method call or regular constructor call
             // recurse, that will fetch the outer context
-            ((ASTExpression) ctx).getTypeMirror();
+            ctx.getTypeMirror();
             return fetchCascaded(e);
         } else {
-            return inferInvocation((InvocationNode) ctx, e, null);
+            return inferInvocation(ctx, e, null);
         }
     }
 
@@ -203,62 +209,46 @@ final class PolyResolution {
      * resolution of an enclosing invocation context.
      */
     private @NonNull JTypeMirror fetchCascaded(TypeNode e) {
-        if (e instanceof ASTLambdaExpression
-            || e instanceof ASTMethodReference
-            || e instanceof InvocationNode) {
-            // those are set as part of overload resolution
-
-            // we need to check the value of the field,
-            // if we called getTypeMirror, and the field is null,
-            // will recurse into this method (so use internal fetch method)
-            JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
-            // Note: a value of null here means overload resolution of
-            // the enclosing invocation failed. In that case, we can start
-            // over for the subexpression, ignoring context type.
-            if (type == null) {
-                return fallbackIfCtxDidntSet(e);
-            }
+        // Some types are set as part of overload resolution
+        // Conditional expressions also have their type set if they're
+        // standalone
+        JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
+        if (type != null) {
             return type;
         }
 
-        if (e instanceof ASTConditionalExpression) {
-            // this is set if the conditional is standalone
-            JTypeMirror type = InternalApiBridge.getTypeMirrorInternal(e);
-            if (type != null) {
-                return type;
-            }
-            // otherwise fallthrough
-        }
+        JavaNode ctx = contextOf(e, false);
 
-        if (e.getParent().getParent() instanceof InvocationNode) {
-            InvocationNode parentInvoc = (InvocationNode) e.getParent().getParent();
+        if (ctx instanceof InvocationNode) {
+            // invocation ctx
+            InvocationNode parentInvoc = (InvocationNode) ctx;
             OverloadSelectionResult info = parentInvoc.getOverloadSelectionInfo();
-            return getFormalTypeForArgument((ASTExpression) e, info);
-        } else if (e.getParent() instanceof ASTConditionalExpression) {
-            return fetchCascaded((TypeNode) e.getParent());
+            if (!info.isFailed()) {
+                JTypeMirror targetT = info.ithFormalParam(e.getIndexInParent());
+                if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
+                    // their types are not completely set
+                    return inferLambdaOrMref((ASTExpression) e, targetT);
+                }
+                return targetT;
+            }
         }
 
-        throw new IllegalStateException("Unknown poly? " + e);
-    }
-
-    private JTypeMirror getFormalTypeForArgument(ASTExpression arg, OverloadSelectionResult info) {
-        if (info.isFailed()) {
-            // TODO might log this
-            return ts.UNKNOWN;
-        }
-        return info.ithFormalParam(arg.getIndexInParent());
+        // if we're here, we failed
+        return fallbackIfCtxDidntSet(e);
     }
 
     /**
      * If resolution of the outer context failed, like if we call an unknown
      * method, we may still be able to derive the types of the arguments. We
      * treat them as if they occur as standalone expressions.
-     * TODO would using error-type as a target type be better?
+     * TODO would using error-type as a target type be better? could coerce
+     * generic method params to error naturally
      */
     private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e) {
         if (e instanceof InvocationNode) {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
+        infer.LOG.polyResolutionFailure(e);
         return ts.UNKNOWN;
     }
 

@@ -144,7 +144,7 @@ public final class InternalApiBridge {
         methodReference.setFunctionalMethod(methodType);
     }
 
-    public static void setFunctionalMethod(ASTLambdaExpression lambda, JMethodSig methodType) {
+    public static void setFunctionalMethod(ASTLambdaExpression lambda, @Nullable JMethodSig methodType) {
         lambda.setFunctionalMethod(methodType);
     }
 

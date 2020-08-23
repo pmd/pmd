@@ -45,6 +45,22 @@ public interface ExprMirror {
     @Nullable JTypeMirror getStandaloneType();
 
 
+    /**
+     * Returns the species that this expression produces. The species
+     * may be known even if the expr is not standalone. For example a
+     * diamond constructor call is not standalone, but its species is
+     * obviously REFERENCE.
+     *
+     * <p>This is used for specificity tests for lambdas. They use species
+     * because invocation needs to be done exactly once, and the actual
+     * type of the expression may differ depending on the selected overload.
+     * Eg given the signatures {@code <T>foo(Supplier<T>)} and {@code foo(Runnable)},
+     * the expression {@code foo(() -> new List<>())} must select the supplier
+     * overload, even before the invocation type of {@code List<>} is known.
+     * The overload selection compares the expected species of both function
+     * types (REFERENCE for Supplier, VOID for Runnable), and determines that
+     * the supplier is more appropriate.
+     */
     default TypeSpecies getStandaloneSpecies() {
         JTypeMirror std = getStandaloneType();
         return std == null ? UNKNOWN : getSpecies(std);
@@ -132,17 +148,21 @@ public interface ExprMirror {
          * For a method ref or lambda, this is the type of the functional interface.
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
          * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}
+         *
+         * <p>May be null if we're resetting some partial data.
          */
         @Override
-        void setInferredType(JTypeMirror mirror);
+        void setInferredType(@Nullable JTypeMirror mirror);
 
 
         /**
          * This is the method that is overridden in getInferredType.
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
          * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) -> java.lang.Boolean}
+         *
+         * <p>May be null if we're resetting some partial data.
          */
-        void setFunctionalMethod(JMethodSig methodType);
+        void setFunctionalMethod(@Nullable JMethodSig methodType);
 
     }
 

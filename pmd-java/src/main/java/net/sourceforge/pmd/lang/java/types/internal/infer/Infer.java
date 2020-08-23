@@ -50,7 +50,7 @@ public final class Infer {
 
     final ExprOps exprOps;
 
-    final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
+    public final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
     private final boolean isJava8; // NOPMD this is unused but may be used later
     private final TypeSystem ts;
@@ -130,7 +130,7 @@ public final class Infer {
         } catch (ResolutionFailedException rfe) {
             rfe.getFailure().addContext(null, site, null);
             LOG.logResolutionFail(rfe.getFailure());
-            expr.setInferredType(getTypeSystem().UNKNOWN);
+            expr.setInferredType(ts.UNKNOWN);
             if (expr instanceof MethodRefMirror) {
                 MethodRefMirror mref = (MethodRefMirror) expr;
                 mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);

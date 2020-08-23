@@ -460,15 +460,14 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     @Override
     public @NonNull JTypeMirror visit(ASTLambdaParameter node, Void data) {
-        ASTLambdaExpression lambda = node.ancestors(ASTLambdaExpression.class).firstOrThrow();
-        lambda.getTypeMirror(); // force evaluation
-
-        JMethodSig m = lambda.getFunctionalMethod();
-        if (m == null) {
-            // this is an error in our logic, should be logged somewhere
-            // todo add a test case, fix, and make this a hard assertion
-            return ts.ERROR;
+        if (node.getTypeNode() != null) {
+            // explicitly typed
+            return node.getTypeNode().getTypeMirror();
         }
+        ASTLambdaExpression lambda = node.ancestors(ASTLambdaExpression.class).firstOrThrow();
+        lambda.getTypeMirror();
+
+        JMethodSig m = lambda.getFunctionalMethod(); // this forces resolution of the lambda
         if (m != getTypeSystem().UNRESOLVED_METHOD) {
             return m.getFormalParameters().get(node.getIndexInParent());
         }

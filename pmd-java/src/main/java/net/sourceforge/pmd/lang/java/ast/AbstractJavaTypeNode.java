@@ -27,12 +27,6 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
     public @NonNull JTypeMirror getTypeMirror() {
         if (typeMirror == null) {
             try {
-                if (this instanceof ASTLambdaExpression) {
-                    // To avoid reentry, harmful for lambdas (there's a special
-                    // variable resolution strategy for lambda parameters)
-                    // for branching polys (conditional, switch) it's ok to reenter
-                    typeMirror = getTypeSystem().ERROR;
-                }
                 LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
                 typeMirror = this.acceptVisitor(resolver, null);
                 assert typeMirror != null : "LazyTypeResolver returned null";
