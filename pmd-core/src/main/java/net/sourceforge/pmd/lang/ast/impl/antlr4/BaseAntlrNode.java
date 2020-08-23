@@ -36,6 +36,11 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>> implements AntlrNode<N> {
 
     private DataMap<DataKey<?, ?>> userMap;
+
+    /**
+     * The only node for which this is not overwritten is the root node, for
+     * which by contract, this is -1.
+     */
     private int indexInParent = -1;
 
     protected BaseAntlrNode() {
@@ -97,7 +102,7 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     @Override
     public int getIndexInParent() {
-        assert indexInParent >= 0 : "Index not set";
+        assert getParent() == null || indexInParent >= 0 : "Index not set";
         return indexInParent;
     }
 

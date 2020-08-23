@@ -17,9 +17,8 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
-import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class XPathRuleTest {
@@ -37,55 +36,6 @@ public class XPathRuleTest {
         testDeprecation(XPathVersion.XPATH_2_0);
     }
 
-    @Test
-    public void testListAttributeDeprecation20() {
-        XPathRule xpr = makeRuleWithList("TestRuleWithListAccess");
-        loggingRule.clear();
-
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        DummyNode firstNode = newNodeWithList();
-        xpr.apply(firstNode, ctx);
-        assertEquals(1, ctx.getReport().size());
-
-        String log = loggingRule.getLog();
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@List' by XPath rule 'TestRuleWithListAccess'"));
-
-        loggingRule.clear();
-        xpr.apply(newNodeWithList(), ctx); // with another node
-        assertEquals(2, ctx.getReport().size());
-        assertEquals("", loggingRule.getLog()); // no addtional warnings
-
-        // with another rule forked from the same one (in multithreaded processor)
-        xpr.deepCopy().apply(newNodeWithList(), ctx);
-        assertEquals(3, ctx.getReport().size());
-        assertEquals("", loggingRule.getLog()); // no addtional warnings
-
-        // with another rule on the same node, new warnings
-        XPathRule otherRule = makeRuleWithList("OtherTestRuleWithListAccess");
-        otherRule.setRuleSetName("rset.xml");
-        otherRule.apply(firstNode, ctx);
-        assertEquals(4, ctx.getReport().size());
-        log = loggingRule.getLog();
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@List' by XPath rule 'OtherTestRuleWithListAccess' (in ruleset 'rset.xml')"));
-    }
-
-
-    private XPathRule makeRuleWithList(String name) {
-        XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, "//dummyNode[@List = 'A']");
-        xpr.setName(name);
-        xpr.setMessage("list is 'a'");
-        return xpr;
-    }
-
-
-    private DummyNode newNodeWithList() {
-        DummyRoot root = new DummyRoot();
-        DummyNode firstNode = new DummyNodeWithListAndEnum(0);
-        firstNode.setCoords(1, 1, 1, 2);
-        root.addChild(firstNode, 0);
-        return root;
-    }
 
     public void testDeprecation(XPathVersion version) {
         XPathRule xpr = makeRule(version, "SomeRule");
@@ -133,6 +83,7 @@ public class XPathRuleTest {
     public XPathRule makeRule(XPathVersion version, String name) {
         XPathRule xpr = new XPathRule(version, "//dummyNode[@Size >= 2 and @Name='foo']");
         xpr.setName(name);
+        xpr.setLanguage(LanguageRegistry.getLanguage("Dummy"));
         xpr.setMessage("gotcha");
         return xpr;
     }

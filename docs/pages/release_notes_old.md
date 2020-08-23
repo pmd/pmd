@@ -7219,7 +7219,7 @@ The binary package still contains all languages and can be used as usual. Have a
            Added - net.sourceforge.pmd.lang.LanguageVersion
            Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
            Added - net.sourceforge.pmd.lang.LanguageVersionHandler
-           Added - net.sourceforge.pmd.lang.XPathHandler
+           Added - net.sourceforge.pmd.lang.rule.xpath.XPathHandler
            Added - net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler
            Added - net.sourceforge.pmd.lang.xpath.Initializer
            Added - net.sourceforge.pmd.lang.ast.AbstractTokenManager
@@ -7253,7 +7253,7 @@ The binary package still contains all languages and can be used as usual. Have a
            Renamed - net.sourceforge.pmd.stat.StatisticalRule to net.sourceforge.pmd.lang.rule.StatisticalRuleHelper
            Renamed - net.sourceforge.pmd.jaxen.TypeOfFunction to net.sourceforge.pmd.lang.java.xpath.TypeOfFunction
            Renamed - net.sourceforge.pmd.jaxen.MatchesFunction to net.sourceforge.pmd.lang.xpath.MatchesFunction
-           Renamed - net.sourceforge.pmd.jaxen.Attribute to net.sourceforge.pmd.lang.ast.xpath.Attribute
+           Renamed - net.sourceforge.pmd.jaxen.Attribute to net.sourceforge.pmd.lang.rule.xpath.Attribute
            Renamed - net.sourceforge.pmd.jaxen.AttributeAxisIterator to net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator
            Renamed - net.sourceforge.pmd.jaxen.DocumentNavigator to net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator
            Renamed - net.sourceforge.pmd.jaxen.NodeIterator to net.sourceforge.pmd.lang.ast.xpath.NodeIterator

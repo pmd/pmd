@@ -4,22 +4,23 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -214,35 +215,21 @@ public interface Node {
      *
      * @param xpathString the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
-     * @throws JaxenException if the xpath is incorrect or fails altogether
-     *
      * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
      *             support for this method.
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
-    default List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
-        return new BaseXPath(xpathString, new ContextualizedNavigator(DeprecatedAttrLogger.createAdHocLogger()))
-                .selectNodes(this);
+    default List<Node> findChildNodesWithXPath(String xpathString) {
+        return new SaxonXPathRuleQuery(
+            xpathString,
+            XPathVersion.DEFAULT,
+            Collections.emptyMap(),
+            XPathHandler.noFunctionDefinitions(),
+            // since this method will be removed, we don't log anything anymore
+            DeprecatedAttrLogger.noop()
+        ).evaluate(this);
     }
 
-    /**
-     * Checks whether at least one descendant matches the xpath expression.
-     *
-     * @param xpathString the expression to check
-     * @return true if there is a match
-     *
-     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
-     *             support for this method.
-     */
-    @Deprecated
-    default boolean hasDescendantMatchingXPath(String xpathString) {
-        try {
-            return !findChildNodesWithXPath(xpathString).isEmpty();
-        } catch (final JaxenException e) {
-            throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
-        }
-    }
 
 
     /**
@@ -320,7 +307,8 @@ public interface Node {
 
 
     /**
-     * Returns an iterator enumerating all the attributes that are available from XPath for this node.
+     * Returns an iterator enumerating all the attributes that are available
+     * from XPath for this node.
      *
      * @return An attribute iterator for this node
      */

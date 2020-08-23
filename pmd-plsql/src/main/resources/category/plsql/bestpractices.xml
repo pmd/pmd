@@ -21,7 +21,6 @@ Rules which enforce generally accepted best practices.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

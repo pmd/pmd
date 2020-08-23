@@ -117,10 +117,6 @@
             <artifactId>pmd-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>

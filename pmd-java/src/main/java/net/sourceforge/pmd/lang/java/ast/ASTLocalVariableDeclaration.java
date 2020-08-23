@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**

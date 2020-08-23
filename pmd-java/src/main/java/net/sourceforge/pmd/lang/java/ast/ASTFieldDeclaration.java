@@ -8,9 +8,9 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**

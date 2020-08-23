@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**

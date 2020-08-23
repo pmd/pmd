@@ -5,12 +5,15 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.Token;
 import net.sf.saxon.expr.VennExpression;
+import net.sf.saxon.expr.parser.Token;
+import net.sf.saxon.expr.sort.DocumentSorter;
 
 /**
  * Splits a venn expression with the union operator into single expressions.
@@ -18,12 +21,13 @@ import net.sf.saxon.expr.VennExpression;
  * <p>E.g. "//A | //B | //C" will result in 3 expressions "//A", "//B", and "//C".
  */
 class SplitUnions extends SaxonExprVisitor {
-    private List<Expression> expressions = new ArrayList<>();
+
+    private final List<Expression> expressions = new ArrayList<>();
 
     @Override
     public Expression visit(VennExpression e) {
         if (e.getOperator() == Token.UNION) {
-            for (Expression operand : e.getOperands()) {
+            for (Expression operand : listOf(e.getLhsExpression(), e.getRhsExpression())) {
                 if (operand instanceof VennExpression) {
                     visit(operand);
                 } else {
@@ -32,6 +36,16 @@ class SplitUnions extends SaxonExprVisitor {
             }
         }
         return e;
+    }
+
+    @Override
+    public Expression visit(Expression e) {
+        // only flatten toplevel unions
+        if (e instanceof VennExpression || e instanceof DocumentSorter) {
+            return super.visit(e);
+        } else {
+            return e;
+        }
     }
 
     public List<Expression> getExpressions() {
