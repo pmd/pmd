@@ -8,7 +8,7 @@ import java.util.function.BiPredicate;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 
 import net.sf.saxon.expr.XPathContext;
@@ -29,12 +29,12 @@ import net.sf.saxon.value.SequenceType;
  */
 public final class TypeIsFunction extends BaseJavaXPathFunction {
 
-    public static final TypeIsFunction TYPE_IS_EXACTLY = new TypeIsFunction("typeIsExactly", TypeHelper::isExactlyA);
-    public static final TypeIsFunction TYPE_IS = new TypeIsFunction("typeIs", TypeHelper::isA);
+    public static final TypeIsFunction TYPE_IS_EXACTLY = new TypeIsFunction("typeIsExactly", TypeTestUtil::isExactlyA);
+    public static final TypeIsFunction TYPE_IS = new TypeIsFunction("typeIs", TypeTestUtil::isA);
 
-    private final BiPredicate<TypeNode, String> checker;
+    private final BiPredicate<String, TypeNode> checker;
 
-    private TypeIsFunction(String localName, BiPredicate<TypeNode, String> checker) {
+    private TypeIsFunction(String localName, BiPredicate<String, TypeNode> checker) {
         super(localName);
         this.checker = checker;
     }
@@ -65,7 +65,7 @@ public final class TypeIsFunction extends BaseJavaXPathFunction {
                 String fullTypeName = arguments[0].head().getStringValue();
 
                 if (contextNode instanceof TypeNode) {
-                    return BooleanValue.get(checker.test((TypeNode) contextNode, fullTypeName));
+                    return BooleanValue.get(checker.test(fullTypeName, (TypeNode) contextNode));
                 } else {
                     throw new IllegalArgumentException("typeIs function may only be called on a TypeNode.");
                 }
