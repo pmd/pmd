@@ -8,7 +8,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
-import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -21,6 +20,6 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((JspNode) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 }

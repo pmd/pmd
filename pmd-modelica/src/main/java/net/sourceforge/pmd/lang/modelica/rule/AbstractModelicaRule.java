@@ -28,13 +28,6 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
         ((ModelicaNode) target).jjtAccept(this, ctx);
     }
 
-    @Override
-    public Object visit(ModelicaNode node, Object data) {
-        for (ModelicaNode child : node.children()) {
-            child.jjtAccept(this, data);
-        }
-        return data;
-    }
 
     @Override
     public boolean dependsOn(AstProcessingStage<?> stage) {

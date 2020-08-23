@@ -31,12 +31,12 @@ public class ModelicaResolverTest {
         }
 
         @Override
-        public Object visit(ModelicaNode node, Object data) {
+        public Object visitModelicaNode(ModelicaNode node, Object data) {
             if (nodeClass.isInstance(node) && node.getImage().equals(nodeName)) {
                 Assert.assertNull(result);
                 result = node;
             }
-            return super.visit(node, data);
+            return super.visitModelicaNode(node, data);
         }
 
         ModelicaNode getResult() {

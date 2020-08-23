@@ -68,7 +68,7 @@ public class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
     }
 
     private Object cont(ModelicaNode node) {
-        super.visit(node, null);
+        super.visitModelicaNode(node, null);
         scopes.pop();
         return null;
     }
