@@ -217,11 +217,9 @@ final class PolyResolution {
             return type;
         }
 
-        JavaNode ctx = contextOf(e, false);
-
-        if (ctx instanceof InvocationNode) {
+        if (e.getParent().getParent() instanceof InvocationNode) {
             // invocation ctx
-            InvocationNode parentInvoc = (InvocationNode) ctx;
+            InvocationNode parentInvoc = (InvocationNode) e.getParent().getParent();
             OverloadSelectionResult info = parentInvoc.getOverloadSelectionInfo();
             if (!info.isFailed()) {
                 JTypeMirror targetT = info.ithFormalParam(e.getIndexInParent());
@@ -231,6 +229,8 @@ final class PolyResolution {
                 }
                 return targetT;
             }
+        } else if (e.getParent() instanceof ASTConditionalExpression && e.getIndexInParent() != 0) {
+            return fetchCascaded((TypeNode) e.getParent());
         }
 
         // if we're here, we failed
