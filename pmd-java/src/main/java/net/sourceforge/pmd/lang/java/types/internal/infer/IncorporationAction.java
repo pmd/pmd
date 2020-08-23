@@ -171,16 +171,11 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             if (inst != null) {
                 for (InferenceVar freeVar : ctx.getFreeVars()) {
-                    freeVar.substBounds(it -> isInstanceOfThisVar(it) ? inst : it);
+                    freeVar.substBounds(it -> ivar.isEquivalentTo(it) ? inst : it);
                 }
                 // check instantiation is compatible
                 new CheckBound(ivar, BoundKind.EQ, inst).apply(ctx);
             }
-        }
-
-        private boolean isInstanceOfThisVar(JTypeMirror it) {
-            return it == ivar // NOPMD CompareObjectsWithEquals
-                || it instanceof InferenceVar && ((InferenceVar) it).getDelegate() == ivar;
         }
 
         @Override
@@ -232,12 +227,6 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             InferenceVar alpha = ivar;
 
-            // alpha = beta, merge beta into alpha
-            if (kind == BoundKind.EQ && bound instanceof InferenceVar) {
-                ((InferenceVar) bound).merge(alpha);
-                return;
-            }
-
             // forward propagation
             // alpha <: T
             //   && alpha >: beta ~> beta <: T      |  beta <: alpha <: T
@@ -256,7 +245,11 @@ abstract class IncorporationAction {
 
             if (bound instanceof InferenceVar) {
                 InferenceVar beta = (InferenceVar) bound;
-                // note that kind is never EQ at this point
+
+                if (kind == BoundKind.EQ) {
+                    beta.adoptAllBounds(alpha);
+                    return;
+                }
 
                 // symmetric propagation
 

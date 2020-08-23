@@ -291,9 +291,6 @@ final class InferenceContext {
 
 
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
-        if (ivar.getDelegate() != null) {
-            return;
-        }
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
         if (kind != BoundKind.UPPER || bound != ts.OBJECT) {
@@ -318,7 +315,6 @@ final class InferenceContext {
         logger.ivarMerged(this, prev, delegate);
 
         mapping = mapping.plus(prev.getBaseVar(), delegate);
-        // freeVars.remove(prev);
         incorporationActions.addFirst(new SubstituteInst(prev, delegate));
     }
 
@@ -418,8 +414,6 @@ final class InferenceContext {
             sb.append(ivar);
             if (ivar.getInst() != null) {
                 sb.append(" := ").append(ivar.getInst()).append('\n');
-            } else if (ivar.getDelegate() != null) {
-                sb.append(" -> ").append(ivar.getDelegate()).append('\n');
             } else {
                 sb.append(" {");
                 boolean any = false;

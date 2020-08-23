@@ -420,7 +420,7 @@ public interface TypeInferenceLogger {
 
         @Override
         public void ivarMerged(InferenceContext ctx, InferenceVar var, InferenceVar delegate) {
-            println(addCtxInfo(ctx, "Ivar merged") + var + " -> " + delegate);
+            println(addCtxInfo(ctx, "Ivar merged") + var + " <=> " + delegate);
         }
 
         @Override

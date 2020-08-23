@@ -203,12 +203,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
     }
 
     /** Returns a function that can retrieve the log*/
-    fun logTypeInference(verbose: Boolean = false): () -> String {
-        val output = ByteArrayOutputStream()
-        val teed = TeeOutputStream(System.err, output)
-        val printStream = PrintStream(teed, /*autoflush:*/true)
-        parser = parser.withProcessing(true).logTypeInference(verbose, printStream)
-        return { output.toString(StandardCharsets.UTF_8) }
+    fun logTypeInference(verbose: Boolean = false, to: PrintStream = System.err) {
+        parser = parser.withProcessing(true).logTypeInference(verbose, to)
     }
 
     var fullSource: String? = null

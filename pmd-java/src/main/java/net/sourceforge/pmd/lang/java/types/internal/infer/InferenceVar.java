@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -36,14 +35,14 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     private static final String[] NAMES = {
         "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν",
         "ξ", "ο", "π", "ρ", "σ", "ς", "τ", "υ", "φ", "χ", "ψ", "ω",
-    };
+        };
 
     private final InferenceContext ctx;
     private JTypeVar tvar;
     private final int id;
-    private Map<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
-    private JTypeMirror inst;
-    private InferenceVar delegate;
+
+    // Equal ivars share the same BoundSet
+    private BoundSet boundSet = new BoundSet();
 
     InferenceVar(InferenceContext ctx, JTypeVar tvar, int id) {
         this.ctx = ctx;
@@ -66,7 +65,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
      * this variable.
      */
     Set<JTypeMirror> getBounds(BoundKind kind) {
-        return bounds.getOrDefault(kind, Collections.emptySet());
+        return boundSet.bounds.getOrDefault(kind, Collections.emptySet());
     }
 
 
@@ -87,46 +86,13 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     }
 
     public void addBound(BoundKind kind, JTypeMirror type, boolean isSubstitution) {
-        if (type == this) {
+        if (this.isEquivalentTo(type)) {
             // may occur because of transitive propagation
             // alpha <: alpha is always true and not interesting
             return;
         }
 
-        if (type instanceof InferenceVar && ((InferenceVar) type).getDelegate() != null) {
-            addBound(kind, ((InferenceVar) type).getDelegate());
-            return;
-        }
-
-        if (delegate != null) {
-            delegate.addBound(kind, type);
-            return;
-        }
-
-        if (type instanceof InferenceVar) {
-            if (kind == BoundKind.EQ
-                // A <: B && B <: A => A = B
-                // this is early propagation
-                || getBounds(kind.complement()).contains(type)) {
-
-                ((InferenceVar) type).merge(this);
-                return;
-            }
-        }
-
-        if (type instanceof InferenceVar && ((InferenceVar) type).getDelegate() == this) {
-
-            Set<JTypeMirror> bounds = this.bounds.get(kind);
-            if (bounds == null || bounds.isEmpty()) {
-                return;
-            } else {
-                // maybe it's been added previously
-                bounds.remove(type);
-            }
-            return;
-        }
-
-        if (bounds.computeIfAbsent(kind, k -> new LinkedHashSet<>()).add(type)) {
+        if (boundSet.bounds.computeIfAbsent(kind, k -> new LinkedHashSet<>()).add(type)) {
             ctx.onBoundAdded(this, kind, type, isSubstitution);
         }
     }
@@ -137,12 +103,12 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
      */
     @Nullable
     JTypeMirror getInst() {
-        return delegate == null ? inst : delegate.getInst();
+        return boundSet.inst;
     }
 
 
     void setInst(JTypeMirror inst) {
-        this.inst = inst;
+        this.boundSet.inst = inst;
     }
 
     /**
@@ -153,14 +119,14 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
      */
     void substBounds(Function<? super SubstVar, ? extends JTypeMirror> substitution) {
 
-        for (Entry<BoundKind, Set<JTypeMirror>> entry : bounds.entrySet()) {
+        for (Entry<BoundKind, Set<JTypeMirror>> entry : boundSet.bounds.entrySet()) {
             BoundKind kind = entry.getKey();
             Set<JTypeMirror> prevBounds = entry.getValue();
 
 
             // put the new bounds before updating
             LinkedHashSet<JTypeMirror> newBounds = new LinkedHashSet<>();
-            bounds.put(kind, newBounds);
+            boundSet.bounds.put(kind, newBounds);
 
             for (JTypeMirror prev : prevBounds) {
                 // add substituted bound
@@ -188,43 +154,35 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return tvar.isCaptured();
     }
 
-    InferenceVar getDelegate() {
-        return delegate;
+    public boolean isEquivalentTo(JTypeMirror t) {
+        return this == t || t instanceof InferenceVar
+            && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
     }
 
     public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {
-        return this == other || delegate == other || other.isTop();
+        return isEquivalentTo(other) || other.isTop();
     }
 
     /**
-     * Set this ivar's delegate to the given ivar. This
-     * - copies all bounds of this ivar onto the delegate
-     * - drops all bounds of this ivar
-     * - makes {@link #getInst()} delegate to delegate.getInst()
-     *
-     * <p>The inference engine subsequently only works on the delegate.
-     * Proofs about the delegate are reflected by this ivar.
+     * Sets the bounds of this ivar and the other to the union of both sets.
      */
-    void merge(InferenceVar candidate) {
-        InferenceVar realDelegate = candidate.getDelegate() != null ? candidate.getDelegate() : candidate;
-        if (realDelegate == this) {
+    void adoptAllBounds(InferenceVar candidate) {
+        if (isEquivalentTo(candidate)) {
             return;
         }
-        this.delegate = realDelegate;
 
-        Map<BoundKind, Set<JTypeMirror>> bounds = this.bounds;
-        this.bounds = Collections.emptyMap();
         for (BoundKind kind : BoundKind.values()) {
-            for (JTypeMirror bound : bounds.getOrDefault(kind, Collections.emptySet())) {
-                this.delegate.addBound(kind, bound);
+            for (JTypeMirror bound : candidate.getBounds(kind)) {
+                addBound(kind, bound);
             }
         }
-
-        ctx.onIvarMerged(this, this.delegate);
+        candidate.boundSet = this.boundSet;
+        ctx.onIvarMerged(candidate, this);
     }
 
     @Override
     public @Nullable JTypeDeclSymbol getSymbol() {
+        JTypeMirror inst = getInst();
         return inst != null ? inst.getSymbol()
                             : new InferenceVarSym(ctx.ts, this);
     }
@@ -330,5 +288,13 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         public String toString() {
             return sym;
         }
+    }
+
+    /** Equal inference vars share the same boundset. */
+    private static final class BoundSet {
+
+        JTypeMirror inst;
+        EnumMap<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
+
     }
 }

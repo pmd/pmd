@@ -281,9 +281,7 @@ class C {
     }
 
     parserTest("Unresolved types are used in overload specificity tests") {
-        val logGetter = logTypeInference()
-
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C {
@@ -309,25 +307,23 @@ class C {
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        logGetter().shouldBeEmpty()
-        call.shouldMatchN {
-            methodCall("foo") {
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-                it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
-                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                it.methodType.symbol shouldBe foo1
+                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe foo1
 
-                argList(1)
+                    argList(1)
+                }
             }
         }
-        logGetter().shouldNotContainIgnoringCase("ambiguity")
 
     }
 
     parserTest("Superclass type is known in the subclass") {
-        val logGetter = logTypeInference()
-
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C extends U1 {
@@ -351,18 +347,18 @@ class C extends U1 {
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        logGetter().shouldBeEmpty()
-        call.shouldMatchN {
-            methodCall("foo") {
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-                it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
-                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                it.methodType.symbol shouldBe foo1
+                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe foo1
 
-                argList(1)
+                    argList(1)
+                }
             }
         }
-        logGetter().shouldNotContainIgnoringCase("ambiguity")
 
     }
 

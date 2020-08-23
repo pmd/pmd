@@ -254,6 +254,8 @@ class StressTest : ProcessorTestSpec({
      */
     parserTest("Test context passing in huge call chain") {
 
+//        logTypeInference(true)
+
         asIfIn(TypeInferenceTestCases::class.java)
 
         //     public static <U> List<U> m(List<U> src)
@@ -275,7 +277,18 @@ class StressTest : ProcessorTestSpec({
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              ))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))))
+              ))))))));
 
         """ should parseAs {
                 localVarDecl {
