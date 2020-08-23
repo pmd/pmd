@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 /**
  * Special tweak to remove deprecated attributes of AccessNode
@@ -34,6 +35,12 @@ public class JavaAttributesPrinter extends RelevantAttributePrinter {
             return attributes;
         }
         return super.getAttributes(node);
+    }
+
+    @Override
+    protected boolean ignoreAttribute(@NonNull Node node, @NonNull Attribute attribute) {
+        return super.ignoreAttribute(node, attribute)
+            || attribute.replacementIfDeprecated() != null; // deprecated attribute is removed
     }
 
     private AttributeInfo getModifierAttr(String name, Set<JModifier> mods) {

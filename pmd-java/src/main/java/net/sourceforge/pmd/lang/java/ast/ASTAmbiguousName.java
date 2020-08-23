@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
  * pass that taking care of obscuring rules and the current declarations
@@ -84,11 +86,13 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return getImage();
     }
 
 
+    @NoAttribute
     public List<String> getSegments() {
         return Arrays.asList(getImage().split("\\."));
     }

@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = "c", @declarationsAreInDefaultPackage = "false"]
++- CompilationUnit[@PackageName = "c"]
    +- PackageDeclaration[@PackageNameImage = "c"]
    |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
    +- EmptyDeclaration[]

@@ -35,6 +35,7 @@ public final class ASTUnionType extends AbstractJavaTypeNode
 
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return children(ASTClassOrInterfaceType.class).toStream().map(ASTClassOrInterfaceType::getTypeImage).collect(Collectors.joining(" | "));
     }
