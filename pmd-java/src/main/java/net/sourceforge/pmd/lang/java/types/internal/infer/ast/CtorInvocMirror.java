@@ -58,7 +58,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public @Nullable JTypeMirror unresolvedType() {
         JClassType newT = getNewType();
-        if (myNode.isDiamond()) {
+        if (myNode.usesDiamondTypeArgs()) {
             if (myNode.getParent() instanceof ASTVariableDeclarator) {
                 // Foo<String> s = new Foo<>();
                 ASTType explicitType = ((ASTVariableDeclarator) myNode.getParent()).getVarId().getTypeNode();
@@ -97,7 +97,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     @Override
     public boolean isDiamond() {
-        return myNode.isDiamond();
+        return myNode.usesDiamondTypeArgs();
     }
 
     @Override

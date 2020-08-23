@@ -26,6 +26,8 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  */
 public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
+    // these are noAttribute so they don't end up in the tree dump tests
+
     /**
      * For now this returns the name of the type with all the segments,
      * without annotations, array dimensions, or type parameters. Experimental
@@ -35,13 +37,13 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
      * @deprecated This is not meaningful. Use {@link #getText()}, or {@link TypePrettyPrint}
      */
     @Deprecated
-    @NoAttribute
     String getTypeImage();
 
     /**
      * Returns the number of array dimensions of this type.
      * This is 0 unless this node {@linkplain #isArrayType()}.
      */
+    @Deprecated
     default int getArrayDepth() {
         return 0;
     }
@@ -50,22 +52,25 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
     /**
      * Returns true if this is the "void" pseudo-type, ie an {@link ASTVoidType}.
      */
+    @NoAttribute
     default boolean isVoid() {
         return this instanceof ASTVoidType;
     }
 
     // TODO remove that, there's enough on JTypeMirror
 
+    @Deprecated
     default boolean isPrimitiveType() {
         return this instanceof ASTPrimitiveType;
     }
 
-
+    @Deprecated
     default boolean isArrayType() {
         return this instanceof ASTArrayType;
     }
 
 
+    @Deprecated
     default boolean isClassOrInterfaceType() {
         return this instanceof ASTClassOrInterfaceType;
     }

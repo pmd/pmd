@@ -26,6 +26,7 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
 
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return "?"; // TODO?
     }

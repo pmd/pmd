@@ -28,6 +28,7 @@ public final class ASTVoidType extends AbstractJavaTypeNode implements ASTType {
     }
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return "void";
     }

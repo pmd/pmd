@@ -23,4 +23,9 @@ public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral 
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    public boolean isCompileTimeConstant() {
+        return false;
+    }
 }

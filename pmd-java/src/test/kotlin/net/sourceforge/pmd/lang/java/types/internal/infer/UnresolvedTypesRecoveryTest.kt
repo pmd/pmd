@@ -183,7 +183,7 @@ class C {
             constructorCall {
                 classType("Unresolved")
 
-                it.isDiamond shouldBe true
+                it.usesDiamondTypeArgs() shouldBe true
 
                 it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
                 it.overloadSelectionInfo.isFailed shouldBe true

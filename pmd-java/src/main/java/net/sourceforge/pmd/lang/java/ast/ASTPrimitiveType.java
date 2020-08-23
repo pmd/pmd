@@ -57,6 +57,7 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     }
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return getKind().getSimpleName();
     }

@@ -35,6 +35,7 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
 
 
     @Override
+    @Deprecated
     public String getTypeImage() {
         return iterator().next().getTypeImage(); //TODO
 
