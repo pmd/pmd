@@ -30,7 +30,8 @@ abstract class BaseTreeDumpTest(
     /**
      * @see BaseTextComparisonTest.doTest
      */
-    fun doTest(fileBaseName: String) {
+    @JvmOverloads
+    fun doTest(fileBaseName: String, parser: BaseParsingHelper<*, *> = this.parser) {
         super.doTest(fileBaseName, "") { sourceText ->
             buildString {
                 printer.renderSubtree(parser.parse(sourceText), this)

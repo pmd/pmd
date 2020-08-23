@@ -4,33 +4,37 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ParserCornersTest extends BaseParserTest {
-
-    private static final String MULTICATCH = "public class Foo { public void bar() { "
-        + "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
+public class ParserCornersTest extends BaseJavaTreeDumpTest {
+    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
     private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
+    private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
+    private final JavaParsingHelper java5 = java.withDefaultVersion("1.7");
     @Rule
     public ExpectedException expect = ExpectedException.none();
 
+
+    @Override
+    public @NonNull BaseParsingHelper<?, ?> getParser() {
+        return java4;
+    }
 
     @Test
     public void testInvalidUnicodeEscape() {
@@ -58,25 +62,25 @@ public class ParserCornersTest extends BaseParserTest {
     @Test
     public void testDiamondUsageJava8() {
         java8.parse("public class PMDExceptionTest {\n"
-                + "  private Component makeUI() {\n"
-                + "    String[] model = {\"123456\", \"7890\"};\n"
-                + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
-                + "    comboBox.setEditable(true);\n"
-                + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
-                + "      private Component editorComponent;\n"
-                + "      @Override public Component getEditorComponent() {\n"
-                + "        if (editorComponent == null) {\n"
-                + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
-                + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
-                + "        }\n"
-                + "        return editorComponent;\n"
-                + "      }\n"
-                + "    });\n"
-                + "    JPanel p = new JPanel();\n"
-                + "    p.add(comboBox);\n"
-                + "    return p;\n"
-                + "  }\n"
-                + "}");
+                        + "  private Component makeUI() {\n"
+                        + "    String[] model = {\"123456\", \"7890\"};\n"
+                        + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
+                        + "    comboBox.setEditable(true);\n"
+                        + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
+                        + "      private Component editorComponent;\n"
+                        + "      @Override public Component getEditorComponent() {\n"
+                        + "        if (editorComponent == null) {\n"
+                        + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
+                        + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
+                        + "        }\n"
+                        + "        return editorComponent;\n"
+                        + "      }\n"
+                        + "    });\n"
+                        + "    JPanel p = new JPanel();\n"
+                        + "    p.add(comboBox);\n"
+                        + "    return p;\n"
+                        + "  }\n"
+                        + "}");
     }
 
     @Test
@@ -101,24 +105,17 @@ public class ParserCornersTest extends BaseParserTest {
 
     @Test
     public void testParsersCases15() {
-        java5.parseResource("ParserCornerCases.java");
+        doTest("ParserCornerCases", java5);
     }
 
     @Test
     public void testParsersCases17() {
-        java7.parseResource("ParserCornerCases17.java");
+        doTest("ParserCornerCases17", java7);
     }
 
     @Test
     public void testParsersCases18() {
-        ASTCompilationUnit cu = java8.parseResource("ParserCornerCases18.java");
-
-        NodeStream<ASTFormalParameter> formals = cu.descendants(ASTFormalParameter.class)
-                                                   .crossFindBoundaries()
-                                                   .cached();
-        Assert.assertEquals(21, formals.count());
-        Assert.assertEquals(4, formals.filter(ASTFormalParameter::isExplicitReceiverParameter).count());
-        Assert.assertEquals(17, formals.filter(it -> !it.isExplicitReceiverParameter()).count());
+        doTest("ParserCornerCases18", java8);
     }
 
     /**
@@ -126,19 +123,12 @@ public class ParserCornersTest extends BaseParserTest {
      */
     @Test
     public void testLambdaBug1333() {
-        java8.parse("final class Bug1333 {\n"
-                        + "    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);\n" + "\n"
-                        + "    public void deleteDirectoriesByNamePattern() {\n"
-                        + "        delete(path -> deleteDirectory(path));\n" + "    }\n" + "\n"
-                        + "    private void delete(Consumer<? super String> consumer) {\n"
-                        + "        LOG.debug(consumer.toString());\n" + "    }\n" + "\n"
-                        + "    private void deleteDirectory(String path) {\n" + "        LOG.debug(path);\n" + "    }\n"
-                        + "}");
+        doTest("LambdaBug1333", java8);
     }
 
     @Test
     public void testLambdaBug1470() {
-        java8.parseResource("LambdaBug1470.java");
+        doTest("LambdaBug1470", java8);
     }
 
     /**
@@ -146,96 +136,59 @@ public class ParserCornersTest extends BaseParserTest {
      */
     @Test
     public void emptyFileJustComment() {
-        java8.parse("// just a comment");
+        getParser().parse("// just a comment");
     }
 
-
-    @Test
-    public void testMultipleExceptionCatchingJava7() {
-        java7.parse(MULTICATCH);
-    }
 
     @Test
     public void testBug1429ParseError() {
-        java8.parseResource("Bug1429.java");
+        doTest("Bug1429", java8);
     }
 
     @Test
     public void testBug1530ParseError() {
-        java8.parseResource("Bug1530.java");
+        doTest("Bug1530", java8);
     }
 
     @Test
     public void testGitHubBug207() {
-        java8.parseResource("GitHubBug207.java");
+        doTest("GitHubBug207", java8);
     }
 
     @Test
     public void testBug206() {
-        java8.parse("public @interface Foo {" + "\n"
-                        + "static final ThreadLocal<Interner<Integer>> interner =" + "\n"
-                        + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + "\n"
-                        + "}");
+        doTest("LambdaBug206", java8);
     }
 
     @Test
     public void testGitHubBug208ParseError() {
-        java5.parseResource("GitHubBug208.java");
-    }
-
-    @Test
-    public void testGitHubBug257NonExistingCast() {
-        String code = "public class Test {" + "\n"
-            + "     public static void main(String[] args) {" + "\n"
-            + "         double a = 4.0;" + "\n"
-            + "         double b = 2.0;" + "\n"
-            + "         double result = Math.sqrt((a)   - b);" + "\n"
-            + "         System.out.println(result);" + "\n"
-            + "     }" + "\n"
-            + "}";
-
-        assertEquals("A cast was found when none expected",
-                     0,
-                     java5.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
+        doTest("GitHubBug208", java5);
     }
 
     @Test
     public void testGitHubBug309() {
-        java8.parseResource("GitHubBug309.java");
+        doTest("GitHubBug309", java8);
     }
 
-    /**
-     * This triggered bug #1484 UnusedLocalVariable - false positive -
-     * parenthesis
-     */
-    @Test
-    public void stringConcatentationShouldNotBeCast() {
-        String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
-            + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
-        Assert.assertEquals(0, java8.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
-    }
 
     /**
      * Empty statements should be allowed.
-     * @throws Exception
+     *
      * @see <a href="https://github.com/pmd/pmd/issues/378">github issue 378</a>
      */
     @Test
-    public void testParseEmptyStatements() {
-        String code = "import a;;import b; public class Foo {}";
-        ASTCompilationUnit cu = java8.parse(code);
-        assertNotNull(cu);
-        Assert.assertEquals(ASTEmptyDeclaration.class, cu.getChild(1).getClass());
+    public void testEmptyStatements1() {
+        doTest("EmptyStmts1");
+    }
 
-        String code2 = "package c;; import a; import b; public class Foo {}";
-        ASTCompilationUnit cu2 = java8.parse(code2);
-        assertNotNull(cu2);
-        Assert.assertEquals(ASTEmptyDeclaration.class, cu2.getChild(1).getClass());
+    @Test
+    public void testEmptyStatements2() {
+        doTest("EmptyStmts2");
+    }
 
-        String code3 = "package c; import a; import b; public class Foo {};";
-        ASTCompilationUnit cu3 = java8.parse(code3);
-        assertNotNull(cu3);
-        Assert.assertEquals(ASTEmptyDeclaration.class, cu3.getChild(4).getClass());
+    @Test
+    public void testEmptyStatements3() {
+        doTest("EmptyStmts3");
     }
 
     @Test
@@ -261,16 +214,12 @@ public class ParserCornersTest extends BaseParserTest {
 
     @Test
     public void testSwitchWithFallthrough() {
-        ASTCompilationUnit compilationUnit = java.parseResource("SwitchWithFallthrough.java", "11");
-        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchFallthroughBranch.class).size());
+        doTest("SwitchWithFallthrough");
     }
 
     @Test
     public void testSwitchStatements() {
-        ASTCompilationUnit compilationUnit = java.parseResource("SwitchStatements.java", "11");
-        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchBranch.class).size());
+        doTest("SwitchStatements");
     }
 
 
