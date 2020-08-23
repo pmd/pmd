@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A class literal. Class literals are {@linkplain ASTPrimaryExpression primary expressions},
@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * ClassLiteral ::= ({@link ASTType Type} | "void") "." "class"
+ * ClassLiteral ::= {@link ASTType Type} "." "class"
  *
  * </pre>
  */
@@ -26,17 +26,10 @@ public final class ASTClassLiteral extends AbstractJavaExpr implements ASTPrimar
         return visitor.visit(this, data);
     }
 
-
-    public boolean isVoid() {
-        return getNumChildren() == 0;
-    }
-
-
     /**
-     * Returns the enclosed type node, or an empty optional if this is void.
+     * Returns the type node (this may be a {@link ASTVoidType}).
      */
-    @Nullable
-    public ASTType getTypeNode() {
-        return isVoid() ? null : (ASTType) getChild(0);
+    public @NonNull ASTType getTypeNode() {
+        return (ASTType) getChild(0);
     }
 }

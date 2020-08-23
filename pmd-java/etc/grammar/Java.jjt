@@ -1562,10 +1562,11 @@ void PrimitiveType() :
 }
 
 
-void ResultType() :
+void ResultType() #void:
 {}
 {
-   "void" | AnnotatedType()
+   "void" #VoidType
+   | AnnotatedType()
 }
 
 
@@ -1853,7 +1854,7 @@ void PrimaryPrefix() #void :
 | "super"                                 #SuperExpression(true)
     ("." MemberSelector() | MethodReference())
 | UnqualifiedAllocationExpr()
-| ("void" "." "class")                    #ClassLiteral
+| ("void" #VoidType "." "class")          #ClassLiteral
 | LOOKAHEAD(1) // suppress the warning here.
   (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
     (
@@ -2628,7 +2629,7 @@ void AnnotationTypeMemberDeclaration() #void:
 void AnnotationMethodDeclaration() #MethodDeclaration:
 {}
 {
-  Type() #ResultType
+  Type()
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
   ("(" ")") #FormalParameters
   [ Dims() ]

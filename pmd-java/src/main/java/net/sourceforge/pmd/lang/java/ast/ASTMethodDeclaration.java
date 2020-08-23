@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * MethodDeclaration ::= {@link ASTModifierList ModifierList}
  *                       {@link ASTTypeParameters TypeParameters}?
- *                       {@link ASTResultType ResultType}
+ *                       {@link ASTType Type}
  *                       &lt;IDENTIFIER&gt;
  *                       {@link ASTFormalParameters FormalParameters}
  *                       {@link ASTArrayDimensions ArrayDimensions}?
@@ -87,11 +88,9 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     /**
      * Returns true if the result type of this method is {@code void}.
-     *
-     * TODO remove, just as simple to write getResultType().isVoid()
      */
     public boolean isVoid() {
-        return getResultType().isVoid();
+        return getResultTypeNode().isVoid();
     }
 
 
@@ -106,9 +105,19 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     /**
      * Returns the result type node of the method.
+     *
+     * @deprecated todo When removed from java-grammar, rename the other to this good name
      */
+    @Deprecated
     public ASTResultType getResultType() {
         return getFirstChildOfType(ASTResultType.class);
+    }
+
+    /**
+     * Returns the result type node of the method. This may be a {@link ASTVoidType}.
+     */
+    public @NonNull ASTType getResultTypeNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
     /**

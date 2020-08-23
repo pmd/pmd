@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 
 /**
  * Signature for an operation.
@@ -128,7 +127,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a getter. */
         private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getArity() != 0 || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
+            if (node.getArity() != 0 || node.isVoid()) {
                 return false;
             }
 
@@ -146,7 +145,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getArity() != 1 || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
+            if (node.getArity() != 1 || !node.isVoid()) {
                 return false;
             }
 

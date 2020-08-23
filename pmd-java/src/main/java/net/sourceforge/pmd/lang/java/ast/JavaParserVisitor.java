@@ -184,4 +184,9 @@ public interface JavaParserVisitor extends JavaVisitor<Object, Object> {
         return null;
     }
 
+    @Deprecated
+    default Object visit(ASTResultType node, Object data) {
+        return null;
+    }
+
 }

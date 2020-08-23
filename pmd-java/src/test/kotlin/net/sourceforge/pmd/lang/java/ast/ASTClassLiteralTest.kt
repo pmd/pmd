@@ -19,7 +19,7 @@ class ASTClassLiteralTest : ParserTestSpec({
 
 
             "void.class" should parseAs {
-                classLiteral { null }
+                classLiteral { voidType() }
             }
 
 

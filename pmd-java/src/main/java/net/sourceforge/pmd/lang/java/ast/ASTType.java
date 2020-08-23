@@ -44,13 +44,17 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
     }
 
 
-    default boolean isPrimitiveType() {
-        return this instanceof ASTPrimitiveType;
+    /**
+     * Returns true if this is the "void" pseudo-type, ie an {@link ASTVoidType}.
+     */
+    default boolean isVoid() {
+        return this instanceof ASTVoidType;
     }
 
+    // TODO remove that, there's enough on JTypeMirror
 
-    default boolean isReferenceType() {
-        return !isPrimitiveType();
+    default boolean isPrimitiveType() {
+        return this instanceof ASTPrimitiveType;
     }
 
 
