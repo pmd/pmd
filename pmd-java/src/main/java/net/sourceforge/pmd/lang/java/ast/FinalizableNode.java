@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * Package private, though the method is public.
