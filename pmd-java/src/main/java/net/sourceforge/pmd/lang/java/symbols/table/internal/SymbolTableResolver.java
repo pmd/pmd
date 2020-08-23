@@ -157,7 +157,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, Void data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
             int pushed = 0;
 
             // the following is just for the body
@@ -212,7 +212,7 @@ public final class SymbolTableResolver {
 
 
         @Override
-        public Void visit(ASTMethodOrConstructorDeclaration node, Void data) {
+        public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Void data) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.bodyDeclaration(top(), node.getFormalParameters(), node.getTypeParameters()));
             setTopSymbolTableAndRecurse(node);

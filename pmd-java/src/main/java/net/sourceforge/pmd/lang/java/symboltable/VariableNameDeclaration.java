@@ -32,8 +32,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return getDeclaratorId().hasArrayType();
     }
 
+    @Deprecated
     public int getArrayDepth() {
-        return getTypeNode().getArrayDepth();
+        return getExplicitTypeNode().getArrayDepth();
     }
 
     public boolean isVarargs() {
@@ -58,7 +59,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isPrimitiveType() {
-        return getTypeNode().isPrimitiveType();
+        return getExplicitTypeNode().isPrimitiveType();
     }
 
     @Override
@@ -102,17 +103,8 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return getDeclaratorId();
     }
 
-    private TypeNode getExplicitTypeNode() {
-        if (getDeclaratorId().isRecordComponent()) {
-            return (TypeNode) node.getParent().getFirstChildOfType(ASTType.class).getChild(0);
-        }
-        if (isPrimitiveType()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0);
-        }
-        if (!isTypeInferred()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0).getChild(0);
-        }
-        return null;
+    private ASTType getExplicitTypeNode() {
+        return getDeclaratorId().getTypeNode();
     }
 
     @Override

@@ -25,7 +25,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -61,7 +62,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
@@ -621,7 +621,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTForStatement node, Object data) {
+        public SpanInfo visit(ASTForStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
             ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
             ASTExpression cond = node.getCondition();
@@ -795,42 +795,28 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         @Override
-        public SpanInfo visit(ASTExpression node, SpanInfo data) {
-            return checkAssignment(node, data);
-        }
-
-        @Override
-        public SpanInfo visit(ASTStatementExpression node, SpanInfo data) {
-            return checkAssignment(node, data);
-        }
-
-        public SpanInfo checkAssignment(JavaNode node, SpanInfo data) {
+        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
             SpanInfo result = data;
-            if (node.getNumChildren() == 3) {
-                // assignment
-                assert node.getChild(1) instanceof ASTAssignmentOperator;
+            ASTAssignableExpr lhs = node.getLeftOperand();
+            ASTExpression rhs = node.getRightOperand();
 
-                // visit the rhs as it is evaluated before
-                JavaNode rhs = node.getChild(2);
-                result = acceptOpt(rhs, result);
+            // visit the rhs as it is evaluated before
+            result = acceptOpt(rhs, result);
 
-                ASTVariableDeclaratorId lhsVar = getVarFromExpression(node.getChild(0), true, result);
-                if (lhsVar != null) {
-                    // in that case lhs is a normal variable (array access not supported)
+            ASTVariableDeclaratorId lhsVar = getVarFromExpression(lhs, true, result);
+            if (lhsVar != null) {
+                // in that case lhs is a normal variable (array access not supported)
 
-                    if (node.getChild(1).getImage().length() >= 2) {
-                        // compound assignment, to use BEFORE assigning
-                        result.use(lhsVar);
-                    }
-
-                    result.assign(lhsVar, rhs);
-                } else {
-                    result = acceptOpt(node.getChild(0), result);
+                if (node.getOperator().isCompound()) {
+                    // compound assignment, to use BEFORE assigning
+                    result.use(lhsVar);
                 }
-                return result;
+
+                result.assign(lhsVar, rhs);
             } else {
-                return visitJavaNode(node, data);
+                result = acceptOpt(lhs, result);
             }
+            return result;
         }
 
         @Override
@@ -846,7 +832,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // variable usage
 
         @Override
-        public SpanInfo visit(ASTPrimaryExpression node, SpanInfo data) {
+        public SpanInfo visitPrimaryExpr(ASTPrimaryExpression node, SpanInfo data) {
             SpanInfo state = visitJavaNode(node, data); // visit subexpressions
 
             ASTVariableDeclaratorId var = getVarFromExpression(node, false, state);

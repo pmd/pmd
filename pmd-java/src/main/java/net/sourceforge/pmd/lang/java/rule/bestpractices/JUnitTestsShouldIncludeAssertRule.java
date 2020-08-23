@@ -99,7 +99,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             Node parent = entry.getKey().getNode().getParent().getParent().getParent();
             if (parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
                 ASTAnnotation annot = parent.getFirstDescendantOfType(ASTAnnotation.class);
-                if (annot == null || !TypeHelper.isA(annot, "org.junit.Rule")) {
+                if (annot == null || !TypeTestUtil.isA("org.junit.Rule", annot)) {
                     continue;
                 }
 

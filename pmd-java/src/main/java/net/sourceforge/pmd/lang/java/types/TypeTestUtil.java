@@ -243,7 +243,7 @@ public final class TypeTestUtil {
                 return isA(binaryName, superClass);
             }
 
-            for (ASTClassOrInterfaceType itf : ((ASTClassOrInterfaceDeclaration) n).getSuperInterfacesTypeNodes()) {
+            for (ASTClassOrInterfaceType itf : n.getSuperInterfaceTypeNodes()) {
                 if (isA(binaryName, itf)) {
                     return true;
                 }

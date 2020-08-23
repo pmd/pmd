@@ -170,7 +170,7 @@ public final class ASTModifierList extends AbstractJavaNode {
         // TODO final modifier is implicitly given to direct subclasses of sealed interface/class
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
 
             ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
             if (enclosing != null && enclosing.isInterface()) {
