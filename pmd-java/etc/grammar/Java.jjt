@@ -2224,9 +2224,9 @@ void BlockStatement() #void:
 
 private void LocalTypeStartNoIdent() #void: // A lookahead
 {}
-{ // notice: not default
-    "public" | "static" | "protected" | "private" | "final"
-  | "abstract" | "synchronized" | "native" | "transient"
+{ // notice: not default, not synchronized, not final
+    "public" | "static" | "protected" | "private"
+  | "abstract" | "native" | "transient"
   | "volatile" | "strictfp"
 
   | "class" | "interface"

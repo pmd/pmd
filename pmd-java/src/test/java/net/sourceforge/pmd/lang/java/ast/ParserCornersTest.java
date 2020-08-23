@@ -222,6 +222,11 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         doTest("SwitchStatements");
     }
 
+    @Test
+    public void testSynchronizedStatements() {
+        doTest("SynchronizedStmts");
+    }
+
 
     private static final String GENERICS_PROBLEM =
         "public class Test {\n public void test() {\n   String o = super.<String> doStuff(\"\");\n }\n}";
