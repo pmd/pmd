@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
@@ -38,7 +38,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node, String.class) || node.isArray()
+        if (!TypeTestUtil.isA(String.class, node) || node.isArray()
                 || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }
