@@ -26,15 +26,12 @@ public class Java14Test {
 
     private final JavaParsingHelper java14p = java14.withDefaultVersion("14-preview");
     private final JavaParsingHelper java13 = java14.withDefaultVersion("13");
-    private final JavaParsingHelper java13p = java14.withDefaultVersion("13-preview");
 
     /**
      * Tests switch expressions with yield.
-     * The switch expressions have no changed between java 13-preview and 14, so behave exactly the same.
      */
     @Test
     public void switchExpressions() {
-        parseAndCheckSwitchExpression(java13p);
         parseAndCheckSwitchExpression(java14);
         parseAndCheckSwitchExpression(java14p);
     }
@@ -84,11 +81,6 @@ public class Java14Test {
 
     @Test
     public void checkYieldConditionalBehaviour() {
-        checkYieldStatements(java13p);
-    }
-
-    @Test
-    public void checkYieldConditionalBehaviourJ14() {
         checkYieldStatements(java14);
     }
 
@@ -138,7 +130,6 @@ public class Java14Test {
 
     @Test
     public void multipleCaseLabels() {
-        multipleCaseLabels(java13p);
         multipleCaseLabels(java14);
         multipleCaseLabels(java14p);
     }
@@ -154,7 +145,6 @@ public class Java14Test {
 
     @Test
     public void switchRules() {
-        switchRules(java13p);
         switchRules(java14);
         switchRules(java14p);
     }
@@ -182,7 +172,6 @@ public class Java14Test {
 
     @Test
     public void simpleSwitchExpressions() {
-        simpleSwitchExpressions(java13p);
         simpleSwitchExpressions(java14);
         simpleSwitchExpressions(java14p);
     }

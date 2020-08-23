@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
  * This can contain additional methods and or constructors.
  *
  * <pre class="grammar">

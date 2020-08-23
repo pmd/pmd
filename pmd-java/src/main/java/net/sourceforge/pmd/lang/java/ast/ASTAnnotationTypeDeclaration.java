@@ -34,6 +34,10 @@ public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
         return TypeKind.ANNOTATION;
     }
 
+    @Override
+    public boolean isLocal() {
+        return getParent() instanceof ASTBlockStatement;
+    }
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {

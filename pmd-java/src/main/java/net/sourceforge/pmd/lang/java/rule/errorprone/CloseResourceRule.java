@@ -45,7 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -288,7 +288,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             for (String type : allowedResourceTypes) {
                 // the check here must be a exact type match, since subclasses may override close()
                 // and actually require closing
-                if (TypeHelper.isExactlyA(refType, type)) {
+                if (TypeTestUtil.isExactlyA(type, refType)) {
                     return true;
                 }
             }
@@ -340,7 +340,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private boolean isNodeInstanceOfResourceType(TypeNode refType) {
         for (String resType : types) {
-            if (TypeHelper.isA(refType, resType)) {
+            if (TypeTestUtil.isA(resType, refType)) {
                 return true;
             }
         }

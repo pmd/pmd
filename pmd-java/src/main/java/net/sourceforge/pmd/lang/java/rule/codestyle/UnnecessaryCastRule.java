@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -105,7 +105,7 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
     }
 
     private ASTClassOrInterfaceType getCollectionItemType(ASTClassOrInterfaceType collectionType) {
-        if (TypeHelper.isA(collectionType, Map.class)) {
+        if (TypeTestUtil.isA(Map.class, collectionType)) {
             List<ASTClassOrInterfaceType> types = collectionType.findDescendantsOfType(ASTClassOrInterfaceType.class);
             if (types.size() >= 2) {
                 return types.get(1); // the value type of the map

@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -121,7 +121,8 @@ public class StringToStringRule extends AbstractJavaRule {
     private boolean isStringVariableDeclarator(ASTVariableDeclaratorId varDeclaratorId) {
         VariableNameDeclaration varNameDeclaration = varDeclaratorId.getNameDeclaration();
         return varNameDeclaration != null
-                && TypeHelper.isExactlyAny(varNameDeclaration, String.class, String[].class);
+            && TypeTestUtil.isExactlyA(String.class, varDeclaratorId)
+            || TypeTestUtil.isExactlyA(String[].class, varDeclaratorId);
     }
 
     private NameOccurrence getVarUsageQualifier(NameOccurrence varUsage) {
