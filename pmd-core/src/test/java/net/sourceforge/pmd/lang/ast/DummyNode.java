@@ -11,11 +11,16 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
-
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+
+    public DummyNode(String xpathName) {
+        super();
+        this.findBoundary = false;
+        this.xpathName = xpathName;
+    }
 
     public DummyNode() {
         this(false);
@@ -82,6 +87,9 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
 
     public static class DummyNodeTypeB extends DummyNode {
 
+        public DummyNodeTypeB() {
+            super("dummyNodeB");
+        }
     }
 
 }

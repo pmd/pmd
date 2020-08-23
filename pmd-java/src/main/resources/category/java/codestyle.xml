@@ -63,7 +63,6 @@ Clarify your intent by using private or package access modifiers instead.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -98,7 +97,6 @@ visibility cannot be reduced). Clarify your intent by using private or package a
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -131,7 +129,6 @@ and increases the maintenance burden.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Name[starts-with(@Image,'System.loadLibrary')]</value>
             </property>
@@ -169,7 +166,6 @@ prefix for these methods.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -206,7 +202,6 @@ another constructor (such as an overloaded constructor) is called, this rule wil
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -358,8 +353,6 @@ boolean bar(int x, int y) {
             <property name="checkCaseStmt" type="Boolean" value="false" description="Require that cases of a switch have braces"/>
 
             <property name="allowEmptyLoop" type="Boolean" value="false" description="Allow loops with an empty statement, e.g. 'while(true);'" />
-
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
                 //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
@@ -410,7 +403,6 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -494,7 +486,6 @@ usage by developers who should be implementing their own versions in the concret
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -541,7 +532,6 @@ public abstract class ShouldBeAbstract {
         <description>No need to explicitly extend Object.</description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -635,7 +625,6 @@ Some for loops can be simplified to while loops, this makes them more concise.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -710,7 +699,6 @@ Names for references to generic values should be limited to a single uppercase l
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -851,7 +839,6 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -890,7 +877,6 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -988,7 +974,6 @@ Fields, formal arguments, or local variable names that are too long can make the
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" description="The variable length reporting threshold" min="1" max="100" value="17"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1023,7 +1008,6 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1115,7 +1099,6 @@ Detects when a class, interface, enum or annotation does not have a package defi
             <property name="xpath">
                 <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
@@ -1143,7 +1126,6 @@ public class ClassInDefaultPackage {
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
                       description="Length under which literals in base 10 are not required to have underscores"/>
             <property name="xpath">
@@ -1219,7 +1201,6 @@ Detects when a package definition contains uppercase characters.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//PackageDeclaration/Name[lower-case(@Image)!=@Image]</value>
             </property>
@@ -1273,7 +1254,6 @@ Remote Interface of a Session EJB should not have a suffix.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1320,7 +1300,6 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1360,7 +1339,6 @@ Short Classnames with fewer than e.g. five characters are not recommended.
         <priority>4</priority>
         <properties>
             <property name="minimum" type="Integer" value="5" min="1" max="100" description="Number of characters that are required as a minimum for a class name."/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1389,7 +1367,6 @@ Method names that are very short are not helpful to the reader.
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a method name."/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1420,7 +1397,6 @@ Fields, local variables, or parameter names that are very short are not helpful 
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a variable name."/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1471,7 +1447,6 @@ which class a static member comes from (Sun 1.5 Language Guide).
         <properties>
             <property name="maximumStaticImports" type="Integer"
                       description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1745,7 +1720,6 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
         <description>Useless parentheses should be removed.</description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1834,7 +1808,6 @@ public class Foo {
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1894,7 +1867,6 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
@@ -1902,7 +1874,6 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
     [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
                 ]]></value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[

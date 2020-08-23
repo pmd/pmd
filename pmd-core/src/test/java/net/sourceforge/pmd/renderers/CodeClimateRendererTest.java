@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class CodeClimateRendererTest extends AbstractRendererTest {
 
@@ -94,8 +95,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
-        XPathRule theRule = new XPathRule();
-        theRule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//dummyNode");
+        XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
         theRule.setDescription("desc");

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jaxen.JaxenException;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -517,15 +515,11 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isNotConditional(ASTBlock enclosingBlock, Node node, String varName) {
         ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
         if (ifStatement != null) {
-            try {
-                // find expressions like: varName != null or null != varName
-                List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
-                        + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
-                        + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
-                return !nodes.isEmpty();
-            } catch (JaxenException e) {
-                throw new RuntimeException(e);
-            }
+            // find expressions like: varName != null or null != varName
+            List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
+                    + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
+                    + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
+            return !nodes.isEmpty();
         }
         return true;
     }

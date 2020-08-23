@@ -22,7 +22,6 @@ protected constructor in order to prevent instantiation than make the class misl
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -56,7 +55,6 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -128,7 +126,6 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -165,7 +162,6 @@ code size and runtime complexity.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -257,7 +253,6 @@ Exception, or Error, use a subclassed exception or error instead.
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -300,7 +295,6 @@ exceptional cases with a `@throws` Javadoc tag, which allows being more descript
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -331,7 +325,6 @@ is invoked by a inner class.
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -364,7 +357,6 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -532,14 +524,10 @@ Errors are system exceptions. Do not extend them.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [pmd-java:typeIs('java.lang.Error')]
-
-
+//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Error')]
 ]]>
                 </value>
             </property>
@@ -730,7 +718,6 @@ in each object at runtime.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -857,7 +844,6 @@ Use opposite operator instead of negating the whole expression with a logic comp
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1051,7 +1037,6 @@ or
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1105,7 +1090,6 @@ as:
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1154,7 +1138,6 @@ Avoid unnecessary comparisons in boolean expressions, they serve no purpose and 
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1216,7 +1199,6 @@ No need to check for null before an instanceof; the instanceof keyword returns f
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1360,7 +1342,6 @@ complexity and find a way to have more fine grained objects.
         <priority>3</priority>
         <properties>
             <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
@@ -1446,7 +1427,6 @@ your API.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

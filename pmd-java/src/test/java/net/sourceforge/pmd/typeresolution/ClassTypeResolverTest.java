@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -302,7 +301,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testLiterals() throws JaxenException {
+    public void testLiterals() {
         List<ASTLiteral> literals = selectNodes(Literals.class, ASTLiteral.class);
         int index = 0;
 
@@ -452,7 +451,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testUnaryNumericPromotion() throws JaxenException {
+    public void testUnaryNumericPromotion() {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -474,7 +473,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testBinaryNumericPromotion() throws JaxenException {
+    public void testBinaryNumericPromotion() {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -545,7 +544,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testBinaryStringPromotion() throws JaxenException {
+    public void testBinaryStringPromotion() {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -565,7 +564,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testUnaryLogicalOperators() throws JaxenException {
+    public void testUnaryLogicalOperators() {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -582,7 +581,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testBinaryLogicalOperators() throws JaxenException {
+    public void testBinaryLogicalOperators() {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -610,7 +609,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testUnaryNumericOperators() throws JaxenException {
+    public void testUnaryNumericOperators() {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<TypeNode> expressions = new ArrayList<>();
         final String baseXPath = "//MethodDeclaration[@Name = 'unaryNumericOperators']/Block";
@@ -645,7 +644,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testBinaryNumericOperators() throws JaxenException {
+    public void testBinaryNumericOperators() {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -668,7 +667,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testAssignmentOperators() throws JaxenException {
+    public void testAssignmentOperators() {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTStatementExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
@@ -753,7 +752,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testSuperExpression() throws JaxenException {
+    public void testSuperExpression() {
         List<TypeNode> expressions = selectNodes(SuperExpression.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix");
 
@@ -776,7 +775,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testArrayTypes() throws JaxenException {
+    public void testArrayTypes() {
         // We must not select the expression in the dimensions
         List<ASTExpression> expressions = selectNodes(ArrayTypes.class, ASTExpression.class, "//VariableInitializer/Expression");
 
@@ -803,7 +802,7 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testArrayAccess() throws JaxenException {
+    public void testArrayAccess() {
         List<ASTExpression> expressions = selectNodes(ArrayAccess.class, ASTExpression.class, "//VariableInitializer/Expression");
 
         int index = 1;
@@ -870,7 +869,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testHeterogeneousArrayFieldDeclaration() throws JaxenException {
+    public void testHeterogeneousArrayFieldDeclaration() {
         List<ASTFieldDeclaration> fields = selectNodes(ArrayVariableDeclaration.class, ASTFieldDeclaration.class);
         List<ASTLocalVariableDeclaration> locals = selectNodes(ArrayVariableDeclaration.class, ASTLocalVariableDeclaration.class);
 
@@ -885,7 +884,7 @@ public class ClassTypeResolverTest {
 
 
     // subtest
-    private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
+    private void testPrimitiveTypeFieldDecl(Node declaration) {
         // public int[] a, b[];
 
         ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTReferenceType.class);
@@ -907,7 +906,7 @@ public class ClassTypeResolverTest {
 
 
     // subtest
-    private void testRefTypeFieldDecl(Node declaration) throws JaxenException {
+    private void testRefTypeFieldDecl(Node declaration) {
 
         // public String[] c, d[];
 
@@ -933,7 +932,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccess() throws JaxenException {
+    public void testFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccess.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -968,7 +967,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccessNested() throws JaxenException {
+    public void testFieldAccessNested() {
         List<TypeNode> expressions = selectNodes(FieldAccessNested.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1000,7 +999,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccessShadow() throws JaxenException {
+    public void testFieldAccessShadow() {
         List<TypeNode> expressions = selectNodes(FieldAccessShadow.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1034,7 +1033,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccessSuper() throws JaxenException {
+    public void testFieldAccessSuper() {
         List<TypeNode> expressions = selectNodes(FieldAccessSuper.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1091,7 +1090,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testBoundsGenericFieldAccess() throws JaxenException {
+    public void testBoundsGenericFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccessGenericBounds.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1127,7 +1126,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testParameterGenericFieldAccess() throws JaxenException {
+    public void testParameterGenericFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccessGenericParameter.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1155,7 +1154,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testSimpleGenericFieldAccess() throws JaxenException {
+    public void testSimpleGenericFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccessGenericSimple.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1215,7 +1214,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testRawGenericFieldAccess() throws JaxenException {
+    public void testRawGenericFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccessGenericRaw.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1286,7 +1285,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testPrimarySimpleGenericFieldAccess() throws JaxenException {
+    public void testPrimarySimpleGenericFieldAccess() {
         List<TypeNode> expressions = selectNodes(FieldAccessPrimaryGenericSimple.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1338,7 +1337,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccessGenericNested() throws JaxenException {
+    public void testFieldAccessGenericNested() {
         List<TypeNode> expressions = selectNodes(FieldAccessGenericNested.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1358,7 +1357,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testFieldAccessStatic() throws JaxenException {
+    public void testFieldAccessStatic() {
         List<TypeNode> expressions = selectNodes(FieldAccessStatic.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
@@ -1403,7 +1402,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodPotentialApplicability() throws JaxenException {
+    public void testMethodPotentialApplicability() {
         List<TypeNode> expressions = selectNodes(MethodPotentialApplicability.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
@@ -1445,7 +1444,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodAccessibility() throws JaxenException {
+    public void testMethodAccessibility() {
         List<TypeNode> expressions = selectNodes(MethodAccessibility.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
@@ -1467,7 +1466,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodFirstPhase() throws JaxenException {
+    public void testMethodFirstPhase() {
         List<TypeNode> expressions = selectNodes(MethodFirstPhase.class, "1.8", TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
@@ -1495,7 +1494,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodMostSpecific() throws JaxenException {
+    public void testMethodMostSpecific() {
         List<TypeNode> expressions = selectNodes(MethodMostSpecific.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1521,7 +1520,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodSecondPhase() throws JaxenException {
+    public void testMethodSecondPhase() {
         List<TypeNode> expressions = selectNodes(MethodSecondPhase.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1558,7 +1557,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodThirdPhase() throws JaxenException {
+    public void testMethodThirdPhase() {
         List<TypeNode> expressions = selectNodes(MethodThirdPhase.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1586,7 +1585,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodStaticAccess() throws JaxenException {
+    public void testMethodStaticAccess() {
         List<TypeNode> expressions = selectNodes(MethodStaticAccess.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1617,7 +1616,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodGenericExplicit() throws JaxenException {
+    public void testMethodGenericExplicit() {
         List<TypeNode> expressions = selectNodes(MethodGenericExplicit.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1633,7 +1632,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testGenericArrays() throws JaxenException {
+    public void testGenericArrays() {
         List<TypeNode> expressions = selectNodes(GenericsArrays.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1660,7 +1659,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodTypeInference() throws JaxenException {
+    public void testMethodTypeInference() {
         List<TypeNode> expressions = selectNodes(GenericMethodsImplicit.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1676,7 +1675,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodTypeInferenceVarargsZeroArity() throws JaxenException {
+    public void testMethodTypeInferenceVarargsZeroArity() {
         List<TypeNode> expressions = selectNodes(VarargsZeroArity.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1693,7 +1692,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodTypeInferenceVarargsAsFixedArity() throws JaxenException {
+    public void testMethodTypeInferenceVarargsAsFixedArity() {
         List<TypeNode> expressions = selectNodes(VarargsAsFixedArity.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1803,7 +1802,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
+    public void testMethodInitialConstraints() throws NoSuchMethodException {
         List<JavaNode> expressions = selectNodes(GenericMethodsImplicit.class, JavaNode.class, "//ArgumentList");
 
         List<Variable> variables = new ArrayList<>();
@@ -1924,27 +1923,16 @@ public class ClassTypeResolverTest {
     }
 
 
-    private <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
-        return selectNodes(source, "1.5", resultType, xpath);
-    }
-
-    // This is the master overload, others just default the parameters
-    private <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
-        ASTCompilationUnit acu = java4.parse(source, version);
-        return convertList(acu.findChildNodesWithXPath(xpath), resultType);
-    }
-
-
     private <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType) {
         return java5.parseClass(source).findDescendantsOfType(resultType);
     }
 
-    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) {
         return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
-    private <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+    private <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) {
         ASTCompilationUnit acu = java4.parseClass(source, version);
         return convertList(acu.findChildNodesWithXPath(xpath), resultType);
     }

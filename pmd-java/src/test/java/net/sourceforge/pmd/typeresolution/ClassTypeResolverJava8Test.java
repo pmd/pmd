@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.jaxen.JaxenException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,7 +30,7 @@ public class ClassTypeResolverJava8Test {
                                              .withResourceContext(ClassTypeResolverJava8Test.class);
 
     @Test
-    public void testThisExpression() throws JaxenException {
+    public void testThisExpression() {
         ASTCompilationUnit acu = java8.parseClass(ThisExpression.class);
 
         List<ASTPrimaryExpression> expressions = convertList(
@@ -54,7 +53,7 @@ public class ClassTypeResolverJava8Test {
     }
 
     @Test
-    public void testSuperExpression() throws JaxenException {
+    public void testSuperExpression() {
         ASTCompilationUnit acu = java8.parseClass(SuperExpression.class);
 
         List<TypeNode> expressions = convertList(

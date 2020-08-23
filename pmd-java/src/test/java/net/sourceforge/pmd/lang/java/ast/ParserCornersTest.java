@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -109,18 +110,15 @@ public class ParserCornersTest extends BaseParserTest {
     }
 
     @Test
-    public void testParsersCases18() throws Exception {
+    public void testParsersCases18() {
         ASTCompilationUnit cu = java8.parseResource("ParserCornerCases18.java");
 
-        Assert.assertEquals(9, cu.findChildNodesWithXPath("//FormalParameter").size());
-        Assert.assertEquals(32, cu.findChildNodesWithXPath("//LambdaParameter").size());
-        Assert.assertEquals(8, cu.findChildNodesWithXPath("//LambdaParameter[@TypeInferred='false']").size());
-        Assert.assertEquals(4, cu.findChildNodesWithXPath("//ReceiverParameter").size());
-    }
-
-    @Test
-    public void testTypeAnnotations() {
-        java8.parseResource("/net/sourceforge/pmd/ast/FullTypeAnnotations.java");
+        NodeStream<ASTFormalParameter> formals = cu.descendants(ASTFormalParameter.class)
+                                                   .crossFindBoundaries()
+                                                   .cached();
+        Assert.assertEquals(21, formals.count());
+        Assert.assertEquals(4, formals.filter(ASTFormalParameter::isExplicitReceiverParameter).count());
+        Assert.assertEquals(17, formals.filter(it -> !it.isExplicitReceiverParameter()).count());
     }
 
     /**

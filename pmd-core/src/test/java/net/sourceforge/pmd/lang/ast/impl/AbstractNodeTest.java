@@ -9,12 +9,10 @@ import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.jaxen.JaxenException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,11 +20,9 @@ import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -214,26 +210,5 @@ public class AbstractNodeTest {
         // Check that this node still does not have any children
         assertEquals(0, grandChild.getNumChildren());
     }
-
-
-    @Test
-    public void testDeprecatedAttributeXPathQuery() throws JaxenException {
-        class MyRootNode extends DummyNode implements RootNode {
-
-            private MyRootNode() {
-                super();
-            }
-        }
-
-        tree(() -> root(new DummyNodeWithDeprecatedAttribute(2)))
-            .findChildNodesWithXPath("//dummyNode[@Size=1]");
-
-        String log = loggingRule.getLog();
-
-        assertTrue(log.contains("deprecated"));
-        assertTrue(log.contains("attribute"));
-        assertTrue(log.contains("dummyNode/@Size"));
-    }
-
 
 }
