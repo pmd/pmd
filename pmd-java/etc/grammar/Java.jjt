@@ -275,6 +275,10 @@ class JavaParserImpl {
     return (jdkVersion == 14 || jdkVersion == 15) && preview;
   }
 
+  private boolean localTypesSupported() {
+    return isRecordTypeSupported();
+  }
+
   private boolean isSealedClassSupported() {
       return jdkVersion == 15 && preview;
   }
@@ -294,12 +298,20 @@ class JavaParserImpl {
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
-  private boolean isNextTokenAnAssert() {
+  private boolean isAssertStart() {
     if (jdkVersion <= 3) {
       return false;
     }
 
     return getToken(1).getImage().equals("assert");
+  }
+
+  private boolean isRecordStart() {
+    return isRecordTypeSupported() && isKeyword("record");
+  }
+
+  private boolean isEnumStart() {
+    return jdkVersion >= 5 && isKeyword("enum");
   }
 
   /**
@@ -357,13 +369,22 @@ class JavaParserImpl {
         || isSealedClassSupported() && isNonSealedModifier();
   }
 
-  private boolean localTypeDeclLookahead() {
+  private boolean localTypeDeclAfterModifiers() {
       Token next = getToken(1);
       return next.kind == CLASS
-        || isRecordTypeSupported() && next.kind == INTERFACE
-        || isRecordTypeSupported() && next.kind == AT && isToken(2, INTERFACE)
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.getImage().equals("enum")
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
+        || localTypesSupported() && (
+              next.kind == INTERFACE
+           || next.kind == AT && isToken(2, INTERFACE)
+           || next.kind == IDENTIFIER && next.getImage().equals("enum")
+           ||
+           next.kind == IDENTIFIER && next.image.equals("record")
+      );
+  }
+
+  private boolean localTypeDeclGivenNextIsIdent() {
+      return localTypesSupported() && (
+          isNonSealedModifier() || isRecordStart() || isEnumStart()
+      );
   }
 
   /**
@@ -434,6 +455,11 @@ class JavaParserImpl {
 
   private void setLastTokenImage(AbstractJavaNode node) {
     node.setImage(getToken(0).getImage());
+  }
+
+  private void fixLastToken() {
+       AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+       top.setLastToken(getToken(0));
   }
 
   private void forceExprContext() {
@@ -2127,8 +2153,20 @@ void ArrayDimExpr() #void:
 void Statement() #void:
 {}
 {
-  Block()
+  StatementNoIdent()
+// testing the hard cases last optimises the code gen
+// all the previous cases are trivial for the parser
+// because they start with a different token
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
+| LOOKAHEAD( { isAssertStart() } ) AssertStatement()
+| LOOKAHEAD(2) LabeledStatement()
+| ( StatementExpression() ";" ) #ExpressionStatement
+}
+
+void StatementNoIdent() #void:
+{}
+{
+  Block()
 | EmptyStatement()
 | SwitchStatement()
 | IfStatement()
@@ -2141,12 +2179,6 @@ void Statement() #void:
 | ThrowStatement()
 | SynchronizedStatement()
 | TryStatement()
-// testing the hard cases last optimises the code gen
-// all the previous cases are trivial for the parser
-// because they start with a different token
-| LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD(2) LabeledStatement()
-| ( StatementExpression() ";" ) #ExpressionStatement
 }
 
 void LabeledStatement() :
@@ -2162,45 +2194,60 @@ void Block() :
 }
 
 void BlockStatement() #void:
-{}
+{} // Note: this has been written this way to minimize lookaheads
+   // This generates a table switch with very few lookaheads
 {
-  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
-| LOOKAHEAD( "@" | "final" )
+  LOOKAHEAD(1, "@" | "final" )
     // this eagerly parses all modifiers and annotations. After that, either a local type declaration
     // or a local variable declaration follows.
     // This allows more modifiers for local variables than actually allowed
-    // and the annotations for local variables need to be moved in the AST down again.
-    ModifierList()
-    (
-        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl()
-        |
-        LocalVariableDeclaration() ";"
+
+    // The ModifierList is adopted by the next class to open
+    ModifierList() (
+        LOOKAHEAD({localTypeDeclAfterModifiers()}) LocalTypeDecl()
+      | LOOKAHEAD({true})                          LocalVariableDeclaration() ";"    { fixLastToken(); }
     )
-| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
-    ModifierList() LocalTypeDecl()
-| LOOKAHEAD(Type() <IDENTIFIER>)
-    LocalVariableDeclaration() ";" {
-      // make it so that the LocalVariableDeclaration's last token is the semicolon
-      AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
-      top.setLastToken(getToken(0));
-  } {}
-|
-  // we need to lookahead until the "class" token,
-  // because a method ref may be annotated
-  // -> so Expression, and hence Statement, may start with "@"
-  LOOKAHEAD(ModifierList() "class") LocalTypeDecl()
-|
-  Statement()
+| LOOKAHEAD(1, <IDENTIFIER>)
+ (
+      LOOKAHEAD({ localTypeDeclGivenNextIsIdent() }) ModifierList() LocalTypeDecl()
+    | LOOKAHEAD({ isAssertStart() })                 AssertStatement()
+    | LOOKAHEAD({ isYieldStart() })                  YieldStatement()
+    | LOOKAHEAD({ getToken(2).kind == COLON })       LabeledStatement()
+    | LOOKAHEAD(ClassOrInterfaceType() <IDENTIFIER>) LocalVariableDeclaration() ";"  { fixLastToken(); }
+    | LOOKAHEAD({true})                              ExpressionStatement()
+ )
+| LOOKAHEAD(1, LocalTypeStartNoIdent()) ModifierList() LocalTypeDecl()
+| LOOKAHEAD(1)                          StatementNoIdent()
+| LOOKAHEAD(Type() <IDENTIFIER>)        LocalVariableDeclaration() ";" { fixLastToken(); }
+| LOOKAHEAD({true})                     ExpressionStatement()
 }
 
-void LocalTypeDecl() #LocalClassStatement:
+private void LocalTypeStartNoIdent() #void: // A lookahead
 {}
-{
-    ClassOrInterfaceDeclaration()
+{ // notice: not default
+    "public" | "static" | "protected" | "private" | "final"
+  | "abstract" | "synchronized" | "native" | "transient"
+  | "volatile" | "strictfp"
+
+  | "class" | "interface"
+}
+
+void LocalTypeDecl() #void:
+{} // At the point this is called, a ModifierList is on the top of the stack,
+{  // waiting for the next node to open. We want that node to be the type declaration,
+   // not the wrapper statement node.
+  ( ClassOrInterfaceDeclaration()
   | AnnotationTypeDeclaration()
   | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
   | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+  ) {
+    // Wrap the type decl into a statement
+    // This can't be done with regular jjtree constructs, as the ModifierList
+    // is adopted by the first node to be opened.
+    ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) jjtree.popNode();
+    ASTLocalClassStatement stmt = new ASTLocalClassStatement(type);
+    jjtree.pushNode(stmt);
+  }
 }
 
 /*
@@ -2241,6 +2288,12 @@ void EmptyDeclaration() :
   ";"
 }
 
+void ExpressionStatement():
+{}
+{
+    StatementExpression() ";"
+}
+
 void StatementExpression() #void:
 {AssignmentOp op = null;}
 {
@@ -2266,12 +2319,6 @@ void SwitchBlock() #void:
         | (SwitchArrowBranch())*
         )
     "}"
-}
-
-void SwitchArrowLahead() #void:
-{}
-{
-    SwitchLabel() "->"
 }
 
 void SwitchArrowBranch():
@@ -2671,3 +2718,4 @@ void VariableAccess(): {} { <IDENTIFIER> }
 // those are created manually
 void TypeExpression(): {} { <IDENTIFIER> }
 void PatternExpression(): {} { <IDENTIFIER> }
+void LocalClassStatement(): {} { TypeDeclaration() }

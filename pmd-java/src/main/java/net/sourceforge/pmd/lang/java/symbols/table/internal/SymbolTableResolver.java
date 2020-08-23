@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -282,7 +281,7 @@ public final class SymbolTableResolver {
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += pushOnStack(f.localVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
                 } else if (st instanceof ASTLocalClassStatement) {
-                    ASTClassOrInterfaceDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getSymbol()));
                     processTypeHeader(local);
                 }
