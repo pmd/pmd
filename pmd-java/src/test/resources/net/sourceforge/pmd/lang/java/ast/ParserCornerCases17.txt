@@ -96,7 +96,6 @@
          |        +- Block[@Size = "2", @containsComment = "false"]
          |           +- LocalVariableDeclaration[@TypeInferred = "false", @Visibility = "local"]
          |           |  +- ModifierList[@EffectiveModifiers = "{final}", @ExplicitModifiers = "{final}"]
-         |           |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
          |           |  +- PrimitiveType[@Kind = "int"]
          |           |  +- VariableDeclarator[@Initializer = "true", @Name = "register"]
          |           |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "register", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "package"]

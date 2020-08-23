@@ -2202,10 +2202,10 @@ void BlockStatement() #void:
     // or a local variable declaration follows.
     // This allows more modifiers for local variables than actually allowed
 
-    // The ModifierList is adopted by the next class to open
+    // The ModifierList is adopted by the next node to open
     ModifierList() (
         LOOKAHEAD({localTypeDeclAfterModifiers()}) LocalTypeDecl()
-      | LOOKAHEAD({true})                          LocalVariableDeclaration() ";"    { fixLastToken(); }
+      | LOOKAHEAD({true})                          LocalVariableDeclarationPendingModifiers() ";" { fixLastToken(); }
     )
 | LOOKAHEAD(1, <IDENTIFIER>)
  (
@@ -2257,6 +2257,15 @@ void LocalVariableDeclaration() :
 {}
 {
   LocalVarModifierList()
+  LocalVariableType()
+  VariableDeclarator()
+  ( "," VariableDeclarator() )*
+}
+
+void LocalVariableDeclarationPendingModifiers() #LocalVariableDeclaration:
+{}
+{
+  // no ModifierList, it's pending at this time
   LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
