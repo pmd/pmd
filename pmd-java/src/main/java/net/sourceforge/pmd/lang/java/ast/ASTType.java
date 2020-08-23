@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 
 
@@ -48,24 +45,18 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
         return 0;
     }
 
-    @Nullable
-    default ASTPrimitiveType asPrimitiveType() {
-        return isPrimitiveType() ? (ASTPrimitiveType) this : null;
+
+    /**
+     * Returns true if this is the "void" pseudo-type, ie an {@link ASTVoidType}.
+     */
+    default boolean isVoid() {
+        return this instanceof ASTVoidType;
     }
 
-    @Nullable
-    default ASTReferenceType asReferenceType() {
-        return isReferenceType() ? (ASTReferenceType) this : null;
-    }
-
+    // TODO remove that, there's enough on JTypeMirror
 
     default boolean isPrimitiveType() {
         return this instanceof ASTPrimitiveType;
-    }
-
-
-    default boolean isReferenceType() {
-        return !isPrimitiveType();
     }
 
 

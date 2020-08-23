@@ -205,7 +205,7 @@ public class Foo {
 
     <test-code>
         <description>violation suppression xpath works, by type</description>
-        <rule-property name="violationSuppressXPath">.[typeIs('java.lang.String')]</rule-property>
+        <rule-property name="violationSuppressXPath">.[pmd-java:typeIs('java.lang.String')]</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

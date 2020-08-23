@@ -51,6 +51,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.addChild(child, index);
     }
 
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    protected void insertChild(AbstractJavaNode child, int index) {
+        super.insertChild(child, index);
+    }
+
     @Override
     protected void removeChildAtIndex(int childIndex) {
         super.removeChildAtIndex(childIndex);

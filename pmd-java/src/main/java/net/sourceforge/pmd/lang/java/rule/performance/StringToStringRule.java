@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
@@ -56,10 +56,9 @@ public class StringToStringRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         if ("toString".equals(node.getMethodName())
-                && node.getArguments().size() == 0) {
-            if (TypeHelper.symbolEquals(String.class, node.getQualifier())) {
-                addViolation(data, node);
-            }
+            && node.getArguments().size() == 0
+            && TypeTestUtil.symbolEquals(String.class, node.getQualifier())) {
+            addViolation(data, node);
         }
 
         return data;

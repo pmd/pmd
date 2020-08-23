@@ -25,7 +25,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -61,7 +62,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
@@ -76,7 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -151,7 +151,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
             GlobalAlgoState result = new GlobalAlgoState();
-            typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
+            typeDecl.acceptVisitor(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
 
             reportFinished(result, (RuleContext) data);
         }
@@ -298,7 +298,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         return sb.toString();
     }
 
-    private static class ReachingDefsVisitor extends JavaParserVisitorAdapter {
+    private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
         static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null);
@@ -318,22 +318,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // following deals with control flow structures
 
         @Override
-        public Object visit(JavaNode node, Object data) {
-
-            for (JavaNode child : node.children()) {
+        protected SpanInfo visitChildren(Node node, SpanInfo data) {
+            for (Node child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
-                data = child.jjtAccept(this, data);
+                data = child.acceptVisitor(this, data);
             }
-
             return data;
         }
 
         @Override
-        public Object visit(ASTBlock node, final Object data) {
+        public SpanInfo visit(ASTBlock node, final SpanInfo data) {
             // variables local to a loop iteration must be killed before the
             // next iteration
 
-            SpanInfo state = (SpanInfo) data;
+            SpanInfo state = data;
             Set<ASTVariableDeclaratorId> localsToKill = new HashSet<>();
 
             for (JavaNode child : node.children()) {
@@ -356,13 +354,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTSwitchStatement node, Object data) {
-            return processSwitch(node, (SpanInfo) data, node.getTestedExpression());
+        public SpanInfo visit(ASTSwitchStatement node, SpanInfo data) {
+            return processSwitch(node, data, node.getTestedExpression());
         }
 
         @Override
-        public Object visit(ASTSwitchExpression node, Object data) {
-            return processSwitch(node, (SpanInfo) data, node.getChild(0));
+        public SpanInfo visit(ASTSwitchExpression node, SpanInfo data) {
+            return processSwitch(node, data, node.getChild(0));
         }
 
         private SpanInfo processSwitch(JavaNode switchLike, SpanInfo data, JavaNode testedExpr) {
@@ -393,14 +391,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTIfStatement node, Object data) {
-            SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTIfStatement node, SpanInfo data) {
+            SpanInfo before = data;
             return makeConditional(before, node.getCondition(), node.getThenBranch(), node.getElseBranch());
         }
 
         @Override
-        public Object visit(ASTConditionalExpression node, Object data) {
-            SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTConditionalExpression node, SpanInfo data) {
+            SpanInfo before = data;
             return makeConditional(before, node.getCondition(), node.getChild(1), node.getChild(2));
         }
 
@@ -504,8 +502,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         @Override
-        public Object visit(ASTTryStatement node, Object data) {
-            final SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTTryStatement node, SpanInfo data) {
+            final SpanInfo before = data;
             ASTFinallyClause finallyClause = node.getFinallyClause();
 
             /*
@@ -579,14 +577,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTCatchClause node, Object data) {
-            SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
+        public SpanInfo visit(ASTCatchClause node, SpanInfo data) {
+            SpanInfo result = visitJavaNode(node, data);
             result.deleteVar(node.getParameter().getVarId());
             return result;
         }
 
         @Override
-        public Object visit(ASTLambdaExpression node, Object data) {
+        public SpanInfo visit(ASTLambdaExpression node, SpanInfo data) {
             // Lambda expression have control flow that is separate from the method
             // So we fork the context, but don't join it
 
@@ -594,7 +592,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // Since those definitions are [effectively] final, they actually can't be
             // killed, but they can be used in the lambda
 
-            SpanInfo before = (SpanInfo) data;
+            SpanInfo before = data;
 
             JavaNode lambdaBody = node.getChild(node.getNumChildren() - 1);
             // if it's an expression, then no assignments may occur in it,
@@ -604,31 +602,31 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), true, null);
+        public SpanInfo visit(ASTWhileStatement node, SpanInfo data) {
+            return handleLoop(node, data, null, node.getCondition(), null, node.getBody(), true, null);
         }
 
         @Override
-        public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), false, null);
+        public SpanInfo visit(ASTDoStatement node, SpanInfo data) {
+            return handleLoop(node, data, null, node.getCondition(), null, node.getBody(), false, null);
         }
 
         @Override
-        public Object visit(ASTForeachStatement node, Object data) {
+        public SpanInfo visit(ASTForeachStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
             // the iterable expression
             JavaNode init = node.getChild(1);
             ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-            return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar);
+            return handleLoop(node, data, init, null, null, body, true, foreachVar);
         }
 
         @Override
-        public Object visit(ASTForStatement node, Object data) {
+        public SpanInfo visit(ASTForStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
             ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
             ASTExpression cond = node.getCondition();
             ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-            return handleLoop(node, (SpanInfo) data, init, cond, update, body, true, null);
+            return handleLoop(node, data, init, cond, update, body, true, null);
         }
 
 
@@ -737,114 +735,96 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo acceptOpt(JavaNode node, SpanInfo before) {
-            return node == null ? before : (SpanInfo) node.jjtAccept(this, before);
+            return node == null ? before : node.acceptVisitor(this, before);
         }
 
         @Override
-        public Object visit(ASTContinueStatement node, Object data) {
-            SpanInfo state = (SpanInfo) data;
-            return state.global.continueTargets.doBreak(state, node.getImage());
+        public SpanInfo visit(ASTContinueStatement node, SpanInfo data) {
+            return data.global.continueTargets.doBreak(data, node.getImage());
         }
 
         @Override
-        public Object visit(ASTBreakStatement node, Object data) {
-            SpanInfo state = (SpanInfo) data;
-            return state.global.breakTargets.doBreak(state, node.getImage());
+        public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
+            return data.global.breakTargets.doBreak(data, node.getImage());
         }
 
         @Override
-        public Object visit(ASTYieldStatement node, Object data) {
+        public SpanInfo visit(ASTYieldStatement node, SpanInfo data) {
             super.visit(node, data); // visit expression
 
-            SpanInfo state = (SpanInfo) data;
             // treat as break, ie abrupt completion + link reaching defs to outer context
-            return state.global.breakTargets.doBreak(state, null);
+            return data.global.breakTargets.doBreak(data, null);
         }
 
 
         // both of those exit the scope of the method/ctor, so their assignments go dead
 
         @Override
-        public Object visit(ASTThrowStatement node, Object data) {
+        public SpanInfo visit(ASTThrowStatement node, SpanInfo data) {
             super.visit(node, data);
-            return ((SpanInfo) data).abruptCompletionByThrow(false);
+            return data.abruptCompletionByThrow(false);
         }
 
         @Override
-        public Object visit(ASTReturnStatement node, Object data) {
+        public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
-            return ((SpanInfo) data).abruptCompletion(null);
+            return data.abruptCompletion(null);
         }
 
         // following deals with assignment
 
         @Override
-        public Object visit(ASTFormalParameter node, Object data) {
+        public SpanInfo visit(ASTFormalParameter node, SpanInfo data) {
             ASTVariableDeclaratorId id = node.getVarId();
-            ((SpanInfo) data).assign(id, id);
+             data.assign(id, id);
             return data;
         }
 
         @Override
-        public Object visit(ASTVariableDeclarator node, Object data) {
+        public SpanInfo visit(ASTVariableDeclarator node, SpanInfo data) {
             ASTVariableDeclaratorId var = node.getVarId();
             ASTExpression rhs = node.getInitializer();
             if (rhs != null) {
-                rhs.jjtAccept(this, data);
-                ((SpanInfo) data).assign(var, rhs);
+                rhs.acceptVisitor(this, data);
+                data.assign(var, rhs);
             } else {
-                ((SpanInfo) data).assign(var, node.getVarId());
+                data.assign(var, node.getVarId());
             }
             return data;
         }
 
 
         @Override
-        public Object visit(ASTExpression node, Object data) {
-            return checkAssignment(node, data);
-        }
+        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
+            SpanInfo result = data;
+            ASTAssignableExpr lhs = node.getLeftOperand();
+            ASTExpression rhs = node.getRightOperand();
 
-        @Override
-        public Object visit(ASTStatementExpression node, Object data) {
-            return checkAssignment(node, data);
-        }
+            // visit the rhs as it is evaluated before
+            result = acceptOpt(rhs, result);
 
-        public Object checkAssignment(JavaNode node, Object data) {
-            SpanInfo result = (SpanInfo) data;
-            if (node.getNumChildren() == 3) {
-                // assignment
-                assert node.getChild(1) instanceof ASTAssignmentOperator;
+            ASTVariableDeclaratorId lhsVar = getVarFromExpression(lhs, true, result);
+            if (lhsVar != null) {
+                // in that case lhs is a normal variable (array access not supported)
 
-                // visit the rhs as it is evaluated before
-                JavaNode rhs = node.getChild(2);
-                result = acceptOpt(rhs, result);
-
-                ASTVariableDeclaratorId lhsVar = getVarFromExpression(node.getChild(0), true, result);
-                if (lhsVar != null) {
-                    // in that case lhs is a normal variable (array access not supported)
-
-                    if (node.getChild(1).getImage().length() >= 2) {
-                        // compound assignment, to use BEFORE assigning
-                        result.use(lhsVar);
-                    }
-
-                    result.assign(lhsVar, rhs);
-                } else {
-                    result = acceptOpt(node.getChild(0), result);
+                if (node.getOperator().isCompound()) {
+                    // compound assignment, to use BEFORE assigning
+                    result.use(lhsVar);
                 }
-                return result;
+
+                result.assign(lhsVar, rhs);
             } else {
-                return visit(node, data);
+                result = acceptOpt(lhs, result);
             }
+            return result;
         }
 
         @Override
-        public Object visit(ASTUnaryExpression node, Object data) {
-            SpanInfo state = (SpanInfo) data;
-            ASTVariableDeclaratorId var = getVarFromExpression(node.getChild(0), true, state);
+        public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
+            ASTVariableDeclaratorId var = getVarFromExpression(node.getChild(0), true, data);
             if (var != null) {
-                state.use(var);
-                state.assign(var, node);
+                data.use(var);
+                data.assign(var, node);
             }
             return data;
         }
@@ -852,8 +832,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // variable usage
 
         @Override
-        public Object visit(ASTPrimaryExpression node, Object data) {
-            SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
+        public SpanInfo visitPrimaryExpr(ASTPrimaryExpression node, SpanInfo data) {
+            SpanInfo state = visitJavaNode(node, data); // visit subexpressions
 
             ASTVariableDeclaratorId var = getVarFromExpression(node, false, state);
             if (var != null) {
@@ -1008,14 +988,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // this is the common denominator between anonymous class & astAnyTypeDeclaration on master
 
         @Override
-        public Object visit(ASTClassOrInterfaceBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data);
+        public SpanInfo visit(ASTClassOrInterfaceBody node, SpanInfo data) {
+            visitTypeBody(node, data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
         @Override
-        public Object visit(ASTEnumBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data);
+        public SpanInfo visit(ASTEnumBody node, SpanInfo data) {
+            visitTypeBody(node, data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 

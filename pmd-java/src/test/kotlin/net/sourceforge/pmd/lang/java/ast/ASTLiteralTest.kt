@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
@@ -45,7 +46,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
     }
 
-    parserTest("Text block literal", javaVersion = J13__PREVIEW) {
+    parserTest("Text block literal", javaVersions = since(J14__PREVIEW)) {
 
         val delim = "\"\"\""
 
@@ -127,7 +128,7 @@ $delim
     }
 
 
-    parserTest("Text block literal on non-JDK13 preview", javaVersions = JavaVersion.except(J13__PREVIEW, J14__PREVIEW)) {
+    parserTest("Text block literal on non-JDK13 preview", javaVersions = Earliest.rangeTo(J14)) {
 
         val delim = "\"\"\""
 

@@ -40,7 +40,7 @@ public class PMDASMVisitor extends ClassVisitor {
     public List<String> innerClasses;
 
     public PMDASMVisitor(String outerName) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM9);
         this.outerName = outerName;
     }
 
@@ -181,7 +181,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         PMDFieldVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
             parent = visitor;
         }
 
@@ -196,7 +196,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         PMDAnnotationVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
             parent = visitor;
         }
 
@@ -228,7 +228,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         PMDSignatureVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
             this.parent = visitor;
         }
 
@@ -292,7 +292,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         PMDMethodVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM9);
             parent = visitor;
         }
 

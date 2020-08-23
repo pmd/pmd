@@ -68,7 +68,6 @@ Avoid inline styles. Use css classes instead.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

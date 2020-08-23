@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -39,6 +40,8 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * each scope object is linked to its parent scope, which is the scope object of
  * the next embedding syntactic entity that has a scope.
  */
+@Deprecated
+@InternalApi
 public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     private ClassLoader classLoader;
@@ -289,7 +292,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     private void cont(JavaNode node) {
-        super.visit(node, null);
+        super.visitJavaNode(node, null);
         scopes.pop();
     }
 }

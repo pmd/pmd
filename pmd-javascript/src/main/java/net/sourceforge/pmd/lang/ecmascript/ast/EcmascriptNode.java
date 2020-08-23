@@ -6,15 +6,20 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 
-    /**
-     * Accept the visitor. *
-     */
-    Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
 
+    /**
+     * @deprecated See {@link EcmascriptParserVisitor}
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    default Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
     /**
      * Get the underlying Rhino AST node.

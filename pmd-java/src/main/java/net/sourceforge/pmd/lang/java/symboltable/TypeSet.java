@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * Keeps track of the types encountered in a ASTCompilationUnit
  */
 @Deprecated
+@InternalApi
 public class TypeSet {
 
     private final PMDASMClassLoader pmdClassLoader;

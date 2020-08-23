@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -32,10 +31,9 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
-import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
@@ -57,7 +55,7 @@ public class XPathRuleTest extends RuleTst {
         XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals("a", rv.getDescription());
     }
 
@@ -76,12 +74,7 @@ public class XPathRuleTest extends RuleTst {
         rule.definePropertyDescriptor(varDescriptor);
 
         Report report = getReportForTestString(rule, TEST3);
-        Iterator<RuleViolation> rv = report.iterator();
-        int i = 0;
-        for (; rv.hasNext(); ++i) {
-            rv.next();
-        }
-        assertEquals(2, i);
+        assertEquals(2, report.getViolations().size());
     }
 
 
@@ -94,7 +87,7 @@ public class XPathRuleTest extends RuleTst {
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -102,7 +95,7 @@ public class XPathRuleTest extends RuleTst {
     public void testFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -110,7 +103,7 @@ public class XPathRuleTest extends RuleTst {
     public void testNoFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -135,28 +128,13 @@ public class XPathRuleTest extends RuleTst {
 
         String xpath = "//PrimarySuffix[@Image='list']";
 
-        // XPATH version 1.0
-        XPathRuleQuery xpathRuleQuery = new JaxenXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(1, nodes.size());
-
-        // XPATH version 1.0 Compatibility
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(1, nodes.size());
-
         // XPATH version 2.0
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.XPATH_2_0,
+                                                                     new HashMap<>(),
+                                                                     language.getLanguageVersionHandler().getXPathHandler(),
+                                                                     DeprecatedAttrLogger.noop());
+        List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(1, nodes.size());
     }
 
@@ -167,31 +145,22 @@ public class XPathRuleTest extends RuleTst {
      *             any error
      */
     @Test
-    public void testFollowingSibling() throws Exception {
-        final String SOURCE = "public interface dummy extends Foo, Bar, Baz {}";
+    public void testFollowingSibling() {
+        final String source = "public interface dummy extends Foo, Bar, Baz {}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SOURCE);
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
         String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
 
-        // XPATH version 1.0
-        XPathRuleQuery xpathRuleQuery = new JaxenXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
-        assertEquals(2, nodes.size());
-        assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
-        assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());
-
         // XPATH version 2.0
-        xpathRuleQuery = new SaxonXPathRuleQuery();
-        xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<>());
-        xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
-        nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.XPATH_2_0,
+                                                                     new HashMap<>(),
+                                                                     language.getLanguageVersionHandler().getXPathHandler(),
+                                                                     DeprecatedAttrLogger.noop());
+        List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
         assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
         assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());

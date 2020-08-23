@@ -15,7 +15,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
 import net.sourceforge.pmd.util.DataMap;
@@ -56,6 +56,9 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public int getIndexInParent() {
         org.w3c.dom.Node parent = node.getParentNode();
+        if (parent == null) {
+            return -1;
+        }
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (node == childNodes.item(i)) {

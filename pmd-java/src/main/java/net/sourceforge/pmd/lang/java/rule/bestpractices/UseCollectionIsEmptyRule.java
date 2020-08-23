@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -87,8 +89,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         if (calledOnType == null) {
             calledOnType = getTypeOfMethodCall(primarySuffix);
         }
-        return calledOnType != null
-                && CollectionUtil.isCollectionType(calledOnType.getType(), true);
+        return calledOnType != null && TypeHelper.isA(calledOnType, Collection.class);
     }
 
     private ASTClassOrInterfaceType getTypeOfVariable(ASTPrimarySuffix primarySuffix) {

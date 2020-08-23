@@ -46,7 +46,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok

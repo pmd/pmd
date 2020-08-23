@@ -218,18 +218,6 @@ fun TreeNodeWrapper<Node, *>.lambdaFormals(size: Int? = null, contents: NodeSpec
 fun TreeNodeWrapper<Node, *>.formalsList(arity: Int, contents: NodeSpec<ASTFormalParameters> = EmptyAssertions) =
         childW(listSpec(arity, contents))
 
-fun TreeNodeWrapper<Node, *>.voidResult() =
-        child<ASTResultType> {
-            it::getTypeNode shouldBe null
-            it::isVoid shouldBe true
-        }
-
-fun TreeNodeWrapper<Node, *>.resultType(contents: ValuedNodeSpec<ASTResultType, ASTType>) =
-        child<ASTResultType>(ignoreChildren = contents == EmptyAssertions) {
-            it::getTypeNode shouldBe contents()
-            it::isVoid shouldBe false
-        }
-
 fun TreeNodeWrapper<Node, *>.defaultValue(contents: ValuedNodeSpec<ASTDefaultValue, ASTMemberValue>) =
         child<ASTDefaultValue>(ignoreChildren = contents == EmptyAssertions) {
             it::getConstant shouldBe contents()
@@ -404,6 +392,8 @@ fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyA
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.voidType() = child<ASTVoidType>() {}
+
 
 fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
         child<ASTTypeExpression>(ignoreChildren = contents == EmptyAssertions) {
@@ -468,10 +458,8 @@ fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = Em
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiteral, ASTType?>) =
+fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiteral, ASTType>) =
         child<ASTClassLiteral> {
-            val tn = it.typeNode
-            it::isVoid shouldBe (tn == null)
             it::getTypeNode shouldBe contents()
         }
 

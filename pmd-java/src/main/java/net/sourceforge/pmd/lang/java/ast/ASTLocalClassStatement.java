@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * LocalClassStatement ::= {@link ASTClassOrInterfaceDeclaration ClassDeclaration}
+ * LocalClassStatement ::= {@link ASTAnyTypeDeclaration TypeDeclaration}
  *
  * </pre>
  */
@@ -20,6 +20,14 @@ public final class ASTLocalClassStatement extends AbstractStatement {
 
     ASTLocalClassStatement(int id) {
         super(id);
+    }
+
+    ASTLocalClassStatement(ASTAnyTypeDeclaration tdecl) {
+        super(JavaParserImplTreeConstants.JJTLOCALCLASSSTATEMENT);
+        assert tdecl != null;
+        addChild((AbstractJavaNode) tdecl, 0);
+        setFirstToken(tdecl.getFirstToken());
+        setLastToken(tdecl.getLastToken());
     }
 
     @Override
@@ -31,8 +39,7 @@ public final class ASTLocalClassStatement extends AbstractStatement {
     /**
      * Returns the contained declaration.
      */
-    @NonNull
-    public ASTClassOrInterfaceDeclaration getDeclaration() {
-        return (ASTClassOrInterfaceDeclaration) getChild(0);
+    public @NonNull ASTAnyTypeDeclaration getDeclaration() {
+        return (ASTAnyTypeDeclaration) getChild(0);
     }
 }

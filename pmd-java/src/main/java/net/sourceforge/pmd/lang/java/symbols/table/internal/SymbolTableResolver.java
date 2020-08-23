@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -161,7 +160,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, Void data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
             int pushed = 0;
 
             enclosingType.push(node);
@@ -215,7 +214,7 @@ public final class SymbolTableResolver {
 
 
         @Override
-        public Void visit(ASTMethodOrConstructorDeclaration node, Void data) {
+        public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Void data) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.bodyDeclaration(top(), enclosing(), node.getFormalParameters(), node.getTypeParameters()));
             setTopSymbolTableAndRecurse(node);
@@ -284,7 +283,7 @@ public final class SymbolTableResolver {
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), ((ASTLocalVariableDeclaration) st).getVarIds()));
                 } else if (st instanceof ASTLocalClassStatement) {
-                    ASTClassOrInterfaceDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
                     processTypeHeader(local);
                 }

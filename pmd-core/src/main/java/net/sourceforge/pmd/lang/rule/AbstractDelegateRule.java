@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -91,11 +90,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public String dysfunctionReason() {
         return rule.dysfunctionReason();
-    }
-
-    @Override
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return rule.ignoredProperties();
     }
 
     @Override

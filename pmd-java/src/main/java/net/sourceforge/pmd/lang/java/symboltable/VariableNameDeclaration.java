@@ -32,8 +32,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return getDeclaratorId().hasArrayType();
     }
 
+    @Deprecated
     public int getArrayDepth() {
-        return getTypeNode().getArrayDepth();
+        return getExplicitTypeNode().getArrayDepth();
     }
 
     public boolean isVarargs() {
@@ -58,12 +59,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isPrimitiveType() {
-        return getTypeNode().isPrimitiveType();
+        return getExplicitTypeNode().isPrimitiveType();
     }
 
     @Override
     public String getTypeImage() {
-        ASTType typeNode = getTypeNode();
+        ASTType typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getTypeImage();
         }
@@ -97,13 +98,18 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return (ASTVariableDeclaratorId) node;
     }
 
-    private ASTType getTypeNode() {
+    @Override
+    public TypeNode getTypeNode() {
+        return getDeclaratorId();
+    }
+
+    private ASTType getExplicitTypeNode() {
         return getDeclaratorId().getTypeNode();
     }
 
     @Override
     public Class<?> getType() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getType();
         }

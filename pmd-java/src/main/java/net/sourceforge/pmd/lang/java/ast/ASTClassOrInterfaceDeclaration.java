@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -46,6 +49,11 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         return this.isInterface;
     }
 
+    @Override
+    public boolean isRegularClass() {
+        return !isInterface;
+    }
+
     void setInterface() {
         this.isInterface = true;
     }
@@ -65,6 +73,12 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
 
         ASTExtendsList extendsList = getFirstChildOfType(ASTExtendsList.class);
         return extendsList == null ? null : extendsList.iterator().next();
+    }
+
+
+    @Experimental
+    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+        return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
 
 }

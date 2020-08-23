@@ -1,0 +1,8 @@
++- CompilationUnit[@PackageName = "com.example.geometry", @declarationsAreInDefaultPackage = "false"]
+   +- PackageDeclaration[@PackageNameImage = "com.example.geometry"]
+   |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
+   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.example.geometry.Square", @CanonicalName = "com.example.geometry.Square", @Enum = "false", @Image = "Square", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "com.example.geometry", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @SimpleName = "Square", @TopLevel = "true", @Visibility = "public"]
+      +- ModifierList[@EffectiveModifiers = "{public, non-sealed}", @ExplicitModifiers = "{public, non-sealed}"]
+      +- ExtendsList[@Size = "1"]
+      |  +- ClassOrInterfaceType[@ArrayDepth = "0", @ArrayType = "false", @ClassOrInterfaceType = "true", @FullyQualified = "false", @PrimitiveType = "false", @ReferenceToClassSameCompilationUnit = "false", @ReferenceType = "true", @SimpleName = "Shape", @TypeImage = "Shape"]
+      +- ClassOrInterfaceBody[@Size = "0"]

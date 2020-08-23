@@ -60,7 +60,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         ctx.setLanguageVersion(plsql.getDefaultVersion());
 
         rule.apply(node, ctx);
-        Assert.assertEquals(2, ctx.getReport().size());
+        Assert.assertEquals(2, ctx.getReport().getViolations().size());
     }
 
 

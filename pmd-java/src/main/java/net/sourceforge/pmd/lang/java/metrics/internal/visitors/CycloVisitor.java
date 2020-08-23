@@ -50,8 +50,8 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
 
     @Override
-    public final Void visit(JavaNode localNode, MutableInt data) {
-        return localNode.isFindBoundary() && !localNode.equals(topNode) ? null : super.visit(localNode, data);
+    public final Void visitJavaNode(JavaNode localNode, MutableInt data) {
+        return localNode.isFindBoundary() && !localNode.equals(topNode) ? null : super.visitJavaNode(localNode, data);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             }
         }
 
-        return visit(node, data);
+        return visitJavaNode(node, data);
     }
 
 

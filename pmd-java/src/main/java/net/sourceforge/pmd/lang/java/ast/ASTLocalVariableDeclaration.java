@@ -24,6 +24,7 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     implements Iterable<ASTVariableDeclaratorId>,
                ASTStatement,
                FinalizableNode,
+               LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
                InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * This defines a compact constructor for a {@link ASTRecordDeclaration RecordDeclaration}
- * (JDK 14 preview feature). Compact constructors implicitly declares formal
+ * (JDK 14 and JDK 15 preview feature). Compact constructors implicitly declares formal
  * parameters corresponding to the record component list. These can be
  * fetched from {@link #getSymbol()}.
  *

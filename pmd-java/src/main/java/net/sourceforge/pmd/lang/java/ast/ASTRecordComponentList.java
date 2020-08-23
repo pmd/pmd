@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
- * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
  *
  * <pre class="grammar">
  *

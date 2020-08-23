@@ -108,7 +108,7 @@ final class AstDisambiguationPass {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, ReferenceCtx data) {
             // since type headers are disambiguated early it doesn't matter
             // if the context is inaccurate in type headers
             return visitChildren(node, data.scopeDownToNested(node.getSymbol()));

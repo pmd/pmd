@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.xpath.Attribute
+import net.sourceforge.pmd.lang.rule.xpath.Attribute
 import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
 import org.apache.commons.lang3.StringEscapeUtils
 
@@ -38,19 +38,31 @@ open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
  */
 open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
+    data class AttributeInfo(val name: String, val value: String?)
+
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
+
+    protected open fun getAttributes(node: Node): Iterable<AttributeInfo> =
+            node.xPathAttributesIterator
+                    .asSequence()
+                    .filterNot { ignoreAttribute(node, it) }
+                    .map { AttributeInfo(it.name, it.value?.toString()) }
+                    .asIterable()
+
 
     override fun appendNodeInfoLn(out: Appendable, node: Node) {
         out.append(node.xPathNodeName)
 
-        node.xPathAttributesIterator
-            .asSequence()
-            // sort to get deterministic results
-            .sortedBy { it.name }
-            .filterNot { ignoreAttribute(node, it) }
-            .joinTo(buffer = out, prefix = "[", postfix = "]") {
-                "@${it.name} = ${valueToString(it.value)}"
-            }
+        val attrs = getAttributes(node).toMutableList()
+
+        // sort to get deterministic results
+        attrs.sortBy { it.name }
+
+        attrs.joinTo(buffer = out, prefix = "[", postfix = "]") {
+            "@${it.name} = ${valueToString(it.value)}"
+        }
+
+        out.append("\n")
     }
 
     protected open fun valueToString(value: Any?): String? {

@@ -43,8 +43,8 @@ public class ExcludeLinesTest extends RuleTst {
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
-        assertTrue(r.isEmpty());
-        assertEquals(r.getSuppressedRuleViolations().size(), 1);
+        assertTrue(r.getViolations().isEmpty());
+        assertEquals(r.getSuppressedViolations().size(), 1);
     }
 
     private static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int x; //NOPMD "

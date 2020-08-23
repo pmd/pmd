@@ -104,8 +104,8 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /** Returns the node owning this modifier list. */
-    public AccessNode getOwner() {
-        return (AccessNode) getParent(); // TODO
+    public Annotatable getOwner() {
+        return (Annotatable) getParent(); // TODO
     }
 
     /**
@@ -167,9 +167,10 @@ public final class ASTModifierList extends AbstractJavaNode {
         private static final EffectiveModifierVisitor INSTANCE = new EffectiveModifierVisitor();
 
         // TODO strictfp modifier is also implicitly given to descendants
+        // TODO final modifier is implicitly given to direct subclasses of sealed interface/class
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
 
             ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
             if (enclosing != null && enclosing.isInterface()) {

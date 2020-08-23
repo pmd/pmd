@@ -12,9 +12,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -227,6 +227,16 @@ public interface ASTAnyTypeDeclaration
      * annotation types). This is consistent with {@link Class#isInterface()}.
      */
     default boolean isInterface() {
+        return false;
+    }
+
+    /**
+     * Returns true if this is a regular class declaration (not an enum,
+     * not a record, not an interface or annotation). Note that eg
+     * {@link JClassSymbol#isClass()} counts records and enums in, just
+     * like {@link #isInterface()} counts annotations in.
+     */
+    default boolean isRegularClass() {
         return false;
     }
 

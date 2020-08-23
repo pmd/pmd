@@ -14,6 +14,9 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by
@@ -55,8 +58,24 @@ public interface ViolationSuppressor {
 
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            String xpath = rv.getRule().getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (xpath != null && node.hasDescendantMatchingXPath(xpath)) {
+            // todo this should not be implemented via a rule property
+            //  because the parsed xpath expression should be stored, not a random string
+            //  this needs to be checked to be a valid xpath expression in the ruleset,
+            //  not at the time it is evaluated, and also parsed by the XPath parser only once
+            Rule rule = rv.getRule();
+            String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+            if (xpath == null) {
+                return null;
+            }
+            SaxonXPathRuleQuery rq = new SaxonXPathRuleQuery(
+                xpath,
+                XPathVersion.DEFAULT,
+                rule.getPropertiesByPropertyDescriptor(),
+                // todo version should be carried around by the node
+                rule.getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
+                DeprecatedAttrLogger.createForSuppression(rv.getRule())
+            );
+            if (!rq.evaluate(node).isEmpty()) {
                 return new SuppressedViolation(rv, this, xpath);
             }
             return null;

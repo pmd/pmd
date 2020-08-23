@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 /**
  * Populates symbols on declaration nodes. Cannot be reused.
  */
-final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
+final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
     private static final String NO_CANONICAL_NAME = "<impossible/name>";
 
@@ -59,10 +59,10 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Void visit(ASTVariableDeclaratorId node, AstSymFactory data) {
 
         if (isTrueLocalVar(node)) {
-            ((AstSymFactory) data).setLocalVarSymbol(node);
+            data.setLocalVarSymbol(node);
         } else {
             // in the other cases, building the method/ctor/class symbols already set the symbols
             assert node.getSymbol() != null : "Symbol was null for " + node;
@@ -80,11 +80,11 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Void visitTypeDecl(ASTAnyTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);
         InternalApiBridge.setQname(node, binaryName, canonicalName);
-        JClassSymbol sym = ((AstSymFactory) data).setClassSymbol(enclosingSymbols.peek(), node);
+        JClassSymbol sym = data.setClassSymbol(enclosingSymbols.peek(), node);
 
         byBinaryName.put(binaryName, sym);
         if (canonicalName != null) {
@@ -97,7 +97,7 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
         anonymousCounters.push(new MutableInt(0));
         currentLocalIndices.push(new HashMap<>());
 
-        super.visit(node, data);
+        visitChildren(node, data);
 
         currentLocalIndices.pop();
         anonymousCounters.pop();
@@ -143,9 +143,9 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+    public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, AstSymFactory data) {
         enclosingSymbols.push(node.getSymbol());
-        super.visit(node, data);
+        visitChildren(node, data);
         enclosingSymbols.pop();
         return null;
     }

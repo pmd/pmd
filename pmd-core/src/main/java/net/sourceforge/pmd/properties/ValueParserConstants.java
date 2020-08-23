@@ -4,14 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.ARRAY_FLAG;
-import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.CLASS_METHOD_DELIMITER;
-import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_ARG_DELIMITER;
-import static net.sourceforge.pmd.properties.modules.MethodPropertyModule.METHOD_GROUP_DELIMITERS;
-
 import java.io.File;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +14,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.ClassUtil;
 
 
 /**
@@ -37,114 +29,6 @@ import net.sourceforge.pmd.util.ClassUtil;
 public final class ValueParserConstants {
 
 
-    /** Extracts methods. */
-    static final ValueParser<Method> METHOD_PARSER = new ValueParser<Method>() {
-        @Override
-        public Method valueOf(String value) throws IllegalArgumentException {
-            return methodFrom(value, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
-        }
-
-
-        /**
-         * Returns the method specified within the string argument after parsing out
-         * its source class and any optional arguments. Callers need to specify the
-         * delimiters expected between the various elements. I.e.:
-         *
-         * <p>"String#isEmpty()" "String#indexOf(int)" "String#substring(int,int)"
-         *
-         * <p>If a method isn't part of the specified class we will walk up any
-         * superclasses to Object to try and find it.
-         *
-         * <p>If the classes are listed in the ClassUtil class within in Typemaps then
-         * you likely can avoid specifying fully-qualified class names per the above
-         * example.
-         *
-         * <p>Returns null if a matching method cannot be found.
-         *
-         * @param methodNameAndArgTypes Method name (with its declaring class and arguments)
-         * @param classMethodDelimiter  Delimiter between the class and method names
-         * @param methodArgDelimiter    Method arguments delimiter
-         *
-         * @return Method
-         */
-        Method methodFrom(String methodNameAndArgTypes, char classMethodDelimiter, char methodArgDelimiter) {
-
-            // classname#methodname(arg1,arg2)
-            // 0 1 2
-
-            int delimPos0 = -1;
-            if (methodNameAndArgTypes != null) {
-                delimPos0 = methodNameAndArgTypes.indexOf(classMethodDelimiter);
-            } else {
-                return null;
-            }
-
-            if (delimPos0 < 0) {
-                return null;
-            }
-
-            String className = methodNameAndArgTypes.substring(0, delimPos0);
-            Class<?> type = ClassUtil.getTypeFor(className);
-            if (type == null) {
-                return null;
-            }
-
-            int delimPos1 = methodNameAndArgTypes.indexOf(METHOD_GROUP_DELIMITERS[0]);
-            if (delimPos1 < 0) {
-                String methodName = methodNameAndArgTypes.substring(delimPos0 + 1);
-                return ClassUtil.methodFor(type, methodName, ClassUtil.EMPTY_CLASS_ARRAY);
-            }
-
-            String methodName = methodNameAndArgTypes.substring(delimPos0 + 1, delimPos1);
-            if (StringUtils.isBlank(methodName)) {
-                return null;
-            } // missing method name?
-
-            int delimPos2 = methodNameAndArgTypes.indexOf(METHOD_GROUP_DELIMITERS[1]);
-            if (delimPos2 < 0) {
-                return null;
-            } // error!
-
-            String argTypesStr = methodNameAndArgTypes.substring(delimPos1 + 1, delimPos2);
-            if (StringUtils.isBlank(argTypesStr)) {
-                return ClassUtil.methodFor(type, methodName, ClassUtil.EMPTY_CLASS_ARRAY);
-            } // no arg(s)
-
-            String[] argTypeNames = StringUtils.split(argTypesStr, methodArgDelimiter);
-            Class<?>[] argTypes = new Class[argTypeNames.length];
-            for (int i = 0; i < argTypes.length; i++) {
-                argTypes[i] = typeFor(argTypeNames[i]);
-            }
-
-            return ClassUtil.methodFor(type, methodName, argTypes);
-        }
-
-
-        private Class<?> typeFor(String typeName) {
-
-            Class<?> type;
-
-            if (typeName.endsWith(ARRAY_FLAG)) {
-                String arrayTypeName = typeName.substring(0, typeName.length() - ARRAY_FLAG.length());
-                type = typeFor(arrayTypeName); // recurse
-                return Array.newInstance(type, 0).getClass(); // TODO is there a
-                // better way to get
-                // an array type?
-            }
-
-            type = ClassUtil.getTypeFor(typeName); // try shortcut first
-            if (type != null) {
-                return type;
-            }
-
-            try {
-                return Class.forName(typeName);
-            } catch (ClassNotFoundException ex) {
-                return null;
-            }
-        }
-
-    };
     /** Extracts characters. */
     static final ValueParser<Character> CHARACTER_PARSER = new ValueParser<Character>() {
         @Override
@@ -210,27 +94,6 @@ public final class ValueParserConstants {
         @Override
         public Pattern valueOf(String value) throws IllegalArgumentException {
             return Pattern.compile(value);
-        }
-    };
-
-    /** Extract classes. */
-    static final ValueParser<Class> CLASS_PARSER = new ValueParser<Class>() {
-        @Override
-        public Class valueOf(String value) throws IllegalArgumentException {
-            if (StringUtils.isBlank(value)) {
-                return null;
-            }
-
-            Class<?> cls = ClassUtil.getTypeFor(value);
-            if (cls != null) {
-                return cls;
-            }
-
-            try {
-                return Class.forName(value);
-            } catch (ClassNotFoundException ex) {
-                throw new IllegalArgumentException(value);
-            }
         }
     };
 

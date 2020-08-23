@@ -116,13 +116,17 @@ public class LanguageLevelChecker<T> {
         SWITCH_EXPRESSIONS(12, 13, true),
         SWITCH_RULES(12, 13, true),
 
-        TEXT_BLOCK_LITERALS(13, 14, false),
+        TEXT_BLOCK_LITERALS(13, 14, true),
         YIELD_STATEMENTS(13, 13, true),
 
         /** \s */
-        SPACE_STRING_ESCAPES(14, 14, false),
-        RECORD_DECLARATIONS(14, 14, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false);
+        SPACE_STRING_ESCAPES(14, 14, true),
+        RECORD_DECLARATIONS(14, 15, false),
+        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 15, false),
+        SEALED_CLASSES(15, 15, false),
+        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, false), // part of the sealed classes JEP
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
         private final int minPreviewVersion;
@@ -357,7 +361,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visit((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
             return null;
         }
 
@@ -472,7 +476,12 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, T data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
+            if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
+                check(node, PreviewFeature.SEALED_CLASSES, data);
+            } else if (node.isLocal() && !node.isRegularClass()) {
+                check(node, PreviewFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
+            }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
                 check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);

@@ -33,7 +33,7 @@ public class DefaultRuleViolationFactoryTest {
     public void testMessage() {
         factory.addViolation(ruleContext, new TestRule(), null, "message with \"'{'\"", null);
 
-        RuleViolation violation = ruleContext.getReport().iterator().next();
+        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
         Assert.assertEquals("message with \"{\"", violation.getDescription());
     }
 
@@ -41,7 +41,7 @@ public class DefaultRuleViolationFactoryTest {
     public void testMessageArgs() {
         factory.addViolation(ruleContext, new TestRule(), null, "message with 1 argument: \"{0}\"", new Object[] {"testarg1"});
 
-        RuleViolation violation = ruleContext.getReport().iterator().next();
+        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
         Assert.assertEquals("message with 1 argument: \"testarg1\"", violation.getDescription());
     }
 }
