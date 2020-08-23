@@ -26,4 +26,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2461 private constructor should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo(int a, int b, int c, String abc, long d, double p,
+     String[] arr, int data, long in, float fl, String res) { } // 11 params
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>anonymous class in private constructor false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Foo() {
+        Object obj = new Object() {
+            public void doWork(int a, int b, int c, String abc, long d, double p,
+                String[] arr, int data, long in, float fl, String res) {} // 11 params
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

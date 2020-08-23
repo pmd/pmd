@@ -22,6 +22,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -75,7 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -122,6 +123,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * parenthesized expressions
            * conditional exprs in loops
            * ignore variables that start with 'ignore'
+           * ignore params of native methods
+           * ignore params of abstract methods
 
      */
 
@@ -151,7 +154,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                 ASTAnyTypeDeclaration typeDecl = (ASTAnyTypeDeclaration) child.getChild(child.getNumChildren() - 1);
                 GlobalAlgoState result = new GlobalAlgoState();
-                typeDecl.jjtAccept(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
+                typeDecl.acceptVisitor(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(result));
 
                 reportFinished(result, (RuleContext) data);
             }
@@ -302,7 +305,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         return sb.toString();
     }
 
-    private static class ReachingDefsVisitor extends JavaParserVisitorAdapter {
+    private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
         static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null);
@@ -322,22 +325,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // following deals with control flow structures
 
         @Override
-        public Object visit(JavaNode node, Object data) {
-
-            for (JavaNode child : node.children()) {
+        protected SpanInfo visitChildren(Node node, SpanInfo data) {
+            for (Node child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
-                data = child.jjtAccept(this, data);
+                data = child.acceptVisitor(this, data);
             }
-
             return data;
         }
 
         @Override
-        public Object visit(ASTBlock node, final Object data) {
+        public SpanInfo visit(ASTBlock node, final SpanInfo data) {
             // variables local to a loop iteration must be killed before the
             // next iteration
 
-            SpanInfo state = (SpanInfo) data;
+            SpanInfo state = data;
             Set<ASTVariableDeclaratorId> localsToKill = new HashSet<>();
 
             for (JavaNode child : node.children()) {
@@ -360,13 +361,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTSwitchStatement node, Object data) {
-            return processSwitch(node, (SpanInfo) data, node.getTestedExpression());
+        public SpanInfo visit(ASTSwitchStatement node, SpanInfo data) {
+            return processSwitch(node, data, node.getTestedExpression());
         }
 
         @Override
-        public Object visit(ASTSwitchExpression node, Object data) {
-            return processSwitch(node, (SpanInfo) data, node.getChild(0));
+        public SpanInfo visit(ASTSwitchExpression node, SpanInfo data) {
+            return processSwitch(node, data, node.getChild(0));
         }
 
         private SpanInfo processSwitch(JavaNode switchLike, SpanInfo data, JavaNode testedExpr) {
@@ -397,14 +398,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTIfStatement node, Object data) {
-            SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTIfStatement node, SpanInfo data) {
+            SpanInfo before = data;
             return makeConditional(before, node.getCondition(), node.getThenBranch(), node.getElseBranch());
         }
 
         @Override
-        public Object visit(ASTConditionalExpression node, Object data) {
-            SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTConditionalExpression node, SpanInfo data) {
+            SpanInfo before = data;
             return makeConditional(before, node.getCondition(), node.getChild(1), node.getChild(2));
         }
 
@@ -508,8 +509,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         @Override
-        public Object visit(ASTTryStatement node, Object data) {
-            final SpanInfo before = (SpanInfo) data;
+        public SpanInfo visit(ASTTryStatement node, SpanInfo data) {
+            final SpanInfo before = data;
             ASTFinallyStatement finallyClause = node.getFinallyClause();
 
             /*
@@ -536,14 +537,28 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before.myFinally = before.forkEmpty();
             }
 
+            final List<ASTCatchStatement> catchClauses = node.getCatchClauses();
+            final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.<SpanInfo>emptyList()
+                                                                     : new ArrayList<SpanInfo>();
+
+            // pre-fill catch spans
+            for (int i = 0; i < catchClauses.size(); i++) {
+                catchSpans.add(before.forkEmpty());
+            }
+
             ASTResourceSpecification resources = node.getFirstChildOfType(ASTResourceSpecification.class);
 
-            SpanInfo bodyState = acceptOpt(resources, before.fork());
+            SpanInfo bodyState = before.fork();
+            bodyState = bodyState.withCatchBlocks(catchSpans);
+            bodyState = acceptOpt(resources, bodyState);
             bodyState = acceptOpt(node.getBody(), bodyState);
+            bodyState = bodyState.withCatchBlocks(Collections.<SpanInfo>emptyList());
 
             SpanInfo exceptionalState = null;
-            for (ASTCatchStatement catchClause : node.getCatchClauses()) {
-                SpanInfo current = acceptOpt(catchClause, before.fork().absorb(bodyState));
+            for (int i = 0; i < catchClauses.size(); i++) {
+                ASTCatchStatement catchClause = catchClauses.get(i);
+
+                SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
                 exceptionalState = current.absorb(exceptionalState);
             }
 
@@ -556,6 +571,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 SpanInfo abruptFinally = before.myFinally.absorb(before);
                 acceptOpt(finallyClause, abruptFinally);
                 before.myFinally = null;
+                abruptFinally.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
 
                 // this is the normal finally
                 finalState = acceptOpt(finallyClause, finalState);
@@ -570,14 +586,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTCatchStatement node, Object data) {
-            SpanInfo result = (SpanInfo) visit((JavaNode) node, data);
+        public SpanInfo visit(ASTCatchStatement node, SpanInfo data) {
+            SpanInfo result = visitJavaNode(node, data);
             result.deleteVar(node.getExceptionId());
             return result;
         }
 
         @Override
-        public Object visit(ASTLambdaExpression node, Object data) {
+        public SpanInfo visit(ASTLambdaExpression node, SpanInfo data) {
             // Lambda expression have control flow that is separate from the method
             // So we fork the context, but don't join it
 
@@ -585,7 +601,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // Since those definitions are [effectively] final, they actually can't be
             // killed, but they can be used in the lambda
 
-            SpanInfo before = (SpanInfo) data;
+            SpanInfo before = data;
 
             JavaNode lambdaBody = node.getChild(node.getNumChildren() - 1);
             // if it's an expression, then no assignments may occur in it,
@@ -595,28 +611,28 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), true, null);
+        public SpanInfo visit(ASTWhileStatement node, SpanInfo data) {
+            return handleLoop(node, data, null, node.getCondition(), null, node.getBody(), true, null);
         }
 
         @Override
-        public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop(node, (SpanInfo) data, null, node.getCondition(), null, node.getBody(), false, null);
+        public SpanInfo visit(ASTDoStatement node, SpanInfo data) {
+            return handleLoop(node, data, null, node.getCondition(), null, node.getBody(), false, null);
         }
 
         @Override
-        public Object visit(ASTForStatement node, Object data) {
+        public SpanInfo visit(ASTForStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
             if (node.isForeach()) {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
                 ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-                return handleLoop(node, (SpanInfo) data, init, null, null, body, true, foreachVar);
+                return handleLoop(node, data, init, null, null, body, true, foreachVar);
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop(node, (SpanInfo) data, init, cond, update, body, true, null);
+                return handleLoop(node, data, init, cond, update, body, true, null);
             }
         }
 
@@ -726,82 +742,79 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo acceptOpt(JavaNode node, SpanInfo before) {
-            return node == null ? before : (SpanInfo) node.jjtAccept(this, before);
+            return node == null ? before : node.acceptVisitor(this, before);
         }
 
         @Override
-        public Object visit(ASTContinueStatement node, Object data) {
-            SpanInfo state = (SpanInfo) data;
-            return state.global.continueTargets.doBreak(state, node.getImage());
+        public SpanInfo visit(ASTContinueStatement node, SpanInfo data) {
+            return data.global.continueTargets.doBreak(data, node.getImage());
         }
 
         @Override
-        public Object visit(ASTBreakStatement node, Object data) {
-            SpanInfo state = (SpanInfo) data;
-            return state.global.breakTargets.doBreak(state, node.getImage());
+        public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
+            return data.global.breakTargets.doBreak(data, node.getImage());
         }
 
         @Override
-        public Object visit(ASTYieldStatement node, Object data) {
+        public SpanInfo visit(ASTYieldStatement node, SpanInfo data) {
             super.visit(node, data); // visit expression
 
-            SpanInfo state = (SpanInfo) data;
             // treat as break, ie abrupt completion + link reaching defs to outer context
-            return state.global.breakTargets.doBreak(state, null);
+            return data.global.breakTargets.doBreak(data, null);
         }
 
 
         // both of those exit the scope of the method/ctor, so their assignments go dead
 
         @Override
-        public Object visit(ASTThrowStatement node, Object data) {
+        public SpanInfo visit(ASTThrowStatement node, SpanInfo data) {
             super.visit(node, data);
-            return ((SpanInfo) data).abruptCompletion(null);
+            return data.abruptCompletionByThrow(false);
         }
 
         @Override
-        public Object visit(ASTReturnStatement node, Object data) {
+        public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
-            return ((SpanInfo) data).abruptCompletion(null);
+            return data.abruptCompletion(null);
         }
 
         // following deals with assignment
 
         @Override
-        public Object visit(ASTFormalParameter node, Object data) {
+        public SpanInfo visit(ASTFormalParameter node, SpanInfo data) {
             if (!node.isExplicitReceiverParameter()) {
                 ASTVariableDeclaratorId id = node.getVariableDeclaratorId();
-                ((SpanInfo) data).assign(id, id);
+                data.assign(id, id);
             }
             return data;
         }
 
         @Override
-        public Object visit(ASTVariableDeclarator node, Object data) {
+        public SpanInfo visit(ASTVariableDeclarator node, SpanInfo data) {
             ASTVariableDeclaratorId var = node.getVariableId();
             ASTVariableInitializer rhs = node.getInitializer();
             if (rhs != null) {
-                rhs.jjtAccept(this, data);
-                ((SpanInfo) data).assign(var, rhs);
+                rhs.acceptVisitor(this, data);
+                data.assign(var, rhs);
             } else {
-                ((SpanInfo) data).assign(var, node.getVariableId());
+                data.assign(var, node.getVariableId());
             }
             return data;
         }
 
 
         @Override
-        public Object visit(ASTExpression node, Object data) {
+        public SpanInfo visit(ASTExpression node, SpanInfo data) {
             return checkAssignment(node, data);
         }
 
         @Override
-        public Object visit(ASTStatementExpression node, Object data) {
+        public SpanInfo visit(ASTStatementExpression node, SpanInfo data) {
             return checkAssignment(node, data);
         }
 
-        public Object checkAssignment(JavaNode node, Object data) {
-            SpanInfo result = (SpanInfo) data;
+        public SpanInfo checkAssignment(JavaNode node, SpanInfo data) {
+            SpanInfo result = data;
             if (node.getNumChildren() == 3) {
                 // assignment
                 assert node.getChild(1) instanceof ASTAssignmentOperator;
@@ -825,23 +838,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
                 return result;
             } else {
-                return visit(node, data);
+                return visitJavaNode(node, data);
             }
         }
 
         @Override
-        public Object visit(ASTPreDecrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
+        public SpanInfo visit(ASTPreDecrementExpression node, SpanInfo data) {
+            return checkIncOrDecrement(node, data);
         }
 
         @Override
-        public Object visit(ASTPreIncrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
+        public SpanInfo visit(ASTPreIncrementExpression node, SpanInfo data) {
+            return checkIncOrDecrement(node, data);
         }
 
         @Override
-        public Object visit(ASTPostfixExpression node, Object data) {
-            return checkIncOrDecrement(node, (SpanInfo) data);
+        public SpanInfo visit(ASTPostfixExpression node, SpanInfo data) {
+            return checkIncOrDecrement(node, data);
         }
 
         private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
@@ -856,14 +869,42 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // variable usage
 
         @Override
-        public Object visit(ASTPrimaryExpression node, Object data) {
-            SpanInfo state = (SpanInfo) visit((JavaNode) node, data); // visit subexpressions
+        public SpanInfo visit(ASTPrimaryExpression node, SpanInfo data) {
+            SpanInfo state = visitJavaNode(node, data); // visit subexpressions
 
             ASTVariableDeclaratorId var = getVarFromExpression(node, false, state);
             if (var != null) {
                 state.use(var);
             }
+
+            maybeThrowUncheckedExceptions(node, state);
+
             return state;
+        }
+
+        private void maybeThrowUncheckedExceptions(ASTPrimaryExpression e, SpanInfo state) {
+            // Note that this doesn't really respect the order of evaluation of subexpressions
+            // This can be easily fixed in the 7.0 tree, but this is rare enough to not deserve
+            // the effort on master.
+
+            // For the record this has problems with call chains with side effects, like
+            //  a.foo(a = 2).bar(a = 3);
+
+            if (!state.isInTryBlock()) {
+                return;
+            }
+            // otherwise any method/ctor call may throw
+
+            // In 7.0, with the precise type/overload resolution, we
+            // could only target methods that throw checked exceptions
+            // (unless some catch block catches an unchecked exceptions)
+            for (JavaNode child : e.children()) {
+                if (child instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) child).isArguments()
+                    || child instanceof ASTPrimarySuffix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression
+                    || child instanceof ASTPrimaryPrefix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression) {
+                    state.abruptCompletionByThrow(true);
+                }
+            }
         }
 
         /**
@@ -982,14 +1023,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // this is the common denominator between anonymous class & astAnyTypeDeclaration on master
 
         @Override
-        public Object visit(ASTClassOrInterfaceBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data);
+        public SpanInfo visit(ASTClassOrInterfaceBody node, SpanInfo data) {
+            visitTypeBody(node, data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
         @Override
-        public Object visit(ASTEnumBody node, Object data) {
-            visitTypeBody(node, (SpanInfo) data);
+        public SpanInfo visit(ASTEnumBody node, SpanInfo data) {
+            visitTypeBody(node, data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
@@ -1001,7 +1042,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (ASTAnyTypeBodyDeclaration decl : declarations) {
                 JavaNode d = decl.getDeclarationNode();
                 if (d instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    ASTMethodDeclaration method = (ASTMethodDeclaration) d;
+                    if (!method.isAbstract() && !method.isNative()) {
+                        ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                    }
                 } else if (d instanceof ASTAnyTypeDeclaration) {
                     JavaNode body = d.getChild(d.getNumChildren() - 1);
                     visitTypeBody(body, data.forkEmptyNonLocal());
@@ -1147,6 +1191,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // needs to go through the finally span (the finally must absorb it)
         SpanInfo myFinally = null;
 
+
+        /**
+         * Inside a try block, we assume that any method/ctor call may
+         * throw, which means, any assignment reaching such a method call
+         * may reach the catch blocks if there are any.
+         */
+        List<SpanInfo> myCatches;
+
         final GlobalAlgoState global;
 
         final Map<ASTVariableDeclaratorId, VarLocalInfo> symtable;
@@ -1161,6 +1213,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             this.parent = parent;
             this.global = global;
             this.symtable = symtable;
+            this.myCatches = Collections.emptyList();
         }
 
         boolean hasVar(ASTVariableDeclaratorId var) {
@@ -1258,16 +1311,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return copy;
         }
 
-        private SpanInfo doFork(SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
+        private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<ASTVariableDeclaratorId, VarLocalInfo> reaching) {
             return new SpanInfo(parent, this.global, reaching);
         }
 
+        /** Abrupt completion for return, continue, break. */
         SpanInfo abruptCompletion(SpanInfo target) {
             // if target == null then this will unwind all the parents
             SpanInfo parent = this;
             while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
+                    // stop on the first finally, its own end state will
+                    // be merged into the nearest enclosing finally
+                    return this;
                 }
                 parent = parent.parent;
             }
@@ -1276,6 +1333,57 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return this;
         }
 
+
+        /**
+         * Record an abrupt completion occurring because of a thrown
+         * exception.
+         *
+         * @param byMethodCall If true, a method/ctor call threw the exception
+         *                     (we conservatively consider they do inside try blocks).
+         *                     Otherwise, a throw statement threw.
+         */
+        SpanInfo abruptCompletionByThrow(boolean byMethodCall) {
+            // Find the first block that has a finally
+            // Be absorbed into every catch block on the way.
+
+            // In 7.0, with the precise type/overload resolution, we
+            // can target the specific catch block that would catch the
+            // exception.
+
+            SpanInfo parent = this;
+            while (parent != null) {
+
+                if (!parent.myCatches.isEmpty()) {
+                    for (SpanInfo c : parent.myCatches) {
+                        c.absorb(this);
+                    }
+                }
+
+                if (parent.myFinally != null) {
+                    // stop on the first finally, its own end state will
+                    // be merged into the nearest enclosing finally
+                    parent.myFinally.absorb(this);
+                    return this;
+                }
+                parent = parent.parent;
+            }
+
+            if (!byMethodCall) {
+                this.symtable.clear(); // following is dead code
+            }
+            return this;
+        }
+
+        SpanInfo withCatchBlocks(List<SpanInfo> catchStmts) {
+            assert myCatches.isEmpty() || catchStmts.isEmpty() : "Cannot set catch blocks twice";
+            myCatches = Collections.unmodifiableList(catchStmts); // we own the list now, to avoid copying
+            return this;
+        }
+
+        private boolean isInTryBlock() {
+            // ignore resources, once they're initialized everything's fine in the block
+            return !myCatches.isEmpty() || myFinally != null;
+        }
 
         SpanInfo absorb(SpanInfo other) {
             // Merge reaching defs of the other scope into this

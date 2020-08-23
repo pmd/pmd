@@ -50,13 +50,13 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
 
     @Override
     protected int getMetric(T node) {
-        return (Integer) new NcssVisitor().visit(node, null) + 1;
+        return 1 + (Integer) node.jjtAccept(new NcssVisitor(), null);
     }
 
     private static class NcssVisitor extends PLSQLParserVisitorAdapter {
 
         @Override
-        public Object visit(PLSQLNode node, Object data) {
+        public Object visitPLSQLNode(PLSQLNode node, Object data) {
             return countNodeChildren(node, data);
         }
 

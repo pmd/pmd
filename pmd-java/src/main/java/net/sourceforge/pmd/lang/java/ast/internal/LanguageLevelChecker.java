@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -43,6 +44,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 
@@ -114,13 +116,16 @@ public class LanguageLevelChecker<T> {
         SWITCH_EXPRESSIONS(12, 13, true),
         SWITCH_RULES(12, 13, true),
 
-        TEXT_BLOCK_LITERALS(13, 14, false),
+        TEXT_BLOCK_LITERALS(13, 14, true),
         YIELD_STATEMENTS(13, 13, true),
 
         /** \s */
-        SPACE_STRING_ESCAPES(14, 14, false),
-        RECORD_DECLARATIONS(14, 14, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false);
+        SPACE_STRING_ESCAPES(14, 14, true),
+        RECORD_DECLARATIONS(14, 15, false),
+        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 15, false),
+        SEALED_CLASSES(15, 15, false),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
         private final int minPreviewVersion;
@@ -375,7 +380,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visit((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
             return null;
         }
 
@@ -514,7 +519,12 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, T data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
+            if ((node.getModifiers() & (AccessNode.SEALED | AccessNode.NON_SEALED)) != 0) {
+                check(node, PreviewFeature.SEALED_CLASSES, data);
+            } else if (node.isLocal() && node.getTypeKind() != TypeKind.CLASS) {
+                check(node, PreviewFeature.SEALED_CLASSES, data);
+            }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
                 check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);

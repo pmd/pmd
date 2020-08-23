@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -21,36 +20,40 @@ public class ProperCloneImplementationRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!"clone".equals(node.getName()) || node.getArity() > 0) {
-            return data;
+    public Object visit(ASTMethodDeclaration method, Object data) {
+        if (isCloneMethod(method) && isNotAbstractMethod(method)) {
+            ASTClassOrInterfaceDeclaration classDecl = method.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            if (isNotFinal(classDecl) && hasAnyAllocationOfClass(method, classDecl.getSimpleName())) {
+                addViolation(data, method);
+            }
         }
-
-        ASTBlock block = node.getFirstChildOfType(ASTBlock.class);
-        if (block == null) {
-            return data;
-        }
-
-        String enclosingClassName = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getSimpleName();
-        if (blockHasAllocations(block, enclosingClassName)) {
-            addViolation(data, node);
-        }
-
         return data;
     }
 
-    private boolean blockHasAllocations(ASTBlock block, String enclosingClassName) {
-        List<ASTAllocationExpression> allocations = block.findDescendantsOfType(ASTAllocationExpression.class);
-        for (ASTAllocationExpression alloc : allocations) {
-            ASTClassOrInterfaceType type = alloc.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (typeHasImage(type, enclosingClassName)) {
+    private boolean isCloneMethod(ASTMethodDeclaration method) {
+        return "clone".equals(method.getName()) && method.getArity() == 0;
+    }
+
+    private boolean isNotAbstractMethod(ASTMethodDeclaration method) {
+        return !method.isAbstract();
+    }
+
+    private boolean isNotFinal(ASTClassOrInterfaceDeclaration classOrInterfaceDecl) {
+        return !classOrInterfaceDecl.isFinal();
+    }
+
+    private boolean hasAnyAllocationOfClass(ASTMethodDeclaration method, String className) {
+        List<ASTAllocationExpression> allocations = method.findDescendantsOfType(ASTAllocationExpression.class);
+        for (ASTAllocationExpression allocation : allocations) {
+            ASTClassOrInterfaceType allocatedType = allocation.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            if (isSimpleNameOfType(className, allocatedType)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean typeHasImage(ASTClassOrInterfaceType type, String image) {
-        return type != null && type.hasImageEqualTo(image);
+    private boolean isSimpleNameOfType(String simpleName, ASTClassOrInterfaceType type) {
+        return type != null && type.hasImageEqualTo(simpleName);
     }
 }

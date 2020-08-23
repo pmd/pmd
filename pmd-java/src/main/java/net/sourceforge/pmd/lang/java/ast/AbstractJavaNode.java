@@ -50,6 +50,11 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
         super.addChild(child, index);
     }
 
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    protected void insertChild(AbstractJavaNode child, int index) {
+        super.insertChild(child, index);
+    }
+
     @Override // override to make it accessible to parser
     protected void setImage(String image) {
         super.setImage(image);

@@ -23,30 +23,50 @@ gets it.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized= true()]</value>
+                <value>//MethodDeclaration[@Synchronized = true()]</value>
             </property>
         </properties>
         <example>
 <![CDATA[
 public class Foo {
-  // Try to avoid this:
-  synchronized void foo() {
-  }
-  // Prefer this:
-  void bar() {
-    synchronized(this) {
+    // Try to avoid this:
+    synchronized void foo() {
+        // code, that doesn't need synchronization
+        // ...
+        // code, that requires synchronization
+        if (!sharedData.has("bar")) {
+            sharedData.add("bar");
+        }
+        // more code, that doesn't need synchronization
+        // ...
     }
-  }
-
-  // Try to avoid this for static methods:
-  static synchronized void fooStatic() {
-  }
-
-  // Prefer this:
-  static void barStatic() {
-    synchronized(Foo.class) {
+    // Prefer this:
+    void bar() {
+        // code, that doesn't need synchronization
+        // ...
+        synchronized(this) {
+            if (!sharedData.has("bar")) {
+                sharedData.add("bar");
+            }
+        }
+        // more code, that doesn't need synchronization
+        // ...
     }
-  }
+
+    // Try to avoid this for static methods:
+    static synchronized void fooStatic() {
+    }
+
+    // Prefer this:
+    static void barStatic() {
+        // code, that doesn't need synchronization
+        // ...
+        synchronized(Foo.class) {
+            // code, that requires synchronization
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
 }
 ]]>
         </example>

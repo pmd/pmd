@@ -1,0 +1,35 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L4
+    [public]                                1         7
+    [with]                                  8         12
+    [sharing]                               13        20
+    [class]                                 21        26
+    [simple]                                27        33
+    [{]                                     34        35
+L5
+    [public]                                2         8
+    [string]                                9         15
+    [someparam]                             16        25
+    [{]                                     26        27
+    [get]                                   28        31
+    [;]                                     31        32
+    [set]                                   33        36
+    [;]                                     36        37
+    [}]                                     38        39
+L7
+    [public]                                2         8
+    [void]                                  9         13
+    [getinit]                               14        21
+    [(]                                     21        22
+    [)]                                     22        23
+    [{]                                     24        25
+L8
+    [someparam]                             3         12
+    [=]                                     13        14
+    [test]                                  16        20
+    [;]                                     21        22
+L9
+    [}]                                     2         3
+L10
+    [}]                                     1         2
+EOF

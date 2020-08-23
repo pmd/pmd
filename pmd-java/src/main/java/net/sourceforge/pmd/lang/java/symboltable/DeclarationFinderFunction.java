@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.SearchFunction;
 
+@Deprecated
+@InternalApi
 public class DeclarationFinderFunction implements SearchFunction<NameDeclaration> {
 
     private NameOccurrence occurrence;

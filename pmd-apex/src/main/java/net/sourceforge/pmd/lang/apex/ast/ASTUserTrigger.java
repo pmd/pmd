@@ -16,8 +16,9 @@ public final class ASTUserTrigger extends AbstractApexNode<UserTrigger> {
         super(userTrigger);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

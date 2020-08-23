@@ -36,4 +36,9 @@ public class PLSQLTokenizerTest extends CpdTextComparisonTest {
     public void testSpecialComments() {
         doTest("specialComments");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

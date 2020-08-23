@@ -53,6 +53,7 @@ The following previously deprecated rules have been finally removed:
 *   AbstractNaming (java-codestyle)
 *   AvoidFinalLocalVariable (java-codestyle)
 *   AvoidPrefixingMethodParameters (java-codestyle)
+*   DataflowAnomalyAnalysis (java-errorprone)
 *   ForLoopsMustUseBraces (java-codestyle)
 *   IfElseStmtsMustUseBraces (java-codestyle)
 *   IfStmtsMustUseBraces (java-codestyle)

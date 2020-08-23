@@ -34,4 +34,9 @@ public class LuaTokenizerTest extends CpdTextComparisonTest {
     public void testFactorial() {
         doTest("factorial");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

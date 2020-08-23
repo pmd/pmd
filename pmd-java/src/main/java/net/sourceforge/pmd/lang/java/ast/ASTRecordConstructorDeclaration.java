@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
  *
  * <pre class="grammar">
  *

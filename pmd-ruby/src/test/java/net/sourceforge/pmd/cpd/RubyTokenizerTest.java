@@ -31,4 +31,9 @@ public class RubyTokenizerTest extends CpdTextComparisonTest {
     public void testSimple() {
         doTest("server");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

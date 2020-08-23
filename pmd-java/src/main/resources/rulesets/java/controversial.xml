@@ -14,7 +14,8 @@ They are held here to allow people to include them as they see fit within their 
     <rule ref="category/java/errorprone.xml/AssignmentInOperand" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidAccessibilityAlteration" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" deprecated="true" />
+    <!-- Removed in PMD 7. -->
+    <!--    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly" deprecated="true" />
     <rule ref="category/java/errorprone.xml/DontImportSun" deprecated="true" />
     <rule ref="category/java/errorprone.xml/NullAssignment" deprecated="true" />

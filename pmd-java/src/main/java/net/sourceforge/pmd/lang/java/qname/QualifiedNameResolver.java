@@ -204,7 +204,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
         int localIndex = NOTLOCAL_PLACEHOLDER;
         if (node instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
@@ -216,7 +216,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
         ((AbstractAnyTypeDeclaration) node).setQualifiedName(contextClassQName());
 
-        super.visit(node, data);
+        super.visitTypeDecl(node, data);
 
         // go back to previous context
         rollbackClassContext();

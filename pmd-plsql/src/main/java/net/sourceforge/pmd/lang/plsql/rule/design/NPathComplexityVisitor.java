@@ -78,7 +78,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(PLSQLNode node, Object data) {
+    public Object visitPLSQLNode(PLSQLNode node, Object data) {
         return complexityMultipleOf(node, data);
     }
 

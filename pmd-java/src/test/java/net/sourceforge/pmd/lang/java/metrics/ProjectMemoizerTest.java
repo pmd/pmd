@@ -67,20 +67,20 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
         acu.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
-            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+            public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
                 if (opMetricKey.supports(node)) {
                     result.add((int) MetricsUtil.computeMetric(opMetricKey, node, MetricOptions.emptyOptions(), force));
                 }
-                return super.visit(node, data);
+                return super.visitMethodOrCtor(node, data);
             }
 
 
             @Override
-            public Object visit(ASTAnyTypeDeclaration node, Object data) {
+            public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
                 if (classMetricKey.supports(node)) {
                     result.add((int) MetricsUtil.computeMetric(classMetricKey, node, MetricOptions.emptyOptions(), force));
                 }
-                return super.visit(node, data);
+                return super.visitTypeDecl(node, data);
             }
         }, null);
 

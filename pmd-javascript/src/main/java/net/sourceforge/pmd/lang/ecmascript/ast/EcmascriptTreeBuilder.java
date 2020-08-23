@@ -242,13 +242,6 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     private void calculateLineNumbers(EcmascriptNode<?> node) {
-        EcmascriptParserVisitorAdapter visitor = new EcmascriptParserVisitorAdapter() {
-            @Override
-            public Object visit(EcmascriptNode<?> node, Object data) {
-                ((AbstractEcmascriptNode<?>) node).calculateLineNumbers(sourceCodePositioner);
-                return super.visit(node, data); // also visit the children
-            }
-        };
-        node.jjtAccept(visitor, null);
+        node.descendantsOrSelf().forEach(n -> ((AbstractEcmascriptNode<?>) n).calculateLineNumbers(sourceCodePositioner));
     }
 }
