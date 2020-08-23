@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
@@ -65,13 +66,12 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
         }
 
         @Override
-        protected Integer zero() {
-            return 0;
-        }
-
-        @Override
-        protected Integer combine(Integer acc, Integer childValue) {
-            return acc + childValue;
+        protected Integer visitChildren(Node node, Void data) {
+            int v = 0;
+            for (Node child : node.children()) {
+                v += child.acceptVisitor(this, data);
+            }
+            return v;
         }
 
         /**

@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.apex.multifile;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 
@@ -56,14 +54,4 @@ public class ApexMultifileVisitor extends ApexVisitorBase<Void, Void> {
         return data;
     }
 
-    @Override
-    public final Object visit(ASTUserInterface node, Object data) {
-        return visitTypeDecl(node, data);
-    }
-
-
-    @Override
-    public final Object visit(ASTUserClass node, Object data) {
-        return visitTypeDecl(node, data);
-    }
 }
