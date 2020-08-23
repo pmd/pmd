@@ -361,7 +361,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visit((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
             return null;
         }
 
@@ -476,13 +476,12 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, T data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, PreviewFeature.SEALED_CLASSES, data);
             } else if (node.isLocal() && !node.isRegularClass()) {
                 check(node, PreviewFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
             }
-
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
                 check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);

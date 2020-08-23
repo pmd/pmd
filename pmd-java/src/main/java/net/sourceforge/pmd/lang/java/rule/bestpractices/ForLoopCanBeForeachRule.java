@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -69,7 +69,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         final List<NameOccurrence> occurrences = indexDecl.get().getValue();
         final VariableNameDeclaration index = indexDecl.get().getKey();
 
-        if (TypeHelper.isExactlyAny(index, Iterator.class)) {
+        if (TypeTestUtil.isA(Iterator.class, index.getDeclaratorId())) {
             getIterableDeclOfIteratorLoop(index, node.getScope())
                 .filter(iterableInfo -> isReplaceableIteratorLoop(indexDecl.get(), guardCondition, iterableInfo, node))
                 .ifPresent(ignored -> addViolation(data, node));

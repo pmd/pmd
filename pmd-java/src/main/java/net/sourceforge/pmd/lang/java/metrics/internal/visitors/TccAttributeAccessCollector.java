@@ -52,17 +52,17 @@ public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
      */
     @SuppressWarnings("unchecked")
     public Map<String, Set<String>> start() {
-        return (Map<String, Set<String>>) this.visit(exploredClass, new HashMap<String, Set<String>>());
+        return (Map<String, Set<String>>) this.visitTypeDecl(exploredClass, new HashMap<String, Set<String>>());
     }
 
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
         if (Objects.equals(node, exploredClass)) {
             methodAttributeAccess = new HashMap<>();
-            super.visit(node, data);
+            super.visitTypeDecl(node, data);
         } else if (node.isLocal()) {
-            super.visit(node, data);
+            super.visitTypeDecl(node, data);
         }
         return methodAttributeAccess;
     }

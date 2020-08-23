@@ -43,7 +43,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             }
         }
 
-
         return super.getMainAttribute(node);
     }
 
@@ -80,12 +79,12 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         private static final MainAttrVisitor INSTANCE = new MainAttrVisitor();
 
         @Override
-        public Attribute visit(JavaNode node, Void data) {
+        public Attribute visitJavaNode(JavaNode node, Void data) {
             return null; // don't recurse
         }
 
         @Override
-        public Attribute visit(ASTAnyTypeDeclaration node, Void data) {
+        public Attribute visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 

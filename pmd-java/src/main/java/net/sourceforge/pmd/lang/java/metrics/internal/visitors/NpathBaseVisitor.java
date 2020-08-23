@@ -85,13 +85,13 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+    public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
         return multiplyChildrenComplexities(node, data);
     }
 
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object data) {
         return multiplyChildrenComplexities(node, data);
     }
 

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -118,7 +118,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
      */
     private boolean isExpectAnnotated(ASTMethodDeclaration method) {
         return method.getDeclaredAnnotations()
-                     .filter(it -> TypeHelper.isA(it, JUNIT4_CLASS_NAME))
+                     .filter(it -> TypeTestUtil.isA(JUNIT4_CLASS_NAME, it))
                      .flatMap(ASTAnnotation::getMembers)
                      .any(it -> "expected".equals(it.getName()));
 
@@ -208,7 +208,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
                     String varName = tokens[0];
                     boolean variableTypeIsSoftAssertion = variables.containsKey(varName)
-                            && TypeHelper.isA(variables.get(varName), "org.assertj.core.api.AbstractSoftAssertions");
+                            && TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", variables.get(varName).getDeclaratorId());
 
                     return methodIsAssertAll && variableTypeIsSoftAssertion;
                 }

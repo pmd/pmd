@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
-import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -40,7 +39,7 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((EcmascriptNode<?>) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
 }

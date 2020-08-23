@@ -85,7 +85,7 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
     protected abstract int getMetric(T node);
 
     @Override
-    public Object visit(PLSQLNode node, Object data) {
+    public Object visitPLSQLNode(PLSQLNode node, Object data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
