@@ -338,25 +338,49 @@ public final class TypeSystem {
      *
      * @return A symbol, or null
      *
-     * @throws IllegalArgumentException If the
+     * @throws IllegalArgumentException if the argument is not a binary name
      */
     public @Nullable JClassSymbol getClassSymbol(String binaryName) {
-        if (binaryName == null) {
+        return getClassSymbolImpl(binaryName, false);
+    }
+
+    /**
+     * Returns a symbol for the canonical name. Returns null if the name is
+     * null or the symbol is not found on the classpath. The class must
+     * not be an array.
+     *
+     * <p>Canonical names separate nested classes with {@code .}
+     * (periods) instead of {@code $} (dollars) as the JVM does. Users
+     * usually use canonical names, but lookup is much more costly.
+     *
+     * @param canonicalName Canonical name
+     *
+     * @return A symbol, or null
+     *
+     * @throws IllegalArgumentException if the argument is not a binary name
+     */
+    public @Nullable JClassSymbol getClassSymbolFromCanonicalName(String canonicalName) {
+        return getClassSymbolImpl(canonicalName, true);
+    }
+
+    private @Nullable JClassSymbol getClassSymbolImpl(String name, boolean isCanonical) {
+        if (name == null) {
             return null;
         }
-        if ("void".equals(binaryName)) {
+        if ("void".equals(name)) {
             return (JClassSymbol) NO_TYPE.getSymbol();
         }
-        PrimitiveTypeKind kind = PrimitiveTypeKind.fromName(binaryName);
+        PrimitiveTypeKind kind = PrimitiveTypeKind.fromName(name);
         if (kind != null) { // void
             return getPrimitive(kind).getSymbol();
         }
 
-        if (!AssertionUtil.isValidJavaPackageName(binaryName)) {
-            throw new IllegalArgumentException("Not a binary name '" + binaryName + "'");
+        if (!AssertionUtil.isJavaBinaryName(name)) {
+            throw new IllegalArgumentException("Not a binary name '" + name + "'");
         }
 
-        return resolver.resolveClassFromBinaryName(binaryName);
+        return isCanonical ? resolver.resolveClassFromCanonicalName(name)
+                           : resolver.resolveClassFromBinaryName(name);
     }
 
     /**

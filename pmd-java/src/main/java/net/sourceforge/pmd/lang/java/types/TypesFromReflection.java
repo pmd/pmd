@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -25,7 +24,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -212,32 +210,18 @@ public final class TypesFromReflection {
      * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
      * 'java.util.Map$Entry').
      */
-    public static Class<?> loadClass(NullableClassLoader ctr, String className) {
+    public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className) {
         return loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className));
     }
 
-    private static Class<?> loadClassFromCanonicalName(NullableClassLoader ctr, String className) {
-        Class<?> clazz = PRIMITIVES_BY_NAME.get(className);
-        if (clazz == null) {
-            clazz = ctr.loadClassOrNull(className);
-        }
-        if (clazz != null) {
-            return clazz;
-        }
-        // allow path separators (.) as inner class name separators
-        final int lastDotIndex = className.lastIndexOf('.');
-
-        if (lastDotIndex >= 0) {
-            String asInner = className.substring(0, lastDotIndex)
-                + '$' + className.substring(lastDotIndex + 1);
-            return loadClassFromCanonicalName(ctr, asInner);
-        }
-        return null;
+    public static @Nullable JClassSymbol loadSymbol(TypeSystem ctr, String className) {
+        JTypeMirror type = loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className));
+        return type == null ? null : (JClassSymbol) type.getSymbol();
     }
 
 
-    private static Class<?> loadClassMaybeArray(NullableClassLoader classLoader,
-                                                String className) {
+    private static @Nullable JTypeMirror loadClassMaybeArray(TypeSystem ts,
+                                                             String className) {
         Validate.notNull(className, "className must not be null.");
         if (className.endsWith("[]")) {
             int dimension = 0;
@@ -250,15 +234,15 @@ public final class TypesFromReflection {
             checkJavaIdent(className, i);
             String elementName = className.substring(0, i);
 
-            Class<?> elementType = loadClassFromCanonicalName(classLoader, elementName);
+            @Nullable JClassSymbol elementType = ts.getClassSymbolFromCanonicalName(elementName);
             if (elementType == null) {
                 return null;
             }
 
-            return Array.newInstance(elementType, (int[]) Array.newInstance(int.class, dimension)).getClass();
+            return ts.arrayType(ts.rawType(elementType), dimension);
         } else {
             checkJavaIdent(className, className.length());
-            return loadClassFromCanonicalName(classLoader, className);
+            return ts.rawType(ts.getClassSymbolFromCanonicalName(className));
         }
     }
 

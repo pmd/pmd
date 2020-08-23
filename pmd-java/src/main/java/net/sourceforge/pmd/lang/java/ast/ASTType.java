@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
 /**

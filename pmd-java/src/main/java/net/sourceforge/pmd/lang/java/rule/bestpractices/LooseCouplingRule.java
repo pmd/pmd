@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class LooseCouplingRule extends AbstractJavaRule {
 
@@ -25,7 +25,7 @@ public class LooseCouplingRule extends AbstractJavaRule {
             return data;
         }
         Node parent = node.getNthParent(3);
-        boolean isType = (TypeHelper.isA(node, Collection.class) || TypeHelper.isA(node, Map.class))
+        boolean isType = (TypeTestUtil.isA(Collection.class, node) || TypeTestUtil.isA(Map.class, node))
             && !(node.getType() != null && node.getType().isInterface());
 
         if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class UseUtilityClassRule extends AbstractLombokAwareRule {
 
@@ -100,7 +100,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
         // check if there's a lombok no arg private constructor, if so skip the rest of the rules
 
         return parent.getDeclaredAnnotations()
-                     .filter(t -> TypeHelper.isA(t, "lombok.NoArgsConstructor"))
+                     .filter(t -> TypeTestUtil.isA("lombok.NoArgsConstructor", t))
                      .flatMap(ASTAnnotation::getMembers)
                      // to set the access level of a constructor in lombok, you set the access property on the annotation
                      .filterMatching(ASTMemberValuePair::getName, "access")

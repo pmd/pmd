@@ -19,9 +19,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class Java10Test {
 
@@ -48,7 +48,7 @@ public class Java10Test {
 
         // check the type of the variable initializer's expression
         ASTExpression initExpression = varId.getInitializer();
-        assertTrue("type should be ArrayList", TypeHelper.symbolEquals(ArrayList.class, initExpression));
+        assertTrue("type should be ArrayList", TypeTestUtil.isA(ArrayList.class, initExpression));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class Java10Test {
 
         assertNull(localVars.get(0).getTypeNode());
         ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
-        assertTrue("type should be String", TypeHelper.symbolEquals(String.class, varDecl));
+        assertTrue("type should be String", TypeTestUtil.isA(String.class, varDecl));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class Java10Test {
 
         assertNull(localVars.get(1).getTypeNode());
         @NonNull ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
-        assertTrue("type should be String", TypeHelper.symbolEquals(String.class, varDecl2));
+        assertTrue("type should be String", TypeTestUtil.isA(String.class, varDecl2));
 
         assertNull(localVars.get(3).getTypeNode());
         ASTVariableDeclaratorId varDecl4 = localVars.get(3).getVarIds().firstOrThrow();
@@ -124,7 +124,7 @@ public class Java10Test {
 
         assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());
         ASTVariableDeclaratorId varId = resources.get(0).asLocalVariableDeclaration().getVarIds().firstOrThrow();
-        assertTrue("type should be FileInputStream", TypeHelper.symbolEquals(FileInputStream.class, varId));
+        assertTrue("type should be FileInputStream", TypeTestUtil.isA(FileInputStream.class, varId));
     }
 
     @Test
