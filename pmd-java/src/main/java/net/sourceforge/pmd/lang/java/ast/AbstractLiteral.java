@@ -13,4 +13,8 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
         super(i);
     }
 
+    @Override
+    public boolean isCompileTimeConstant() {
+        return true; // note: NullLiteral overrides this to false
+    }
 }

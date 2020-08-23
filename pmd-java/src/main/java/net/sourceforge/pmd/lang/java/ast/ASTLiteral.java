@@ -20,9 +20,13 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public interface ASTLiteral extends ASTPrimaryExpression {
 
+    // Those methods are deprecated as they're not so useful, and introduce
+    // unwanted XPath attributes
+
     /**
      * Returns true if this is a {@linkplain ASTStringLiteral string literal}.
      */
+    @Deprecated
     default boolean isStringLiteral() {
         return this instanceof ASTStringLiteral;
     }
@@ -30,6 +34,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is a {@linkplain ASTCharLiteral character literal}.
      */
+    @Deprecated
     default boolean isCharLiteral() {
         return this instanceof ASTCharLiteral;
     }
@@ -38,6 +43,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is the {@linkplain ASTNullLiteral null literal}.
      */
+    @Deprecated
     default boolean isNullLiteral() {
         return this instanceof ASTNullLiteral;
     }
@@ -46,6 +52,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is a {@linkplain ASTBooleanLiteral boolean literal}.
      */
+    @Deprecated
     default boolean isBooleanLiteral() {
         return this instanceof ASTBooleanLiteral;
     }
@@ -55,6 +62,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
      * Returns true if this is a {@linkplain ASTNumericLiteral numeric literal}
      * of any kind.
      */
+    @Deprecated
     default boolean isNumericLiteral() {
         return this instanceof ASTNumericLiteral;
     }
@@ -63,6 +71,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is an {@linkplain ASTNumericLiteral integer literal}.
      */
+    @Deprecated
     default boolean isIntLiteral() {
         return false;
     }
@@ -71,6 +80,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is a {@linkplain ASTNumericLiteral long integer literal}.
      */
+    @Deprecated
     default boolean isLongLiteral() {
         return false;
     }
@@ -79,6 +89,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is a {@linkplain ASTNumericLiteral float literal}.
      */
+    @Deprecated
     default boolean isFloatLiteral() {
         return false;
     }
@@ -87,6 +98,7 @@ public interface ASTLiteral extends ASTPrimaryExpression {
     /**
      * Returns true if this is a {@linkplain ASTNumericLiteral double literal}.
      */
+    @Deprecated
     default boolean isDoubleLiteral() {
         return false;
     }

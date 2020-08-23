@@ -56,15 +56,6 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return QualifiableExpression.super.getQualifier();
     }
 
-    /**
-     * Returns true if this constructor call uses the diamond operator,
-     * eg {@code new ArrayList<>()}.
-     */
-    public boolean isDiamond() {
-        ASTTypeArguments targs = getTypeNode().getTypeArguments();
-        return targs != null && targs.isDiamond();
-    }
-
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
