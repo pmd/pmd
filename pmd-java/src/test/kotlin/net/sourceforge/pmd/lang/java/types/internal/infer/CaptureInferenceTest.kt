@@ -363,8 +363,6 @@ interface MostlySingularMultimap<K, V> {
 
     parserTest("Unbounded wild has bound of its underlying tvar") {
 
-        logTypeInference(true)
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import java.util.List;
