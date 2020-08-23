@@ -15,7 +15,7 @@ import org.jaxen.XPathFunctionContext;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 
 @InternalApi
@@ -50,7 +50,7 @@ public class TypeIsFunction implements Function {
      */
     public static boolean typeIs(final Node n, final String fullTypeName) {
         if (n instanceof TypeNode) {
-            return TypeHelper.isA((TypeNode) n, fullTypeName);
+            return TypeTestUtil.isA(fullTypeName, (TypeNode) n);
         } else {
             throw new IllegalArgumentException("typeIs function may only be called on a TypeNode.");
         }

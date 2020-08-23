@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -19,6 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
+@Deprecated
+@InternalApi
 public class NameFinder {
 
     private List<JavaNameOccurrence> names = new ArrayList<>();

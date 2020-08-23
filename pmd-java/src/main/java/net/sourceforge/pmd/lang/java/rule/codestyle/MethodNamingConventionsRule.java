@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -64,9 +63,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
             return false;
         }
 
-        ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) parent).getSuperClassTypeNode();
-
-        return superClass != null && TypeHelper.isA(superClass, "junit.framework.TestCase");
+        return TypeTestUtil.isA("junit.framework.TestCase", (ASTClassOrInterfaceDeclaration) parent);
     }
 
 
