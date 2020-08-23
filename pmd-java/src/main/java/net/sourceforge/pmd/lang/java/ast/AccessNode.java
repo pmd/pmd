@@ -11,7 +11,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * A node that owns a {@linkplain ASTModifierList modifier list}.
