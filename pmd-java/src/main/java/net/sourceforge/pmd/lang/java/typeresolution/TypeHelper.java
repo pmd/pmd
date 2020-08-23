@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 

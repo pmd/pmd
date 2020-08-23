@@ -776,7 +776,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public SpanInfo visit(ASTFormalParameter node, SpanInfo data) {
             ASTVariableDeclaratorId id = node.getVarId();
-             data.assign(id, id);
+            data.assign(id, id);
             return data;
         }
 
