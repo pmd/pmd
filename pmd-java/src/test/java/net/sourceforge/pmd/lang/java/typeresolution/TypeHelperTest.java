@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 
+@Ignore("Will be removed in the typeres branch")
 public class TypeHelperTest extends BaseNonParserTest {
 
     private static final NullableClassLoader LOADER = wrapNullable(TypeHelperTest.class.getClassLoader());

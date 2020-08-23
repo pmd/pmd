@@ -180,7 +180,7 @@ public interface JavaParserVisitor extends JavaVisitor<Object, Object> {
     }
 
     @Deprecated
-    public default Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+    default Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         return null;
     }
 
