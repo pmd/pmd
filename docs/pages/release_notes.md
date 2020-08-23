@@ -88,6 +88,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   [#2684](https://github.com/pmd/pmd/issues/2684): \[java] UnusedAssignment FP in try/catch
     *   [#2686](https://github.com/pmd/pmd/issues/2686): \[java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes
 *   java-design
+    *   [#2108](https://github.com/pmd/pmd/issues/2108): \[java] \[doc] ImmutableField rule: Description should clarify shallow immutability
     *   [#2461](https://github.com/pmd/pmd/issues/2461): \[java] ExcessiveParameterListRule must ignore a private constructor
 *   java-errorprone
     *   [#2410](https://github.com/pmd/pmd/issues/2410): \[java] ProperCloneImplementation not valid for final class
@@ -155,6 +156,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 *   [#2697](https://github.com/pmd/pmd/pull/2697): \[java] ExcessiveParameterListRule must ignore a private constructor - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2699](https://github.com/pmd/pmd/pull/2699): \[java] ProperCloneImplementation not valid for final class - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2700](https://github.com/pmd/pmd/pull/2700): \[java] Fix OnlyOneReturn code example - [Jan-Lukas Else](https://github.com/jlelse)
+*   [#2722](https://github.com/pmd/pmd/pull/2722): \[doc] \[java] ImmutableField: extend description, fixes #2108 - [Mateusz Stefanski](https://github.com/mateusz-stefanski)
 
 
 {% endtocmaker %}
