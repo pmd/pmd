@@ -34,10 +34,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public final class InferenceVar implements JTypeMirror, SubstVar {
 
     // we used to use greek letters (for style), but they're hard to type
-    private static final String NAMES =
-        "abcdefghijklmnopqrstuvwxyz"
-        // + "αβγδεζηθκλμνξπρςυφχψω"
-        ;
+    private static final String NAMES = "abcdefghijklmnopqrstuvwxyz"; // + "αβγδεζηθκλμνξπρςυφχψω"
 
     private final InferenceContext ctx;
     private JTypeVar tvar;

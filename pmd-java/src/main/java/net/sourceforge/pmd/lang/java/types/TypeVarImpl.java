@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {
 
 
@@ -176,6 +177,11 @@ abstract class TypeVarImpl implements JTypeVar {
         @Override
         public boolean equals(Object o) {
             return this == o || o instanceof CaptureMatcher && o.equals(this);
+        }
+
+        @Override
+        public int hashCode() { // NOPMD UselessOverridingMethod
+            return super.hashCode();
         }
 
         @Override

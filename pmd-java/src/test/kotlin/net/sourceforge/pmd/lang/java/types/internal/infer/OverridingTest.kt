@@ -234,24 +234,24 @@ class F<G> {
 
    parserTest("Static method of interface is not inherited!") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+       val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
-class List<T> {}
+interface List<T> {}
 
-interface Sup { 
+interface Sup {
     static <E> E m(F<? extends E> e) { return null; }
 }
 
-class Sub implements Sup { 
+class Sub implements Sup {
     static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
 }
 
-class F<G> {
+class F<G> implements List<F<G>> {
     {
         // This is not ambiguous. The interface static method
         // may only be called with the interface as qualifier.
-        Sub.m(new F<List<G>>()); 
+        Sub.m(new F<F<List<G>>>());
     }
 }
    """.trimIndent()
@@ -277,9 +277,9 @@ class F<G> {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
-class List<T> {}
+interface List<T> {}
 
-interface Sup { 
+interface Sup {
     static <E> E m(F<? extends E> e) { return null; }
 }
 
@@ -287,11 +287,11 @@ interface Sub extends Sup { // note now, that it is an interface
     static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
 }
 
-class F<G> {
+class F<G> implements List<F<G>> {
     {
         // This is not ambiguous. The interface static method
         // may only be called with the interface as qualifier.
-        Sub.m(new F<List<G>>()); 
+        Sub.m(new F<F<List<G>>>());
     }
 }
    """.trimIndent()

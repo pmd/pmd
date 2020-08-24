@@ -230,7 +230,6 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test type var bound substitution in inherited members") {
 
-        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 interface I<S> {}

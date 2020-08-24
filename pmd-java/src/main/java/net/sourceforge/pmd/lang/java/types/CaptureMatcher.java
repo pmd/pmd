@@ -10,7 +10,6 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
 /**
@@ -43,8 +42,10 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public @NonNull String getName() {
-        return captured != null ? captured.getName()
-                                : AssertionUtil.unsupportedOperation("name");
+        if (captured != null) {
+            return captured.getName();
+        }
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
     @Override
@@ -69,12 +70,12 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
-        return AssertionUtil.unsupportedOperation("this is a test only object which should only be used for equals");
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
     @Override
     public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
-        return AssertionUtil.unsupportedOperation("this is a test only object which should only be used for equals");
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
     @Override
@@ -99,7 +100,7 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public int hashCode() {
-        return Objects.hash(wild);
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
     @Override

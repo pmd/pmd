@@ -30,7 +30,12 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
     @Override
     public @Nullable JTypeMirror getStandaloneType() {
         JMethodSig ctdecl = getCtdecl();
-        return TypeOps.mentionsAny(ctdecl.getReturnType(), ctdecl.getTypeParameters()) ? null : ctdecl.getReturnType();
+        return isContextDependent(ctdecl) ? null : ctdecl.getReturnType();
+    }
+
+    private static boolean isContextDependent(JMethodSig m) {
+        m = m.internalApi().adaptedMethod();
+        return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
     }
 
     private JMethodSig getCtdecl() {

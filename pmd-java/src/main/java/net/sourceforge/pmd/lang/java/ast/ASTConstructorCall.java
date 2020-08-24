@@ -61,17 +61,19 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
         return QualifiableExpression.super.getQualifier();
     }
 
-    @Nullable
-    public ASTTypeArguments getExplicitTypeArguments() {
+    @Override
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
     @Override
-    @NonNull
-    public ASTArgumentList getArguments() {
-        int idx = getNumChildren() - (isAnonymousClass() ? 2 : 1);
-        return (ASTArgumentList) getChild(idx);
+    public @NonNull ASTArgumentList getArguments() {
+        JavaNode child = getLastChild();
+        if (child instanceof ASTAnonymousClassDeclaration) {
+            return (ASTArgumentList) getChild(getNumChildren() - 2);
+        }
+        return (ASTArgumentList) child;
     }
 
     /** Returns true if type arguments to the constructed instance's type are inferred. */

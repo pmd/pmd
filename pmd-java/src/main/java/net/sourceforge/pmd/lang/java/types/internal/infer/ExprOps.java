@@ -501,7 +501,7 @@ final class ExprOps {
         return ts.parameterise(ts.getClassSymbol(Class.class), listOf(ts.wildcard(true, erasedReceiverType)));
     }
 
-    public static boolean isContextDependent(JMethodSig m) {
+    static boolean isContextDependent(JMethodSig m) {
         m = m.internalApi().adaptedMethod();
         return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
     }
