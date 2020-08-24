@@ -42,11 +42,12 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         if (visitor instanceof ApexVisitor) {
             return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
         }
-        return super.acceptVisitor(visitor, data);
+        return visitor.cannotVisit(this, data);
     }
 
     protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
