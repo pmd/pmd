@@ -7,8 +7,8 @@ package net.sourceforge.pmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
-
 import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
