@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asClassType;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAny;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
+import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.methodRefAsInvocation;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.EQ;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.LOWER;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.UPPER;
@@ -91,7 +92,9 @@ final class ExprCheckHelper {
         {
             JTypeMirror standalone = expr.getStandaloneType();
             if (standalone != null) {
-                expr.setInferredType(standalone);
+                if (mayMutateExpr()) {
+                    expr.setInferredType(standalone);
+                }
                 isStandalone = true;
 
                 // defer check if fi is not ground
@@ -127,8 +130,14 @@ final class ExprCheckHelper {
                     return isLambdaCompatible(funType, lambda);
                 } catch (ResolutionFailedException e) {
                     // need to cleanup the partial data
-                    lambda.setInferredType(null);
-                    lambda.setFunctionalMethod(null);
+                    if (mayMutateExpr()) {
+                        lambda.setInferredType(null);
+                        lambda.setFunctionalMethod(null);
+                    }
+
+                    if (site != null) {
+                        site.maySkipInvocation(false);
+                    }
                     throw e;
                 }
             } else {
@@ -147,7 +156,8 @@ final class ExprCheckHelper {
     }
 
     private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc, boolean isStandalone) {
-        MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, this.site, this.infCtx);
+        MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, this.site, this.infCtx, isSpecificityCheck());
+
         MethodCtDecl argCtDecl = infer.determineInvocationTypeOrFail(nestedSite);
         JMethodSig mostSpecific = argCtDecl.getMethodType();
 
@@ -161,8 +171,10 @@ final class ExprCheckHelper {
                 actualType = fallback;
             }
             // else it's ts.UNRESOLVED
-            invoc.setInferredType(fallback);
-            invoc.setMethodType(infer.NO_CTDECL);
+            if (mayMutateExpr()) {
+                invoc.setInferredType(fallback);
+                invoc.setMethodType(infer.NO_CTDECL);
+            }
         }
 
         if (site != null) {
@@ -180,7 +192,7 @@ final class ExprCheckHelper {
             checker.checkExprConstraint(infCtx, actualType, targetType);
         }
 
-        if (!argCtDecl.isFailed()) {
+        if (!argCtDecl.isFailed() && mayMutateExpr()) {
             infCtx.addInstantiationListener(
                 infCtx.freeVarsIn(actualType),
                 solved -> {
@@ -391,7 +403,7 @@ final class ExprCheckHelper {
             // as dependencies between these new variables and the inference variables in T.
 
             if (phase.isInvocation()) {
-                JMethodSig sig = infer.exprOps.inferMethodRefInvocation(mref, fun, ctdecl0, site, infCtx);
+                JMethodSig sig = inferMethodRefInvocation(mref, fun, ctdecl0);
                 if (fixInstantiation) {
                     // We know that fun & sig have the same type params
                     // We need to fix those that are out-of-scope
@@ -413,7 +425,7 @@ final class ExprCheckHelper {
     }
 
     private void completeMethodRefInference(MethodRefMirror mref, JClassType groundTargetType, JMethodSig functionalMethod, JMethodSig ctDecl, boolean isExactMethod) {
-        if (phase.isInvocation() || isExactMethod) {
+        if ((phase.isInvocation() || isExactMethod) && mayMutateExpr()) {
             // if exact, then the arg is relevant to applicability and there
             // may not be an invocation round
             infCtx.addInstantiationListener(
@@ -425,6 +437,14 @@ final class ExprCheckHelper {
                 }
             );
         }
+    }
+
+
+    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
+        InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
+        wrapper.setMethodType(ctdecl);
+        MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx, isSpecificityCheck());
+        return infer.determineInvocationTypeOrFail(mockSite).getMethodType();
     }
 
     /**
@@ -450,22 +470,32 @@ final class ExprCheckHelper {
 
         // this is because the lazy type resolver uses the functional
         // method to resolve the type of a LambdaParameter
-        lambda.setInferredType(groundTargetType);
-        lambda.setFunctionalMethod(groundFun);
+        if (mayMutateExpr()) {
+            lambda.setInferredType(groundTargetType);
+            lambda.setFunctionalMethod(groundFun);
 
-        // set the final type when done
-        if (phase.isInvocation()) {
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(groundTargetType),
-                solved -> {
-                    JClassType solvedGround = solved.ground(groundTargetType);
-                    lambda.setInferredType(solvedGround);
-                    lambda.setFunctionalMethod(solved.ground(groundFun).internalApi().withOwner(solved.ground(groundFun.getDeclaringType())));
-                }
-            );
+            // set the final type when done
+            if (phase.isInvocation()) {
+                infCtx.addInstantiationListener(
+                    infCtx.freeVarsIn(groundTargetType),
+                    solved -> {
+                        JClassType solvedGround = solved.ground(groundTargetType);
+                        lambda.setInferredType(solvedGround);
+                        lambda.setFunctionalMethod(solved.ground(groundFun).internalApi().withOwner(solved.ground(groundFun.getDeclaringType())));
+                    }
+                );
+            }
         }
 
         return isLambdaCongruent(functionalItf, groundTargetType, groundFun, lambda);
+    }
+
+    private boolean mayMutateExpr() {
+        return !isSpecificityCheck();
+    }
+
+    private boolean isSpecificityCheck() {
+        return site != null && site.isSpecificityCheck();
     }
 
     // functionalItf    = T
@@ -520,8 +550,14 @@ final class ExprCheckHelper {
             infCtx.addInstantiationListener(
                 infCtx.freeVarsIn(groundFun.getFormalParameters()),
                 solvedCtx -> {
-                    lambda.setInferredType(solvedCtx.ground(groundTargetType));
-                    lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
+                    if (mayMutateExpr()) {
+                        lambda.setInferredType(solvedCtx.ground(groundTargetType));
+                        lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
+                    } else {
+                        // it must be, otherwise we wouldn't be doing specificity
+                        // checks as this parameter would be irrelevant to applicability
+                        assert lambda.isExplicitlyTyped();
+                    }
                     JTypeMirror groundResult = solvedCtx.ground(result);
                     for (ExprMirror expr : lambda.getResultExpressions()) {
                         if (!isCompatible(groundResult, expr)) {

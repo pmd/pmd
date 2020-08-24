@@ -37,6 +37,11 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     // TODO by mocking a call site we may be able to remove that logic
     //  Basically infer m1 against m2 with the same core routines as the
     //  main Infer.
+    // m1 is more specific than m2 if m2 can handle more calls than m1
+
+    // so try to infer applicability of m2 for argument types == formal param types of m1
+    // yeah but this would ignore the shape of lambdas, we'd only get constraints
+    // like f1(m1) <: f1(m2), ignoring that a lambda may be compatible with both types
 
     private final Infer infer;
     private final MethodResolutionPhase phase;
@@ -126,6 +131,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     }
 
     private boolean doInfer(JMethodSig m1, JMethodSig m2) {
+        MethodCallSite site = this.site.cloneForSpecificityCheck(infer);
         InferenceContext ctx = infer.newContextFor(m2);
 
         // even if m1 is generic, the type parameters of m1 are treated as type variables, not inference variables.
@@ -161,19 +167,19 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
             JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
             if (sfun == null || tfun == null) {
-                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, null);
+                infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, site);
                 continue;
             }
 
             // otherwise they're both functional interfaces
-            if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun, ei)) {
+            if (!isFunctionTypeMoreSpecific(ctx, si, sfun, tfun, ei, site)) {
                 return false;
             }
         }
 
         if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
             // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, null);
+            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, site);
         }
 
         ctx.solve();
@@ -199,7 +205,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                                                JTypeMirror si,
                                                JMethodSig sfun,
                                                JMethodSig tfun,
-                                               ExprMirror ei) {
+                                               ExprMirror ei, MethodCallSite site) {
         if (sfun.getArity() != tfun.getArity()
             || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
             return false;
@@ -241,10 +247,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             return false;
         }
 
-        return addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS);
+        return addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS, site);
     }
 
-    private boolean addGenericExprConstraintsRecursive(InferenceContext ctx, ExprMirror ei, JTypeMirror rs, JTypeMirror rt, Substitution tToS) {
+    private boolean addGenericExprConstraintsRecursive(InferenceContext ctx, ExprMirror ei, JTypeMirror rs, JTypeMirror rt, Substitution tToS, MethodCallSite site) {
         if (ei instanceof LambdaExprMirror) {
             // Otherwise, if ei is an explicitly typed lambda expression:
             //
@@ -277,7 +283,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 }
             }
 
-            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, null);
+            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, site);
             return true;
         } else if (ei instanceof MethodRefMirror) {
             //  Otherwise, if ei is an exact method reference:
@@ -300,10 +306,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return true;
             }
 
-            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, null);
+            infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, site);
             return true;
         } else if (ei instanceof BranchingMirror) {
-            return ((BranchingMirror) ei).branchesMatch(e -> addGenericExprConstraintsRecursive(ctx, e, rs, rt, tToS));
+            return ((BranchingMirror) ei).branchesMatch(e -> addGenericExprConstraintsRecursive(ctx, e, rs, rt, tToS, site));
         }
 
         return false;

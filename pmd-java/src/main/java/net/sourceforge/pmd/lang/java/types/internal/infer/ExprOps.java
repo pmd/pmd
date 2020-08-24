@@ -260,12 +260,6 @@ final class ExprOps {
         }
     }
 
-    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl, MethodCallSite outerSite, @Nullable InferenceContext outerCtx) {
-        InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
-        wrapper.setMethodType(ctdecl);
-        MethodCallSite site = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), outerSite, outerCtx);
-        return infer.determineInvocationTypeOrFail(site).getMethodType();
-    }
 
     // for inexact method refs
     @Nullable MethodCtDecl findInexactMethodRefCompileTimeDecl(MethodRefMirror mref, JMethodSig targetType) {
@@ -313,7 +307,7 @@ final class ExprOps {
         }
     }
 
-    private static InvocationMirror methodRefAsInvocation(final MethodRefMirror mref, JMethodSig targetType, boolean asInstanceMethod) {
+    static InvocationMirror methodRefAsInvocation(final MethodRefMirror mref, JMethodSig targetType, boolean asInstanceMethod) {
         // the arguments are treated as if they were of the type
         // of the formal parameters of the candidate
         List<JTypeMirror> formals = targetType.getFormalParameters();

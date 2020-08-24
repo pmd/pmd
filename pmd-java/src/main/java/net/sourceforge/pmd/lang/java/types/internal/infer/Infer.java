@@ -92,7 +92,7 @@ public final class Infer {
     }
 
     public MethodCallSite newCallSite(InvocationMirror expr, @Nullable JTypeMirror expectedType) {
-        return newCallSite(expr, expectedType, null, null);
+        return newCallSite(expr, expectedType, null, null, false);
     }
 
     /** Site for a nested poly expr. */
@@ -100,8 +100,9 @@ public final class Infer {
     MethodCallSite newCallSite(InvocationMirror expr,
                                @Nullable JTypeMirror expectedType,
                                @Nullable MethodCallSite outerSite,
-                               @Nullable InferenceContext outerCtx) {
-        return new MethodCallSite(expr, expectedType, outerSite, outerCtx != null ? outerCtx : emptyContext());
+                               @Nullable InferenceContext outerCtx,
+                               boolean isSpecificityCheck) {
+        return new MethodCallSite(expr, expectedType, outerSite, outerCtx != null ? outerCtx : emptyContext(), isSpecificityCheck);
     }
 
     InferenceContext emptyContext() {

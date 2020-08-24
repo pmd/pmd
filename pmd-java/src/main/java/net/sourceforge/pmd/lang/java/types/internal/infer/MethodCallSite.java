@@ -36,13 +36,31 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     private boolean canSkipInvocation = true;
     private boolean needsUncheckedConversion = false;
 
+    private final boolean isSpecificityCheck;
+
     MethodCallSite(InvocationMirror expr,
                    @Nullable JTypeMirror expectedType,
                    @Nullable MethodCallSite outerSite,
-                   @NonNull InferenceContext infCtx) {
+                   @NonNull InferenceContext infCtx,
+                   boolean isSpecificityCheck) {
         super(expr, expectedType);
         this.outerSite = outerSite;
         this.localInferenceContext = infCtx;
+        this.isSpecificityCheck = isSpecificityCheck;
+    }
+
+    boolean isSpecificityCheck() {
+        return isSpecificityCheck;
+    }
+
+    MethodCallSite cloneForSpecificityCheck(Infer infer) {
+        return new MethodCallSite(
+            getExpr(),
+            getExpectedType(),
+            null,
+            infer.emptyContext(),
+            true
+        );
     }
 
     void acceptFailure(ResolutionFailure exception) {
