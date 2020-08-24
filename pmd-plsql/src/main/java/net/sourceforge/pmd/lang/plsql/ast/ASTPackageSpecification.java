@@ -11,7 +11,7 @@ public class ASTPackageSpecification extends AbstractPLSQLNode implements Oracle
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PLSQLVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
