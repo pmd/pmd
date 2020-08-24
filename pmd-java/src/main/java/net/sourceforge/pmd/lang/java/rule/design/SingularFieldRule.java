@@ -61,8 +61,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>();
-        defaultValues.addAll(super.defaultSuppressionAnnotations());
+        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
         defaultValues.add("lombok.experimental.Delegate");
         defaultValues.add("lombok.EqualsAndHashCode");
         return defaultValues;
