@@ -8,6 +8,6 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 
 @Deprecated
 @DeprecatedUntil700
-public class VmParserVisitorAdapter implements VmParserVisitor {
+public class VmParserVisitorAdapter extends VmVisitorBase<Object, Object> implements VmParserVisitor {
 
 }
