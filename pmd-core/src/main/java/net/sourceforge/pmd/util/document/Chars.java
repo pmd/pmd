@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -185,6 +184,13 @@ public final class Chars implements CharSequence {
             }
 
             @Override
+            public long skip(long n) {
+                int oldPos = pos;
+                pos = Math.min(max, pos + (int) n);
+                return pos - oldPos;
+            }
+
+            @Override
             public void close() {
                 // nothing to do
             }
@@ -257,7 +263,10 @@ public final class Chars implements CharSequence {
             return false;
         }
         Chars chars = (Chars) o;
-        return StringUtils.equals(this, chars);
+        if (this.len != chars.len) {
+            return false;
+        }
+        return this.str.regionMatches(start, chars.str, chars.start, this.len);
     }
 
     @Override
