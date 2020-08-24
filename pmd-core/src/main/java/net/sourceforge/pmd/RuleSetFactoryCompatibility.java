@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,9 +139,9 @@ public class RuleSetFactoryCompatibility {
      */
     String determineEncoding(byte[] bytes) {
         String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length,
-                Charset.forName("ISO-8859-1"));
+                StandardCharsets.ISO_8859_1);
         Matcher matcher = ENCODING_PATTERN.matcher(firstBytes);
-        String encoding = Charset.forName("UTF-8").name();
+        String encoding = StandardCharsets.UTF_8.name();
         if (matcher.find()) {
             encoding = matcher.group(1);
         }
