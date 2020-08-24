@@ -563,8 +563,7 @@ interface ImmutableList<E> extends List<E> {
 
             @Override
             public List<E> toList() {
-                List<E> result = new ArrayList<>(this);
-                return result;
+                return new ArrayList<>(this);
             }
 
 
