@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
 import net.sourceforge.pmd.lang.java.types.SubstVar;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -32,10 +33,11 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class InferenceVar implements JTypeMirror, SubstVar {
 
-    private static final String[] NAMES = {
-        "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν",
-        "ξ", "ο", "π", "ρ", "σ", "ς", "τ", "υ", "φ", "χ", "ψ", "ω",
-        };
+    // we used to use greek letters (for style), but they're hard to type
+    private static final String NAMES =
+        "abcdefghijklmnopqrstuvwxyz"
+        // + "αβγδεζηθκλμνξπρςυφχψω"
+        ;
 
     private final InferenceContext ctx;
     private JTypeVar tvar;
@@ -50,9 +52,10 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         this.id = id;
     }
 
-    @Override
     public String getName() {
-        return toString();
+        // note: the type inference logger depends on this naming pattern
+        String prefix = isCaptured() ? "^" : "'";
+        return prefix + NAMES.charAt(id % NAMES.length()) + generationNum();
     }
 
     @Override
@@ -201,11 +204,11 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
 
     @Override
     public String toString() {
-        return NAMES[id % NAMES.length] + numOfId();
+        return TypePrettyPrint.prettyPrint(this);
     }
 
-    private String numOfId() {
-        int n = id / NAMES.length;
+    private String generationNum() {
+        int n = id / NAMES.length();
         return n == 0 ? "" : "" + n;
     }
 

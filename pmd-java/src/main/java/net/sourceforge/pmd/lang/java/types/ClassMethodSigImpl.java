@@ -56,14 +56,6 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
         this.tparams = tparams;
     }
 
-
-    // bounds of the type params of a method need to be substituted
-    // with the lexical subst of the owner
-    static List<JTypeVar> realTypeParams(JClassType owner, List<JTypeVar> baseTypeParams) {
-        assert baseTypeParams != null && owner != null : "Null params in " + owner + ", " + baseTypeParams;
-        return TypeOps.substInBoundsOnly(baseTypeParams, owner.getTypeParamSubst());
-    }
-
     @Override
     public TypeSystem getTypeSystem() {
         return owner.getTypeSystem();
@@ -125,7 +117,9 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public List<JTypeVar> getTypeParameters() {
         if (tparams == null) {
-            tparams = realTypeParams(owner, symbol.getTypeParameters());
+            // bounds of the type params of a method need to be substituted
+            // with the lexical subst of the owner
+            tparams = TypeOps.substInBoundsOnly(symbol.getTypeParameters(), owner.getTypeParamSubst());
         }
         return tparams;
     }
@@ -181,11 +175,6 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
     @Override
     public JMethodSig withOwner(JTypeMirror newOwner) {
-        // FIXME java.lang.IllegalArgumentException: java.util.function.BinaryOperator<java.util.List<java.lang.Class<?>>> cannot be the owner of java.util.function.BiFunction<java.util.List<java.lang.Class<?>>, java.util.List<java.lang.Class<?>>, java.util.List<java.lang.Class<?>>>.apply(java.util.List<java.lang.Class<?>>, java.util.List<java.lang.Class<?>>) -> java.util.List<java.lang.Class<?>>
-        //        private static List<Class<?>> longestParameterList(List<List<Class<?>>> lists) {
-        //            final List<Class<?>> empty = List.of();
-        //            return lists.stream().reduce((p, q) -> p.size() >= q.size() ? p : q).orElse(empty);
-        //        }
         if (newOwner instanceof JClassType && Objects.equals(newOwner.getSymbol(), this.owner.getSymbol())) {
             return new ClassMethodSigImpl((JClassType) newOwner, symbol, adaptedMethod, tparams, resultType, formals, thrown);
         } else {

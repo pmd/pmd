@@ -237,6 +237,8 @@ class F<G> {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
+class List<T> {}
+
 interface Sup { 
     static <E> E m(F<? extends E> e) { return null; }
 }
@@ -275,6 +277,8 @@ class F<G> {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
+class List<T> {}
+
 interface Sup { 
     static <E> E m(F<? extends E> e) { return null; }
 }

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.MultiAssertionError
 import net.sourceforge.pmd.lang.ast.NodeStream
 import net.sourceforge.pmd.lang.ast.NodeStream.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper

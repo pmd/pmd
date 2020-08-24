@@ -373,7 +373,7 @@ final class ExprCheckHelper {
         // Otherwise, if the method reference expression elides TypeArguments, and the compile-time
         // declaration is a generic method, and the return type of the compile-time declaration mentions
         // at least one of the method's type parameters, then:
-        if (mref.getExplicitTypeArguments().isEmpty() && TypeOps.isContextDependent(ctdecl)) {
+        if (mref.getExplicitTypeArguments().isEmpty() && ExprOps.isContextDependent(ctdecl)) {
 
             // If R mentions one of the type parameters of the function type, the constraint reduces to false.
             if (mentionsAny(r, fun.getTypeParameters())) {

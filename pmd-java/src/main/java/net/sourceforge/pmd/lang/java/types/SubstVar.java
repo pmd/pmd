@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
  */
 public interface SubstVar extends JTypeMirror {
 
-    String getName();
 
     @Override
     default JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {

@@ -230,28 +230,31 @@ class TypeInferenceTest : ProcessorTestSpec({
 
     parserTest("Test type var bound substitution in inherited members") {
 
+        logTypeInference(true)
+
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-import java.util.ArrayList;
-import java.util.List;
+interface I<S> {}
+class C<Q> implements I<Q> {}
 
 class Scratch<O> {
 
-    <K extends List<O>> K inherited(K k) { return k; }
+    <K extends I<O>> K inherited(K k) { return k; }
     
     static class Inner<T> extends Scratch<T> {
         {
-            ArrayList<T> t = new ArrayList<>();
-            List<T> res = inherited(t);
+            C<T> t = new C<>();
+            I<T> res = inherited(t);
         }
     }
 }
         """.trimIndent())
 
+        val (t_I, t_C) = acu.declaredTypeSignatures()
         val tParam = acu.typeVariables().first { it.name == "T" }
 
         spy.shouldBeOk {
             // fixme this test could be better
-            acu.firstMethodCall() shouldHaveType gen.t_ArrayList[tParam] // of T, not of O
+            acu.firstMethodCall() shouldHaveType t_C[tParam] // of T, not of O
         }
     }
 

@@ -707,7 +707,7 @@ public final class TypeSystem {
      * intended to be used by the implementor of {@link JTypeParameterSymbol}.
      */
     public JTypeVar newTypeVar(JTypeParameterSymbol symbol) {
-        return new TypeVarImpl(this, symbol);
+        return new TypeVarImpl.RegularTypeVar(this, symbol);
     }
 
     private static final class NullType implements JTypeMirror {

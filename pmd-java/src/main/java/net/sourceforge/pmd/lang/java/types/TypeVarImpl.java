@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -11,30 +12,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
-class TypeVarImpl implements JTypeVar {
+abstract class TypeVarImpl implements JTypeVar {
 
 
-    private final @Nullable JTypeParameterSymbol origin;
-    private final TypeSystem ts;
-    private JTypeMirror upperBound;
-    private JTypeMirror lowerBound;
+    final TypeSystem ts;
 
     // constructor only for the captured version.
-    private TypeVarImpl(TypeSystem ts,
-                        @Nullable JTypeMirror upperBound,
-                        @Nullable JTypeMirror lowerBound,
-                        @Nullable JTypeParameterSymbol origin) {
+    private TypeVarImpl(TypeSystem ts) {
         this.ts = ts;
-        this.upperBound = upperBound == null ? ts.OBJECT : upperBound;
-        this.lowerBound = lowerBound == null ? ts.NULL_TYPE : lowerBound;
-        this.origin = origin;
-    }
-
-    TypeVarImpl(TypeSystem ts, @NonNull JTypeParameterSymbol tvar) {
-        this.ts = ts;
-        this.origin = tvar;
-        this.upperBound = null;
-        this.lowerBound = ts.NULL_TYPE;
     }
 
     @Override
@@ -43,60 +28,8 @@ class TypeVarImpl implements JTypeVar {
     }
 
     @Override
-    public String getName() {
-        return origin == null ? null : origin.getSimpleName();
-    }
-
-    @Override
-    public @Nullable JTypeParameterSymbol getSymbol() {
-        return origin;
-    }
-
-    void setUpperBound(@NonNull JTypeMirror upperBound) {
-        this.upperBound = upperBound;
-    }
-
-
-    void setLowerBound(@NonNull JTypeMirror lowerBound) {
-        this.lowerBound = lowerBound;
-    }
-
-    @Override
-    public @NonNull JTypeMirror getUpperBound() {
-        if (upperBound == null) {
-            upperBound = origin.computeUpperBound();
-        }
-        return upperBound;
-    }
-
-    @Override
-    public @NonNull JTypeMirror getLowerBound() {
-        return lowerBound;
-    }
-
-    @Override
-    public boolean isCaptured() {
-        return false;
-    }
-
-    @Override
     public JTypeMirror getErasure() {
         return getUpperBound().getErasure();
-    }
-
-    @Override
-    public boolean isCaptureOf(JWildcardType wildcard) {
-        return false;
-    }
-
-    @Override
-    public @Nullable JWildcardType getCapturedOrigin() {
-        return null;
-    }
-
-    @Override
-    public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
-        return new TypeVarImpl(ts, upper, lower, origin);
     }
 
     @Override
@@ -109,40 +42,120 @@ class TypeVarImpl implements JTypeVar {
      * the capture conversion algo in {@link TypeConversion#capture(JTypeMirror)}.
      * Captured variables use reference identity as equality relation.
      */
-    static TypeVarImpl freshCapture(JWildcardType wildcard) {
-        return new CapturedTypeVarImpl(wildcard);
+    static TypeVarImpl.CapturedTypeVar freshCapture(JWildcardType wildcard) {
+        return new CapturedTypeVar(wildcard);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    static final class RegularTypeVar extends TypeVarImpl {
+
+        private final @NonNull JTypeParameterSymbol symbol;
+        private JTypeMirror upperBound;
+
+        RegularTypeVar(TypeSystem ts, @NonNull JTypeParameterSymbol symbol) {
+            super(ts);
+            this.symbol = symbol;
         }
-        if (o == null || getClass() != o.getClass()) {
+
+
+        @Override
+        public boolean isCaptured() {
             return false;
         }
-        TypeVarImpl that = (TypeVarImpl) o;
-        return origin != null && origin.equals(that.origin);
+
+        @Override
+        public @NonNull JTypeMirror getLowerBound() {
+            return ts.NULL_TYPE;
+        }
+
+        @Override
+        public @NonNull JTypeParameterSymbol getSymbol() {
+            return symbol;
+        }
+
+        @Override
+        public @NonNull String getName() {
+            return symbol.getSimpleName();
+        }
+
+        @Override
+        public @NonNull JTypeMirror getUpperBound() {
+            if (upperBound == null) {
+                upperBound = symbol.computeUpperBound();
+            }
+            return upperBound;
+        }
+
+        @Override
+        public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
+            JTypeMirror newBound = getUpperBound().subst(substitution);
+            if (newBound == upperBound) {
+                return this;
+            }
+            RegularTypeVar clone = new RegularTypeVar(this.ts, this.symbol);
+            clone.upperBound = newBound;
+            return clone;
+        }
+
+        @Override
+        public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
+            throw new UnsupportedOperationException("Not a capture variable");
+        }
+
+        @Override
+        public boolean isCaptureOf(JWildcardType wildcard) {
+            return false;
+        }
+
+        @Override
+        public @Nullable JWildcardType getCapturedOrigin() {
+            return null;
+        }
+
+        // we only compare the symbol
+        // the point is to make tvars whose bound was substed equal to the original
+        // tvar, for substs to work repeatedly. Maybe improving how JMethodSig works
+        // would remove the need for that
+        // Eg it would be nice to conceptualize JMethodSig as just a method symbol +
+        // a substitution mapping type params in scope at that point to actual types
+        // The problem is that we may want to subst it with type vars, and then use
+        // those
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            RegularTypeVar that = (RegularTypeVar) o;
+            return symbol.equals(that.symbol);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(symbol);
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return origin.hashCode();
-    }
-
-    private static final class CapturedTypeVarImpl extends TypeVarImpl {
+    static final class CapturedTypeVar extends TypeVarImpl {
 
         private static final int PRIME = 997;  // largest prime less than 1000
 
         private final JWildcardType wildcard;
         private final int captureId = hashCode() % PRIME;
 
-        CapturedTypeVarImpl(JWildcardType wild) {
+        private JTypeMirror upperBound;
+        private JTypeMirror lowerBound;
+
+        private CapturedTypeVar(JWildcardType wild) {
             this(wild, wild.asLowerBound(), wild.asUpperBound());
         }
 
-        CapturedTypeVarImpl(JWildcardType wild, JTypeMirror lower, JTypeMirror upper) {
-            super(wild.getTypeSystem(), upper, lower, null);
+        private CapturedTypeVar(JWildcardType wild, JTypeMirror lower, JTypeMirror upper) {
+            super(wild.getTypeSystem());
+            this.upperBound = upper;
+            this.lowerBound = lower;
             this.wildcard = wild;
         }
 
@@ -150,20 +163,19 @@ class TypeVarImpl implements JTypeVar {
             return wildcard;
         }
 
-
-        @Override
-        public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
-            return new CapturedTypeVarImpl(wildcard, lower, upper);
+        void setUpperBound(@NonNull JTypeMirror upperBound) {
+            this.upperBound = upperBound;
         }
+
+
+        void setLowerBound(@NonNull JTypeMirror lowerBound) {
+            this.lowerBound = lowerBound;
+        }
+
 
         @Override
         public boolean equals(Object o) {
             return this == o || o instanceof CaptureMatcher && o.equals(this);
-        }
-
-        @Override
-        public int hashCode() {
-            return System.identityHashCode(this);
         }
 
         @Override
@@ -183,21 +195,37 @@ class TypeVarImpl implements JTypeVar {
 
         @Override
         public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
-            return new CapturedTypeVarImpl(
-                this.wildcard.subst(substitution),
-                getLowerBound().subst(substitution),
-                getUpperBound().subst(substitution)
-            );
+            JWildcardType wild = this.wildcard.subst(substitution);
+            JTypeMirror lower = getLowerBound().subst(substitution);
+            JTypeMirror upper = getUpperBound().subst(substitution);
+            if (wild == this.wildcard && lower == this.lowerBound && upper == this.lowerBound) {
+                return this;
+            }
+            return new CapturedTypeVar(wild, lower, upper);
         }
 
         @Override
-        public String getName() {
+        public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
+            return new CapturedTypeVar(wildcard, lower, upper);
+        }
+
+        @Override
+        public @NonNull JTypeMirror getUpperBound() {
+            return upperBound;
+        }
+
+        @Override
+        public @NonNull JTypeMirror getLowerBound() {
+            return lowerBound;
+        }
+
+        @Override
+        public @Nullable JTypeParameterSymbol getSymbol() {
             return null;
         }
 
         @Override
-        public String toString() {
-            // doesn't use TypePrettyPrint
+        public @NonNull String getName() {
             return "capture#" + captureId + " of " + wildcard;
         }
     }

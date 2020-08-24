@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.internal.util;
 
 
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -73,5 +74,14 @@ public final class AssertionUtil {
         }
 
         return obj;
+    }
+
+    public static <T, E extends Throwable> T fail(Supplier<E> f) throws E {
+        throw f.get();
+    }
+
+    public static <T> T unsupportedOperation(String message) {
+        // this returns T, so that this function may be used in an expression
+        throw new UnsupportedOperationException(message);
     }
 }

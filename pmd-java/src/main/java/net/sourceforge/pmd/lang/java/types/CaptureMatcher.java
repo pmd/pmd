@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
 /**
@@ -40,8 +42,9 @@ final class CaptureMatcher implements JTypeVar {
     }
 
     @Override
-    public @Nullable String getName() {
-        return captured != null ? captured.getName() : null;
+    public @NonNull String getName() {
+        return captured != null ? captured.getName()
+                                : AssertionUtil.unsupportedOperation("name");
     }
 
     @Override
@@ -66,9 +69,13 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
-        throw new UnsupportedOperationException("Unsupported");
+        return AssertionUtil.unsupportedOperation("this is a test only object which should only be used for equals");
     }
 
+    @Override
+    public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
+        return AssertionUtil.unsupportedOperation("this is a test only object which should only be used for equals");
+    }
 
     @Override
     public boolean equals(Object o) {

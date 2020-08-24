@@ -637,8 +637,7 @@ class Scratch {
         }
     }
 
-    parserTest("f:Body expression should be ground") {
-        logTypeInference(true)
+    parserTest("Body expression should be ground") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 

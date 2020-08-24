@@ -500,4 +500,9 @@ final class ExprOps {
     private static JTypeMirror getClassReturn(JTypeMirror erasedReceiverType, TypeSystem ts) {
         return ts.parameterise(ts.getClassSymbol(Class.class), listOf(ts.wildcard(true, erasedReceiverType)));
     }
+
+    public static boolean isContextDependent(JMethodSig m) {
+        m = m.internalApi().adaptedMethod();
+        return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
+    }
 }

@@ -175,7 +175,7 @@ public final class TypeConversion {
 
             if (arg instanceof JWildcardType) {
                 JWildcardType w = (JWildcardType) arg;        // Ti alias
-                TypeVarImpl freshVar = (TypeVarImpl) fresh; // Si alias
+                TypeVarImpl.CapturedTypeVar freshVar = (TypeVarImpl.CapturedTypeVar) fresh; // Si alias
 
                 JTypeMirror prevUpper = param.getUpperBound(); // Ui
                 JTypeMirror substituted = TypeOps.subst(prevUpper, subst);

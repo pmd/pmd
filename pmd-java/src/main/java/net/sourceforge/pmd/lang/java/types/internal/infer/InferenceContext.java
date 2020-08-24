@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -44,6 +45,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphW
  */
 final class InferenceContext {
 
+    // ivar/ctx ids are globally unique, & repeatable in debug output if you do exactly the same run
     private static int varId = 0;
     private static int ctxId = 0;
 
@@ -103,7 +105,7 @@ final class InferenceContext {
     }
 
     /** Add a variable to this context. */
-    private InferenceVar addVarImpl(JTypeVar tvar) {
+    private InferenceVar addVarImpl(@NonNull JTypeVar tvar) {
         InferenceVar ivar = new InferenceVar(this, tvar, varId++);
         freeVars.add(ivar);
         inferenceVars.add(ivar);

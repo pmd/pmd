@@ -519,7 +519,7 @@ public final class Infer {
         }
 
 
-        site.maySkipInvocation(!TypeOps.isContextDependent(m) && site.getOuterCtx().isGround(m.getReturnType()));
+        site.maySkipInvocation(!ExprOps.isContextDependent(m) && site.getOuterCtx().isGround(m.getReturnType()));
 
         return instantiateImpl(m, site, phase);
     }

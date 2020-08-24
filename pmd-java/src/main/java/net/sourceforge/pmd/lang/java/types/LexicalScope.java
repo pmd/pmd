@@ -18,12 +18,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * An index of type variables by name.
  */
-public final class LexicalScope extends MapFunction<String, @Nullable SubstVar> {
+public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> {
 
     /** The empty scope contains no vars. */
     public static final LexicalScope EMPTY = new LexicalScope(Collections.emptyMap());
 
-    private LexicalScope(Map<String, ? extends SubstVar> map) {
+    private LexicalScope(Map<String, ? extends JTypeVar> map) {
         super(Collections.unmodifiableMap(map));
     }
 
@@ -31,7 +31,7 @@ public final class LexicalScope extends MapFunction<String, @Nullable SubstVar> 
      * Returns the type var with the given name, or null.
      */
     @Override
-    public @Nullable SubstVar apply(@NonNull String var) {
+    public @Nullable JTypeVar apply(@NonNull String var) {
         return getMap().get(var);
     }
 
@@ -39,11 +39,11 @@ public final class LexicalScope extends MapFunction<String, @Nullable SubstVar> 
      * Return a new scope which contains the given tvars. They shadow
      * tvars that were in this scope.
      */
-    public LexicalScope andThen(List<? extends SubstVar> vars) {
+    public LexicalScope andThen(List<? extends JTypeVar> vars) {
         if (this == EMPTY && vars.isEmpty()) {
             return EMPTY;
         }
-        return new LexicalScope(associateByTo(new HashMap<>(getMap()), vars, SubstVar::getName));
+        return new LexicalScope(associateByTo(new HashMap<>(getMap()), vars, JTypeVar::getName));
     }
 
 }

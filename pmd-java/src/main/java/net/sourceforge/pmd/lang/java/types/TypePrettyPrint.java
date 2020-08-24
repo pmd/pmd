@@ -14,6 +14,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -139,18 +140,14 @@ public final class TypePrettyPrint {
 
         @Override
         public Void visitTypeVar(JTypeVar t, TypePrettyPrinter sb) {
-            if (t.isCaptured()) {
-                sb.append(t); // overridden, they use a special name, etc
-            } else {
-                if (sb.qualifyTvars) {
-                    JTypeParameterSymbol sym = t.getSymbol();
-                    if (sym != null) {
-                        sb.append(sym.getDeclaringSymbol().getSimpleName());
-                        sb.append('#');
-                    }
+            if (!t.isCaptured() && sb.qualifyTvars) {
+                JTypeParameterSymbol sym = t.getSymbol();
+                if (sym != null) {
+                    sb.append(sym.getDeclaringSymbol().getSimpleName());
+                    sb.append('#');
                 }
-                sb.append(t.getName());
             }
+            sb.append(t.getName());
 
             if (sb.printTypeVarBounds == YES) {
                 sb.printTypeVarBounds = NO;
@@ -220,6 +217,12 @@ public final class TypePrettyPrint {
         @Override
         public Void visitNullType(JTypeMirror t, TypePrettyPrinter sb) {
             sb.append("null");
+            return null;
+        }
+
+        @Override
+        public Void visitInferenceVar(InferenceVar t, TypePrettyPrinter sb) {
+            sb.append(t.getName());
             return null;
         }
 

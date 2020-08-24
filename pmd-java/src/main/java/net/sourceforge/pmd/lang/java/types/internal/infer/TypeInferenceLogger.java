@@ -136,8 +136,8 @@ public interface TypeInferenceLogger {
         private static final String TO_WHITE =
             Matcher.quoteReplacement(ANSI_GRAY) + "$0" + Matcher.quoteReplacement(ANSI_RESET);
 
-        private static final Pattern IVAR_PATTERN = Pattern.compile("[α-ω]\\d*");
-        private static final Pattern IDENT_PATTERN = Pattern.compile("\\b(?!extends|super|capture|of)[\\w&&[^α-ω]]++(?!\\.)<?|-?>++");
+        private static final Pattern IVAR_PATTERN = Pattern.compile("['^][α-ωa-z]\\d*");
+        private static final Pattern IDENT_PATTERN = Pattern.compile("\\b(?<!['^])(?!extends|super|capture|of|)[\\w]++(?!\\.)<?|-?>++");
 
         protected String color(Object str, String color) {
             return SystemUtils.IS_OS_UNIX ? color + str + ANSI_RESET : str.toString();

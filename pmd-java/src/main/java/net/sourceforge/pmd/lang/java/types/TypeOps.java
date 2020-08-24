@@ -1918,11 +1918,6 @@ public final class TypeOps {
 
     // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
 
-    public static boolean isContextDependent(JMethodSig m) {
-        m = m.internalApi().adaptedMethod();
-        return m.isGeneric() && mentionsAny(m.getReturnType(), m.getTypeParameters());
-    }
-
     /**
      * Returns true if the type is {@link TypeSystem#UNKNOWN},
      * {@link TypeSystem#ERROR}, or its symbol is unresolved.
