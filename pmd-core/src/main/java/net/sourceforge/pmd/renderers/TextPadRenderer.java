@@ -55,7 +55,7 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
             RuleViolation rv = violations.next();
             buf.setLength(0);
             // Filename
-            buf.append(determineFileName(rv.getFilename()) + "(");
+            buf.append(determineFileName(rv.getFilename())).append("(");
             // Line number
             buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
             // Name of violated rule

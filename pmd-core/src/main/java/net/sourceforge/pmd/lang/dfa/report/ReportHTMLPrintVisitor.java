@@ -131,8 +131,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
 
         vnode.getParent().addNumberOfViolation(1);
         RuleViolation vio = vnode.getRuleViolation();
-        classBuf.append("<tr>" + " <td>" + vio.getMethodName() + "</td>" + " <td>" + this.displayRuleViolation(vio)
-                + "</td>" + "</tr>");
+        classBuf.append("<tr>" + " <td>").append(vio.getMethodName()).append("</td>").append(" <td>").append(this.displayRuleViolation(vio)).append("</td>").append("</tr>");
     }
 
     private void renderPackage(PackageNode pnode) {

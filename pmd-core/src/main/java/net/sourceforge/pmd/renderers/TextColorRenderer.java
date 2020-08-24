@@ -125,17 +125,41 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             String nextFile = determineFileName(rv.getFilename());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
-                buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold
-                        + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
+                buf.append(this.yellowBold)
+                        .append("*")
+                        .append(this.colorReset)
+                        .append(" file: ")
+                        .append(this.whiteBold)
+                        .append(this.getRelativePath(lastFile))
+                        .append(this.colorReset)
+                        .append(PMD.EOL);
             }
-            buf.append(
-                    this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1)
-                            + this.colorReset + ":" + this.cyan + rv.getBeginLine()
-                            + (rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine()) + this.colorReset + PMD.EOL);
-            buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
-            buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
-            buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getBeginLine()) + PMD.EOL
-                    + PMD.EOL);
+            buf.append(this.green)
+                    .append("    src:  ")
+                    .append(this.cyan)
+                    .append(lastFile.substring(lastFile.lastIndexOf(File.separator) + 1))
+                    .append(this.colorReset).append(":")
+                    .append(this.cyan)
+                    .append(rv.getBeginLine())
+                    .append(rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine())
+                    .append(this.colorReset)
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    rule: ")
+                    .append(this.colorReset)
+                    .append(rv.getRule().getName())
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    msg:  ")
+                    .append(this.colorReset)
+                    .append(rv.getDescription())
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    code: ")
+                    .append(this.colorReset)
+                    .append(this.getLine(lastFile, rv.getBeginLine()))
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
         writer.write(PMD.EOL + PMD.EOL);
@@ -155,11 +179,26 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             String nextFile = determineFileName(error.getFile());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
-                buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold
-                        + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
+                buf.append(this.redBold)
+                        .append("*")
+                        .append(this.colorReset)
+                        .append(" file: ")
+                        .append(this.whiteBold)
+                        .append(this.getRelativePath(lastFile))
+                        .append(this.colorReset)
+                        .append(PMD.EOL);
             }
-            buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL)
-                .append(this.red).append(error.getDetail()).append(colorReset).append(PMD.EOL).append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    err:  ")
+                    .append(this.cyan)
+                    .append(error.getMsg())
+                    .append(this.colorReset)
+                    .append(PMD.EOL)
+                    .append(this.red)
+                    .append(error.getDetail())
+                    .append(colorReset)
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
 
@@ -167,9 +206,21 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.setLength(0);
             numberOfErrors++;
             Report.ConfigurationError error = i.next();
-            buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold
-                    + error.rule().getName() + this.colorReset + PMD.EOL);
-            buf.append(this.green + "    err:  " + this.cyan + error.issue() + this.colorReset + PMD.EOL + PMD.EOL);
+            buf.append(this.redBold)
+                    .append("*")
+                    .append(this.colorReset)
+                    .append(" rule: ")
+                    .append(this.whiteBold)
+                    .append(error.rule().getName())
+                    .append(this.colorReset)
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    err:  ")
+                    .append(this.cyan)
+                    .append(error.issue())
+                    .append(this.colorReset)
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
 
