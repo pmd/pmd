@@ -43,7 +43,7 @@ abstract class BaseTextComparisonTest {
         val actual = transformTextContent(sourceText(fileBaseName))
 
         if (!expectedFile.exists()) {
-            expectedFile.writeText(actual)
+            expectedFile.writeText(actual.normalize())
             throw AssertionError(
             """
             Reference file doesn't exist, created it at $expectedFile

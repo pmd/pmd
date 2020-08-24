@@ -35,9 +35,8 @@ public class TypesTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void testBigFile() {
-        // fixme this is really shitty as it depends on our internal API..
-        doTest("IteratorBasedNStream");
+    public void testIteratorUtilCopy() {
+        doTest("IteratorUtilCopy");
     }
 
     @Override
