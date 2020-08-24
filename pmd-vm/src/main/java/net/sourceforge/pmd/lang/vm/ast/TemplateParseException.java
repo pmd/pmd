@@ -162,7 +162,7 @@ public class TemplateParseException extends ParseException {
 
         int maxSize = 0;
 
-        final StringBuffer expected = new StringBuffer();
+        final StringBuilder expected = new StringBuilder();
 
         for (int i = 0; i < expectedTokenSequences.length; i++) {
             if (maxSize < expectedTokenSequences[i].length) {

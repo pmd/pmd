@@ -57,7 +57,7 @@ public class FileReporterTest {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
                 buffer.append(line);
