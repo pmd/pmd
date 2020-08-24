@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.component7
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
@@ -636,6 +634,47 @@ class Scratch {
             run shouldHaveType t_Runnable
             action shouldHaveType t_Action[gen.t_String]
             s shouldHaveType gen.t_String
+        }
+    }
+
+    parserTest("f:Body expression should be ground") {
+        logTypeInference(true)
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+interface Iterator<Q> {}
+interface Function<U,V> { 
+    V apply(U u);
+}
+
+class NodeStream<T> {
+
+    public <R> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
+        return mapIter(iter -> mapNotNull(iter, mapper));
+    }
+
+    protected <P> NodeStream<P> mapIter(Function<Iterator<T>, Iterator<P>> fun) {return null;}
+
+    public static <Q, V> Iterator<V> mapNotNull(Iterator<? extends Q> it, Function<? super Q, ? extends V> mapper) { return null; }
+
+}
+            """)
+
+        val (t_Iterator, t_Function, t_NodeStream) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (iter) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+        val (_, _, _, tvar, rvar) = acu.typeVariables()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Function[t_Iterator[tvar], t_Iterator[rvar]]
+            iter shouldHaveType t_Iterator[tvar]
+            lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
+                it.methodType.shouldMatchMethod(
+                        named = "mapNotNull",
+                        withFormals = listOf(t_Iterator[`?` extends tvar], t_Function[`?` `super` tvar, `?` extends rvar])
+                )
+                it shouldHaveType t_Iterator[rvar]
+            }
         }
     }
 

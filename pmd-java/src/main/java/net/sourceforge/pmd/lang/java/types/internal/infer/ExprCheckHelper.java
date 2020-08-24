@@ -194,7 +194,7 @@ final class ExprCheckHelper {
 
         if (!argCtDecl.isFailed() && mayMutateExpr()) {
             infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(actualType),
+                infCtx.freeVarsIn(mostSpecific),
                 solved -> {
                     JMethodSig ground = solved.ground(mostSpecific);
                     invoc.setInferredType(ground.getReturnType());
@@ -553,10 +553,6 @@ final class ExprCheckHelper {
                     if (mayMutateExpr()) {
                         lambda.setInferredType(solvedCtx.ground(groundTargetType));
                         lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
-                    } else {
-                        // it must be, otherwise we wouldn't be doing specificity
-                        // checks as this parameter would be irrelevant to applicability
-                        assert lambda.isExplicitlyTyped();
                     }
                     JTypeMirror groundResult = solvedCtx.ground(result);
                     for (ExprMirror expr : lambda.getResultExpressions()) {
