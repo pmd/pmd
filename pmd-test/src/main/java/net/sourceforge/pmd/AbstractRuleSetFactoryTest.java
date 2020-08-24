@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -483,11 +483,7 @@ public abstract class AbstractRuleSetFactoryTest {
         return new RuleSetReferenceId(null) {
             @Override
             public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
+                return new ByteArrayInputStream(ruleSetXml.getBytes(StandardCharsets.UTF_8));
             }
         };
     }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.processor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -98,7 +99,7 @@ public class MultiThreadProcessorTest {
 
         @Override
         public InputStream getInputStream() throws IOException {
-            return new ByteArrayInputStream(data.getBytes("UTF-8"));
+            return new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         }
 
         @Override
