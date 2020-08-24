@@ -53,7 +53,6 @@ public abstract class Comment extends AbstractNode {
      * of the comment as well as the start marker ({@code //}, {@code /*} or {@code /**}
      * and the end markers (<code>&#x2a;/</code>).
      *
-     * @param comment the raw comment
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
