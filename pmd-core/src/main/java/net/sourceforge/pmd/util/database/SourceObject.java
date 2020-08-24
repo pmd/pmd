@@ -131,21 +131,21 @@ public class SourceObject {
         LOG.entering(CLASS_NAME, "getSuffixFromType", this);
         if (null == type || type.isEmpty()) {
             return "";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("JAVA") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("JAVA")) {
             return ".java";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TRIGGER") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TRIGGER")) {
             return ".trg";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("FUNCTION") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("FUNCTION")) {
             return ".fnc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PROCEDURE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PROCEDURE")) {
             return ".prc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PACKAGE_BODY")) {
             return ".pkb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PACKAGE")) {
             return ".pks";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TYPE_BODY")) {
             return ".tpb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TYPE")) {
             return ".tps";
         } else {
             return "";
