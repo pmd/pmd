@@ -494,8 +494,8 @@ public interface" />
             <replacefilter token="${base-visitor-interface-name}"
                            value="${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>" />
 
-            <replacefilter token="Object" value="P" />
-            <replacefilter token="P visit" value="R visit" />
+            <replacefilter token="Object data" value="P data" />
+            <replacefilter token="Object visit" value="R visit" />
 
             <replacefilter token="default R visit${node-name}(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }"
                            value="default R visit${node-name}(${node-name} node, P data) { return visitNode(node, data); }" />

@@ -42,7 +42,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Vm" />
                                     <property name="lang-terse-name" value="vm" />
