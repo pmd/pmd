@@ -50,7 +50,7 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
             buf.setLength(0);

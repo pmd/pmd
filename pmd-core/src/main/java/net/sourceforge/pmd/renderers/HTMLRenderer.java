@@ -173,7 +173,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL
                 + "<th>File</th><th>Problem</th></tr>" + PMD.EOL);
 
-        StringBuffer buf = new StringBuffer(500);
+        StringBuilder buf = new StringBuilder(500);
         boolean colorize = true;
         for (Report.ProcessingError pe : errors) {
             buf.setLength(0);

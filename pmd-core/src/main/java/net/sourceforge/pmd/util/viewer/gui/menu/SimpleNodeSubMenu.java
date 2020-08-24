@@ -38,7 +38,7 @@ public class SimpleNodeSubMenu extends JMenu {
     }
 
     private void init() {
-        StringBuffer buf = new StringBuffer(200);
+        StringBuilder buf = new StringBuilder(200);
         for (Node temp = node; temp != null; temp = temp.getParent()) {
             buf.insert(0, "/" + temp.toString());
         }
