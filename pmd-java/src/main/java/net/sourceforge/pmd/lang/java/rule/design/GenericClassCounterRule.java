@@ -93,7 +93,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
         this.operand = getProperty(OPERAND_DESCRIPTOR);
         this.typesMatch = RegexHelper.compilePatternsFromList(getProperty(TYPE_MATCH_DESCRIPTOR));
         String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
-        this.threshold = Integer.valueOf(thresholdAsString);
+        this.threshold = Integer.parseInt(thresholdAsString);
         // Initializing list of match
         this.matches = new ArrayList<>();
 

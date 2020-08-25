@@ -107,7 +107,7 @@
 
         <pmd.build-tools.version>8</pmd.build-tools.version>
 
-        <pmd-designer.version>6.24.0</pmd-designer.version>
+        <pmd-designer.version>6.27.0</pmd-designer.version>
     </properties>
 
     <build>

@@ -48,6 +48,11 @@ in terms of string processing.
 
 See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](https://github.com/pmd/pmd/pull/2656).
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.27.0).
+
 #### New Rules
 
 *   The new Java rule {% rule "java/bestpractices/AvoidReassigningCatchVariables" %} (`java-bestpractices`) finds
@@ -88,6 +93,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   [#2684](https://github.com/pmd/pmd/issues/2684): \[java] UnusedAssignment FP in try/catch
     *   [#2686](https://github.com/pmd/pmd/issues/2686): \[java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes
 *   java-design
+    *   [#2108](https://github.com/pmd/pmd/issues/2108): \[java] \[doc] ImmutableField rule: Description should clarify shallow immutability
     *   [#2461](https://github.com/pmd/pmd/issues/2461): \[java] ExcessiveParameterListRule must ignore a private constructor
 *   java-errorprone
     *   [#2410](https://github.com/pmd/pmd/issues/2410): \[java] ProperCloneImplementation not valid for final class
@@ -114,7 +120,7 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 
 *   {% jdoc !!core::Rule#getParserOptions() %}
 *   {% jdoc !!core::lang.Parser#getParserOptions() %}
-*   {% jdoc !!core::lang.AbstractParser %}
+*   {% jdoc core::lang.AbstractParser %}
 *   {% jdoc !!core::RuleContext#removeAttribute(java.lang.String) %}
 *   {% jdoc !!core::RuleContext#getAttribute(java.lang.String) %}
 *   {% jdoc !!core::RuleContext#setAttribute(java.lang.String, java.lang.Object) %}
@@ -139,7 +145,21 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
     *   {% jdoc_package core::lang.dfa %}
     *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
 
-*   {% jdoc !!visualforce::lang.vf.VfSimpleCharStream %}
+*   {% jdoc visualforce::lang.vf.VfSimpleCharStream %}
+
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDeclarations %}
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDocument %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#zero() %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#combine(Object, Object) %}
+*   {% jdoc apex::lang.apex.ast.ApexParserVisitorReducedAdapter %}
+*   {% jdoc java::lang.java.ast.JavaParserVisitorReducedAdapter %}
+
+* {% jdoc java::lang.java.typeresolution.TypeHelper %} is deprecated in
+ favor of {% jdoc java::lang.java.types.TypeTestUtil %}, which has the
+same functionality, but a slightly changed API.
+* Many of the classes in {% jdoc_package java::lang.java.symboltable %}
+are deprecated as internal API.
+
 
 ### External Contributions
 
@@ -155,6 +175,15 @@ See also [[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656](
 *   [#2697](https://github.com/pmd/pmd/pull/2697): \[java] ExcessiveParameterListRule must ignore a private constructor - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2699](https://github.com/pmd/pmd/pull/2699): \[java] ProperCloneImplementation not valid for final class - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2700](https://github.com/pmd/pmd/pull/2700): \[java] Fix OnlyOneReturn code example - [Jan-Lukas Else](https://github.com/jlelse)
+*   [#2722](https://github.com/pmd/pmd/pull/2722): \[doc] \[java] ImmutableField: extend description, fixes #2108 - [Mateusz Stefanski](https://github.com/mateusz-stefanski)
+*   [#2725](https://github.com/pmd/pmd/pull/2725): Cleanup: change valueOf to parse when we need primitive return value. - [XenoAmess](https://github.com/XenoAmess)
+*   [#2726](https://github.com/pmd/pmd/pull/2726): Cleanup: replace StringBuffer with StringBuilder - [XenoAmess](https://github.com/XenoAmess)
+*   [#2727](https://github.com/pmd/pmd/pull/2727): Cleanup: replace indexOf() < 0 with contains - [XenoAmess](https://github.com/XenoAmess)
+*   [#2728](https://github.com/pmd/pmd/pull/2728): Cleanup: javadoc issues - [XenoAmess](https://github.com/XenoAmess)
+*   [#2729](https://github.com/pmd/pmd/pull/2729): Cleanup: use print instead of printf if no format exists - [XenoAmess](https://github.com/XenoAmess)
+*   [#2731](https://github.com/pmd/pmd/pull/2731): Cleanup: avoid compiling Patterns repeatedly - [XenoAmess](https://github.com/XenoAmess)
+*   [#2732](https://github.com/pmd/pmd/pull/2732): Cleanup: use StandardCharsets instead of Charset.forName - [XenoAmess](https://github.com/XenoAmess) 
+*   [#2734](https://github.com/pmd/pmd/pull/2734): Cleanup: use try with resources - [XenoAmess](https://github.com/XenoAmess)
 
 
 {% endtocmaker %}

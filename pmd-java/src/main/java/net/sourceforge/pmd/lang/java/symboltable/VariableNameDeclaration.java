@@ -77,7 +77,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     @Override
     public String getTypeImage() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getImage();
         }
@@ -111,7 +111,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return (ASTVariableDeclaratorId) node;
     }
 
-    private TypeNode getTypeNode() {
+    @Override
+    public TypeNode getTypeNode() {
+        return getDeclaratorId();
+    }
+
+    private TypeNode getExplicitTypeNode() {
         if (isRecordComponent()) {
             return (TypeNode) node.getParent().getFirstChildOfType(ASTType.class).getChild(0);
         }
@@ -126,7 +131,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     @Override
     public Class<?> getType() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getType();
         }
