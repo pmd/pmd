@@ -63,7 +63,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            result = SymbolicValue.ofAtom(value);
+            result = SymbolicValue.of(value);
         }
 
         @Override
@@ -91,7 +91,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            arrayElements.add(SymbolicValue.ofAtom(value));
+            arrayElements.add(SymbolicValue.of(value));
         }
 
         @Override

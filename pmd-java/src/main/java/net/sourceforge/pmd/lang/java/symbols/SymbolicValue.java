@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -28,8 +29,12 @@ public class SymbolicValue {
         // package-private
     }
 
+    public static SymbolicValue arrayOf(SymbolicValue... values) {
+        return new Array(Arrays.asList(values.clone()));
+    }
+
     // returns null for unsupported value
-    public static @Nullable SymbolicValue ofAtom(Object value) {
+    public static @Nullable SymbolicValue of(Object value) {
         if (value == null) {
             return null;
         }
@@ -41,7 +46,7 @@ public class SymbolicValue {
             Object[] arr = (Object[]) value;
             List<SymbolicValue> lst = new ArrayList<>(arr.length);
             for (Object o : arr) {
-                SymbolicValue elt = ofAtom(o);
+                SymbolicValue elt = of(o);
                 if (elt == null) {
                     return null;
                 }
@@ -138,6 +143,10 @@ public class SymbolicValue {
 
         public Object getValue() {
             return value;
+        }
+
+        public boolean valueEquals(Object o) {
+            return this.value.equals(o);
         }
 
         @Override
