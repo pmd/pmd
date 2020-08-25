@@ -102,7 +102,7 @@ public abstract class AbstractRuleSetFactoryTest {
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
         int invalidXPathSuppress = 0;
-        String messages = "";
+        StringBuilder messages = new StringBuilder();
         List<String> ruleSetFileNames = getRuleSetFileNames();
         for (String fileName : ruleSetFileNames) {
             RuleSet ruleSet = loadRuleSetByFileName(fileName);
@@ -123,13 +123,22 @@ public abstract class AbstractRuleSetFactoryTest {
                 // Is since missing ?
                 if (rule.getSince() == null) {
                     invalidSinceAttributes++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute" + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" is missing 'since' attribute")
+                            .append(PMD.EOL);
                 }
                 // Is URL valid ?
                 if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
                     invalidExternalInfoURL++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute"
-                            + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" is missing 'externalInfoURL' attribute")
+                            .append(PMD.EOL);
                 } else {
                     String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
                             + language.getTerseName() + "_"
@@ -139,9 +148,15 @@ public abstract class AbstractRuleSetFactoryTest {
                     if (rule.getExternalInfoUrl() == null
                             || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
                         invalidExternalInfoURL++;
-                        messages += "Rule " + fileName + "/" + rule.getName()
-                                + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl()
-                                + "), it should be:" + expectedExternalInfoURL + PMD.EOL;
+                        messages.append("Rule ")
+                                .append(fileName)
+                                .append("/")
+                                .append(rule.getName())
+                                .append(" seems to have an invalid 'externalInfoURL' value (")
+                                .append(rule.getExternalInfoUrl())
+                                .append("), it should be:")
+                                .append(expectedExternalInfoURL)
+                                .append(PMD.EOL);
                     }
                 }
                 // Proper class name/packaging?
@@ -150,22 +165,32 @@ public abstract class AbstractRuleSetFactoryTest {
                 if (!rule.getRuleClass().equals(expectedClassName)
                         && !validXPathClassNames.contains(rule.getRuleClass())) {
                     invalidClassName++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value ("
-                            + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" seems to have an invalid 'class' value (")
+                            .append(rule.getRuleClass())
+                            .append("), it should be:")
+                            .append(expectedClassName)
+                            .append(PMD.EOL);
                 }
                 // Should not have violation suppress regex property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
                     invalidRegexSuppress++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-                            + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name()
-                            + "', this is intended for end user customization only." + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" should not have '")
+                            .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
+                            .append("', this is intended for end user customization only.")
+                            .append(PMD.EOL);
                 }
                 // Should not have violation suppress xpath property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
                     invalidXPathSuppress++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-                            + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()
-                            + "', this is intended for end user customization only." + PMD.EOL;
+                    messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(PMD.EOL);
                 }
             }
         }

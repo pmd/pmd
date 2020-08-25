@@ -60,10 +60,10 @@ public final class PMDCommandLineInterface {
     public static String buildUsageText(JCommander jcommander) {
         StringBuilder usage = new StringBuilder();
 
-        String allCommandsDescription = null;
+        StringBuilder allCommandsDescription = null;
         if (jcommander != null && jcommander.getCommands() != null) {
             for (String command : jcommander.getCommands().keySet()) {
-                allCommandsDescription += jcommander.getCommandDescription(command) + PMD.EOL;
+                allCommandsDescription.append(jcommander.getCommandDescription(command)).append(PMD.EOL);
             }
         }
 
@@ -143,7 +143,7 @@ public final class PMDCommandLineInterface {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
-                buf.append(" Deprecated alias for '" + renderer.getName()).append(PMD.EOL);
+                buf.append(" Deprecated alias for '").append(renderer.getName()).append(PMD.EOL);
                 continue;
             }
             buf.append(renderer.getDescription()).append(PMD.EOL);
