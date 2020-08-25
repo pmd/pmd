@@ -120,6 +120,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ##### For removal
 
+*   {% jdoc !!core::RuleViolationComparator %}
 *   {% jdoc !!core::Rule#getParserOptions() %}
 *   {% jdoc !!core::lang.Parser#getParserOptions() %}
 *   {% jdoc core::lang.AbstractParser %}
