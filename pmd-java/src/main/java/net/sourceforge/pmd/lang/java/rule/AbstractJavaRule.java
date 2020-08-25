@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
 
 /**
@@ -28,7 +27,7 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
  * TODO add documentation
  *
  */
-public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
+public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor {
 
     public AbstractJavaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));

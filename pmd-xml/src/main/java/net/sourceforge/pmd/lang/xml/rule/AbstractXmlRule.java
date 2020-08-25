@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -21,7 +20,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * {@link #visit(XmlNode, RuleContext)} and can call <code>super</code> to visit
  * children.
  */
-public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
+public class AbstractXmlRule extends AbstractRule {
 
     @Deprecated
     public static final PropertyDescriptor<Boolean> COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
