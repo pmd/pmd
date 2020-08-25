@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.of;
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofArray;
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofEnum;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.symValueFor;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofArray;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofEnum;
 
 import java.util.List;
 
@@ -69,13 +69,13 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "valueWithDefault");
-        Assert.assertEquals(of("ddd"), m.getDefaultAnnotationValue());
+        Assert.assertEquals(symValueFor("ddd"), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "valueNoDefault");
         Assert.assertNull(m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayDefault");
-        Assert.assertEquals(of(new String[] {"ddd"}), m.getDefaultAnnotationValue());
+        Assert.assertEquals(symValueFor(new String[] {"ddd"}), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayEmptyDefault");
         Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
@@ -101,8 +101,8 @@ public class SymbolReflectionTest {
 
     @Test
     public void testSymValueEquality() {
-        Assert.assertEquals(of(new String[] {"ddd", "eee"}),
-                            ofArray(of("ddd"), of("eee")));
+        Assert.assertEquals(symValueFor(new String[] {"ddd", "eee"}),
+                            ofArray(symValueFor("ddd"), symValueFor("eee")));
     }
 
 

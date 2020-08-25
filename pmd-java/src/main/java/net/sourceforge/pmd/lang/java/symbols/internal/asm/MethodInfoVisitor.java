@@ -12,14 +12,15 @@ import java.util.function.Consumer;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 
-import net.sourceforge.pmd.lang.java.symbols.AnnotationElement;
-import net.sourceforge.pmd.lang.java.symbols.AnnotationElement.Array;
-import net.sourceforge.pmd.lang.java.symbols.AnnotationElement.EnumConstant;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
+import net.sourceforge.pmd.lang.java.symbols.AnnotationUtils;
 
 class MethodInfoVisitor extends MethodVisitor {
 
     private final ExecutableStub execStub;
-    private AnnotationElement defaultAnnotValue;
+    private SymbolicValue defaultAnnotValue;
 
     MethodInfoVisitor(ExecutableStub execStub) {
         super(AsmSymbolResolver.ASM_API_V);
@@ -38,6 +39,11 @@ class MethodInfoVisitor extends MethodVisitor {
         super.visitEnd();
     }
 
+    @Override
+    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        return super.visitAnnotation(descriptor, visible);
+    }
+
     private class DefaultAnnotValueVisitor extends SymbolicValueBuilder {
 
         @Override
@@ -49,7 +55,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
     private static class SymbolicValueBuilder extends AnnotationVisitor {
 
-        AnnotationElement result;
+        SymbolicValue result;
 
         SymbolicValueBuilder() {
             super(AsmSymbolResolver.ASM_API_V);
@@ -58,12 +64,12 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visitEnum(String name, String descriptor, String value) {
-            result = new EnumConstant(descriptor, value);
+            result = new SymEnum(descriptor, value);
         }
 
         @Override
         public void visit(String name, Object value) {
-            result = AnnotationElement.of(value);
+            result = AnnotationUtils.symValueFor(value);
         }
 
         @Override
@@ -75,10 +81,10 @@ class MethodInfoVisitor extends MethodVisitor {
 
     static class ArrayValueBuilder extends AnnotationVisitor {
 
-        private final List<AnnotationElement> arrayElements;
-        private final Consumer<AnnotationElement> finisher;
+        private final List<SymbolicValue> arrayElements;
+        private final Consumer<SymbolicValue> finisher;
 
-        ArrayValueBuilder(List<AnnotationElement> arrayElements, Consumer<AnnotationElement> finisher) {
+        ArrayValueBuilder(List<SymbolicValue> arrayElements, Consumer<SymbolicValue> finisher) {
             super(AsmSymbolResolver.ASM_API_V);
             this.arrayElements = arrayElements;
             this.finisher = finisher;
@@ -86,12 +92,12 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visitEnum(String name, String descriptor, String value) {
-            arrayElements.add(new EnumConstant(descriptor, value));
+            arrayElements.add(new SymEnum(descriptor, value));
         }
 
         @Override
         public void visit(String name, Object value) {
-            arrayElements.add(AnnotationElement.of(value));
+            arrayElements.add(AnnotationUtils.symValueFor(value));
         }
 
         @Override
@@ -101,7 +107,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visitEnd() {
-            finisher.accept(new Array(arrayElements));
+            finisher.accept(new SymArray(arrayElements));
         }
     }
 }

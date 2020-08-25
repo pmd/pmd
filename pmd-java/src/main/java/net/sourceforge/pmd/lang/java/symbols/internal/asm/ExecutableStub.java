@@ -12,7 +12,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 
-import net.sourceforge.pmd.lang.java.symbols.AnnotationElement;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
@@ -83,7 +83,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         return TypeOps.subst(type.getExceptionTypes(), subst);
     }
 
-    void setDefaultAnnotValue(@Nullable AnnotationElement defaultAnnotValue) {
+    void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
         // overridden by MethodStub
     }
 
@@ -139,7 +139,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
      */
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
 
-        private @Nullable AnnotationElement defaultAnnotValue;
+        private @Nullable SymbolicValue defaultAnnotValue;
 
         protected MethodStub(ClassStub owner,
                              String simpleName,
@@ -177,11 +177,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         }
 
         @Override
-        public @Nullable AnnotationElement getDefaultAnnotationValue() {
+        public @Nullable SymbolicValue getDefaultAnnotationValue() {
             return defaultAnnotValue;
         }
 
-        void setDefaultAnnotValue(@Nullable AnnotationElement defaultAnnotValue) {
+        void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
             this.defaultAnnotValue = defaultAnnotValue;
         }
     }

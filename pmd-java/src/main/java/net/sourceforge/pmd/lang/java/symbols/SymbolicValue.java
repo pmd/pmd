@@ -4,119 +4,77 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
 
 /**
  * Structure to represent constant values of annotations symbolically.
  * Annotations may contain:
  * <ul>
- * <li>Primitive or string values: {@link Atom}
- * <li>Arrays of primitives or strings: {@link Atom}
- * <li>Enum constants: {@link EnumConstant}
- * <li>Other annotations (currently unsupported)
- * <li>Arrays of annotations, or enum constants, of dimension 1: {@link Array}
+ * <li>Primitive or string values: {@link SymValue}
+ * <li>Arrays of primitives or strings: {@link SymValue}
+ * <li>Enum constants: {@link SymEnum}
+ * <li>Other annotations: {@link SymAnnot}
+ * <li>Arrays of annotations, or enum constants, of dimension 1: {@link SymArray}
  * </ul>
+ *
+ * <p>Any other values, including the null reference, are unsupported and
+ * cannot be represented by this API.
  *
  * <p>Currently the public API allows comparing the values to an actual
  * java value that you compiled against ({@link #valueEquals(Object)}).
  * This may be improved later to allow comparing values without needing
  * them in the compile classpath.
  */
-public abstract class AnnotationElement {
+public interface SymbolicValue {
 
-    AnnotationElement() {
-        // package-private
-    }
-
-
-    /**
-     * Returns an annotation element for the given java value. Returns
-     * null if the value cannot be an annotation element.
-     */
-    public static @Nullable AnnotationElement of(Object value) {
-        if (value == null) {
-            return null;
-        }
-
-        if (value.getClass() == String.class
-            || ClassUtils.isPrimitiveOrWrapper(value.getClass())) {
-            return new Atom(value);
-        }
-
-        if (value instanceof Enum<?>) {
-            return ofEnum((Enum<?>) value);
-        }
-
-        if (value instanceof Annotation) {
-            return null;// unsupported for now
-        }
-
-        if (value.getClass().isArray()) {
-            Class<?> comp = value.getClass().getComponentType();
-            if (comp.isPrimitive() || comp == String.class) {
-                return new Atom(value);
-            } else if (comp.isArray()) {
-                return null; // arrays of arrays are not possible in annotations
-            }
-
-            Object[] arr = (Object[]) value;
-            List<AnnotationElement> lst = new ArrayList<>(arr.length);
-            for (Object o : arr) {
-                // this must be an annotation, or an enum constant
-                if (o == null) {
-                    return null;
-                }
-                AnnotationElement elt = of(o);
-                assert !(elt instanceof Atom || elt instanceof Array);
-                if (elt == null) {
-                    return null;
-                }
-                lst.add(elt);
-            }
-            return new Array(lst);
-        }
-
-        return null;
-    }
-
-
-    // test only
-    static AnnotationElement ofArray(AnnotationElement... values) {
-        return new Array(Arrays.asList(values.clone()));
-    }
-
-    // test only
-    static <T extends Enum<T>> AnnotationElement ofEnum(Enum<T> value) {
-        return new EnumConstant(ClassNamesUtil.getTypeDescriptor(value.getDeclaringClass()),
-                                value.name());
-    }
 
     /**
      * Returns true if this symbolic value represents the same value as
      * the given object. If the parameter is null, returns false.
+     *
+     * <p>Note that this is partially implemented and will always return
+     * false if the tested value is an annotation, or an array of annotation
+     * values.
      */
-    public abstract boolean valueEquals(Object o);
+    boolean valueEquals(Object o);
 
     /**
-     * Returns an array of enum constants, or of annotations.
-     * Note that arrays of strings, and arrays of primitives,
-     * are represented by an {@link Atom}.
+     * Symbolic representation of an annotation.
      */
-    public static final class Array extends AnnotationElement {
+    interface SymAnnot extends SymbolicValue {
 
-        private final List<AnnotationElement> elements;
+        /**
+         * Returns the value of the attribute of this annotation named
+         * so.
+         */
+        @Nullable SymbolicValue getAttribute(String name);
 
-        public Array(List<AnnotationElement> elements) {
+        Iterable<String> iterateAttributes();
+
+        boolean isOfType(Class<?> klass);
+
+        boolean isOfType(String binaryName);
+
+        default boolean attributeMatches(String name, Object attrValue) {
+            SymbolicValue attr = getAttribute(name);
+            return attr != null && attr.valueEquals(attrValue);
+        }
+    }
+
+    /**
+     * An array of enum constants, or of annotations.
+     * Note that arrays of strings, and arrays of primitives,
+     * are represented by an {@link SymValue}.
+     */
+    final class SymArray implements SymbolicValue {
+
+        private final List<SymbolicValue> elements;
+
+        public SymArray(List<SymbolicValue> elements) {
             this.elements = Collections.unmodifiableList(elements);
         }
 
@@ -124,7 +82,7 @@ public abstract class AnnotationElement {
             return elements.size();
         }
 
-        public List<AnnotationElement> elements() {
+        public List<SymbolicValue> elements() {
             return elements;
         }
 
@@ -157,7 +115,7 @@ public abstract class AnnotationElement {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            Array array = (Array) o;
+            SymArray array = (SymArray) o;
             return Objects.equals(elements, array.elements);
         }
 
@@ -169,9 +127,9 @@ public abstract class AnnotationElement {
 
 
     /**
-     * Symbolically represents an enum constant.
+     * Symbolic representation of an enum constant.
      */
-    public static final class EnumConstant extends AnnotationElement {
+    final class SymEnum implements SymbolicValue {
 
         private final String enumTypeInternalName;
         private final String enumName;
@@ -180,7 +138,7 @@ public abstract class AnnotationElement {
          * @param enumTypeDescriptor The type descriptor, eg {@code Lcom/MyEnum;}
          * @param enumConstName      Simple name of the enum constant
          */
-        public EnumConstant(String enumTypeDescriptor, String enumConstName) {
+        public SymEnum(String enumTypeDescriptor, String enumConstName) {
             this.enumTypeInternalName = enumTypeDescriptor;
             this.enumName = enumConstName;
         }
@@ -194,13 +152,7 @@ public abstract class AnnotationElement {
             if (!this.enumName.equals(value.name())) {
                 return false;
             }
-            Class<?> k = value.getDeclaringClass();
-            if (!this.enumTypeInternalName.endsWith(k.getSimpleName())) {
-                // optimisation, fails early without having to compute the internal name
-                return false;
-            }
-
-            return ClassNamesUtil.getTypeDescriptor(k).equals(enumTypeInternalName);
+            return AnnotationUtils.typeDescriptorEquals(enumTypeInternalName, value.getDeclaringClass());
         }
 
         @Override
@@ -211,7 +163,7 @@ public abstract class AnnotationElement {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            EnumConstant that = (EnumConstant) o;
+            SymEnum that = (SymEnum) o;
             return Objects.equals(enumTypeInternalName, that.enumTypeInternalName)
                 && Objects.equals(enumName, that.enumName);
         }
@@ -225,13 +177,13 @@ public abstract class AnnotationElement {
     /**
      * Represents a primitive or string value, or an array of those.
      * Arrays of enum constants, and of annotations, are represented
-     * by {@link Array}.
+     * by {@link SymArray}.
      */
-    public static final class Atom extends AnnotationElement {
+    final class SymValue implements SymbolicValue {
 
         private final Object value;
 
-        Atom(Object value) {
+        SymValue(Object value) {
             this.value = value;
         }
 
@@ -255,8 +207,8 @@ public abstract class AnnotationElement {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            Atom atom = (Atom) o;
-            return Objects.deepEquals(value, atom.value);
+            SymValue symValue = (SymValue) o;
+            return Objects.deepEquals(value, symValue.value);
         }
 
         @Override

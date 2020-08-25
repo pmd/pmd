@@ -30,9 +30,9 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
 
     /**
      * Returns the default value, if this is a constant method. See
-     * {@link AnnotationElement} for current limitations
+     * {@link SymbolicValue} for current limitations
      */
-    default @Nullable AnnotationElement getDefaultAnnotationValue() {
+    default @Nullable SymbolicValue getDefaultAnnotationValue() {
         return null;
     }
 
