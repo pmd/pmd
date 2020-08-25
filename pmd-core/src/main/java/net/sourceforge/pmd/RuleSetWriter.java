@@ -168,7 +168,6 @@ public class RuleSetWriter {
                     return null;
                 }
             } else {
-                Language language = ruleReference.getOverriddenLanguage();
                 LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
                 LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
                 Boolean deprecated = ruleReference.isOverriddenDeprecated();
@@ -184,7 +183,7 @@ public class RuleSetWriter {
                         .getOverriddenPropertiesByPropertyDescriptor();
                 List<String> examples = ruleReference.getOverriddenExamples();
 
-                return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated,
+                return createSingleRuleElement(null, minimumLanguageVersion, maximumLanguageVersion, deprecated,
                         name, null, ref, message, externalInfoUrl, null, description, priority,
                         propertyDescriptors, propertiesByPropertyDescriptor, examples);
             }

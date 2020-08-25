@@ -107,6 +107,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+        if (minimumLanguageVersion != null && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
@@ -117,6 +120,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+        if (maximumLanguageVersion != null && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
