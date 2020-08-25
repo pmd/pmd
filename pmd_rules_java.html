@@ -1749,7 +1749,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a>: Calls to a collection’s ‘toArray(E[])’ method should specify a target array of zero size. This al…</li>
   <li><a href="pmd_rules_java_performance.html#redundantfieldinitializer">RedundantFieldInitializer</a>: Java will initialize fields with known default values so any explicit initialization of those sam…</li>
   <li><a href="pmd_rules_java_performance.html#shortinstantiation">ShortInstantiation</a>: Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf(). I…</li>
-  <li><a href="pmd_rules_java_performance.html#simplifystartswith">SimplifyStartsWith</a>: Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (st…</li>
+  <li><a href="pmd_rules_java_performance.html#simplifystartswith">SimplifyStartsWith</a>: Calls to ‘string.startsWith("x")’ with a string literal of length 1 can be rewritten using ‘strin…</li>
   <li><a href="pmd_rules_java_performance.html#stringinstantiation">StringInstantiation</a>: Avoid instantiating String objects; this is usually unnecessary since they are immutable and can …</li>
   <li><a href="pmd_rules_java_performance.html#stringtostring">StringToString</a>: Avoid calling toString() on objects already known to be string instances; this is unnecessary.</li>
   <li><a href="pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">TooFewBranchesForASwitchStatement</a>: Switch statements are intended to be used to support complex branching behaviour. Using a switch …</li>
@@ -2073,7 +2073,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 24, 2020 <br />
+ Site last generated: Aug 25, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -2114,8 +2114,9 @@ Note that new Short() is deprecated since JDK 9 for that reason.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (string).charAt(0)
-at the expense of some readability.</p>
+<p>Calls to <code class="language-plaintext highlighter-rouge">string.startsWith("x")</code> with a string literal of length 1 can be rewritten using <code class="language-plaintext highlighter-rouge">string.charAt(0)</code>,
+at the expense of some readability. To prevent <code class="language-plaintext highlighter-rouge">IndexOutOfBoundsException</code> being thrown by the <code class="language-plaintext highlighter-rouge">charAt</code> method,
+ensure that the string is not empty by making an additional check first.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
@@ -2139,7 +2140,7 @@ at the expense of some readability.</p>
     <span class="o">}</span>
 
     <span class="kt">boolean</span> <span class="nf">fasterCheckIt</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">==</span> <span class="sc">'a'</span><span class="o">;</span>  <span class="c1">// faster approach</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">x</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">==</span> <span class="sc">'a'</span><span class="o">;</span>  <span class="c1">// faster approach</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2550,7 +2551,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 24, 2020 <br />
+ Site last generated: Aug 25, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
