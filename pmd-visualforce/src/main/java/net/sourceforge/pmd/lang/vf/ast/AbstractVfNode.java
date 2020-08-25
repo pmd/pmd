@@ -22,6 +22,7 @@ abstract class AbstractVfNode extends AbstractJjtreeNode<AbstractVfNode, VfNode>
     public String getXPathNodeName() {
         return VfParserImplTreeConstants.jjtNodeName[id];
     }
+
     protected abstract <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
