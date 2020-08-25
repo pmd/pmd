@@ -57,8 +57,6 @@
 
     <!-- Visitor names -->
     <property name="gen-visitor-name" value="${parser-name}Visitor" />
-    <property name="base-visitor-interface-name" value="${lang-name}ParserVisitor" />
-    <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
 
     <property name="generic-visitor-interface-name" value="${lang-name}Visitor" />
     <property name="generic-visitor-interface-file"
@@ -70,10 +68,6 @@
     <target name="alljavacc"
             description="Generates JavaCC sources and cleans them up"
             depends="checkUpToDate,init,jjtree,jjtree-ersatz,javacc,adapt-generated,default-visitor,cleanup" />
-
-    <target name="alljavacc-visitor+"
-            description="Like alljavacc, replaces default JJTree visitor with a generic one"
-            depends="alljavacc,generic-visitor-replacement" />
 
     <target name="checkUpToDate"
             description="Checks the input files are up to date">
@@ -452,58 +446,29 @@ public final class ${token-constants-name} \{${line.separator}
             </fileset>
         </replaceregexp>
 
-        <!-- Remove constructor with parser -->
-        <replaceregexp flags="sg">
-            <regexp pattern="jjtAccept\(${gen-visitor-name}" />
-            <substitution expression="jjtAccept\(${base-visitor-interface-name}" />
-            <fileset dir="${target-package-dir}">
-                <include name="${ast-prefix}*" />
-            </fileset>
-        </replaceregexp>
-
     </target>
-
-
 
     <target name="default-visitor" depends="jjtree" unless="jjtreeBuildNotRequired">
-
-        <move file="${target-package-dir}/${gen-visitor-name}.java" tofile="${base-visitor-interface-file}" />
-
-        <!-- Base visitor with Object everywhere -->
-        <!-- We perform most changes like adding default methods, etc on this one -->
-        <!-- Changes are then copied on other visitors -->
-        <replace file="${base-visitor-interface-file}">
-            <replacefilter token="public interface" value="
-public interface" />
-            <replacefilter token="${gen-visitor-name}" value="${base-visitor-interface-name}" />
-            <replacefilter token="SimpleNode" value="${node-name}" />
-            <!-- Default methods -->
-            <replacefilter token="public Object visit(" value="default Object visit(" />
-            <replacefilter token=");" value=") { return visit${node-name}(node, data); }" />
-            <replacefilter
-                    token="default Object visit(${node-name} node, Object data) { return visit${node-name}(node, data); }"
-                    value="default Object visit${node-name}(${node-name} node, Object data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }">
-            </replacefilter>
-        </replace>
-
-    </target>
-
-    <target name="generic-visitor-replacement" depends="default-visitor" unless="jjtreeBuildNotRequired">
-        <move file="${base-visitor-interface-file}" tofile="${generic-visitor-interface-file}" />
+        <move file="${target-package-dir}/${gen-visitor-name}.java" tofile="${generic-visitor-interface-file}" />
         <replace file="${generic-visitor-interface-file}">
-            <replacefilter token="${base-visitor-interface-name}"
+            <replacefilter token="${gen-visitor-name}"
                            value="${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>" />
 
-            <replacefilter token="Object data" value="P data" />
-            <replacefilter token="Object visit" value="R visit" />
+            <replacefilter token="SimpleNode" value="${node-name}" />
+            <!-- Root method, eg visitJavaNode -->
+            <replacefilter
+                    token="Object visit(${node-name} node, Object data);"
+                    value="default R visit${node-name}(${node-name} node, P data) { return visitNode(node, data); }">
+            </replacefilter>
 
-            <replacefilter token="default R visit${node-name}(${node-name} node, P data) { for (int i = 0, len = node.getNumChildren(); i &lt; len; i++) node.getChild(i).jjtAccept(this, data); return data; }"
-                           value="default R visit${node-name}(${node-name} node, P data) { return visitNode(node, data); }" />
+
+            <replacefilter token="public Object visit(" value="default R visit(" />
+            <replacefilter token="Object data);" value="P data) { return visit${node-name}(node, data); }" />
         </replace>
 
         <replace>
-            <replacefilter token="public Object jjtAccept(${lang-name}ParserVisitor visitor, Object data)"
-                           value="@Override protected &lt;P, R> R accept${lang-name}Visitor(${lang-name}Visitor&lt;? super P, ? extends R> visitor, P data)" />
+            <replacefilter token="public Object jjtAccept(${gen-visitor-name} visitor, Object data)"
+                           value="@Override protected &lt;P, R> R accept${generic-visitor-interface-name}(${generic-visitor-interface-name}&lt;? super P, ? extends R> visitor, P data)" />
 
             <fileset dir="${target-package-dir}">
                 <include name="${ast-prefix}*" />
