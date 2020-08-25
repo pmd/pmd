@@ -289,13 +289,10 @@ public interface Node {
      * @implSpec A typical implementation will check the type of the visitor to
      *     be that of the language specific visitor, then call the most specific
      *     visit method of this Node. This is typically implemented by having
-     *     a different override per concrete node class (no shortcuts).
+     *     a different override per concrete node class (no shortcuts). If the
+     *     visitor is not handled, call {@link AstVisitor#cannotVisit(Node, Object)}.
      */
-    // TODO remove the default implementation, convert all visitors to be generic
-    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        // override me
-        throw new IllegalArgumentException("Unsupported visitor" + visitor + " for node " + this);
-    }
+    <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data);
 
 
     /**
