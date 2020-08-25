@@ -79,7 +79,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     protected String expandVariables(String message) {
 
-        if (message.indexOf("${") < 0) {
+        if (!message.contains("${")) {
             return message;
         }
 
