@@ -31,15 +31,17 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class RuleSetTest {
+
+    private final Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
 
     @Test(expected = NullPointerException.class)
     public void testRuleSetRequiresName() {
@@ -169,7 +171,7 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testApply0Rules() throws Exception {
+    public void testApply0Rules() {
         RuleSet ruleset = createRuleSetBuilder("ruleset").build();
         verifyRuleSet(ruleset, 0, new HashSet<RuleViolation>());
     }
@@ -241,25 +243,23 @@ public class RuleSetTest {
 
         Rule rule = new MockRule();
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertFalse("Different languages should not apply",
                 RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertTrue("Same language with no min/max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
-        rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5"));
+        rule.setMinimumLanguageVersion(dummyLang.getVersion("1.5"));
         assertTrue("Same language with valid min only should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
-        rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.6"));
+        rule.setMaximumLanguageVersion(dummyLang.getVersion("1.6"));
         assertTrue("Same language with valid min and max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.4")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.7")));
     }
 
     @Test
@@ -404,7 +404,6 @@ public class RuleSetTest {
 
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -420,7 +419,7 @@ public class RuleSetTest {
         Report r = new Report();
         ctx.setReport(r);
         ctx.setSourceCodeFile(file);
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ctx.setLanguageVersion(dummyLang.getDefaultVersion());
         ruleSets.apply(makeCompilationUnits(), ctx);
         assertEquals("Violations", 2, r.getViolations().size());
 
@@ -442,7 +441,6 @@ public class RuleSetTest {
     public void copyConstructorDeepCopies() {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -495,7 +493,7 @@ public class RuleSetTest {
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
@@ -519,7 +517,7 @@ public class RuleSetTest {
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored"));
         context.setIgnoreExceptions(false);
         ruleset.apply(makeCompilationUnits(), context);
@@ -540,7 +538,7 @@ public class RuleSetTest {
         }).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
@@ -581,7 +579,7 @@ public class RuleSetTest {
         }).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         RuleSets rulesets = new RuleSets(ruleset);
@@ -593,6 +591,26 @@ public class RuleSetTest {
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
         assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+    }
+
+
+    class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
+
+        MockRule() {
+            super();
+            setLanguage(dummyLang);
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
+            super(name, description, message, ruleSetName, priority);
+            setLanguage(dummyLang);
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName) {
+            super(name, description, message, ruleSetName);
+            setLanguage(dummyLang);
+        }
+
     }
 
 }
