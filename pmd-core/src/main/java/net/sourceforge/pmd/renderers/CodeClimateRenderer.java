@@ -115,27 +115,38 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private <T> String getBody() {
-        String result = "## " + rule.getName() + "\\n\\n" + "Since: PMD " + rule.getSince() + "\\n\\n" + "Priority: "
-            + rule.getPriority() + "\\n\\n"
-            + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): "
-            + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
-            + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): "
-            + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
+        StringBuilder result = new StringBuilder();
+        result.append("## ")
+                .append(rule.getName())
+                .append("\\n\\n")
+                .append("Since: PMD ")
+                .append(rule.getSince())
+                .append("\\n\\n")
+                .append("Priority: ")
+                .append(rule.getPriority())
+                .append("\\n\\n")
+                .append("[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): ")
+                .append(Arrays.toString(getCategories()).replaceAll("[\\[\\]]", ""))
+                .append("\\n\\n")
+                .append("[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): ")
+                .append(getRemediationPoints())
+                .append("\\n\\n")
+                .append(cleaned(rule.getDescription()));
 
         if (!rule.getExamples().isEmpty()) {
-            result += "\\n\\n### Example:\\n\\n";
+            result.append("\\n\\n### Example:\\n\\n");
 
             for (String snippet : rule.getExamples()) {
                 String exampleSnippet = snippet.replaceAll("\\n", "\\\\n");
                 exampleSnippet = exampleSnippet.replaceAll("\\t", "\\\\t");
-                result += "```java\\n" + exampleSnippet + "\\n```  ";
+                result.append("```java\\n").append(exampleSnippet).append("\\n```  ");
             }
         }
 
         if (!rule.getPropertyDescriptors().isEmpty()) {
-            result += "\\n\\n### [PMD properties](" + PMD_PROPERTIES_URL + ")\\n\\n";
-            result += "Name | Value | Description\\n";
-            result += "--- | --- | ---\\n";
+            result.append("\\n\\n### [PMD properties](").append(PMD_PROPERTIES_URL).append(")\\n\\n");
+            result.append("Name | Value | Description\\n");
+            result.append("--- | --- | ---\\n");
 
             for (PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
                 String propertyName = property.name().replaceAll("\\_", "\\\\_");
@@ -152,10 +163,10 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 }
                 propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
 
-                result += propertyName + " | " + propertyValue + " | " + property.description() + "\\n";
+                result.append(propertyName).append(" | ").append(propertyValue).append(" | ").append(property.description()).append("\\n");
             }
         }
-        return cleaned(result);
+        return cleaned(result.toString());
     }
 
     private String cleaned(String original) {

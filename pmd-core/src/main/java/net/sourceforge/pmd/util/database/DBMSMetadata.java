@@ -88,7 +88,7 @@ public class DBMSMetadata {
 
     /**
      * {@link java.sql.Types} value representing the type returned by
-     * {@link callableStatement}
+     * {@link #callableStatement}
      *
      * <b>Currently only java.sql.Types.String and java.sql.Types.Clob are
      * supported</b>
