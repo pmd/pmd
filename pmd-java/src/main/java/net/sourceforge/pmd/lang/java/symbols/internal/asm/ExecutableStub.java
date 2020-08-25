@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import static net.sourceforge.pmd.util.CollectionUtil.map;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -25,12 +27,6 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbol {
-
-    /**
-     * A method may only have 255 parameters by the jvm spec (chap 4).
-     * So we can put the flag for a final param inside the index.
-     */
-    static final int FINAL_PARAM_FLAG = 1 << 9;
 
     private final String descriptor;
     protected final LazyMethodType type;
@@ -60,6 +56,10 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     @Override
     public List<JFormalParamSymbol> getFormalParameters() {
+        if (params == null) {
+            this.params = Collections.unmodifiableList(map(type.getParameterTypes(),
+                                                           FormalParamStub::new));
+        }
         return params;
     }
 
@@ -70,7 +70,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     @Override
     public int getArity() {
-        return getFormalParameters().size();
+        return type.getParameterTypes().size();
     }
 
     @Override
@@ -83,26 +83,22 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         return TypeOps.subst(type.getExceptionTypes(), subst);
     }
 
-    void setParams(List<JFormalParamSymbol> params) {
-        this.params = Collections.unmodifiableList(params); // implicit null check
-    }
-
     void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
         // overridden by MethodStub
     }
 
+
+    /**
+     * Formal parameter symbols obtained from the class have no info
+     * about name or whether it's final. This info is missing from
+     * classfiles when they're not compiled with debug symbols.
+     */
     class FormalParamStub implements JFormalParamSymbol {
 
-        private final int index;
-        private final String name;
+        private final JTypeMirror type;
 
-        FormalParamStub(int index, boolean isFinal, String name) {
-            this.name = name;
-            this.index = index | (isFinal ? FINAL_PARAM_FLAG : 0);
-        }
-
-        private JTypeMirror getType() {
-            return ExecutableStub.this.type.getParameterTypes().get(index);
+        FormalParamStub(JTypeMirror type) {
+            this.type = type;
         }
 
         @Override
@@ -112,17 +108,17 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
         @Override
         public boolean isFinal() {
-            return (index & FINAL_PARAM_FLAG) != 0;
+            return false;
         }
 
         @Override
         public JTypeMirror getTypeMirror(Substitution subst) {
-            return getType().subst(subst);
+            return type.subst(subst);
         }
 
         @Override
         public String getSimpleName() {
-            return name;
+            return "";
         }
 
         @Override
@@ -131,6 +127,16 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         }
     }
 
+    /**
+     * Formal parameter symbols obtained from the class have no info
+     * about name or whether it's final. This is because due to ASM's
+     * design, parsing this information would entail parsing a lot of
+     * other information we don't care about, and so this would be
+     * wasteful. It's unlikely anyone cares about this anyway.
+     *
+     * <p>If classes are compiled without debug symbols that info
+     * is NOT in the classfile anyway.
+     */
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
 
         private @Nullable SymbolicValue defaultAnnotValue;

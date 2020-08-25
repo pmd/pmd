@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -73,7 +72,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
                     if (instream != null) {
                         ClassReader classReader = new ClassReader(instream);
                         ClassStubBuilder builder = new ClassStubBuilder(ClassStub.this, resolver);
-                        classReader.accept(builder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
+                        classReader.accept(builder, ClassReader.SKIP_CODE);
                         return true;
                     } else {
                         return false;
