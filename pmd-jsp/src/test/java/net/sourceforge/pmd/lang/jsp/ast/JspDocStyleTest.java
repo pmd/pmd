@@ -784,8 +784,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private List<ASTElement> sortNodesByName(Collection<ASTElement> elements) {
-        List<ASTElement> list = new ArrayList<>();
-        list.addAll(elements);
+        List<ASTElement> list = new ArrayList<>(elements);
         Collections.sort(list, new Comparator<ASTElement>() {
             public int compare(ASTElement o1, ASTElement o2) {
                 if (o1.getName() == null) {
@@ -812,8 +811,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private <T extends Node> List<T> sortByImage(Collection<T> elements) {
-        List<T> list = new ArrayList<>();
-        list.addAll(elements);
+        List<T> list = new ArrayList<>(elements);
         Collections.sort(list, new Comparator<Node>() {
             public int compare(Node o1, Node o2) {
                 if (o1.getImage() == null) {
