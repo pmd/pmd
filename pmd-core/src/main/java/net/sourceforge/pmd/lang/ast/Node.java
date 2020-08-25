@@ -282,17 +282,19 @@ public interface Node {
      * @param visitor Visitor to dispatch
      * @param data    Parameter to the visit
      *
-     * @return What the visitor returned
-     *
-     * @throws IllegalArgumentException If the visitor is incompatible with this node
+     * @return What the visitor returned. If this node doesn't recognize
+     * the type of the visitor, returns {@link AstVisitor#cannotVisit(Node, Object) visitor.cannotVisit(this, data)}.
      *
      * @implSpec A typical implementation will check the type of the visitor to
      *     be that of the language specific visitor, then call the most specific
      *     visit method of this Node. This is typically implemented by having
-     *     a different override per concrete node class (no shortcuts). If the
-     *     visitor is not handled, call {@link AstVisitor#cannotVisit(Node, Object)}.
+     *     a different override per concrete node class (no shortcuts).
+     *
+     *     The default implementation calls back {@link AstVisitor#cannotVisit(Node, Object)}.
      */
-    <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data);
+    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        return visitor.cannotVisit(this, data);
+    }
 
 
     /**

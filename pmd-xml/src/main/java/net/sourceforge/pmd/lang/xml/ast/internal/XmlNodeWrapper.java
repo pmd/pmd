@@ -15,7 +15,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
@@ -160,11 +159,6 @@ class XmlNodeWrapper implements XmlNode {
         Iterator<Attribute>[] it = new Iterator[iterators.size()];
 
         return new CompoundIterator<>(iterators.toArray(it));
-    }
-
-    @Override
-    public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.cannotVisit(this, data);
     }
 
     @Override
