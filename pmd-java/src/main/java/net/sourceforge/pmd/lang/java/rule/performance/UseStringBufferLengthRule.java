@@ -14,8 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 /**
@@ -63,8 +62,8 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
         if (nd == null) {
             return data;
         }
-        if (alreadySeen.contains(nd) || !(nd instanceof TypedNameDeclaration) || nd instanceof TypedNameDeclaration
-                && TypeHelper.isExactlyNone((TypedNameDeclaration) nd, StringBuffer.class, StringBuilder.class)) {
+        if (alreadySeen.contains(nd) || !(nd instanceof VariableNameDeclaration)
+                || !ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(((VariableNameDeclaration) nd).getDeclaratorId())) {
             return data;
         }
         alreadySeen.add(nd);

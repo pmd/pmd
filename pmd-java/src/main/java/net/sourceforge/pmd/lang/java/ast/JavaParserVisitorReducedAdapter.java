@@ -8,7 +8,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * Visitor adapter with convenient visit methods to e.g. treat contructors and methods the same.
  *
  * @author Clément Fournier
+ * @deprecated The functionality of this adapter will be moved into the base java visitor, so this class will
+ *             go away with PMD 7.
  */
+@Deprecated
 public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
 
     @Override

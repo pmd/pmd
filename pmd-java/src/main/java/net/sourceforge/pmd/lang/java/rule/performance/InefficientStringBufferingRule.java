@@ -27,9 +27,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * How this rule works: find additive expressions: + check that the addition is
@@ -128,10 +127,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (type != null) {
             List<ASTClassOrInterfaceType> types = type.findDescendantsOfType(ASTClassOrInterfaceType.class);
             if (!types.isEmpty()) {
-                ASTClassOrInterfaceType typeDeclaration = types.get(0);
-                if (TypeHelper.isA(typeDeclaration, String.class)) {
-                    return true;
-                }
+                return TypeTestUtil.isA(String.class, types.get(0));
             }
         }
         return false;
@@ -185,8 +181,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             return false;
         }
         ASTName n = s.getFirstDescendantOfType(ASTName.class);
-        if (n == null || n.getImage().indexOf(methodName) == -1
-                || !(n.getNameDeclaration() instanceof TypedNameDeclaration)) {
+        if (n == null || !n.getImage().contains(methodName)
+                || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
 
@@ -198,8 +194,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (argList == null || argList.getNumChildren() > 1) {
             return false;
         }
-        return TypeHelper.isExactlyAny((TypedNameDeclaration) n.getNameDeclaration(), StringBuffer.class,
-                StringBuilder.class);
+        return ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(((VariableNameDeclaration) n.getNameDeclaration()).getDeclaratorId());
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
@@ -210,7 +205,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         // note that the child can be an ArrayDimsAndInits, for example, from
         // java.lang.FloatingDecimal: t = new int[ nWords+wordcount+1 ];
         ASTClassOrInterfaceType an = ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        return an != null && TypeHelper.isEither(an, StringBuffer.class, StringBuilder.class);
+        return ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(an);
     }
 
     private static class MethodCallChain {
@@ -226,12 +221,12 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         boolean isExactlyOfAnyType(Class<?> clazz, Class<?> ... clazzes) {
             ASTPrimaryPrefix typeNode = getTypeNode();
 
-            if (TypeHelper.isExactlyA(typeNode, clazz.getName())) {
+            if (TypeTestUtil.isExactlyA(clazz, typeNode)) {
                 return true;
             }
             if (clazzes != null) {
                 for (Class<?> c : clazzes) {
-                    if (TypeHelper.isExactlyA(typeNode, c.getName())) {
+                    if (TypeTestUtil.isExactlyA(c, typeNode)) {
                         return true;
                     }
                 }

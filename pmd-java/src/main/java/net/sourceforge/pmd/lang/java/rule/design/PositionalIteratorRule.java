@@ -18,14 +18,14 @@ public class PositionalIteratorRule extends AbstractJavaRule {
     public Object visit(ASTWhileStatement node, Object data) {
         if (hasNameAsChild(node.getChild(0))) {
             String exprName = getName(node.getChild(0));
-            if (exprName.indexOf(".hasNext") != -1 && node.getNumChildren() > 1) {
+            if (exprName.contains(".hasNext") && node.getNumChildren() > 1) {
 
                 Node loopBody = node.getChild(1);
                 List<String> names = new ArrayList<>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
                 for (String name : names) {
-                    if (name.indexOf(".next") != -1) {
+                    if (name.contains(".next")) {
                         nextCount++;
                     }
                 }

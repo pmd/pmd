@@ -6,6 +6,10 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
+/**
+ * @deprecated This AST node will be removed. It is not used in the grammar and thus won't be in the AST.
+ */
+@Deprecated
 public class ASTJspDeclarations extends AbstractJspNode {
     @InternalApi
     @Deprecated

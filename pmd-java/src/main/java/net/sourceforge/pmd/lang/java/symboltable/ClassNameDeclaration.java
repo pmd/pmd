@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class ClassNameDeclaration extends AbstractNameDeclaration implements TypedNameDeclaration {
@@ -17,15 +19,10 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
 
     @Override
     public String toString() {
-        if (node instanceof ASTClassOrInterfaceDeclaration) {
-            if (((ASTClassOrInterfaceDeclaration) node).isInterface()) {
-                return "Interface " + node.getImage();
-            } else {
-                return "Class " + node.getImage();
-            }
-        } else {
-            return "Enum " + node.getImage();
+        if (node instanceof ASTAnyTypeDeclaration) {
+            return PrettyPrintingUtil.kindName((ASTAnyTypeDeclaration) node) + node.getImage();
         }
+        return "anonymous";
     }
 
     public Node getAccessNodeParent() {
@@ -34,11 +31,22 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
 
     @Override
     public String getTypeImage() {
-        return ((ASTClassOrInterfaceDeclaration) node).getImage();
+        return getTypeNode().getImage();
     }
 
     @Override
     public Class<?> getType() {
-        return ((ASTClassOrInterfaceDeclaration) node).getType();
+        if (node instanceof ASTAnyTypeDeclaration) {
+            return ((ASTAnyTypeDeclaration) node).getType();
+        }
+        return null;
+    }
+
+    /**
+     * Null for anonymous classes.
+     */
+    @Override
+    public TypeNode getTypeNode() {
+        return node instanceof TypeNode ? (TypeNode) node : null;
     }
 }

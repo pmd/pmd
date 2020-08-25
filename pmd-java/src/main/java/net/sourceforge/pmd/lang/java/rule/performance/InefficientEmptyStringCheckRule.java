@@ -46,7 +46,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
     @Override
     public boolean isTargetMethod(JavaNameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null
-                && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("trim") != -1) {
+                && occ.getNameForWhichThisIsAQualifier().getImage().contains("trim")) {
             Node pExpression = occ.getLocation().getParent().getParent();
             if (pExpression.getNumChildren() > 2 && "length".equals(pExpression.getChild(2).getImage())) {
                 return true;

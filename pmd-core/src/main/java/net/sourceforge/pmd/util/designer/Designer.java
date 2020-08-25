@@ -710,7 +710,7 @@ public class Designer implements ClipboardOwner {
             String text;
             if (value instanceof Node) {
                 Node node = (Node) value;
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                 if (Proxy.isProxyClass(value.getClass())) {
                     name = value.toString();

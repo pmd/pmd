@@ -2,9 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.typeresolution;
-
-import static net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader.ClassLoaderWrapper.wrapNullable;
+package net.sourceforge.pmd.lang.java.types;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -12,6 +10,7 @@ import java.lang.annotation.Annotation;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -21,11 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
-import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 
-public class TypeHelperTest extends BaseNonParserTest {
-
-    private static final NullableClassLoader LOADER = wrapNullable(TypeHelperTest.class.getClassLoader());
+public class TypeTestUtilTest extends BaseNonParserTest {
 
     @Rule
     public final ExpectedException expect = ExpectedException.none();
@@ -40,11 +36,10 @@ public class TypeHelperTest extends BaseNonParserTest {
 
 
         Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
-        Assert.assertTrue(TypeHelper.isA(klass, "java.io.Serializable"));
-        Assert.assertTrue(TypeHelper.isA(klass, Serializable.class));
+        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
+        Assert.assertTrue(TypeTestUtil.isA("java.io.Serializable", klass));
+        Assert.assertTrue(TypeTestUtil.isA(Serializable.class, klass));
     }
-
 
 
     @Test
@@ -57,7 +52,7 @@ public class TypeHelperTest extends BaseNonParserTest {
 
 
         Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
+        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Iterable.class);
         assertIsA(klass, Enum.class);
         assertIsA(klass, Serializable.class);
@@ -74,7 +69,7 @@ public class TypeHelperTest extends BaseNonParserTest {
 
 
         Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
+        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
     }
@@ -88,20 +83,60 @@ public class TypeHelperTest extends BaseNonParserTest {
     @Test
     public void testIsAFallbackAnnotationSimpleNameImport() {
         ASTName annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
-                .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
+                                 .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
 
         Assert.assertNull(annotation.getType());
-        Assert.assertTrue(TypeHelper.isA(annotation, "foo.Stuff"));
-        Assert.assertFalse(TypeHelper.isA(annotation, "other.Stuff"));
+        Assert.assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
+        Assert.assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
         // if the searched class name is not fully qualified, then the search should still be successfull
-        Assert.assertTrue(TypeHelper.isA(annotation, "Stuff"));
+        Assert.assertTrue(TypeTestUtil.isA("Stuff", annotation));
+    }
+
+    @Test
+    public void testNullNode() {
+        Assert.assertFalse(TypeTestUtil.isA(String.class, null));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", null));
+        Assert.assertFalse(TypeTestUtil.isExactlyA(String.class, null));
+        Assert.assertFalse(TypeTestUtil.isExactlyA("java.lang.String", null));
+    }
+
+    @Test
+    public void testNullClass() {
+        final ASTName node = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
+                                 .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
+        Assert.assertNotNull(node);
+
+        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() {
+                TypeTestUtil.isA((String) null, node);
+            }
+        });
+        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() {
+                TypeTestUtil.isA((Class<?>) null, node);
+            }
+        });
+        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() {
+                TypeTestUtil.isExactlyA((Class<?>) null, node);
+            }
+        });
+        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() {
+                TypeTestUtil.isExactlyA((String) null, node);
+            }
+        });
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {
-        Assert.assertTrue("TypeHelper::isA with class arg: " + type.getCanonicalName(),
-                          TypeHelper.isA(node, type));
-        Assert.assertTrue("TypeHelper::isA with string arg: " + type.getCanonicalName(),
-                          TypeHelper.isA(node, type.getCanonicalName()));
+        Assert.assertTrue("TypeTestUtil::isA with class arg: " + type.getCanonicalName(),
+                          TypeTestUtil.isA(type, node));
+        Assert.assertTrue("TypeTestUtil::isA with string arg: " + type.getCanonicalName(),
+                          TypeTestUtil.isA(type.getCanonicalName(), node));
     }
 
 }
