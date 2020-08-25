@@ -2,10 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal.asm;
+package net.sourceforge.pmd.lang.java.symbols;
 
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.of;
 import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofArray;
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofSimple;
 import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofEnum;
 
 import java.util.List;
@@ -15,9 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults.MyEnum;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
@@ -71,13 +69,13 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "valueWithDefault");
-        Assert.assertEquals(ofSimple("ddd"), m.getDefaultAnnotationValue());
+        Assert.assertEquals(of("ddd"), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "valueNoDefault");
         Assert.assertNull(m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayDefault");
-        Assert.assertEquals(ofSimple(new String[] {"ddd"}), m.getDefaultAnnotationValue());
+        Assert.assertEquals(of(new String[] {"ddd"}), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayEmptyDefault");
         Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
@@ -103,8 +101,8 @@ public class SymbolReflectionTest {
 
     @Test
     public void testSymValueEquality() {
-        Assert.assertEquals(ofSimple(new String[] {"ddd", "eee"}),
-                            ofArray(ofSimple("ddd"), ofSimple("eee")));
+        Assert.assertEquals(of(new String[] {"ddd", "eee"}),
+                            ofArray(of("ddd"), of("eee")));
     }
 
 

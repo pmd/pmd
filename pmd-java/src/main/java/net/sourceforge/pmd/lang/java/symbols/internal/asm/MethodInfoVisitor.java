@@ -63,7 +63,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            result = AnnotationElement.ofSimple(value);
+            result = AnnotationElement.of(value);
         }
 
         @Override
@@ -91,7 +91,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            arrayElements.add(AnnotationElement.ofSimple(value));
+            arrayElements.add(AnnotationElement.of(value));
         }
 
         @Override
