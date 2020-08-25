@@ -67,7 +67,7 @@ public class TokenMgrError extends RuntimeException {
      * equivalents in the given string
      */
     protected static final String addEscapes(final String str) {
-        final StringBuffer retval = new StringBuffer();
+        final StringBuilder retval = new StringBuilder();
         char ch;
         for (int i = 0; i < str.length(); i++) {
             switch (str.charAt(i)) {

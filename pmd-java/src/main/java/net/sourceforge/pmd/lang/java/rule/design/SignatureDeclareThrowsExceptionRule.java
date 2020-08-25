@@ -103,7 +103,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object o) {
-        if (node.getImportedName().indexOf("junit") != -1) {
+        if (node.getImportedName().contains("junit")) {
             junitImported = true;
         }
         return super.visit(node, o);

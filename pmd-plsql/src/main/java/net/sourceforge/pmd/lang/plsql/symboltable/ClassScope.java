@@ -188,25 +188,25 @@ public class ClassScope extends AbstractScope {
 
     @Override
     public String toString() {
-        String res = "ClassScope (" + className + "): ";
+        StringBuilder res = new StringBuilder("ClassScope (").append(className).append("): ");
         Map<ClassNameDeclaration, List<NameOccurrence>> classNames = getClassDeclarations();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = getVariableDeclarations();
         if (!classNames.isEmpty()) {
-            res += "(" + classNames.keySet() + ")";
+            res.append('(').append(classNames.keySet()).append(')');
         }
         if (!methodNames.isEmpty()) {
             for (MethodNameDeclaration mnd : methodNames.keySet()) {
-                res += mnd.toString();
+                res.append(mnd.toString());
                 int usages = methodNames.get(mnd).size();
-                res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";
-                res += ",";
+                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
+                res.append(',');
             }
         }
         if (!variableNames.isEmpty()) {
-            res += "(" + variableNames.keySet() + ")";
+            res.append('(').append(variableNames.keySet()).append(')');
         }
-        return res;
+        return res.toString();
     }
 
     private String clipClassName(String s) {

@@ -75,7 +75,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
         String[] methodNames = methodNames();
 
         for (String element : methodNames) {
-            if (methodCall.indexOf(element) != -1) {
+            if (methodCall.contains(element)) {
                 return true;
             }
         }
