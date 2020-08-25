@@ -103,6 +103,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
     *   [#2531](https://github.com/pmd/pmd/issues/2531): \[java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase())
     *   [#2647](https://github.com/pmd/pmd/issues/2647): \[java] Deprecate rule DataFlowAnomalyAnalysis
 *   java-performance
+    *   [#1868](https://github.com/pmd/pmd/issues/1868): \[java] false-positive for SimplifyStartsWith if string is empty
     *   [#2441](https://github.com/pmd/pmd/issues/2441): \[java] RedundantFieldInitializer can not detect a special case for char initialize: `char foo = '\0';`
     *   [#2530](https://github.com/pmd/pmd/issues/2530): \[java] StringToString can not detect the case: getStringMethod().toString()
 
@@ -176,6 +177,7 @@ are deprecated as internal API.
 *   [#2699](https://github.com/pmd/pmd/pull/2699): \[java] ProperCloneImplementation not valid for final class - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2700](https://github.com/pmd/pmd/pull/2700): \[java] Fix OnlyOneReturn code example - [Jan-Lukas Else](https://github.com/jlelse)
 *   [#2722](https://github.com/pmd/pmd/pull/2722): \[doc] \[java] ImmutableField: extend description, fixes #2108 - [Mateusz Stefanski](https://github.com/mateusz-stefanski)
+*   [#2723](https://github.com/pmd/pmd/pull/2723): \[doc] \[java] SimplifyStartsWith: update description and example, fixes #1868 - [Mateusz Stefanski](https://github.com/mateusz-stefanski)
 *   [#2725](https://github.com/pmd/pmd/pull/2725): Cleanup: change valueOf to parse when we need primitive return value. - [XenoAmess](https://github.com/XenoAmess)
 *   [#2726](https://github.com/pmd/pmd/pull/2726): Cleanup: replace StringBuffer with StringBuilder - [XenoAmess](https://github.com/XenoAmess)
 *   [#2727](https://github.com/pmd/pmd/pull/2727): Cleanup: replace indexOf() < 0 with contains - [XenoAmess](https://github.com/XenoAmess)
