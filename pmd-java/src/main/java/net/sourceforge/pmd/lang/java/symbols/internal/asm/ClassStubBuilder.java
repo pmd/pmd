@@ -10,6 +10,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.NoUrlLoader;
 
 
@@ -75,11 +77,19 @@ class ClassStubBuilder extends ClassVisitor {
 
         if ("<clinit>".equals(name)) {
             return null;
-        } else if ("<init>".equals(name)) {
-            myStub.addCtor(new ExecutableStub.CtorStub(myStub, access, descriptor, signature, exceptions, isInnerNonStaticClass));
-        } else {
-            myStub.addMethod(new ExecutableStub.MethodStub(myStub, name, access, descriptor, signature, exceptions));
         }
-        return null;
+
+
+        ExecutableStub execStub;
+        if ("<init>".equals(name)) {
+            CtorStub ctor = new CtorStub(myStub, access, descriptor, signature, exceptions, isInnerNonStaticClass);
+            myStub.addCtor(ctor);
+            execStub = ctor;
+        } else {
+            MethodStub method = new MethodStub(myStub, name, access, descriptor, signature, exceptions);
+            myStub.addMethod(method);
+            execStub = method;
+        }
+        return new MethodInfoVisitor(execStub);
     }
 }

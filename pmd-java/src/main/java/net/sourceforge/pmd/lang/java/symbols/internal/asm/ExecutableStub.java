@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +24,12 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbol {
+
+    /**
+     * A method may only have 255 parameters by the jvm spec (chap 4).
+     * So we can put the flag for a final param inside the index.
+     */
+    static final int FINAL_PARAM_FLAG = 1 << 9;
 
     private final String descriptor;
     protected final LazyMethodType type;
@@ -54,14 +59,6 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     @Override
     public List<JFormalParamSymbol> getFormalParameters() {
-        if (params == null) {
-            List<JTypeMirror> ptypes = type.getParameterTypes();
-            params = new ArrayList<>(ptypes.size());
-            for (int i = 0; i < ptypes.size(); i++) {
-                params.add(new FormalParamStub(i, ptypes.get(i)));
-            }
-            this.params = Collections.unmodifiableList(params);
-        }
         return params;
     }
 
@@ -72,7 +69,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     @Override
     public int getArity() {
-        return type.getParameterTypes().size();
+        return getFormalParameters().size();
     }
 
     @Override
@@ -83,6 +80,10 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     @Override
     public List<JTypeMirror> getThrownExceptionTypes(Substitution subst) {
         return TypeOps.subst(type.getExceptionTypes(), subst);
+    }
+
+    void setParams(List<JFormalParamSymbol> params) {
+        this.params = Collections.unmodifiableList(params); // implicit null check
     }
 
 
@@ -96,11 +97,15 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     class FormalParamStub implements JFormalParamSymbol {
 
         private final int index;
-        private final JTypeMirror type;
+        private final String name;
 
-        FormalParamStub(int index, JTypeMirror type) {
-            this.index = index;
-            this.type = type;
+        FormalParamStub(int index, boolean isFinal, String name) {
+            this.name = name;
+            this.index = index | (isFinal ? FINAL_PARAM_FLAG : 0);
+        }
+
+        private JTypeMirror getType() {
+            return ExecutableStub.this.type.getParameterTypes().get(index);
         }
 
         @Override
@@ -110,17 +115,17 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
         @Override
         public boolean isFinal() {
-            return false;
+            return (index & FINAL_PARAM_FLAG) != 0;
         }
 
         @Override
         public JTypeMirror getTypeMirror(Substitution subst) {
-            return type.subst(subst);
+            return getType().subst(subst);
         }
 
         @Override
         public String getSimpleName() {
-            return "p" + index;
+            return name;
         }
 
         @Override
