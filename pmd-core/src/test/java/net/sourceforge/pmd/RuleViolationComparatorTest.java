@@ -58,7 +58,7 @@ public class RuleViolationComparatorTest {
         Collections.shuffle(ruleViolations, random);
 
         // Sort
-        Collections.sort(ruleViolations, RuleViolationComparator.INSTANCE);
+        Collections.sort(ruleViolations, RuleViolation.DEFAULT_COMPARATOR);
 
         // Check
         int count = 0;

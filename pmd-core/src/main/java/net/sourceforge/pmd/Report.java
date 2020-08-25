@@ -345,7 +345,7 @@ public class Report implements Iterable<RuleViolation> {
             return;
         }
 
-        int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+        int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
         violations.add(index < 0 ? -index - 1 : index, violation);
         violationTree.addRuleViolation(violation);
         for (ThreadSafeReportListener listener : listeners) {
@@ -405,7 +405,7 @@ public class Report implements Iterable<RuleViolation> {
         suppressedRuleViolations.addAll(r.suppressedRuleViolations);
 
         for (RuleViolation violation : r.getViolations()) {
-            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+            int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
             violations.add(index < 0 ? -index - 1 : index, violation);
             violationTree.addRuleViolation(violation);
         }
@@ -519,7 +519,7 @@ public class Report implements Iterable<RuleViolation> {
      * Returns an unmodifiable list of violations that have been
      * recorded until now. None of those violations were suppressed.
      *
-     * <p>The violations list is sorted with {@link RuleViolationComparator#INSTANCE}.
+     * <p>The violations list is sorted with {@link RuleViolation#DEFAULT_COMPARATOR}.
      */
     public final List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Comparator;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename1"));
         DummyNode s = new DummyNode(1);
@@ -72,7 +73,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
@@ -91,7 +92,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
