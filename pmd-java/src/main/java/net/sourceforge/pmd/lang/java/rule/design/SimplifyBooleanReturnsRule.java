@@ -148,7 +148,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
      * Checks, whether there is a statement after the given if statement, and if
      * so, whether this is just a return boolean statement.
      *
-     * @param node
+     * @param ifNode
      *            the if statement
      * @return
      */
@@ -167,7 +167,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
      * Checks whether the given ifstatement just returns a boolean in the if
      * clause.
      *
-     * @param node
+     * @param ifNode
      *            the if statement
      * @return
      */

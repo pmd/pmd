@@ -529,7 +529,7 @@ public abstract class RuleTst {
     }
 
     private static String parseTextNode(Node exampleNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {

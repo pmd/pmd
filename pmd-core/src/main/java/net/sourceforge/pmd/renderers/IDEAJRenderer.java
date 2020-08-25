@@ -69,7 +69,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            buf.append(rv.getDescription() + PMD.EOL);
+            buf.append(rv.getDescription()).append(PMD.EOL);
             buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
             buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')')
                     .append(PMD.EOL);

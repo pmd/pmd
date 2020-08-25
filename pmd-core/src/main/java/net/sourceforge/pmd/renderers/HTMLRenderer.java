@@ -181,7 +181,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL
                 + "<th>File</th><th>Problem</th></tr>" + PMD.EOL);
 
-        StringBuffer buf = new StringBuffer(500);
+        StringBuilder buf = new StringBuilder(500);
         boolean colorize = true;
         for (Report.ProcessingError pe : errors) {
             buf.setLength(0);
@@ -224,8 +224,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(renderRuleName(rv.getRule())).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(PMD.EOL);
-            buf.append("<td align=\"center\">").append(
-                sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(PMD.EOL);
             buf.append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
         }

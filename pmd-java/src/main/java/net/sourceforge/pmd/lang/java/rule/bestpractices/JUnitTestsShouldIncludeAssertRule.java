@@ -199,7 +199,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 Node name = pe.getFirstDescendantOfType(ASTName.class);
                 if (name != null) {
                     String img = name.getImage();
-                    if (img.indexOf(".") == -1) {
+                    if (!img.contains(".")) {
                         return false;
                     }
                     String[] tokens = img.split("\\.");
