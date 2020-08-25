@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -86,14 +87,10 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         this.params = Collections.unmodifiableList(params); // implicit null check
     }
 
+    void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+        // overridden by MethodStub
+    }
 
-    /**
-     * Formal parameter symbols obtained from the class have no info
-     * about name or whether it's final. This is because due to ASM's
-     * design, parsing this information would entail parsing a lot of
-     * other information we don't care about, and so this would be
-     * wasteful. It's unlikely anyone cares about this anyway.
-     */
     class FormalParamStub implements JFormalParamSymbol {
 
         private final int index;
@@ -136,6 +133,8 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
 
+        private @Nullable SymbolicValue defaultAnnotValue;
+
         protected MethodStub(ClassStub owner,
                              String simpleName,
                              int accessFlags,
@@ -169,6 +168,15 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         @Override
         public boolean equals(Object obj) {
             return SymbolEquality.METHOD.equals(this, obj);
+        }
+
+        @Override
+        public @Nullable SymbolicValue getDefaultAnnotationValue() {
+            return defaultAnnotValue;
+        }
+
+        void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+            this.defaultAnnotValue = defaultAnnotValue;
         }
     }
 
