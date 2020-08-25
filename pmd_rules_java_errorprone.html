@@ -4671,8 +4671,12 @@ new StringBuilder("A")   //  1 + 16 = 17
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>The method name and parameter number are suspiciously close to equals(Object), which can denote an
-intention to override the equals(Object) method.</p>
+<p>The method name and parameter number are suspiciously close to <code class="language-plaintext highlighter-rouge">Object.equals</code>, which can denote an
+intention to override it. However, the method does not override <code class="language-plaintext highlighter-rouge">Object.equals</code>, but overloads it instead.
+Overloading <code class="language-plaintext highlighter-rouge">Object.equals</code> method is confusing for other programmers, error-prone and hard to maintain,
+especially when using inheritance, because <code class="language-plaintext highlighter-rouge">@Override</code> annotations used in subclasses can provide a false
+sense of security. For more information on <code class="language-plaintext highlighter-rouge">Object.equals</code> method, see Effective Java, 3rd Edition,
+Item 10: Obey the general contract when overriding equals.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'equals'</span><span class="p">]</span><span class="w">
