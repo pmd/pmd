@@ -288,7 +288,7 @@ final class TypeSigParser {
             this.lexicalScope = lexicalScope;
         }
 
-        TypeScanner(TypeSystem ts, LexicalScope lexicalScope, char[] chars, int start, int end) {
+        TypeScanner(TypeSystem ts, LexicalScope lexicalScope, String chars, int start, int end) {
             super(chars, start, end);
             this.ts = ts;
             this.lexicalScope = lexicalScope;

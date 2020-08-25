@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+
 /**
  * Base class to scan a type signature.
  */
 class SignatureScanner {
 
-    protected final char[] chars;
+    protected final String chars;
     protected final int start;
     protected final int end;
 
@@ -21,16 +23,14 @@ class SignatureScanner {
             throw new IllegalArgumentException("Type descriptor \"" + descriptor + "\" is empty or null");
         }
 
-        this.chars = new char[descriptor.length() + 1]; // Add one last entry (\0) to not overflow on EOI
+        this.chars = descriptor;
         this.start = 0;
         this.end = descriptor.length();
-        descriptor.getChars(start, end, chars, 0);
     }
 
-    SignatureScanner(char[] chars, int start, int end) {
+    SignatureScanner(String chars, int start, int end) {
         assert chars != null;
-        assert start <= end && start >= 0 && start < chars.length
-            : "Invalid range " + start + ".." + end + " in 0.." + (chars.length + 1);
+        AssertionUtil.assertValidStringRange(chars, start, end);
         this.chars = chars;
         this.start = start;
         this.end = end;
@@ -38,15 +38,15 @@ class SignatureScanner {
 
 
     public char charAt(int off) {
-        return chars[off];
+        return off == end ? 0 : chars.charAt(off);
     }
 
     public void dumpChars(int start, int end, StringBuilder builder) {
-        builder.append(chars, start, end - start);
+        builder.append(chars, start, end);
     }
 
     public int consumeChar(int start, char l, String s) {
-        if (chars[start] != l) {
+        if (charAt(start) != l) {
             throw expected(s, start);
         }
         return start + 1;
@@ -97,7 +97,7 @@ class SignatureScanner {
         if (start == end) {
             return "";
         }
-        return new String(chars, start, end - start);
+        return chars.substring(start, end);
     }
 
     @Override

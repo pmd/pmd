@@ -26,6 +26,33 @@ public final class AssertionUtil {
         return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
     }
 
+    private static boolean isValidRange(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
+        return startInclusive <= endExclusive && minIndex <= startInclusive && endExclusive <= maxIndex;
+    }
+
+    private static String invalidRangeMessage(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
+        return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
+    }
+
+    /**
+     * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
+     *                                  not a valid substring range for the given string
+     */
+    public static void validateStringRange(CharSequence string, int startInclusive, int endExclusive) {
+        if (!isValidRange(startInclusive, endExclusive, 0, string.length())) {
+            throw new IllegalArgumentException(invalidRangeMessage(startInclusive, endExclusive, 0, string.length()));
+        }
+    }
+
+    /**
+     * Like {@link #validateStringRange(CharSequence, int, int)} but eliminated
+     * at runtime if running without assertions.
+     */
+    public static void assertValidStringRange(CharSequence string, int startInclusive, int endExclusive) {
+        assert isValidRange(startInclusive, endExclusive, 0, string.length())
+            : invalidRangeMessage(startInclusive, endExclusive, 0, string.length());
+    }
+
     /**
      * Returns true if the charsequence is a valid java identifier.
      *

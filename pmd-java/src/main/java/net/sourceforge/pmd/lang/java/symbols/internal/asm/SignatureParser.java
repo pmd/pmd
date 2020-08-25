@@ -108,7 +108,7 @@ class SignatureParser {
             super(getTypeSystem(), lexicalScope, descriptor);
         }
 
-        MyTypeBuilder(LexicalScope lexicalScope, char[] chars, int start, int end) {
+        MyTypeBuilder(LexicalScope lexicalScope, String chars, int start, int end) {
             super(getTypeSystem(), lexicalScope, chars, start, end);
         }
 
