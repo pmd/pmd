@@ -13,6 +13,8 @@ import java.util.Objects;
 import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
+
 /**
  * Structure to represent symbolic constant values for annotations.
  * Annotations may contain:
@@ -20,21 +22,26 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <li>Primitive or string values
  * <li>Other annotations (currently unsupported)
  * <li>Enum constants
- * <li>Arrays of symbolic values (currently, only arrays of strings or enum constants are supported)
+ * <li>Arrays of annotation elements values, of dimension 1 (currently, only arrays of strings or enum constants are supported)
  * </ul>
  */
-public class SymbolicValue {
+public class AnnotationElement {
 
-    SymbolicValue() {
+    AnnotationElement() {
         // package-private
     }
 
-    public static SymbolicValue arrayOf(SymbolicValue... values) {
+    public static AnnotationElement ofArray(AnnotationElement... values) {
         return new Array(Arrays.asList(values.clone()));
     }
 
+    public static <T extends Enum<T>> AnnotationElement ofEnum(T value) {
+        return new EnumConstant(ClassNamesUtil.getTypeDescriptor(value.getDeclaringClass()),
+                                value.name());
+    }
+
     // returns null for unsupported value
-    public static @Nullable SymbolicValue of(Object value) {
+    public static @Nullable AnnotationElement ofSimple(Object value) {
         if (value == null) {
             return null;
         }
@@ -44,9 +51,9 @@ public class SymbolicValue {
                 return null;
             }
             Object[] arr = (Object[]) value;
-            List<SymbolicValue> lst = new ArrayList<>(arr.length);
+            List<AnnotationElement> lst = new ArrayList<>(arr.length);
             for (Object o : arr) {
-                SymbolicValue elt = of(o);
+                AnnotationElement elt = ofSimple(o);
                 if (elt == null) {
                     return null;
                 }
@@ -61,11 +68,11 @@ public class SymbolicValue {
         return null;
     }
 
-    public static final class Array extends SymbolicValue {
+    public static final class Array extends AnnotationElement {
 
-        private final List<SymbolicValue> elements;
+        private final List<AnnotationElement> elements;
 
-        public Array(List<SymbolicValue> elements) {
+        public Array(List<AnnotationElement> elements) {
             this.elements = Collections.unmodifiableList(elements);
         }
 
@@ -73,7 +80,7 @@ public class SymbolicValue {
             return elements.size();
         }
 
-        public List<SymbolicValue> elements() {
+        public List<AnnotationElement> elements() {
             return elements;
         }
 
@@ -96,11 +103,15 @@ public class SymbolicValue {
     }
 
 
-    public static final class EnumConstant extends SymbolicValue {
+    public static final class EnumConstant extends AnnotationElement {
 
         private final String enumTypeInternalName;
         private final String enumName;
 
+        /**
+         * @param enumTypeDescriptor The type descriptor, eg {@code Lcom/MyEnum;}
+         * @param enumConstName      Name of the enum constant
+         */
         public EnumConstant(String enumTypeDescriptor, String enumConstName) {
             this.enumTypeInternalName = enumTypeDescriptor;
             this.enumName = enumConstName;
@@ -129,7 +140,7 @@ public class SymbolicValue {
      * Represents a primitive or string value. Note that this does
      * not represent arrays of those.
      */
-    public static final class Atom extends SymbolicValue {
+    public static final class Atom extends AnnotationElement {
 
         private final Object value;
 

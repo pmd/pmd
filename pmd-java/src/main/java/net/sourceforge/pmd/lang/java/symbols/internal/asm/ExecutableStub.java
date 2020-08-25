@@ -12,11 +12,11 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 
+import net.sourceforge.pmd.lang.java.symbols.AnnotationElement;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -83,7 +83,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         return TypeOps.subst(type.getExceptionTypes(), subst);
     }
 
-    void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+    void setDefaultAnnotValue(@Nullable AnnotationElement defaultAnnotValue) {
         // overridden by MethodStub
     }
 
@@ -139,7 +139,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
      */
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
 
-        private @Nullable SymbolicValue defaultAnnotValue;
+        private @Nullable AnnotationElement defaultAnnotValue;
 
         protected MethodStub(ClassStub owner,
                              String simpleName,
@@ -177,11 +177,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         }
 
         @Override
-        public @Nullable SymbolicValue getDefaultAnnotationValue() {
+        public @Nullable AnnotationElement getDefaultAnnotationValue() {
             return defaultAnnotValue;
         }
 
-        void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+        void setDefaultAnnotValue(@Nullable AnnotationElement defaultAnnotValue) {
             this.defaultAnnotValue = defaultAnnotValue;
         }
     }

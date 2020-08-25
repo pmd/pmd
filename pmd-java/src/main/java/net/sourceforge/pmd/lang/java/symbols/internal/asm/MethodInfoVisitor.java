@@ -12,14 +12,14 @@ import java.util.function.Consumer;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.Array;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.EnumConstant;
+import net.sourceforge.pmd.lang.java.symbols.AnnotationElement;
+import net.sourceforge.pmd.lang.java.symbols.AnnotationElement.Array;
+import net.sourceforge.pmd.lang.java.symbols.AnnotationElement.EnumConstant;
 
 class MethodInfoVisitor extends MethodVisitor {
 
     private final ExecutableStub execStub;
-    private SymbolicValue defaultAnnotValue;
+    private AnnotationElement defaultAnnotValue;
 
     MethodInfoVisitor(ExecutableStub execStub) {
         super(AsmSymbolResolver.ASM_API_V);
@@ -49,7 +49,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
     private static class SymbolicValueBuilder extends AnnotationVisitor {
 
-        SymbolicValue result;
+        AnnotationElement result;
 
         SymbolicValueBuilder() {
             super(AsmSymbolResolver.ASM_API_V);
@@ -63,7 +63,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            result = SymbolicValue.of(value);
+            result = AnnotationElement.ofSimple(value);
         }
 
         @Override
@@ -75,10 +75,10 @@ class MethodInfoVisitor extends MethodVisitor {
 
     static class ArrayValueBuilder extends AnnotationVisitor {
 
-        private final List<SymbolicValue> arrayElements;
-        private final Consumer<SymbolicValue> finisher;
+        private final List<AnnotationElement> arrayElements;
+        private final Consumer<AnnotationElement> finisher;
 
-        ArrayValueBuilder(List<SymbolicValue> arrayElements, Consumer<SymbolicValue> finisher) {
+        ArrayValueBuilder(List<AnnotationElement> arrayElements, Consumer<AnnotationElement> finisher) {
             super(AsmSymbolResolver.ASM_API_V);
             this.arrayElements = arrayElements;
             this.finisher = finisher;
@@ -91,7 +91,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
         @Override
         public void visit(String name, Object value) {
-            arrayElements.add(SymbolicValue.of(value));
+            arrayElements.add(AnnotationElement.ofSimple(value));
         }
 
         @Override

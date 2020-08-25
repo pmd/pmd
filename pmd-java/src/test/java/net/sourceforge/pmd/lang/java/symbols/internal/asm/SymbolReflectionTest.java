@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofArray;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofSimple;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationElement.ofEnum;
+
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,8 +18,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
+import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults.MyEnum;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -57,6 +62,51 @@ public class SymbolReflectionTest {
         Assert.assertEquals(ts.getClassSymbol(String.class), p.getTypeMirror(Substitution.EMPTY).getSymbol());
     }
 
+    @Test
+    public void testReflectionOfAnnotDefault() {
+        // note that this asserts, that the param names are unavailable
+
+        JClassSymbol sym = loadAnnotation(AnnotWithDefaults.class);
+
+        JMethodSymbol m;
+
+        m = getMethod(sym, "valueWithDefault");
+        Assert.assertEquals(ofSimple("ddd"), m.getDefaultAnnotationValue());
+
+        m = getMethod(sym, "valueNoDefault");
+        Assert.assertNull(m.getDefaultAnnotationValue());
+
+        m = getMethod(sym, "stringArrayDefault");
+        Assert.assertEquals(ofSimple(new String[] {"ddd"}), m.getDefaultAnnotationValue());
+
+        m = getMethod(sym, "stringArrayEmptyDefault");
+        Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
+    }
+
+
+    @Test
+    public void testReflectionOfEnumDefault() {
+        // note that this asserts, that the param names are unavailable
+
+        JClassSymbol sym = loadAnnotation(AnnotWithDefaults.class);
+
+        JMethodSymbol m;
+
+        m = getMethod(sym, "enumArr");
+        Assert.assertEquals(ofArray(ofEnum(MyEnum.AA), ofEnum(MyEnum.BB)),
+                            m.getDefaultAnnotationValue());
+
+        m = getMethod(sym, "enumSimple");
+        Assert.assertEquals(ofEnum(MyEnum.AA), m.getDefaultAnnotationValue());
+    }
+
+
+    @Test
+    public void testSymValueEquality() {
+        Assert.assertEquals(ofSimple(new String[] {"ddd", "eee"}),
+                            ofArray(ofSimple("ddd"), ofSimple("eee")));
+    }
+
 
     private static JMethodSymbol getMethod(JClassSymbol sym, String name) {
         return sym.getDeclaredMethods().stream().filter(it -> it.getSimpleName().equals(name))
@@ -64,37 +114,15 @@ public class SymbolReflectionTest {
                   .orElseThrow(AssertionError::new);
     }
 
-    @Test
-    public void testReflectionOfAnnotDefault() {
-        // note that this asserts, that the param names are unavailable
-
-        JClassSymbol sym = loader.resolveClassFromBinaryName(AnnotWithDefaults.class.getName());
+    private @NonNull JClassSymbol loadAnnotation(Class<?> klass) {
+        JClassSymbol sym = loader.resolveClassFromBinaryName(klass.getName());
 
         Assert.assertNotNull(sym);
         Assert.assertTrue(sym.isAbstract());
         Assert.assertTrue(sym.isAnnotation());
         Assert.assertTrue(sym.isInterface());
-
-        JMethodSymbol m;
-
-        m = getMethod(sym, "valueWithDefault");
-        Assert.assertEquals(SymbolicValue.of("ddd"), m.getDefaultAnnotationValue());
-
-        m = getMethod(sym, "valueNoDefault");
-        Assert.assertNull(m.getDefaultAnnotationValue());
-
-        m = getMethod(sym, "stringArrayDefault");
-        Assert.assertEquals(SymbolicValue.of(new String[] {"ddd"}), m.getDefaultAnnotationValue());
-
-        m = getMethod(sym, "stringArrayEmptyDefault");
-        Assert.assertEquals(SymbolicValue.arrayOf(), m.getDefaultAnnotationValue());
+        return sym;
     }
 
-
-    @Test
-    public void testSymValueEquality() {
-        Assert.assertEquals(SymbolicValue.of(new String[] {"ddd", "eee"}),
-                            SymbolicValue.arrayOf(SymbolicValue.of("ddd"), SymbolicValue.of("eee")));
-    }
 
 }
