@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.commons.lang3.EnumUtils;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 
 /**
@@ -38,8 +38,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * Returns true if this switch has a {@code default} case.
      */
     default boolean hasDefaultCase() {
-        ASTSwitchBranch last = getBranches().last();
-        return last != null && last.getLabel().isDefault();
+        return getBranches().any(it -> it.getLabel().isDefault());
     }
 
 
@@ -68,31 +67,15 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      */
     default boolean isExhaustiveEnumSwitch() {
         ASTExpression expression = getTestedExpression();
-
-        if (expression.getType() == null) {
+        JTypeDeclSymbol symbol = expression.getTypeMirror().getSymbol();
+        if (!(symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isEnum())) {
             return false;
         }
 
-        if (Enum.class.isAssignableFrom(expression.getType())) {
-
-            @SuppressWarnings("unchecked")
-            Set<String> constantNames = EnumUtils.getEnumMap((Class<? extends Enum>) expression.getType()).keySet();
-
-            for (ASTSwitchBranch branch : this) {
-                // since this is an enum switch, the labels are necessarily
-                // the simple name of some enum constant.
-
-                // descendant can be null for default case
-                ASTName name = branch.getLabel().getFirstDescendantOfType(ASTName.class);
-                if (name != null) {
-                    constantNames.remove(name.getImage());
-                }
-            }
-
-            return constantNames.isEmpty();
-        }
-
-        return false;
+        // we assume there's no duplicate labels
+        long numConstants = ((JClassSymbol) symbol).getDeclaredFields().stream().filter(JFieldSymbol::isEnumConstant).count();
+        int numLabels = getBranches().map(ASTSwitchBranch::getLabel).flatMap(ASTSwitchLabel::getExprList).count();
+        return numLabels == numConstants;
     }
 
 

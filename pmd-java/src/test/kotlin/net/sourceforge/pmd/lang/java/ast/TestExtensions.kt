@@ -587,7 +587,7 @@ fun TreeNodeWrapper<Node, *>.switchLabel(assertions: NodeSpec<ASTSwitchLabel> = 
 fun TreeNodeWrapper<Node, *>.switchDefaultLabel(assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions) =
         child<ASTSwitchLabel>(ignoreChildren = assertions == EmptyAssertions) {
             it::isDefault shouldBe true
-            it::getExprList shouldBe emptyList()
+            it.exprList.toList() shouldBe emptyList()
             assertions()
         }
 
