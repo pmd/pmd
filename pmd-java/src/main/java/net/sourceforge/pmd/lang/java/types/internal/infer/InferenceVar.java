@@ -209,6 +209,19 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return n == 0 ? "" : "" + n;
     }
 
+    StringBuilder formatBounds(StringBuilder sb) {
+        sb.append(" {");
+        boolean any = false;
+        for (BoundKind bk : BoundKind.ALL) {
+            for (JTypeMirror bound : getBounds(bk)) {
+                sb.append(any ? ", " : " ").append(bk.format(this, bound));
+                any = true;
+            }
+        }
+        sb.append(any ? " }" : "}");
+        return sb;
+    }
+
 
     public enum BoundKind {
         UPPER(" <: ") {

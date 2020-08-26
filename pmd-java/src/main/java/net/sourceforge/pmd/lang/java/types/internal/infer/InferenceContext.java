@@ -94,7 +94,7 @@ final class InferenceContext {
     }
 
     /** Add a variable to this context. */
-    void addVar(JTypeVar tvar) {
+    InferenceVar addVar(JTypeVar tvar) {
         InferenceVar ivar = addVarImpl(tvar);
         addPrimaryBound(ivar);
 
@@ -102,6 +102,7 @@ final class InferenceContext {
             // remove remaining occurrences of type params
             otherIvar.substBounds(this::mapToIVars);
         }
+        return ivar;
     }
 
     /** Add a variable to this context. */
@@ -417,15 +418,7 @@ final class InferenceContext {
             if (ivar.getInst() != null) {
                 sb.append(" := ").append(ivar.getInst()).append('\n');
             } else {
-                sb.append(" {");
-                boolean any = false;
-                for (BoundKind bk : BoundKind.values()) {
-                    for (JTypeMirror bound : ivar.getBounds(bk)) {
-                        sb.append(any ? ", " : " ").append(bk.format(ivar, bound));
-                        any = true;
-                    }
-                }
-                sb.append(any ? " }" : "}").append('\n');
+                ivar.formatBounds(sb).append('\n');
             }
         }
 
