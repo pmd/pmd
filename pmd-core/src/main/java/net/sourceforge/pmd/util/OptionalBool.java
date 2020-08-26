@@ -8,6 +8,14 @@ package net.sourceforge.pmd.util;
 public enum OptionalBool {
     YES, NO, UNKNOWN;
 
+    public OptionalBool complement() {
+        switch (this) {
+        case YES: return NO;
+        case NO: return YES;
+        default: return this;
+        }
+    }
+
     public boolean isKnown() {
         return this != UNKNOWN;
     }
