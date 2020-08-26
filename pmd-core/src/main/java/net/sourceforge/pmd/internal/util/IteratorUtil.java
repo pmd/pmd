@@ -14,9 +14,12 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -168,6 +171,13 @@ public final class IteratorUtil {
         };
     }
 
+    /**
+     * Apply a transform on the iterator of an iterable.
+     */
+    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+        return () -> mapper.apply(iter.iterator());
+    }
+
     @SafeVarargs
     public static <T> Iterator<T> iterate(T... elements) {
         return Arrays.asList(elements).iterator();
@@ -249,6 +259,7 @@ public final class IteratorUtil {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
     }
+
 
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
@@ -421,6 +432,10 @@ public final class IteratorUtil {
                 li.remove();
             }
         };
+    }
+
+    public static <T> Stream<T> toStream(Iterator<? extends T> iter) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
     }
 
     public abstract static class AbstractIterator<T> implements Iterator<T> {

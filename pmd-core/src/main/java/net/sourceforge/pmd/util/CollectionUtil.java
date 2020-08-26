@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -31,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.MapPSet;
+import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -281,6 +283,9 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        if (m instanceof PMap) {
+            return ((PMap<K, V>) m).plus(k, v);
+        }
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
@@ -367,6 +372,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), from.size(), f);
     }
 
@@ -375,6 +383,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
@@ -383,6 +394,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(Arrays.asList(from), f);
     }
 
@@ -391,6 +405,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from, UNKNOWN_SIZE, f);
     }
 
@@ -414,6 +431,9 @@ public final class CollectionUtil {
     public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
                                      Iterable<? extends T> from,
                                      Function<? super T, ? extends U> f) {
+        if (from == null) {
+            return map(collector, emptyIterator(), f);
+        }
         return map(collector, from.iterator(), f);
     }
 
