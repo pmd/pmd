@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -371,6 +372,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), from.size(), f);
     }
 
@@ -379,6 +383,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
@@ -398,6 +405,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from, UNKNOWN_SIZE, f);
     }
 
@@ -421,6 +431,9 @@ public final class CollectionUtil {
     public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
                                      Iterable<? extends T> from,
                                      Function<? super T, ? extends U> f) {
+        if (from == null) {
+            return map(collector, emptyIterator(), f);
+        }
         return map(collector, from.iterator(), f);
     }
 
