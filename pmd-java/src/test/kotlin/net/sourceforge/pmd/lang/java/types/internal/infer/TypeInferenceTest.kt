@@ -278,7 +278,7 @@ class Scratch {
         """.trimIndent())
 
         val (ofCall, mCall) = acu.methodCalls().toList()
-        val (m, of) = acu.methodDeclarations().toList { it.sig }
+        val (m, of) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             ofCall shouldHaveType gen.`t_List{String}`

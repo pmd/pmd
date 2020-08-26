@@ -30,7 +30,7 @@ interface Sub extends Top<Integer> {
         """.trimIndent())
 
         val (t_Top, t_Sub) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
-        val (topAccept, subAcceptOverride, subAccept) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+        val (topAccept, subAcceptOverride, subAccept) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
 
         TypeOps.findFunctionalInterfaceMethod(t_Top) shouldBe topAccept
 

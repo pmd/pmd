@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
@@ -314,7 +313,7 @@ interface NodeStream<T> {
                 """.trimIndent()
         )
 
-        val (_, unionOfIter) = acu.methodDeclarations().toList { it.sig }
+        val (_, unionOfIter) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(unionOfIter)
@@ -353,7 +352,7 @@ interface MostlySingularMultimap<K, V> {
                 """.trimIndent()
         )
 
-        val (_, _, lastGroupBy) = acu.methodDeclarations().toList { it.sig }
+        val (_, _, lastGroupBy) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(lastGroupBy)

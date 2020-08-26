@@ -45,7 +45,7 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
     }
 
     @Override
-    public JMethodSig getSig() {
+    public JMethodSig getGenericSignature() {
         if (sig == null) {
             sig = getTypeSystem().sigOf(getSymbol());
         }

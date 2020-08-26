@@ -99,7 +99,7 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
 
         val (sup, _, outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
@@ -159,7 +159,7 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
 
         val (outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
@@ -193,7 +193,7 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.sig }
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
 
         val (outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }

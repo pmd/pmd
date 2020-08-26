@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 
@@ -41,7 +42,13 @@ public interface ASTMethodOrConstructorDeclaration
     JExecutableSymbol getSymbol();
 
 
-    JMethodSig getSig();
+    /**
+     * Returns the generic signature for the method. This is a {@link JMethodSig}
+     * declared in the {@linkplain JClassType#getGenericTypeDeclaration() generic type declaration}
+     * of the enclosing type. The signature may mention type parameters
+     * of the enclosing types, and its own type parameters.
+     */
+    JMethodSig getGenericSignature();
 
 
     /**

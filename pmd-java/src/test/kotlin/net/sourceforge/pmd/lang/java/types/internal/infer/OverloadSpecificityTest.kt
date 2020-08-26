@@ -95,7 +95,7 @@ class Other {
                 """.trimIndent()
         )
 
-        val (m1, m2, m3) = acu.methodDeclarations().toList { it.sig }
+        val (m1, m2, m3) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         // precondition
@@ -149,7 +149,7 @@ class F {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.sig }
+        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
@@ -178,7 +178,7 @@ class F {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.sig }
+        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
@@ -207,7 +207,7 @@ class F {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.sig }
+        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
@@ -233,7 +233,7 @@ class Sub extends Sup {
                 """.trimIndent()
         )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.sig }
+        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
@@ -258,7 +258,7 @@ class Sub extends Sup {
                 """.trimIndent()
         )
 
-        val (supM, _) = acu.methodDeclarations().toList { it.sig }
+        val (supM, _) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(supM)
@@ -311,7 +311,7 @@ class C<U> {
 
                 """.trimIndent()
         )
-        val genericCtor = acu.ctorDeclarations().get(1)!!.sig // new(C<U>)
+        val genericCtor = acu.ctorDeclarations().get(1)!!.genericSignature // new(C<U>)
 
         spy.shouldBeOk {
             acu.firstCtorCall().methodType.shouldBeSomeInstantiationOf(genericCtor)
@@ -339,7 +339,7 @@ class Scratch<N extends Number> {
                 """.trimIndent()
         )
 
-        val (_, specific) = acu.methodDeclarations().toList { it.sig }
+        val (_, specific) = acu.methodDeclarations().toList { it.genericSignature }
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)

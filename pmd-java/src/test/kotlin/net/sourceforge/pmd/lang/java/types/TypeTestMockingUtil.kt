@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotest.assertions.MultiAssertionError
 import net.sourceforge.pmd.lang.ast.NodeStream
 import net.sourceforge.pmd.lang.ast.NodeStream.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
@@ -62,7 +61,7 @@ fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration>
 
 fun JavaNode.firstEnclosingType(): JClassType = descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
 fun JavaNode.declaredTypeSignatures(): List<JClassType> = descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
-fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations().toList { it.sig }
+fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations().toList { it.genericSignature }
 
 fun JavaNode.methodCalls(): DescendantNodeStream<ASTMethodCall> = descendants(ASTMethodCall::class.java)
 fun JavaNode.firstMethodCall() = descendants(ASTMethodCall::class.java).firstOrThrow()

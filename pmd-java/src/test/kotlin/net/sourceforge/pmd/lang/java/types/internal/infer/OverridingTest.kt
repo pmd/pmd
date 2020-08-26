@@ -7,8 +7,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
@@ -37,7 +35,7 @@ class Other extends Scratch {
                 """.trimIndent()
             )
 
-            val (scratchM, otherM, otherOverload) = acu.methodDeclarations().toList { it.sig }
+            val (scratchM, otherM, otherOverload) = acu.methodDeclarations().toList { it.genericSignature }
 
 
             assert(TypeOps.areOverrideEquivalent(scratchM, otherM)) {
@@ -99,7 +97,7 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.sig }
+        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         assert(TypeOps.areOverrideEquivalent(scratchM, otherM)) {
@@ -132,7 +130,7 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.sig }
+        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         assertFalse("Methods are not override-equivalent") {
@@ -153,7 +151,7 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.sig }
+        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         assertFalse("Methods are not override-equivalent") {
@@ -325,7 +323,7 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.sig }
+        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         assert(TypeOps.areOverrideEquivalent(scratchM, otherM)) {
@@ -359,7 +357,7 @@ class Scratch {
                 """.trimIndent()
         )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.sig }
+        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
         assert(TypeOps.areOverrideEquivalent(scratchM, otherM)) {

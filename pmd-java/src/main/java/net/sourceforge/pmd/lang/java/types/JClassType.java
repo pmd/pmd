@@ -101,8 +101,9 @@ public interface JClassType extends JTypeMirror {
 
     /**
      * If this type is generic, returns the type that represents its
-     * generic type declaration. Otherwise, if this type is erased,
-     * returns the non-erased version of this type.
+     * generic type declaration. Otherwise, returns this type.
+     *
+     * @see #isGenericTypeDeclaration()
      */
     JClassType getGenericTypeDeclaration();
 

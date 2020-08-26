@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
 import java.util.function.*
 import java.util.stream.Collector
-import kotlin.collections.LinkedHashSet
 import java.util.function.Function as JavaFunction
 
 /**
@@ -812,7 +811,7 @@ interface Predicate<Q> {
 
         spy.shouldBeOk {
             ternary shouldHaveType t_Predicate[tvar]
-            fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.sig)
+            fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.genericSignature)
             fooRef shouldHaveType t_Predicate[tvar]
         }
     }

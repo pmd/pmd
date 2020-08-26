@@ -44,6 +44,15 @@ public interface ASTAnyTypeDeclaration
     JClassSymbol getSymbol();
 
 
+    /**
+     * Returns the {@linkplain JClassType#getGenericTypeDeclaration() generic type declaration}
+     * of the declared type. Note that for {@linkplain ASTAnonymousClassDeclaration anonymous classes},
+     * this returns a class type whose symbol is the actual anonymous
+     * class. Eg {@code new Runnable() { void foo() { } void run() { } }}
+     * would present both methods, ie not just be a {@code Runnable}.
+     * The {@link ASTConstructorCall} would have type {@code Runnable}
+     * though, not the anonymous class.
+     */
     @Override
     @NonNull JClassType getTypeMirror();
 
