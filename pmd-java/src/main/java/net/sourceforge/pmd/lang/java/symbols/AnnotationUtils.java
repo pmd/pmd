@@ -15,7 +15,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymValue;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
 
 /**
  *
@@ -85,16 +84,7 @@ public final class AnnotationUtils {
 
     // test only
     static <T extends Enum<T>> SymbolicValue ofEnum(Enum<T> value) {
-        return new SymEnum(ClassNamesUtil.getTypeDescriptor(value.getDeclaringClass()),
-                           value.name());
+        return new SymEnum(value.getDeclaringClass().getName(), value.name(), true);
     }
 
-    static boolean typeDescriptorEquals(String descriptor, Class<?> klass) {
-        if (!descriptor.endsWith(klass.getSimpleName())) {
-            // optimisation, fails early without having to compute the internal name
-            return false;
-        }
-
-        return ClassNamesUtil.getTypeDescriptor(klass).equals(descriptor);
-    }
 }

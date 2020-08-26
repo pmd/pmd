@@ -7,7 +7,33 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
+ * When dealing with classes we have to handle a bunch of different
+ * kinds of names. From higher level to lower level:
+ * <ul>
+ * <li>Canonical name: {@code a.b.C.D}
+ * <li>Binary name: {@code a.b.C$D}
+ * <li>Internal name: {@code a/b/C$D}
+ * </ul>
  *
+ * <p>Canonical names are on the Java language level. They are how you
+ * type a reference to a class from an another arbitrary class. Some classes
+ * may not even have one, eg local classes cannot be referenced from outside
+ * their scope.
+ *
+ * <p>Binary names lift the ambiguity between inner class selection and
+ * package name that exists in canonical names. They're more convenient
+ * to work with when loading classes.
+ *
+ * <p>Internal names are burned into class files are they allow getting
+ * a file path to the referenced class file just by appending {@code .class}.
+ *
+ * <p><i>Type descriptors</i> are another class of "names" that use internal names,
+ * but are more general, as they can represent all kinds of types. Eg the
+ * type descriptor for class {@code a.b.C.D} is {@code La/b/C$D;}, the one of
+ * {@code boolean} is {@code Z}, and the one of {@code boolean[]} is {@code [Z}.
+ *
+ * <p><i>Type signatures</i> are a superset of type descriptors that can
+ * also represent generic types.
  */
 public final class ClassNamesUtil {
 
@@ -28,6 +54,19 @@ public final class ClassNamesUtil {
 
     public static String getInternalName(Class<?> klass) {
         return klass.getName().replace('.', '/');
+    }
+
+    public static String internalToBinaryName(String internal) {
+        return internal.replace('/', '.');
+    }
+
+    public static String classDescriptorToBinaryName(String descriptor) {
+        return descriptor.substring(1, descriptor.length() - 1)
+                         .replace('/', '.');
+    }
+
+    public static String binaryToInternal(String binary) {
+        return binary.replace('.', '/');
     }
 
 }

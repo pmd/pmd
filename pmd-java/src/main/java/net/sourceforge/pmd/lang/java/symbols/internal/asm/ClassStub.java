@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -56,6 +57,8 @@ final class ClassStub implements JClassSymbol, AsmStub {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
+
+    private List<SymAnnot> annotations = new ArrayList<>();
 
     private final ParseLock parseLock;
 
@@ -94,6 +97,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 ctors = Collections.unmodifiableList(ctors);
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
+                annotations = Collections.unmodifiableList(annotations);
             }
 
             @Override
@@ -199,6 +203,11 @@ final class ClassStub implements JClassSymbol, AsmStub {
         ctors.add(methodStub);
     }
 
+    void addAnnot(SymAnnot annot) {
+        annotations.add(annot);
+    }
+
+
     // </editor-fold>
 
 
@@ -262,6 +271,12 @@ final class ClassStub implements JClassSymbol, AsmStub {
     public List<JClassSymbol> getDeclaredClasses() {
         parseLock.ensureParsed();
         return memberClasses;
+    }
+
+    @Override
+    public List<SymAnnot> getDeclaredAnnotations() {
+        parseLock.ensureParsed();
+        return annotations;
     }
 
     @Override

@@ -4,11 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Structure to represent constant values of annotations symbolically.
@@ -43,25 +50,51 @@ public interface SymbolicValue {
     boolean valueEquals(Object o);
 
     /**
+     * Returns true if this value is equal to the other one. The parameter
+     * must be a {@link SymbolicValue} of the same type. Use {@link #valueEquals(Object)}
+     * to compare to a java object.
+     */
+    boolean equals(Object o);
+
+    /**
      * Symbolic representation of an annotation.
      */
     interface SymAnnot extends SymbolicValue {
 
-        /**
-         * Returns the value of the attribute of this annotation named
-         * so.
-         */
-        @Nullable SymbolicValue getAttribute(String name);
+        /** Returns the value of the attribute of this annotation named so. */
+        default @Nullable SymbolicValue getAttribute(String name) {
+            return getExplicitAttributes().get(name);
+        }
 
-        Iterable<String> iterateAttributes();
+        Map<String, SymbolicValue> getExplicitAttributes();
 
-        boolean isOfType(Class<?> klass);
+        RetentionPolicy getRetention();
 
         boolean isOfType(String binaryName);
 
-        default boolean attributeMatches(String name, Object attrValue) {
+        default boolean isOfType(Class<? extends Annotation> klass) {
+            return isOfType(klass.getName());
+        }
+
+        /**
+         * Returns YES if the annotation has the attribute explicitly
+         * set to the given value. Returns NO if it is explicitly set
+         * to another value. Returns UNKNOWN otherwise. Note that this
+         * will return UNKNOWN if the default value is used.
+         *
+         * @param attrValue An object value, or a {@link SymbolicValue}
+         */
+        default OptionalBool attributeMatches(String name, Object attrValue) {
             SymbolicValue attr = getAttribute(name);
-            return attr != null && attr.valueEquals(attrValue);
+            if (attr == null) {
+                return OptionalBool.UNKNOWN;
+            }
+
+            if (attrValue instanceof SymbolicValue) {
+                return OptionalBool.definitely(attr.equals(attrValue));
+            } else {
+                return OptionalBool.definitely(attr.valueEquals(attrValue));
+            }
         }
     }
 
@@ -123,6 +156,11 @@ public interface SymbolicValue {
         public int hashCode() {
             return Objects.hash(elements);
         }
+
+        @Override
+        public String toString() {
+            return "[" + elements + ']';
+        }
     }
 
 
@@ -131,7 +169,7 @@ public interface SymbolicValue {
      */
     final class SymEnum implements SymbolicValue {
 
-        private final String enumTypeInternalName;
+        private final String enumBinaryName;
         private final String enumName;
 
         /**
@@ -139,7 +177,16 @@ public interface SymbolicValue {
          * @param enumConstName      Simple name of the enum constant
          */
         public SymEnum(String enumTypeDescriptor, String enumConstName) {
-            this.enumTypeInternalName = enumTypeDescriptor;
+            this(enumTypeDescriptor, enumConstName, false);
+        }
+
+
+        SymEnum(String enumTypeDescriptor, String enumConstName, boolean isBinaryName) {
+            if (isBinaryName) {
+                this.enumBinaryName = enumTypeDescriptor;
+            } else {
+                this.enumBinaryName = ClassNamesUtil.classDescriptorToBinaryName(enumTypeDescriptor);
+            }
             this.enumName = enumConstName;
         }
 
@@ -152,7 +199,7 @@ public interface SymbolicValue {
             if (!this.enumName.equals(value.name())) {
                 return false;
             }
-            return AnnotationUtils.typeDescriptorEquals(enumTypeInternalName, value.getDeclaringClass());
+            return enumBinaryName.equals(value.getDeclaringClass().getName());
         }
 
         @Override
@@ -164,13 +211,18 @@ public interface SymbolicValue {
                 return false;
             }
             SymEnum that = (SymEnum) o;
-            return Objects.equals(enumTypeInternalName, that.enumTypeInternalName)
+            return Objects.equals(enumBinaryName, that.enumBinaryName)
                 && Objects.equals(enumName, that.enumName);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(enumTypeInternalName, enumName);
+            return Objects.hash(enumBinaryName, enumName);
+        }
+
+        @Override
+        public String toString() {
+            return enumBinaryName + "#" + enumName;
         }
     }
 
@@ -214,6 +266,14 @@ public interface SymbolicValue {
         @Override
         public int hashCode() {
             return Objects.hash(value);
+        }
+
+        @Override
+        public String toString() {
+            if (value.getClass().isArray()) {
+                return ArrayUtils.toString(value);
+            }
+            return value.toString();
         }
     }
 }

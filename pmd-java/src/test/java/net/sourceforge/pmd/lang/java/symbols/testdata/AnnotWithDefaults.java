@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 /**
  *
  */
+@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE_USE})
 public @interface AnnotWithDefaults {
 
 

@@ -212,6 +212,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     // todo getEnumConstants
 
+
     /**
      * This returns true if this is not an interface, primitive or array.
      */

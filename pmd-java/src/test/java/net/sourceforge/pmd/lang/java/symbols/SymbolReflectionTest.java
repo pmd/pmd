@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.symValueFor;
 import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofArray;
 import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofEnum;
+import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.symValueFor;
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -15,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults.MyEnum;
@@ -100,6 +106,47 @@ public class SymbolReflectionTest {
 
 
     @Test
+    public void testAnnotOnClass() {
+        // note that this asserts, that the param names are unavailable
+
+        JClassSymbol sym = loadClass(AnnotWithDefaults.class);
+
+        Assert.assertTrue(sym.isAnnotationPresent(Target.class));
+
+        SymAnnot target = sym.getDeclaredAnnotation(Target.class);
+        Assert.assertTrue(target.isOfType(Target.class));
+        Assert.assertTrue(target.isOfType(Target.class.getName()));
+
+        Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.ANNOTATION_TYPE, ElementType.TYPE_USE}));
+
+    }
+
+
+    @Test
+    public void testAnnotThatHasDefaults() {
+        // note that this asserts, that the param names are unavailable
+
+        /*
+            @AnnotWithDefaults(valueNoDefault = "ohio",
+                       stringArrayDefault = {})
+
+         */
+        JClassSymbol sym = loadClass(SomeClass.class);
+
+        Assert.assertTrue(sym.isAnnotationPresent(AnnotWithDefaults.class));
+
+        SymAnnot target = sym.getDeclaredAnnotation(AnnotWithDefaults.class);
+
+
+        Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
+        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] {}));
+        Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
+        Assert.assertEquals(UNKNOWN, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
+
+    }
+
+
+    @Test
     public void testSymValueEquality() {
         Assert.assertEquals(symValueFor(new String[] {"ddd", "eee"}),
                             ofArray(symValueFor("ddd"), symValueFor("eee")));
@@ -113,12 +160,15 @@ public class SymbolReflectionTest {
     }
 
     private @NonNull JClassSymbol loadAnnotation(Class<?> klass) {
-        JClassSymbol sym = loader.resolveClassFromBinaryName(klass.getName());
-
-        Assert.assertNotNull(sym);
+        JClassSymbol sym = loadClass(klass);
         Assert.assertTrue(sym.isAbstract());
         Assert.assertTrue(sym.isAnnotation());
         Assert.assertTrue(sym.isInterface());
+        return sym;
+    }
+    private @NonNull JClassSymbol loadClass(Class<?> klass) {
+        JClassSymbol sym = loader.resolveClassFromBinaryName(klass.getName());
+        Assert.assertNotNull(sym);
         return sym;
     }
 

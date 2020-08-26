@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.NoUrlLoader;
@@ -34,6 +36,23 @@ class ClassStubBuilder extends ClassVisitor {
     public void visit(int version, int access, String internalName, @Nullable String signature, String superName, String[] interfaces) {
         myStub.setModifiers(access, true);
         myStub.setHeader(signature, superName, interfaces);
+    }
+
+    @Override
+    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        return new SymbolicValueBuilder() {
+            final SymbolicAnnotationImpl annot = new SymbolicAnnotationImpl(visible, descriptor);
+
+            @Override
+            protected void acceptValue(String name, SymbolicValue v) {
+                annot.addAttribute(name, v);
+            }
+
+            @Override
+            public void visitEnd() {
+                myStub.addAnnot(annot);
+            }
+        };
     }
 
     @Override

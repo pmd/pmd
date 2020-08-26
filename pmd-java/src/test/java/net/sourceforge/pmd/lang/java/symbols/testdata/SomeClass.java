@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
-/**
- *
- */
+@AnnotWithDefaults(valueNoDefault = "ohio",
+                   stringArrayDefault = {})
 public class SomeClass {
 
 
