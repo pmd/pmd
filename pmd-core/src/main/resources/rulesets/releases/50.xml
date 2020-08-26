@@ -10,7 +10,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 
 	<rule ref="rulesets/ecmascript/basic.xml/AssignmentInOperand"/>
 	<rule ref="rulesets/ecmascript/basic.xml/ConsistentReturn"/>
-	<rule ref="rulesets/ecmascript/basic.xml/InnaccurateNumericLiteral"/>
+	<rule ref="rulesets/ecmascript/basic.xml/InaccurateNumericLiteral"/>
 	<rule ref="rulesets/ecmascript/basic.xml/UnreachableCode"/>
     <rule ref="rulesets/ecmascript/basic.xml/EqualComparison"/>
     <rule ref="rulesets/ecmascript/basic.xml/GlobalVariable"/>

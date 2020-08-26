@@ -48,7 +48,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         case LOWER_WILDCARD:
             return ArrayUtils.contains(intersectionTypes, null) ? null : new JavaTypeDefinitionLower(intersectionTypes);
         default:
-            throw new IllegalStateException("Unknow type");
+            throw new IllegalStateException("Unknown type");
         }
     }
 

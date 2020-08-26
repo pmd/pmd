@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * Language implemention for Ruby.
+ * Language implementation for Ruby.
  *
  * @author Zev Blut zb@ubit.com
  */

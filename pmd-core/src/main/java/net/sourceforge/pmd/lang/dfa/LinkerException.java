@@ -14,7 +14,7 @@ public class LinkerException extends Exception {
 
     public LinkerException() {
         // TODO redefinition | accurate?
-        super("An error occured by computing the data flow paths");
+        super("An error occurred by computing the data flow paths");
     }
 
     public LinkerException(String message) {

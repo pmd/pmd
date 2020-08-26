@@ -28,7 +28,7 @@ public class FieldAccessGenericParameter<T extends GenericClass<String, GenericC
     <C extends Number> FieldAccessGenericParameter() {
         C constructorGeneric = null;
 
-        // access type dependant on constructor type arugments
+        // access type dependant on constructor type arguments
         // Primary[Prefix[Name[localGeneric]]]
         constructorGeneric = null; // Number
     }

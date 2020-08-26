@@ -2163,7 +2163,7 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1405](https://github.com/pmd/pmd/issues/1405): \[java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources
     *   [#1555](https://github.com/pmd/pmd/issues/1555): \[java] UnusedImports false positive for method parameter type in @see Javadoc
 *   java-codestyle
-    *   [#1543](https://github.com/pmd/pmd/issues/1543): \[java] LinguisticNaming should ignore overriden methods
+    *   [#1543](https://github.com/pmd/pmd/issues/1543): \[java] LinguisticNaming should ignore overridden methods
     *   [#1547](https://github.com/pmd/pmd/issues/1547): \[java] AtLeastOneConstructorRule: false-positive with lombok.AllArgsConstructor
     *   [#1624](https://github.com/pmd/pmd/issues/1624): \[java] UseDiamondOperator false positive with var initializer
 *   java-design
@@ -2190,7 +2190,7 @@ No changes.
 
 *   [#1623](https://github.com/pmd/pmd/pull/1623): \[java] Fix lombok.AllArgsConstructor support - [Bobby Wertman](https://github.com/CasualSuperman)
 *   [#1625](https://github.com/pmd/pmd/pull/1625): \[java] UnusedImports false positive for method parameter type in @see Javadoc - [Shubham](https://github.com/Shubham-2k17)
-*   [#1628](https://github.com/pmd/pmd/pull/1628): \[java] LinguisticNaming should ignore overriden methods - [Shubham](https://github.com/Shubham-2k17)
+*   [#1628](https://github.com/pmd/pmd/pull/1628): \[java] LinguisticNaming should ignore overridden methods - [Shubham](https://github.com/Shubham-2k17)
 *   [#1634](https://github.com/pmd/pmd/pull/1634): \[java] BeanMembersShouldSerializeRule does not recognize lombok accessors - [Shubham](https://github.com/Shubham-2k17)
 *   [#1635](https://github.com/pmd/pmd/pull/1635): \[java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat - [Shubham](https://github.com/Shubham-2k17)
 *   [#1637](https://github.com/pmd/pmd/pull/1637): \[java] Compile time constants initialized by literals avoided by AccessorMethodGenerationRule - [Shubham](https://github.com/Shubham-2k17)
@@ -3067,7 +3067,7 @@ This is a minor release.
     *   [#1173](https://github.com/pmd/pmd/issues/1173): \[core] Some characters in CPD are not shown correctly.
     *   [#1193](https://github.com/pmd/pmd/issues/1193): \[core] Designer doesn't start with run.sh
 *   ecmascript
-    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
+    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InaccurateNumericLiteral false positive with hex literals
 *   java
     *   [#1074](https://github.com/pmd/pmd/issues/1074): \[java] MissingOverrideRule exception when analyzing PMD under Java 9
     *   [#1174](https://github.com/pmd/pmd/issues/1174): \[java] CommentUtil.multiLinesIn() could lead to StringIndexOutOfBoundsException
@@ -4405,7 +4405,7 @@ is not finalized yet and is expected to change.
 #### Modified Rules
 
 *   The Java rule `UnnecessaryFinalModifier` (ruleset java-unnecessary) now also reports on private methods marked as `final`.
-    Being private, such methods can't be overriden, and therefore, the final keyword is redundant.
+    Being private, such methods can't be overridden, and therefore, the final keyword is redundant.
 
 *   The Java rule `PreserveStackTrace` (ruleset java-design) has been relaxed to support the builder pattern on thrown exception.
     This change may introduce some false positives if using the exception in non-orthodox ways for things other than setting the
@@ -7647,7 +7647,7 @@ The binary package still contains all languages and can be used as usual. Have a
         Basic ruleset: NoInlineScript
 
     New ECMAScript rules:
-        Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
+        Basic ruleset: AssignmentInOperand,ConsistentReturn,InaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
         Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
         Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 
@@ -7820,7 +7820,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1902351 - AvoidReassigningParameters not identify parent field
     Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
     Fixed other issues in SimplifyBooleanReturns
-    Modified AvoidReassigningParameter to also check constructor arguments for reassignement
+    Modified AvoidReassigningParameter to also check constructor arguments for reassignment
 
     New rules:
         Basic ruleset: AvoidMultipleUnaryOperators
