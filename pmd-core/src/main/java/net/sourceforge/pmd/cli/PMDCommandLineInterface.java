@@ -60,7 +60,7 @@ public final class PMDCommandLineInterface {
     public static String buildUsageText(JCommander jcommander) {
         StringBuilder usage = new StringBuilder();
 
-        StringBuilder allCommandsDescription = null;
+        StringBuilder allCommandsDescription = new StringBuilder();
         if (jcommander != null && jcommander.getCommands() != null) {
             for (String command : jcommander.getCommands().keySet()) {
                 allCommandsDescription.append(jcommander.getCommandDescription(command)).append(PMD.EOL);
@@ -77,7 +77,7 @@ public final class PMDCommandLineInterface {
 
         fullText += supportedVersions() + PMD.EOL;
 
-        if (allCommandsDescription != null) {
+        if (allCommandsDescription.length() != 0) {
             fullText += "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL
                     + allCommandsDescription + PMD.EOL;
         }
