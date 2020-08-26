@@ -8,5 +8,5 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 
 @Deprecated
 @DeprecatedUntil700
-public class PLSQLParserVisitorAdapter extends PLSQLVisitorBase<Object, Object> implements PLSQLParserVisitor {
+public class PLSQLParserVisitorAdapter extends PlsqlVisitorBase<Object, Object> implements PLSQLParserVisitor {
 }

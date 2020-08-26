@@ -31,13 +31,13 @@ abstract class AbstractPLSQLNode extends AbstractJjtreeNode<AbstractPLSQLNode, P
         return value;
     }
 
-    protected abstract <P, R> R acceptPlsqlVisitor(PLSQLVisitor<? super P, ? extends R> visitor, P data);
+    protected abstract <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof PLSQLVisitor) {
-            return acceptPlsqlVisitor((PLSQLVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof PlsqlVisitor) {
+            return acceptPlsqlVisitor((PlsqlVisitor<? super P, ? extends R>) visitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

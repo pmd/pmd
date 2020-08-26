@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 @Deprecated
 @DeprecatedUntil700
-public interface PLSQLParserVisitor extends PLSQLVisitor<Object, Object> {
+public interface PLSQLParserVisitor extends PlsqlVisitor<Object, Object> {
 
     @Override
     default Object visitNode(Node node, Object param) {

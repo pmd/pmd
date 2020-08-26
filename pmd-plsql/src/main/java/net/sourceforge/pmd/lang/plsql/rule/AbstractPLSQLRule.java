@@ -100,6 +100,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      */
     public Object visit(ExecutableCode node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ExecutableCode)");
-        return visitPLSQLNode(node, data);
+        return visitPlsqlNode(node, data);
     }
 }

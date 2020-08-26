@@ -13,7 +13,7 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
     }
 
     @Override
-    protected <P, R> R acceptPlsqlVisitor(PLSQLVisitor<? super P, ? extends R> visitor, P data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

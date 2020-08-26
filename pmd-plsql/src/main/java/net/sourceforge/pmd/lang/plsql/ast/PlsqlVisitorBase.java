@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 
 /**
- * Base implementation of {@link PLSQLVisitor}.
+ * Base implementation of {@link PlsqlVisitor}.
  */
-public abstract class PLSQLVisitorBase<P, R> extends AstVisitorBase<P, R> implements PLSQLVisitor<P, R> {
+public abstract class PlsqlVisitorBase<P, R> extends AstVisitorBase<P, R> implements PlsqlVisitor<P, R> {
 
 }
