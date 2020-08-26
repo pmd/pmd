@@ -7,6 +7,7 @@ package net.sourceforge.pmd.internal.util;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
@@ -100,6 +101,13 @@ public final class AssertionUtil {
         }
 
         return obj;
+    }
+
+    public static @NonNull AssertionError shouldNotReachHere(String message) {
+        String prefix = "This should be unreachable";
+        message = StringUtils.isBlank(message) ? prefix
+                                               : prefix + ": " + message;
+        return new AssertionError(message);
     }
 
 }

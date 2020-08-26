@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import static java.util.Arrays.asList;
+import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleThroughBoxing;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
@@ -52,7 +53,7 @@ final class PolyResolution {
 
     JTypeMirror computePolyType(final TypeNode e) {
         if (!canBePoly(e)) {
-            throw new IllegalStateException("Unknown poly?" + e);
+            throw shouldNotReachHere("Unknown poly " + e);
         }
 
         // here ctx can be
@@ -100,7 +101,7 @@ final class PolyResolution {
             JTypeMirror targetType = getTargetType(ctx, true);
             return inferLambdaOrMref((ASTExpression) e, targetType);
         } else {
-            throw new IllegalStateException("Unknown poly?" + e);
+            throw shouldNotReachHere("Unknown poly " + e);
         }
     }
 
@@ -113,8 +114,7 @@ final class PolyResolution {
         return result;
     }
 
-    @NonNull
-    private JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocationNode ctx) {
+    private @NonNull JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocationNode ctx) {
         // an outer invocation ctx
         if (ctx instanceof ASTExpression) {
             // method call or regular constructor call
@@ -339,7 +339,7 @@ final class PolyResolution {
             return allowCasts ? ((ASTCastExpression) context).getCastType().getTypeMirror()
                               : null;
         } else {
-            throw new IllegalStateException("No target type");
+            throw shouldNotReachHere("No target type for " + context);
         }
 
     }
