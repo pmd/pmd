@@ -29,7 +29,7 @@ public class AsmSymbolResolver implements SymbolResolver {
              - eg used in ASTSwitchLike::isExhaustiveEnumSwitch
      */
 
-    static final int ASM_API_V = Opcodes.ASM7;
+    static final int ASM_API_V = Opcodes.ASM9;
 
     private final TypeSystem ts;
     private final ClassLoader classLoader;
