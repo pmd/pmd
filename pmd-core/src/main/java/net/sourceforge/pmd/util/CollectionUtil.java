@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -31,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.MapPSet;
+import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -137,6 +139,30 @@ public final class CollectionUtil {
             map.put(entry.getValue(), entry.getKey());
         }
         return map;
+    }
+
+
+
+    /**
+     * Returns a list view that pretends it is the concatenation of
+     * both lists. The returned view is unmodifiable. The implementation
+     * is pretty stupid and not optimized for repeated concatenation,
+     * but should be ok for smallish chains of random-access lists.
+     *
+     * @param head Head elements (to the left)
+     * @param tail Tail elements (to the right)
+     * @param <T>  Type of elements in both lists
+     *
+     * @return A concatenated view
+     */
+    public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
+        if (head.isEmpty()) {
+            return Collections.unmodifiableList(tail);
+        } else if (tail.isEmpty()) {
+            return Collections.unmodifiableList(head);
+        } else {
+            return new ConsList<>(head, tail);
+        }
     }
 
 
@@ -257,6 +283,9 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        if (m instanceof PMap) {
+            return ((PMap<K, V>) m).plus(k, v);
+        }
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
@@ -343,6 +372,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), from.size(), f);
     }
 
@@ -351,6 +383,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
@@ -359,6 +394,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(Arrays.asList(from), f);
     }
 
@@ -367,12 +405,15 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from, UNKNOWN_SIZE, f);
     }
 
     private static <T, R> List<R> map(Iterator<? extends T> from, int sizeHint, Function<? super T, ? extends R> f) {
         if (!from.hasNext()) {
-            return Collections.emptyList();
+            return emptyList();
         } else if (sizeHint == 1) {
             return Collections.singletonList(f.apply(from.next()));
         }
@@ -390,6 +431,9 @@ public final class CollectionUtil {
     public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
                                      Iterable<? extends T> from,
                                      Function<? super T, ? extends U> f) {
+        if (from == null) {
+            return map(collector, emptyIterator(), f);
+        }
         return map(collector, from.iterator(), f);
     }
 
@@ -474,7 +518,7 @@ public final class CollectionUtil {
     public static <T> List<T> drop(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
 
-        return list.size() <= n ? Collections.emptyList()
+        return list.size() <= n ? emptyList()
                                 : list.subList(n, list.size());
     }
 

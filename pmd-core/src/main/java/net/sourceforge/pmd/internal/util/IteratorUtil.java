@@ -14,9 +14,12 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -74,6 +77,35 @@ public final class IteratorUtil {
                         }
                     }
                     done();
+                }
+            }
+        };
+    }
+
+    /**
+     * Like flatMap, but yields each element of the input iterator before
+     * yielding the results of the mapper function. Null elements of the
+     * input iterator are both yielded by the returned iterator and passed
+     * to the stepper. If the stepper returns null, that result is ignored.
+     */
+    public static <R> Iterator<R> flatMapWithSelf(Iterator<? extends R> iter, Function<? super R, ? extends @Nullable Iterator<? extends R>> f) {
+        return new AbstractIterator<R>() {
+            private Iterator<? extends R> current = null;
+
+            @Override
+            protected void computeNext() {
+                if (current != null && current.hasNext()) {
+                    setNext(current.next());
+                } else {
+                    // current is exhausted
+                    current = null;
+                    if (iter.hasNext()) {
+                        R next = iter.next();
+                        setNext(next);
+                        current = f.apply(next);
+                    } else {
+                        done();
+                    }
                 }
             }
         };
@@ -137,6 +169,13 @@ public final class IteratorUtil {
                 return mapper.apply(iter.next());
             }
         };
+    }
+
+    /**
+     * Apply a transform on the iterator of an iterable.
+     */
+    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+        return () -> mapper.apply(iter.iterator());
     }
 
     @SafeVarargs
@@ -220,6 +259,7 @@ public final class IteratorUtil {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
     }
+
 
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
@@ -394,6 +434,10 @@ public final class IteratorUtil {
         };
     }
 
+    public static <T> Stream<T> toStream(Iterator<? extends T> iter) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
+    }
+
     public abstract static class AbstractIterator<T> implements Iterator<T> {
 
         private State state = State.NOT_READY;
@@ -447,5 +491,39 @@ public final class IteratorUtil {
             throw new UnsupportedOperationException();
         }
 
+    }
+
+    public abstract static class AbstractPausingIterator<T> extends AbstractIterator<T> {
+
+        private int numYielded = 0;
+        private T currentValue;
+
+        @Override
+        public T next() {
+            T next = super.next();
+            currentValue = next;
+            prepareViewOn(next);
+            numYielded++;
+            return next;
+        }
+
+        protected void prepareViewOn(T current) {
+            // to be overridden
+        }
+
+        protected final int getIterationCount() {
+            return numYielded;
+        }
+
+        protected T getCurrentValue() {
+            ensureReadable();
+            return currentValue;
+        }
+
+        protected void ensureReadable() {
+            if (numYielded == 0) {
+                throw new IllegalStateException("No values were yielded, should have called next");
+            }
+        }
     }
 }
