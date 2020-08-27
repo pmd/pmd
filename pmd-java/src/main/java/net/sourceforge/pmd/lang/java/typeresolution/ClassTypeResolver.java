@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
-import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArguments;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
@@ -459,7 +459,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         }
 
         if (!foundMethods.isEmpty()) {
-            // if we found an method by explicit imports, on demand imports mustn't be searched, because
+            // if we found an method by explicit imports, on deamand imports mustn't be searched, because
             // explicit imports shadow them by name, regardless of method parameters
             return foundMethods;
         }
@@ -913,7 +913,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
 
                     if (previousChild != null) { // Qualified 'super' expression
                         // anonymous classes can't have qualified super expression, thus
-                        // getSuperClassTypeDefinition's second argument isn't null, but we are not
+                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
                         // looking for enclosing super types
                         currentChild.setTypeDefinition(
                                 getSuperClassTypeDefinition(currentChild, previousChild.getType()));
@@ -936,7 +936,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     if (astArguments != null) { // method
                         ASTArgumentList astArgumentList = getArgumentList(astArguments);
                         int methodArgsArity = getArgumentListArity(astArgumentList);
-                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArguments(currentChild);
+                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
 
                         List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
                                                                         currentChildImage,
@@ -953,7 +953,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
 
 
             if (currentChild.getType() != null) {
-                // rollup type from the child: PrimaryPrefix/PrimarySuffix -> PrimaryExpression
+                // rollup type from the child: PrimaryPrefix/PrimarySuffx -> PrimaryExpression
                 if (primaryNodeType == null || !primaryNodeType.isArrayType()) {
                     primaryNodeType = currentChild.getTypeDefinition();
                 }

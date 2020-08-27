@@ -93,7 +93,7 @@ public final class MethodTypeResolution {
         List<JavaTypeDefinition> subtypeableParams = subtypeableMethod.getParameterTypes();
         List<JavaTypeDefinition> methodParams = method.getParameterTypes();
 
-        // If we come from third-phase, both are varargs, otherwise, treat all as fixed-arity
+        // If we come from third-phase, both are varargs, otherwhise, treat all as fixed-arity
         if (!method.getMethod().isVarArgs() || !subtypeableMethod.getMethod().isVarArgs()) {
             for (int index = 0; index < subtypeableParams.size(); ++index) {
                 if (!isSubtypeable(methodParams.get(index), subtypeableParams.get(index))) {
@@ -702,7 +702,7 @@ public final class MethodTypeResolution {
         return JavaTypeDefinition.forClass(PRIMITIVE_BOXING_RULES.get(def.getType()));
     }
 
-    public static List<JavaTypeDefinition> getMethodExplicitTypeArguments(Node node) {
+    public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {
         ASTMemberSelector memberSelector = node.getFirstChildOfType(ASTMemberSelector.class);
         if (memberSelector == null) {
             return Collections.emptyList();
@@ -720,10 +720,5 @@ public final class MethodTypeResolution {
         }
 
         return result;
-    }
-
-    @Deprecated
-    public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {
-        return getMethodExplicitTypeArguments(node);
     }
 }

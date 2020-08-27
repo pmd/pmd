@@ -157,7 +157,7 @@ public abstract class BoundOrConstraint {
     }
 
     /**
-     * @return true, if the right-hand side mentions variables
+     * @return true, if the right-hand side mentions variales
      */
     public boolean rightHasMentionedVariable() {
         return rightTypeVariable != null;
