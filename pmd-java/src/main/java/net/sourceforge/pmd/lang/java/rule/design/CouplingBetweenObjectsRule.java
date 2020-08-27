@@ -117,7 +117,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * convenient method to handle hierarchy. This is probably too much work and
+     * Convenience method to handle hierarchy. This is probably too much work and
      * will go away once I figure out the framework
      */
     private void handleASTTypeChildren(Node node) {
