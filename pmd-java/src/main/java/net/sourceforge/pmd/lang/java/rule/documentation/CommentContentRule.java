@@ -143,7 +143,7 @@ public class CommentContentRule extends AbstractCommentRule {
         return super.visit(cUnit, data);
     }
 
-    public boolean hasDisallowedTerms() {
+    private boolean hasDisallowedTerms() {
         List<String> terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
         return !terms.isEmpty();
     }
