@@ -230,4 +230,34 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(b, hasBoundsExactly(lower(intersect(listOfA, ts.SERIALIZABLE))));
     }
 
+    @Test
+    public void testArrayLower() {
+        InferenceContext ctx = emptyCtx();
+
+        InferenceVar a = newIvar(ctx);
+
+        // Boolean[] <: 'a[]
+        // ~> Boolean <: 'a
+        addSubtypeConstraint(ctx,
+                             ts.arrayType(ts.BOOLEAN.box()),
+                             ts.arrayType(a));
+
+        assertThat(a, hasBoundsExactly(lower(ts.BOOLEAN.box())));
+    }
+
+    @Test
+    public void testArrayUpper() {
+        InferenceContext ctx = emptyCtx();
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a[] <: Boolean[]
+        // ~> 'a <: Boolean
+        addSubtypeConstraint(ctx,
+                             ts.arrayType(a),
+                             ts.arrayType(ts.BOOLEAN.box()));
+
+        assertThat(a, hasBoundsExactly(upper(ts.BOOLEAN.box())));
+    }
+
 }
