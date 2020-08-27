@@ -93,12 +93,12 @@ if (someVar != 3) {
         </example>
     </rule>
 
-    <rule name="InaccurateNumericLiteral"
+    <rule name="InnaccurateNumericLiteral"
           language="ecmascript"
           since="5.0"
           message="The numeric literal ''{0}'' will have at different value at runtime."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral">
         <description>
 The numeric literal will have a different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.

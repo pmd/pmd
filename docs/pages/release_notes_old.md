@@ -3067,7 +3067,7 @@ This is a minor release.
     *   [#1173](https://github.com/pmd/pmd/issues/1173): \[core] Some characters in CPD are not shown correctly.
     *   [#1193](https://github.com/pmd/pmd/issues/1193): \[core] Designer doesn't start with run.sh
 *   ecmascript
-    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InaccurateNumericLiteral false positive with hex literals
+    *   [#861](https://github.com/pmd/pmd/issues/861): \[ecmascript] InnaccurateNumericLiteral false positive with hex literals
 *   java
     *   [#1074](https://github.com/pmd/pmd/issues/1074): \[java] MissingOverrideRule exception when analyzing PMD under Java 9
     *   [#1174](https://github.com/pmd/pmd/issues/1174): \[java] CommentUtil.multiLinesIn() could lead to StringIndexOutOfBoundsException
@@ -7647,7 +7647,7 @@ The binary package still contains all languages and can be used as usual. Have a
         Basic ruleset: NoInlineScript
 
     New ECMAScript rules:
-        Basic ruleset: AssignmentInOperand,ConsistentReturn,InaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
+        Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
         Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
         Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 

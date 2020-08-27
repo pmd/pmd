@@ -12,7 +12,7 @@
 
     <rule ref="category/ecmascript/errorprone.xml/AvoidTrailingComma" deprecated="true" />"
     <rule ref="category/ecmascript/errorprone.xml/EqualComparison" deprecated="true" />
-    <rule ref="category/ecmascript/errorprone.xml/InaccurateNumericLiteral" deprecated="true" />
+    <rule ref="category/ecmascript/errorprone.xml/InnaccurateNumericLiteral" deprecated="true" />
 
     <rule ref="category/ecmascript/bestpractices.xml/ConsistentReturn" deprecated="true" />
     <rule ref="category/ecmascript/bestpractices.xml/GlobalVariable" deprecated="true" />

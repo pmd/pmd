@@ -51,7 +51,7 @@ var x = 1.12345678901234567e-4;
     </test-code>
 
     <test-code>
-        <description>#861 [ecmascript] InaccurateNumericLiteral false positive</description>
+        <description>#861 [ecmascript] InnaccurateNumericLiteral false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 var hex1 = 0x20;
