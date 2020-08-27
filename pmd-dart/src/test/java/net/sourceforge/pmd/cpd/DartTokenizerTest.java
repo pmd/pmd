@@ -60,6 +60,11 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    public void testEscapedDollar() {
+        doTest("escaped_dollar");
+    }
+
+    @Test
     public void testRegex() {
         doTest("regex");
     }

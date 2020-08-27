@@ -373,6 +373,7 @@ MultiLineString
 fragment
 StringContentTDQ
   : ~('\\' | '"' | '$')
+  | '\\' ~('\n' | '\r')
   | '"' ~'"' | '""' ~'"'
   | StringInterpolation
   ;
@@ -380,6 +381,7 @@ StringContentTDQ
 fragment
 StringContentTSQ
   : ~('\\' | '\'' | '$')
+  | '\\' ~('\n' | '\r')
   | '\'' ~'\'' | '\'\'' ~'\''
   | StringInterpolation
   ;
