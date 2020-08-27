@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
+import static net.sourceforge.pmd.lang.java.types.TypeTestUtilKt.captureMatcher;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.eqBound;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
@@ -18,7 +19,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -151,8 +151,21 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(b, hasBoundsExactly(lower(a)));
     }
 
+    /* Remember:
+            let S, T != Object, S <: T
+
+            G<? super T> </: G<? extends T>
+            G<? extends T> </: G<? super T>
+
+            G<? super T> <: G<? super S>
+            G<? extends S> <: G<? extends T>
+
+            if T = Object, then G<? extends T> = G<?>, and
+
+            G<A> <: G<?> forall A (incl. wildcards)
+     */
+
     @Test
-    @Ignore("TODO waiting for more unit tests to fix it")
     public void testWildLowerUpper() {
         InferenceContext ctx = emptyCtx();
 
@@ -160,21 +173,38 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         InferenceVar b = newIvar(ctx);
 
         // List<? super 'a> <: List<? extends 'b>
-        // ~> unsatisfiable
-        subtypeConstraintShouldFail(ctx, listType(superWild(a)), listType(extendsWild(b)));
+        // ~> 'b >: Object
+        addSubtypeConstraint(ctx, listType(superWild(a)), listType(extendsWild(b)));
+
+        assertThat(b, hasBoundsExactly(upper(ts.OBJECT), lower(ts.OBJECT)));
+        assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
     }
 
     @Test
-    @Ignore("TODO waiting for more unit tests to fix it")
     public void testWildUpperLower() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
         InferenceVar b = newIvar(ctx);
 
-        // List<? super 'a> <: List<? extends 'b>
-        // ~> unsatisfiable
-        subtypeConstraintShouldFail(ctx, listType(extendsWild(a)), listType(superWild(b)));
+        // List<? extends 'a> <: List<? super 'b>
+        // ~> 'b <: capture of ? extends 'a
+
+        // Proof:
+        // capture(List<? extends 'a>) <: List<? super 'b>
+        // |- List<capture of ? extends 'a> <: List<? super 'b>
+        //   |- capture of ? extends 'a <= ? super 'b
+        //     |- lower(? super 'b) <: lower(capture of ? extends 'a)
+        //       |- 'b             <: capture of ? extends 'a
+        //     |- upper(capture of ? extends 'a) <: upper(? super 'b)
+        //       |- 'a                          <: Object
+
+        // Note that lower(capture of ? extends 'a) does not reduce to
+        // the null type, as that would be useless and disprove valid programs.
+        addSubtypeConstraint(ctx, listType(extendsWild(a)), listType(superWild(b)));
+
+        assertThat(b, hasBoundsExactly(upper(ts.OBJECT), upper(captureMatcher(extendsWild(a)))));
+        assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
     }
 
 

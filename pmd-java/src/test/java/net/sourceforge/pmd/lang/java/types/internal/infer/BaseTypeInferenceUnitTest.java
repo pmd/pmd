@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -125,6 +124,7 @@ public class BaseTypeInferenceUnitTest {
         return new BaseMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
+                description.appendText("'_ ");
                 Bound.describeList(description, Arrays.asList(bounds));
             }
 
@@ -150,17 +150,36 @@ public class BaseTypeInferenceUnitTest {
                 InferenceVar ivar = (InferenceVar) actual;
                 JClassType top = ivar.getTypeSystem().OBJECT;
 
-                Map<BoundKind, Set<JTypeMirror>> expectedBounds = Bound.collectByKind(bounds);
+                // note: don't use ivar.getBounds(ALL) as this would merge 'a >: T and 'a <: T
                 Map<BoundKind, Set<JTypeMirror>> actualBounds = getBounds(ivar);
-                expectedBounds.compute(BoundKind.UPPER, (k, set) -> {
-                    if (set == null) {
-                        return setOf(top);
-                    }
-                    set.add(top);
-                    return set;
-                });
 
-                return expectedBounds.equals(actualBounds);
+                // note: don't use sets/ maps to put Bound instances in,
+                // as captureMatchers don't support hashing. Also don't
+                // use Set::contains
+
+
+                boolean expectTop = Arrays.stream(bounds).anyMatch(it -> it.kind == BoundKind.UPPER && it.t == top);
+
+                int numToTest = actualBounds.values().stream().mapToInt(Set::size).sum();
+                if (!expectTop) {
+                    numToTest--;
+                }
+
+                if (numToTest != bounds.length) {
+                    return false;
+                }
+
+                b:
+                for (Bound bound : bounds) {
+                    for (JTypeMirror t : actualBounds.getOrDefault(bound.kind, Collections.emptySet())) {
+                        if (t.equals(bound.t)) {
+                            numToTest--;
+                            continue b;
+                        }
+                    }
+                }
+
+                return numToTest == 0;
             }
         };
     }
