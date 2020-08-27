@@ -2163,7 +2163,7 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1405](https://github.com/pmd/pmd/issues/1405): \[java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources
     *   [#1555](https://github.com/pmd/pmd/issues/1555): \[java] UnusedImports false positive for method parameter type in @see Javadoc
 *   java-codestyle
-    *   [#1543](https://github.com/pmd/pmd/issues/1543): \[java] LinguisticNaming should ignore overridden methods
+    *   [#1543](https://github.com/pmd/pmd/issues/1543): \[java] LinguisticNaming should ignore overriden methods
     *   [#1547](https://github.com/pmd/pmd/issues/1547): \[java] AtLeastOneConstructorRule: false-positive with lombok.AllArgsConstructor
     *   [#1624](https://github.com/pmd/pmd/issues/1624): \[java] UseDiamondOperator false positive with var initializer
 *   java-design
@@ -2190,7 +2190,7 @@ No changes.
 
 *   [#1623](https://github.com/pmd/pmd/pull/1623): \[java] Fix lombok.AllArgsConstructor support - [Bobby Wertman](https://github.com/CasualSuperman)
 *   [#1625](https://github.com/pmd/pmd/pull/1625): \[java] UnusedImports false positive for method parameter type in @see Javadoc - [Shubham](https://github.com/Shubham-2k17)
-*   [#1628](https://github.com/pmd/pmd/pull/1628): \[java] LinguisticNaming should ignore overridden methods - [Shubham](https://github.com/Shubham-2k17)
+*   [#1628](https://github.com/pmd/pmd/pull/1628): \[java] LinguisticNaming should ignore overriden methods - [Shubham](https://github.com/Shubham-2k17)
 *   [#1634](https://github.com/pmd/pmd/pull/1634): \[java] BeanMembersShouldSerializeRule does not recognize lombok accessors - [Shubham](https://github.com/Shubham-2k17)
 *   [#1635](https://github.com/pmd/pmd/pull/1635): \[java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat - [Shubham](https://github.com/Shubham-2k17)
 *   [#1637](https://github.com/pmd/pmd/pull/1637): \[java] Compile time constants initialized by literals avoided by AccessorMethodGenerationRule - [Shubham](https://github.com/Shubham-2k17)
@@ -4405,7 +4405,7 @@ is not finalized yet and is expected to change.
 #### Modified Rules
 
 *   The Java rule `UnnecessaryFinalModifier` (ruleset java-unnecessary) now also reports on private methods marked as `final`.
-    Being private, such methods can't be overridden, and therefore, the final keyword is redundant.
+    Being private, such methods can't be overriden, and therefore, the final keyword is redundant.
 
 *   The Java rule `PreserveStackTrace` (ruleset java-design) has been relaxed to support the builder pattern on thrown exception.
     This change may introduce some false positives if using the exception in non-orthodox ways for things other than setting the
@@ -7820,7 +7820,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1902351 - AvoidReassigningParameters not identify parent field
     Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
     Fixed other issues in SimplifyBooleanReturns
-    Modified AvoidReassigningParameter to also check constructor arguments for reassignment
+    Modified AvoidReassigningParameter to also check constructor arguments for reassignement
 
     New rules:
         Basic ruleset: AvoidMultipleUnaryOperators
