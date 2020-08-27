@@ -103,12 +103,31 @@ public @interface MetricType {
     </test-code>
 
     <test-code>
-        <description>#2708 - False positive with @Builder.Default fields</description>
+        <description>#2708 - False positive with lombok @Builder.Default fields</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package com.example;
 
 import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import not.lombok.Builder;
 import lombok.Data;
 
 @Data
