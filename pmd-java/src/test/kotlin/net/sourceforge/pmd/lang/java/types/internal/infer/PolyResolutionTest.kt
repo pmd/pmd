@@ -9,10 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
-import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
@@ -337,7 +334,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val t_Scratch = acu.firstEnclosingType()
+        val t_Scratch = acu.firstTypeSignature()
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldMatchMethod(

@@ -385,31 +385,7 @@ class Scratch<S extends Scratch<S>> {
     }
 
 
-    parserTest("Some capture problem with ctx type incompatible with cvar") {
-        /*
-    .... ctdecl resolution succeeds
-    Success: uniCopyStage(CompletableFuture<capture#228 of ?>) -> CompletableFuture<capture#228 of ?>
-Phase INVOC_STRICT     uniCopyStage(CompletableFuture<T>) -> CompletableFuture<U>
-    New bound           (ctx 2):   δ <: γ
-    Context 2          uniCopyStage(CompletableFuture<δ>) -> CompletableFuture<γ>
-    RETURN
-        New bound           (ctx 2):   γ = java.lang.Object
-
-    ARGUMENTS
-        Checking arg 0 against CompletableFuture<δ>
-            At:   /*unknown*/:8 :31..8:37
-            Expr: cfs[0]
-            New bound           (ctx 2):   δ = capture#158 of ?
-
-
-    New bound           (ctx 2):   γ >: capture#158 of ?
-    New bound           (ctx 2):   γ >: δ
-    New bound           (ctx 2):   δ = java.lang.Object
-    New bound           (ctx 2):   δ >: capture#158 of ?
-    Failed: Incompatible bounds: δ = capture#158 of ? and δ = java.lang.Object
-    FAILED! SAD!
-     -> Falling back on uniCopyStage(CompletableFuture<(*error*)>) -> CompletableFuture<(*error*)>
-         */
+    parserTest("Array access should be captured") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
@@ -420,15 +396,27 @@ class CompletableFuture<T> {
     public static CompletableFuture<Object> anyOf(CompletableFuture<?>... cfs) {
         return (cfs.length == 0)
                ? new CompletableFuture<Object>()
-               : uniCopyStage(cfs[0]); // here. I'm not sure how this should behave
+               : uniCopyStage(cfs[0]);
     }
 }
 
                 """.trimIndent()
         )
 
+        val t_CompletableFuture = acu.firstTypeSignature()
+
         spy.shouldBeOk {
-            acu.firstMethodCall().methodType
+            val captureMatcher = captureMatcher(`?`)
+
+            val arrType = acu.descendants(ASTArrayAccess::class.java).firstOrThrow().typeMirror
+
+            arrType shouldBe t_CompletableFuture[captureMatcher]
+
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                    named = "uniCopyStage",
+                    withFormals = listOf(t_CompletableFuture[captureMatcher]),
+                    returning = t_CompletableFuture[ts.OBJECT]
+            )
         }
     }
 

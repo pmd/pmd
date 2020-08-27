@@ -17,6 +17,7 @@ import org.mockito.Mockito
 
 fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilationUnit, TypeInferenceSpy> {
     val spy = spy(typeInfLogger)
+    `when`(spy.isNoop).thenReturn(false) // enable log for exceptions though
     val acu = this.logTypeInference(spy).parse(code)
     return Pair(acu, TypeInferenceSpy(spy, acu.typeSystem))
 }
@@ -59,7 +60,7 @@ fun JavaNode.methodDeclarations(): DescendantNodeStream<ASTMethodDeclaration> = 
 fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = descendants(ASTAnyTypeDeclaration::class.java)
 fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java)
 
-fun JavaNode.firstEnclosingType(): JClassType = descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+fun JavaNode.firstTypeSignature(): JClassType = descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
 fun JavaNode.declaredTypeSignatures(): List<JClassType> = descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations().toList { it.genericSignature }
 

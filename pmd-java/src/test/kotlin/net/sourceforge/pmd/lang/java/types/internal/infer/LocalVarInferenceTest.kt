@@ -78,7 +78,7 @@ class Scratch<S extends Scratch<S>> {
                 """.trimIndent()
         )
 
-        val t_Scratch = acu.firstEnclosingType()
+        val t_Scratch = acu.firstTypeSignature()
 
         spy.shouldBeOk {
             acu.varId("k") shouldHaveType t_Scratch[`?` extends t_Scratch[`?`]]

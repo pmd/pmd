@@ -499,14 +499,16 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
 
     @Override
     public JTypeMirror visit(ASTArrayAccess node, Void data) {
-        JTypeMirror comp = node.getQualifier().getTypeMirror();
-        if (comp instanceof JArrayType) {
-            return ((JArrayType) comp).getComponentType();
-        } else if (comp == ts.UNKNOWN) {
-            return polyResolution.getContextTypeForStandaloneFallback(node);
+        JTypeMirror compType;
+        JTypeMirror arrType = node.getQualifier().getTypeMirror();
+        if (arrType instanceof JArrayType) {
+            compType = ((JArrayType) arrType).getComponentType();
+        } else if (arrType == ts.UNKNOWN) {
+            compType = polyResolution.getContextTypeForStandaloneFallback(node);
         } else {
-            return ts.ERROR;
+            compType = ts.ERROR;
         }
+        return capture(compType);
     }
 
     @Override

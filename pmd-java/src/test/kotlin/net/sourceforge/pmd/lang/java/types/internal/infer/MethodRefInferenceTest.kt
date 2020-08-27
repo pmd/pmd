@@ -358,7 +358,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
             }
         """.trimIndent())
 
-        val t_Archive = acu.firstEnclosingType()
+        val t_Archive = acu.firstTypeSignature()
         val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
         spy.shouldTriggerMissingCtDecl {
@@ -386,7 +386,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
         """.trimIndent())
 
 
-        val t_Archive = acu.firstEnclosingType()
+        val t_Archive = acu.firstTypeSignature()
         val getName = acu.methodDeclarations().firstOrThrow()
         val ifPresentCall = acu.firstMethodCall()
 
@@ -803,7 +803,7 @@ interface Predicate<Q> {
         """.trimIndent())
 
 
-        val t_Predicate = acu.firstEnclosingType()
+        val t_Predicate = acu.firstTypeSignature()
         val testMethod = acu.methodDeclarations().get(0)!!
         val tvar = acu.typeVar("T")
         val (ternary) = acu.descendants(ASTConditionalExpression::class.java).toList()
@@ -1061,7 +1061,7 @@ class Scratch {
             }
         """.trimIndent())
 
-        val t_Archive = acu.firstEnclosingType()
+        val t_Archive = acu.firstTypeSignature()
 
         val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
 
