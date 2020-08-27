@@ -66,13 +66,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 public interface JTypeMirror extends JTypeVisitable {
     // TODO: unstable stuff (@Experimental)
     //  - Member access:
-    //    - #streamMethods
     //    - #getDeclaredField
     //    - #getDeclaredClass
-    //  - #isConvertibleTo: Convertibility is unstable today, eg could
-    //  we merge primitive widening, subtyping & identity? The distinction
-    //  doesn't appear very useful, I don't remember why it was needed at
-    //  some point. Note that #isSubtypeOf is stable, as it returns a boolean.
     //  - In JWildcardType, the specification of some methods is unstable:
     //    - #isSubtypeOf/#isConvertibleTo
     //    - #getErasure
@@ -374,15 +369,15 @@ public interface JTypeMirror extends JTypeVisitable {
      * method, they're not reused between calls. This stream does not
      * include constructors.
      *
-     * <p>Experimental: streams are a bit impractical when it comes to
-     * configuring the filter. Possibly a specialized API should be introduced.
-     * We need to support the use cases of the symbol table, ie filter by name + accessibility + staticity,
-     * and also possibly use cases for rules, like getting a method from
-     * a known signature. See also {@link JClassType#getDeclaredMethod(JExecutableSymbol)},
-     * which looks like this. Unifying this API would be nice.
-     *
      * @param prefilter Filter selecting symbols for which a signature
      *                  should be created and yielded by the stream
+     *
+     * @experimental streams are a bit impractical when it comes to
+     *     configuring the filter. Possibly a specialized API should be introduced.
+     *     We need to support the use cases of the symbol table, ie filter by name + accessibility + staticity,
+     *     and also possibly use cases for rules, like getting a method from
+     *     a known signature. See also {@link JClassType#getDeclaredMethod(JExecutableSymbol)},
+     *     which looks like this. Unifying this API would be nice.
      */
     @Experimental
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
@@ -394,7 +389,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * not recurse into supertypes. Note that only class and array types
      * declare methods themselves.
      *
-     * <p>Experimental: see {@link #streamMethods(Predicate)}
+     * @experimental See {@link #streamMethods(Predicate)}
      *
      * @see #streamMethods(Predicate)
      */

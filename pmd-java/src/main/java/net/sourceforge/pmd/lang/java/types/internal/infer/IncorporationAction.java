@@ -51,7 +51,7 @@ abstract class IncorporationAction {
             // Even with a relatively small cache size, the hit ratio is
             // very high (around 75% on the tests we have here, discounting
             // the stress tests)
-            // TODO analyse on real data - needs a realistic disambiguation
+            // TODO refresh numbers using a real codebase
             private static final int MAX_SIZE = 200;
 
             @Override

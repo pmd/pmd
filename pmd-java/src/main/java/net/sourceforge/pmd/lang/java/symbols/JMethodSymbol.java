@@ -18,7 +18,8 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodDeclaration> {
 
 
-    // FIXME they're filtered out, figure out if typeres really needs that
+    // note that for now, bridge methods are filtered out from the ASM
+    // symbols, and bridge methods are not reflected by the AST symbols
     boolean isBridge();
 
 

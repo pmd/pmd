@@ -234,7 +234,8 @@ public final class TypeSystem {
         primitivesByKind.put(PrimitiveTypeKind.DOUBLE, DOUBLE);
 
         // note that those intentionally have names that are invalid as java identifiers
-        // todo those special types should probably have a special implementation here
+        // todo those special types should probably have a special implementation here,
+        //  so as not to depend on UnresolvedClassStore
         UnresolvedClassStore unresolvedSyms = new UnresolvedClassStore(this);
         JClassSymbol unresolvedTypeSym = unresolvedSyms.makeUnresolvedReference("(*unknown*)", 0);
         UNKNOWN = new SentinelType(this, "(*unknown*)", unresolvedTypeSym);
@@ -437,12 +438,7 @@ public final class TypeSystem {
         if (symbol instanceof JClassSymbol) {
             JClassSymbol classSym = (JClassSymbol) symbol;
             if (classSym.isArray()) {
-                // generic array types are represented by a special
-                // type in the j.l.reflect API, so the component is
-                // also raw
-                // fixme this is wrong:
-                //  var genArr = ts.array(tvar, 1);
-                //  ts.typeOf(genArr.symbol(), false) != genArr
+                // generic array types are created by #arrayType, see spec in javadoc
                 JTypeMirror component = rawType(classSym.getArrayComponent());
                 return arrayType(component);
             } else {

@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.captureMatcher
+import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.typeDsl
 import java.util.function.Supplier
 
@@ -145,9 +146,9 @@ class SpecialMethodsTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("getClass in invocation ctx") {
+    parserTest("getClass in invocation ctx, unchecked conversion") {
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 
             class Scratch {
                 public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
@@ -167,23 +168,21 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        call.shouldMatchN {
-            methodCall("copyOf") {
-                it.typeMirror shouldBe with(it.typeDsl) {
-                    ts.OBJECT.toArray()
-                }
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("copyOf") {
+                    it.typeMirror shouldBe ts.OBJECT.toArray()
 
-                argList {
-                    variableAccess("elements")
+                    argList {
+                        variableAccess("elements")
 
-                    methodCall("getClass") {
-                        it.typeMirror shouldBe with(it.typeDsl) {
-                            Class::class[`?` extends ts.OBJECT.toArray()] // todo should this be captured?
+                        methodCall("getClass") {
+                            it.typeMirror shouldBe Class::class[`?` extends ts.OBJECT.toArray()]
+
+                            variableAccess("a")
+
+                            argList(0)
                         }
-
-                        variableAccess("a")
-
-                        argList(0)
                     }
                 }
             }

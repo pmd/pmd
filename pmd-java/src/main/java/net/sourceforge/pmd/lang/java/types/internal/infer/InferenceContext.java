@@ -333,13 +333,6 @@ final class InferenceContext {
             return;
         }
 
-        // TODO
-        //  Organize incorporation actions better
-        //  * When an ivar is adopted by an enclosing context it keeps
-        //    sending messages to the old one but not the new...
-        //  * Javac uses one local queue per ivar, seems much more
-        //    resilient
-
         IncorporationAction hook = incorporationActions.pollFirst();
         while (hook != null) {
 
