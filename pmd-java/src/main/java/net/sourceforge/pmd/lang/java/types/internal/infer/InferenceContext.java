@@ -262,6 +262,8 @@ final class InferenceContext {
                     // This can happen eg when an assertion fails in a
                     // subcontext that depends on this one, which is waiting
                     // for more inference to happen
+
+                    // TODO investigate
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
