@@ -85,4 +85,23 @@ class Scratch<S extends Scratch<S>> {
         }
     }
 
+    parserTest("Local var for anonymous") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+class Scratch {
+
+    static {
+        var k = new Runnable() {};
+    }
+}
+                """.trimIndent()
+        )
+
+        spy.shouldBeOk {
+            // not the anon type
+            acu.varId("k") shouldHaveType Runnable::class.decl
+        }
+    }
+
 })

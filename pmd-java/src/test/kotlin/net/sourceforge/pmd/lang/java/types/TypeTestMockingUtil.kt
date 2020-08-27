@@ -56,12 +56,12 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
 }
 
 
-fun JavaNode.methodDeclarations(): DescendantNodeStream<ASTMethodDeclaration> = descendants(ASTMethodDeclaration::class.java)
-fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = descendants(ASTAnyTypeDeclaration::class.java)
-fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java)
+fun JavaNode.methodDeclarations(): DescendantNodeStream<ASTMethodDeclaration> = descendants(ASTMethodDeclaration::class.java).crossFindBoundaries()
+fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries()
+fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java).crossFindBoundaries()
 
-fun JavaNode.firstTypeSignature(): JClassType = descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
-fun JavaNode.declaredTypeSignatures(): List<JClassType> = descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+fun JavaNode.firstTypeSignature(): JClassType = typeDeclarations().firstOrThrow().typeMirror
+fun JavaNode.declaredTypeSignatures(): List<JClassType> = typeDeclarations().toList { it.typeMirror }
 fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations().toList { it.genericSignature }
 
 fun JavaNode.methodCalls(): DescendantNodeStream<ASTMethodCall> = descendants(ASTMethodCall::class.java)

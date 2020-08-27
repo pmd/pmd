@@ -8,8 +8,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
-import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.*
 
 /**
  * @author Clément Fournier
@@ -235,6 +234,42 @@ class AnonCtorsTest : ProcessorTestSpec({
 
                         child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
                     }
+                }
+            }
+        }
+    }
+
+
+    parserTest("Test new method in anonymous class") {
+
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+            interface Scratch {
+
+                int k = new Scratch() {
+                    int someNewMethod() { return 2; }
+                }.someNewMethod();
+            }
+            """)
+
+        val (t_Scratch, t_Anon) = acu.declaredTypeSignatures()
+
+        val (methodDecl) = acu.declaredMethodSignatures()
+        val call = acu.firstMethodCall()
+
+        methodDecl.modifiers shouldBe 0
+
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("someNewMethod") {
+
+                    it.qualifier!! shouldHaveType t_Scratch
+                    it.methodType shouldBeSomeInstantiationOf methodDecl
+
+                    it::getQualifier shouldBe unspecifiedChild()
+
+                    argList(0)
                 }
             }
         }

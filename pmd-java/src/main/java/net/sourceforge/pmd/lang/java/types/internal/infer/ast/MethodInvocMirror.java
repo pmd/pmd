@@ -9,6 +9,8 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
@@ -56,7 +58,16 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
             // already filters accessibility
             return myNode.getSymbolTable().methods().resolve(getName());
         } else {
-            JTypeMirror lhsType = TypeConversion.capture(lhs.getTypeMirror());
+            JTypeMirror lhsType;
+            if (lhs instanceof ASTConstructorCall) {
+                ASTConstructorCall ctor = (ASTConstructorCall) lhs;
+                ASTAnonymousClassDeclaration anon = ctor.getAnonymousClassDeclaration();
+                // put methods declared in the anonymous class in scope
+                lhsType = anon != null ? anon.getTypeMirror() : ctor.getTypeMirror();
+            } else {
+                lhsType = lhs.getTypeMirror();
+            }
+            lhsType = TypeConversion.capture(lhsType);
             boolean staticOnly = lhs instanceof ASTTypeExpression;
 
             return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());

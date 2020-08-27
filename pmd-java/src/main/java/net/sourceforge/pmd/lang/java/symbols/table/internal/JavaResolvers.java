@@ -25,6 +25,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -386,7 +387,8 @@ public final class JavaResolvers {
         case 0:
             return sym.getPackageName().equals(packageName);
         default:
-            throw new AssertionError(Modifier.toString(sym.getModifiers()));
+            // fixme this is reachable for invalid declarations, like a private field of an interface
+            throw AssertionUtil.shouldNotReachHere(Modifier.toString(sym.getModifiers()));
         }
     }
 

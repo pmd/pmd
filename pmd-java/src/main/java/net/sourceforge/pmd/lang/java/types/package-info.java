@@ -108,29 +108,6 @@ class O {
  */
 
 
-/* TODO real anonymous types
-    - define hooks on JClassType (isAnonymous/projectAnonymous)
-    - handle this in projectUpwards
-
-class Scratch {
-
-    public static void main(String[] args) {
-        new Object() {
-            void def() {}
-        }.def(); // ok
-
-        // type is Object, not Scratch$2
-        var foo = new Object() {
-            void def() {}
-        };
-    }
-}
-
-
-
- */
-
-
 /* TODO qualified anonymous constructor
 
 class Scratch {
