@@ -51,7 +51,7 @@ public class ASTReference extends AbstractVmNode {
      * Indicates if toString() should be called during condition evaluation just
      * to ensure it does not return null. Check is unnecessary if all toString()
      * implementations are known to have non-null return values. Disabling the
-     * check will give a performance improve since toString() may be a complex
+     * check will give a performance improvement since toString() may be a complex
      * operation on large objects.
      *
      * @deprecated for removal with PMD 7.0.0
