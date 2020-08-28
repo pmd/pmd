@@ -59,6 +59,9 @@ import java.util.function.Function;
  * would allow us to remove all the remaining ambiguous names.
  */
 public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTReferenceType, ASTPrimaryExpression {
+    // if true, then this was explitly left in the tree by the disambig
+    // pass, with a warning
+    private boolean wasProcessed = false;
 
     ASTAmbiguousName(int id) {
         super(id);
@@ -73,6 +76,14 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     public String getName() {
         return super.getImage();
+    }
+
+    boolean wasProcessed() {
+        return wasProcessed;
+    }
+
+    void setProcessed() {
+        this.wasProcessed = true;
     }
 
     @Override

@@ -30,9 +30,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  * which determines accessibility of referenced symbols. The context may
  * have no enclosing class, eg in the "extends" clause of a toplevel type.
  *
- * <p>This is an internal helper class for the disambiguation pass + some other lazy things
+ * <p>This is an internal helper class for disambiguation pass
  */
-public class ReferenceCtx {
+public final class ReferenceCtx {
 
     final JavaAstProcessor processor;
     final String packageName;

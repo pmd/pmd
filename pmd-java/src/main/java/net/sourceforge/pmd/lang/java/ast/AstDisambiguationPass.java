@@ -104,6 +104,11 @@ final class AstDisambiguationPass {
 
         @Override
         public Void visit(ASTAmbiguousName name, ReferenceCtx processor) {
+            if (name.wasProcessed()) {
+                // don't redo analysis
+                return null;
+            }
+
             JSymbolTable symbolTable = name.getSymbolTable();
             assert symbolTable != null : "Symbol tables haven't been set yet??";
 
@@ -421,6 +426,7 @@ final class AstDisambiguationPass {
                 // then this name is unresolved, leave the ambiguous name in the tree
                 // this only happens inside expressions
                 ctx.getLogger().warning(ambig, CANNOT_RESOLVE_AMBIGUOUS_NAME, packageImage, ReferenceCtx.Fallback.AMBIGUOUS);
+                ambig.setProcessed(); // signal that we don't want to retry resolving this
                 return ambig;
             }
 
