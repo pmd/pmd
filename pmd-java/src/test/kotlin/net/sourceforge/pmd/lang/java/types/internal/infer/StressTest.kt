@@ -249,12 +249,15 @@ class StressTest : ProcessorTestSpec({
         - caching of the ctdecl
         ->> mostly, merging of equal ivars
 
-        Javac does this in 30 seconds. Without merging ivars, this takes 60 seconds.
+        Javac does this in 30 seconds. Without merging ivars, this takes 60 seconds
+
+        Update: this used to very fast. I reverted some optimisations for clarity,
+        which makes this take about 20 secs. So I'm removing some nesting to not
+        slow down the build too much.
 
      */
     parserTest("Test context passing in huge call chain") {
 
-//        logTypeInference(true)
 
         asIfIn(TypeInferenceTestCases::class.java)
 
@@ -270,20 +273,20 @@ class StressTest : ProcessorTestSpec({
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
-              ))))))))
-              ))))))))
-              ))))))))
-              ))))))))
-              ))))))))
-              ))))))))
-              ))))))))
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
+//              ))))))))
+//              ))))))))
+//              ))))))))
+//              ))))))))
+//              ))))))))
+//              ))))))))
+//              ))))))))
               ))))))))
               ))))))))
               ))))))))
