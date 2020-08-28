@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
-import net.sourceforge.pmd.lang.apex.metrics.impl.CycloMetric;
 
 /**
  * @author Clément Fournier
@@ -32,7 +31,7 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
 
     @Override
     public Void visit(ASTIfBlockStatement node, MutableInt data) {
-        data.add(1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+        data.add(1 + ApexMetricsHelper.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
         return super.visit(node, data);
     }
 
@@ -47,7 +46,7 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
     @Override
     public Void visit(ASTForLoopStatement node, MutableInt data) {
         data.add(
-                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
         return super.visit(node, data);
     }
 
@@ -68,7 +67,7 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
     @Override
     public Void visit(ASTWhileLoopStatement node, MutableInt data) {
         data.add(
-                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
         return super.visit(node, data);
     }
 
@@ -76,7 +75,7 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
     @Override
     public Void visit(ASTDoLoopStatement node, MutableInt data) {
         data.add(
-                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
         return super.visit(node, data);
     }
 
@@ -84,7 +83,7 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
     @Override
     public Void visit(ASTTernaryExpression node, MutableInt data) {
         data.add(
-                1 + CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTStandardCondition.class)));
         return super.visit(node, data);
     }
 

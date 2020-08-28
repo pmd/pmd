@@ -43,9 +43,9 @@ public final class ClassFanOutMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            MutableInt cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
-            return (double) cfo.getValue();
+            return computeFanOut(node, options);
         }
+
     }
 
     public static final class ClassFanOutOperationMetric extends AbstractJavaOperationMetric {

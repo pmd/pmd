@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * @author Clément Fournier
  * @since 5.8.0
  */
-public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double> {
+public interface MetricKey<N extends Node, R extends Number> extends DataKey<MetricKey<N, R>, R> {
 
     /**
      * Returns the name of the metric.
@@ -36,18 +36,17 @@ public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double>
      *
      * @return The calculator
      */
-    Metric<N> getCalculator();
+    Metric<N, R> getCalculator();
 
 
     /**
      * Returns true if the metric held by this key can be computed on this node.
-     * TODO this should be turned into supports(Node)
      *
      * @param node The node to test
      *
      * @return Whether or not the metric can be computed on this node
      */
-    boolean supports(N node);
+    boolean supports(Node node);
 
     // TODO the metric key should know about supported options
 
@@ -63,11 +62,11 @@ public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double>
      *
      * @throws NullPointerException If either parameter is null
      */
-    static <T extends Node> MetricKey<T> of(@NonNull String name, @NonNull Metric<T> metric) {
+    static <T extends Node, R extends Number> MetricKey<T, R> of(@NonNull Metric<T, R> metric, @NonNull String name, String... aliases) {
         AssertionUtil.requireParamNotNull("name", name);
         AssertionUtil.requireParamNotNull("metric", metric);
 
-        return new MetricKey<T>() {
+        return new MetricKey<T, R>() {
             @Override
             public String name() {
                 return name;
@@ -75,13 +74,13 @@ public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double>
 
 
             @Override
-            public Metric<T> getCalculator() {
+            public Metric<T, R> getCalculator() {
                 return metric;
             }
 
 
             @Override
-            public boolean supports(T node) {
+            public boolean supports(Node node) {
                 return metric.supports(node);
             }
 

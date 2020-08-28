@@ -10,9 +10,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetric;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.metrics.AbstractMetric;
 
 
 /**
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyTypeDeclaration> implements JavaClassMetric {
+public abstract class AbstractJavaClassMetric<R extends Number> extends AbstractMetric<ASTAnyTypeDeclaration, R>  {
 
 
     /**
@@ -32,8 +32,8 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      * @return True if the metric can be computed on this type declaration
      */
     @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return !node.isInterface();
+    public boolean supports(Node node) {
+        return node instanceof ASTAnyTypeDeclaration && !((ASTAnyTypeDeclaration) node).isInterface();
     }
 
 
@@ -45,7 +45,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return The number of operations matching the signature mask
      */
-    protected int countMatchingOpSigs(ASTAnyTypeDeclaration classNode, JavaOperationSigMask mask) {
+    protected static int countMatchingOpSigs(ASTAnyTypeDeclaration classNode, JavaOperationSigMask mask) {
         int count = 0;
         List<ASTMethodOrConstructorDeclaration> decls = getMethodsAndConstructors(classNode);
 
@@ -67,7 +67,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return The number of fields matching the signature mask
      */
-    protected int countMatchingFieldSigs(ASTAnyTypeDeclaration classNode, JavaFieldSigMask mask) {
+    protected static int countMatchingFieldSigs(ASTAnyTypeDeclaration classNode, JavaFieldSigMask mask) {
         int count = 0;
         List<ASTFieldDeclaration> decls = getFields(classNode);
 
@@ -88,7 +88,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return The list of all methods and constructors
      */
-    protected List<ASTMethodOrConstructorDeclaration> getMethodsAndConstructors(ASTAnyTypeDeclaration node) {
+    protected static List<ASTMethodOrConstructorDeclaration> getMethodsAndConstructors(ASTAnyTypeDeclaration node) {
         return getDeclarationsOfType(node, ASTMethodOrConstructorDeclaration.class);
     }
 
@@ -100,12 +100,12 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return The list of all fields
      */
-    protected List<ASTFieldDeclaration> getFields(ASTAnyTypeDeclaration node) {
+    protected static List<ASTFieldDeclaration> getFields(ASTAnyTypeDeclaration node) {
         return getDeclarationsOfType(node, ASTFieldDeclaration.class);
     }
 
 
-    private <T extends Node> List<T> getDeclarationsOfType(ASTAnyTypeDeclaration node, Class<T> tClass) {
+    private static <T extends Node> List<T> getDeclarationsOfType(ASTAnyTypeDeclaration node, Class<T> tClass) {
         return node.getDeclarations().filterIs(tClass).toList();
     }
 

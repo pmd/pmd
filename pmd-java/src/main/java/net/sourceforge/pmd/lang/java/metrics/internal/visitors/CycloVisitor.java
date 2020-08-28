@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
@@ -66,7 +66,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     private Void handleSwitch(ASTSwitchLike node, MutableInt data) {
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getChild(0)));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getChild(0)));
         }
 
         for (ASTSwitchBranch branch : node) {
@@ -92,7 +92,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTConditionalExpression node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -102,7 +102,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTWhileStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -112,7 +112,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTIfStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -124,7 +124,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
         data.increment();
 
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -140,7 +140,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTDoStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -167,7 +167,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             data.add(2); // equivalent to if (condition) { throw .. }
 
             if (considerBooleanPaths) {
-                data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
+                data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
             }
         }
 

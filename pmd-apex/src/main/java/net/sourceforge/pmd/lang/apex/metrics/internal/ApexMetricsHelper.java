@@ -1,37 +1,25 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics.impl;
+package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
-import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.StandardCycloVisitor;
-import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 import apex.jorje.data.ast.BooleanOp;
 
 /**
- * See the doc for the Java metric.
  *
- * @author Clément Fournier
  */
-public class CycloMetric extends AbstractApexOperationMetric {
+public final class ApexMetricsHelper {
 
-
-    @Override
-    public double computeFor(ASTMethod node, MetricOptions options) {
-        MutableInt result = new MutableInt(1);
-        node.acceptVisitor(new StandardCycloVisitor(), result);
-        return result.doubleValue();
+    private ApexMetricsHelper() {
+        // utility class
     }
-
 
     /**
      * Computes the number of control flow paths through that expression, which is the number of {@code ||} and {@code
@@ -41,7 +29,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
      *
      * @return The complexity of the expression
      */
-    public static int booleanExpressionComplexity(ASTStandardCondition expression) {
+    static int booleanExpressionComplexity(ASTStandardCondition expression) {
         Set<ASTBooleanExpression> subs = new HashSet<>(expression.findDescendantsOfType(ASTBooleanExpression.class));
         int complexity = 0;
 

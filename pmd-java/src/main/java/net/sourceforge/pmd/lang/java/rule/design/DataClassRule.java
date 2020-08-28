@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.NOAM;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.NOPA;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.WMC;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.WOC;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NUMBER_OF_ACCESSORS;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NUMBER_OF_PUBLIC_FIELDS;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHED_METHOD_COUNT;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHT_OF_CLASS;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
@@ -31,17 +31,17 @@ public class DataClassRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
 
-        if (!MetricsUtil.supportsAll(node, NOAM, NOPA, WMC, WOC)) {
+        if (!MetricsUtil.supportsAll(node, NUMBER_OF_ACCESSORS, NUMBER_OF_PUBLIC_FIELDS, WEIGHED_METHOD_COUNT, WEIGHT_OF_CLASS)) {
             return super.visit(node, data);
         }
 
         boolean isDataClass = interfaceRevealsData(node) && classRevealsDataAndLacksComplexity(node);
 
         if (isDataClass) {
-            double woc = MetricsUtil.computeMetric(WOC, node);
-            int nopa = (int) MetricsUtil.computeMetric(NOPA, node);
-            int noam = (int) MetricsUtil.computeMetric(NOAM, node);
-            int wmc = (int) MetricsUtil.computeMetric(WMC, node);
+            double woc = MetricsUtil.computeMetric(WEIGHT_OF_CLASS, node);
+            int nopa = MetricsUtil.computeMetric(NUMBER_OF_PUBLIC_FIELDS, node);
+            int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);
+            int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
             addViolation(data, node, new Object[] {node.getSimpleName(),
                                                    StringUtil.percentageString(woc, 3),
@@ -53,15 +53,15 @@ public class DataClassRule extends AbstractJavaMetricsRule {
 
 
     private boolean interfaceRevealsData(ASTAnyTypeDeclaration node) {
-        double woc = MetricsUtil.computeMetric(WOC, node);
+        double woc = MetricsUtil.computeMetric(WEIGHT_OF_CLASS, node);
         return woc < WOC_LEVEL;
     }
 
     private boolean classRevealsDataAndLacksComplexity(ASTAnyTypeDeclaration node) {
 
-        int nopa = (int) MetricsUtil.computeMetric(NOPA, node);
-        int noam = (int) MetricsUtil.computeMetric(NOAM, node);
-        int wmc = (int) MetricsUtil.computeMetric(WMC, node);
+        int nopa = MetricsUtil.computeMetric(NUMBER_OF_PUBLIC_FIELDS, node);
+        int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);
+        int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
         return nopa + noam > ACCESSOR_OR_FIELD_FEW_LEVEL && wmc < WMC_HIGH_LEVEL
             || nopa + noam > ACCESSOR_OR_FIELD_MANY_LEVEL && wmc < WMC_VERY_HIGH_LEVEL;

@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 
 
 /**
@@ -109,7 +109,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
             complexity += (int) element.jjtAccept(this, data);
         }
 
-        int boolCompIf = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         return boolCompIf + complexity;
     }
 
@@ -118,7 +118,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTWhileStatement node, Object data) {
         // (npath of while + bool_comp of while + 1) * npath of next
 
-        int boolCompWhile = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompWhile = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
         int nPathWhile = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
@@ -130,7 +130,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTDoStatement node, Object data) {
         // (npath of do + bool_comp of do + 1) * npath of next
 
-        int boolCompDo = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompDo = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
         int nPathDo = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
@@ -142,7 +142,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data) {
         // (npath of for + bool_comp of for + 1) * npath of next
 
-        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = JavaMetrics.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
         int nPathFor = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
@@ -160,7 +160,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
             return 1;
         }
 
-        int boolCompReturn = CycloMetric.booleanExpressionComplexity(expr);
+        int boolCompReturn = JavaMetrics.booleanExpressionComplexity(expr);
         int conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
 
         if (conditionalExpressionComplexity > 1) {
@@ -184,7 +184,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
     public int handleSwitch(ASTSwitchLike node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
         int npath = 0;
         int caseRange = 0;
@@ -221,7 +221,7 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTConditionalExpression node, Object data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        int boolCompTernary = CycloMetric.booleanExpressionComplexity(node.getCondition());
+        int boolCompTernary = JavaMetrics.booleanExpressionComplexity(node.getCondition());
 
         return boolCompTernary + sumChildrenComplexities(node, data) - 1;
     }

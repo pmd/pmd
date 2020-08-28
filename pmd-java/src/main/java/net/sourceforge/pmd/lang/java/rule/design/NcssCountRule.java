@@ -14,11 +14,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
@@ -89,14 +87,14 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
         super.visit(node, data);
 
-        if (JavaClassMetricKey.NCSS.supports(node)) {
-            int classSize = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NCSS, node, ncssOptions);
-            int classHighest = (int) MetricsUtil.computeStatistics(JavaOperationMetricKey.NCSS, node.getOperations(), ncssOptions).getMax();
+        if (JavaMetrics.NCSS.supports(node)) {
+            int classSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
+            int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.NCSS, node.getOperations(), ncssOptions).getMax();
 
             if (classSize >= classReportLevel) {
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),
-                                          classSize + " (Highest = " + classHighest + ")", };
+                                          classSize + " (Highest = " + classHighest + ")",};
 
                 addViolation(data, node, messageParams);
             }
@@ -108,12 +106,12 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
 
-        if (JavaOperationMetricKey.NCSS.supports((MethodLikeNode) node)) {
-            int methodSize = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NCSS, node, ncssOptions);
+        if (JavaMetrics.NCSS.supports(node)) {
+            int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= methodReportLevel) {
                 addViolation(data, node, new String[] {
                     node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
+                    PrettyPrintingUtil.displaySignature(node), "" + methodSize,});
             }
         }
         return data;

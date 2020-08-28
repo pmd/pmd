@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.ATFD;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.TCC;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey.WMC;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.TIGHT_CLASS_COHESION;
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHED_METHOD_COUNT;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -44,13 +44,13 @@ public class GodClassRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (!MetricsUtil.supportsAll(node, WMC, TCC, ATFD)) {
+        if (!MetricsUtil.supportsAll(node, WEIGHED_METHOD_COUNT, TIGHT_CLASS_COHESION, ACCESS_TO_FOREIGN_DATA)) {
             return super.visit(node, data);
         }
 
-        int wmc = (int) MetricsUtil.computeMetric(WMC, node);
-        double tcc = MetricsUtil.computeMetric(TCC, node);
-        int atfd = (int) MetricsUtil.computeMetric(ATFD, node);
+        int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
+        double tcc = MetricsUtil.computeMetric(TIGHT_CLASS_COHESION, node);
+        int atfd = MetricsUtil.computeMetric(ACCESS_TO_FOREIGN_DATA, node);
 
         super.visit(node, data);
 

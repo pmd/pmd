@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
-import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.CognitiveComplexityVisitor.State;
+import net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityVisitor.State;
 
 import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.data.ast.PrefixOp;
@@ -41,7 +41,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
         private BooleanOp currentBooleanOperation = null;
         private String methodName = null;
 
-        public double getComplexity() {
+        public int getComplexity() {
             return complexity;
         }
 

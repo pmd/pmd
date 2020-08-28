@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<MethodLikeNode>
-        implements JavaOperationMetric {
+public abstract class AbstractJavaOperationMetric extends net.sourceforge.pmd.lang.metrics.AbstractMetric<MethodLikeNode>
+    implements JavaOperationMetric {
 
     /**
      * Returns true if the metric can be computed on this operation. By default, abstract operations are filtered out.

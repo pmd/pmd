@@ -14,14 +14,13 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -32,10 +31,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Cyclomatic complexity rule using metrics.
  *
  * @author Clément Fournier, based on work by Alan Hohn and Donald A. Leckie
- * @see CycloMetric
  * @version 6.0.0
  */
-public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
+public class CyclomaticComplexityRule extends AbstractJavaRule {
 
     private static final Logger LOG = Logger.getLogger(CyclomaticComplexityRule.class.getName());
 
@@ -118,15 +116,22 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object param) {
+        if (node instanceof ASTAnyTypeDeclaration) {
+            visitTypeDecl((ASTAnyTypeDeclaration) node, param);
+        }
+        return null;
+    }
 
-        super.visit(node, data);
+    public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
 
-        if (JavaClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node, cycloOptions);
+        super.visitJavaNode(node, data);
+
+        if (JavaMetrics.WEIGHED_METHOD_COUNT.supports(node)) {
+            int classWmc = MetricsUtil.computeMetric(JavaMetrics.WEIGHED_METHOD_COUNT, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
-                int classHighest = (int) MetricsUtil.computeStatistics(JavaOperationMetricKey.CYCLO, node.getOperations(), cycloOptions).getMax();
+                int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.CYCLO, node.getOperations(), cycloOptions).getMax();
 
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),
@@ -141,29 +146,34 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public final Object visit(MethodLikeNode node, Object data) {
+    public final Object visit(ASTMethodDeclaration node, Object data) {
+        visitMethodLike(node, data);
+        return super.visit(node, data);
+    }
 
-        if (JavaOperationMetricKey.CYCLO.supports(node)) {
-            int cyclo = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.CYCLO, node, cycloOptions);
+    @Override
+    public final Object visit(ASTConstructorDeclaration node, Object data) {
+        visitMethodLike(node, data);
+        return super.visit(node, data);
+    }
+
+    private void visitMethodLike(ASTMethodOrConstructorDeclaration node, Object data) {
+        if (JavaMetrics.CYCLO.supports(node)) {
+            int cyclo = MetricsUtil.computeMetric(JavaMetrics.CYCLO, node, cycloOptions);
             if (cyclo >= methodReportLevel) {
 
 
-                String opname = node instanceof ASTMethodOrConstructorDeclaration
-                                ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
-                                : "lambda";
+                String opname = PrettyPrintingUtil.displaySignature(node);
 
-                String kindname = node instanceof ASTMethodOrConstructorDeclaration
-                                  ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
-                                  : "lambda";
+                String kindname = node instanceof ASTConstructorDeclaration ? "constructor" : "method";
 
 
                 addViolation(data, node, new String[] {kindname,
                                                        opname,
                                                        "",
-                                                       "" + cyclo, });
+                                                       "" + cyclo,});
             }
         }
-        return data;
     }
 
 }

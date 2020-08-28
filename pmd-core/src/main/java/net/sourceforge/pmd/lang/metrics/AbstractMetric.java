@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public abstract class AbstractMetric<N extends Node> implements Metric<N> {
+public abstract class AbstractMetric<N extends Node, R extends Number> implements Metric<N, R> {
 
     /**
      * Metrics should be stateless, thus any instance of the same metric class should be equal.

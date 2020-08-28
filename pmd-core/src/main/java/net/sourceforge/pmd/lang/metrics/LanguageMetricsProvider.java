@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -28,35 +31,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @since 6.11.0
  */
 @Experimental
-public interface LanguageMetricsProvider<T extends Node, O extends Node> {
+public interface LanguageMetricsProvider {
 
-    /**
-     * Returns a list of all supported type metric keys
-     * for the language.
-     */
-    List<? extends MetricKey<T>> getAvailableTypeMetrics();
-
-
-    /**
-     * Returns a list of all supported operation metric keys
-     * for the language.
-     */
-    List<? extends MetricKey<O>> getAvailableOperationMetrics();
-
-
-    /**
-     * Returns the given node casted to {@link T} if it's of the correct
-     * type, otherwise returns null.
-     */
-    T asTypeNode(Node anyNode);
-
-
-    /**
-     * Returns the given node casted to {@link O} if it's of the correct
-     * type, otherwise returns null.
-     */
-    O asOperationNode(Node anyNode);
-
+    Set<Metric<?, ?>> getMetrics();
 
     /**
      * Computes all metrics available on the given node.
@@ -66,5 +43,14 @@ public interface LanguageMetricsProvider<T extends Node, O extends Node> {
      *
      * @return A map of metric key to their result, possibly empty, but with no null value
      */
-    Map<MetricKey<?>, Double> computeAllMetricsFor(Node node);
+    default Map<Metric<?, ?>, Number> computeAllMetricsFor(Node node) {
+        Map<Metric<?, ?>, Number> results = new HashMap<>();
+        for (Metric<?, ?> metric : getMetrics()) {
+            @Nullable Number result = Metric.compute(metric, MetricOptions.emptyOptions(), node);
+            if (result != null) {
+                results.put(metric, result);
+            }
+        }
+        return results;
+    }
 }
