@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -78,12 +79,6 @@ public final class SymbolTableResolver {
 
         private final Deque<ASTAnyTypeDeclaration> enclosingType = new ArrayDeque<>();
 
-        /*
-            TODO do disambiguation entirely in this visitor
-             This is because qualified ctor invocations need the type of their LHS
-             This is tricky because disambig needs to proceed bottom up
-         */
-
         MyVisitor(ASTCompilationUnit root, SymTableFactory helper) {
             this.root = root;
             f = helper;
@@ -107,7 +102,28 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTClassOrInterfaceType node, @NonNull ReferenceCtx data) {
-            // all types are disambiguated in this resolver, because of qualified anon classes...
+            // all types are disambiguated in this resolver, because
+            // the symbols available inside the body of an anonymous class
+            // depend on the type of the superclass/superinterface (the Runnable in `new Runnable() { }`).
+            // This type may be
+            // 1. a diamond (`new Function<>() { ... }`),
+            // 2. qualified (`expr.new Inner() { ... }`)
+            // 3. both
+            // For case 2, resolution of the symbol of Inner needs full
+            // type resolution of the qualifying `expr`, which may depend
+            // on the disambiguation of arbitrary type nodes (eg method
+            // parameters, local var types).
+            // Which means, as early as in this visitor, we may need the
+            // symbols of all class types. For that reason we disambiguate
+            // them early.
+            // Todo test ambig names in expressions depended on by the qualifier
+            f.disambig(NodeStream.of(node), data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTAmbiguousName node, @NonNull ReferenceCtx data) {
+            // see comment in visit(ClassType)
             f.disambig(NodeStream.of(node), data);
             return null;
         }
