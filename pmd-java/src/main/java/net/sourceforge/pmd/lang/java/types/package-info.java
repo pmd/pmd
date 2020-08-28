@@ -40,30 +40,11 @@ class Scratch {
  */
 
 
-/*
-TODO: qualified super ctor call
-   -> Update CtorInvocMirror.ExplicitCtorInvocMirror#getNewType
-
-
-class Outer {
-    class Inner<T> {
-        public Inner(T value) { }
-    }
-}
-
-
-class Scratch extends Outer.Inner<String> {
-
-    public Scratch(Outer o) {
-        o.super("value");
-    }
-}
-
- */
 
 
 /* TODO possibly, the type node for a diamond should have the parameterized
-    type, for now it's the generic type declaration
+    type, for now it's the generic type declaration, which has out-of-scope
+    type params
     See TypesFromAst
 
 import java.util.ArrayList;

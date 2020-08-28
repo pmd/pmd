@@ -7,9 +7,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.shouldMatchMethod
-import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.*
 
 /**
  * @author Clément Fournier
@@ -192,6 +190,93 @@ class CtorInferenceTest : ProcessorTestSpec({
             }
         }
 
+    }
+
+    parserTest("Qualified superclass ctor") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+
+
+            class Outer {
+                class Inner<T> {
+                    public Inner(T value) { }
+                }
+            }
+
+
+            class Scratch extends Outer.Inner<String> {
+            
+                public Scratch(Outer o) {
+                    o.super("value");
+                }
+            }
+
+            """)
+
+        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+
+        val (innerCtor) = acu.ctorDeclarations().toList()
+        val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
+
+        spy.shouldBeOk {
+            ctor.methodType.shouldMatchMethod(
+                    named = JConstructorSymbol.CTOR_NAME,
+                    declaredIn = t_Outer select t_Inner[ts.STRING],
+                    withFormals = listOf(ts.STRING),
+                    returning = t_Outer select t_Inner[ts.STRING]
+            )
+
+            ctor.methodType.let {
+                it.symbol shouldBe innerCtor.symbol
+                it.symbol.tryGetNode() shouldBe innerCtor
+            }
+        }
+    }
+
+    parserTest("Qualified generic superclass ctor") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+
+
+            class Outer<O> {
+                class Inner {
+                    public Inner(O value) { }
+                }
+            }
+
+
+            class Scratch extends Outer<Integer>.Inner {
+                // TODO make a test where the super is the raw type Outer.Inner
+                // then the explicit ctor invoc may be different
+
+                public Scratch() {
+                    new Outer<Integer>().super(4);
+                }
+            }
+
+            """)
+
+
+        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+
+        val (innerCtor) = acu.ctorDeclarations().toList()
+        val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
+
+        spy.shouldBeOk {
+            ctor.methodType.shouldMatchMethod(
+                    named = JConstructorSymbol.CTOR_NAME,
+                    declaredIn = t_Outer[ts.INT.box()] select t_Inner,
+                    withFormals = listOf(ts.INT.box()),
+                    returning = t_Outer[ts.INT.box()] select t_Inner
+            )
+
+            ctor.methodType.let {
+                it.symbol shouldBe innerCtor.symbol
+                it.symbol.tryGetNode() shouldBe innerCtor
+            }
+        }
     }
 
 })
