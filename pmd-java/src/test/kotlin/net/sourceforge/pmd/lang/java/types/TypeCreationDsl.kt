@@ -93,8 +93,10 @@ interface TypeDslMixin {
     operator fun KClass<*>.get(vararg t: JTypeMirror): JClassType = this.decl.withTypeArguments(t.toList())
     operator fun KClass<*>.get(vararg t: KClass<*>): JClassType = this.decl.withTypeArguments(t.toList().map { it.decl })
 
-    infix fun JClassType.select(inner: JClassType) =
+    infix fun JClassType.select(inner: JClassType): JClassType =
             this.selectInner(inner.symbol, inner.typeArgs)
+
+    operator fun JClassType.div(inner: JClassType): JClassType = select(inner)
 
 
     /** Unbounded wildcard. The wildcard DSL allows

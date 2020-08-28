@@ -49,7 +49,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 argList {
                     constructorCall {
                         classType("Gen") {
-                            it.typeMirror shouldBe t_Gen
+                            it.typeMirror shouldBe t_Gen.erasure
                             diamond()
                         }
 
@@ -281,6 +281,88 @@ class AnonCtorsTest : ProcessorTestSpec({
                     child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
                         it.typeMirror shouldBe t_Anon // though
                     }
+                }
+            }
+        }
+    }
+
+
+
+    parserTest("Test qualified diamond anonymous class constructor, depending on disambig in sibling tree") {
+
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                    
+            package p.q;
+
+            class Scratch<S> {
+
+                class Inner<T> extends Foo<S> { }
+
+                public void main(String[] args) {
+                    // getScratch's return type is ambiguous, it needs to be disambiged
+                    // before the symbol table for inherited members of the new Inner is
+                    // set, otherwise we don't know the actual type of the LHS
+                    Scratch<Integer>.Inner<String> invalid = Foo.<java.lang.Integer>getScratch().new Inner<>() {
+                        // stuff inherited here needs
+                        {
+                            // fooField is inherited through superclass Foo<S>
+                            // it's declared later in the compilation unit
+                            fooField.toString();
+                        }
+                    };
+                }
+                
+                static class Foo<Q> { 
+                
+                    // this return type is ambiguous
+                    static <T> p.q.Scratch<T> getScratch() { return new Scratch<>(); }
+                    
+                    Q fooField;
+                }
+            }
+            """)
+
+        val (t_Scratch, t_Inner, t_Anon, t_Foo) = acu.declaredTypeSignatures()
+        
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val fieldAccess = acu.descendants(ASTVariableAccess::class.java).crossFindBoundaries().firstOrThrow()
+
+        spy.shouldBeOk {
+
+            // Scratch<Integer>.Inner<String>
+            val innerT = t_Scratch[int.box()] / t_Inner[gen.t_String]
+
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
+
+
+                    it.typeMirror shouldBe innerT
+
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = innerT,
+                            withFormals = emptyList(),
+                            returning = innerT
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
+
+
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it.typeMirror shouldBe t_Anon // though
+                    }
+                }
+            }
+
+            fieldAccess.shouldMatchN {
+                variableAccess("fooField") {
+                    it shouldHaveType int.box()
                 }
             }
         }

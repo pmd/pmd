@@ -217,7 +217,7 @@ final class AstClassSym
 
             } else if (node.getParent() instanceof ASTConstructorCall) {
 
-                @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
+                @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeMirror();
 
                 return sym instanceof JClassType && !sym.isInterface()
                        ? (JClassType) sym

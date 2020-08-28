@@ -409,6 +409,8 @@ public final class TypeOps {
     private static Convertibility isSubtypePure(JTypeMirror t, JTypeMirror s) {
         if (t instanceof InferenceVar) {
             return Convertibility.subtypeIf(((InferenceVar) t).isSubtypeNoSideEffect(s));
+        } else if (s instanceof InferenceVar) {
+            return Convertibility.subtypeIf(((InferenceVar) s).isSupertypeNoSideEffect(t));
         }
 
         return isConvertible(t, s);

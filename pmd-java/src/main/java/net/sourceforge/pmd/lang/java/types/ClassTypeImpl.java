@@ -191,6 +191,10 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public JClassType withTypeArguments(List<? extends JTypeMirror> typeArgs) {
+        if (enclosingType != null) {
+            return enclosingType.selectInner(symbol, new ArrayList<>(typeArgs));
+        }
+
         int expected = symbol.getTypeParameterCount();
         if (typeArgs.size() != expected && !typeArgs.isEmpty()) {
             throw invalidTypeArgs(symbol, typeArgs);

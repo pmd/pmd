@@ -121,28 +121,22 @@ final class TypesFromAst {
 
         ASTTypeArguments typeArguments = node.getTypeArguments();
 
+        List<JTypeMirror> boundGenerics = Collections.emptyList();
         if (typeArguments != null) {
-            if (typeArguments.isDiamond()) {
-                // todo should be set to the inferred type! later
-                return ts.declaration((JClassSymbol) reference);
-            } else {
-                final List<JTypeMirror> boundGenerics = new ArrayList<>(typeArguments.getNumChildren());
+            if (!typeArguments.isDiamond()) {
+                boundGenerics = new ArrayList<>(typeArguments.getNumChildren());
                 for (ASTType t : typeArguments) {
                     boundGenerics.add(fromAst(ts, subst, t));
                 }
-
-                if (enclosing != null) {
-                    return enclosing.selectInner((JClassSymbol) reference, boundGenerics);
-                } else {
-                    return ts.parameterise((JClassSymbol) reference, boundGenerics);
-                }
             }
+            // fallthrough, this will be set to the raw type (with the correct enclosing type)
+            // until the constructor call is fully type resolved
         }
 
         if (enclosing != null) {
-            return enclosing.selectInner((JClassSymbol) reference, Collections.emptyList());
+            return enclosing.selectInner((JClassSymbol) reference, boundGenerics);
         } else {
-            return ts.rawType(reference);
+            return ts.parameterise((JClassSymbol) reference, boundGenerics);
         }
     }
 

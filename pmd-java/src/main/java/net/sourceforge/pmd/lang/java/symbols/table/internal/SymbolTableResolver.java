@@ -6,9 +6,13 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -16,11 +20,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -66,36 +72,78 @@ public final class SymbolTableResolver {
     public static void traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
         SymTableFactory helper = new SymTableFactory(root.getPackageName(), processor);
         ReferenceCtx ctx = ReferenceCtx.root(processor, root);
-        new MyVisitor(root, helper).traverse(ctx);
+        Set<DeferredNode> todo = Collections.singleton(new DeferredNode(root, ctx, SymbolTableImpl.EMPTY));
+        do {
+            Set<DeferredNode> newDeferred = new HashSet<>();
+            for (DeferredNode deferred : todo) {
+                MyVisitor visitor = new MyVisitor(helper, todo, newDeferred);
+                visitor.traverse(deferred);
+            }
+            todo = newDeferred;
+        } while (!todo.isEmpty());
+    }
+
+    private static class DeferredNode {
+
+        final JavaNode node;
+        // this is data used to resume the traversal
+        final ReferenceCtx enclosingCtx;
+        final JSymbolTable localStackTop;
+
+        private DeferredNode(JavaNode node, ReferenceCtx enclosingCtx, JSymbolTable localStackTop) {
+            this.node = node;
+            this.enclosingCtx = enclosingCtx;
+            this.localStackTop = localStackTop;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            DeferredNode that = (DeferredNode) o;
+            return node.equals(that.node);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(node);
+        }
     }
 
     private static class MyVisitor extends JavaVisitorBase<@NonNull ReferenceCtx, Void> {
 
-        private final ASTCompilationUnit root;
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
         private final Deque<ASTAnyTypeDeclaration> enclosingType = new ArrayDeque<>();
 
-        MyVisitor(ASTCompilationUnit root, SymTableFactory helper) {
-            this.root = root;
+        private final Set<DeferredNode> deferredInPrevRound;
+        private final Set<DeferredNode> newDeferred;
+
+        MyVisitor(SymTableFactory helper, Set<DeferredNode> deferredInPrevRound, Set<DeferredNode> newDeferred) {
             f = helper;
+            this.deferredInPrevRound = deferredInPrevRound;
+            this.newDeferred = newDeferred;
         }
 
 
         /**
          * Start the analysis.
          */
-        public void traverse(ReferenceCtx ctx) {
+        void traverse(DeferredNode task) {
             assert stack.isEmpty()
                 : "Stack should be empty when starting the traversal";
 
-            stack.push(SymbolTableImpl.EMPTY);
-            root.acceptVisitor(this, ctx);
-            stack.pop();
+            stack.push(task.localStackTop);
+            task.node.acceptVisitor(this, task.enclosingCtx);
+            JSymbolTable last = stack.pop();
 
-            assert stack.isEmpty()
-                : "Unbalanced stack push/pop! Left " + stack;
+            assert last == task.localStackTop
+                : "Unbalanced stack push/pop! Started with " + task.localStackTop + ", finished on " + last;
         }
 
         @Override
@@ -216,6 +264,22 @@ public final class SymbolTableResolver {
             return null;
         }
 
+        @Override
+        public Void visit(ASTAnonymousClassDeclaration node, @NonNull ReferenceCtx ctx) {
+            if (node.getParent() instanceof ASTConstructorCall) {
+                // deferred to later, the symbol table for its body depends
+                // on typeres of the ctor which may be qualified, and refer
+                // to stuff that are declared later in the compilation unit,
+                // and not yet disambiged.
+                DeferredNode deferredSpec = new DeferredNode(node, ctx, top());
+                if (!deferredInPrevRound.contains(deferredSpec)) {
+                    newDeferred.add(deferredSpec);
+                    return null;
+                }
+                // otherwise fallthrough
+            }
+            return visitTypeDecl(node, ctx);
+        }
 
         @Override
         public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, @NonNull ReferenceCtx ctx) {

@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+
 /**
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
  * expression}
@@ -44,9 +46,10 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
     @Override
     public @NonNull List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
-            ASTClassOrInterfaceType type = ((ASTConstructorCall) getParent()).getTypeNode();
-            if (type.getReferencedSym() != null && type.getReferencedSym().isInterface()) {
-                return listOf(type);
+            ASTConstructorCall ctor = (ASTConstructorCall) getParent();
+            @NonNull JTypeMirror type = ctor.getTypeMirror();
+            if (type.isInterface()) {
+                return listOf(ctor.getTypeNode());
             }
         }
         return Collections.emptyList();

@@ -163,6 +163,10 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return isEquivalentTo(other) || other.isTop();
     }
 
+    public boolean isSupertypeNoSideEffect(@NonNull JTypeMirror other) {
+        return isEquivalentTo(other) || other.isBottom();
+    }
+
     /**
      * Sets the bounds of this ivar and the other to the union of both sets.
      */

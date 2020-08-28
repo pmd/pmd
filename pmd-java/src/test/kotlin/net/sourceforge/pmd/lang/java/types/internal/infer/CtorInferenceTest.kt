@@ -99,8 +99,9 @@ class CtorInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Generic enum constant ctors") {
+        logTypeInference(true)
 
-        val acu = parser.parse(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
             import java.util.function.Function;
@@ -119,7 +120,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
         val (a) = acu.descendants(ASTEnumConstant::class.java).toList()
 
-        with(acu.typeDsl) {
+        spy.shouldBeOk {
 
             a.methodType.shouldMatchMethod(
                     named = JConstructorSymbol.CTOR_NAME,

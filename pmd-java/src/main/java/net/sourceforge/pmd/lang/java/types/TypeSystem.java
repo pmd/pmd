@@ -486,16 +486,14 @@ public final class TypeSystem {
     }
 
 
+    // TODO spec
+    //  - should be equivalent to rawType(klass).withTypeArguments(typeArgs)
+    //  - should not accept malformed types, esp. those where there is an enclosing type
+    //  - test: should not recreate OBJECT
     public @NonNull JTypeMirror parameterise(JClassSymbol klass, List<? extends JTypeMirror> typeArgs) {
-        Objects.requireNonNull(klass, "Null class symbol");
-        Objects.requireNonNull(typeArgs, "Null type arguments, use an empty list!");
-
-        if (!klass.isUnresolved() && !typeArgs.isEmpty() && klass.getTypeParameterCount() != typeArgs.size()) {
-            throw new IllegalArgumentException("Cannot parameterize " + klass + " with " + typeArgs);
-        } else if (typeArgs.isEmpty()) {
-            return rawType(klass);
+        if (!klass.isGeneric() && typeArgs.isEmpty()) {
+            return rawType(klass); // note this ensures that OBJECT is preserved
         }
-
         // if the type arguments are mismatched, the constructor will throw
         return new ClassTypeImpl(this, klass, new ArrayList<>(typeArgs), false);
     }
