@@ -69,12 +69,13 @@ class O {
 
 
 /* TODO finish NamedReferenceExpr by patching LazyTypeResolver
+     this needs tests, will be done in fwd branch
 
  */
 
 
 /* TODO test explicitly typed lambda (in ExplicitTypesTest)
-
+     wildcard parameterization inference is not implemented yet.
  */
 
 

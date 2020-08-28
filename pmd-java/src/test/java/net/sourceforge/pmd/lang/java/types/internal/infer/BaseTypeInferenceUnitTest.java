@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.BaseMatcher;
@@ -221,11 +220,6 @@ public class BaseTypeInferenceUnitTest {
         @Override
         public void describeTo(Description description) {
             description.appendText("_" + kind.getSym() + t);
-        }
-
-        public static Map<BoundKind, Set<JTypeMirror>> collectByKind(Bound... bounds) {
-            return Arrays.stream(bounds).collect(Collectors.groupingBy(b -> b.kind,
-                                                                       Collectors.mapping(b -> b.t, Collectors.toCollection(LinkedHashSet::new))));//mutable set
         }
 
         public static Bound lower(JTypeMirror t) {
