@@ -95,8 +95,8 @@ final class SymTableFactory {
     // <editor-fold defaultstate="collapsed" desc="Utilities for classloading">
 
 
-    public void disambig(NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration context, boolean outsideContext) {
-        InternalApiBridge.disambig(processor, nodes, context, outsideContext);
+    public void disambig(NodeStream<? extends JavaNode> nodes, ReferenceCtx context) {
+        InternalApiBridge.disambigWithCtx(nodes, context);
     }
 
     SemanticChecksLogger getLogger() {
@@ -318,7 +318,9 @@ final class SymTableFactory {
         JClassSymbol sym = t.getSymbol();
 
         ShadowChainNode<JTypeMirror, ScopeInfo> types = typeNode(parent);
-        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, t);                                                        // self name
+        if (!sym.isAnonymousClass()) {
+            types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, t);                                                        // self name
+        }
         types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                                           // inherited classes (note they shadow the enclosing type)
         types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(t.getDeclaredClasses()));       // inner classes declared here
         types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));                   // type parameters

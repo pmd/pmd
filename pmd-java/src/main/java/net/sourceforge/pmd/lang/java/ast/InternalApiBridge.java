@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -116,12 +117,8 @@ public final class InternalApiBridge {
         }
     }
 
-    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration context, boolean outsideContext) {
-        AstDisambiguationPass.disambig(processor, nodes, context, outsideContext);
-    }
-
-    public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
-        AstDisambiguationPass.disambig(processor, root);
+    public static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
+        AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
     public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {

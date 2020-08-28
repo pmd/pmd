@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
@@ -170,6 +171,116 @@ class AnonCtorsTest : ProcessorTestSpec({
                 child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
                     it.typeMirror shouldBe t_Anon // though
 
+                }
+            }
+        }
+    }
+
+    parserTest("Test qualified anonymous class constructor") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                        
+            class Scratch {
+
+                class Inner {}
+
+                public static void main(String[] args) {
+                    new Scratch().new Inner() {
+
+                    };
+                }
+            }
+            """)
+
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
+
+                    it.typeMirror shouldBe t_Inner
+
+                    t_Inner.shouldBeA<JClassType> {
+                        it.enclosingType shouldBe t_Scratch
+                    }
+
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = t_Inner,
+                            withFormals = emptyList(),
+                            returning = t_Inner
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
+
+
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it.typeMirror shouldBe t_Anon // though
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    parserTest("Test qualified diamond anonymous class constructor") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+
+            class Scratch<S> {
+
+                class Inner<T> {}
+
+                public void main(String[] args) {
+                    // note: this is invalid, because the Scratch<> diamond doesn't have context
+                    // Inner<String> invalid = new Scratch<>().new Inner<>() {};
+
+                    Scratch<S> s = null; // this type node needs to be disambiged early
+                    Inner<String> invalid = s.new Inner<>() {
+
+                    };
+                }
+            }
+            """)
+
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
+
+                    it.typeMirror shouldBe t_Inner[gen.t_String]
+
+                    t_Inner.shouldBeA<JClassType> {
+                        it.enclosingType shouldBe t_Scratch
+                    }
+
+                    it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = t_Inner[gen.t_String],
+                            withFormals = emptyList(),
+                            returning = t_Inner[gen.t_String]
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
+
+
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it.typeMirror shouldBe t_Anon // though
+                    }
                 }
             }
         }

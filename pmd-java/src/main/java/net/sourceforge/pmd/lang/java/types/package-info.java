@@ -97,19 +97,3 @@ class O {
  */
 
 
-/* TODO qualified anonymous constructor
-
-class Scratch {
-
-    class Inner {}
-
-    public static void main(String[] args) {
-        new Scratch().new Inner() {
-
-        };
-    }
-}
-
-
-
- */
