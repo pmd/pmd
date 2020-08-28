@@ -16,13 +16,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
-import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -213,26 +211,6 @@ public final class SymbolTableResolver {
 
             enclosingType.pop();
 
-            popStack(pushed);
-
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTAnonymousClassDeclaration node, @NonNull ReferenceCtx ctx) {
-
-            // the supertype node, should be disambiguated to access members of the type
-            f.disambig(node.asStream().parents()
-                           .filterIs(ASTConstructorCall.class)
-                           .map(ASTConstructorCall::getTypeNode),
-                       ctx);
-
-            // helper.pushCtxType(node.getSymbol());
-            int pushed = pushOnStack(f.typeBody(top(), node.getTypeMirror())); // methods & fields & inherited classes
-
-            setTopSymbolTableAndRecurse(node.getBody(), ctx);
-
-            // helper.popCtxType();
             popStack(pushed);
 
             return null;
