@@ -75,7 +75,7 @@ public class AcceptanceTest extends BaseNonParserTest {
                 assertEquals(1, usages.size());
                 assertEquals(3, usages.get(0).getLocation().getBeginLine());
             } else {
-                fail("Unkown variable " + vnd);
+                fail("Unknown variable " + vnd);
             }
         }
     }

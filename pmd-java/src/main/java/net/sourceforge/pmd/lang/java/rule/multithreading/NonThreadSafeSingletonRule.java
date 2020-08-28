@@ -81,11 +81,11 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                 if (n == null || !fieldDecls.containsKey(n.getImage())) {
                     continue;
                 }
-                List<ASTAssignmentOperator> assigmnents = ifStatement
+                List<ASTAssignmentOperator> assignments = ifStatement
                         .findDescendantsOfType(ASTAssignmentOperator.class);
                 boolean violation = false;
-                for (int ix = 0; ix < assigmnents.size(); ix++) {
-                    ASTAssignmentOperator oper = assigmnents.get(ix);
+                for (int ix = 0; ix < assignments.size(); ix++) {
+                    ASTAssignmentOperator oper = assignments.get(ix);
                     if (!(oper.getParent() instanceof ASTStatementExpression)) {
                         continue;
                     }

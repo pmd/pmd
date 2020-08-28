@@ -187,7 +187,7 @@ public class Foo {
     } catch (SQLException se) {
         throw new DataAccessException(se);
     } finally {
-        //call method to close the ResultSet and PreparedStatment
+        //call method to close the ResultSet and PreparedStatement
     }
     return result;
   }

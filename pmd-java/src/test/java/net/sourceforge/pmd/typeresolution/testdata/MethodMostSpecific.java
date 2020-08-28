@@ -12,7 +12,7 @@ import javax.management.relation.RoleList;
 
 public abstract class MethodMostSpecific {
     void test() {
-        // Hiararchy: Object, AbstractCollection, AbstractList, ArrayList, RoleList
+        // Hierarchy: Object, AbstractCollection, AbstractList, ArrayList, RoleList
 
         String a = moreSpecific((Number) null, (AbstractCollection) null);
         Exception b = moreSpecific((Integer) null, (AbstractList) null);
