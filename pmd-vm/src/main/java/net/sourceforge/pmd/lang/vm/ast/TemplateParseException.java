@@ -107,18 +107,18 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * returns the Template name where this exception occured.
+     * returns the Template name where this exception occurred.
      *
-     * @return The Template name where this exception occured.
+     * @return The Template name where this exception occurred.
      */
     public String getTemplateName() {
         return templateName;
     }
 
     /**
-     * returns the line number where this exception occured.
+     * returns the line number where this exception occurred.
      *
-     * @return The line number where this exception occured.
+     * @return The line number where this exception occurred.
      */
     public int getLineNumber() {
         if (currentToken != null && currentToken.next != null) {
@@ -129,9 +129,9 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * returns the column number where this exception occured.
+     * returns the column number where this exception occurred.
      *
-     * @return The column number where this exception occured.
+     * @return The column number where this exception occurred.
      */
     public int getColumnNumber() {
         if (currentToken != null && currentToken.next != null) {

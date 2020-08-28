@@ -355,7 +355,7 @@ void attachLibrary() :
 
 /**
  * All global definitions of triggers, functions and procedures are evaluated here.
- * Every occurence goes under a new PACKAGE-Node in the XML document.
+ * Every occurrence goes under a new PACKAGE-Node in the XML document.
  * This happens, cause a global "block" does not have a definied start and end token
  * like a package specification or a package body.
  * Thats why every construct is handled like a new part of the global package.
@@ -4393,7 +4393,7 @@ ASTTriggerUnit TriggerUnit()  :
 
 	[ [<FORWARD>|<REVERSE>] <CROSSEDITION> ] // 11G Syntax to specify Cross Edition Trigger
 	[ (<FOLLOWS>|<PRECEDES>) ( [LOOKAHEAD(2) ID() "."] ID() )  ( ","  ( [ LOOKAHEAD(2) ID() "."] ID() ) )* ] // 11G Syntax to specify trigger firing order
-	[ <ENABLE> | <DISABLE> ] // 11G Syntax can create the trigger enabled or disabled explcitly
+	[ <ENABLE> | <DISABLE> ] // 11G Syntax can create the trigger enabled or disabled explicitly
 	[ <WHEN> "(" ConditionalOrExpression() ")" ]
 
 	//Trigger Body follows :

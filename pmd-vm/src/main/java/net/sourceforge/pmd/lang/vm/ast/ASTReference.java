@@ -51,7 +51,7 @@ public class ASTReference extends AbstractVmNode {
      * Indicates if toString() should be called during condition evaluation just
      * to ensure it does not return null. Check is unnecessary if all toString()
      * implementations are known to have non-null return values. Disabling the
-     * check will give a performance improval since toString() may be a complex
+     * check will give a performance improvement since toString() may be a complex
      * operation on large objects.
      *
      * @deprecated for removal with PMD 7.0.0
@@ -89,7 +89,7 @@ public class ASTReference extends AbstractVmNode {
      * Routine to allow the literal representation to be externally overridden.
      * Used now in the VM system to override a reference in a VM tree with the
      * literal of the calling arg to make it work nicely when calling arg is
-     * null. It seems a bit much, but does keep things consistant.
+     * null. It seems a bit much, but does keep things consistent.
      *
      * Note, you can only set the literal once...
      *

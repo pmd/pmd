@@ -201,13 +201,13 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
         if (methodNode.getUsers().isEmpty()) {
             boolean log = true;
             if (options.isIgnoreMethodAllOverride()) {
-                if (ClassLoaderUtil.isOverridenMethod(methodNode.getClassNode().getClass(), methodNode.getMember(),
+                if (ClassLoaderUtil.isOverriddenMethod(methodNode.getClassNode().getClass(), methodNode.getMember(),
                         false)) {
                     ignore("method all override", methodNode);
                     log = false;
                 }
             } else if (options.isIgnoreMethodJavaLangObjectOverride()) {
-                if (ClassLoaderUtil.isOverridenMethod(java.lang.Object.class, methodNode.getMember(), true)) {
+                if (ClassLoaderUtil.isOverriddenMethod(java.lang.Object.class, methodNode.getMember(), true)) {
                     ignore("method java.lang.Object override", methodNode);
                     log = false;
                 }

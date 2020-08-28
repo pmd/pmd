@@ -11,7 +11,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericSuperClassA
 /*
  * TODO: add anonymous class this (Allocation expression)
  * TODO: add primitives, parameterized arrays
- * TODO: diamond, type parmeter declarations can shadow Class declarations
+ * TODO: diamond, type parameter declarations can shadow Class declarations
  */
 
 public class FieldAccessGenericSimple extends GenericSuperClassA<Long> {

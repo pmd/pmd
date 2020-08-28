@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Not OK! Has overriden getInstance() methods</description>
+        <description>Not OK! Has overridden getInstance() methods</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Singleton {

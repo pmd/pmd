@@ -291,14 +291,14 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         if (fileName.indexOf(this.pwd) == 0) {
             relativePath = "." + fileName.substring(this.pwd.length());
 
-            // remove current dir occuring twice - occurs if . was supplied as
+            // remove current dir occurring twice - occurs if . was supplied as
             // path
             if (relativePath.startsWith("." + File.separator + "." + File.separator)) {
                 relativePath = relativePath.substring(2);
             }
         } else {
             // this happens when pmd's supplied argument deviates from the pwd
-            // 'branch' (god knows this terminolgy - i hope i make some sense).
+            // 'branch' (god knows this terminology - i hope i make some sense).
             // for instance, if supplied=/usr/lots/of/src and
             // pwd=/usr/lots/of/shared/source
             // TODO: a fix to get relative path?

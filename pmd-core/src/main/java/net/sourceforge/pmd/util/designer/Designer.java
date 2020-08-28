@@ -179,11 +179,11 @@ public class Designer implements ClipboardOwner {
         frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
         frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
         frame.setVisible(true);
-        int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
-        controlSplitPane.setDividerLocation(horozontalMiddleLocation);
+        int horizontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
+        controlSplitPane.setDividerLocation(horizontalMiddleLocation);
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
         astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
-        resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
+        resultsSplitPane.setDividerLocation(horizontalMiddleLocation);
 
         loadSettings();
     }
@@ -660,9 +660,9 @@ public class Designer implements ClipboardOwner {
                                 entry.getKey().getClass().getSimpleName() + ": " + entry.getKey());
                         scopeTreeNode.add(nameDeclarationTreeNode);
                         for (NameOccurrence nameOccurrence : entry.getValue()) {
-                            DefaultMutableTreeNode nameOccurranceTreeNode = new DefaultMutableTreeNode(
+                            DefaultMutableTreeNode nameOccurrenceTreeNode = new DefaultMutableTreeNode(
                                     "Name occurrence: " + nameOccurrence);
-                            nameDeclarationTreeNode.add(nameOccurranceTreeNode);
+                            nameDeclarationTreeNode.add(nameOccurrenceTreeNode);
                         }
                     }
                 }
@@ -890,16 +890,16 @@ public class Designer implements ClipboardOwner {
         return b;
     }
 
-    private static void makeTextComponentUndoable(JTextComponent textConponent) {
+    private static void makeTextComponentUndoable(JTextComponent textComponent) {
         final UndoManager undoManager = new UndoManager();
-        textConponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
+        textComponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
             @Override
             public void undoableEditHappened(UndoableEditEvent evt) {
                 undoManager.addEdit(evt.getEdit());
             }
         });
-        ActionMap actionMap = textConponent.getActionMap();
-        InputMap inputMap = textConponent.getInputMap();
+        ActionMap actionMap = textComponent.getActionMap();
+        InputMap inputMap = textComponent.getInputMap();
         actionMap.put("Undo", new AbstractAction("Undo") {
             @Override
             public void actionPerformed(ActionEvent evt) {
