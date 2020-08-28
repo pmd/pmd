@@ -1033,7 +1033,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 } else if (type.getChild(0) instanceof ASTReferenceType) {
                     parameterTypes.add("ref");
                 } else {
-                    parameterTypes.add("<unkown>");
+                    parameterTypes.add("<unknown>");
                 }
             }
         }

@@ -123,7 +123,7 @@ public abstract class DeprecatedAttrLogger {
                 if (!replacement.isEmpty()) {
                     msg += ", please use " + replacement + " instead";
                 }
-                // log with execption stack trace to help figure out where exactly the xpath is used.
+                // log with exception stack trace to help figure out where exactly the xpath is used.
                 LOG.log(Level.WARNING, msg, new RuntimeException(msg));
             }
         }

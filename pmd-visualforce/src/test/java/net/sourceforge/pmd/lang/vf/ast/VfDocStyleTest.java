@@ -139,9 +139,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValue() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
-        assertEquals("One element expected!", 1, elememts.size());
-        ASTElement element = elememts.iterator().next();
+        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
+        assertEquals("One element expected!", 1, elements.size());
+        ASTElement element = elements.iterator().next();
         ASTAttributeValue attribute = element.getFirstDescendantOfType(ASTAttributeValue.class);
         ASTIdentifier id = attribute.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct identifier expected", "foo", id.getImage());
@@ -153,9 +153,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValueWithCommentDQ() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT);
-        assertEquals("One element expected!", 1, elememts.size());
-        ASTElement element = elememts.iterator().next();
+        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT);
+        assertEquals("One element expected!", 1, elements.size());
+        ASTElement element = elements.iterator().next();
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
         ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct identifier expected", "init", id.getImage());
@@ -166,9 +166,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValueWithCommentSQ() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ);
-        assertEquals("One element expected!", 1, elememts.size());
-        ASTElement element = elememts.iterator().next();
+        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ);
+        assertEquals("One element expected!", 1, elements.size());
+        ASTElement element = elements.iterator().next();
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
         ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct identifier expected", "init", id.getImage());
@@ -723,12 +723,12 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_TAB_ATTR = "<tag:if something='\t' >   </tag:if>";
 
-    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if someting=\"x\" > </tag:someTag>";
+    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if something=\"x\" > </tag:someTag>";
 
     /**
      * someTag is closed just once
      */
-    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag someting=\"x\" > </tag:someTag> </tag:x>";
+    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag something=\"x\" > </tag:someTag> </tag:x>";
 
     /**
      * nested empty tags
@@ -757,7 +757,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     private static final String TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE = "<a> <x> <a> <b> <b> </z> </a> </x>";
 
-    private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if someting='x' > </tag:someTag>";
+    private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if something='x' > </tag:someTag>";
 
     private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<apex:someTag something={!something} > foo </apex:someTag>";
 }

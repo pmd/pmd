@@ -264,7 +264,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             if (occ.getLocation().getFirstParentOfType(ASTForUpdate.class) == null
                 && occ.getLocation().getFirstParentOfType(ASTExpression.class)
                 != stmt.getFirstChildOfType(ASTExpression.class)
-                && !occurenceIsArrayAccess(occ, arrayName)) {
+                && !occurrenceIsArrayAccess(occ, arrayName)) {
                 return false;
             }
         }
@@ -272,7 +272,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private boolean occurenceIsArrayAccess(NameOccurrence occ, String arrayName) {
+    private boolean occurrenceIsArrayAccess(NameOccurrence occ, String arrayName) {
         if (occ.getLocation() instanceof ASTName) {
             ASTPrimarySuffix suffix = occ.getLocation().getFirstParentOfType(ASTPrimarySuffix.class);
 
@@ -319,7 +319,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             if (occ.getLocation().getFirstParentOfType(ASTForUpdate.class) == null
                 && occ.getLocation().getFirstParentOfType(ASTExpression.class)
                 != stmt.getFirstChildOfType(ASTExpression.class)
-                && !occurenceIsListGet(occ, listName)) {
+                && !occurrenceIsListGet(occ, listName)) {
                 return false;
             }
         }
@@ -328,8 +328,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    /** @return true if this occurence is as an argument to List.get on the correct list */
-    private static boolean occurenceIsListGet(NameOccurrence occ, String listName) {
+    /** @return true if this occurrence is as an argument to List.get on the correct list */
+    private static boolean occurrenceIsListGet(NameOccurrence occ, String listName) {
         if (occ.getLocation() instanceof ASTName) {
             ASTPrimarySuffix suffix = occ.getLocation().getFirstParentOfType(ASTPrimarySuffix.class);
 

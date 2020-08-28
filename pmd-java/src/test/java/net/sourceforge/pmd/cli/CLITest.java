@@ -106,6 +106,6 @@ public class CLITest extends BaseCLITest {
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
         assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern
-                .quote("No rules found. Maybe you mispelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
+                .quote("No rules found. Maybe you misspelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
     }
 }

@@ -56,14 +56,14 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
         if (".method".equals(classAndMethodName)) {
             // working on a directory tree
-            renderDirectoy(writer, violations);
+            renderDirectory(writer, violations);
         } else {
             // working on one file
             renderFile(writer, violations);
         }
     }
 
-    private void renderDirectoy(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+    private void renderDirectory(Writer writer, Iterator<RuleViolation> violations) throws IOException {
         SourcePath sourcePath = new SourcePath(getProperty(SOURCE_PATH));
         StringBuilder buf = new StringBuilder();
         while (violations.hasNext()) {

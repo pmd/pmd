@@ -347,7 +347,7 @@ public class RuleSetFactoryTest {
                     "WARNING: Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
         assertEquals(1,
                 StringUtils.countMatches(logging.getLog(),
-                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is mispelled or the rule doesn't exist anymore?"));
+                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is misspelled or the rule doesn't exist anymore?"));
     }
 
     /**
@@ -563,7 +563,7 @@ public class RuleSetFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIncorrectExternalRef() throws IllegalArgumentException, RuleSetNotFoundException {
-        loadFirstRule(REF_MISPELLED_XREF);
+        loadFirstRule(REF_MISSPELLED_XREF);
     }
 
     @Test
@@ -921,7 +921,7 @@ public class RuleSetFactoryTest {
         + " </rule>\n"
         + "</ruleset>";
 
-    private static final String REF_MISPELLED_XREF = "<?xml version=\"1.0\"?>\n"
+    private static final String REF_MISSPELLED_XREF = "<?xml version=\"1.0\"?>\n"
         + "<ruleset name=\"test\">\n"
         + "\n"
         + " <description>testdesc</description>\n"

@@ -196,7 +196,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (1)</description>
+        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close connection method (1)</description>
         <rule-property name="closeTargets">this.closeConnection</rule-property>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
@@ -216,7 +216,7 @@ public class Foo {
     </test-code>
 
    <test-code>
-        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (2)</description>
+        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close connection method (2)</description>
         <rule-property name="closeTargets">this.closeConnection</rule-property>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>

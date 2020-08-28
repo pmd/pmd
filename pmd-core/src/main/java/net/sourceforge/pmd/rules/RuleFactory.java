@@ -235,17 +235,17 @@ public class RuleFactory {
      * @return A map of property names to their value
      */
     private Map<String, String> getPropertyValuesFrom(Element propertiesNode) {
-        Map<String, String> overridenProperties = new HashMap<>();
+        Map<String, String> overriddenProperties = new HashMap<>();
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())) {
                 Entry<String, String> overridden = getPropertyValue((Element) node);
-                overridenProperties.put(overridden.getKey(), overridden.getValue());
+                overriddenProperties.put(overridden.getKey(), overridden.getValue());
             }
         }
 
-        return overridenProperties;
+        return overriddenProperties;
     }
 
     /**
