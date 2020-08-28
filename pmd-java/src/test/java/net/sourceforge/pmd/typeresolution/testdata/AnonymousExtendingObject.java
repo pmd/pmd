@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
-public class AnoymousExtendingObject {
+public class AnonymousExtendingObject {
 
     public void foo() {
         System.out.println(new Object() {
             @Override
             public String toString() {
-                return "Suprise!";
+                return "Surprise!";
             }
         });
     }

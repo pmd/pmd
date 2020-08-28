@@ -665,9 +665,9 @@ statements
   : statement*
   ;
 statement
-  : label* nonLabledStatment
+  : label* nonLabelledStatement
   ;
-nonLabledStatment
+nonLabelledStatement
   : block
   | localVariableDeclaration
   | forStatement
@@ -675,7 +675,7 @@ nonLabledStatment
   | doStatement
   | switchStatement
   | ifStatement
-  | rethrowStatment
+  | rethrowStatement
   | tryStatement
   | breakStatement
   | continueStatement
@@ -740,7 +740,7 @@ defaultCase
   ;
 
 // 17.10 Rethrow
-rethrowStatment
+rethrowStatement
   : 'rethrow' SEMICOLON
   ;
 

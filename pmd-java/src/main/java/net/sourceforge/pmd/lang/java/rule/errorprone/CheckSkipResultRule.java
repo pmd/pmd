@@ -47,7 +47,7 @@ public class CheckSkipResultRule extends AbstractJavaRule {
                             // if exp is neither in a bare statement
                             // or between a pair of parentheses,
                             // it's in some other kind of statement
-                            // or assignement so the returned value is used
+                            // or assignment so the returned value is used
                             break;
                         }
                     }

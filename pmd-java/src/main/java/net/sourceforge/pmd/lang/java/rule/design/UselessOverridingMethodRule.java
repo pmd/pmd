@@ -83,9 +83,9 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodThrowingType(ASTMethodDeclaration node, Class<? extends Exception> exceptionType) {
-        ASTNameList thrownsExceptions = node.getThrows();
-        if (thrownsExceptions != null) {
-            List<ASTName> names = thrownsExceptions.findChildrenOfType(ASTName.class);
+        ASTNameList thrownExceptions = node.getThrows();
+        if (thrownExceptions != null) {
+            List<ASTName> names = thrownExceptions.findChildrenOfType(ASTName.class);
             for (ASTName name : names) {
                 if (name.getType() != null && name.getType() == exceptionType) {
                     return true;

@@ -146,8 +146,8 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
     @InternalApi
     @Deprecated
     @Override
-    public void setVolatile(boolean isVolative) {
-        setModifier(isVolative, VOLATILE);
+    public void setVolatile(boolean isVolatile) {
+        setModifier(isVolatile, VOLATILE);
     }
 
     @Override

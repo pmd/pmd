@@ -33,7 +33,7 @@ public class GenericWithOverloadsImpl implements GenericInterfaceWithOverloads<S
     }
 
 
-    // this one is not overriden, no bridge
+    // this one is not overridden, no bridge
     public String multi(ASTMethodDeclaration node, String data, Integer integer) {
         return null;
     }

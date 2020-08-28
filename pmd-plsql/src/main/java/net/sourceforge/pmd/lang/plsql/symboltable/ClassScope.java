@@ -171,7 +171,7 @@ public class ClassScope extends AbstractScope {
 
         if (null == occurrence.getImage()) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("occurrence==" + occurrence.toString() + "with Argumanet Count == "
+                LOGGER.finest("occurrence==" + occurrence.toString() + "with Argument Count == "
                         + occurrence.getArgumentCount() + " for className=" + className);
             }
         }

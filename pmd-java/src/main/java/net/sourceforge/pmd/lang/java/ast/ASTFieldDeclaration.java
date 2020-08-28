@@ -165,7 +165,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     /**
      * Gets the variable name of this field. This method searches the first
-     * VariableDeclartorId node and returns its image or <code>null</code> if
+     * VariableDeclaratorId node and returns its image or <code>null</code> if
      * the child node is not found.
      *
      * @return a String representing the name of the variable

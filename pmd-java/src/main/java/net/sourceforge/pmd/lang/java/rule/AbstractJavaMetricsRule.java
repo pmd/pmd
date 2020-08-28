@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 
 
 /**
- * Java Rule with convenient visit methods to e.g. treat contructors and methods the same.
+ * Java Rule with convenient visit methods to e.g. treat constructors and methods the same.
  *
  * @author Clément Fournier
  * @deprecated Internal API

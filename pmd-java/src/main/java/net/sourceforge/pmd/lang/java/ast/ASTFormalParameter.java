@@ -61,7 +61,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     }
 
     /**
-     * If true, this formal parameter represents one without explit types.
+     * If true, this formal parameter represents one without explicit types.
      * This can appear as part of a lambda expression with java11 using "var".
      *
      * @see ASTVariableDeclaratorId#isTypeInferred()
