@@ -382,7 +382,8 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTClassLiteral node, Void data) {
         JClassSymbol klassSym = ts.getClassSymbol(Class.class);
-        if (node.getTypeNode() == null) {
+        assert klassSym != null : Class.class + " is missing from the classpath?";
+        if (node.getTypeNode() instanceof ASTVoidType) {
             // void.class : Class<Void>
             return ts.parameterise(klassSym, listOf(ts.BOXED_VOID));
         } else {

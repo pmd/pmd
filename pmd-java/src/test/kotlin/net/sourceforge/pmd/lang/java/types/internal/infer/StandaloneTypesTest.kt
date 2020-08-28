@@ -278,6 +278,11 @@ class StandaloneTypesTest : ProcessorTestSpec({
                 "true" should haveType { boolean }
                 "false" should haveType { boolean }
             }
+
+            doTest("Class literals") {
+                "String.class" should haveType { Class::class[gen.t_String] }
+                "void.class" should haveType { Class::class[ts.BOXED_VOID] }
+            }
         }
     }
 

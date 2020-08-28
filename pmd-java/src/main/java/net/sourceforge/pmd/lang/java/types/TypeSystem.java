@@ -492,7 +492,7 @@ public final class TypeSystem {
     //  - test: should not recreate OBJECT
     public @NonNull JTypeMirror parameterise(JClassSymbol klass, List<? extends JTypeMirror> typeArgs) {
         if (!klass.isGeneric() && typeArgs.isEmpty()) {
-            return rawType(klass); // note this ensures that OBJECT is preserved
+            return rawType(klass); // note this ensures that OBJECT and such is preserved
         }
         // if the type arguments are mismatched, the constructor will throw
         return new ClassTypeImpl(this, klass, new ArrayList<>(typeArgs), false);
