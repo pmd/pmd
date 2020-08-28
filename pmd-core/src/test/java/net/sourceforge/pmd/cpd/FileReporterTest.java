@@ -54,10 +54,8 @@ public class FileReporterTest {
     }
 
     private String readFile(File file) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
-            StringBuffer buffer = new StringBuffer();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            StringBuilder buffer = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
                 buffer.append(line);
@@ -67,10 +65,6 @@ public class FileReporterTest {
                 }
             }
             return buffer.toString();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 

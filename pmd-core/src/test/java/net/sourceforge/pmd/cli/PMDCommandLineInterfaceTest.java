@@ -84,6 +84,7 @@ public class PMDCommandLineInterfaceTest {
 
     @Test
     public void testBuildUsageText() {
+        // no exception..
         Assert.assertNotNull(PMDCommandLineInterface.buildUsageText());
     }
 

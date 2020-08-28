@@ -181,7 +181,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             return false;
         }
         ASTName n = s.getFirstDescendantOfType(ASTName.class);
-        if (n == null || n.getImage().indexOf(methodName) == -1
+        if (n == null || !n.getImage().contains(methodName)
                 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }

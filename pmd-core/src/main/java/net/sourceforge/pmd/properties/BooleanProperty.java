@@ -33,7 +33,7 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      */
     @Deprecated
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
-        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder, false);
+        this(theName, theDescription, Boolean.parseBoolean(defaultBoolStr), theUIOrder, false);
     }
 
 

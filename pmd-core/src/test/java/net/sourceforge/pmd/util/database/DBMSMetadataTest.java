@@ -279,7 +279,7 @@ public class DBMSMetadataTest {
                 "testURI=%s,\ngetSchemasList()=%s\n,getSourceCodeTypesList()=%s\n,getSourceCodeNmesList()=%s\n",
                 testURI, testURI.getSchemasList(), testURI.getSourceCodeTypesList(), testURI.getSourceCodeNamesList());
 
-        System.out.printf("sourceObjectList ...\n");
+        System.out.print("sourceObjectList ...\n");
         for (SourceObject sourceObject : sourceObjectList) {
             System.out.printf("sourceObject=%s\n", sourceObject);
             System.out.printf("sourceCode=[%s]\n", getStringFromReader(instance.getSourceCode(sourceObject)));

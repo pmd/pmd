@@ -19,8 +19,7 @@ public class MethodFirstPhase {
 
         Exception b = vararg((Number) null);
 
-        Set<String> set = new HashSet<>();
-        set.addAll(Arrays.asList("a", "b")); // TODO: return type of method call Arrays.asList is missing
+        Set<String> set = new HashSet<>(Arrays.asList("a", "b")); // TODO: return type of method call Arrays.asList is missing
 
         List<String> myList = new ArrayList<>();
         Collections.sort(myList); // TODO: generic type variables on methods
