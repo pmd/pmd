@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -46,11 +47,6 @@ final class PolyResolution {
         this.exprMirrors = new JavaExprMirrors(infer);
     }
 
-    /*
-        TODO array initializers count as assignment context:
-         Runnable[] r = { () -> {} };
-     */
-
     JTypeMirror computePolyType(final TypeNode e) {
         if (!canBePoly(e)) {
             throw shouldNotReachHere("Unknown poly " + e);
@@ -59,7 +55,7 @@ final class PolyResolution {
         // here ctx can be
         // - e (no context)
         // - an InvocationNode -> invocation context
-        // - a ReturnStatement, AssignmentExpression, VariableDeclarator -> assignment context
+        // - a ReturnStatement, AssignmentExpression, VariableDeclarator, ArrayInitializer -> assignment context
         // - a CastExpression -> cast context
         final JavaNode ctx = contextOf(e, false);
 
@@ -331,6 +327,11 @@ final class PolyResolution {
         } else if (context instanceof ASTAssignmentExpression) {
             // assignment context
             return ((ASTAssignmentExpression) context).getLeftOperand().getTypeMirror();
+        } else if (context instanceof ASTArrayInitializer) {
+            // assignment context, in an array initializer
+            JTypeMirror type = ((ASTArrayInitializer) context).getTypeMirror();
+            return type.isArray() ? ((JArrayType) type).getComponentType()
+                                  : ts.ERROR;
         } else if (context instanceof ASTVariableDeclarator) {
             assert ((ASTVariableDeclarator) context).getVarId().getTypeNode() != null
                 : "Local var inference should not have a context node, this could loop forever";
@@ -410,13 +411,15 @@ final class PolyResolution {
             return null;
         }
 
-        if (papa instanceof ASTCastExpression) {
+        if (papa instanceof ASTArrayInitializer) {
+            return papa; // assignment ctx
+        } else if (papa instanceof ASTCastExpression) {
             // cast context
             return papa;
         } else if (papa instanceof ASTAssignmentExpression && node.getIndexInParent() == 1) { // second operand
             return papa;
-        } else if (papa instanceof ASTReturnStatement || papa instanceof ASTVariableDeclarator
-            && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
+        } else if (papa instanceof ASTReturnStatement
+            || papa instanceof ASTVariableDeclarator && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
             // this counts as assignment context
             return papa;
         } else if (papa instanceof ASTYieldStatement) {

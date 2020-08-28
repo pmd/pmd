@@ -345,4 +345,33 @@ class Scratch {
             )
         }
     }
+
+    parserTest("Array initializer is an assignment context") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+    class Scratch {
+        {
+            Runnable[] r = {
+                () -> { } // is a Runnable
+            }, r2[] = {
+                { // multilevel array
+                    () -> { }
+                }
+            };
+
+            r = new Runnable[] { () -> { } }; // in array alloc
+        }
+    }
+
+        """.trimIndent())
+
+        val (lambda1, lambda2, lambda3) = acu.descendants(ASTLambdaExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            lambda1 shouldHaveType Runnable::class.decl
+            lambda2 shouldHaveType Runnable::class.decl
+            lambda3 shouldHaveType Runnable::class.decl
+        }
+    }
 })
