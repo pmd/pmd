@@ -1412,14 +1412,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using the ‘following’ or ‘preceeding’ axes whenever possible, as these can cut
+<p>Avoid using the ‘following’ or ‘preceding’ axes whenever possible, as these can cut
 through 100% of the document in the worst case.  Also, try to avoid using ‘descendant’
-or ‘descendant-self’ axes, as if you’re at the top of the Document, it necessarily means
+or ‘descendant-or-self’ axes, as if you’re at the top of the Document, it necessarily means
 cutting through 100% of the document.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="kr">node()</span><span class="p">[</span><span class="w">
-  </span><span class="nf">contains</span><span class="p">(</span><span class="na">@select</span><span class="p">,</span><span class="s1">'preceeding::'</span><span class="p">)</span><span class="w">
+  </span><span class="nf">contains</span><span class="p">(</span><span class="na">@select</span><span class="p">,</span><span class="s1">'preceding::'</span><span class="p">)</span><span class="w">
   </span><span class="ow">or</span><span class="w">
   </span><span class="nf">contains</span><span class="p">(</span><span class="na">@select</span><span class="p">,</span><span class="s1">'following::'</span><span class="p">)</span><span class="w">
   </span><span class="ow">or</span><span class="w">
@@ -1488,7 +1488,7 @@ cutting through 100% of the document.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 25, 2020 <br />
+ Site last generated: Aug 28, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
