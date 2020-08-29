@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -21,16 +20,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  * like the designer, in a language independent way. Accessible through
  * {@link LanguageVersionHandler#getLanguageMetricsProvider()}.
  *
- * Note: this is experimental, ie unstable until 7.0.0, after which it will probably
- * be promoted to a real API.
- *
- * @param <T> Type of type declaration nodes of the language
- * @param <O> Type of operation declaration nodes of the language
  *
  * @author Clément Fournier
  * @since 6.11.0
  */
-@Experimental
 public interface LanguageMetricsProvider {
 
     Set<Metric<?, ?>> getMetrics();

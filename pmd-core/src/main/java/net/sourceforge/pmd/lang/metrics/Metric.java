@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
- * Object computing a metric on a node. Metric objects are stateless,
- * which means that instances of the same metric are all equal.
+ * A named computation that can be carried out on some nodes. Example
+ * include complexity metrics.
  *
  * @param <N> Type of nodes the metric can be computed on
  * @param <R> Result type of the metric
