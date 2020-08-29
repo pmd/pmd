@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.signature;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 
@@ -12,6 +13,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public abstract class ApexSignature {
 
     /** Visibility of the field or method. */

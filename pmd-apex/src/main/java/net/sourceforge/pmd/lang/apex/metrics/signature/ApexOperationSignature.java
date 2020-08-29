@@ -7,12 +7,15 @@ package net.sourceforge.pmd.lang.apex.metrics.signature;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public final class ApexOperationSignature extends ApexSignature implements Signature<ASTMethod> {
 
     private static final Map<Integer, ApexOperationSignature> POOL = new HashMap<>();

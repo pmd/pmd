@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.multifile.signature;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 
 /**
@@ -14,6 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public final class JavaFieldSignature extends JavaSignature<ASTFieldDeclaration> {
 
     private static final Map<Integer, JavaFieldSignature> POOL = new HashMap<>();

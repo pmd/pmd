@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.metrics.SigMask;
 
@@ -18,6 +19,8 @@ import net.sourceforge.pmd.lang.metrics.SigMask;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public abstract class JavaSigMask<T extends JavaSignature<?>> implements SigMask<T> {
 
     /** Visibility mask. */

@@ -8,11 +8,14 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexSignature.Visibility;
 
 /**
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public class ApexOperationSigMask {
 
     private Set<Visibility> visMask = EnumSet.allOf(Visibility.class);

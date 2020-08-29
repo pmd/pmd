@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
 /**
  * Generic signature mask.
  *
@@ -12,6 +14,8 @@ package net.sourceforge.pmd.lang.metrics;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
+@DeprecatedUntil700
 public interface SigMask<T extends Signature<?>> {
 
     /**

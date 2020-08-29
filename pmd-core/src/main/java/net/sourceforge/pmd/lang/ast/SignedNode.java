@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
@@ -14,6 +15,8 @@ import net.sourceforge.pmd.lang.metrics.Signature;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public interface SignedNode<N> extends Node {
 
     /**
@@ -21,6 +24,8 @@ public interface SignedNode<N> extends Node {
      *
      * @return The signature
      */
+    @Deprecated
+    @DeprecatedUntil700
     Signature<? super N> getSignature();
 
 }

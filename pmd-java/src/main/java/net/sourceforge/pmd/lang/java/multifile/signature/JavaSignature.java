@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.multifile.signature;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.metrics.Signature;
@@ -13,6 +14,8 @@ import net.sourceforge.pmd.lang.metrics.Signature;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public abstract class JavaSignature<N extends SignedNode<N>> implements Signature<N> {
 
     /** Visibility. */

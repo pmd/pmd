@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 
 /**
@@ -15,6 +16,8 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public final class JavaOperationSigMask extends JavaSigMask<JavaOperationSignature> {
 
     private Set<JavaOperationSignature.Role> roleMask = EnumSet.allOf(Role.class);

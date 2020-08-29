@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.multifile.signature;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
 /**
  * Signature mask for a field. Newly created masks cover any field.
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public final class JavaFieldSigMask extends JavaSigMask<JavaFieldSignature> {
 
     private boolean coverFinal = true;

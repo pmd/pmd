@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -18,6 +19,8 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
  *
  * @author Clément Fournier
  */
+@Deprecated
+@DeprecatedUntil700
 public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConstructorDeclaration> {
 
     private static final Map<Integer, JavaOperationSignature> POOL = new ConcurrentHashMap<>();
