@@ -5,8 +5,8 @@
 /**
  * Language-independent framework to represent code metrics. If you want
  * to compute code metrics in your rules, then you should find the language-specific
- * enums containing {@link net.sourceforge.pmd.lang.metrics.MetricKey}s
- * in the relevant language modules.
+ * utility class containing {@link net.sourceforge.pmd.lang.metrics.Metric}
+ * constants, eg in java, {@code JavaMetrics}.
  *
  * <p>Metrics are cached by default on the nodes they're computed on.
  * Many APIs here are deprecated, this is because metrics were previously
