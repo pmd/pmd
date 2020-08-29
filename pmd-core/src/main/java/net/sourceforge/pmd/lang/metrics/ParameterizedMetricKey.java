@@ -23,35 +23,35 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
     private static final ConcurrentMap<ParameterizedMetricKey<?, ?>, ParameterizedMetricKey<?, ?>> POOL = new ConcurrentHashMap<>();
 
     /** The metric key. */
-    public final Metric<N, R> key;
+    public final Metric<N, R> metric;
     /** The options of the metric. */
     public final MetricOptions options;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(Metric<N, R> key, MetricOptions options) {
-        this.key = key;
+    private ParameterizedMetricKey(Metric<N, R> metric, MetricOptions options) {
+        this.metric = metric;
         this.options = options;
     }
 
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + key.name() + ", options=" + options + '}';
+        return "ParameterizedMetricKey{key=" + metric.name() + ", options=" + options + '}';
     }
 
 
     @Override
     public boolean equals(Object o) {
         return o instanceof ParameterizedMetricKey
-            && ((ParameterizedMetricKey<?, ?>) o).key.equals(key)
+            && ((ParameterizedMetricKey<?, ?>) o).metric.equals(metric)
             && ((ParameterizedMetricKey<?, ?>) o).options.equals(options);
     }
 
 
     @Override
     public int hashCode() {
-        return 31 * key.hashCode() + options.hashCode();
+        return 31 * metric.hashCode() + options.hashCode();
     }
 
 

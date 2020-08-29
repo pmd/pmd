@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
-import static net.sourceforge.pmd.internal.util.PredicateUtil.always;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -27,13 +26,17 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
  *
  */
 public final class ApexMetrics {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static final Class<ApexNode<?>> GENERIC_APEX_NODE_CLASS =
+        (Class) ApexNode.class; // this is a Class<ApexNode>, the raw type
+
 
     public static final Metric<ApexNode<?>, Integer> CYCLO =
-        Metric.of(ApexMetrics::computeCyclo, isApexNode(),
+        Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(),
                   "Cyclomatic Complexity", "Cyclo");
 
     public static final Metric<ApexNode<?>, Integer> COGNITIVE_COMPLEXITY =
-        Metric.of(ApexMetrics::computeCognitiveComp, isApexNode(),
+        Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
                   "Cognitive Complexity");
 
 
@@ -47,9 +50,10 @@ public final class ApexMetrics {
 
 
 
-    private static Function<Node, ApexNode<?>> isApexNode() {
-        return filterMapNode(ApexNode.class, always());
+    private static Function<Node, ApexNode<?>> isRegularApexNode() {
+        return filterMapNode(GENERIC_APEX_NODE_CLASS, n -> !(n instanceof ASTMethod && ((ASTMethod) n).isSynthetic()));
     }
+
 
     private static <T extends Node> Function<Node, T> filterMapNode(Class<? extends T> klass, Predicate<? super T> pred) {
         return n -> n.asStream().filterIs(klass).filter(pred).first();
