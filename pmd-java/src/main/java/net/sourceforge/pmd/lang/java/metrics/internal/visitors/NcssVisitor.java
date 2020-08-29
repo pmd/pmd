@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 

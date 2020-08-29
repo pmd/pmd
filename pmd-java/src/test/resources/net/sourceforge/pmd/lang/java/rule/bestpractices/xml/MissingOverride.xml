@@ -129,29 +129,20 @@ public class AnonClassExample {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
         @Override
-        public Metric<ASTAnyTypeDeclaration> getCalculator() {
-            return null;
+        public void handle(int[] ints) {
+            super.handle(ints);
         }
     };
 
     @Override
-    public Metric<ASTAnyTypeDeclaration> getCalculator() {
-        return null;
-    }
+    public void handle(int[] ints) {
 
-
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return false;
     }
 }
+
         ]]></code>
     </test-code>
 
@@ -162,22 +153,20 @@ public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
-        public Metric<ASTAnyTypeDeclaration> getCalculator() {
-            return null;
+        @Override
+        public void handle(int[] ints) {
+            super.handle(ints);
         }
     };
 
+    @Override
+    public void handle(int[] ints) {
 
-    public Metric<ASTAnyTypeDeclaration> getCalculator() {
-        return null;
     }
 }
+
         ]]></code>
     </test-code>
 
@@ -244,19 +233,20 @@ public enum EnumWithAnonClass {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
+    Foo {
+        @Override
+        public void handle(int[] ints) {
+            super.handle(ints);
+        }
+    };
 
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
-    Foo;
+    @Override
+    public void handle(int[] ints) {
 
-    // missing
-    // this is determined from the bridge method, but only works if there are no overloads
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return false;
     }
 }
+
         ]]></code>
     </test-code>
 

@@ -4,22 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  */
-public class NPathTestRule extends AbstractMetricTestRule {
+public class NPathTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return null;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.NPATH;
+    public NPathTestRule() {
+        super(JavaMetrics.NPATH);
     }
 }

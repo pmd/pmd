@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.AtfdBaseVisitor;
@@ -67,8 +68,8 @@ public final class JavaMetrics {
         Metric.of(JavaMetrics::computeCyclo, isJavaNode(),
                   "Cyclomatic Complexity", "Cyclo");
 
-    public static final Metric<JavaNode, Integer> NPATH =
-        Metric.of(JavaMetrics::computeNpath, isJavaNode(),
+    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> NPATH =
+        Metric.of(JavaMetrics::computeNpath, n -> n.asStream().filterIs(ASTMethodOrConstructorDeclaration.class).first(),
                   "NPath Complexity", "NPath");
 
     public static final Metric<ASTAnyTypeDeclaration, Integer> WEIGHED_METHOD_COUNT =

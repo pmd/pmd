@@ -14,25 +14,27 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * @author Clément Fournier
  */
 public class ProjectMemoizerTest extends BaseNonParserTest {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKey.of("null", new RandomClassMetric());
-    private MetricKey<MethodLikeNode> opMetricKey = MetricKey.of("null", new RandomOperationMetric());
+    private final Metric<Node, Integer> randomMetric = randomMetric();
 
+    private static Metric<Node, Integer> randomMetric() {
+        Random capturedRandom = new Random();
+        return Metric.of((t, opts)-> capturedRandom.nextInt(), t -> t, "randomMetric");
+    }
 
     @Test
     public void memoizationTest() {
@@ -68,8 +70,9 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
         acu.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
             public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
-                if (opMetricKey.supports(node)) {
-                    result.add((int) MetricsUtil.computeMetric(opMetricKey, node, MetricOptions.emptyOptions(), force));
+                Integer value = Metric.compute(randomMetric, MetricOptions.emptyOptions(), node);
+                if (value != null) {
+                    result.add(value);
                 }
                 return super.visitMethodOrCtor(node, data);
             }
@@ -77,8 +80,9 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
             @Override
             public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
-                if (classMetricKey.supports(node)) {
-                    result.add((int) MetricsUtil.computeMetric(classMetricKey, node, MetricOptions.emptyOptions(), force));
+                Integer value = Metric.compute(randomMetric, MetricOptions.emptyOptions(), node);
+                if (value != null) {
+                    result.add(value);
                 }
                 return super.visitTypeDecl(node, data);
             }
@@ -88,26 +92,5 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
     }
 
 
-    private class RandomOperationMetric extends AbstractJavaOperationMetric {
-
-        private Random random = new Random();
-
-
-        @Override
-        public double computeFor(MethodLikeNode node, MetricOptions options) {
-            return random.nextInt();
-        }
-    }
-
-    private class RandomClassMetric extends AbstractJavaClassMetric {
-
-        private Random random = new Random();
-
-
-        @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            return random.nextInt();
-        }
-    }
 
 }

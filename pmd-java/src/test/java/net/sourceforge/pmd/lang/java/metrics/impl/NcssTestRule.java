@@ -6,33 +6,26 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  */
-public class NcssTestRule extends AbstractMetricTestRule {
+public class NcssTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected boolean isReportClasses() {
-        return false;
+    public NcssTestRule() {
+        super(JavaMetrics.NCSS);
     }
 
-
     @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.NCSS;
+    protected boolean reportOn(Node node) {
+        return node instanceof ASTBodyDeclaration;
     }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.NCSS;
-    }
-
 
     @Override
     protected Map<String, MetricOption> optionMappings() {

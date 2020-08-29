@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 

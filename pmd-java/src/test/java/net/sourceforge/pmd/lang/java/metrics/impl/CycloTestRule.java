@@ -6,29 +6,21 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * Tests cyclo.
  *
  * @author Clément Fournier
  */
-public class CycloTestRule extends AbstractMetricTestRule {
+public class CycloTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return null;
+    public CycloTestRule() {
+        super(JavaMetrics.CYCLO);
     }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.CYCLO;
-    }
-
 
     @Override
     protected Map<String, MetricOption> optionMappings() {

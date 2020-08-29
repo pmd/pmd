@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutMetric.ClassFanOutOption;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.ClassFanOutOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 

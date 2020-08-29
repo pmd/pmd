@@ -4,23 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class AtfdTestRule extends AbstractMetricTestRule {
+public class AtfdTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.ATFD;
+    public AtfdTestRule() {
+        super(JavaMetrics.ACCESS_TO_FOREIGN_DATA);
     }
 
 
     @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.ATFD;
+    protected String violationMessage(Node node, Integer result) {
+        return super.violationMessage(node, result);
     }
 }

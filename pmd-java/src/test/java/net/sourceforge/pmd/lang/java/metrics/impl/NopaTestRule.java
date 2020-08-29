@@ -4,23 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class NopaTestRule extends AbstractMetricTestRule {
+public class NopaTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.NOPA;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return null;
+    public NopaTestRule() {
+        super(JavaMetrics.NUMBER_OF_PUBLIC_FIELDS);
     }
 }

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -71,11 +71,11 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        if (!JavaOperationMetricKey.NPATH.supports(node)) {
+        if (!JavaMetrics.NPATH.supports(node)) {
             return data;
         }
 
-        int npath = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NPATH, node);
+        int npath = MetricsUtil.computeMetric(JavaMetrics.NPATH, node);
         if (npath >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                    PrettyPrintingUtil.displaySignature(node),
