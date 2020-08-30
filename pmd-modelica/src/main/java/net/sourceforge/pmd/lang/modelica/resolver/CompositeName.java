@@ -36,8 +36,8 @@ public final class CompositeName {
         return create(components, 0, components.length, isAbsolute);
     }
 
-    public static CompositeName create(boolean isAbsolute, String[] componenets, int prefixLength) {
-        return create(componenets, 0, prefixLength, isAbsolute);
+    public static CompositeName create(boolean isAbsolute, String[] components, int prefixLength) {
+        return create(components, 0, prefixLength, isAbsolute);
     }
 
     public static CompositeName create(String simpleName) {

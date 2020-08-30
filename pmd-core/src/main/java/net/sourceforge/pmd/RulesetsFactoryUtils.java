@@ -42,7 +42,7 @@ public final class RulesetsFactoryUtils {
             ruleSets = factory.createRuleSets(rulesets);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
-                String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ')';
+                String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);
             }

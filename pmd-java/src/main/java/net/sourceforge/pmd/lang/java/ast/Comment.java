@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
 
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
-    // or the start of line within a multine comment (*). It removes the end of the comment (*/) if existing.
+    // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
     private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
 
     // Same as "\\R" - but \\R is only available with java8+

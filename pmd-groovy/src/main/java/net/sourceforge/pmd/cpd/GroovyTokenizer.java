@@ -16,7 +16,7 @@ import groovyjarjarantlr.TokenStream;
 import groovyjarjarantlr.TokenStreamException;
 
 /**
- * The Grooovy Tokenizer
+ * The Groovy Tokenizer
  */
 public class GroovyTokenizer implements Tokenizer {
 

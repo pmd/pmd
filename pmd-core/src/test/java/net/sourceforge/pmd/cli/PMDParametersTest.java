@@ -16,7 +16,7 @@ public class PMDParametersTest {
         // no language set, uses default language
         Assert.assertEquals("1.7", parameters.getVersion());
 
-        // now set lanuage
+        // now set language
         FieldUtils.writeDeclaredField(parameters, "language", "dummy2", true);
         Assert.assertEquals("1.0", parameters.getVersion());
     }

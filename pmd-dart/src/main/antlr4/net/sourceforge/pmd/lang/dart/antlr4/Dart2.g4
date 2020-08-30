@@ -351,16 +351,16 @@ SingleLineString
 
 fragment
 StringContentDQ
-  : ~('\\' | '"' /*| '$'*/ | '\n' | '\r')
+  : ~('\\' | '"' | '$' | '\n' | '\r')
   | '\\' ~('\n' | '\r')
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 fragment
 StringContentSQ
-  : ~('\\' | '\'' /*| '$'*/ | '\n' | '\r')
+  : ~('\\' | '\'' | '$' | '\n' | '\r')
   | '\\' ~('\n' | '\r')
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 MultiLineString
@@ -372,15 +372,18 @@ MultiLineString
 
 fragment
 StringContentTDQ
-  : ~('\\' | '"' /*| '$'*/)
+  : ~('\\' | '"' | '$')
+  | '\\' ~('\n' | '\r')
   | '"' ~'"' | '""' ~'"'
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
-fragment StringContentTSQ
-  : ~('\\' | '\'' /*| '$'*/)
+fragment
+StringContentTSQ
+  : ~('\\' | '\'' | '$')
+  | '\\' ~('\n' | '\r')
   | '\'' ~'\'' | '\'\'' ~'\''
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 NEWLINE
@@ -390,10 +393,17 @@ NEWLINE
   ;
 
 // 16.5.1 String Interpolation
-stringInterpolation
-//  : '$' IDENTIFIER_NO_DOLLAR
-  : '$' identifier// FIXME
-  | '${' expression '}'
+fragment
+StringInterpolation
+  : '$' IDENTIFIER_NO_DOLLAR
+  | '${' StringInterpolationContent* '}'
+  ;
+
+fragment
+StringInterpolationContent
+  : ~('$' | '{' | '}')
+  | '$' IDENTIFIER_NO_DOLLAR
+  | '${' StringInterpolationContent* '}'
   ;
 
 // 16.6 Symbols
@@ -665,9 +675,9 @@ statements
   : statement*
   ;
 statement
-  : label* nonLabledStatment
+  : label* nonLabelledStatement
   ;
-nonLabledStatment
+nonLabelledStatement
   : block
   | localVariableDeclaration
   | forStatement
@@ -675,7 +685,7 @@ nonLabledStatment
   | doStatement
   | switchStatement
   | ifStatement
-  | rethrowStatment
+  | rethrowStatement
   | tryStatement
   | breakStatement
   | continueStatement
@@ -740,7 +750,7 @@ defaultCase
   ;
 
 // 17.10 Rethrow
-rethrowStatment
+rethrowStatement
   : 'rethrow' SEMICOLON
   ;
 

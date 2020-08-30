@@ -172,7 +172,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
                     }
 
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
-                        // cand is overriden
+                        // cand is overridden
                         result.add(cand);
                         toRemove.add(cand);
                         // Several methods are eligible, because of return type covariance

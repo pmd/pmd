@@ -124,7 +124,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
         // When we do full symbol resolution, we'll need to add a truly
         // top-level GlobalScope.
         Scope scope;
-        // %TODO generate a SchemaScope, based on inferred or explcitly
+        // %TODO generate a SchemaScope, based on inferred or explicitly
         // specified SchemaName
         ASTObjectDeclaration n = null; // node.getPackageDeclaration();
         if (n != null) {

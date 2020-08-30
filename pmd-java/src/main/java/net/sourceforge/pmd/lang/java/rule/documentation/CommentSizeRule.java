@@ -86,7 +86,7 @@ public class CommentSizeRule extends AbstractCommentRule {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 
-        List<Integer> indicies = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
         String[] lines = comment.getImage().split(CR);
 
         int offset = comment.getBeginLine();
@@ -94,11 +94,11 @@ public class CommentSizeRule extends AbstractCommentRule {
         for (int i = 0; i < lines.length; i++) {
             String cleaned = withoutCommentMarkup(lines[i]);
             if (cleaned.length() > maxLength) {
-                indicies.add(i + offset);
+                indices.add(i + offset);
             }
         }
 
-        return indicies;
+        return indices;
     }
 
     @Override

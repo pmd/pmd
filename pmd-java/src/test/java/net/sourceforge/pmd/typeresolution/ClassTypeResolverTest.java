@@ -71,8 +71,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 import net.sourceforge.pmd.typeresolution.testdata.AbstractReturnTypeUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
+import net.sourceforge.pmd.typeresolution.testdata.AnonymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
-import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayAccess;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
@@ -285,7 +285,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAnonymousExtendingObject() throws Exception {
-        Node acu = java8.parseClass(AnoymousExtendingObject.class);
+        Node acu = java8.parseClass(AnonymousExtendingObject.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) allocationExpression.getChild(0);
         Assert.assertTrue(Object.class.isAssignableFrom(child.getType()));

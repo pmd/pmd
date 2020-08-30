@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -209,6 +210,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> append(NodeStream<? extends T> right);
 
@@ -220,6 +223,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> prepend(NodeStream<? extends T> right);
 
@@ -343,7 +348,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns a node stream containing all the (first-degree) parents of the nodes
      * contained in this stream.
      *
-     * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
+     * <p>This is equivalent to {@code map(Node::getParent)}.
      *
      * @return A stream of parents
      *
@@ -697,7 +702,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns the first element of this stream, or {@code null} if the
      * stream is empty.
      *
-     * <p>If you'd rather continue processingthe first element as a node
+     * <p>If you'd rather continue processing the first element as a node
      * stream, you can use {@link #take(int) take(1)}.
      *
      * <p>This is equivalent to {@link #get(int) get(0)}.
@@ -709,6 +714,26 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #firstOpt()
      */
     @Nullable T first();
+
+
+    /**
+     * Returns the first element of this stream, or throws a {@link NoSuchElementException}
+     * if the stream is empty.
+     *
+     * @return the first element of this stream
+     *
+     * @see #first(Predicate)
+     * @see #first(Class)
+     * @see #firstOpt()
+     */
+    @NonNull
+    default T firstOrThrow() {
+        T first = first();
+        if (first == null) {
+            throw new NoSuchElementException("Empty node stream");
+        }
+        return first;
+    }
 
 
     /**
@@ -1021,6 +1046,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return upstream.cached().flatMap(aggregate);
     }
 
+
     /**
      * Returns a map function, that checks whether the parameter is an
      * instance of any of the given classes. If so, it returns the parameter,
@@ -1077,6 +1103,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
             return null;
         };
     }
+
 
     /**
      * A specialization of {@link NodeStream} that allows configuring

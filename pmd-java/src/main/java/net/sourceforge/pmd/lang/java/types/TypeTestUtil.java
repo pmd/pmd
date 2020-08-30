@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 /**
  * Public utilities to test the type of nodes.
  *
- * <p>This replaces {@link TypeHelper}. Note that in constrast to methods
+ * <p>This replaces {@link TypeHelper}. Note that in contrast to methods
  * in {@link TypeHelper}, these methods:
  * <ul>
  * <li>Take the node as the second parameter
@@ -196,7 +196,7 @@ public final class TypeTestUtil {
 
     /**
      * Returns true if the class n is a subtype of clazzName, given n
-     * is an annotationt type.
+     * is an annotation type.
      */
     private static boolean isAnnotationSubtype(Class<?> n, String clazzName) {
         assert n != null && n.isAnnotation() : "Not an annotation type";

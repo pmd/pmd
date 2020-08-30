@@ -590,7 +590,7 @@ public class RuleSetFactory {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.warning(
                     "Unable to exclude rules " + excludedRulesCheck + " from ruleset reference " + ref
-                    + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
+                    + "; perhaps the rule name is misspelled or the rule doesn't exist anymore?");
             }
         }
 
@@ -683,7 +683,7 @@ public class RuleSetFactory {
 
         if (referencedRule == null) {
             throw new IllegalArgumentException("Unable to find referenced rule " + otherRuleSetReferenceId.getRuleName()
-                    + "; perhaps the rule name is mispelled?");
+                    + "; perhaps the rule name is misspelled?");
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
