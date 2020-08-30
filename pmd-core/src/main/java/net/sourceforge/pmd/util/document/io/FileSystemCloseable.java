@@ -14,7 +14,7 @@ import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 /**
  * Tracks unclosed references to a resource. Zip files containing
- * {@link TextFile}s are thus closed when all of their dependent
+ * {@link TextFile}s are closed when all of their dependent
  * {@link TextFile} entries have been closed.
  */
 public final class FileSystemCloseable extends BaseCloseable implements Closeable {

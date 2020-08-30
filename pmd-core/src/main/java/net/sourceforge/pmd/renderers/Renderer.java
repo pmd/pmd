@@ -22,6 +22,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -208,7 +209,7 @@ public interface Renderer extends PropertySource {
             final Object reportMergeLock = new Object();
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 Renderer renderer = Renderer.this;
 
                 renderer.startFileAnalysis(file); // this routine is thread-safe by contract

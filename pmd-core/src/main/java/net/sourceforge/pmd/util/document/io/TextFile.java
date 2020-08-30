@@ -120,24 +120,4 @@ public interface TextFile extends Closeable {
     void close() throws IOException;
 
 
-    @Deprecated
-    default DataSource asDataSource() {
-        return new DataSource() {
-            @Override
-            public InputStream getInputStream() throws IOException {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public String getNiceFileName(boolean shortNames, String inputFileName) {
-                return getDisplayName();
-            }
-
-            @Override
-            public void close() throws IOException {
-                TextFile.this.close();
-            }
-        };
-    }
-
 }

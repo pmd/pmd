@@ -22,7 +22,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Listens to an analysis. This object produces new {@link FileAnalysisListener}
@@ -57,7 +57,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
      *                               This prevents manipulation mistakes but is
      *                               not a strong requirement.
      */
-    FileAnalysisListener startFileAnalysis(DataSource file);
+    FileAnalysisListener startFileAnalysis(TextFile file);
 
     /**
      * Notify the implementation that the analysis ended, ie all files
@@ -84,7 +84,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
     static GlobalAnalysisListener noop() {
         return new GlobalAnalysisListener() {
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 return FileAnalysisListener.noop();
             }
 
@@ -124,7 +124,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             }
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 return FileAnalysisListener.tee(CollectionUtil.map(myList, it -> it.startFileAnalysis(file)));
             }
 
@@ -168,7 +168,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         }
 
         @Override
-        public FileAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(TextFile file) {
             return violation -> count.incrementAndGet();
         }
     }
@@ -186,8 +186,8 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         class ExceptionThrowingListener implements GlobalAnalysisListener {
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
-                String filename = file.getNiceFileName(false, null);
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
+                String filename = file.getPathId(); // capture the filename instead of the file
                 return new FileAnalysisListener() {
                     @Override
                     public void onRuleViolation(RuleViolation violation) {

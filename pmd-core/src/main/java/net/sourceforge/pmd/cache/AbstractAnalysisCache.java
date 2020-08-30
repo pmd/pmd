@@ -34,8 +34,8 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -229,7 +229,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+    public FileAnalysisListener startFileAnalysis(TextFile filename) {
         return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {

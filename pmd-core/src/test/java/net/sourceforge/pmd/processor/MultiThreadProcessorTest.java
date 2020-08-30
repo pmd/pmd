@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
@@ -143,7 +142,7 @@ public class MultiThreadProcessorTest {
         public AtomicInteger violations = new AtomicInteger(0);
 
         @Override
-        public FileAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(TextFile file) {
             return new FileAnalysisListener() {
                 @Override
                 public void onRuleViolation(RuleViolation violation) {

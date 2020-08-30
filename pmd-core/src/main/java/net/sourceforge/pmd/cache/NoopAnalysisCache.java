@@ -11,8 +11,8 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * A NOOP analysis cache. Easier / safer than null-checking.
@@ -49,7 +49,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+    public FileAnalysisListener startFileAnalysis(TextFile filename) {
         return FileAnalysisListener.noop();
     }
 
