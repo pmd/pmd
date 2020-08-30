@@ -101,6 +101,28 @@ public interface Node extends Reportable {
         return FileLocation.COORDS_COMPARATOR.compare(getReportLocation(), node.getReportLocation());
     }
 
+    // Those are kept here because they're handled specially as XPath
+    // attributes
+
+    default int getBeginLine() {
+        return getReportLocation().getBeginLine();
+    }
+
+
+    default int getBeginColumn() {
+        return getReportLocation().getBeginColumn();
+    }
+
+
+    default int getEndLine() {
+        return getReportLocation().getEndLine();
+    }
+
+
+    default int getEndColumn() {
+        return getReportLocation().getEndColumn();
+    }
+
 
     default int getBeginLine() {
         return getReportLocation().getBeginLine();
