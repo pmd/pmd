@@ -80,7 +80,7 @@ public interface XPathRuleQuery {
 
     /**
      * Indicates which AST Nodes (if any) should be used with the RuleChain. Use
-     * of the RuleChain will allow the query execute on a targed sub-tree of the
+     * of the RuleChain will allow the query execute on a targeted sub-tree of the
      * AST, instead of the entire AST from the root. This can result in great
      * performance benefits.
      */

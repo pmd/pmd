@@ -52,7 +52,7 @@ program. As such, they include all control flow statements, such as 'if', 'while
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
-Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
 methods' complexities reaches 40, even if none of the methods was directly reported.
 
 Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down

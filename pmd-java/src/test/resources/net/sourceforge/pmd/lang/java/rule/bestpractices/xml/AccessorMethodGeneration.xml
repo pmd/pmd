@@ -16,7 +16,7 @@ public class Foo {
         private long innerField;
 
         InnerClass() {
-            innerField = Foo.this.field; // violation, accesing a private field
+            innerField = Foo.this.field; // violation, accessing a private field
         }
     }
 }
@@ -36,7 +36,7 @@ public class Foo {
         private long innerField;
 
         InnerClass() {
-            innerField = field; // violation, accesing a private field
+            innerField = field; // violation, accessing a private field
         }
     }
 }
@@ -57,7 +57,7 @@ public class Foo {
     }
 
     long method() {
-        return new InnerClass().innerField; // violation, accesing a private field
+        return new InnerClass().innerField; // violation, accessing a private field
     }
 }
         ]]></code>
@@ -95,7 +95,7 @@ public class Foo {
 public class Foo {
     public class InnerClass {
         private void secret() {
-            outerSecret(); // violation, accesing a private method
+            outerSecret(); // violation, accessing a private method
         }
     }
 
@@ -114,7 +114,7 @@ public class Foo {
 public class Foo {
     public class InnerClass {
         private void secret() {
-            Foo.this.outerSecret(); // violation, accesing a private method
+            Foo.this.outerSecret(); // violation, accessing a private method
         }
     }
 
@@ -137,7 +137,7 @@ public class Foo {
     }
 
     private void outerSecret() {
-        new InnerClass().secret(); // violation, accesing a private method
+        new InnerClass().secret(); // violation, accessing a private method
     }
 }
         ]]></code>

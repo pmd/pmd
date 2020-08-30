@@ -53,9 +53,9 @@ public class MacroParseException extends ParseException {
     }
 
     /**
-     * returns the Template name where this exception occured.
+     * returns the Template name where this exception occurred.
      *
-     * @return The Template name where this exception occured.
+     * @return The Template name where this exception occurred.
      * @since 1.5
      */
     public String getTemplateName() {
@@ -63,9 +63,9 @@ public class MacroParseException extends ParseException {
     }
 
     /**
-     * returns the line number where this exception occured.
+     * returns the line number where this exception occurred.
      *
-     * @return The line number where this exception occured.
+     * @return The line number where this exception occurred.
      * @since 1.5
      */
     public int getLineNumber() {
@@ -79,9 +79,9 @@ public class MacroParseException extends ParseException {
     }
 
     /**
-     * returns the column number where this exception occured.
+     * returns the column number where this exception occurred.
      *
-     * @return The column number where this exception occured.
+     * @return The column number where this exception occurred.
      * @since 1.5
      */
     public int getColumnNumber() {

@@ -179,7 +179,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
                 return e.getKey();
             }
         }
-        return "--unkown--";
+        return "--unknown--";
     }
 
     final void setImage(String image) {

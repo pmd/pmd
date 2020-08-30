@@ -108,7 +108,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     }
 
     /**
-     * checks the children and creates them if neccessary
+     * checks the children and creates them if necessary
      */
     private void checkChildren() {
         if (children == null) {

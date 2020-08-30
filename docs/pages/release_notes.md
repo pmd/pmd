@@ -190,6 +190,8 @@ are deprecated as internal API.
 *   [#2732](https://github.com/pmd/pmd/pull/2732): Cleanup: use StandardCharsets instead of Charset.forName - [XenoAmess](https://github.com/XenoAmess) 
 *   [#2733](https://github.com/pmd/pmd/pull/2733): Cleanup: Collection::addAll issues  - [XenoAmess](https://github.com/XenoAmess) 
 *   [#2734](https://github.com/pmd/pmd/pull/2734): Cleanup: use try with resources - [XenoAmess](https://github.com/XenoAmess)
+*   [#2744](https://github.com/pmd/pmd/pull/2744): Cleanup: fix typos - [XenoAmess](https://github.com/XenoAmess)
+*   [#2749](https://github.com/pmd/pmd/pull/2749): \[dart] \[cpd] Improvements for Dart interpolated strings - [Maikel Steneker](https://github.com/maikelsteneker)
 
 
 {% endtocmaker %}
