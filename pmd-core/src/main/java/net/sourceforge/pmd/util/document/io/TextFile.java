@@ -5,7 +5,10 @@
 package net.sourceforge.pmd.util.document.io;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -46,10 +49,30 @@ public interface TextFile extends Closeable {
         return discoverer.getDefaultLanguageVersionForFile(getDisplayName());
     }
 
+    default boolean matches(Predicate<File> filter) {
+        return filter.test(new File(getDisplayName()));
+    }
+
 
     /**
-     * Returns the full file name of the file. This name is used for
-     * reporting and should not be interpreted.
+     * Returns an identifier for the path of this file. This should not
+     * be interpreted as a {@link File}, it may not be a file on this
+     * filesystem. The only requirement for this method, is that two
+     * distinct text files should have distinct path IDs, and that from
+     * one analysis to the next, the path ID of logically identical files
+     * be the same.
+     *
+     * <p>Basically this may be implemented as a URL, or a file path. It
+     * is used to index violation caches.
+     */
+    String getPathId();
+
+
+    /**
+     * Returns a display name for the file. This name is used for
+     * reporting and should not be interpreted. It may be relative
+     * to a directory or so. Use {@link #getPathId()} when you want
+     * an identifier.
      */
     @NonNull
     String getDisplayName();
@@ -86,5 +109,25 @@ public interface TextFile extends Closeable {
      */
     TextFileContent readContents() throws IOException;
 
+
+    @Deprecated
+    default DataSource asDataSource() {
+        return new DataSource() {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String getNiceFileName(boolean shortNames, String inputFileName) {
+                return getDisplayName();
+            }
+
+            @Override
+            public void close() throws IOException {
+                TextFile.this.close();
+            }
+        };
+    }
 
 }

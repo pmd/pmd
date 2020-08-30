@@ -19,26 +19,31 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class MultiThreadProcessorTest {
 
     private GlobalAnalysisListener listener;
 
-    private List<DataSource> files;
+    private List<TextFile> files;
     private SimpleReportListener reportListener;
     private PMDConfiguration configuration;
 
     public RuleSets setUpForTest(final String ruleset) throws RuleSetNotFoundException {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
+        LanguageVersion lv = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
         files = listOf(
-            DataSource.forString("abc", "file1-violation.dummy"),
-            DataSource.forString("DEF", "file2-foo.dummy")
+            PmdFiles.readOnlyString("abc", "file1-violation.dummy", lv),
+            PmdFiles.readOnlyString("DEF", "file2-foo.dummy", lv)
         );
 
         reportListener = new SimpleReportListener();

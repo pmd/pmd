@@ -33,7 +33,12 @@ public interface TextDocument extends Closeable {
     LanguageVersion getLanguageVersion();
 
     /**
-     * Returns the name of the {@link TextFile} backing this instance.
+     * Returns {@link TextFile#getPathId()} for the text file backing this document.
+     */
+    String getPathId();
+
+    /**
+     * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
      */
     String getDisplayName();
 

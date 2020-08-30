@@ -8,6 +8,9 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -133,6 +136,15 @@ public final class Chars implements CharSequence {
      */
     public void appendChars(StringBuilder sb) {
         sb.append(str, start, start + len);
+    }
+
+
+    /**
+     * Returns the characters of this charsequence encoded with the
+     * given charset.
+     */
+    public ByteBuffer getBytes(Charset charset) {
+        return charset.encode(CharBuffer.wrap(str, start, start + len));
     }
 
     /**

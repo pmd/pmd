@@ -24,6 +24,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private final LanguageVersion langVersion;
 
     private final String fileName;
+    private final String pathId;
 
     TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
         this.backend = backend;
@@ -31,6 +32,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         this.langVersion = langVersion;
         this.positioner = null;
         this.fileName = backend.getDisplayName();
+        this.pathId = backend.getPathId();
     }
 
     @Override
@@ -41,6 +43,11 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     @Override
     public String getDisplayName() {
         return fileName;
+    }
+
+    @Override
+    public String getPathId() {
+        return pathId;
     }
 
     @Override

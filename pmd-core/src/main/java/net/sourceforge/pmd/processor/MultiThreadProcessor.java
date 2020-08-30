@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 
 /**
@@ -29,13 +29,13 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
 
     @Override
     @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
-    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
+    public void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener) {
         // The thread-local is not static, but analysis-global
         // This means we don't have to reset it manually, every analysis is isolated.
         // The initial value makes a copy of the rulesets
         final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(rulesets));
 
-        for (final DataSource dataSource : files) {
+        for (final TextFile dataSource : files) {
             executor.submit(new PmdRunnable(dataSource, listener, configuration) {
                 @Override
                 protected RuleSets getRulesets() {

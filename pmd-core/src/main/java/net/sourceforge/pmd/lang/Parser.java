@@ -48,19 +48,17 @@ public interface Parser {
      */
     final class ParserTask {
 
-        private final LanguageVersion lv;
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
 
         private final String commentMarker;
 
 
-        public ParserTask(LanguageVersion lv, TextDocument textDoc, SemanticErrorReporter reporter) {
-            this(lv, textDoc, reporter, PMD.SUPPRESS_MARKER);
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+            this(textDoc, reporter, PMD.SUPPRESS_MARKER);
         }
 
-        public ParserTask(LanguageVersion lv, TextDocument textDoc, SemanticErrorReporter reporter, String commentMarker) {
-            this.lv = Objects.requireNonNull(lv, "lv was null");
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, String commentMarker) {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
             this.commentMarker = Objects.requireNonNull(commentMarker, "commentMarker was null");
@@ -68,7 +66,7 @@ public interface Parser {
 
 
         public LanguageVersion getLanguageVersion() {
-            return lv;
+            return textDoc.getLanguageVersion();
         }
 
         /**
@@ -76,7 +74,7 @@ public interface Parser {
          * not be interpreted, it may not be a file-system path.
          */
         public String getFileDisplayName() {
-            return textDoc.getFileName();
+            return textDoc.getDisplayName();
         }
 
         /**

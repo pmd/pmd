@@ -13,7 +13,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * This is internal API!
@@ -31,7 +31,7 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
     /**
      * Analyse all files. Each text file is closed.
      */
-    public abstract void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener);
+    public abstract void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener);
 
     /**
      * Joins tasks and await completion of the analysis.
@@ -53,7 +53,7 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
      * It executes the rulesets on this thread, without copying the rulesets.
      */
     @InternalApi
-    public static void runSingleFile(List<RuleSet> ruleSets, DataSource file, GlobalAnalysisListener listener, PMDConfiguration configuration) {
+    public static void runSingleFile(List<RuleSet> ruleSets, TextFile file, GlobalAnalysisListener listener, PMDConfiguration configuration) {
         RuleSets rsets = new RuleSets(ruleSets);
         new MonoThreadProcessor(configuration).processFiles(rsets, listOf(file), listener);
     }

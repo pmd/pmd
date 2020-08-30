@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +15,6 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -35,6 +31,9 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -165,25 +164,22 @@ public class TreeExportCli {
         Parser parser = languageHandler.getParser();
 
         @SuppressWarnings("PMD.CloseResource")
-        final Reader source;
-        final String filename;
+        TextFile textFile;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
-            source = new StringReader(readFromSystemIn());
-            filename = "stdin";
+            textFile = PmdFiles.readOnlyString(readFromSystemIn(), "stdin", langVersion);
         } else {
-            source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
-            filename = file;
+            textFile = PmdFiles.forPath(Paths.get(file), Charset.forName(encoding));
         }
 
         // disable warnings for deprecated attributes
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
-        try {
-            String fullSource = IOUtils.toString(source);
-            RootNode root = parser.parse(new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop()));
+        try (TextDocument textDocument = TextDocument.create(textFile, langVersion)) {
+
+            RootNode root = parser.parse(new ParserTask(textDocument, SemanticErrorReporter.noop()));
 
             AstAnalysisContext ctx = new AstAnalysisContext() {
                 @Override
@@ -200,8 +196,6 @@ public class TreeExportCli {
             languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
 
             renderer.renderSubtree(root, System.out);
-        } finally {
-            source.close();
         }
     }
 

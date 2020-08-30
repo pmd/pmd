@@ -24,6 +24,7 @@ import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -52,6 +53,7 @@ public class RuleSet implements ChecksumAware {
     private final List<Pattern> excludePatterns;
     private final List<Pattern> includePatterns;
 
+    /* TODO make that a Predicate<String> */
     private final Predicate<File> filter;
 
     /**
@@ -531,8 +533,12 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if the file should be checked,
      *         <code>false</code> otherwise
      */
-    public boolean applies(File file) {
-        return file == null || filter.test(file);
+    public boolean applies(String qualFileName) {
+        return filter.test(new File(qualFileName));
+    }
+
+    public boolean applies(TextFile file) {
+        return applies(file.getPathId());
     }
 
     /**

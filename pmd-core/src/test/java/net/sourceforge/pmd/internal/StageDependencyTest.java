@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class StageDependencyTest {
 
@@ -43,8 +44,9 @@ public class StageDependencyTest {
         // TODO Handle Rules having different parser options.
 
         Parser parser = version.getLanguageVersionHandler().getParser();
+        TextDocument doc = TextDocument.readOnlyString(source, version);
 
-        ParserTask task = new ParserTask(version, "dummyfile.dummy", source, SemanticErrorReporter.noop());
+        ParserTask task = new ParserTask(doc, SemanticErrorReporter.noop());
 
         RootNode rootNode = parser.parse(task);
 

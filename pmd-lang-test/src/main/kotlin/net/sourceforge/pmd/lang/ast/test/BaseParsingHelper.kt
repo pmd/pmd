@@ -8,9 +8,8 @@ import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.datasource.DataSource
 import net.sourceforge.pmd.util.document.TextDocument
-import net.sourceforge.pmd.util.document.TextDocument
+import net.sourceforge.pmd.util.document.io.PmdFiles
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -120,7 +119,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
         val textDoc = TextDocument.readOnlyString(sourceCode, lversion)
-        val task = Parser.ParserTask(lversion, textDoc, SemanticErrorReporter.noop(), options.suppressMarker)
+        val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop(), options.suppressMarker)
         val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
             postProcessing(handler, lversion, rootNode)
@@ -219,7 +218,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         AbstractPMDProcessor.runSingleFile(
                 listOf(rules),
-                DataSource.forString(code, "test.${getVersion(null).language.extensions[0]}"),
+                PmdFiles.readOnlyString(code, "testFile", getVersion(null)),
                 fullListener,
                 configuration
         )

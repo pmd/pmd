@@ -5,6 +5,8 @@
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.map;
+import static net.sourceforge.pmd.util.CollectionUtil.toMutableList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +17,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +51,8 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -192,8 +197,22 @@ public final class PMD {
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
                                     GlobalAnalysisListener listener) throws Exception {
+        List<TextFile> inputFiles = map(toMutableList(),
+                                        files,
+                                        ds -> PmdFiles.dataSourceCompat(ds, configuration));
+
+        newProcessFiles(configuration, ruleSets, inputFiles, listener);
+    }
+
+    public static void newProcessFiles(final PMDConfiguration configuration,
+                                       final List<RuleSet> ruleSets,
+                                       final List<TextFile> inputFiles,
+                                       GlobalAnalysisListener listener) throws Exception {
+
+        sortFiles(configuration, inputFiles);
 
         final RuleSets rs = new RuleSets(ruleSets);
+
 
         // todo Just like we throw for invalid properties, "broken rules"
         // shouldn't be a "config error". This is the only instance of
@@ -205,7 +224,6 @@ public final class PMD {
 
         encourageToUseIncrementalAnalysis(configuration);
 
-        files = sortFiles(configuration, files);
 
         // Make sure the cache is listening for analysis results
         listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
@@ -214,7 +232,7 @@ public final class PMD {
 
         Exception ex = null;
         try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-            processor.processFiles(rs, files, listener);
+            processor.processFiles(rs, inputFiles, listener);
         } catch (Exception e) {
             ex = e;
         } finally {
@@ -222,7 +240,7 @@ public final class PMD {
 
             // in case we analyzed files within Zip Files/Jars, we need to close them after
             // the analysis is finished
-            Exception closed = IOUtil.closeAll(files);
+            Exception closed = IOUtil.closeAll(inputFiles);
 
             if (closed != null) {
                 if (ex != null) {
@@ -262,24 +280,13 @@ public final class PMD {
     }
 
 
-    private static List<DataSource> sortFiles(final PMDConfiguration configuration, List<DataSource> files) {
-        // the input collection may be unmodifiable
-        files = new ArrayList<>(files);
-
+    private static void sortFiles(final PMDConfiguration configuration, List<TextFile> files) {
         if (configuration.isStressTest()) {
             // randomize processing order
             Collections.shuffle(files);
         } else {
-            final boolean useShortNames = configuration.isReportShortNames();
-            final String inputPaths = configuration.getInputPaths();
-            files.sort((left, right) -> {
-                String leftString = left.getNiceFileName(useShortNames, inputPaths);
-                String rightString = right.getNiceFileName(useShortNames, inputPaths);
-                return leftString.compareTo(rightString);
-            });
+            files.sort(Comparator.comparing(TextFile::getPathId));
         }
-
-        return files;
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {

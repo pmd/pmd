@@ -35,6 +35,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -64,13 +65,13 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public boolean isUpToDate(final File sourceFile) {
+    public boolean isUpToDate(final TextDocument document) {
         // There is a new file being analyzed, prepare entry in updated cache
-        final AnalysisResult updatedResult = new AnalysisResult(sourceFile);
-        updatedResultsCache.put(sourceFile.getPath(), updatedResult);
+        final AnalysisResult updatedResult = new AnalysisResult(AnalysisResult.computeFileChecksum(document.getText()), new ArrayList<>());
+        updatedResultsCache.put(document.getPathId(), updatedResult);
 
         // Now check the old cache
-        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
+        final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
 
         // is this a known file? has it changed?
         final boolean result = analysisResult != null
@@ -89,8 +90,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public List<RuleViolation> getCachedViolations(final File sourceFile) {
-        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
+    public List<RuleViolation> getCachedViolations(final TextDocument sourceFile) {
+        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPathId());
 
         if (analysisResult == null) {
             // new file, avoid nulls
@@ -101,8 +102,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void analysisFailed(final File sourceFile) {
-        updatedResultsCache.remove(sourceFile.getPath());
+    public void analysisFailed(final TextDocument sourceFile) {
+        updatedResultsCache.remove(sourceFile.getPathId());
     }
 
 

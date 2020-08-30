@@ -13,7 +13,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +39,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class RuleSetTest {
 
@@ -367,7 +370,7 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeApplies() {
-        File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
+        TextFile file = PmdFiles.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue("No patterns", ruleSet.applies(file));

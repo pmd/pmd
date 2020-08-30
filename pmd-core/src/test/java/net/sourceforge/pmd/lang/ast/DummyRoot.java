@@ -25,6 +25,7 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
         super();
         this.suppressMap = suppressMap;
         this.languageVersion = languageVersion;
+        setCoords(1, 1, 1, 1);
     }
 
     public DummyRoot(Map<Integer, String> suppressMap) {

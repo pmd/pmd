@@ -28,13 +28,9 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final Path path;
     private final Charset charset;
 
-    NioTextFile(Path path, Charset charset) throws IOException {
+    NioTextFile(Path path, Charset charset) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
-
-        if (!Files.isRegularFile(path)) {
-            throw new IOException("Not a regular file: " + path);
-        }
 
         this.path = path;
         this.charset = charset;
@@ -47,6 +43,11 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public @NonNull String getDisplayName() {
+        return path.toString();
+    }
+
+    @Override
+    public String getPathId() {
         return path.toAbsolutePath().toString();
     }
 
@@ -76,6 +77,10 @@ class NioTextFile extends BaseCloseable implements TextFile {
     @Override
     public TextFileContent readContents() throws IOException {
         ensureOpen();
+
+        if (!Files.isRegularFile(path)) {
+            throw new IOException("Not a regular file: " + path);
+        }
 
         String text;
         try (BufferedReader br = Files.newBufferedReader(path, charset)) {

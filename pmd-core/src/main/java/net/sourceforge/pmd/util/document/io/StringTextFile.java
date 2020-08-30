@@ -34,6 +34,11 @@ class StringTextFile implements TextFile {
     }
 
     @Override
+    public String getPathId() {
+        return name;
+    }
+
+    @Override
     public boolean isReadOnly() {
         return true;
     }
