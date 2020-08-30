@@ -110,6 +110,16 @@ public interface TextFile extends Closeable {
     TextFileContent readContents() throws IOException;
 
 
+    /**
+     * Release resources associated with this text file. Is a noop if
+     * it is called several times.
+     *
+     * @throws IOException If an IO exception occurs
+     */
+    @Override
+    void close() throws IOException;
+
+
     @Deprecated
     default DataSource asDataSource() {
         return new DataSource() {

@@ -169,7 +169,7 @@ public class TreeExportCli {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
-            textFile = PmdFiles.readOnlyString(readFromSystemIn(), "stdin", langVersion);
+            textFile = PmdFiles.forString(readFromSystemIn(), "stdin", langVersion);
         } else {
             textFile = PmdFiles.forPath(Paths.get(file), Charset.forName(encoding));
         }

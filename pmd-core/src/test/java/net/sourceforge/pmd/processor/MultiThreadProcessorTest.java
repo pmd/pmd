@@ -42,8 +42,8 @@ public class MultiThreadProcessorTest {
         configuration.setThreads(2);
         LanguageVersion lv = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
         files = listOf(
-            PmdFiles.readOnlyString("abc", "file1-violation.dummy", lv),
-            PmdFiles.readOnlyString("DEF", "file2-foo.dummy", lv)
+            PmdFiles.forString("abc", "file1-violation.dummy", lv),
+            PmdFiles.forString("DEF", "file2-foo.dummy", lv)
         );
 
         reportListener = new SimpleReportListener();

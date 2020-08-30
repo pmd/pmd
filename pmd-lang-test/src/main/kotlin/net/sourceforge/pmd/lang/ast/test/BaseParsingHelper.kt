@@ -218,7 +218,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         AbstractPMDProcessor.runSingleFile(
                 listOf(rules),
-                PmdFiles.readOnlyString(code, "testFile", getVersion(null)),
+                PmdFiles.forString(code, "testFile", getVersion(null)),
                 fullListener,
                 configuration
         )

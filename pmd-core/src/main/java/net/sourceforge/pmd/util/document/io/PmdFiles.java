@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -68,8 +69,8 @@ public final class PmdFiles {
      *
      * @throws NullPointerException If the source text is null
      */
-    public static TextFile readOnlyString(String source) {
-        return readOnlyString(source, "n/a", null);
+    public static TextFile forString(String source) {
+        return forString(source, "n/a", null);
     }
 
     /**
@@ -81,7 +82,7 @@ public final class PmdFiles {
      *
      * @throws NullPointerException If the source text or the name is null
      */
-    public static TextFile readOnlyString(@NonNull String source, @NonNull String name, @Nullable LanguageVersion lv) {
+    public static TextFile forString(@NonNull String source, @NonNull String name, @Nullable LanguageVersion lv) {
         return new StringTextFile(source, name, lv);
     }
 
@@ -116,7 +117,8 @@ public final class PmdFiles {
      */
     @Deprecated
     public static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
-        return new TextFile() {
+        class DataSourceTextFile extends BaseCloseable implements TextFile {
+
             @Override
             public String getPathId() {
                 return ds.getNiceFileName(false, null);
@@ -147,9 +149,11 @@ public final class PmdFiles {
             }
 
             @Override
-            public void close() throws IOException {
+            protected void doClose() throws IOException {
                 ds.close();
             }
-        };
+        }
+
+        return new DataSourceTextFile();
     }
 }

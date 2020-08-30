@@ -296,7 +296,7 @@ public abstract class RuleTst {
 
                 AbstractPMDProcessor.runSingleFile(
                     listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
-                    PmdFiles.readOnlyString(code, "testFile", languageVersion),
+                    PmdFiles.forString(code, "testFile", languageVersion),
                     listener,
                     config
                 );

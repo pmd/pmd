@@ -11,19 +11,34 @@ public abstract class BaseCloseable implements Closeable {
 
     protected boolean open = true;
 
-    protected void ensureOpen() throws IOException {
+    protected final void ensureOpen() throws IOException {
         if (!open) {
             throw new IOException("Closed " + this);
         }
     }
 
-    @Override
-    public void close() throws IOException {
-        if (open) {
-            open = false;
-            doClose();
+    protected final void ensureOpenIllegalState() throws IllegalStateException {
+        if (!open) {
+            throw new IllegalStateException("Closed " + this);
         }
     }
 
+
+    /**
+     * Noop if called several times. Thread-safe.
+     */
+    @Override
+    public void close() throws IOException {
+        if (open) {
+            synchronized (this) {
+                if (open) {
+                    open = false;
+                    doClose();
+                }
+            }
+        }
+    }
+
+    /** Called at most once. */
     protected abstract void doClose() throws IOException;
 }

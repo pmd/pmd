@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -175,20 +174,14 @@ public final class FileUtil {
     /**
      * Reads the file, which contains the filelist. This is used for the
      * command line arguments --filelist/-filelist for both PMD and CPD.
-     * The separator in the filelist is a command and/or newlines.
+     * The separator in the filelist is a comma and/or newlines.
      *
      * @param filelist the file which contains the list of path names
-     * @return a comma-separated list of file paths
+     *
+     * @return a list of file paths
+     *
      * @throws IOException if the file couldn't be read
      */
-    public static String readFilelist(File filelist) throws IOException {
-        String filePaths = FileUtils.readFileToString(filelist);
-        filePaths = StringUtils.trimToEmpty(filePaths);
-        filePaths = filePaths.replaceAll("\\r?\\n", ",");
-        filePaths = filePaths.replaceAll(",+", ",");
-        return filePaths;
-    }
-
     public static List<String> readFilelistEntries(Path filelist) throws IOException {
         return Files.readAllLines(filelist).stream()
                     .flatMap(it -> Arrays.stream(it.split(",")))

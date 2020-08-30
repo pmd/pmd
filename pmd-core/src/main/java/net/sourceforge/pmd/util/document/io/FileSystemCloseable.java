@@ -6,39 +6,49 @@ package net.sourceforge.pmd.util.document.io;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 
-public final class FileSystemCloseable implements AutoCloseable {
+/**
+ * Tracks unclosed references to a resource. Zip files containing
+ * {@link TextFile}s are thus closed when all of their dependent
+ * {@link TextFile} entries have been closed.
+ */
+public final class FileSystemCloseable extends BaseCloseable implements Closeable {
 
     private final AtomicInteger numOpenResources = new AtomicInteger();
     private final Closeable closeAction;
-    private boolean isClosed;
 
+    /**
+     * Create a new filesystem closeable which when closed, executes
+     * the {@link Closeable#close()} action of the parameter. Dependent
+     * resources need to be registered using {@link PmdFiles#forPath(Path, Charset, FileSystemCloseable) forPath}.
+     *
+     * @param closeAction A closeable
+     */
     public FileSystemCloseable(Closeable closeAction) {
         this.closeAction = closeAction;
     }
 
-    public void addDependent() {
+    void addDependent() {
+        ensureOpenIllegalState();
         numOpenResources.incrementAndGet();
     }
 
-    public void closeDependent() throws IOException {
+    void closeDependent() throws IOException {
+        ensureOpenIllegalState();
         if (numOpenResources.decrementAndGet() == 0) {
-            synchronized (this) {
-                closeAction.close();
-                isClosed = true;
-            }
+            // no more open references, we can close it
+            // is this thread-safe?
+            close();
         }
     }
 
     @Override
-    public void close() throws Exception {
-        synchronized (this) {
-            if (!isClosed) {
-                closeAction.close();
-                isClosed = true;
-            }
-        }
+    protected void doClose() throws IOException {
+        closeAction.close();
     }
 }

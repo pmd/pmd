@@ -124,7 +124,7 @@ public interface TextDocument extends Closeable {
     }
 
     static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {
-        TextFile textFile = PmdFiles.readOnlyString(source, filename, lv);
+        TextFile textFile = PmdFiles.forString(source, filename, lv);
         try {
             return new TextDocumentImpl(textFile, lv);
         } catch (IOException e) {
