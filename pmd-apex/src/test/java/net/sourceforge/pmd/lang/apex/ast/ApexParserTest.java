@@ -49,13 +49,13 @@ public class ApexParserTest extends ApexParserTestBase {
             + "}\n"; // line 6
 
     @Test
-    public void verifyLineColumNumbers() {
+    public void verifyLineColumnNumbers() {
         ApexNode<Compilation> rootNode = parse(testCodeForLineNumbers);
         assertLineNumbersForTestCode(rootNode);
     }
 
     @Test
-    public void verifyLineColumNumbersWithWindowsLineEndings() {
+    public void verifyLineColumnNumbersWithWindowsLineEndings() {
         String windowsLineEndings = testCodeForLineNumbers.replaceAll(" \n", "\r\n");
         ApexNode<Compilation> rootNode = parse(windowsLineEndings);
         assertLineNumbersForTestCode(rootNode);

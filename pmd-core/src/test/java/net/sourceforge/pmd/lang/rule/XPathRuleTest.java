@@ -74,12 +74,12 @@ public class XPathRuleTest {
         loggingRule.clear();
         eval(ctx, xpr, newNodeWithList()); // with another node
         assertEquals(2, ctx.getReport().size());
-        assertEquals("", loggingRule.getLog()); // no addtional warnings
+        assertEquals("", loggingRule.getLog()); // no additional warnings
 
         // with another rule forked from the same one (in multithreaded processor)
         eval(ctx, xpr.deepCopy(), newNodeWithList());
         assertEquals(3, ctx.getReport().size());
-        assertEquals("", loggingRule.getLog()); // no addtional warnings
+        assertEquals("", loggingRule.getLog()); // no additional warnings
 
         // with another rule on the same node, new warnings
         XPathRule otherRule = makeRuleWithList("OtherTestRuleWithListAccess");

@@ -112,7 +112,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
 
     /**
      * Gets the variable name of this declaration. This method searches the first
-     * VariableDeclartorId node and returns it's image or <code>null</code> if
+     * VariableDeclaratorId node and returns it's image or <code>null</code> if
      * the child node is not found.
      *
      * @return a String representing the name of the variable

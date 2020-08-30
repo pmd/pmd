@@ -231,7 +231,7 @@ public class ConfigurationTest {
         cacheFile.deleteOnExit();
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
-        assertSame("Confgured cache not stored", analysisCache, configuration.getAnalysisCache());
+        assertSame("Configured cache not stored", analysisCache, configuration.getAnalysisCache());
     }
 
     @Test

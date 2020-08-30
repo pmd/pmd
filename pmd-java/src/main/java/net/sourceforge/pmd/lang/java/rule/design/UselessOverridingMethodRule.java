@@ -83,9 +83,9 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodThrowingType(ASTMethodDeclaration node, Class<? extends Exception> exceptionType) {
-        ASTNameList thrownsExceptions = node.getThrows();
-        if (thrownsExceptions != null) {
-            List<ASTName> names = thrownsExceptions.findChildrenOfType(ASTName.class);
+        ASTNameList thrownExceptions = node.getThrows();
+        if (thrownExceptions != null) {
+            List<ASTName> names = thrownExceptions.findChildrenOfType(ASTName.class);
             for (ASTName name : names) {
                 if (name.getType() != null && name.getType() == exceptionType) {
                     return true;
@@ -297,6 +297,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
      * @deprecated this method will be removed. Just use {@link Node#findChildrenOfType(Class)} directly.
      */
     @Deprecated
+    // should be findFirstDegreeChildrenOfType
     public <T> List<T> findFirstDegreeChaildrenOfType(Node n, Class<T> targetType) {
         return n.findChildrenOfType(targetType);
     }

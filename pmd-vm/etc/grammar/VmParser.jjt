@@ -592,7 +592,7 @@ TOKEN:
 
 /*
  * needed because #set is so wacky in it's desired behavior.  We want set
- * to eat any preceeding whitespace so it is invisible in formatting.
+ * to eat any preceding whitespace so it is invisible in formatting.
  * (As it should be.)  If this works well, I am going to chuck the whole MORE:
  * token abomination.
  *
@@ -1955,8 +1955,8 @@ void PrimaryExpression() #void : {}
     The recent versions of the parser are trying to support precise output to
     support general template use. The directives do not render trailing
     whitespace and newlines if followed by a newline.  They will render
-    preceeding whitespace. The only exception is #set, which also eats
-    preceeding whitespace.
+    preceding whitespace. The only exception is #set, which also eats
+    preceding whitespace.
 
     So, with a template :
 

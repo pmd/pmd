@@ -376,7 +376,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             List<ASTAssignmentOperator> assignmentStmts = block.findDescendantsOfType(ASTAssignmentOperator.class);
             for (ASTAssignmentOperator stmt : assignmentStmts) {
                 //we only care about it if it occurs prior to (or on) the beginLine of the current expression
-                //and if it is a simple_assignement_operator
+                //and if it is a simple_assignment_operator
                 if (stmt.getBeginLine() <= expression.getBeginLine()
                         && stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
                     //now we need to make sure it has the right image name

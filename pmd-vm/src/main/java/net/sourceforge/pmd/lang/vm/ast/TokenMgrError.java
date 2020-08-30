@@ -18,7 +18,7 @@ public class TokenMgrError extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Lexical error occured.
+     * Lexical error occurred.
      */
     static final int LEXICAL_ERROR = 0;
 
@@ -63,7 +63,7 @@ public class TokenMgrError extends RuntimeException {
     }
 
     /**
-     * Replaces unprintable characters by their espaced (or unicode escaped)
+     * Replaces unprintable characters by their escaped (or unicode escaped)
      * equivalents in the given string
      */
     protected static final String addEscapes(final String str) {
@@ -115,9 +115,9 @@ public class TokenMgrError extends RuntimeException {
      * Returns a detailed message for the Error when it is thrown by the token
      * manager to indicate a lexical error. Parameters : EOFSeen : indicates if
      * EOF caused the lexicl error curLexState : lexical state in which this
-     * error occured errorLine : line number when the error occured errorColumn
-     * : column number when the error occured errorAfter : prefix that was seen
-     * before this error occured curchar : the offending character Note: You can
+     * error occurred errorLine : line number when the error occurred errorColumn
+     * : column number when the error occurred errorAfter : prefix that was seen
+     * before this error occurred curchar : the offending character Note: You can
      * customize the lexical error message by modifying this method.
      */
     protected static String lexicalError(final boolean eofSeen, final int lexState, final int errorLine,

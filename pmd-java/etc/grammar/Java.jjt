@@ -1751,7 +1751,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 /*
  * This is really ugly... we are repeating the CastExpression lookahead and full expression...
  * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
- * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
+ * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
 */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
 | LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
