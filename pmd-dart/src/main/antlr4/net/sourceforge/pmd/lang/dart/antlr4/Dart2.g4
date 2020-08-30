@@ -351,16 +351,16 @@ SingleLineString
 
 fragment
 StringContentDQ
-  : ~('\\' | '"' /*| '$'*/ | '\n' | '\r')
+  : ~('\\' | '"' | '$' | '\n' | '\r')
   | '\\' ~('\n' | '\r')
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 fragment
 StringContentSQ
-  : ~('\\' | '\'' /*| '$'*/ | '\n' | '\r')
+  : ~('\\' | '\'' | '$' | '\n' | '\r')
   | '\\' ~('\n' | '\r')
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 MultiLineString
@@ -372,15 +372,16 @@ MultiLineString
 
 fragment
 StringContentTDQ
-  : ~('\\' | '"' /*| '$'*/)
+  : ~('\\' | '"' | '$')
   | '"' ~'"' | '""' ~'"'
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
-fragment StringContentTSQ
-  : ~('\\' | '\'' /*| '$'*/)
+fragment
+StringContentTSQ
+  : ~('\\' | '\'' | '$')
   | '\'' ~'\'' | '\'\'' ~'\''
-  //| stringInterpolation
+  | StringInterpolation
   ;
 
 NEWLINE
@@ -390,10 +391,17 @@ NEWLINE
   ;
 
 // 16.5.1 String Interpolation
-stringInterpolation
-//  : '$' IDENTIFIER_NO_DOLLAR
-  : '$' identifier// FIXME
-  | '${' expression '}'
+fragment
+StringInterpolation
+  : '$' IDENTIFIER_NO_DOLLAR
+  | '${' StringInterpolationContent* '}'
+  ;
+
+fragment
+StringInterpolationContent
+  : ~('$' | '{' | '}')
+  | '$' IDENTIFIER_NO_DOLLAR
+  | '${' StringInterpolationContent* '}'
   ;
 
 // 16.6 Symbols
