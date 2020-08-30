@@ -44,32 +44,6 @@ public final class FileUtil {
     }
 
     /**
-     * Close all closeable resources in order. If any exception occurs,
-     * it is saved and returned. If more than one exception occurs, the
-     * following are accumulated as suppressed violations.
-     *
-     * @param closeables Resources to close
-     *
-     * @return An exception, or null if no 'close' routine threw
-     */
-    @SuppressWarnings("PMD.CloseResource") // false-positive
-    public static Exception closeAll(Collection<? extends AutoCloseable> closeables) {
-        Exception composed = null;
-        for (AutoCloseable it : closeables) {
-            try {
-                it.close();
-            } catch (Exception e) {
-                if (composed == null) {
-                    composed = e;
-                } else {
-                    composed.addSuppressed(e);
-                }
-            }
-        }
-        return composed;
-    }
-
-    /**
      * Helper method to get a filename without its extension
      *
      * @param fileName

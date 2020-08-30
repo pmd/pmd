@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  */
 public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
-    private final String source =
+    private static final String SOURCE =
         "create or replace\n" + "package pkg_xpath_problem\n" + "AS\n" + "    PROCEDURE pkg_minimal\n" + "    IS\n"
             + "        a_variable VARCHAR2(1);\n" + "    BEGIN \n" + "        --PRAGMA INLINE(output,'YES');\n"
             + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n";
@@ -29,7 +29,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1() throws Exception {
+    public void testXPathRule1() {
         testOnVersion(XPathVersion.XPATH_1_0);
     }
 
@@ -37,7 +37,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1Compatibility() throws Exception {
+    public void testXPathRule1Compatibility() {
         testOnVersion(XPathVersion.XPATH_1_0_COMPATIBILITY);
     }
 
@@ -45,17 +45,17 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule2() throws Exception {
+    public void testXPathRule2() {
         testOnVersion(XPathVersion.XPATH_2_0);
     }
 
 
-    private void testOnVersion(XPathVersion xpath10) throws Exception {
+    private void testOnVersion(XPathVersion xpath10) {
         XPathRule rule = new XPathRule(xpath10, "//PrimaryPrefix");
         rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
         rule.setMessage("Test Violation");
 
-        Report report = plsql.executeRule(rule, source);
+        Report report = plsql.executeRule(rule, SOURCE);
         Assert.assertEquals(2, report.getViolations().size());
     }
 

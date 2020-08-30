@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -129,7 +129,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
             @Override
             public void close() throws Exception {
-                Exception composed = FileUtil.closeAll(myList);
+                Exception composed = IOUtil.closeAll(myList);
                 if (composed != null) {
                     throw composed;
                 }

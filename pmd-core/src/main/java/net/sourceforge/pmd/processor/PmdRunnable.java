@@ -96,7 +96,7 @@ class PmdRunnable implements Runnable {
         TimeTracker.finishThread();
     }
 
-    public void processSource(RuleContext ruleCtx, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
+    private void processSource(RuleContext ruleCtx, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
         String fullSource = DataSource.readToString(dataSource, configuration.getSourceEncoding());
         String filename = dataSource.getNiceFileName(false, null);
 
@@ -116,7 +116,7 @@ class PmdRunnable implements Runnable {
         }
     }
 
-    private RootNode parse(Parser parser, ParserTask task) throws IOException {
+    private RootNode parse(Parser parser, ParserTask task) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
             return parser.parse(task);
         }
@@ -127,7 +127,7 @@ class PmdRunnable implements Runnable {
                                RuleSets ruleSets,
                                RuleContext ctx,
                                LanguageVersion languageVersion,
-                               String filename) throws FileAnalysisException, IOException {
+                               String filename) throws FileAnalysisException {
 
         ParserTask task = new ParserTask(
             languageVersion,

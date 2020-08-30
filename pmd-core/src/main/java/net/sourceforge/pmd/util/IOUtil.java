@@ -17,6 +17,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -97,4 +98,29 @@ public final class IOUtil {
         }
     }
 
+    /**
+     * Close all closeable resources in order. If any exception occurs,
+     * it is saved and returned. If more than one exception occurs, the
+     * following are accumulated as suppressed exceptions in the first.
+     *
+     * @param closeables Resources to close
+     *
+     * @return An exception, or null if no 'close' routine threw
+     */
+    @SuppressWarnings("PMD.CloseResource") // false-positive
+    public static Exception closeAll(Collection<? extends AutoCloseable> closeables) {
+        Exception composed = null;
+        for (AutoCloseable it : closeables) {
+            try {
+                it.close();
+            } catch (Exception e) {
+                if (composed == null) {
+                    composed = e;
+                } else {
+                    composed.addSuppressed(e);
+                }
+            }
+        }
+        return composed;
+    }
 }

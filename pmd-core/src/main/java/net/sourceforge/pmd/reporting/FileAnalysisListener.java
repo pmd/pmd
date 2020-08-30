@@ -13,7 +13,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * A handler for events occuring during analysis of a single file. Instances
@@ -117,7 +117,7 @@ public interface FileAnalysisListener extends AutoCloseable {
 
             @Override
             public void close() throws Exception {
-                Exception composed = FileUtil.closeAll(list);
+                Exception composed = IOUtil.closeAll(list);
                 if (composed != null) {
                     throw composed;
                 }

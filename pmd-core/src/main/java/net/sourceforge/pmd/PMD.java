@@ -222,7 +222,7 @@ public class PMD {
 
             // in case we analyzed files within Zip Files/Jars, we need to close them after
             // the analysis is finished
-            Exception closed = FileUtil.closeAll(files);
+            Exception closed = IOUtil.closeAll(files);
 
             if (closed != null) {
                 if (ex != null) {
