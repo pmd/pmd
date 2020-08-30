@@ -14,6 +14,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;

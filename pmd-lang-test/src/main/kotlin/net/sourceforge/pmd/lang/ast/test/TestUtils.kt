@@ -88,6 +88,6 @@ fun assertSize(report: Report, size: Int): List<RuleViolation> {
 
 /** Assert number of suppressed violations. */
 fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation> {
-    assertEquals(size, report.suppressedRuleViolations.size, message = "Wrong number of suppressed violations!")
-    return report.suppressedRuleViolations
+    assertEquals(size, report.suppressedViolations.size, message = "Wrong number of suppressed violations!")
+    return report.suppressedViolations
 }
