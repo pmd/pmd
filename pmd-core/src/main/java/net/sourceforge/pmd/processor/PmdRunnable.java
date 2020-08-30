@@ -27,14 +27,14 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-class PmdRunnable implements Runnable {
+/**
+ * A processing task for a single file.
+ */
+abstract class PmdRunnable implements Runnable {
 
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener ruleContext;
-
-    // this should only be used within the run method (when we are on the actual carrier thread)
-    private final ThreadLocal<RuleSets> ruleSetCopy;
 
     private final PMDConfiguration configuration;
 
@@ -42,9 +42,7 @@ class PmdRunnable implements Runnable {
 
     PmdRunnable(DataSource dataSource,
                 GlobalAnalysisListener ruleContext,
-                ThreadLocal<RuleSets> ruleSetCopy,
                 PMDConfiguration configuration) {
-        this.ruleSetCopy = ruleSetCopy;
         this.dataSource = dataSource;
         // this is the real, canonical and absolute filename (not shortened)
         String realFileName = dataSource.getNiceFileName(false, null);
@@ -55,12 +53,18 @@ class PmdRunnable implements Runnable {
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
+    /**
+     * This is only called within the run method (when we are on the actual carrier thread).
+     * That way an implementation that uses a ThreadLocal will see the
+     * correct thread.
+     */
+    protected abstract RuleSets getRulesets();
+
     @Override
     public void run() throws FileAnalysisException {
         TimeTracker.initThread();
 
-        RuleSets ruleSets = ruleSetCopy.get();
-        assert ruleSets != null : "ThreadLocal should have an initial value";
+        RuleSets ruleSets = getRulesets();
 
         try (FileAnalysisListener listener = ruleContext.startFileAnalysis(dataSource)) {
             final RuleContext ruleCtx = RuleContext.create(listener);

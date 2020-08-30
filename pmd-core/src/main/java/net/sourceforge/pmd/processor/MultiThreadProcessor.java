@@ -35,7 +35,12 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
         final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(rulesets));
 
         for (final DataSource dataSource : files) {
-            executor.submit(new PmdRunnable(dataSource, listener, ruleSetCopy, configuration));
+            executor.submit(new PmdRunnable(dataSource, listener, configuration) {
+                @Override
+                protected RuleSets getRulesets() {
+                    return ruleSetCopy.get();
+                }
+            });
         }
     }
 

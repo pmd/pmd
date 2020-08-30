@@ -23,10 +23,13 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     @Override
     public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
-        // populating the initial value avoids copying the ruleset
-        ThreadLocal<RuleSets> tlocal = ThreadLocal.withInitial(() -> rulesets);
         for (DataSource file : files) {
-            new PmdRunnable(file, listener, tlocal, configuration).run();
+            new PmdRunnable(file, listener, configuration) {
+                @Override
+                protected RuleSets getRulesets() {
+                    return rulesets;
+                }
+            }.run();
         }
     }
 
