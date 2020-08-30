@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.internal.util.AssertionUtil.requireParamNotNul
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -83,8 +84,8 @@ public final class PredicateUtil {
      *
      * @return A File Filter.
      */
-    public static Predicate<File> toFileFilter(final FilenameFilter filter) {
-        return file -> filter.accept(file.getParentFile(), file.getName());
+    public static Predicate<Path> toFileFilter(final FilenameFilter filter) {
+        return path -> filter.accept(path.getParent().toFile(), path.getFileName().toString());
     }
 
     /**

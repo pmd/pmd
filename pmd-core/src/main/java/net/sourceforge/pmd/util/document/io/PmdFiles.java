@@ -14,6 +14,7 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cpd.SourceCode;
@@ -42,7 +43,22 @@ public final class PmdFiles {
      * @throws NullPointerException if the path or the charset is null
      */
     public static TextFile forPath(final Path path, final Charset charset) {
-        return new NioTextFile(path, charset);
+        return new NioTextFile(path, charset, null);
+    }
+
+    /**
+     * Returns an instance of this interface reading and writing to a file.
+     * The returned instance may be read-only. If the file is not a regular
+     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
+     * will throw.
+     *
+     * @param path    Path to the file
+     * @param charset Encoding to use
+     *
+     * @throws NullPointerException if the path or the charset is null
+     */
+    public static TextFile forPath(final Path path, final Charset charset, FileSystemCloseable fileSystemCloseable) {
+        return new NioTextFile(path, charset, fileSystemCloseable);
     }
 
     /**
@@ -61,11 +77,29 @@ public final class PmdFiles {
      *
      * @param source Text of the file
      * @param name   File name to use
+     * @param lv     Language version, which overrides the default language associations given by the file extension
      *
      * @throws NullPointerException If the source text or the name is null
      */
-    public static TextFile readOnlyString(String source, String name, LanguageVersion lv) {
+    public static TextFile readOnlyString(@NonNull String source, @NonNull String name, @Nullable LanguageVersion lv) {
         return new StringTextFile(source, name, lv);
+    }
+
+    /**
+     * Returns a read-only instance of this interface reading from a reader.
+     * The reader is first read when {@link TextFile#readContents()} is first
+     * called, and is closed when that method exits. Note that this may
+     * only be called once, afterwards, {@link TextFile#readContents()} will
+     * throw an {@link IOException}.
+     *
+     * @param reader Text of the file
+     * @param name   File name to use
+     * @param lv     Language version, which overrides the default language associations given by the file extension
+     *
+     * @throws NullPointerException If the reader or the name is null
+     */
+    public static TextFile forReader(@NonNull Reader reader, @NonNull String name, @Nullable LanguageVersion lv) {
+        return new ReaderTextFile(reader, name, lv);
     }
 
     /**
@@ -108,7 +142,7 @@ public final class PmdFiles {
                 try (InputStream is = ds.getInputStream();
                      Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
                     String contents = IOUtils.toString(reader);
-                    return TextFileContent.normalizeToFileContent(contents);
+                    return TextFileContent.fromCharSeq(contents);
                 }
             }
 

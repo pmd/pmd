@@ -4,9 +4,17 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.ByteOrderMark;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BOMInputStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.util.document.Chars;
@@ -61,14 +69,47 @@ public final class TextFileContent {
      *
      * @return A text file content
      */
-    @NonNull
-    public static TextFileContent normalizeToFileContent(CharSequence text) {
+    public static @NonNull TextFileContent fromCharSeq(CharSequence text) {
         return normalizeImpl(text, System.lineSeparator());
     }
 
+    /**
+     * Read the reader fully and produce a {@link TextFileContent}. This
+     * does not close the reader.
+     *
+     * @param reader A reader
+     *
+     * @return A text file content
+     *
+     * @throws IOException If an IO exception occurs
+     */
+    public static TextFileContent fromReader(Reader reader) throws IOException {
+        // TODO maybe there's a more efficient way to do that.
+        String text = IOUtils.toString(reader);
+        return fromCharSeq(text);
+    }
+
+
+    /**
+     * Reads the contents of the data source to a string. Skips the byte-order
+     * mark if present. Parsers expect input without a BOM.
+     *
+     * @param dataSource     Input stream
+     * @param sourceEncoding Encoding to use to read from the data source
+     */
+    public static TextFileContent fromInputStream(InputStream dataSource, Charset sourceEncoding) throws IOException {
+        try (InputStream stream = dataSource;
+             // Skips the byte-order mark
+             BOMInputStream bomIs = new BOMInputStream(stream, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE);
+             Reader reader = new InputStreamReader(bomIs, sourceEncoding)) {
+
+            return fromReader(reader);
+        }
+    }
 
     // test only
-    @NonNull static TextFileContent normalizeImpl(CharSequence text, String fallbackLineSep) {
+    @NonNull
+    static TextFileContent normalizeImpl(CharSequence text, String fallbackLineSep) {
         Matcher matcher = NEWLINE_PATTERN.matcher(text);
         boolean needsNormalization;
         String lineTerminator;
@@ -96,4 +137,5 @@ public final class TextFileContent {
 
         return new TextFileContent(Chars.wrap(text), lineTerminator);
     }
+
 }

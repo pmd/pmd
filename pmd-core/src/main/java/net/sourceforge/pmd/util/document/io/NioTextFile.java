@@ -7,13 +7,14 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
@@ -27,13 +28,18 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
+    private final @Nullable FileSystemCloseable fs;
 
-    NioTextFile(Path path, Charset charset) {
+    NioTextFile(Path path, Charset charset, @Nullable FileSystemCloseable fs) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
 
         this.path = path;
         this.charset = charset;
+        this.fs = fs;
+        if (fs != null) {
+            fs.addDependent();
+        }
     }
 
     @Override
@@ -82,17 +88,17 @@ class NioTextFile extends BaseCloseable implements TextFile {
             throw new IOException("Not a regular file: " + path);
         }
 
-        String text;
-        try (BufferedReader br = Files.newBufferedReader(path, charset)) {
-            text = IOUtils.toString(br);
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return TextFileContent.fromInputStream(inputStream, charset);
         }
-        return TextFileContent.normalizeToFileContent(text);
     }
 
 
     @Override
-    protected void doClose() {
-        // do nothing
+    protected void doClose() throws IOException {
+        if (fs != null) {
+            fs.closeDependent();
+        }
     }
 
     @Override

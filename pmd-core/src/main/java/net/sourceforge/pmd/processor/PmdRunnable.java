@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.io.IOException;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSets;
@@ -65,19 +63,20 @@ abstract class PmdRunnable implements Runnable {
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {
-                TextDocument textDocument = TextDocument.create(textFile, langVersion);
+                try (TextDocument textDocument = TextDocument.create(textFile, langVersion)) {
 
-                if (configuration.getAnalysisCache().isUpToDate(textDocument)) {
-                    reportCachedRuleViolations(listener, textDocument);
-                } else {
-                    try {
-                        processSource(listener, textDocument, ruleSets);
-                    } catch (Exception e) {
-                        configuration.getAnalysisCache().analysisFailed(textDocument);
+                    if (configuration.getAnalysisCache().isUpToDate(textDocument)) {
+                        reportCachedRuleViolations(listener, textDocument);
+                    } else {
+                        try {
+                            processSource(listener, textDocument, ruleSets);
+                        } catch (Exception e) {
+                            configuration.getAnalysisCache().analysisFailed(textDocument);
 
-                        // The listener handles logging if needed,
-                        // it may also rethrow the error, as a FileAnalysisException (which we let through below)
-                        listener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
+                            // The listener handles logging if needed,
+                            // it may also rethrow the error, as a FileAnalysisException (which we let through below)
+                            listener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
+                        }
                     }
                 }
             }

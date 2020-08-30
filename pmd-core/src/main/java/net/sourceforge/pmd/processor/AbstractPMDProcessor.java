@@ -34,7 +34,8 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
     public abstract void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener);
 
     /**
-     * Joins tasks and await completion of the analysis.
+     * Joins tasks and await completion of the analysis. After this, all
+     * {@link TextFile}s must have been closed.
      */
     @Override
     public abstract void close();

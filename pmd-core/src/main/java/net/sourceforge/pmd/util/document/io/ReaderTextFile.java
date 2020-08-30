@@ -4,35 +4,31 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Read-only view on a string.
  */
-class StringTextFile implements TextFile {
+class ReaderTextFile implements TextFile {
 
-    private final TextFileContent content;
     private final String name;
     private final LanguageVersion lv;
+    private final Reader reader;
 
-    StringTextFile(CharSequence source, @NonNull String name, LanguageVersion lv) {
-        this.lv = lv;
-        AssertionUtil.requireParamNotNull("source text", source);
+    ReaderTextFile(Reader reader, @NonNull String name, LanguageVersion lv) {
+        this.reader = reader;
+        AssertionUtil.requireParamNotNull("reader", reader);
         AssertionUtil.requireParamNotNull("file name", name);
 
-        this.content = TextFileContent.fromCharSeq(source);
+        this.lv = lv;
         this.name = name;
-    }
-
-    @Override
-    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
-        return lv == null ? TextFile.super.getLanguageVersion(discoverer)
-                          : lv;
     }
 
     @Override
@@ -56,18 +52,28 @@ class StringTextFile implements TextFile {
     }
 
     @Override
-    public TextFileContent readContents() {
-        return content;
+    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
+        return lv == null ? TextFile.super.getLanguageVersion(discoverer)
+                          : lv;
     }
 
     @Override
-    public void close() {
-        // nothing to do
+    public TextFileContent readContents() throws IOException {
+        try {
+            return TextFileContent.fromReader(reader);
+        } finally {
+            reader.close();
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        reader.close();
     }
 
     @Override
     public String toString() {
-        return "ReadOnlyString[" + StringUtil.truncate(content.getNormalizedText().toString(), 40, "...") + "]";
+        return "ReaderTextFile[" + name + "]";
     }
 
 }

@@ -10,10 +10,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
@@ -145,22 +148,14 @@ public final class CPDCommandLineInterface {
     }
 
     private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
-        File file = new File(inputFilePath);
         List<File> files = new ArrayList<>();
         try {
-            if (!file.exists()) {
-                throw new FileNotFoundException("Couldn't find directory/file '" + inputFilePath + "'");
-            } else {
-                String filePaths = FileUtil.readFilelist(new File(inputFilePath));
-                for (String param : filePaths.split(",")) {
-                    File fileToAdd = new File(param);
-                    if (!fileToAdd.exists()) {
-                        throw new FileNotFoundException("Couldn't find directory/file '" + param + "'");
-                    }
-                    files.add(fileToAdd);
-                }
-                addSourcesFilesToCPD(files, cpd, recursive);
+            Path file = FileUtil.toExistingPath(inputFilePath);
+            for (String param : FileUtil.readFilelistEntries(file)) {
+                @NonNull Path fileToAdd = FileUtil.toExistingPath(param);
+                files.add(fileToAdd.toFile());
             }
+            addSourcesFilesToCPD(files, cpd, recursive);
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }

@@ -6,15 +6,10 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
-import static net.sourceforge.pmd.util.CollectionUtil.toMutableList;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +30,6 @@ import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
@@ -46,11 +40,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.database.DBMSMetadata;
-import net.sourceforge.pmd.util.database.DBURI;
-import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
@@ -79,50 +69,6 @@ public final class PMD {
 
 
     /**
-     * Parses the given string as a database uri and returns a list of
-     * datasources.
-     *
-     * @param uriString the URI to parse
-     *
-     * @return list of data sources
-     *
-     * @throws IOException if the URI couldn't be parsed
-     * @see DBURI
-     */
-    public static List<DataSource> getURIDataSources(String uriString) throws IOException {
-        List<DataSource> dataSources = new ArrayList<>();
-
-        try {
-            DBURI dbUri = new DBURI(uriString);
-            DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
-            LOG.log(Level.FINE, "DBMSMetadata retrieved");
-            List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            LOG.log(Level.FINE, "Located {0} database source objects", sourceObjectList.size());
-            for (SourceObject sourceObject : sourceObjectList) {
-                String falseFilePath = sourceObject.getPseudoFileName();
-                LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
-
-                try {
-                    dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject), falseFilePath));
-                } catch (SQLException ex) {
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
-                    }
-                }
-            }
-        } catch (URISyntaxException e) {
-            throw new IOException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
-        } catch (SQLException e) {
-            throw new IOException("Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
-        } catch (ClassNotFoundException e) {
-            throw new IOException("Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"", e);
-        } catch (Exception e) {
-            throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
-        }
-        return dataSources;
-    }
-
-    /**
      * This method is the main entry point for command line usage.
      *
      * @param configuration the configuration to use
@@ -141,7 +87,7 @@ public final class PMD {
 
         try {
 
-            final List<DataSource> files = getApplicableFiles(configuration, languages);
+            final List<TextFile> files = FileUtil.getApplicableFiles(configuration, languages);
             Renderer renderer = configuration.createRenderer(true);
 
             @SuppressWarnings("PMD.CloseResource")
@@ -152,7 +98,7 @@ public final class PMD {
 
 
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                    processFiles(configuration, ruleSets, files, listener);
+                    newProcessFiles(configuration, ruleSets, files, listener);
                 }
             }
             return violationCounter.getResult();
@@ -197,19 +143,17 @@ public final class PMD {
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
                                     GlobalAnalysisListener listener) throws Exception {
-        List<TextFile> inputFiles = map(toMutableList(),
-                                        files,
-                                        ds -> PmdFiles.dataSourceCompat(ds, configuration));
+        List<TextFile> inputFiles = map(files, ds -> PmdFiles.dataSourceCompat(ds, configuration));
 
         newProcessFiles(configuration, ruleSets, inputFiles, listener);
     }
 
-    public static void newProcessFiles(final PMDConfiguration configuration,
-                                       final List<RuleSet> ruleSets,
-                                       final List<TextFile> inputFiles,
+    public static void newProcessFiles(PMDConfiguration configuration,
+                                       List<RuleSet> ruleSets,
+                                       List<TextFile> inputFiles,
                                        GlobalAnalysisListener listener) throws Exception {
 
-        sortFiles(configuration, inputFiles);
+        inputFiles = sortFiles(configuration, inputFiles);
 
         final RuleSets rs = new RuleSets(ruleSets);
 
@@ -280,13 +224,16 @@ public final class PMD {
     }
 
 
-    private static void sortFiles(final PMDConfiguration configuration, List<TextFile> files) {
+    private static List<TextFile> sortFiles(final PMDConfiguration configuration, List<TextFile> files) {
+        // the input collection may be unmodifiable
+        files = new ArrayList<>(files);
         if (configuration.isStressTest()) {
             // randomize processing order
             Collections.shuffle(files);
         } else {
             files.sort(Comparator.comparing(TextFile::getPathId));
         }
+        return files;
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
@@ -298,70 +245,6 @@ public final class PMD {
             LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
                     + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
         }
-    }
-
-    /**
-     * Determines all the files, that should be analyzed by PMD.
-     *
-     * @param configuration
-     *            contains either the file path or the DB URI, from where to
-     *            load the files
-     * @param languages
-     *            used to filter by file extension
-     * @return List of {@link DataSource} of files
-     */
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
-            return internalGetApplicableFiles(configuration, languages);
-        }
-    }
-
-    private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
-                                                               Set<Language> languages) throws IOException {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
-        List<DataSource> files = new ArrayList<>();
-
-        if (null != configuration.getInputPaths()) {
-            files.addAll(FileUtil.collectFiles(configuration.getInputPaths(), fileSelector));
-        }
-
-        if (null != configuration.getInputUri()) {
-            String uriString = configuration.getInputUri();
-            files.addAll(getURIDataSources(uriString));
-        }
-
-        if (null != configuration.getInputFilePath()) {
-            String inputFilePath = configuration.getInputFilePath();
-            File file = new File(inputFilePath);
-            if (!file.exists()) {
-                throw new FileNotFoundException(inputFilePath);
-            }
-
-            try {
-                String filePaths = FileUtil.readFilelist(file);
-                files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
-            } catch (IOException ex) {
-                throw new IOException("Problem with Input File Path: " + inputFilePath, ex);
-            }
-
-        }
-
-        if (null != configuration.getIgnoreFilePath()) {
-            String ignoreFilePath = configuration.getIgnoreFilePath();
-            File file = new File(ignoreFilePath);
-            if (!file.exists()) {
-                throw new FileNotFoundException(ignoreFilePath);
-            }
-
-            try {
-                String filePaths = FileUtil.readFilelist(file);
-                files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
-                throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
-            }
-        }
-        return files;
     }
 
     private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final List<RuleSet> ruleSets) {
