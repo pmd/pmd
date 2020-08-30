@@ -8,7 +8,7 @@ L2
     [var]                                   1         4
     [dollar]                                5         11
     [=]                                     12        13
-    ['$']                                   14        17
+    ['$newLine']                            14        24
 L3
     [var]                                   1         4
     [escaped_dollar]                        5         19
