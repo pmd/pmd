@@ -17,6 +17,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -36,6 +38,11 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
         this.path = path;
         this.charset = charset;
+    }
+
+    @Override
+    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
+        return discoverer.getDefaultLanguageVersionForFile(path.toFile());
     }
 
     @Override

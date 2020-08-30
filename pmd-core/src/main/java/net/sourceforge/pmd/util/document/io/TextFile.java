@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -28,6 +30,22 @@ import net.sourceforge.pmd.util.document.TextDocument;
  * to, also, the "data" it provides is text, not bytes.
  */
 public interface TextFile extends Closeable {
+
+
+    /**
+     * Returns the language version which should be used to parse this
+     * file. It's the text file's responsibility, so that the {@linkplain #getDisplayName() display name}
+     * is never interpreted as a file name, which may not be true.
+     *
+     * @param discoverer Object which knows about language versions selected per-language
+     *
+     * @return A language version
+     */
+    default @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
+        // TODO remove this, when listeners have been refactored, etc.
+        return discoverer.getDefaultLanguageVersionForFile(getDisplayName());
+    }
+
 
     /**
      * Returns the full file name of the file. This name is used for
