@@ -109,10 +109,6 @@ public final class FileUtil {
                                 Predicate<? super Path> filter) throws IOException {
         Path file = toExistingPath(root);
 
-        if (!filter.test(file)) {
-            return;
-        }
-
         Stream<Path> subfiles;
         @Nullable FileSystemCloseable fsCloseable;
         if (Files.isDirectory(file)) {
@@ -124,7 +120,9 @@ public final class FileUtil {
             fsCloseable = new FileSystemCloseable(zipfs);
             subfiles = Files.walk(zipfs.getPath("/"));
         } else {
-            result.add(PmdFiles.forPath(file, charset));
+            if (filter.test(file)) {
+                result.add(PmdFiles.forPath(file, charset));
+            }
             return;
         }
 
