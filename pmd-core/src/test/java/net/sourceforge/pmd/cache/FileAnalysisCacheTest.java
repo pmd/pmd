@@ -157,7 +157,7 @@ public class FileAnalysisCacheTest {
     public void testAuxClasspathNonExistingAuxclasspathEntriesIgnored() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);
         final URLClassLoader cl = mock(URLClassLoader.class);
-        when(cl.getURLs()).thenReturn(new URL[] {new File(tempFolder.getRoot(), "non-existing-dir").toURI().toURL(),});
+        when(cl.getURLs()).thenReturn(new URL[] {new File(tempFolder.getRoot(), "non-existing-dir").toURI().toURL(), });
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
@@ -177,7 +177,7 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        when(cl.getURLs()).thenReturn(new URL[] {tempFolder.newFile().toURI().toURL(),});
+        when(cl.getURLs()).thenReturn(new URL[] {tempFolder.newFile().toURI().toURL(), });
         reloadedCache.checkValidity(rs, cl);
         assertTrue("Cache believes unmodified file is not up to date after auxclasspath changed when no rule cares",
                    reloadedCache.isUpToDate(sourceFile));
@@ -193,7 +193,7 @@ public class FileAnalysisCacheTest {
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         final File classpathFile = tempFolder.newFile();
-        when(cl.getURLs()).thenReturn(new URL[] {classpathFile.toURI().toURL(),});
+        when(cl.getURLs()).thenReturn(new URL[] {classpathFile.toURI().toURL(), });
 
         // Make sure the auxclasspath file is not empty
         Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());

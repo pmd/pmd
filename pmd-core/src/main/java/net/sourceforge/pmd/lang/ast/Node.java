@@ -104,21 +104,22 @@ public interface Node extends Reportable {
     // Those are kept here because they're handled specially as XPath
     // attributes
 
+    @Override
     default int getBeginLine() {
         return getReportLocation().getBeginLine();
     }
 
-
+    @Override
     default int getBeginColumn() {
         return getReportLocation().getBeginColumn();
     }
 
-
+    @Override
     default int getEndLine() {
         return getReportLocation().getEndLine();
     }
 
-
+    @Override
     default int getEndColumn() {
         return getReportLocation().getEndColumn();
     }
