@@ -36,9 +36,9 @@ import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -56,7 +56,7 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
  * interface is supported, as well as a programmatic API for integrating PMD
  * with other software such as IDEs and Ant.
  */
-public class PMD {
+public final class PMD {
 
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 

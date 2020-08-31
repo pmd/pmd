@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.processor.FileAnalysisListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;

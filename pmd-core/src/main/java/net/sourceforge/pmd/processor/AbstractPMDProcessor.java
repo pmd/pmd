@@ -8,8 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
@@ -30,6 +28,9 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
         this.configuration = configuration;
     }
 
+    /**
+     * Analyse all files. Each text file is closed.
+     */
     public abstract void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener);
 
     /**

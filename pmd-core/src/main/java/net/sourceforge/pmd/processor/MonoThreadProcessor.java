@@ -22,6 +22,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
     }
 
     @Override
+    @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
     public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
         for (DataSource file : files) {
             new PmdRunnable(file, listener, configuration) {
@@ -33,6 +34,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
         }
     }
 
+    @Override
     public void close() {
         // nothing to do
     }

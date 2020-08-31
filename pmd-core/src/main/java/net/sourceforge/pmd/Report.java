@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.datasource.DataSource;
 

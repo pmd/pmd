@@ -122,6 +122,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             TeeListener(List<GlobalAnalysisListener> myList) {
                 this.myList = myList;
             }
+
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
                 return FileAnalysisListener.tee(CollectionUtil.map(myList, it -> it.startFileAnalysis(file)));
