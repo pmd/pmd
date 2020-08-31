@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.semantic.ast.member.Method;
 
@@ -31,15 +30,6 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
 
     public String getCanonicalName() {
         return node.getMethodInfo().getCanonicalName();
-    }
-
-    @Override
-    protected TextRegion getRegion() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return TextRegion.union(super.getRegion(), block.getRegion());
-        }
-        return super.getRegion();
     }
 
     @Override

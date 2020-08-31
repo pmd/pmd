@@ -278,7 +278,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
-        node.calculateLineNumbers(sourceCode);
 
         // Append to parent
         AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
@@ -296,9 +295,17 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         if (nodes.isEmpty()) {
             // add the comments only at the end of the processing as the last step
             addFormalComments();
+            closeTree(node);
         }
 
         return node;
+    }
+
+    private void closeTree(AbstractApexNode<?> node) {
+        node.closeNode(sourceCode);
+        for (ApexNode<?> child : node.children()) {
+            closeTree((AbstractApexNode<?>) child);
+        }
     }
 
     private void addFormalComments() {
@@ -334,15 +341,17 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
         // find the token, that appears as close as possible before the node
         TextRegion nodeRegion = node.getRegion();
-        for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
-            if (tokenLocation.region.compareTo(nodeRegion) > 0) {
+        for (ApexDocTokenLocation comment : apexDocTokenLocations) {
+            if (comment.region.compareTo(nodeRegion) > 0) {
                 // this and all remaining tokens are after the node
                 // so no need to check the remaining tokens.
                 break;
             }
 
-            if (tokenLocation.nearestNode == null || tokenLocation.nearestNode.getRegion().compareTo(nodeRegion) < 0) {
-                tokenLocation.nearestNode = node;
+            int distance = nodeRegion.getStartOffset() - comment.region.getStartOffset();
+            if (comment.nearestNode == null || distance < comment.nearestNodeDistance) {
+                comment.nearestNode = node;
+                comment.nearestNodeDistance = distance;
             }
         }
     }
@@ -391,6 +400,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         private final Chars image;
 
         private AbstractApexNode<?> nearestNode;
+        private int nearestNodeDistance;
 
         ApexDocTokenLocation(TextRegion commentRegion, Chars image) {
             this.region = commentRegion;

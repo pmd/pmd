@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.data.Identifier;
@@ -39,7 +41,7 @@ public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallEx
     }
 
     @Override
-    protected TextRegion getRegion() {
+    protected @NonNull TextRegion getRegion() {
         int fullLength = getFullMethodName().length();
         int nameLength = getMethodName().length();
         TextRegion base = super.getRegion();

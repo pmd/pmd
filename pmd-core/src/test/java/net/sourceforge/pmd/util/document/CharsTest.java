@@ -75,6 +75,7 @@ public class CharsTest {
     @Test
     public void trimStartAndEnd() {
         Chars bc = Chars.wrap("a   bc db").slice(1, 6);
+        //                      ------
         Assert.assertEquals("   bc ", bc.toString());
         Assert.assertEquals("bc ", bc.trimStart().toString());
         Assert.assertEquals("   bc", bc.trimEnd().toString());

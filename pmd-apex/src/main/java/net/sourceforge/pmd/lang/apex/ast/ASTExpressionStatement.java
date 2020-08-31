@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.util.document.TextRegion;
-
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 
 public final class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
@@ -20,11 +18,4 @@ public final class ASTExpressionStatement extends AbstractApexNode<ExpressionSta
         return visitor.visit(this, data);
     }
 
-    @Override
-    protected TextRegion getRegion() {
-        if (getNumChildren() > 0) {
-            return TextRegion.union(super.getRegion(), ((AbstractApexNode<?>) getChild(0)).getRegion());
-        }
-        return super.getRegion();
-    }
 }

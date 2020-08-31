@@ -73,11 +73,11 @@ public class ApexParserTest extends ApexParserTestBase {
         // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
 
         // "public"
-        assertPosition(rootNode, 1, 14, 6, 2);
+        assertPosition(rootNode, 1, 14, 1, 25);
 
         // "method1" - starts with identifier until end of its block statement
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 17, 5, 6);
+        assertPosition(method1, 2, 17, 2, 24);
         // Modifier of method1 - doesn't work. This node just sees the
         // identifier ("method1")
         // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
@@ -90,7 +90,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         // the expression ("System.out...")
         Node expressionStatement = blockStatement.getChild(0);
-        assertPosition(expressionStatement, 3, 9, 3, 35);
+        assertPosition(expressionStatement, 3, 20, 3, 35);
     }
 
     @Test
@@ -106,12 +106,10 @@ public class ApexParserTest extends ApexParserTestBase {
         ApexNode<Compilation> rootNode = parse(code);
 
         Node method1 = rootNode.getChild(1);
-        assertEquals("Wrong begin line", 2, method1.getBeginLine());
-        assertEquals("Wrong end line", 3, method1.getEndLine());
+        assertPosition(method1, 2, 17, 2, 24);
 
         Node method2 = rootNode.getChild(2);
-        assertEquals("Wrong begin line", 4, method2.getBeginLine());
-        assertEquals("Wrong end line", 5, method2.getEndLine());
+        assertPosition(method2, 4, 17, 4, 24);
     }
 
     @Test

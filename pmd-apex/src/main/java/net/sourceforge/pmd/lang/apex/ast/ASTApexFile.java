@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -21,12 +22,11 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     private Map<Integer, String> suppressMap = Collections.emptyMap();
     private final TextDocument textDocument;
 
-    ASTApexFile(ParserTask task,
-                AbstractApexNode<? extends Compilation> child) {
+    ASTApexFile(ParserTask task, AbstractApexNode<? extends Compilation> child) {
         super(child.getNode());
         this.textDocument = task.getTextDocument();
         addChild(child, 0);
-        super.calculateLineNumbers(task.getTextDocument());
+        this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 
     @Override

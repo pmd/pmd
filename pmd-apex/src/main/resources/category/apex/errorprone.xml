@@ -193,7 +193,7 @@ Empty block statements serve no purpose and should be removed.
                 <value>
 <![CDATA[
 //Method/ModifierNode[@Abstract!= true() and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
+| //Method/BlockStatement//BlockStatement[count(*) = 0 and @RealLoc = true()]
 ]]>
                 </value>
             </property>

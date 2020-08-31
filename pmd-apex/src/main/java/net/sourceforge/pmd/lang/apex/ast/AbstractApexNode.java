@@ -22,7 +22,6 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
 
     protected final T node;
     private TextRegion region;
-    protected TextDocument textDocument;
 
     protected AbstractApexNode(T node) {
         this.node = node;
@@ -55,24 +54,23 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
         return getParent().getRoot();
     }
 
-    /* package */ void calculateLineNumbers(TextDocument positioner, int startOffset, int endOffset) {
-        textDocument = positioner;
-        region = TextRegion.fromBothOffsets(startOffset, endOffset);
-    }
-
     @Override
     public FileLocation getReportLocation() {
-        return textDocument.toLocation(getRegion());
+        return getTextDocument().toLocation(getRegion());
     }
 
-    protected TextRegion getRegion() {
+    protected @NonNull TextRegion getRegion() {
         if (region == null) {
-            AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
-            if (parent == null) {
-                throw new RuntimeException("Unable to determine location of " + this);
+            if (!hasRealLoc()) {
+                AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
+                if (parent == null) {
+                    throw new RuntimeException("Unable to determine location of " + this);
+                }
+                region = parent.getRegion();
+            } else {
+                Location loc = node.getLoc();
+                region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());
             }
-            region = parent.getRegion();
-            return region;
         }
         return region;
     }
@@ -82,15 +80,16 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
         return this.getClass().getSimpleName().replaceFirst("^AST", "");
     }
 
-    void calculateLineNumbers(TextDocument positioner) {
-        if (!hasRealLoc()) {
-            // region is null
-            this.textDocument = positioner;
-            return;
-        }
+    /**
+     * Note: in this routine, the node has not been added to its parents,
+     * but its children have been populated (except comments).
+     */
+    void closeNode(TextDocument positioner) {
+        // do nothing
+    }
 
-        Location loc = node.getLoc();
-        calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
+    protected void setRegion(TextRegion region) {
+        this.region = region;
     }
 
     @Deprecated

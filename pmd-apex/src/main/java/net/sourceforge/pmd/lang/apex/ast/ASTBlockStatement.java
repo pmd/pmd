@@ -26,8 +26,8 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
     }
 
     @Override
-    void calculateLineNumbers(TextDocument positioner) {
-        super.calculateLineNumbers(positioner);
+    void closeNode(TextDocument positioner) {
+        super.closeNode(positioner);
         if (!hasRealLoc()) {
             return;
         }
@@ -37,5 +37,10 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
         // regardless whether curly braces where present or not.
         char firstChar = positioner.getText().charAt(node.getLoc().getStartIndex());
         curlyBrace = firstChar == '{';
+    }
+
+    @Override
+    public boolean hasRealLoc() {
+        return super.hasRealLoc() && node.getLoc() != getParent().getNode().getLoc();
     }
 }
