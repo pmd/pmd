@@ -49,16 +49,17 @@ public final class StringPool {
 
         if (doPool && c instanceof Chars) {
             if (COLLECT_STATS) {
-                return pool.compute((Chars) c,
-                                    (chars, s) -> {
-                                        if (s != null) {
-                                            STATS.addCacheHit(s.length());
-                                            return s;
-                                        } else {
-                                            STATS.addCacheMiss(chars.length());
-                                            return chars.toString();
-                                        }
-                                    });
+                return pool.compute(
+                    (Chars) c,
+                    (chars, s) -> {
+                        if (s != null) {
+                            STATS.addCacheHit(s.length());
+                            return s;
+                        } else {
+                            STATS.addCacheMiss(chars.length());
+                            return chars.toString();
+                        }
+                    });
             } else {
                 return pool.computeIfAbsent((Chars) c, Chars::toString);
             }

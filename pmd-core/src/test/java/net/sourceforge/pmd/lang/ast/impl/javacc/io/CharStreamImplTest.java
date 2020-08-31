@@ -164,6 +164,7 @@ public class CharStreamImplTest {
         expect.expect(IllegalArgumentException.class);
         stream.backup(10);
     }
+
     @Test
     public void testBacktrackTooMuch2() throws IOException {
 

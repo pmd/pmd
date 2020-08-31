@@ -127,7 +127,8 @@ public class EscapeAwareReader extends Reader {
      * @param maxOff Max offset up to which to read ahead
      */
     protected int gobbleMaxWithoutEscape(int maxOff) throws IOException {
-        return this.bufpos = maxOff;
+        this.bufpos = maxOff;
+        return maxOff;
     }
 
     protected int recordEscape(final int startOffsetInclusive, int endOffsetExclusive, Chars translation) {

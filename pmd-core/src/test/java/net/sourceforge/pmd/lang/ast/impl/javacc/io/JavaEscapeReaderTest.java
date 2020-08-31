@@ -67,7 +67,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testNotAnEscape1Read3_SplitInTheMiddleOfBackslashes() throws IOException {
+    public void testNotAnEscape1Read3SplitInTheMiddleOfBackslashes() throws IOException {
 
         String input = "abc\\\\\\dede";
         //                   ^
@@ -158,6 +158,4 @@ public class JavaEscapeReaderTest {
         contents.getChars(0, contents.length(), chars2, off);
         Assert.assertArrayEquals(chars2, chars);
     }
-
-
 }

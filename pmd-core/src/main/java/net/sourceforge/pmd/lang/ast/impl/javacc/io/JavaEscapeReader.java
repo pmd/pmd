@@ -46,7 +46,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
     private Chars escapeValue(int posOfFirstBackSlash, int offOfTheU) throws IOException {
         try {
             char c = (char)
-                    ( hexVal(input.charAt(++offOfTheU)) << 12
+                    ( hexVal(input.charAt(++offOfTheU)) << 12 // SUPPRESS CHECKSTYLE paren pad
                     | hexVal(input.charAt(++offOfTheU)) << 8
                     | hexVal(input.charAt(++offOfTheU)) << 4
                     | hexVal(input.charAt(++offOfTheU))

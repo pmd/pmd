@@ -33,13 +33,17 @@ public abstract class BackslashEscapeReader extends EscapeAwareReader {
     @Override
     protected int gobbleMaxWithoutEscape(final int maxOff) throws IOException {
         int off = this.bufpos;
-        boolean noBackSlash = false;
+        boolean seenBackslash = true;
         int notEscapeEnd = this.savedNotEscapeSpecialEnd;
-        while (off < maxOff && (noBackSlash = input.charAt(off) != BACKSLASH || notEscapeEnd < off)) {
+        while (off < maxOff) {
+            seenBackslash = input.charAt(off) == BACKSLASH && notEscapeEnd >= off;
+            if (seenBackslash) {
+                break;
+            }
             off++;
         }
 
-        if (noBackSlash || off == maxOff) {
+        if (!seenBackslash || off == maxOff) {
             this.bufpos = off;
             return off;
         }

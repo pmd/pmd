@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.util.document.FileLocation;

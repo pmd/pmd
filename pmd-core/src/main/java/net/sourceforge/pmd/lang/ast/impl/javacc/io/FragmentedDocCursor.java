@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.document.Chars;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class FragmentedDocCursor {
 
     private static final EOFException EOF = new EOFException();
@@ -173,7 +174,8 @@ final class FragmentedDocCursor {
                 this.outStart = prev.outEnd();
                 this.inStart = prev.inEnd();
             } else {
-                this.outStart = this.inStart = 0;
+                this.inStart = 0;
+                this.outStart = 0;
             }
         }
 
