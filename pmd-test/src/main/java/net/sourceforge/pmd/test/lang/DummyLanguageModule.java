@@ -4,14 +4,8 @@
 
 package net.sourceforge.pmd.test.lang;
 
-import java.io.Reader;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
