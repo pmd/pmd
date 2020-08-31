@@ -26,6 +26,8 @@ import net.sourceforge.pmd.util.document.io.TextFileContent;
  * is the {@link TextFile}.
  */
 public interface TextDocument extends Closeable {
+    // todo logical sub-documents, to support embedded languages
+    //  ideally, just slice the text, and share the positioner
 
     /**
      * Returns the language version that should be used to parse this file.

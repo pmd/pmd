@@ -12,8 +12,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * Wraps a piece of text, and converts absolute offsets to line/column
- * coordinates, and back. This is used by some language implementations
- * (JS, XML, Apex) and by the {@link TextDocument} implementation.
+ * coordinates, and back. This is used by the {@link TextDocument} implementation.
  */
 public final class SourceCodePositioner {
 
@@ -50,10 +49,10 @@ public final class SourceCodePositioner {
      *
      * @return Line number (1-based), or -1
      *
-     * @throws IllegalArgumentException If the offset is negative
+     * @throws IndexOutOfBoundsException If the offset is negative
      */
     public int lineNumberFromOffset(final int offset) {
-        AssertionUtil.requireNonNegative("offset", offset);
+        AssertionUtil.requireIndexNonNegative("offset", offset);
 
         if (offset > sourceCodeLength) {
             return -1;
@@ -73,12 +72,12 @@ public final class SourceCodePositioner {
      *
      * @return Column number (1-based), or -1
      *
-     * @throws IllegalArgumentException If the line number does not exist
+     * @throws IndexOutOfBoundsException If the line number does not exist
      */
     public int columnFromOffset(final int lineNumber, final int globalOffset) {
         int lineIndex = lineNumber - 1;
         if (lineIndex < 0 || lineIndex >= lineOffsets.length) {
-            throw new IllegalArgumentException("Line " + lineNumber + " does not exist");
+            throw new IndexOutOfBoundsException("Line " + lineNumber + " does not exist");
         }
 
         int bound = lineIndex + 1 < lineOffsets.length ? lineOffsets[lineIndex + 1]
@@ -123,11 +122,11 @@ public final class SourceCodePositioner {
      *
      * @return Text offset
      *
-     * @throws IllegalArgumentException If the line is invalid
+     * @throws IndexOutOfBoundsException If the line is invalid
      */
     public int offsetOfEndOfLine(final int line) {
         if (!isValidLine(line)) {
-            throw new IllegalArgumentException(line + " is not a valid line number, expected at most " + lineOffsets.length);
+            throw new IndexOutOfBoundsException(line + " is not a valid line number, expected at most " + lineOffsets.length);
         }
 
         return line == lineOffsets.length  // last line?

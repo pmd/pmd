@@ -20,6 +20,8 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private SourceCodePositioner positioner;
 
+    // to support CPD with the same api, we could probably just store
+    // a soft reference to the Chars, and build the positioner eagerly.
     private final TextFileContent content;
 
     private final LanguageVersion langVersion;
