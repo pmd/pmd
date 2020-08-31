@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Base class for an antlr node. This implements the PMD interfaces only,
@@ -67,6 +69,13 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
     public abstract Token getFirstAntlrToken();
 
     public abstract Token getLastAntlrToken();
+
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getTextDocument().toLocation(TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
+                                                                       getFirstAntlrToken().getStopIndex()));
+    }
 
     void setIndexInParent(int indexInParent) {
         this.indexInParent = indexInParent;

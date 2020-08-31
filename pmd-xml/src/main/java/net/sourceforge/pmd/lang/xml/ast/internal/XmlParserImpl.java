@@ -12,14 +12,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -65,7 +63,7 @@ public class XmlParserImpl {
     public RootXmlNode parse(ParserTask task) {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document, task);
+        RootXmlNode root = new RootXmlNode(this, document, task.getTextDocument());
         TextDocument textDocument = task.getTextDocument();
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, textDocument);
         lineNumbers.determine();

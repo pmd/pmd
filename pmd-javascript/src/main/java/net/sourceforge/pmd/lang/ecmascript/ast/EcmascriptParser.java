@@ -19,7 +19,6 @@ import org.mozilla.javascript.ast.ParseProblem;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 public class EcmascriptParser {
     protected final EcmascriptParserOptions parserOptions;
@@ -53,10 +52,10 @@ public class EcmascriptParser {
 
     public ASTAstRoot parse(final ParserTask task) {
         final List<ParseProblem> parseProblems = new ArrayList<>();
-        final TextDocument document = task.getTextDocument();
-        final AstRoot astRoot = parseEcmascript(document.getText().toString(), parseProblems);
-        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(document, parseProblems);
+        final AstRoot astRoot = parseEcmascript(task.getSourceText(), parseProblems);
+        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
+        tree.setDocument(task.getTextDocument());
 
         String suppressMarker = task.getCommentMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
@@ -65,8 +64,7 @@ public class EcmascriptParser {
                 int nopmd = comment.getValue().indexOf(suppressMarker);
                 if (nopmd > -1) {
                     String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
-                    EcmascriptNode<Comment> node = treeBuilder.build(comment);
-                    suppressMap.put(node.getBeginLine(), suppression);
+                    suppressMap.put(comment.getLineno(), suppression);
                 }
             }
         }

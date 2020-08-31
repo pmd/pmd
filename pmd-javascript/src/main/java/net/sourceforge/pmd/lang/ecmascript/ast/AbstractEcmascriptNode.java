@@ -4,21 +4,17 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
     private String image;
-    protected TextDocument textDocument;
-    private int absPos;
 
     AbstractEcmascriptNode(T node) {
         this.node = node;
@@ -38,26 +34,13 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
         this.image = image;
     }
 
-    /* package private */
-    int calculateAbsolutePos(TextDocument positioner, int parentRelPos) {
-        this.textDocument = positioner;
-        int absPos = parentRelPos + node.getPosition();
-        this.absPos = absPos;
-        return absPos;
-    }
-
     @Override
     public FileLocation getReportLocation() {
-        return textDocument.toLocation(getTextRegion());
+        return getTextDocument().toLocation(getTextRegion());
     }
 
     private TextRegion getTextRegion() {
-        return TextRegion.fromOffsetLength(absPos, node.getLength());
-    }
-
-    @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+        return TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength());
     }
 
     @Override

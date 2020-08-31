@@ -29,7 +29,6 @@ public abstract class SwiftInnerNode
         return visitor.visitNode(this, data);
     }
 
-
     @Override // override to make visible in package
     protected PmdAsAntlrInnerNode<SwiftNode> asAntlrNode() {
         return super.asAntlrNode();
