@@ -199,5 +199,10 @@ are deprecated as internal API.
 *   [#2750](https://github.com/pmd/pmd/pull/2750): \[dart] \[cpd] Cpd Dart escaped dollar - [Maikel Steneker](https://github.com/maikelsteneker)
 
 
+### Stats
+* 189 commits
+* 68 closed tickets & PRs
+* Days since last release: 37
+
 {% endtocmaker %}
 
