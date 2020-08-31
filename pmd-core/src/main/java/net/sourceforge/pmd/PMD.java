@@ -98,7 +98,7 @@ public final class PMD {
 
 
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                    newProcessFiles(configuration, ruleSets, files, listener);
+                    processTextFiles(configuration, ruleSets, files, listener);
                 }
             }
             return violationCounter.getResult();
@@ -145,13 +145,13 @@ public final class PMD {
                                     GlobalAnalysisListener listener) throws Exception {
         List<TextFile> inputFiles = map(files, ds -> PmdFiles.dataSourceCompat(ds, configuration));
 
-        newProcessFiles(configuration, ruleSets, inputFiles, listener);
+        processTextFiles(configuration, ruleSets, inputFiles, listener);
     }
 
-    public static void newProcessFiles(PMDConfiguration configuration,
-                                       List<RuleSet> ruleSets,
-                                       List<TextFile> inputFiles,
-                                       GlobalAnalysisListener listener) throws Exception {
+    public static void processTextFiles(PMDConfiguration configuration,
+                                        List<RuleSet> ruleSets,
+                                        List<TextFile> inputFiles,
+                                        GlobalAnalysisListener listener) throws Exception {
 
         inputFiles = sortFiles(configuration, inputFiles);
 

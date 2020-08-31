@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,8 +42,8 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.log.AntLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
@@ -140,15 +139,16 @@ public class PMDTaskImpl {
         // like a lot of redundancy
         Report errorReport = new Report();
         final AtomicInteger reportSize = new AtomicInteger();
-        final String separator = System.getProperty("file.separator");
 
         for (FileSet fs : filesets) {
-            List<DataSource> files = new LinkedList<>();
+            List<TextFile> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
             for (String srcFile : srcFiles) {
-                File file = new File(ds.getBasedir() + separator + srcFile);
-                files.add(new FileDataSource(file));
+                java.nio.file.Path file = ds.getBasedir().toPath().resolve(srcFile);
+                String displayName = configuration.isReportShortNames() ? srcFile : null;
+                LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.toString());
+                files.add(PmdFiles.forPath(file, configuration.getSourceEncoding(), langVersion, displayName, null));
             }
 
             final String commonInputPath = ds.getBasedir().getPath();
@@ -174,7 +174,7 @@ public class PMDTaskImpl {
             }
 
             try {
-                PMD.processFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
+                PMD.processTextFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
             } catch (Exception pmde) {
                 handleError(errorReport, pmde);
             }
@@ -206,9 +206,8 @@ public class PMDTaskImpl {
             }
 
             @Override
-            public void startFileAnalysis(DataSource dataSource) {
-                project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
-                            Project.MSG_VERBOSE);
+            public void startFileAnalysis(TextFile dataSource) {
+                project.log("Processing file " + dataSource.getDisplayName(), Project.MSG_VERBOSE);
             }
 
             @Override

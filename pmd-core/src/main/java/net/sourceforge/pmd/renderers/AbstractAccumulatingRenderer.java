@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Abstract base class for {@link Renderer} implementations which only produce
@@ -38,7 +38,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void startFileAnalysis(DataSource dataSource) {
+    public void startFileAnalysis(TextFile dataSource) {
         // does nothing - override if necessary
     }
 

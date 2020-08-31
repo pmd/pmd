@@ -110,8 +110,8 @@ public interface TextDocument extends Closeable {
     void close() throws IOException;
 
 
-    static TextDocument create(TextFile textFile, LanguageVersion lv) throws IOException {
-        return new TextDocumentImpl(textFile, lv);
+    static TextDocument create(TextFile textFile) throws IOException {
+        return new TextDocumentImpl(textFile);
     }
 
     /**
@@ -126,7 +126,7 @@ public interface TextDocument extends Closeable {
     static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {
         TextFile textFile = PmdFiles.forString(source, filename, lv);
         try {
-            return new TextDocumentImpl(textFile, lv);
+            return new TextDocumentImpl(textFile);
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }

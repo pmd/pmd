@@ -28,11 +28,14 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class GlobalListenerTest {
 
@@ -40,13 +43,15 @@ public class GlobalListenerTest {
         return RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
     }
 
+    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+
     static final int NUM_DATA_SOURCES = 3;
 
-    static List<DataSource> mockDataSources() {
+    List<TextFile> mockDataSources() {
         return listOf(
-            DataSource.forString("abc", "fname1.dummy"),
-            DataSource.forString("abcd", "fname2.dummy"),
-            DataSource.forString("abcd", "fname21.dummy")
+            PmdFiles.forString("abc", "fname1.dummy", dummyVersion),
+            PmdFiles.forString("abcd", "fname2.dummy", dummyVersion),
+            PmdFiles.forString("abcd", "fname21.dummy", dummyVersion)
         );
     }
 
@@ -147,7 +152,7 @@ public class GlobalListenerTest {
 
     private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) throws Exception {
         try {
-            PMD.processFiles(
+            PMD.processTextFiles(
                 config,
                 listOf(mockRuleset(rule)),
                 mockDataSources(),

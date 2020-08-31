@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,11 +45,12 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.FileSystemCloseable;
+import net.sourceforge.pmd.util.document.io.ReferenceCountedCloseable;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
@@ -101,33 +103,38 @@ public final class FileUtil {
     }
 
     @SuppressWarnings("PMD.CloseResource")
-    // the zip file can't be closed here, it's closed with the FileSystemCloseable
+    // the zip file can't be closed here, it's closed with the FileSystemCloseable during analysis
     private static void collect(List<TextFile> result,
                                 String root,
                                 Charset charset,
+                                Function<? super Path, LanguageVersion> languageVersionFinder,
                                 Predicate<? super Path> filter) throws IOException {
         Path file = toExistingPath(root);
 
         Stream<Path> subfiles;
-        @Nullable FileSystemCloseable fsCloseable;
+        @Nullable ReferenceCountedCloseable fsCloseable;
         if (Files.isDirectory(file)) {
             fsCloseable = null;
             subfiles = Files.walk(file);
         } else if (root.endsWith(".zip") || root.endsWith(".jar")) {
             URI uri = URI.create(root);
             FileSystem zipfs = FileSystems.newFileSystem(uri, Collections.emptyMap());
-            fsCloseable = new FileSystemCloseable(zipfs);
+            fsCloseable = new ReferenceCountedCloseable(zipfs);
             subfiles = Files.walk(zipfs.getPath("/"));
         } else {
             if (filter.test(file)) {
-                result.add(PmdFiles.forPath(file, charset));
+                LanguageVersion langVersion = languageVersionFinder.apply(file);
+                result.add(PmdFiles.forPath(file, charset, langVersion, null));
             }
             return;
         }
 
         try (Stream<Path> walk = subfiles) {
             walk.filter(filter)
-                .map(path -> PmdFiles.forPath(path, charset, fsCloseable))
+                .map(path -> {
+                    LanguageVersion langVersion = languageVersionFinder.apply(path);
+                    return PmdFiles.forPath(path, charset, langVersion, fsCloseable);
+                })
                 .forEach(result::add);
         }
 
@@ -222,17 +229,20 @@ public final class FileUtil {
 
     private static void internalGetApplicableFiles(List<TextFile> files, PMDConfiguration configuration, Set<Language> languages) throws IOException {
         List<String> ignoredFiles = getIgnoredFiles(configuration);
-        Predicate<Path> fileSelector = PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
-        fileSelector = fileSelector.and(path -> !ignoredFiles.contains(path.toString()));
+        Predicate<Path> fileFilter = PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
+        fileFilter = fileFilter.and(path -> !ignoredFiles.contains(path.toString()));
+
+        Function<Path, LanguageVersion> languageVersionFinder = path ->
+            configuration.getLanguageVersionDiscoverer().getDefaultLanguageVersionForFile(path.toFile());
 
         if (null != configuration.getInputPaths()) {
             for (String root : configuration.getInputPaths().split(",")) {
-                collect(files, root, configuration.getSourceEncoding(), fileSelector);
+                collect(files, root, configuration.getSourceEncoding(), languageVersionFinder, fileFilter);
             }
         }
 
         if (null != configuration.getInputUri()) {
-            getURIDataSources(files, configuration.getInputUri());
+            getURIDataSources(files, configuration.getInputUri(), configuration);
         }
 
         if (null != configuration.getInputFilePath()) {
@@ -240,7 +250,7 @@ public final class FileUtil {
 
             try {
                 for (String root : readFilelistEntries(fileList)) {
-                    collect(files, root, configuration.getSourceEncoding(), fileSelector);
+                    collect(files, root, configuration.getSourceEncoding(), languageVersionFinder, fileFilter);
                 }
             } catch (IOException ex) {
                 throw new IOException("Problem with filelist: " + configuration.getInputFilePath(), ex);
@@ -265,7 +275,7 @@ public final class FileUtil {
     }
 
 
-    private static void getURIDataSources(List<TextFile> collector, String uriString) throws IOException {
+    private static void getURIDataSources(List<TextFile> collector, String uriString, PMDConfiguration config) throws IOException {
 
         try {
             DBURI dbUri = new DBURI(uriString);
@@ -278,7 +288,8 @@ public final class FileUtil {
                 LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
 
                 try {
-                    collector.add(PmdFiles.forReader(dbmsMetadata.getSourceCode(sourceObject), falseFilePath, null));
+                    LanguageVersion lv = config.getLanguageVersionOfFile(falseFilePath);
+                    collector.add(PmdFiles.forReader(dbmsMetadata.getSourceCode(sourceObject), falseFilePath, lv));
                 } catch (SQLException ex) {
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);

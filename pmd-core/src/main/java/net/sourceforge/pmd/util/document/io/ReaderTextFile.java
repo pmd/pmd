@@ -11,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 
 /**
  * Read-only view on a string.
@@ -19,15 +18,16 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 class ReaderTextFile implements TextFile {
 
     private final String name;
-    private final LanguageVersion lv;
+    private final LanguageVersion languageVersion;
     private final Reader reader;
 
-    ReaderTextFile(Reader reader, @NonNull String name, LanguageVersion lv) {
-        this.reader = reader;
+    ReaderTextFile(Reader reader, @NonNull String name, LanguageVersion languageVersion) {
         AssertionUtil.requireParamNotNull("reader", reader);
         AssertionUtil.requireParamNotNull("file name", name);
+        AssertionUtil.requireParamNotNull("language version", languageVersion);
 
-        this.lv = lv;
+        this.reader = reader;
+        this.languageVersion = languageVersion;
         this.name = name;
     }
 
@@ -52,9 +52,8 @@ class ReaderTextFile implements TextFile {
     }
 
     @Override
-    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
-        return lv == null ? TextFile.super.getLanguageVersion(discoverer)
-                          : lv;
+    public @NonNull LanguageVersion getLanguageVersion() {
+        return languageVersion;
     }
 
     @Override

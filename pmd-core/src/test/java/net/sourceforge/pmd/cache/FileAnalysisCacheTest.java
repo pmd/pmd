@@ -34,7 +34,8 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
@@ -57,14 +58,17 @@ public class FileAnalysisCacheTest {
     private TextDocument sourceFile;
     private TextFile sourceFileBackend;
 
+    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+
+
     @Before
     public void setUp() throws IOException {
         unexistingCacheFile = new File(tempFolder.getRoot(), "non-existing-file.cache");
         newCacheFile = new File(tempFolder.getRoot(), "pmd-analysis.cache");
         emptyCacheFile = tempFolder.newFile();
         File sourceFile = tempFolder.newFile("Source.java");
-        this.sourceFileBackend = PmdFiles.forPath(sourceFile.toPath(), Charset.defaultCharset());
-        this.sourceFile = TextDocument.create(sourceFileBackend, null);
+        this.sourceFileBackend = PmdFiles.forPath(sourceFile.toPath(), Charset.defaultCharset(), dummyVersion);
+        this.sourceFile = TextDocument.create(sourceFileBackend);
     }
 
     @Test
@@ -115,7 +119,7 @@ public class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.startFileAnalysis(mock(DataSource.class)).onRuleViolation(rv);
+        cache.startFileAnalysis(mock(TextFile.class)).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -353,7 +357,7 @@ public class FileAnalysisCacheTest {
         // Edit the file
 
         sourceFileBackend.writeContents(new TextFileContent(Chars.wrap("some text"), System.lineSeparator()));
-        sourceFile = TextDocument.create(sourceFileBackend, null);
+        sourceFile = TextDocument.create(sourceFileBackend);
 
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         assertFalse("Cache believes a known, changed file is up to date", cache.isUpToDate(sourceFile));

@@ -21,7 +21,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
@@ -33,7 +32,7 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * <li>{@link Renderer#setUseShortNames(List)}</li>
  * <li>{@link Renderer#setWriter(Writer)}</li>
  * <li>{@link Renderer#start()}</li>
- * <li>{@link Renderer#startFileAnalysis(DataSource)} for each source file
+ * <li>{@link Renderer#startFileAnalysis(TextFile)} for each source file
  * processed</li>
  * <li>{@link Renderer#renderFileReport(Report)} for each Report instance</li>
  * <li>{@link Renderer#end()}</li>
@@ -148,13 +147,13 @@ public interface Renderer extends PropertySource {
      * @param dataSource
      *            The source file.
      */
-    void startFileAnalysis(DataSource dataSource);
+    void startFileAnalysis(TextFile dataSource);
 
     /**
      * Render the given file Report. There may be multiple Report instances
      * which need to be rendered if produced by different threads. It is called
      * after {@link Renderer#start()} and
-     * {@link Renderer#startFileAnalysis(DataSource)}, but before
+     * {@link Renderer#startFileAnalysis(TextFile)}, but before
      * {@link Renderer#end()}.
      *
      * @param report

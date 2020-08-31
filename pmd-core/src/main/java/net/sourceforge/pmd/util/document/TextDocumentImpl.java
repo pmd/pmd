@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Objects;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -19,20 +20,24 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private SourceCodePositioner positioner;
 
-    private TextFileContent content;
+    private final TextFileContent content;
 
     private final LanguageVersion langVersion;
 
     private final String fileName;
     private final String pathId;
 
-    TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
+    TextDocumentImpl(TextFile backend) throws IOException {
         this.backend = backend;
         this.content = backend.readContents();
-        this.langVersion = langVersion;
+        this.langVersion = backend.getLanguageVersion();
         this.positioner = null;
         this.fileName = backend.getDisplayName();
         this.pathId = backend.getPathId();
+
+        Objects.requireNonNull(langVersion, "Null language version for file " + backend);
+        Objects.requireNonNull(fileName, "Null display name for file " + backend);
+        Objects.requireNonNull(pathId, "Null path id for file " + backend);
     }
 
     @Override

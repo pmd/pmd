@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -38,13 +37,14 @@ public final class PmdFiles {
      * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
      * will throw.
      *
-     * @param path    Path to the file
-     * @param charset Encoding to use
+     * @param path        Path to the file
+     * @param charset     Encoding to use
+     * @param langVersion Language version to use
      *
-     * @throws NullPointerException if the path or the charset is null
+     * @throws NullPointerException if the path, the charset, or the language version are null
      */
-    public static TextFile forPath(final Path path, final Charset charset) {
-        return new NioTextFile(path, charset, null);
+    public static TextFile forPath(final Path path, final Charset charset, LanguageVersion langVersion) {
+        return forPath(path, charset, langVersion, null);
     }
 
     /**
@@ -53,13 +53,25 @@ public final class PmdFiles {
      * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
      * will throw.
      *
-     * @param path    Path to the file
-     * @param charset Encoding to use
+     * @param path        Path to the file
+     * @param charset     Encoding to use
+     * @param langVersion Language version to use
      *
-     * @throws NullPointerException if the path or the charset is null
+     * @throws NullPointerException if the path, the charset, or the language version are null
      */
-    public static TextFile forPath(final Path path, final Charset charset, FileSystemCloseable fileSystemCloseable) {
-        return new NioTextFile(path, charset, fileSystemCloseable);
+    public static TextFile forPath(final Path path,
+                                   final Charset charset,
+                                   LanguageVersion langVersion,
+                                   @Nullable ReferenceCountedCloseable fileSystemCloseable) {
+        return forPath(path, charset, langVersion, null, fileSystemCloseable);
+    }
+
+    public static TextFile forPath(final Path path,
+                                   final Charset charset,
+                                   final LanguageVersion langVersion,
+                                   final @Nullable String displayName,
+                                   final @Nullable ReferenceCountedCloseable fileSystemCloseable) {
+        return new NioTextFile(path, charset, langVersion, displayName, fileSystemCloseable);
     }
 
     /**
@@ -97,17 +109,10 @@ public final class PmdFiles {
      * @param name   File name to use
      * @param lv     Language version, which overrides the default language associations given by the file extension
      *
-     * @throws NullPointerException If the reader or the name is null
+     * @throws NullPointerException If any parameter is null
      */
-    public static TextFile forReader(@NonNull Reader reader, @NonNull String name, @Nullable LanguageVersion lv) {
+    public static TextFile forReader(@NonNull Reader reader, @NonNull String name, @NonNull LanguageVersion lv) {
         return new ReaderTextFile(reader, name, lv);
-    }
-
-    /**
-     * Wraps the given {@link SourceCode} (provided for compatibility).
-     */
-    public static TextFile cpdCompat(SourceCode sourceCode) {
-        return new StringTextFile(sourceCode.getCodeBuffer(), sourceCode.getFileName(), null);
     }
 
     /**
@@ -118,6 +123,11 @@ public final class PmdFiles {
     @Deprecated
     public static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
         class DataSourceTextFile extends BaseCloseable implements TextFile {
+
+            @Override
+            public @NonNull LanguageVersion getLanguageVersion() {
+                return config.getLanguageVersionOfFile(getPathId());
+            }
 
             @Override
             public String getPathId() {

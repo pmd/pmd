@@ -11,8 +11,8 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
@@ -31,6 +31,9 @@ abstract class PmdRunnable implements Runnable {
     private final TextFile textFile;
     private final GlobalAnalysisListener ruleContext;
 
+    private final AnalysisCache analysisCache;
+    /** @deprecated Get rid of this */
+    @Deprecated
     private final PMDConfiguration configuration;
 
     private final RulesetStageDependencyHelper dependencyHelper;
@@ -40,6 +43,7 @@ abstract class PmdRunnable implements Runnable {
                 PMDConfiguration configuration) {
         this.textFile = textFile;
         this.ruleContext = ruleContext;
+        this.analysisCache = configuration.getAnalysisCache();
         this.configuration = configuration;
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
@@ -58,19 +62,18 @@ abstract class PmdRunnable implements Runnable {
         RuleSets ruleSets = getRulesets();
 
         try (FileAnalysisListener listener = ruleContext.startFileAnalysis(textFile)) {
-            LanguageVersion langVersion = textFile.getLanguageVersion(configuration.getLanguageVersionDiscoverer());
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {
-                try (TextDocument textDocument = TextDocument.create(textFile, langVersion)) {
+                try (TextDocument textDocument = TextDocument.create(textFile)) {
 
-                    if (configuration.getAnalysisCache().isUpToDate(textDocument)) {
+                    if (analysisCache.isUpToDate(textDocument)) {
                         reportCachedRuleViolations(listener, textDocument);
                     } else {
                         try {
                             processSource(listener, textDocument, ruleSets);
                         } catch (Exception e) {
-                            configuration.getAnalysisCache().analysisFailed(textDocument);
+                            analysisCache.analysisFailed(textDocument);
 
                             // The listener handles logging if needed,
                             // it may also rethrow the error, as a FileAnalysisException (which we let through below)
@@ -89,7 +92,7 @@ abstract class PmdRunnable implements Runnable {
     }
 
     private void reportCachedRuleViolations(final FileAnalysisListener ctx, TextDocument file) {
-        for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(file)) {
+        for (final RuleViolation rv : analysisCache.getCachedViolations(file)) {
             ctx.onRuleViolation(rv);
         }
     }

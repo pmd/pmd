@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Abstract base class for {@link Renderer} implementations which can produce
@@ -51,7 +51,7 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void startFileAnalysis(DataSource dataSource) {
+    public void startFileAnalysis(TextFile dataSource) {
         // does nothing - override if necessary
     }
 

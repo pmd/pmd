@@ -171,13 +171,13 @@ public class TreeExportCli {
             System.err.println("Reading from stdin...");
             textFile = PmdFiles.forString(readFromSystemIn(), "stdin", langVersion);
         } else {
-            textFile = PmdFiles.forPath(Paths.get(file), Charset.forName(encoding));
+            textFile = PmdFiles.forPath(Paths.get(file), Charset.forName(encoding), langVersion);
         }
 
         // disable warnings for deprecated attributes
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
-        try (TextDocument textDocument = TextDocument.create(textFile, langVersion)) {
+        try (TextDocument textDocument = TextDocument.create(textFile)) {
 
             RootNode root = parser.parse(new ParserTask(textDocument, SemanticErrorReporter.noop()));
 

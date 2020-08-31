@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -18,21 +17,21 @@ class StringTextFile implements TextFile {
 
     private final TextFileContent content;
     private final String name;
-    private final LanguageVersion lv;
+    private final LanguageVersion languageVersion;
 
-    StringTextFile(CharSequence source, @NonNull String name, LanguageVersion lv) {
-        this.lv = lv;
+    StringTextFile(CharSequence source, String name, LanguageVersion languageVersion) {
         AssertionUtil.requireParamNotNull("source text", source);
         AssertionUtil.requireParamNotNull("file name", name);
+        AssertionUtil.requireParamNotNull("language version", languageVersion);
 
+        this.languageVersion = languageVersion;
         this.content = TextFileContent.fromCharSeq(source);
         this.name = name;
     }
 
     @Override
-    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
-        return lv == null ? TextFile.super.getLanguageVersion(discoverer)
-                          : lv;
+    public @NonNull LanguageVersion getLanguageVersion() {
+        return languageVersion;
     }
 
     @Override

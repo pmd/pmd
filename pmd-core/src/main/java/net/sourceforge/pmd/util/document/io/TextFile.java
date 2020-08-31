@@ -7,14 +7,12 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -40,14 +38,9 @@ public interface TextFile extends Closeable {
      * file. It's the text file's responsibility, so that the {@linkplain #getDisplayName() display name}
      * is never interpreted as a file name, which may not be true.
      *
-     * @param discoverer Object which knows about language versions selected per-language
-     *
      * @return A language version
      */
-    default @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
-        // TODO remove this, when listeners have been refactored, etc.
-        return discoverer.getDefaultLanguageVersionForFile(getDisplayName());
-    }
+    @NonNull LanguageVersion getLanguageVersion();
 
     default boolean matches(Predicate<File> filter) {
         return filter.test(new File(getDisplayName()));

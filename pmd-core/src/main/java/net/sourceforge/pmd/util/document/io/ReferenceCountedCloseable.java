@@ -11,13 +11,14 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * Tracks unclosed references to a resource. Zip files containing
  * {@link TextFile}s are closed when all of their dependent
  * {@link TextFile} entries have been closed.
  */
-public final class FileSystemCloseable extends BaseCloseable implements Closeable {
+public final class ReferenceCountedCloseable extends BaseCloseable implements Closeable {
 
     private final AtomicInteger numOpenResources = new AtomicInteger();
     private final Closeable closeAction;
@@ -25,11 +26,11 @@ public final class FileSystemCloseable extends BaseCloseable implements Closeabl
     /**
      * Create a new filesystem closeable which when closed, executes
      * the {@link Closeable#close()} action of the parameter. Dependent
-     * resources need to be registered using {@link PmdFiles#forPath(Path, Charset, FileSystemCloseable) forPath}.
+     * resources need to be registered using {@link PmdFiles#forPath(Path, Charset, LanguageVersion, ReferenceCountedCloseable) forPath}.
      *
      * @param closeAction A closeable
      */
-    public FileSystemCloseable(Closeable closeAction) {
+    public ReferenceCountedCloseable(Closeable closeAction) {
         this.closeAction = closeAction;
     }
 

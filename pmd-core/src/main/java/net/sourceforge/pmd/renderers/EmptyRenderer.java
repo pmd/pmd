@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * An empty renderer, for when you really don't want a report.
@@ -30,7 +30,7 @@ public class EmptyRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void startFileAnalysis(DataSource dataSource) {
+    public void startFileAnalysis(TextFile dataSource) {
         // deliberately does nothing
     }
 

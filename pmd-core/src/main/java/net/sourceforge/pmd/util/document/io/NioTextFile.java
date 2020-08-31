@@ -19,7 +19,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -28,14 +27,19 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
-    private final @Nullable FileSystemCloseable fs;
+    private final @Nullable ReferenceCountedCloseable fs;
+    private final LanguageVersion languageVersion;
+    private final @Nullable String displayName;
 
-    NioTextFile(Path path, Charset charset, @Nullable FileSystemCloseable fs) {
+    NioTextFile(Path path, Charset charset, LanguageVersion languageVersion, @Nullable String displayName, @Nullable ReferenceCountedCloseable fs) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
+        AssertionUtil.requireParamNotNull("language version", languageVersion);
 
+        this.displayName = displayName;
         this.path = path;
         this.charset = charset;
+        this.languageVersion = languageVersion;
         this.fs = fs;
         if (fs != null) {
             fs.addDependent();
@@ -43,13 +47,13 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public @NonNull LanguageVersion getLanguageVersion(LanguageVersionDiscoverer discoverer) {
-        return discoverer.getDefaultLanguageVersionForFile(path.toFile());
+    public @NonNull LanguageVersion getLanguageVersion() {
+        return languageVersion;
     }
 
     @Override
     public @NonNull String getDisplayName() {
-        return path.toString();
+        return displayName == null ? path.toString() : displayName;
     }
 
     @Override
