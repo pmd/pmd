@@ -213,6 +213,41 @@ public final class Chars implements CharSequence {
         return trimStart().trimEnd();
     }
 
+
+    /**
+     * Returns true if this char sequence is logically equal to the
+     * parameter. This means they're equal character-by-character. This
+     * is more general than {@link #equals(Object)}, which will only answer
+     * true if the parameter is a {@link Chars}.
+     *
+     * @param cs         Another char sequence
+     * @param ignoreCase Whether to ignore case
+     *
+     * @return True if both sequences are equal
+     */
+    public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
+        if (cs instanceof Chars) {
+            Chars chars2 = (Chars) cs;
+            if (len != chars2.len) {
+                return false;
+            }
+            return str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
+        } else {
+            if (length() != cs.length()) {
+                return false;
+            }
+            return str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
+        }
+    }
+
+    /**
+     * Like {@link #contentEquals(CharSequence, boolean)}, considering
+     * case distinctions.
+     */
+    public boolean contentEquals(CharSequence cs) {
+        return contentEquals(cs, false);
+    }
+
     /**
      * Returns a new reader for the whole contents of this char sequence.
      */
@@ -325,14 +360,10 @@ public final class Chars implements CharSequence {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Chars)) {
             return false;
         }
-        Chars chars = (Chars) o;
-        if (this.len != chars.len) {
-            return false;
-        }
-        return this.str.regionMatches(start, chars.str, chars.start, this.len);
+        return contentEquals((Chars) o);
     }
 
     @Override
