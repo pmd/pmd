@@ -113,9 +113,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val source = DataSource.forString(sourceCode, "test-file")
+        val source = DataSource.forString(sourceCode, FileAnalysisException.NO_FILE_NAME)
         val toString = DataSource.readToString(source, StandardCharsets.UTF_8)
-        val task = Parser.ParserTask(lversion, "test-file", toString, SemanticErrorReporter.noop(), options.suppressMarker)
+        val task = Parser.ParserTask(lversion, FileAnalysisException.NO_FILE_NAME, toString, SemanticErrorReporter.noop(), options.suppressMarker)
         val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
             postProcessing(handler, lversion, rootNode)

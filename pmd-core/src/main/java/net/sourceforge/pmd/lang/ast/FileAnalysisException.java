@@ -19,8 +19,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    protected static final String UNKNOWN_FNAME = "(unknown file)";
-    private String filename = UNKNOWN_FNAME;
+    public static final @NonNull String NO_FILE_NAME = "(unknown file)";
+    private String filename = NO_FILE_NAME;
 
     public FileAnalysisException() {
         super();
@@ -44,7 +44,7 @@ public class FileAnalysisException extends RuntimeException {
     }
 
     protected boolean hasFileName() {
-        return !UNKNOWN_FNAME.equals(filename);
+        return !NO_FILE_NAME.equals(filename);
     }
 
     /**

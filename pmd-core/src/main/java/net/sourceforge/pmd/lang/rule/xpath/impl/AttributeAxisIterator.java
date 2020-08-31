@@ -39,7 +39,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                     Long.TYPE, Character.TYPE, Float.TYPE));
 
     private static final Set<String> FILTERED_OUT_NAMES
-        = new HashSet<>(Arrays.asList("toString", "getNumChildren", "getIndexInParent", "getParent", "getClass", "getRuleIndex", "getXPathNodeName", "altNumber", "toStringTree", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
+        = new HashSet<>(Arrays.asList("toString", "getNumChildren", "getIndexInParent", "getParent", "getSourceCodeFile", "getClass", "getRuleIndex", "getXPathNodeName", "altNumber", "toStringTree", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
 
     /* Iteration variables */
     private final Iterator<MethodWrapper> iterator;
