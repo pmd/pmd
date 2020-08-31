@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.27.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.28.0-SNAPSHOT</li>
     
     
     
@@ -1403,239 +1403,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="--2020---6270-snapshot">??-????-2020 - 6.27.0-SNAPSHOT</h2>
+  <h2 id="--2020---6280-snapshot">??-????-2020 - 6.28.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.27.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.28.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="java-15-support">Java 15 Support</h4>
-
-<p>This release of PMD brings support for Java 15. PMD can parse <a href="https://openjdk.java.net/jeps/378">Text Blocks</a>
-which have been promoted to be a standard language feature of Java.</p>
-
-<p>PMD also supports <a href="https://openjdk.java.net/jeps/375">Pattern Matching for instanceof</a>,
-<a href="https://openjdk.java.net/jeps/384">Records</a>, and <a href="https://openjdk.java.net/jeps/360">Sealed Classes</a>.</p>
-
-<p>Note: The Pattern Matching for instanceof, Records, and Sealed Classes are all preview language features of OpenJDK 15
-and are not enabled by default. In order to
-analyze a project with PMD that uses these language features, you’ll need to enable it via the environment
-variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="language-plaintext highlighter-rouge">15-preview</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd -language java -version 15-preview ...
-</code></pre></div></div>
-
-<p>Note: Support for Java 13 preview language features have been removed. The version “13-preview” is no longer available.</p>
-
-<h4 id="changes-in-how-tab-characters-are-handled">Changes in how tab characters are handled</h4>
-
-<p>In the past, tab characters in source files has been handled differently in different languages by PMD.
-For instance in Java, tab characters had a width of 8 columns, while C# used only 1 column. Visualforce instead
-used 4 columns.</p>
-
-<p>This has been unified now so that tab characters are consistently now always 1 column wide.</p>
-
-<p>This however might be a <strong>incompatible</strong> change, if you’re using the properties “BeginColumn” or “EndColumn”
-additionally to “BeginLine” and “EndLine” of a Token/AST node in order to highlight
-where a rule violation occurred in the source file. If you have logic there that deals with tab characters,
-you most likely can remove this logic now, since tab characters are now just “normal” characters
-in terms of string processing.</p>
-
-<p>See also <a href="https://github.com/pmd/pmd/pull/2656">[all] Ensure PMD/CPD uses tab width of 1 for tabs consistently #2656</a>.</p>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.27.0">PMD Designer Changelog</a>.</p>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningCatchVariables</code></a> (<code class="language-plaintext highlighter-rouge">java-bestpractices</code>) finds
-cases where the variable of the caught exception is reassigned. This practice is surprising and prevents
-further evolution of the code like multi-catch.</li>
-</ul>
-
-<h4 id="modified-rules">Modified Rules</h4>
-
-<ul>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="language-plaintext highlighter-rouge">CloseResource</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>) has a new property
-<code class="language-plaintext highlighter-rouge">closeNotInFinally</code>. With this property set to <code class="language-plaintext highlighter-rouge">true</code> the rule will also find calls to close a
-resource, which are not in a finally-block of a try-statement. If a resource is not closed within a
-finally block, it might not be closed at all in case of exceptions.</p>
-
-    <p>As this new detection would yield many new violations, it is disabled by default. It might be
-enabled in a later version of PMD.</p>
-  </li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="language-plaintext highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>)
-is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> (<code class="language-plaintext highlighter-rouge">java-bestpractices</code>),
-which was introduced in PMD 6.26.0.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/724">#724</a>: [core] Avoid parsing rulesets multiple times</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1962">#1962</a>: [core] Simplify Report API</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2653">#2653</a>: [lang-test] Upgrade kotlintest to Kotest</li>
-      <li><a href="https://github.com/pmd/pmd/pull/2656">#2656</a>: [all] Ensure PMD/CPD uses tab width of 1 for tabs consistently</li>
-      <li><a href="https://github.com/pmd/pmd/pull/2690">#2690</a>: [core] Fix java7 compatibility</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2646">#2646</a>: [java] Support JDK 15</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2471">#2471</a>: [java] New Rule: AvoidReassigningCatchVariables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2663">#2663</a>: [java] NoClassDefFoundError on upgrade from 6.25.0 to 6.26.0</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2668">#2668</a>: [java] UnusedAssignment false positives</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2673">#2673</a>: [java] UnusedPrivateField and SingularField false positive with lombok annotation EqualsAndHashCode</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2684">#2684</a>: [java] UnusedAssignment FP in try/catch</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2686">#2686</a>: [java] UnusedAssignment must not flag abstract method parameters in interfaces and abstract classes</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2108">#2108</a>: [java] [doc] ImmutableField rule: Description should clarify shallow immutability</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2461">#2461</a>: [java] ExcessiveParameterListRule must ignore a private constructor</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2264">#2264</a>: [java] SuspiciousEqualsMethodName: Improve description about error-prone overloading of equals()</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2410">#2410</a>: [java] ProperCloneImplementation not valid for final class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2431">#2431</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2439">#2439</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2470">#2470</a>: [java] CloseResource false positive when resource included in return value</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2531">#2531</a>: [java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase())</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2647">#2647</a>: [java] Deprecate rule DataFlowAnomalyAnalysis</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1868">#1868</a>: [java] false-positive for SimplifyStartsWith if string is empty</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2441">#2441</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code></li>
-      <li><a href="https://github.com/pmd/pmd/issues/2530">#2530</a>: [java] StringToString can not detect the case: getStringMethod().toString()</li>
-    </ul>
-  </li>
-  <li>dart
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/2750">#2750</a>: [dart] [cpd] Cpd Dart escaped dollar</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<ul>
-  <li>XML rule definition in rulesets: In PMD 7, the <code class="language-plaintext highlighter-rouge">language</code> attribute will be required on all <code class="language-plaintext highlighter-rouge">rule</code>
-elements that declare a new rule. Some base rule classes set the language implicitly in their
-constructor, and so this is not required in all cases for the rule to work. But this
-behavior will be discontinued in PMD 7, so missing <code class="language-plaintext highlighter-rouge">language</code> attributes are now
-reported as a forward compatibility warning.</li>
-</ul>
-
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<h5 id="for-removal">For removal</h5>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#getParserOptions()"><code>Rule#getParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/Parser.html#getParserOptions()"><code>Parser#getParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/AbstractParser.html#"><code>AbstractParser</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#removeAttribute(java.lang.String)"><code>RuleContext#removeAttribute</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#getAttribute(java.lang.String)"><code>RuleContext#getAttribute</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#setAttribute(java.lang.String,java.lang.Object)"><code>RuleContext#setAttribute</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ApexParserOptions.html#"><code>ApexParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThrowStatement.html#getFirstClassOrInterfaceTypeImage()"><code>ASTThrowStatement#getFirstClassOrInterfaceTypeImage</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/EcmascriptParserOptions.html#"><code>EcmascriptParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/rule/EcmascriptXPathRule.html#"><code>EcmascriptXPathRule</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/XmlParserOptions.html#"><code>XmlParserOptions</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/XmlXPathRule.html#"><code>XmlXPathRule</code></a></li>
-  <li>
-    <p>Properties of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></p>
-  </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.ReadableDuration.html#"><code>net.sourceforge.pmd.Report.ReadableDuration</code></a></li>
-  <li>
-    <p>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>net.sourceforge.pmd.Report</code></a>. They are replaced by accessors
-  that produce a List. For example, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#iterator()"><code>iterator()</code></a> 
-  (and implementing Iterable) and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#isEmpty()"><code>isEmpty()</code></a> are both
-  replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/Report.html#getViolations()"><code>getViolations()</code></a>.</p>
-  </li>
-  <li>The dataflow codebase is deprecated for removal in PMD 7. This
-includes all code in the following packages, and their subpackages:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.dfa</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.java.dfa</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.dfa</code></a></li>
-      <li>and the class <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLDataFlowHandler.html#"><code>PLSQLDataFlowHandler</code></a></li>
-    </ul>
-  </li>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfSimpleCharStream.html#"><code>VfSimpleCharStream</code></a></p>
-  </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspDeclarations.html#"><code>ASTJspDeclarations</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspDocument.html#"><code>ASTJspDocument</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ScalaParserVisitorAdapter.html#zero()"><code>ScalaParserVisitorAdapter#zero</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ScalaParserVisitorAdapter.html#combine(Object,Object)"><code>ScalaParserVisitorAdapter#combine</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitorReducedAdapter.html#"><code>ApexParserVisitorReducedAdapter</code></a></li>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorReducedAdapter.html#"><code>JavaParserVisitorReducedAdapter</code></a></p>
-  </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a> is deprecated in
- favor of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a>, which has the
-same functionality, but a slightly changed API.</li>
-  <li>Many of the classes in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symboltable/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symboltable</code></a>
-are deprecated as internal API.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/2656">#2656</a>: [all] Ensure PMD/CPD uses tab width of 1 for tabs consistently - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2659">#2659</a>: [java] StringToString can not detect the case: getStringMethod().toString() - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2662">#2662</a>: [java] UnnecessaryCaseChange can not detect the case like: foo.equals(bar.toLowerCase()) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2671">#2671</a>: [java] CloseResource false positive when resource included in return value - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2674">#2674</a>: [java] add lombok.EqualsAndHashCode in AbstractLombokAwareRule - <a href="https://github.com/berkam">berkam</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2677">#2677</a>: [java] RedundantFieldInitializer can not detect a special case for char initialize: <code class="language-plaintext highlighter-rouge">char foo = '\0';</code> - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2678">#2678</a>: [java] AvoidCatchingThrowable can not detect the case: catch (java.lang.Throwable t) - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2679">#2679</a>: [java] InvalidLogMessageFormatRule throws IndexOutOfBoundsException when only logging exception message - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2682">#2682</a>: [java] New Rule: AvoidReassigningCatchVariables - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2697">#2697</a>: [java] ExcessiveParameterListRule must ignore a private constructor - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2699">#2699</a>: [java] ProperCloneImplementation not valid for final class - <a href="https://github.com/Drofff">Mykhailo Palahuta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2700">#2700</a>: [java] Fix OnlyOneReturn code example - <a href="https://github.com/jlelse">Jan-Lukas Else</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2722">#2722</a>: [doc] [java] ImmutableField: extend description, fixes #2108 - <a href="https://github.com/mateusz-stefanski">Mateusz Stefanski</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2723">#2723</a>: [doc] [java] SimplifyStartsWith: update description and example, fixes #1868 - <a href="https://github.com/mateusz-stefanski">Mateusz Stefanski</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2724">#2724</a>: [doc] [java] SuspiciousEqualsMethodName: update description, fixes #2264 - <a href="https://github.com/mateusz-stefanski">Mateusz Stefanski</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2725">#2725</a>: Cleanup: change valueOf to parse when we need primitive return value. - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2726">#2726</a>: Cleanup: replace StringBuffer with StringBuilder - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2727">#2727</a>: Cleanup: replace indexOf() &lt; 0 with contains - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2728">#2728</a>: Cleanup: javadoc issues - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2729">#2729</a>: Cleanup: use print instead of printf if no format exists - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2730">#2730</a>: Cleanup: StringBuilder issues - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2731">#2731</a>: Cleanup: avoid compiling Patterns repeatedly - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2732">#2732</a>: Cleanup: use StandardCharsets instead of Charset.forName - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2733">#2733</a>: Cleanup: Collection::addAll issues  - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2734">#2734</a>: Cleanup: use try with resources - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2744">#2744</a>: Cleanup: fix typos - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2745">#2745</a>: [core] Fix a NPE in buildUsageText - <a href="https://github.com/XenoAmess">XenoAmess</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2749">#2749</a>: [dart] [cpd] Improvements for Dart interpolated strings - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2750">#2750</a>: [dart] [cpd] Cpd Dart escaped dollar - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-</ul>
 
 
 
