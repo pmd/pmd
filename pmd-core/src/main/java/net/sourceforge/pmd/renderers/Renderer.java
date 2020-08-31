@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -29,7 +28,6 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * <ol>
  * <li>Renderer construction/initialization</li>
  * <li>{@link Renderer#setShowSuppressedViolations(boolean)}</li>
- * <li>{@link Renderer#setUseShortNames(List)}</li>
  * <li>{@link Renderer#setWriter(Writer)}</li>
  * <li>{@link Renderer#start()}</li>
  * <li>{@link Renderer#startFileAnalysis(TextFile)} for each source file
@@ -100,16 +98,6 @@ public interface Renderer extends PropertySource {
      *            Whether to show suppressed violations.
      */
     void setShowSuppressedViolations(boolean showSuppressedViolations);
-
-    /**
-     * Render the filenames of found violations with short names. That is, any prefix
-     * given as inputPaths is removed.
-     * By default, the full pathnames are used. If the given list of {@code inputPaths}
-     * is empty, then the full pathnames are used.
-     *
-     * @param inputPaths
-     */
-    void setUseShortNames(List<String> inputPaths);
 
     /**
      * Get the Writer for the Renderer.

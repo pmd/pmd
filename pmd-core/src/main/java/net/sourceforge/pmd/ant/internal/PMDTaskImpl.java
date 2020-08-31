@@ -40,9 +40,9 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.log.AntLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
@@ -143,30 +143,20 @@ public class PMDTaskImpl {
         for (FileSet fs : filesets) {
             List<TextFile> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
-            String[] srcFiles = ds.getIncludedFiles();
-            for (String srcFile : srcFiles) {
-                java.nio.file.Path file = ds.getBasedir().toPath().resolve(srcFile);
-                String displayName = configuration.isReportShortNames() ? srcFile : null;
-                LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.toString());
-                files.add(PmdFiles.forPath(file, configuration.getSourceEncoding(), langVersion, displayName, null));
+            java.nio.file.Path baseDir = ds.getBasedir().toPath();
+            configuration.setInputPaths(baseDir.toString());
+            for (String srcFile : ds.getIncludedFiles()) {
+                java.nio.file.Path file = baseDir.resolve(srcFile);
+                files.add(FileUtil.createNioTextFile(configuration, file, null));
             }
 
-            final String commonInputPath = ds.getBasedir().getPath();
-            configuration.setInputPaths(commonInputPath);
-            final List<String> reportShortNamesPaths = new ArrayList<>();
-            if (configuration.isReportShortNames()) {
-                reportShortNamesPaths.add(commonInputPath);
-            }
-
-            Renderer logRenderer = makeRenderer(reportSize, commonInputPath);
+            Renderer logRenderer = makeRenderer(reportSize);
             List<GlobalAnalysisListener> renderers;
             try {
                 renderers = new ArrayList<>(formatters.size() + 1);
                 renderers.add(logRenderer.newListener());
                 for (Formatter formatter : formatters) {
-                    Renderer renderer = formatter.getRenderer();
-                    renderer.setUseShortNames(reportShortNamesPaths);
-                    renderers.add(renderer.newListener());
+                    renderers.add(formatter.getRenderer().newListener());
                 }
             } catch (IOException e) {
                 handleError(errorReport, e);
@@ -198,7 +188,7 @@ public class PMDTaskImpl {
     }
 
     @NonNull
-    private AbstractRenderer makeRenderer(AtomicInteger reportSize, String commonInputPath) {
+    private AbstractRenderer makeRenderer(AtomicInteger reportSize) {
         return new AbstractRenderer("log", "Logging renderer") {
             @Override
             public void start() {

@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +41,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -50,8 +49,8 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.ReferenceCountedCloseable;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.ReferenceCountedCloseable;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
@@ -106,35 +105,30 @@ public final class FileUtil {
     // the zip file can't be closed here, it's closed with the FileSystemCloseable during analysis
     private static void collect(List<TextFile> result,
                                 String root,
-                                Charset charset,
-                                Function<? super Path, LanguageVersion> languageVersionFinder,
+                                PMDConfiguration configuration,
                                 Predicate<? super Path> filter) throws IOException {
-        Path file = toExistingPath(root);
+        Path rootPath = toExistingPath(root);
 
         Stream<Path> subfiles;
         @Nullable ReferenceCountedCloseable fsCloseable;
-        if (Files.isDirectory(file)) {
+        if (Files.isDirectory(rootPath)) {
             fsCloseable = null;
-            subfiles = Files.walk(file);
+            subfiles = Files.walk(rootPath);
         } else if (root.endsWith(".zip") || root.endsWith(".jar")) {
             URI uri = URI.create(root);
             FileSystem zipfs = FileSystems.newFileSystem(uri, Collections.emptyMap());
             fsCloseable = new ReferenceCountedCloseable(zipfs);
             subfiles = Files.walk(zipfs.getPath("/"));
         } else {
-            if (filter.test(file)) {
-                LanguageVersion langVersion = languageVersionFinder.apply(file);
-                result.add(PmdFiles.forPath(file, charset, langVersion, null));
+            if (filter.test(rootPath)) {
+                result.add(createNioTextFile(configuration, rootPath, null));
             }
             return;
         }
 
         try (Stream<Path> walk = subfiles) {
             walk.filter(filter)
-                .map(path -> {
-                    LanguageVersion langVersion = languageVersionFinder.apply(path);
-                    return PmdFiles.forPath(path, charset, langVersion, fsCloseable);
-                })
+                .map(path -> createNioTextFile(configuration, path, fsCloseable))
                 .forEach(result::add);
         }
 
@@ -232,12 +226,9 @@ public final class FileUtil {
         Predicate<Path> fileFilter = PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
         fileFilter = fileFilter.and(path -> !ignoredFiles.contains(path.toString()));
 
-        Function<Path, LanguageVersion> languageVersionFinder = path ->
-            configuration.getLanguageVersionDiscoverer().getDefaultLanguageVersionForFile(path.toFile());
-
         if (null != configuration.getInputPaths()) {
             for (String root : configuration.getInputPaths().split(",")) {
-                collect(files, root, configuration.getSourceEncoding(), languageVersionFinder, fileFilter);
+                collect(files, root, configuration, fileFilter);
             }
         }
 
@@ -250,7 +241,7 @@ public final class FileUtil {
 
             try {
                 for (String root : readFilelistEntries(fileList)) {
-                    collect(files, root, configuration.getSourceEncoding(), languageVersionFinder, fileFilter);
+                    collect(files, root, configuration, fileFilter);
                 }
             } catch (IOException ex) {
                 throw new IOException("Problem with filelist: " + configuration.getInputFilePath(), ex);
@@ -308,4 +299,18 @@ public final class FileUtil {
             throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
     }
+
+    private static @Nullable String displayName(PMDConfiguration config, Path file) {
+        if (config.isReportShortNames() && config.getInputPaths() != null) {
+            return ShortFilenameUtil.determineFileName(Arrays.asList(config.getInputPaths().split(",")), file.toString());
+        }
+        return null;
+    }
+
+    public static TextFile createNioTextFile(PMDConfiguration config, Path file, @Nullable ReferenceCountedCloseable fsCloseable) {
+        String displayName = displayName(config, file);
+        LanguageVersion langVersion = config.getLanguageVersionOfFile(file.toString());
+        return PmdFiles.forPath(file, config.getSourceEncoding(), langVersion, displayName, fsCloseable);
+    }
+
 }

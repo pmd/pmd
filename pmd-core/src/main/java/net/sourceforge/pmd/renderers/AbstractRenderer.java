@@ -6,15 +6,12 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.PMDParameters;
-import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.util.IOUtil;
 
@@ -27,8 +24,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
-
-    protected List<String> inputPathPrefixes = Collections.emptyList();
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -70,11 +65,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         this.showSuppressedViolations = showSuppressedViolations;
     }
 
-    @Override
-    public void setUseShortNames(List<String> inputPaths) {
-        this.inputPathPrefixes = inputPaths;
-    }
-
     /**
      * Determines the filename that should be used in the report depending on the
      * option "shortnames". If the option is enabled, then the filename in the report
@@ -88,7 +78,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * @see PMDParameters#isShortnames()
      */
     protected String determineFileName(String inputFileName) {
-        return ShortFilenameUtil.determineFileName(inputPathPrefixes, inputFileName);
+        return inputFileName; // now the TextFile always has a short display name if it was created so.
     }
 
     @Override
