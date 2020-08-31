@@ -65,26 +65,25 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     @Override
     public FileLocation toLocation(TextRegion region) {
         checkInRange(region);
+        ensureHasPositioner();
 
-        if (positioner == null) {
-            // if nobody cares about lines, this is not computed
-            positioner = new SourceCodePositioner(getText());
-        }
-
-        int bline = positioner.lineNumberFromOffset(region.getStartOffset());
-        int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
-        int eline = positioner.lineNumberFromOffset(region.getEndOffset());
-        int ecol = positioner.columnFromOffset(eline, region.getEndOffset());
+        long bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
+        long epos = region.isEmpty() ? bpos
+                                     : positioner.lineColFromOffset(region.getEndOffset(), false);
 
         return new FileLocation(
             fileName,
-            bline, bcol,
-            eline, ecol
+            SourceCodePositioner.unmaskLine(bpos),
+            SourceCodePositioner.unmaskCol(bpos),
+            SourceCodePositioner.unmaskLine(epos),
+            SourceCodePositioner.unmaskCol(epos)
         );
     }
 
     @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
+        ensureHasPositioner();
+
         if (!positioner.isValidLine(startLineInclusive)
             || !positioner.isValidLine(endLineInclusive)
             || startLineInclusive > endLineInclusive) {
@@ -94,6 +93,13 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         int first = positioner.offsetFromLineColumn(startLineInclusive, 1);
         int last = positioner.offsetOfEndOfLine(endLineInclusive);
         return TextRegion.fromBothOffsets(first, last);
+    }
+
+    private void ensureHasPositioner() {
+        if (positioner == null) {
+            // if nobody cares about lines, this is not computed
+            positioner = new SourceCodePositioner(getText());
+        }
     }
 
     void checkInRange(TextRegion region) {

@@ -39,6 +39,56 @@ public class TextDocumentTest {
     }
 
     @Test
+    public void testRegionAtEol() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+
+        TextRegion region = TextRegion.fromOffsetLength(0, "bonjour\n".length());
+        assertEquals("bonjour\n", doc.slice(region).toString());
+        FileLocation withLines = doc.toLocation(region);
+
+        assertEquals(1, withLines.getBeginLine());
+        assertEquals(1, withLines.getEndLine());
+        assertEquals(1, withLines.getBeginColumn());
+        assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
+        assertEquals("bonjour\n".length(), withLines.getEndColumn() - withLines.getBeginColumn());
+    }
+
+    @Test
+    public void testEmptyRegionAtEol() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        //                                                             ^ The caret position right after the \n
+        //                                                               We consider it's part of the next line
+
+        TextRegion region = TextRegion.fromOffsetLength("bonjour\n".length(), 0);
+        assertEquals("", doc.slice(region).toString());
+
+        FileLocation withLines = doc.toLocation(region);
+
+        assertEquals(2, withLines.getBeginLine());
+        assertEquals(2, withLines.getEndLine());
+        assertEquals(1, withLines.getBeginColumn());
+        assertEquals(1, withLines.getEndColumn());
+    }
+
+    @Test
+    public void testRegionForEol() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        //                                                           [ [ The region containing the \n
+        //                                                               We consider it ends on the same line, not the next one
+
+
+        TextRegion region = TextRegion.fromOffsetLength("bonjour".length(), 1);
+        assertEquals("\n", doc.slice(region).toString());
+
+        FileLocation withLines = doc.toLocation(region);
+
+        assertEquals(1, withLines.getBeginLine());
+        assertEquals(1, withLines.getEndLine());
+        assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
+        assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
+    }
+
+    @Test
     public void testMultiLineRegion() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 

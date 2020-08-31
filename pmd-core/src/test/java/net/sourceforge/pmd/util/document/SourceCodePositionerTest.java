@@ -109,7 +109,7 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertArrayEquals(new int[] { 0, 40, 49 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 40, 49, 50 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertArrayEquals(new int[] { 0, 41, 51 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 41, 51, 52 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -131,7 +131,19 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertArrayEquals(new int[] { 0, 41, 50 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 41, 50, 51 }, positioner.getLineOffsets());
+    }
+
+    @Test
+    public void longOffsetMasking() {
+        assertMasking(1, 4);
+        assertMasking(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    private void assertMasking(int line, int col) {
+        long l = SourceCodePositioner.maskLineCol(line, col);
+        assertEquals(line, SourceCodePositioner.unmaskLine(l));
+        assertEquals(col, SourceCodePositioner.unmaskCol(l));
     }
 
 }

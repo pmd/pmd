@@ -124,6 +124,26 @@ public final class AssertionUtil {
         return value;
     }
 
+    /**
+     * @throws IndexOutOfBoundsException If value < 0 || value >= maxValue
+     */
+    public static int requireInNonNegativeRange(String name, int value, int maxValue) {
+        if (value < 0 || value >= maxValue) {
+            throw mustBe(name, value, "in range [0," + maxValue + "[", IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 1 || value >= maxValue
+     */
+    public static int requireInPositiveRange(String name, int value, int maxValue) {
+        if (value < 0 || value >= maxValue) {
+            throw mustBe(name, value, "in range [1," + maxValue + "[", IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
     public static RuntimeException mustBe(String name, Object value, String condition) {
         return mustBe(name, value, condition, IllegalArgumentException::new);
     }
