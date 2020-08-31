@@ -85,7 +85,7 @@ public final class PmdFiles {
      * @throws NullPointerException If the source text is null
      */
     public static TextFile forString(String source) {
-        return forString(source, "n/a", null);
+        return forString(source, TextFile.UNKNOWN_FILENAME, null);
     }
 
     /**

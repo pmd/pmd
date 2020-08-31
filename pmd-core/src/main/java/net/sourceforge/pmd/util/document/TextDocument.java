@@ -127,11 +127,9 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a read-only document for the given text.
-     * FIXME for the moment, the language version may be null (for CPD languages).
-     * this may be fixed when CPD and PMD languages are merged
      */
     static TextDocument readOnlyString(final String source, LanguageVersion lv) {
-        return readOnlyString(source, "n/a", lv);
+        return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
     }
 
     static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {

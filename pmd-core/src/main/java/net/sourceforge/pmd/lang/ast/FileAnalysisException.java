@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.util.document.io.TextFile;
+
 /**
  * An exception that occurs while processing a file. Subtypes include
  * <ul>
@@ -19,8 +21,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    public static final @NonNull String NO_FILE_NAME = "(unknown file)";
-    private String filename = NO_FILE_NAME;
+    private String filename = TextFile.UNKNOWN_FILENAME;
 
     public FileAnalysisException() {
         super();
@@ -44,7 +45,7 @@ public class FileAnalysisException extends RuntimeException {
     }
 
     protected boolean hasFileName() {
-        return !NO_FILE_NAME.equals(filename);
+        return !TextFile.UNKNOWN_FILENAME.equals(filename);
     }
 
     /**

@@ -32,6 +32,8 @@ import net.sourceforge.pmd.util.document.TextDocument;
  */
 public interface TextFile extends Closeable {
 
+    String UNKNOWN_FILENAME = "(unknown file)";
+
 
     /**
      * Returns the language version which should be used to parse this
