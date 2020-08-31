@@ -215,7 +215,7 @@ final class FragmentedDocCursor {
 
         @Override
         public String toString() {
-            return "Fragment[" + inStart + ".." + outStart + "]\n" + chars;
+            return "Fragment[" + inStart + ".." + inEnd() + " -> " + outStart() + ".." + outEnd() + "]" + chars;
         }
     }
 }

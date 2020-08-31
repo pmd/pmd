@@ -42,6 +42,11 @@ public class BaseTokenFilterTest {
         }
 
         @Override
+        public TextRegion getRegion() {
+            return TextRegion.fromBothOffsets(0, text.length());
+        }
+
+        @Override
         public boolean isEof() {
             return text == null;
         }

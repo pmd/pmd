@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -21,6 +19,7 @@ import net.sourceforge.pmd.lang.cpp.ast.CppEscapeReader;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.TextFileContent;
 
 /**
  * The C++ tokenizer.
@@ -63,34 +62,46 @@ public class CPPTokenizer extends JavaCCTokenizer {
         }
     }
 
-    private Chars maybeSkipBlocks(Chars test) throws IOException {
+    /**
+     * @param chars Normalized chars
+     */
+    private CharSequence maybeSkipBlocks(Chars chars) {
         if (!skipBlocks) {
-            return test;
+            return chars;
         }
 
-        try (BufferedReader reader = new BufferedReader(test.newReader())) {
-            StringBuilder filtered = new StringBuilder(test.length());
-            String line;
-            boolean skip = false;
-            while ((line = reader.readLine()) != null) {
-                if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
+        int i = 0;
+        int lastLineStart = 0;
+        boolean skip = false;
+        StringBuilder filtered = new StringBuilder(chars.length());
+        while (i < chars.length()) {
+            if (chars.charAt(i) == TextFileContent.NORMALIZED_LINE_TERM_CHAR) {
+                Chars lastLine = chars.subSequence(lastLineStart, i);
+                Chars trimmed = lastLine.trim();
+                if (trimmed.contentEquals(skipBlocksStart, true)) {
                     skip = true;
-                } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
+                } else if (trimmed.contentEquals(skipBlocksEnd, true)) {
                     skip = false;
                 }
                 if (!skip) {
-                    filtered.append(line);
+                    lastLine.appendChars(filtered);
                 }
-                // always add a new line to keep the line-numbering
-                filtered.append(PMD.EOL);
+                // always add newline, to preserve line numbers
+                filtered.append(TextFileContent.NORMALIZED_LINE_TERM_CHAR);
+                lastLineStart = i + 1;
             }
-            return Chars.wrap(filtered, false);
+            i++;
         }
+        if (lastLineStart < i && !skip) {
+            chars.appendChars(filtered, lastLineStart, i - lastLineStart);
+        }
+        return filtered;
     }
 
 
     @Override
     protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
+        textDoc = TextDocument.readOnlyString(maybeSkipBlocks(textDoc.getText()), textDoc.getDisplayName(), textDoc.getLanguageVersion());
         return new JavaccTokenDocument(textDoc) {
             @Override
             public EscapeAwareReader newReader(Chars text) {

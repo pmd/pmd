@@ -18,13 +18,13 @@ public class CppEscapeReader extends BackslashEscapeReader {
 
     @Override
     protected int handleBackslash(int maxOff, final int backSlashOff) {
-        int off = backSlashOff;
+        int off = backSlashOff + 1;
 
         if (input.charAt(off) == NEWLINE) {
-            return recordEscape(backSlashOff, 2, Chars.EMPTY);
+            return recordEscape(backSlashOff, off + 1, Chars.EMPTY);
         } else if (input.charAt(off) == CARRIAGE_RETURN) {
             if (input.charAt(++off) == NEWLINE) {
-                return recordEscape(backSlashOff, 3, Chars.EMPTY);
+                return recordEscape(backSlashOff, off + 1, Chars.EMPTY);
             }
         }
 

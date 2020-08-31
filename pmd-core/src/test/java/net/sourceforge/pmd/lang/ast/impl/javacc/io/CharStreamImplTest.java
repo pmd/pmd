@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -22,6 +24,7 @@ public class CharStreamImplTest {
 
     @Rule
     public ExpectedException expect = ExpectedException.none();
+    private LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
     @Test
     public void testReadZeroChars() throws IOException {
@@ -135,12 +138,12 @@ public class CharStreamImplTest {
         stream.readChar();
     }
 
-    public static CharStream simpleCharStream(String abcd) throws IOException {
-        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)));
+    public CharStream simpleCharStream(String abcd) throws IOException {
+        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)));
     }
 
-    public static CharStream javaCharStream(String abcd) throws IOException {
-        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)) {
+    public CharStream javaCharStream(String abcd) throws IOException {
+        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)) {
             @Override
             public EscapeAwareReader newReader(Chars text) {
                 return new JavaEscapeReader(text);
