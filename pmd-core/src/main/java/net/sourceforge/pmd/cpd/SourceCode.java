@@ -227,4 +227,8 @@ public class SourceCode {
     public String getFileName() {
         return cl.getFileName();
     }
+
+    public Reader getReader() throws Exception {
+        return cl.getReader();
+    }
 }

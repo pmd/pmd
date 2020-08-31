@@ -17,7 +17,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -119,6 +122,8 @@ public final class PmdFiles {
      * Wraps the given {@link DataSource} (provided for compatibility).
      * Note that data sources are only usable once (even {@link DataSource#forString(String, String)}),
      * so calling {@link TextFile#readContents()} twice will throw the second time.
+     *
+     * @deprecated This is only a transitional API for the PMD 7 branch
      */
     @Deprecated
     public static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
@@ -165,5 +170,32 @@ public final class PmdFiles {
         }
 
         return new DataSourceTextFile();
+    }
+
+
+    /** The language version must be non-null. */
+    @Deprecated
+    private static final Language DUMMY_CPD_LANG = new BaseLanguageModule("cpd", "cpd", "cpd", "cpd") {
+        {
+            addDefaultVersion("0", parserOptions -> task -> {
+                throw new UnsupportedOperationException();
+            });
+        }
+
+    };
+
+    /**
+     * Bridges {@link SourceCode} with {@link TextFile}. This allows
+     * javacc tokenizers to work on text documents.
+     *
+     * @deprecated This is only a transitional API for the PMD 7 branch
+     */
+    @Deprecated
+    public static TextFile cpdCompat(SourceCode sourceCode) {
+        return new StringTextFile(
+            sourceCode.getCodeBuffer().toString(),
+            sourceCode.getFileName(),
+            DUMMY_CPD_LANG.getDefaultVersion()
+        );
     }
 }
