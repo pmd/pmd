@@ -26,8 +26,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public final class FileLocation {
 
-    public static final FileLocation UNDEFINED = new FileLocation("n/a", 1, 1, 1, 1);
-
     public static final Comparator<FileLocation> COORDS_COMPARATOR =
         Comparator.comparingInt(FileLocation::getBeginLine)
                   .thenComparingInt(FileLocation::getBeginColumn)

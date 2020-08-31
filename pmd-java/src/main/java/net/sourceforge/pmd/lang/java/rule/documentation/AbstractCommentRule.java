@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -32,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.JavadocElement;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -122,7 +122,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
             cUnit.descendants()
                  .crossFindBoundaries()
                 .<JjtreeNode<?>>map(NodeStream.asInstanceOf(ASTAnyTypeDeclaration.class, ASTFieldDeclaration.class, ASTMethodDeclaration.class, ASTConstructorDeclaration.class))
-                .collect(Collectors.toList()); // todo toMutableList
+                .collect(CollectionUtil.toMutableList());
 
         itemsByLineNumber.addAll(cUnit.getComments());
         ASTPackageDeclaration pack = cUnit.getPackageDeclaration();

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.util.Properties;
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
@@ -32,9 +33,8 @@ public class CsTokenizer extends AntlrTokenizer {
     }
 
     @Override
-    protected AntlrTokenManager getLexerForSource(final SourceCode sourceCode) {
-        final CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new CSharpLexer(charStream), sourceCode.getFileName());
+    protected Lexer getLexerForSource(final CharStream charStream) {
+        return new CSharpLexer(charStream);
     }
 
     @Override

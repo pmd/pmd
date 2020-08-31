@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.document.Reportable;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
@@ -32,8 +33,18 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
     /**
      * Returns the token's text.
      */
-    String getImage();
+    default String getImage() {
+        return getImageCs().toString();
+    }
 
+    /**
+     * Returns the image as a {@link CharSequence}.
+     */
+    CharSequence getImageCs();
+
+
+    /** Returns a text region with the coordinates of this token. */
+    TextRegion getRegion();
 
     /**
      * Returns true if this token is an end-of-file token. This is the
@@ -56,7 +67,9 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      * the other.
      */
     @Override
-    int compareTo(T o);
+    default int compareTo(T o) {
+        return getRegion().compareTo(o.getRegion());
+    }
 
 
     /**

@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.Recognizer;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -18,18 +19,13 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class AntlrTokenManager implements TokenManager<AntlrToken> {
 
     private final Lexer lexer;
-    private final String fileName;
+    private final TextDocument textDoc;
     private AntlrToken previousToken;
 
-    /**
-     * Constructor
-     *
-     * @param lexer The lexer
-     * @param fileName The file name
-     */
-    public AntlrTokenManager(final Lexer lexer, final String fileName) {
+
+    public AntlrTokenManager(final Lexer lexer, final TextDocument textDocument) {
         this.lexer = lexer;
-        this.fileName = fileName;
+        this.textDoc = textDocument;
         resetListeners();
     }
 
@@ -44,7 +40,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
 
     private AntlrToken getNextTokenFromAnyChannel() {
         final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
-        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment, fileName);
+        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment, textDoc);
         if (previousToken != null) {
             previousToken.next = currentToken;
         }
@@ -54,7 +50,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
     }
 
     public String getFileName() {
-        return fileName;
+        return textDoc.getDisplayName();
     }
 
     private void resetListeners() {

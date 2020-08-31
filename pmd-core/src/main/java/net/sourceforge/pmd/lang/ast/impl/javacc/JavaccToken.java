@@ -136,13 +136,11 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
-    public String getImage() {
-        return image.toString();
+    public CharSequence getImageCs() {
+        return image;
     }
 
-    /**
-     * Returns a region with the coordinates of this token.
-     */
+    @Override
     public TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
@@ -158,11 +156,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     @Override
     public FileLocation getReportLocation() {
         return document.getTextDocument().toLocation(getRegion());
-    }
-
-    @Override
-    public int compareTo(JavaccToken o) {
-        return getRegion().compareTo(o.getRegion());
     }
 
     @Override
