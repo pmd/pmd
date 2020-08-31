@@ -415,7 +415,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
             // in order to ensure that we check the proper attribute
             attr = iterator.next();
         }
-        assertEquals("Expected to detect proper value for attribute!", "\r\n", attr.getImage());
+        assertEquals("Expected to detect proper value for attribute!", "\n", attr.getImage());
 
     }
 
