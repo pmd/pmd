@@ -30,7 +30,7 @@ public final class TextFileContent {
      */
     public static final String NORMALIZED_LINE_TERM = "\n";
 
-    private static final Pattern NEWLINE_PATTERN = Pattern.compile("\\R");
+    private static final Pattern NEWLINE_PATTERN = Pattern.compile("\r\n?+|[\n\r\\u0085]");
 
     private final Chars cdata;
     private final String lineTerminator;
@@ -92,7 +92,8 @@ public final class TextFileContent {
 
     /**
      * Reads the contents of the data source to a string. Skips the byte-order
-     * mark if present. Parsers expect input without a BOM.
+     * mark if present. Parsers expect input without a BOM. This closes the input
+     * stream.
      *
      * @param dataSource     Input stream
      * @param sourceEncoding Encoding to use to read from the data source
@@ -108,8 +109,7 @@ public final class TextFileContent {
     }
 
     // test only
-    @NonNull
-    static TextFileContent normalizeImpl(CharSequence text, String fallbackLineSep) {
+    static @NonNull TextFileContent normalizeImpl(CharSequence text, String fallbackLineSep) {
         Matcher matcher = NEWLINE_PATTERN.matcher(text);
         boolean needsNormalization;
         String lineTerminator;
