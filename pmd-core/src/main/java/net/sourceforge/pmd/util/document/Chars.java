@@ -151,20 +151,25 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(String, int)}.
      */
     public int indexOf(String s, int fromIndex) {
-        return str.indexOf(s, idx(fromIndex));
+        int res = str.indexOf(s, idx(fromIndex)) - start;
+        return res >= len ? -1 : res;
     }
 
     /**
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        return str.indexOf(ch, idx(fromIndex));
+        int res = str.indexOf(ch, idx(fromIndex)) - start;
+        return res >= len ? -1 : res;
     }
 
     /**
      * See {@link String#startsWith(String, int)}.
      */
     public boolean startsWith(String prefix, int fromIndex) {
+        if (fromIndex < 0 || fromIndex >= len || prefix.length() > len) {
+            return false;
+        }
         return str.startsWith(prefix, idx(fromIndex));
     }
 
@@ -185,6 +190,7 @@ public final class Chars implements CharSequence {
         while (i < maxIdx && str.charAt(i) <= 32) {
             i++;
         }
+        i -= start;
         return slice(i, len - i);
     }
 
@@ -193,11 +199,11 @@ public final class Chars implements CharSequence {
      * This is consistent with {@link String#trim()}.
      */
     public Chars trimEnd() {
-        int i = start + len - 1;
-        while (i >= start && str.charAt(i) <= 32) {
+        int i = start + len;
+        while (i > start && str.charAt(i - 1) <= 32) {
             i--;
         }
-        return slice(0, idx(i));
+        return slice(0, i - start);
     }
 
     /**
@@ -255,6 +261,9 @@ public final class Chars implements CharSequence {
 
     @Override
     public char charAt(int index) {
+        if (index < 0 || index >= len) {
+            throw new StringIndexOutOfBoundsException(index);
+        }
         return str.charAt(idx(index));
     }
 
@@ -268,7 +277,7 @@ public final class Chars implements CharSequence {
      * of start + end.
      */
     public Chars slice(int off, int len) {
-        validateRangeWithAssert(off, len, this.len);
+        validateRange(off, len, this.len);
         if (len == 0) {
             return EMPTY;
         } else if (off == 0 && len == this.len) {
@@ -286,13 +295,19 @@ public final class Chars implements CharSequence {
      * @param len Length of the substring (0 <= len <= this.length() - off)
      */
     public String substring(int off, int len) {
-        validateRangeWithAssert(off, len, this.len);
+        validateRange(off, len, this.len);
         int start = idx(off);
         return str.substring(start, start + len);
     }
 
     private static void validateRangeWithAssert(int off, int len, int bound) {
         assert len >= 0 && off >= 0 && (off + len) <= bound : invalidRange(off, len, bound);
+    }
+
+    private static void validateRange(int off, int len, int bound) {
+        if (len < 0 || off < 0 || (off + len) > bound) {
+            throw new IndexOutOfBoundsException(invalidRange(off, len, bound));
+        }
     }
 
     private static String invalidRange(int off, int len, int bound) {

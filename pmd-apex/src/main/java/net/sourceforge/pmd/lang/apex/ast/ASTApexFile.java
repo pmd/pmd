@@ -19,6 +19,7 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
     private Map<Integer, String> suppressMap = Collections.emptyMap();
+    private final TextDocument textDocument;
 
     ASTApexFile(ParserTask task,
                 AbstractApexNode<? extends Compilation> child) {

@@ -358,14 +358,13 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         while (matcher.find()) {
             int startIdx = matcher.start();
             int endIdx = matcher.end();
-            int len = endIdx - startIdx;
-            Chars commentText = text.slice(startIdx, len);
+            Chars commentText = text.subSequence(startIdx, endIdx);
 
             if (commentText.startsWith("/**")) {
                 TextRegion commentRegion = TextRegion.fromBothOffsets(startIdx, endIdx);
                 tokenLocations.add(new ApexDocTokenLocation(commentRegion, commentText));
             } else if (checkForCommentSuppression && commentText.startsWith("//")) {
-                Chars trimmed = commentText.trimStart();
+                Chars trimmed = commentText.subSequence("//".length(), commentText.length()).trimStart();
                 if (trimmed.startsWith(suppressMarker)) {
                     Chars userMessage = trimmed.subSequence(suppressMarker.length(), trimmed.length()).trim();
                     suppressMap.put(source.lineNumberAt(startIdx), userMessage.toString());
