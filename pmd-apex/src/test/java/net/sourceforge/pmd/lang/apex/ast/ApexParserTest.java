@@ -132,14 +132,14 @@ public class ApexParserTest extends ApexParserTestBase {
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
         assertPosition(comment, 1, 9, 1, 32);
-        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
+        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken().toString());
 
         ApexNode<?> m1 = root.getChild(2);
         assertThat(m1, instanceOf(ASTMethod.class));
 
         ApexNode<?> comment2 = m1.getChild(0);
         assertThat(comment2, instanceOf(ASTFormalComment.class));
-        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken());
+        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken().toString());
     }
 
     @Test

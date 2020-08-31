@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 
-import org.antlr.runtime.Token;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment.AstComment;
+import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
@@ -22,17 +22,11 @@ import apex.jorje.semantic.symbol.type.TypeInfos;
 
 public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
-    private final String image;
+    private final Chars image;
 
-    ASTFormalComment(Token token) {
+    ASTFormalComment(TextRegion token, Chars image) {
         super(new AstComment(token));
-        this.image = token.getText();
-    }
-
-    @Deprecated
-    public ASTFormalComment(String token) {
-        super(new AstComment(null));
-        image = token;
+        this.image = image;
     }
 
 
@@ -43,10 +37,10 @@ public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
     @Override
     public String getImage() {
-        return image;
+        return image.toString();
     }
 
-    public String getToken() {
+    public Chars getToken() {
         return image;
     }
 
@@ -55,10 +49,8 @@ public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
         private final Location loc;
 
-        private AstComment(Token token) {
-            this.loc = token == null
-                       ? Locations.NONE
-                       : Locations.loc(token.getLine(), token.getCharPositionInLine() + 1);
+        private AstComment(TextRegion region) {
+            this.loc = Locations.index(region.getStartOffset(), region.getLength());
         }
 
         @Override

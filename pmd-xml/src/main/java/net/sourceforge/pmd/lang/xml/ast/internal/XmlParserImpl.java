@@ -64,8 +64,7 @@ public class XmlParserImpl {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
         RootXmlNode root = new RootXmlNode(this, document, task.getTextDocument());
-        TextDocument textDocument = task.getTextDocument();
-        DOMLineNumbers lineNumbers = new DOMLineNumbers(root, textDocument);
+        DOMLineNumbers lineNumbers = new DOMLineNumbers(root, task.getTextDocument());
         lineNumbers.determine();
         nodeCache.put(document, root);
         return root;

@@ -113,14 +113,6 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
         }
     }
 
-    public String getLocation() {
-        if (hasRealLoc()) {
-            return String.valueOf(node.getLoc());
-        } else {
-            return "no location";
-        }
-    }
-
     @Override
     public String getDefiningType() {
         if (node.getDefiningType() != null) {

@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.util.document.Chars;
 
 public class ApexDocRule extends AbstractApexRule {
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
@@ -143,7 +144,7 @@ public class ApexDocRule extends AbstractApexRule {
     private ApexDocComment getApexDocComment(ApexNode<?> node) {
         ASTFormalComment comment = node.getFirstChildOfType(ASTFormalComment.class);
         if (comment != null) {
-            String token = comment.getToken();
+            Chars token = comment.getToken();
 
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();

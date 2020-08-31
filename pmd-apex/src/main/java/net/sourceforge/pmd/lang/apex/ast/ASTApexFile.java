@@ -18,20 +18,14 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
-    private final TextDocument doc;
     private Map<Integer, String> suppressMap = Collections.emptyMap();
 
     ASTApexFile(ParserTask task,
                 AbstractApexNode<? extends Compilation> child) {
         super(child.getNode());
-        this.doc = task.getTextDocument();
+        this.textDocument = task.getTextDocument();
         addChild(child, 0);
         super.calculateLineNumbers(task.getTextDocument());
-    }
-
-    @Override
-    public @NonNull TextDocument getTextDocument() {
-        return doc;
     }
 
     @Override

@@ -11,15 +11,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.Token;
-
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
-import apex.jorje.parser.impl.ApexLexer;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.AnonymousClass;
 import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
@@ -122,8 +122,13 @@ import apex.jorje.semantic.exception.Errors;
 
 final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
+    private static final Pattern COMMENT_PATTERN =
+        // we only need to check for \n as the input is normalized
+        Pattern.compile("/\\*\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
+
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+
 
     static {
         register(Annotation.class, ASTAnnotation.class);
@@ -300,11 +305,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
             AbstractApexNode<?> parent = tokenLocation.nearestNode;
             if (parent != null) {
-                ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
-                comment.calculateLineNumbers(sourceCode, tokenLocation.index,
-                        tokenLocation.index + tokenLocation.token.getText().length());
-
-                parent.insertChild(comment, 0);
+                parent.insertChild(new ASTFormalComment(tokenLocation.region, tokenLocation.image), 0);
             }
         }
     }
@@ -332,54 +333,44 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             return;
         }
         // find the token, that appears as close as possible before the node
-        int nodeStart = loc.getStartIndex();
+        TextRegion nodeRegion = node.getRegion();
         for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
-            if (tokenLocation.index > nodeStart) {
+            if (tokenLocation.region.compareTo(nodeRegion) > 0) {
                 // this and all remaining tokens are after the node
                 // so no need to check the remaining tokens.
                 break;
             }
 
-            int distance = nodeStart - tokenLocation.index;
-            if (tokenLocation.nearestNode == null || distance < tokenLocation.nearestNodeDistance) {
+            if (tokenLocation.nearestNode == null || tokenLocation.nearestNode.getRegion().compareTo(nodeRegion) < 0) {
                 tokenLocation.nearestNode = node;
-                tokenLocation.nearestNodeDistance = distance;
             }
         }
     }
 
     private static CommentInformation extractInformationFromComments(TextDocument source, String suppressMarker) {
-        ANTLRStringStream stream = new ANTLRStringStream(source.getText().toString());
-        ApexLexer lexer = new ApexLexer(stream);
+        Chars text = source.getText();
 
+        boolean checkForCommentSuppression = suppressMarker != null;
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
 
-        int startIndex = 0;
-        Token token = lexer.nextToken();
-        int endIndex = lexer.getCharIndex();
+        Matcher matcher = COMMENT_PATTERN.matcher(text);
+        while (matcher.find()) {
+            int startIdx = matcher.start();
+            int endIdx = matcher.end();
+            int len = endIdx - startIdx;
+            Chars commentText = text.slice(startIdx, len);
 
-        boolean checkForCommentSuppression = suppressMarker != null;
-
-        while (token.getType() != Token.EOF) {
-            if (token.getType() == ApexLexer.BLOCK_COMMENT) {
-                // Filter only block comments starting with "/**"
-                if (token.getText().startsWith("/**")) {
-                    tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
-                }
-            } else if (checkForCommentSuppression && token.getType() == ApexLexer.EOL_COMMENT) {
-                // check if it starts with the suppress marker
-                String trimmedCommentText = token.getText().substring(2).trim();
-
-                if (trimmedCommentText.startsWith(suppressMarker)) {
-                    String userMessage = trimmedCommentText.substring(suppressMarker.length()).trim();
-                    suppressMap.put(token.getLine(), userMessage);
+            if (commentText.startsWith("/**")) {
+                TextRegion commentRegion = TextRegion.fromBothOffsets(startIdx, endIdx);
+                tokenLocations.add(new ApexDocTokenLocation(commentRegion, commentText));
+            } else if (checkForCommentSuppression && commentText.startsWith("//")) {
+                Chars trimmed = commentText.trimStart();
+                if (trimmed.startsWith(suppressMarker)) {
+                    Chars userMessage = trimmed.subSequence(suppressMarker.length(), trimmed.length()).trim();
+                    suppressMap.put(source.lineNumberAt(startIdx), userMessage.toString());
                 }
             }
-
-            startIndex = endIndex;
-            token = lexer.nextToken();
-            endIndex = lexer.getCharIndex();
         }
 
         return new CommentInformation(suppressMap, tokenLocations);
@@ -396,14 +387,15 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private static class ApexDocTokenLocation {
-        int index;
-        Token token;
-        AbstractApexNode<?> nearestNode;
-        int nearestNodeDistance;
 
-        ApexDocTokenLocation(int index, Token token) {
-            this.index = index;
-            this.token = token;
+        private final TextRegion region;
+        private final Chars image;
+
+        private AbstractApexNode<?> nearestNode;
+
+        ApexDocTokenLocation(TextRegion commentRegion, Chars image) {
+            this.region = commentRegion;
+            this.image = image;
         }
     }
 

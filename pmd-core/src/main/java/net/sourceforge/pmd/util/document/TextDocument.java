@@ -86,6 +86,17 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
+    /**
+     * Determines the line number at the given offset (inclusive).
+     *
+     * @return the line number at the given index
+     *
+     * @throws IndexOutOfBoundsException If the argument is not a valid offset in this document
+     */
+    default int lineNumberAt(int offset) {
+        return toLocation(TextRegion.fromOffsetLength(offset, 0)).getBeginLine();
+    }
+
 
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.

@@ -169,6 +169,45 @@ public final class Chars implements CharSequence {
     }
 
     /**
+     * See {@link String#startsWith(String)}.
+     */
+    public boolean startsWith(String prefix) {
+        return startsWith(prefix, 0);
+    }
+
+    /**
+     * Returns a subsequence which does not start with control characters (<= 32).
+     * This is consistent with {@link String#trim()}.
+     */
+    public Chars trimStart() {
+        int i = start;
+        int maxIdx = start + len;
+        while (i < maxIdx && str.charAt(i) <= 32) {
+            i++;
+        }
+        return slice(i, len - i);
+    }
+
+    /**
+     * Returns a subsequence which does not end with control characters (<= 32).
+     * This is consistent with {@link String#trim()}.
+     */
+    public Chars trimEnd() {
+        int i = start + len - 1;
+        while (i >= start && str.charAt(i) <= 32) {
+            i--;
+        }
+        return slice(0, idx(i));
+    }
+
+    /**
+     * Like {@link String#trim()}.
+     */
+    public Chars trim() {
+        return trimStart().trimEnd();
+    }
+
+    /**
      * Returns a new reader for the whole contents of this char sequence.
      */
     public Reader newReader() {
