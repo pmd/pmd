@@ -198,6 +198,11 @@ public interface GlobalAnalysisListener extends AutoCloseable {
                     public void onError(ProcessingError error) throws FileAnalysisException {
                         throw FileAnalysisException.wrap(filename, "Unknown error", error.getError());
                     }
+
+                    @Override
+                    public String toString() {
+                        return "ExceptionThrower";
+                    }
                 };
             }
 

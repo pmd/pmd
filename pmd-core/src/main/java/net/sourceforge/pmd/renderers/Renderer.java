@@ -240,6 +240,11 @@ public interface Renderer extends PropertySource {
                             }
                         }
                     }
+
+                    @Override
+                    public String toString() {
+                        return "FileRendererListener[" + Renderer.this + "]";
+                    }
                 };
             }
 

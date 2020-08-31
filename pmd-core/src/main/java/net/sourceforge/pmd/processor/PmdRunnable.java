@@ -79,14 +79,11 @@ abstract class PmdRunnable implements Runnable {
                 } else {
                     try {
                         processSource(ruleCtx, langVersion, ruleSets);
-                    } catch (FileAnalysisException e) {
-                        configuration.getAnalysisCache().analysisFailed(file);
-                        throw e; // bubble managed exceptions, they were already reported
                     } catch (Exception e) {
                         configuration.getAnalysisCache().analysisFailed(file);
 
                         // The listener handles logging if needed,
-                        // it may also rethrow the error.
+                        // it may also rethrow the error, as a FileAnalysisException (which we let through below)
                         ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
                     }
                 }

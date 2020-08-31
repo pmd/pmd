@@ -6,7 +6,6 @@ package net.sourceforge.pmd.reporting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -67,7 +66,7 @@ public interface FileAnalysisListener extends AutoCloseable {
      * A listener that does nothing.
      */
     static FileAnalysisListener noop() {
-        return violation -> { /* do nothing*/};
+        return NoopFileListener.INSTANCE;
     }
 
 
@@ -92,8 +91,11 @@ public interface FileAnalysisListener extends AutoCloseable {
             return listeners.iterator().next();
         }
 
-        List<FileAnalysisListener> list = Collections.unmodifiableList(new ArrayList<>(listeners));
-        return new FileAnalysisListener() {
+        List<FileAnalysisListener> list = new ArrayList<>(listeners);
+        list.removeIf(it -> it == NoopFileListener.INSTANCE);
+
+        class TeeListener implements FileAnalysisListener {
+
             @Override
             public void onRuleViolation(RuleViolation violation) {
                 for (FileAnalysisListener it : list) {
@@ -122,8 +124,14 @@ public interface FileAnalysisListener extends AutoCloseable {
                     throw composed;
                 }
             }
-        };
 
+            @Override
+            public String toString() {
+                return "Tee" + list;
+            }
+        }
+
+        return new TeeListener();
     }
 
 }

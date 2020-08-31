@@ -281,6 +281,11 @@ public class Report {
         public void onError(ProcessingError error) {
             report.addError(error);
         }
+
+        @Override
+        public String toString() {
+            return "ReportBuilderListener";
+        }
     }
 
     /**
