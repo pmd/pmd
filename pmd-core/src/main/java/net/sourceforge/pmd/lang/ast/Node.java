@@ -125,26 +125,6 @@ public interface Node extends Reportable {
     }
 
 
-    default int getBeginLine() {
-        return getReportLocation().getBeginLine();
-    }
-
-
-    default int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
-    }
-
-
-    default int getEndLine() {
-        return getReportLocation().getEndLine();
-    }
-
-
-    default int getEndColumn() {
-        return getReportLocation().getEndColumn();
-    }
-
-
     /**
      * Returns true if this node is considered a boundary by traversal
      * methods. Traversal methods such as {@link #descendants()}

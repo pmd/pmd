@@ -19,6 +19,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 public class BaseTokenFilterTest {
 
@@ -46,8 +47,13 @@ public class BaseTokenFilterTest {
         }
 
         @Override
-        public String getImage() {
+        public String getImageCs() {
             return text;
+        }
+
+        @Override
+        public TextRegion getRegion() {
+            return TextRegion.fromBothOffsets(0, text.length());
         }
 
         @Override

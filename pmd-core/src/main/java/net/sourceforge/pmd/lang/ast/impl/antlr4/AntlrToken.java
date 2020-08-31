@@ -54,7 +54,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
     /** Returns a text region with the coordinates of this token. */
     @Override
     public TextRegion getRegion() {
-        return TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex());
+        return TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex() + 1);
     }
 
     @Override
