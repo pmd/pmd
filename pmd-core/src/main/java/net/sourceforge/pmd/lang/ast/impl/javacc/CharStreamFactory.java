@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
 
 public final class CharStreamFactory {
 
@@ -31,7 +32,7 @@ public final class CharStreamFactory {
      */
     public static CharStream simpleCharStream(Reader input, Function<? super TextDocument, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
-        JavaccTokenDocument document = documentMaker.apply(TextDocument.readOnlyString(source, null));
+        JavaccTokenDocument document = documentMaker.apply(TextDocument.readOnlyString(source, PmdFiles.dummyCpdVersion()));
         return new SimpleCharStream(document);
     }
 
@@ -47,7 +48,7 @@ public final class CharStreamFactory {
      */
     public static CharStream javaCharStream(Reader input, Function<? super TextDocument, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
-        JavaccTokenDocument tokens = documentMaker.apply(TextDocument.readOnlyString(source, null));
+        JavaccTokenDocument tokens = documentMaker.apply(TextDocument.readOnlyString(source, PmdFiles.dummyCpdVersion()));
         return new JavaCharStream(tokens);
     }
 

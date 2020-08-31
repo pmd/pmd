@@ -184,6 +184,11 @@ public final class PmdFiles {
 
     };
 
+    @Deprecated
+    public static LanguageVersion dummyCpdVersion() {
+        return DUMMY_CPD_LANG.getDefaultVersion();
+    }
+
     /**
      * Bridges {@link SourceCode} with {@link TextFile}. This allows
      * javacc tokenizers to work on text documents.
@@ -195,7 +200,7 @@ public final class PmdFiles {
         return new StringTextFile(
             sourceCode.getCodeBuffer().toString(),
             sourceCode.getFileName(),
-            DUMMY_CPD_LANG.getDefaultVersion()
+            dummyCpdVersion()
         );
     }
 }
