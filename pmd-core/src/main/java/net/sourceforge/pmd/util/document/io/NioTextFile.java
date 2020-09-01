@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -92,9 +91,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
             throw new IOException("Not a regular file: " + path);
         }
 
-        try (InputStream inputStream = Files.newInputStream(path)) {
-            return TextFileContent.fromInputStream(inputStream, charset);
-        }
+        return TextFileContent.fromInputStream(Files.newInputStream(path), charset);
     }
 
 

@@ -31,7 +31,7 @@ public class AnalysisResult {
 
     static long computeFileChecksum(final Chars contents) {
         Adler32 checksum = new Adler32();
-        checksum.update(contents.getBytes(StandardCharsets.UTF_16)); // don't use platform specific encoding
+        checksum.update(contents.getBytes(StandardCharsets.UTF_8)); // don't use platform specific encoding
         return checksum.getValue();
     }
 
