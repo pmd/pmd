@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
+
 public class AnyTokenizerTest {
 
     @Test
@@ -27,7 +29,24 @@ public class AnyTokenizerTest {
         compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
     }
 
-    private void compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
+    @Test
+    public void testMultilineString() {
+        AnyTokenizer tokenizer = new AnyTokenizer("//");
+        Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
+        TokenEntry string = IteratorUtil.getNth(tokens.iterator(), 2);
+        assertEquals("\"oo\n\"", getTokenImage(string));
+        assertEquals(1, string.getBeginLine());
+        assertEquals(5, string.getBeginColumn());
+        assertEquals(2, string.getEndColumn()); // ends on line 2
+
+        TokenEntry semi = IteratorUtil.getNth(tokens.iterator(), 3);
+        assertEquals(";", getTokenImage(semi));
+        assertEquals(2, semi.getBeginLine());
+        assertEquals(2, semi.getBeginColumn());
+        assertEquals(3, semi.getEndColumn());
+    }
+
+    private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
@@ -36,6 +55,7 @@ public class AnyTokenizerTest {
                                           .collect(Collectors.toList());
 
         assertEquals(expectedImages, tokenStrings);
+        return tokens;
     }
 
     private @NonNull String getTokenImage(TokenEntry t) {

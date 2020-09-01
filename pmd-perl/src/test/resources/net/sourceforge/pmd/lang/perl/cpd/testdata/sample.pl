@@ -16,7 +16,8 @@ while (<>) {
     # s/#/\n/g;
 
     if (/YOUR_PATTERN_GOES_HERE/) {
-	print "Matched: |$`<$&>$'|\n";
+	print 'Matched: |$ `
+	<$&>$|\n'; # multiline string
 	# If you need these for testing patterns with
 	# memories, uncomment them as well
 	# print "    And memory one got <$1>\n";
