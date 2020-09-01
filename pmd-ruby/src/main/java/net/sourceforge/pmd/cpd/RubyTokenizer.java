@@ -10,7 +10,9 @@ import java.util.ArrayList;
  * Tokenizer for Ruby.
  *
  * @author Zev Blut zb@ubit.com
+ * @deprecated Was replaced by an {@link AnyTokenizer}. Use {@link RubyLanguage#getTokenizer()} anyway
  */
+@Deprecated
 public class RubyTokenizer extends AbstractTokenizer {
 
     /**

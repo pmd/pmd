@@ -1,44 +1,79 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [require]                               1         7
-    ["socket"]                              9         16
+    [require]                               1         8
+    ["socket"]                              9         9
 L3
-    [gs]                                    1         2
-    [=]                                     4         4
-    [tcpserver.open]                        7         20
-    [0]                                     22        22
+    [gs]                                    1         3
+    [=]                                     4         2
+    [TCPServer]                             7         10
+    [.]                                     16        2
+    [open]                                  17        5
+    [(]                                     21        2
+    [0]                                     22        2
+    [)]                                     23        2
 L4
-    [addr]                                  1         4
-    [=]                                     7         7
-    [gs.addr]                               9         15
+    [addr]                                  1         5
+    [=]                                     7         2
+    [gs]                                    9         3
+    [.]                                     11        2
+    [addr]                                  12        5
 L5
-    [addr.shift]                            1         10
+    [addr]                                  1         5
+    [.]                                     5         2
+    [shift]                                 6         6
 L7
-    [true]                                  7         10
+    [while]                                 1         6
+    [true]                                  7         5
 L8
     [ns]                                    2         3
-    [=]                                     5         5
-    [gs.accept]                             7         15
+    [=]                                     5         2
+    [gs]                                    7         3
+    [.]                                     9         2
+    [accept]                                10        7
 L9
     [print]                                 2         6
-    [ns]                                    8         9
-    [" is accepted"]                        12        25
+    [(]                                     7         2
+    [ns]                                    8         3
+    [,]                                     10        2
+    [" is accepted"]                        12        15
+    [)]                                     26        2
 L10
-    [thread.start]                          2         13
+    [Thread]                                2         7
+    [.]                                     8         2
+    [start]                                 9         6
+    [do]                                    15        3
 L11
-    [s]                                     3         3
-    [=]                                     5         5
-    [ns]                                    7         8
-    [ # save to dynamic variable]           31        56
+    [s]                                     3         2
+    [=]                                     5         2
+    [ns]                                    7         3
 L12
-    [s.gets]                                9         14
+    [while]                                 3         6
+    [s]                                     9         2
+    [.]                                     10        2
+    [gets]                                  11        5
 L13
-    [s.write]                               4         10
-    [$_]                                    12        13
+    [s]                                     4         2
+    [.]                                     5         2
+    [write]                                 6         6
+    [(]                                     11        2
+    [$]                                     12        2
+    [_]                                     13        2
+    [)]                                     14        2
+L14
+    [end]                                   3         4
 L15
-    [print]                                 3         7
-    [s]                                     9         9
-    [" is \t\t           gone\t\t      [    12        34
-L19
-    [s.close]                               3         9
+    [print]                                 3         6
+    [(]                                     8         2
+    [s]                                     9         2
+    [,]                                     10        2
+    [" is \n\t\t           gone\n\t\t  [    12        35
+    [)]                                     95        2
+L16
+    [s]                                     3         2
+    [.]                                     4         2
+    [close]                                 5         6
+L17
+    [end]                                   2         4
+L18
+    [end]                                   1         4
 EOF

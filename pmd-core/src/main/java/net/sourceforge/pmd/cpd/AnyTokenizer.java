@@ -76,8 +76,8 @@ public class AnyTokenizer implements Tokenizer {
                     continue;
                 }
 
-                int bcol = 1 + matcher.start() - lastLineStart;
-                int ecol = 1 + StringUtil.columnNumberAt(image, image.length());
+                int bcol = 1 + matcher.start() - lastLineStart; // + 1 because columns are 1 based
+                int ecol = StringUtil.columnNumberAt(image, image.length()); // this already outputs a 1-based column
                 tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), lineNo, bcol, ecol));
             }
         } finally {
