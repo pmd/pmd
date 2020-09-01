@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Objects;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
@@ -21,7 +20,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private SourceCodePositioner positioner;
 
     // to support CPD with the same api, we could probably just store
-    // a soft reference to the Chars, and build the positioner eagerly.
+    // a soft reference to the contents, and build the positioner eagerly.
     private final TextFileContent content;
 
     private final LanguageVersion langVersion;
@@ -98,7 +97,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private void ensureHasPositioner() {
         if (positioner == null) {
             // if nobody cares about lines, this is not computed
-            positioner = new SourceCodePositioner(getText());
+            positioner = SourceCodePositioner.create(getText());
         }
     }
 
@@ -109,27 +108,12 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public Chars getText() {
-        return content.getNormalizedText();
-    }
-
-    @Override
     public TextFileContent getContent() {
         return content;
     }
 
     @Override
-    public Reader newReader() {
-        return getText().newReader();
-    }
-
-    @Override
-    public int getLength() {
-        return getText().length();
-    }
-
-    @Override
-    public Chars slice(TextRegion region) {
+    public Chars sliceText(TextRegion region) {
         return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }
 

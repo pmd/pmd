@@ -62,6 +62,12 @@ public interface TextDocument extends Closeable {
     }
 
     /**
+     * Returns a region of the {@linkplain #getText() text} as a character sequence.
+     */
+    Chars sliceText(TextRegion region);
+
+
+    /**
      * Returns the current contents of the text file. See also {@link #getText()}.
      */
     TextFileContent getContent();
@@ -114,15 +120,6 @@ public interface TextDocument extends Closeable {
     default int lineNumberAt(int offset) {
         return toLocation(TextRegion.fromOffsetLength(offset, 0)).getBeginLine();
     }
-
-
-    /**
-     * Returns a region of the {@linkplain #getText() text} as a character sequence.
-     *
-     * <p>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.
-     */
-    Chars slice(TextRegion region);
-
 
     /**
      * Closing a document closes the underlying {@link TextFile}.

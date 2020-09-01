@@ -26,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 /**
  * Contents of a text file.
@@ -37,6 +38,8 @@ public final class TextFileContent {
      * line endings in the {@linkplain #getNormalizedText() normalized text}.
      */
     public static final String NORMALIZED_LINE_TERM = "\n";
+
+    /** The normalized line ending as a char. */
     public static final char NORMALIZED_LINE_TERM_CHAR = '\n';
 
     private static final int DEFAULT_BUFSIZE = 8192;
@@ -48,11 +51,13 @@ public final class TextFileContent {
     private final String lineTerminator;
 
     private final long checkSum;
+    private final SourceCodePositioner positioner;
 
-    private TextFileContent(Chars normalizedText, String lineTerminator, long checkSum) {
+    private TextFileContent(Chars normalizedText, String lineTerminator, long checkSum, SourceCodePositioner positioner) {
         this.cdata = normalizedText;
         this.lineTerminator = lineTerminator;
         this.checkSum = checkSum;
+        this.positioner = positioner;
     }
 
     /**
@@ -90,6 +95,13 @@ public final class TextFileContent {
      */
     public long getCheckSum() {
         return checkSum;
+    }
+
+    /**
+     * Returns a positioner, which knows about line endings in the source document.
+     */
+    public SourceCodePositioner getPositioner() {
+        return positioner;
     }
 
     /**
@@ -176,7 +188,7 @@ public final class TextFileContent {
             text = NEWLINE_PATTERN.matcher(text).replaceAll(NORMALIZED_LINE_TERM);
         }
 
-        return new TextFileContent(Chars.wrap(text), lineTerminator, checksum);
+        return new TextFileContent(Chars.wrap(text), lineTerminator, checksum, SourceCodePositioner.create(text));
     }
 
     // test only
@@ -190,7 +202,9 @@ public final class TextFileContent {
         StringBuilder result = new StringBuilder(bufSize);
         String detectedLineTerm = null;
         boolean afterCr = false;
+        SourceCodePositioner.Builder positionerBuilder = new SourceCodePositioner.Builder();
 
+        int bufOffset = 0;
         int nextCharToCopy = 0;
         int n = input.read(cbuf);
         if (n > 0 && cbuf[0] == ByteOrderMark.UTF_BOM) {
@@ -218,7 +232,7 @@ public final class TextFileContent {
 
                         if (i > 0) {
                             cbuf[i - 1] = '\n'; // replace the \r with a \n
-                            // copy up and including the \r, which was replaced
+                            // copy up to and including the \r, which was replaced
                             result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
                             nextCharToCopy = i + 1; // set the next char to copy to after the \n
                         }
@@ -226,20 +240,22 @@ public final class TextFileContent {
                         // just \n
                         newLineTerm = NORMALIZED_LINE_TERM;
                     }
+                    positionerBuilder.addLineEndAtOffset(bufOffset + i);
                     detectedLineTerm = detectLineTerm(detectedLineTerm, newLineTerm, fallbackLineSep);
-                } else if (c == '\r' && i == n - 1) {
-                    // then, we don't know whether the next char is going to be a \n or not
-                    // append up to and excluding the \r
-                    result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
                 }
                 afterCr = c == '\r';
             } // end for
 
-            if (nextCharToCopy != n && !afterCr) {
-                result.append(cbuf, nextCharToCopy, n - nextCharToCopy);
+            if (nextCharToCopy != n) {
+                int numRemaining = n - nextCharToCopy;
+                if (afterCr) {
+                    numRemaining--; // don't copy the \r, it could still be followed by \n on the next round
+                }
+                result.append(cbuf, nextCharToCopy, numRemaining);
             }
 
             nextCharToCopy = 0;
+            bufOffset += n;
             n = input.read(cbuf);
         } // end while
 
@@ -251,7 +267,7 @@ public final class TextFileContent {
         if (afterCr) { // we're at EOF, so it's not followed by \n
             result.append('\r');
         }
-        return new TextFileContent(Chars.wrap(result), detectedLineTerm, checksum.getValue());
+        return new TextFileContent(Chars.wrap(result), detectedLineTerm, checksum.getValue(), positionerBuilder.build(bufOffset));
     }
 
     private static String detectLineTerm(@Nullable String curLineTerm, String newLineTerm, String fallback) {

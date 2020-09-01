@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
@@ -26,16 +24,8 @@ public final class SourceCodePositioner {
     private final int[] lineOffsets;
     private final int sourceCodeLength;
 
-    /**
-     * Builds a new positioner for the given char sequence.
-     * The char sequence should not change state (eg a {@link StringBuilder})
-     * after construction, otherwise this positioner becomes unreliable.
-     *
-     * @param sourceCode Text to wrap
-     */
-    public SourceCodePositioner(CharSequence sourceCode) {
-        int len = sourceCode.length();
-        this.lineOffsets = makeLineOffsets(sourceCode, len);
+    private SourceCodePositioner(int[] offsets, int len) {
+        this.lineOffsets = offsets;
         this.sourceCodeLength = len;
     }
 
@@ -164,9 +154,7 @@ public final class SourceCodePositioner {
             throw new IndexOutOfBoundsException(line + " is not a valid line number, expected at most " + lineOffsets.length);
         }
 
-        return line == lineOffsets.length  // last line?
-               ? sourceCodeLength
-               : lineOffsets[line];
+        return lineOffsets[line];
     }
 
     boolean isValidLine(int line) {
@@ -185,39 +173,79 @@ public final class SourceCodePositioner {
      * Returns the last column number of the last line in the document.
      */
     public int getLastLineColumn() {
-        return columnFromOffset(getLastLine(), sourceCodeLength - 1);
+        return getLastColumnOfLine(getLastLine());
     }
 
     private int getLastColumnOfLine(int line) {
         return 1 + lineOffsets[line] - lineOffsets[line - 1];
     }
 
-    private static int[] makeLineOffsets(CharSequence sourceCode, int len) {
-        List<Integer> buffer = new ArrayList<>();
-        buffer.add(0); // first line
+    /**
+     * Builds a new positioner for the given char sequence.
+     * The char sequence should not change state (eg a {@link StringBuilder})
+     * after construction, otherwise this positioner becomes unreliable.
+     *
+     * @param charSeq Text to wrap
+     */
+    public static SourceCodePositioner create(CharSequence charSeq) {
+        final int len = charSeq.length();
+        Builder builder = new Builder();
 
         int off = 0;
-        char prev = 0; // "undefined"
         while (off < len) {
-            char c = sourceCode.charAt(off++);
+            char c = charSeq.charAt(off);
             if (c == '\n') {
-                buffer.add(off);
-            } else if (prev == '\r') {
-                buffer.add(off - 1);
+                builder.addLineEndAtOffset(off + 1);
             }
-            prev = c;
+            off++;
         }
 
-        int[] lineOffsets = new int[buffer.size() + 1];
-        for (int i = 0; i < buffer.size(); i++) {
-            lineOffsets[i] = buffer.get(i);
-        }
-        lineOffsets[buffer.size()] = sourceCode.length();
-        return lineOffsets;
+        return builder.build(len);
     }
 
-    enum Bias {
-        INCLUSIVE,
-        EXCLUSIVE
+    public static final class Builder {
+
+        private int[] buf;
+        private int count = 1; // note the first element of the buffer is always 0 (the offset of the first line)
+        private int lastLineOffset = 0;
+
+        Builder(int bufSize) {
+            buf = new int[Math.max(1, bufSize)];
+        }
+
+        public Builder() {
+            this(400);
+        }
+
+        /**
+         * Record a line ending. The parameter must be monotonically increasing.
+         *
+         * @param offset The index of the character right after the line
+         *               terminator in the source text. Eg for {@code \r\n}
+         *               or {@code \n}, it's the index of the {@code \n}, plus 1.
+         */
+        public void addLineEndAtOffset(int offset) {
+            addLineImpl(offset, false);
+        }
+
+        private void addLineImpl(int offset, boolean isEof) {
+            if (offset < 0 || offset < lastLineOffset || offset == lastLineOffset && !isEof) {
+                throw new IllegalArgumentException(
+                    "Invalid offset " + offset + " (last offset " + lastLineOffset + ")"
+                );
+            }
+            lastLineOffset = offset;
+            if (count >= buf.length) {
+                buf = Arrays.copyOf(buf, buf.length * 2 + 1);
+            }
+            buf[count] = offset;
+            count++;
+        }
+
+        public SourceCodePositioner build(int eofOffset) {
+            addLineImpl(eofOffset, true);
+            int[] finalOffsets = Arrays.copyOf(buf, count);
+            return new SourceCodePositioner(finalOffsets, eofOffset);
+        }
     }
 }
