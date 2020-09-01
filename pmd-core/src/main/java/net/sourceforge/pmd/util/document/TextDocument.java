@@ -130,11 +130,11 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      */
-    static TextDocument readOnlyString(final String source, LanguageVersion lv) {
+    static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
         return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
     }
 
-    static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {
+    static TextDocument readOnlyString(final CharSequence source, final String filename, LanguageVersion lv) {
         TextFile textFile = PmdFiles.forString(source, filename, lv);
         try {
             return new TextDocumentImpl(textFile);
