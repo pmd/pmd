@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Assert;
@@ -32,16 +33,16 @@ public class TextFileContentTest {
     public ExpectedException expect = ExpectedException.none();
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testMixedDelimiters(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testMixedDelimiters(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\nb\n\rc");
         Assert.assertEquals(Chars.wrap("a\nb\n\rc"), content.getNormalizedText());
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testFormFeedIsNotNewline(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testFormFeedIsNotNewline(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\f\nb\nc");
         Assert.assertEquals(Chars.wrap("a\f\nb\nc"), content.getNormalizedText());
         Assert.assertEquals("\n", content.getLineTerminator());
@@ -56,8 +57,8 @@ public class TextFileContentTest {
     }
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testBomElimination(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testBomElimination(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("\ufeffabc");
         Chars normalizedText = content.getNormalizedText();
         Assert.assertEquals(Chars.wrap("abc"), normalizedText);
@@ -67,16 +68,16 @@ public class TextFileContentTest {
     }
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testNoExplicitLineMarkers(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testNoExplicitLineMarkers(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a");
         Assert.assertEquals(Chars.wrap("a"), content.getNormalizedText());
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testEmptyFile(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testEmptyFile(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("");
         Assert.assertEquals(Chars.wrap(""), content.getNormalizedText());
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
@@ -102,8 +103,8 @@ public class TextFileContentTest {
     }
 
     @Test
-    @Parameters(source = Origin.class)
-    public void testCrCr(Origin origin) throws IOException {
+    @Parameters(source = TextContentOrigin.class)
+    public void testCrCr(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\rb");
         Assert.assertEquals(Chars.wrap("a\r\rb"), content.getNormalizedText());
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
@@ -119,14 +120,15 @@ public class TextFileContentTest {
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
-    enum Origin {
+    enum TextContentOrigin {
         INPUT_STREAM {
             @Override
             TextFileContent normalize(String text) throws IOException {
-                byte[] input = text.getBytes(StandardCharsets.UTF_8);
+                Charset charset = StandardCharsets.UTF_8;
+                byte[] input = text.getBytes(charset);
                 TextFileContent content;
                 try (ByteArrayInputStream bar = new ByteArrayInputStream(input)) {
-                    content = TextFileContent.fromInputStream(bar, StandardCharsets.UTF_8, LINESEP_SENTINEL);
+                    content = TextFileContent.fromInputStream(bar, charset, LINESEP_SENTINEL);
                 }
                 return content;
             }

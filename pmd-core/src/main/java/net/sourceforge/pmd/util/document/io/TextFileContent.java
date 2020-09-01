@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,9 +125,8 @@ public final class TextFileContent {
 
 
     /**
-     * Reads the contents of the data source to a string. Skips the byte-order
-     * mark if present. Parsers expect input without a BOM. This closes the input
-     * stream.
+     * Reads the contents of the input stream into a TextFileContent.
+     * This closes the input stream. This takes care of buffering.
      *
      * @param inputStream    Input stream
      * @param sourceEncoding Encoding to use to read from the data source
@@ -138,7 +138,7 @@ public final class TextFileContent {
     // test only
     static TextFileContent fromInputStream(InputStream inputStream, Charset sourceEncoding, String fallbackLineSep) throws IOException {
         Checksum checksum = newChecksum();
-        try (CheckedInputStream checkedIs = new CheckedInputStream(inputStream, checksum);
+        try (CheckedInputStream checkedIs = new CheckedInputStream(new BufferedInputStream(inputStream), checksum);
              Reader reader = new InputStreamReader(checkedIs, sourceEncoding)) {
             return normalizingRead(reader, DEFAULT_BUFSIZE, fallbackLineSep, checksum, false);
         }
@@ -146,7 +146,7 @@ public final class TextFileContent {
 
     // test only
     static @NonNull TextFileContent normalizeCharSeq(CharSequence text, String fallBackLineSep) {
-        long checksum = getChecksum(text); // the checksum is computed on the original file
+        long checksum = getCheckSum(text); // the checksum is computed on the original file
 
         if (text.length() > 0 && text.charAt(0) == ByteOrderMark.UTF_BOM) {
             text = text.subSequence(1, text.length()); // skip the BOM
@@ -189,82 +189,67 @@ public final class TextFileContent {
         char[] cbuf = new char[bufSize];
         StringBuilder result = new StringBuilder(bufSize);
         String detectedLineTerm = null;
-        int n;
         boolean afterCr = false;
-        StringBuilder pendingLine = null;
-        while (IOUtils.EOF != (n = input.read(cbuf))) {
-            int copiedUpTo = 0;
 
+        int nextCharToCopy = 0;
+        int n = input.read(cbuf);
+        if (n > 0 && cbuf[0] == ByteOrderMark.UTF_BOM) {
+            nextCharToCopy = 1;
+        }
+
+        while (n != IOUtils.EOF) {
             if (updateChecksum) { // if we use a checked input stream we dont need to update the checksum manually
-                updateChecksum(checksum, CharBuffer.wrap(cbuf, 0, n));
+                updateChecksum(checksum, CharBuffer.wrap(cbuf, nextCharToCopy, n));
             }
 
-            for (int i = 0; i < n; i++) {
+            for (int i = nextCharToCopy; i < n; i++) {
                 char c = cbuf[i];
 
-                if (i == 0 && result.length() == 0 && c == ByteOrderMark.UTF_BOM) {
-                    copiedUpTo = 1;
-                    // first char of the entire text: skip bom
-                    continue;
-                }
-
-                if (afterCr && c != NORMALIZED_LINE_TERM_CHAR && copiedUpTo > 0) {
-                    // we saw an \r, but it's not followed by \n
-                    // append up to and including the first \r
-                    result.append(cbuf, copiedUpTo, i - copiedUpTo);
-                    copiedUpTo = i;
-                } else if (pendingLine != null) {
-                    assert afterCr && i == 0;
-                    // we saw a \r at the end of the last buffer
-                    result.append(pendingLine);
-                    pendingLine = null; // reset it
-                    if (c != NORMALIZED_LINE_TERM_CHAR) {
-                        result.append('\r'); // because it won't be normalized
-                    }
-                    // don't reset afterCr, so that the branch below can see it
+                if (afterCr && c != NORMALIZED_LINE_TERM_CHAR && i == 0) {
+                    // we saw a \r at the end of the last buffer, but didn't copy it
+                    // it's actually not followed by an \n
+                    result.append('\r');
                 }
 
                 if (c == NORMALIZED_LINE_TERM_CHAR) {
+                    final String newLineTerm;
                     if (afterCr) {
-                        // \r\n
+                        newLineTerm = "\r\n";
+
                         if (i > 0) {
                             cbuf[i - 1] = '\n'; // replace the \r with a \n
                             // copy up and including the \r, which was replaced
-                            result.append(cbuf, copiedUpTo, i - copiedUpTo);
-                        } else {
-                            // i == 0
-                            // we saw a \r\n split over two buffer iterations
-                            // it's been appended previously
-                            result.append(NORMALIZED_LINE_TERM_CHAR);
+                            result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
+                            nextCharToCopy = i + 1; // set the next char to copy to after the \n
                         }
-                        copiedUpTo = i + 1;
-                        detectedLineTerm = detectLineTerm(detectedLineTerm, "\r\n", fallbackLineSep);
                     } else {
-                        // \n
-                        // no need to copy just yet, we can continue
-                        detectedLineTerm = detectLineTerm(detectedLineTerm, NORMALIZED_LINE_TERM, fallbackLineSep);
+                        // just \n
+                        newLineTerm = NORMALIZED_LINE_TERM;
                     }
+                    detectedLineTerm = detectLineTerm(detectedLineTerm, newLineTerm, fallbackLineSep);
                 } else if (c == '\r' && i == n - 1) {
                     // then, we don't know whether the next char is going to be a \n or not
-                    // note the pendingLine does not include the final \r
-                    assert pendingLine == null;
-                    pendingLine = new StringBuilder(i - copiedUpTo);
-                    pendingLine.append(cbuf, copiedUpTo, i - copiedUpTo);
+                    // append up to and excluding the \r
+                    result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
                 }
                 afterCr = c == '\r';
+            } // end for
+
+            if (nextCharToCopy != n && !afterCr) {
+                result.append(cbuf, nextCharToCopy, n - nextCharToCopy);
             }
 
-            if (copiedUpTo != n && !afterCr) {
-                result.append(cbuf, copiedUpTo, n - copiedUpTo);
-            }
-        }
+            nextCharToCopy = 0;
+            n = input.read(cbuf);
+        } // end while
 
         if (detectedLineTerm == null) {
             // no line terminator in text
             detectedLineTerm = fallbackLineSep;
         }
-        if (pendingLine != null) {
-            result.append(pendingLine).append('\r');
+
+        if (afterCr) { // we're at EOF, so it's not followed by \n
+            result.append('\r');
         }
         return new TextFileContent(Chars.wrap(result), detectedLineTerm, checksum.getValue());
     }
@@ -280,7 +265,7 @@ public final class TextFileContent {
         }
     }
 
-    private static long getChecksum(CharSequence cs) {
+    private static long getCheckSum(CharSequence cs) {
         Checksum checksum = newChecksum();
         updateChecksum(checksum, CharBuffer.wrap(cs));
         return checksum.getValue();

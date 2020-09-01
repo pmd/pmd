@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.document.io.TextFileContent;
 /**
  * Represents a textual document, providing methods to edit it incrementally
  * and address regions of text. A text document delegates IO operations
- * to a {@link TextFile}. It reflects some snapshot of the file,
+ * to a {@link TextFile}. It reflects some in-memory snapshot of the file,
  * though the file may still be edited externally.
  *
  * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
@@ -29,6 +29,9 @@ import net.sourceforge.pmd.util.document.io.TextFileContent;
 public interface TextDocument extends Closeable {
     // todo logical sub-documents, to support embedded languages
     //  ideally, just slice the text, and share the positioner
+
+    // todo text edition (there are some reverted commits in the branch
+    //  with part of this, including a lot of tests)
 
     /**
      * Returns the language version that should be used to parse this file.
@@ -51,24 +54,32 @@ public interface TextDocument extends Closeable {
      * external modifications to the {@link TextFile} into account.
      *
      * <p>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.
+     *
+     * @see TextFileContent#getNormalizedText()
      */
-    Chars getText();
+    default Chars getText() {
+        return getContent().getNormalizedText();
+    }
 
     /**
-     * Returns a checksum for the file text. See {@link TextFileContent#getCheckSum()}.
+     * Returns the current contents of the text file. See also {@link #getText()}.
      */
-    long getChecksum();
+    TextFileContent getContent();
 
     /**
      * Returns a reader over the text of this document.
      */
-    Reader newReader();
+    default Reader newReader() {
+        return getText().newReader();
+    }
 
 
     /**
      * Returns the length in characters of the {@linkplain #getText() text}.
      */
-    int getLength();
+    default int getLength() {
+        return getText().length();
+    }
 
 
     /**
