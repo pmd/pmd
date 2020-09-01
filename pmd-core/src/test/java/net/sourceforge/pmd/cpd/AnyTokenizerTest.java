@@ -18,15 +18,24 @@ public class AnyTokenizerTest {
     @Test
     public void testMultiLineMacros() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST1));
+        compareResult(tokenizer, TEST1, EXPECTED);
+    }
+
+    @Test
+    public void testStringEscape() {
+        AnyTokenizer tokenizer = new AnyTokenizer("//");
+        compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
+    }
+
+    private void compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
-        assertEquals(31, tokens.size());
         List<String> tokenStrings = tokens.getTokens().stream()
                                           .map(this::getTokenImage)
                                           .collect(Collectors.toList());
 
-        assertEquals(EXPECTED, tokenStrings);
+        assertEquals(expectedImages, tokenStrings);
     }
 
     private @NonNull String getTokenImage(TokenEntry t) {

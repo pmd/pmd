@@ -29,8 +29,8 @@ public class AnyTokenizer implements Tokenizer {
             "\\w++" // either a word
                 + eolCommentFragment(singleLineCommentStart) // a comment
                 + "|[^\"'\\s]" // a single separator char
-                + "|\"(?:[^\"\\\\]++|\\\\\")*+\"" // a double-quoted string
-                + "|'(?:[^'\\\\]++|\\\\')*+'" // a single-quoted string
+                + "|\"(?:[^\"\\\\]++|\\\\.)*+\"" // a double-quoted string
+                + "|'(?:[^'\\\\]++|\\\\.)*+'" // a single-quoted string
                 + "|\n" // or a newline (to count lines), note that sourcecode normalizes line endings
         );
     }
@@ -55,7 +55,7 @@ public class AnyTokenizer implements Tokenizer {
         if (StringUtils.isBlank(start)) {
             return "";
         } else {
-            return "|(?:" + Pattern.quote(start) + "[^\n]++)"; // note: sourcecode normalizes line endings
+            return "|(?:" + Pattern.quote(start) + "[^\n]*+)"; // note: sourcecode normalizes line endings
         }
     }
 
@@ -78,6 +78,9 @@ public class AnyTokenizer implements Tokenizer {
 
                 int bcol = 1 + matcher.start() - lastLineStart; // + 1 because columns are 1 based
                 int ecol = StringUtil.columnNumberAt(image, image.length()); // this already outputs a 1-based column
+                if (ecol == image.length() + 1) {
+                    ecol = bcol + image.length(); // single-line token
+                }
                 tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), lineNo, bcol, ecol));
             }
         } finally {
