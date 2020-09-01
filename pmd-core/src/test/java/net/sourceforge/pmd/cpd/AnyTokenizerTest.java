@@ -34,13 +34,13 @@ public class AnyTokenizerTest {
         assertEquals("\"oo\n\"", getTokenImage(string));
         assertEquals(1, string.getBeginLine());
         assertEquals(5, string.getBeginColumn());
-        assertEquals(2, string.getEndColumn()); // ends on line 2
+        assertEquals(1, string.getEndColumn()); // ends on line 2
 
         TokenEntry semi = tokens.getTokens().get(3);
         assertEquals(";", getTokenImage(semi));
         assertEquals(2, semi.getBeginLine());
         assertEquals(2, semi.getBeginColumn());
-        assertEquals(3, semi.getEndColumn());
+        assertEquals(2, semi.getEndColumn());
     }
 
     private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {

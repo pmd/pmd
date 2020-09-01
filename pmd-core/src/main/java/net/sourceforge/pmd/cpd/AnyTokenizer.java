@@ -86,6 +86,8 @@ public class AnyTokenizer implements Tokenizer {
                     lineNo += StringUtil.lineNumberAt(image, image.length()) - 1;
                     lastLineStart = matcher.start() + image.length() - ecol + 1;
                 }
+                // note: remove this -1 on the 7.0.x branch, this is here because in PMD 6, end columns are inclusive
+                ecol = ecol - 1;
                 tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), bline, bcol, ecol));
             }
         } finally {

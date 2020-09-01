@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.perl.cpd;
 
 import java.util.Properties;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.PerlLanguage;
@@ -23,7 +22,7 @@ public class PerlTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer(@NonNull Properties properties) {
+    public Tokenizer newTokenizer(Properties properties) {
         return new PerlLanguage().getTokenizer();
     }
 
