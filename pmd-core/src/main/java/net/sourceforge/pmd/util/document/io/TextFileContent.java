@@ -36,7 +36,7 @@ public final class TextFileContent {
     private final Chars cdata;
     private final String lineTerminator;
 
-    public TextFileContent(Chars normalizedText, String lineTerminator) {
+    private TextFileContent(Chars normalizedText, String lineTerminator) {
         this.cdata = normalizedText;
         this.lineTerminator = lineTerminator;
     }

@@ -36,7 +36,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
@@ -356,7 +355,9 @@ public class FileAnalysisCacheTest {
 
         // Edit the file
 
-        sourceFileBackend.writeContents(new TextFileContent(Chars.wrap("some text"), System.lineSeparator()));
+        TextFileContent text = TextFileContent.fromCharSeq("some text");
+        assertEquals(System.lineSeparator(), text.getLineTerminator());
+        sourceFileBackend.writeContents(text);
         sourceFile = TextDocument.create(sourceFileBackend);
 
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
