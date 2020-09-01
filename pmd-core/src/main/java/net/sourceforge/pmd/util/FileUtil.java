@@ -49,7 +49,6 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.ReferenceCountedCloseable;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
@@ -280,7 +279,7 @@ public final class FileUtil {
 
                 try {
                     LanguageVersion lv = config.getLanguageVersionOfFile(falseFilePath);
-                    collector.add(PmdFiles.forReader(dbmsMetadata.getSourceCode(sourceObject), falseFilePath, lv));
+                    collector.add(TextFile.forReader(dbmsMetadata.getSourceCode(sourceObject), falseFilePath, lv).build());
                 } catch (SQLException ex) {
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
@@ -308,9 +307,12 @@ public final class FileUtil {
     }
 
     public static TextFile createNioTextFile(PMDConfiguration config, Path file, @Nullable ReferenceCountedCloseable fsCloseable) {
-        String displayName = displayName(config, file);
         LanguageVersion langVersion = config.getLanguageVersionOfFile(file.toString());
-        return PmdFiles.forPath(file, config.getSourceEncoding(), langVersion, displayName, fsCloseable);
+
+        return TextFile.forPath(file, config.getSourceEncoding(), langVersion)
+                       .withDisplayName(displayName(config, file))
+                       .belongingTo(fsCloseable)
+                       .build();
     }
 
 }

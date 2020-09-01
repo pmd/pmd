@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.document.TextDocument
-import net.sourceforge.pmd.util.document.io.PmdFiles
 import net.sourceforge.pmd.util.document.io.TextFile
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
@@ -219,7 +218,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         AbstractPMDProcessor.runSingleFile(
                 listOf(rules),
-                PmdFiles.forString(code, "testFile", getVersion(null)),
+                TextFile.forCharSeq(code, "testFile", getVersion(null)),
                 fullListener,
                 configuration
         )

@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class GlobalListenerTest {
@@ -49,9 +48,9 @@ public class GlobalListenerTest {
 
     List<TextFile> mockDataSources() {
         return listOf(
-            PmdFiles.forString("abc", "fname1.dummy", dummyVersion),
-            PmdFiles.forString("abcd", "fname2.dummy", dummyVersion),
-            PmdFiles.forString("abcd", "fname21.dummy", dummyVersion)
+            TextFile.forCharSeq("abc", "fname1.dummy", dummyVersion),
+            TextFile.forCharSeq("abcd", "fname2.dummy", dummyVersion),
+            TextFile.forCharSeq("abcd", "fname21.dummy", dummyVersion)
         );
     }
 

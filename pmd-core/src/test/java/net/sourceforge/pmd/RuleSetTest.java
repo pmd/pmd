@@ -39,7 +39,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class RuleSetTest {
@@ -370,7 +369,7 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeApplies() {
-        TextFile file = PmdFiles.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion());
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion()).build();
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue("No patterns", ruleSet.applies(file));

@@ -19,7 +19,7 @@ import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.CpdCompat;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
@@ -30,7 +30,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
-        try (TextDocument textDoc = TextDocument.create(PmdFiles.cpdCompat(sourceCode))) {
+        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
 
             CharStream charStream = CharStreams.fromString(textDoc.getText().toString(), textDoc.getDisplayName());
 

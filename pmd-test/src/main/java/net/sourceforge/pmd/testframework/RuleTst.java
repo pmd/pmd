@@ -49,7 +49,7 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Advanced methods for test cases
@@ -296,7 +296,7 @@ public abstract class RuleTst {
 
                 AbstractPMDProcessor.runSingleFile(
                     listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
-                    PmdFiles.forString(code, "testFile", languageVersion),
+                    TextFile.forCharSeq(code, "testFile", languageVersion),
                     listener,
                     config
                 );

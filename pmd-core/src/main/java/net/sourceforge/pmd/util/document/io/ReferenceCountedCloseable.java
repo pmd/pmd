@@ -6,12 +6,9 @@ package net.sourceforge.pmd.util.document.io;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * Tracks unclosed references to a resource. Zip files containing
@@ -26,7 +23,7 @@ public final class ReferenceCountedCloseable extends BaseCloseable implements Cl
     /**
      * Create a new filesystem closeable which when closed, executes
      * the {@link Closeable#close()} action of the parameter. Dependent
-     * resources need to be registered using {@link PmdFiles#forPath(Path, Charset, LanguageVersion, ReferenceCountedCloseable) forPath}.
+     * resources need to be registered using {@link TextFileBuilder#belongingTo(ReferenceCountedCloseable)}.
      *
      * @param closeAction A closeable
      */

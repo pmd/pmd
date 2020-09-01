@@ -4,16 +4,29 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForCharSeq;
+import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForNio;
+import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForReader;
 
 /**
  * Represents some location containing character data. Despite the name,
@@ -116,5 +129,124 @@ public interface TextFile extends Closeable {
     @Override
     void close() throws IOException;
 
+    // factory methods
 
+    /**
+     * Returns an instance of this interface reading and writing to a file.
+     * The returned instance may be read-only. If the file is not a regular
+     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
+     * will throw.
+     *
+     * @param path            Path to the file
+     * @param charset         Encoding to use
+     * @param languageVersion Language version to use
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFileBuilder forPath(Path path, Charset charset, LanguageVersion languageVersion) {
+        return new ForNio(languageVersion, path, charset);
+    }
+
+    /**
+     * Returns a read-only TextFile reading from a string.
+     * Note that this will normalize the text, in such a way that {@link TextFile#readContents()}
+     * may not produce exactly the same char sequence.
+     *
+     * @param charseq         Text of the file
+     * @param pathId          File name to use as path id
+     * @param languageVersion Language version
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFile forCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
+        return builderForCharSeq(charseq, pathId, languageVersion).build();
+    }
+
+    /**
+     * Returns a read-only TextFile reading from a string.
+     * Note that this will normalize the text, in such a way that {@link TextFile#readContents()}
+     * may not produce exactly the same char sequence.
+     *
+     * @param charseq         Text of the file
+     * @param pathId          File name to use as path id
+     * @param languageVersion Language version
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFileBuilder builderForCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
+        return new ForCharSeq(charseq, pathId, languageVersion);
+    }
+
+    /**
+     * Returns a read-only instance of this interface reading from a reader.
+     * The reader is first read when {@link TextFile#readContents()} is first
+     * called, and is closed when that method exits. Note that this may
+     * only be called once, afterwards, {@link TextFile#readContents()} will
+     * throw an {@link IOException}.
+     *
+     * @param reader          Text of the file
+     * @param pathId          File name to use as path id
+     * @param languageVersion Language version
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFileBuilder forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
+        return new ForReader(languageVersion, reader, pathId);
+    }
+
+    /**
+     * Wraps the given {@link DataSource} (provided for compatibility).
+     * Note that data sources are only usable once (even {@link DataSource#forString(String, String)}),
+     * so calling {@link TextFile#readContents()} twice will throw the second time.
+     *
+     * @deprecated This is deprecated until PMD 7 is out, after which
+     *     {@link DataSource} will be removed.
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
+        class DataSourceTextFile extends BaseCloseable implements TextFile {
+
+            @Override
+            public @NonNull LanguageVersion getLanguageVersion() {
+                return config.getLanguageVersionOfFile(getPathId());
+            }
+
+            @Override
+            public String getPathId() {
+                return ds.getNiceFileName(false, null);
+            }
+
+            @Override
+            public @NonNull String getDisplayName() {
+                return ds.getNiceFileName(config.isReportShortNames(), config.getInputPaths());
+            }
+
+            @Override
+            public boolean isReadOnly() {
+                return true;
+            }
+
+            @Override
+            public void writeContents(TextFileContent content) {
+                throw new ReadOnlyFileException();
+            }
+
+            @Override
+            public TextFileContent readContents() throws IOException {
+                try (InputStream is = ds.getInputStream();
+                     Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
+                    String contents = IOUtils.toString(reader);
+                    return TextFileContent.fromCharSeq(contents);
+                }
+            }
+
+            @Override
+            protected void doClose() throws IOException {
+                ds.close();
+            }
+        }
+
+        return new DataSourceTextFile();
+    }
 }

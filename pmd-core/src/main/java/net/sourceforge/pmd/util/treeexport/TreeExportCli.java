@@ -32,7 +32,6 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 import com.beust.jcommander.DynamicParameter;
@@ -169,9 +168,9 @@ public class TreeExportCli {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
-            textFile = PmdFiles.forString(readFromSystemIn(), "stdin", langVersion);
+            textFile = TextFile.forCharSeq(readFromSystemIn(), "stdin", langVersion).build();
         } else {
-            textFile = PmdFiles.forPath(Paths.get(file), Charset.forName(encoding), langVersion);
+            textFile = TextFile.forPath(Paths.get(file), Charset.forName(encoding), langVersion).build();
         }
 
         // disable warnings for deprecated attributes

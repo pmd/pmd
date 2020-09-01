@@ -41,7 +41,6 @@ import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
@@ -143,7 +142,7 @@ public final class PMD {
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
                                     GlobalAnalysisListener listener) throws Exception {
-        List<TextFile> inputFiles = map(files, ds -> PmdFiles.dataSourceCompat(ds, configuration));
+        List<TextFile> inputFiles = map(files, ds -> TextFile.dataSourceCompat(ds, configuration));
 
         processTextFiles(configuration, ruleSets, inputFiles, listener);
     }

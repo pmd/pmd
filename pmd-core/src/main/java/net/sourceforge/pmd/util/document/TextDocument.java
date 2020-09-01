@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.document.io.TextFileContent;
 
@@ -136,7 +135,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      *
-     * @see PmdFiles#forString(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
         return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
@@ -145,14 +144,14 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text. This works as
      * if by calling {@link TextDocument#create(TextFile)} on a textfile
-     * produced by {@link PmdFiles#forString(CharSequence, String, LanguageVersion) forString},
+     * produced by {@link TextFile#forCharSeq(CharSequence, String, LanguageVersion) forString},
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
-     * @see PmdFiles#forString(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
      */
     static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
-        TextFile textFile = PmdFiles.forString(source, filename, lv);
+        TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);
         } catch (IOException e) {

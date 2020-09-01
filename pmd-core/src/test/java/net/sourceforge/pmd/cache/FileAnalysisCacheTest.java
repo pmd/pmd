@@ -37,7 +37,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.util.document.io.TextFileContent;
 
@@ -66,7 +65,7 @@ public class FileAnalysisCacheTest {
         newCacheFile = new File(tempFolder.getRoot(), "pmd-analysis.cache");
         emptyCacheFile = tempFolder.newFile();
         File sourceFile = tempFolder.newFile("Source.java");
-        this.sourceFileBackend = PmdFiles.forPath(sourceFile.toPath(), Charset.defaultCharset(), dummyVersion);
+        this.sourceFileBackend = TextFile.forPath(sourceFile.toPath(), Charset.defaultCharset(), dummyVersion).build();
         this.sourceFile = TextDocument.create(sourceFileBackend);
     }
 

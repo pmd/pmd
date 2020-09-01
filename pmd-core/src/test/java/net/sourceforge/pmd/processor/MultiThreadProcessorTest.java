@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class MultiThreadProcessorTest {
@@ -41,8 +40,8 @@ public class MultiThreadProcessorTest {
         configuration.setThreads(2);
         LanguageVersion lv = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
         files = listOf(
-            PmdFiles.forString("abc", "file1-violation.dummy", lv),
-            PmdFiles.forString("DEF", "file2-foo.dummy", lv)
+            TextFile.forCharSeq("abc", "file1-violation.dummy", lv),
+            TextFile.forCharSeq("DEF", "file2-foo.dummy", lv)
         );
 
         reportListener = new SimpleReportListener();
