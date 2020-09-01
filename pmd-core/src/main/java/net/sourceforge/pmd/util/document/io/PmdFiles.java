@@ -35,32 +35,17 @@ public final class PmdFiles {
 
 
     /**
-     * Returns an instance of this interface reading and writing to a file.
-     * The returned instance may be read-only. If the file is not a regular
-     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
-     * will throw.
-     *
-     * @param path        Path to the file
-     * @param charset     Encoding to use
-     * @param langVersion Language version to use
-     *
-     * @throws NullPointerException if the path, the charset, or the language version are null
+     * See {@linkplain #forPath(Path, Charset, LanguageVersion, String, ReferenceCountedCloseable) the main overload}.
+     * This defaults the display name to the file path, and has no dependency
+     * on a closeable file system.
      */
     public static TextFile forPath(final Path path, final Charset charset, LanguageVersion langVersion) {
         return forPath(path, charset, langVersion, null);
     }
 
     /**
-     * Returns an instance of this interface reading and writing to a file.
-     * The returned instance may be read-only. If the file is not a regular
-     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
-     * will throw.
-     *
-     * @param path        Path to the file
-     * @param charset     Encoding to use
-     * @param langVersion Language version to use
-     *
-     * @throws NullPointerException if the path, the charset, or the language version are null
+     * See {@linkplain #forPath(Path, Charset, LanguageVersion, String, ReferenceCountedCloseable) the main overload}.
+     * This defaults the display name to the file path.
      */
     public static TextFile forPath(final Path path,
                                    final Charset charset,
@@ -69,6 +54,23 @@ public final class PmdFiles {
         return forPath(path, charset, langVersion, null, fileSystemCloseable);
     }
 
+    /**
+     * Returns an instance of this interface reading and writing to a file.
+     * The returned instance may be read-only. If the file is not a regular
+     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
+     * will throw.
+     *
+     * @param path                Path to the file
+     * @param charset             Encoding to use
+     * @param langVersion         Language version to use
+     * @param displayName         A custom display name. If null it will default to the file path
+     * @param fileSystemCloseable A closeable that must be closed after the new file is closed itself.
+     *                            This is used to close zip archives after all the textfiles within them
+     *                            are closed. In this case, the reference counted closeable tracks a ZipFileSystem.
+     *                            If null, then the new text file doesn't have a dependency.
+     *
+     * @throws NullPointerException if the path, the charset, or the language version are null
+     */
     public static TextFile forPath(final Path path,
                                    final Charset charset,
                                    final LanguageVersion langVersion,
@@ -78,26 +80,17 @@ public final class PmdFiles {
     }
 
     /**
-     * Returns a read-only instance of this interface reading from a string.
+     * Returns a read-only TextFile reading from a string.
+     * Note that this will normalize the text, in such a way that {@link TextFile#readContents()}
+     * may not produce exactly the same char sequence.
      *
      * @param source Text of the file
-     *
-     * @throws NullPointerException If the source text is null
-     */
-    public static TextFile forString(String source) {
-        return forString(source, TextFile.UNKNOWN_FILENAME, null);
-    }
-
-    /**
-     * Returns a read-only instance of this interface reading from a string.
-     *
-     * @param source Text of the file
-     * @param name   File name to use
-     * @param lv     Language version, which overrides the default language associations given by the file extension
+     * @param name   File name to use (both as display name and path ID)
+     * @param lv     Language version
      *
      * @throws NullPointerException If the source text or the name is null
      */
-    public static TextFile forString(@NonNull String source, @NonNull String name, @Nullable LanguageVersion lv) {
+    public static TextFile forString(@NonNull String source, @NonNull String name, @NonNull LanguageVersion lv) {
         return new StringTextFile(source, name, lv);
     }
 
