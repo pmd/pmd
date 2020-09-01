@@ -139,4 +139,17 @@ public class ExampleClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Should trigger multiple times for fields declared on one line</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+public class ExampleClass {
+
+    private final String one = "one", two = "two;
+}
+        ]]></code>
+    </test-code>
 </test-data>
