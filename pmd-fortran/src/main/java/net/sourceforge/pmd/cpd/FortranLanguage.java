@@ -11,7 +11,7 @@ package net.sourceforge.pmd.cpd;
  */
 public class FortranLanguage extends AbstractLanguage {
     /**
-     * Create a Fotran Language instance.
+     * Create a Fortran Language instance.
      */
     public FortranLanguage() {
         super("Fortran", "fortran", new FortranTokenizer(), ".for", ".f", ".f66", ".f77", ".f90");

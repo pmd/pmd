@@ -53,6 +53,7 @@ public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
      *
      * @deprecated Is internal API, not useful, there's a typo. See <a href="https://github.com/pmd/pmd/pull/1927">#1927</a>
      */
+    // should be isSuppressed, but as it is already Deprecated, we will not port it.
     @Deprecated
     public static boolean isSupressed(Node node, Rule rule) {
         boolean result = suppresses(node, rule);

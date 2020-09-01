@@ -1,8 +1,8 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.27.0-SNAPSHOT
-    previous_version: 6.26.0
+    version: 6.28.0-SNAPSHOT
+    previous_version: 6.27.0
     date: ??-????-2020
     release_type: minor
 

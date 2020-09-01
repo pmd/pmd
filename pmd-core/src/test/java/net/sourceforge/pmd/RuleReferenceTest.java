@@ -61,7 +61,7 @@ public class RuleReferenceTest {
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
     }
 
     @Test
@@ -97,11 +97,11 @@ public class RuleReferenceTest {
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
     }
 
-    private void validateOverridenValues(final StringProperty propertyDescriptor1,
-            final StringProperty propertyDescriptor2, RuleReference ruleReference) {
+    private void validateOverriddenValues(final StringProperty propertyDescriptor1,
+                                          final StringProperty propertyDescriptor2, RuleReference ruleReference) {
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
                 ruleReference.getLanguage());
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),

@@ -75,7 +75,7 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    /* This is the one overriden in PropertyDescriptor */
+    /* This is the one overridden in PropertyDescriptor */
     @Override
     public String propertyErrorFor(Rule rule) {
         List<V> realValues = rule.getProperty(this);

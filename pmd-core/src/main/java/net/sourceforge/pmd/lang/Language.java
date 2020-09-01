@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Interface each Language implementation has to implement. It is used by the
- * LanguageRregistry to access constants and implementation classes in order to
+ * LanguageRegistry to access constants and implementation classes in order to
  * provide support for the language.
  * <p>
  * The following are key components of a Language in PMD:

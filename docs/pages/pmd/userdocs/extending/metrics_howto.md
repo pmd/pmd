@@ -246,7 +246,7 @@ the Java framework but it's symmetrical in the Apex framework.
     value. That's especially good to implement metrics that count some kind of node,
     e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java)
     or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
-    Additionnally, it makes your metric more easily generalisable to other node types.
+    Additionally, it makes your metric more easily generalisable to other node types.
 
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.

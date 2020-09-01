@@ -88,7 +88,7 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertNull(annotation.getType());
         Assert.assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
         Assert.assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
-        // if the searched class name is not fully qualified, then the search should still be successfull
+        // if the searched class name is not fully qualified, then the search should still be successful
         Assert.assertTrue(TypeTestUtil.isA("Stuff", annotation));
     }
 

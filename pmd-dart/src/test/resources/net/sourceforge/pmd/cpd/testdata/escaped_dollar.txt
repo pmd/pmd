@@ -1,0 +1,7 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [var]                                   1         3
+    [multiLineStringWithDollar]             5         29
+    [=]                                     31        31
+    ["""\n      \\$\n      """]             33        9
+EOF
