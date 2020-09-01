@@ -91,7 +91,7 @@ public class AnyTokenizer implements Tokenizer {
                 tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), bline, bcol, ecol));
             }
         } finally {
-            tokenEntries.add(TokenEntry.EOF);
+            tokenEntries.add(TokenEntry.getEOF());
         }
     }
 

@@ -18,6 +18,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+* {% core::cpd.AbstractTokenizer %}
+
 ### External Contributions
 
 {% endtocmaker %}
