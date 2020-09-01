@@ -114,6 +114,11 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public long getChecksum() {
+        return content.getCheckSum();
+    }
+
+    @Override
     public Reader newReader() {
         return getText().newReader();
     }

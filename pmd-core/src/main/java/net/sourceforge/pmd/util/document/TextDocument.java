@@ -55,6 +55,10 @@ public interface TextDocument extends Closeable {
      */
     Chars getText();
 
+    /**
+     * Returns a checksum for the file text. See {@link TextFileContent#getCheckSum()}.
+     */
+    long getChecksum();
 
     /**
      * Returns a reader over the text of this document.

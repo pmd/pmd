@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.cache;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.zip.Adler32;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * The result of a single file analysis.
@@ -27,12 +24,6 @@ public class AnalysisResult {
     public AnalysisResult(final long fileChecksum, final List<RuleViolation> violations) {
         this.fileChecksum = fileChecksum;
         this.violations = violations;
-    }
-
-    static long computeFileChecksum(final Chars contents) {
-        Adler32 checksum = new Adler32();
-        checksum.update(contents.getBytes(StandardCharsets.UTF_8)); // don't use platform specific encoding
-        return checksum.getValue();
     }
 
     public long getFileChecksum() {
