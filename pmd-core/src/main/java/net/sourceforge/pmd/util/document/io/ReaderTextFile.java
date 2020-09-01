@@ -58,11 +58,7 @@ class ReaderTextFile implements TextFile {
 
     @Override
     public TextFileContent readContents() throws IOException {
-        try {
-            return TextFileContent.fromReader(reader);
-        } finally {
-            reader.close();
-        }
+        return TextFileContent.fromReader(reader); // this closes the reader
     }
 
     @Override
