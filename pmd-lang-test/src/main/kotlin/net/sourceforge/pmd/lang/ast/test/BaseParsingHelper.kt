@@ -10,6 +10,7 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.document.TextDocument
 import net.sourceforge.pmd.util.document.io.PmdFiles
+import net.sourceforge.pmd.util.document.io.TextFile
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -118,7 +119,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val textDoc = TextDocument.readOnlyString(sourceCode, lversion)
+        val textDoc = TextDocument.readOnlyString(sourceCode, TextFile.UNKNOWN_FILENAME, lversion)
         val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop(), options.suppressMarker)
         val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {

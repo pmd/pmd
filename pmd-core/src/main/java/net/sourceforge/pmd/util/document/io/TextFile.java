@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -32,21 +31,24 @@ import net.sourceforge.pmd.util.document.TextDocument;
  */
 public interface TextFile extends Closeable {
 
+    /**
+     * The name used for a file that has no name. This is mostly only
+     * relevant for unit tests.
+     */
     String UNKNOWN_FILENAME = "(unknown file)";
 
 
     /**
-     * Returns the language version which should be used to parse this
-     * file. It's the text file's responsibility, so that the {@linkplain #getDisplayName() display name}
-     * is never interpreted as a file name, which may not be true.
+     * Returns the language version which should be used to process this
+     * file. This is a property of the file, which allows sources for
+     * several different language versions to be processed in the same
+     * PMD run. It also makes it so, that the file extension is not interpreted
+     * to find out the language version after the initial file collection
+     * phase.
      *
      * @return A language version
      */
     @NonNull LanguageVersion getLanguageVersion();
-
-    default boolean matches(Predicate<File> filter) {
-        return filter.test(new File(getDisplayName()));
-    }
 
 
     /**
@@ -66,8 +68,8 @@ public interface TextFile extends Closeable {
     /**
      * Returns a display name for the file. This name is used for
      * reporting and should not be interpreted. It may be relative
-     * to a directory or so. Use {@link #getPathId()} when you want
-     * an identifier.
+     * to a directory or so, it may also not be normalized. Use
+     * {@link #getPathId()} when you want an identifier.
      */
     @NonNull
     String getDisplayName();

@@ -88,7 +88,7 @@ public final class PmdFiles {
      * @param name   File name to use (both as display name and path ID)
      * @param lv     Language version
      *
-     * @throws NullPointerException If the source text or the name is null
+     * @throws NullPointerException If any parameter is null
      */
     public static TextFile forString(@NonNull CharSequence source, @NonNull String name, @NonNull LanguageVersion lv) {
         return new StringTextFile(source, name, lv);

@@ -8,6 +8,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -129,15 +131,26 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a read-only document for the given text.
+     *
+     * @see PmdFiles#forString(CharSequence, String, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
         return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
     }
 
-    static TextDocument readOnlyString(final CharSequence source, final String filename, LanguageVersion lv) {
+    /**
+     * Returns a read-only document for the given text. This works as
+     * if by calling {@link TextDocument#create(TextFile)} on a textfile
+     * produced by {@link PmdFiles#forString(CharSequence, String, LanguageVersion) forString},
+     * but doesn't throw {@link IOException}, as such text files will
+     * not throw.
+     *
+     * @see PmdFiles#forString(CharSequence, String, LanguageVersion)
+     */
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
         TextFile textFile = PmdFiles.forString(source, filename, lv);
         try {
-            return new TextDocumentImpl(textFile);
+            return create(textFile);
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }
