@@ -45,16 +45,6 @@ class StringTextFile implements TextFile {
     }
 
     @Override
-    public boolean isReadOnly() {
-        return true;
-    }
-
-    @Override
-    public void writeContents(TextFileContent charSequence) {
-        throw new ReadOnlyFileException();
-    }
-
-    @Override
     public TextFileContent readContents() {
         return content;
     }

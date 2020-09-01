@@ -94,7 +94,9 @@ public interface TextFile extends Closeable {
      * In the general case, nothing prevents this method's result from
      * changing from one invocation to another.
      */
-    boolean isReadOnly();
+    default boolean isReadOnly() {
+        return true;
+    }
 
 
     /**
@@ -106,7 +108,9 @@ public interface TextFile extends Closeable {
      * @throws IOException           If an error occurs
      * @throws ReadOnlyFileException If this text source is read-only
      */
-    void writeContents(TextFileContent content) throws IOException;
+    default void writeContents(TextFileContent content) throws IOException {
+        throw new ReadOnlyFileException();
+    }
 
 
     /**
@@ -220,16 +224,6 @@ public interface TextFile extends Closeable {
             @Override
             public @NonNull String getDisplayName() {
                 return ds.getNiceFileName(config.isReportShortNames(), config.getInputPaths());
-            }
-
-            @Override
-            public boolean isReadOnly() {
-                return true;
-            }
-
-            @Override
-            public void writeContents(TextFileContent content) {
-                throw new ReadOnlyFileException();
             }
 
             @Override

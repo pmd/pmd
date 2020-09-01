@@ -42,16 +42,6 @@ class ReaderTextFile implements TextFile {
     }
 
     @Override
-    public boolean isReadOnly() {
-        return true;
-    }
-
-    @Override
-    public void writeContents(TextFileContent charSequence) {
-        throw new ReadOnlyFileException();
-    }
-
-    @Override
     public @NonNull LanguageVersion getLanguageVersion() {
         return languageVersion;
     }
