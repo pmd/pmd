@@ -19,7 +19,7 @@ import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.CpdCompat;
+import net.sourceforge.pmd.util.document.io.CpdCompat;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
