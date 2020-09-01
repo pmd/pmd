@@ -7,11 +7,17 @@ package net.sourceforge.pmd.cpd;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
 /**
  *
  * @author Zev Blut zb@ubit.com
  * @author Romain PELISSE belaran@gmail.com
+ *
+ * @deprecated Use an {@link AnyTokenizer} instead, it's basically as powerful.
  */
+@Deprecated
+@DeprecatedUntil700
 public abstract class AbstractTokenizer implements Tokenizer {
 
     // FIXME depending on subclasses to assign local vars is rather fragile -
