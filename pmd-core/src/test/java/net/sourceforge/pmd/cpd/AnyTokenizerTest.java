@@ -7,13 +7,10 @@ package net.sourceforge.pmd.cpd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
-
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 public class AnyTokenizerTest {
 
@@ -33,13 +30,13 @@ public class AnyTokenizerTest {
     public void testMultilineString() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
-        TokenEntry string = IteratorUtil.getNth(tokens.iterator(), 2);
+        TokenEntry string = tokens.getTokens().get(2);
         assertEquals("\"oo\n\"", getTokenImage(string));
         assertEquals(1, string.getBeginLine());
         assertEquals(5, string.getBeginColumn());
         assertEquals(2, string.getEndColumn()); // ends on line 2
 
-        TokenEntry semi = IteratorUtil.getNth(tokens.iterator(), 3);
+        TokenEntry semi = tokens.getTokens().get(3);
         assertEquals(";", getTokenImage(semi));
         assertEquals(2, semi.getBeginLine());
         assertEquals(2, semi.getBeginColumn());
@@ -50,15 +47,17 @@ public class AnyTokenizerTest {
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
-        List<String> tokenStrings = tokens.getTokens().stream()
-                                          .map(this::getTokenImage)
-                                          .collect(Collectors.toList());
+
+        List<String> tokenStrings = new ArrayList<>();
+        for (TokenEntry token : tokens.getTokens()) {
+            tokenStrings.add(getTokenImage(token));
+        }
 
         assertEquals(expectedImages, tokenStrings);
         return tokens;
     }
 
-    private @NonNull String getTokenImage(TokenEntry t) {
+    private String getTokenImage(TokenEntry t) {
         return t.toString();
     }
 

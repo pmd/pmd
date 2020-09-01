@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * Higher-quality lexers should be implemented with a lexer generator.
  *
  * <p>In PMD 7, this replaces AbstractTokenizer, which provided nearly
- * no more functionality and whose API was hard to update.
+ * no more functionality.
  */
 public class AnyTokenizer implements Tokenizer {
 
@@ -61,7 +61,7 @@ public class AnyTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuilder text = sourceCode.getCodeBuffer();
+        CharSequence text = sourceCode.getCodeBuffer();
         Matcher matcher = pattern.matcher(text);
         int lineNo = 1;
         int lastLineStart = 0;
