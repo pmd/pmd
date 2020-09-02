@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.util.document;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  *
@@ -93,6 +99,15 @@ public class CharsTest {
         Assert.assertEquals(' ', bc.charAt(5));
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(-1));
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(7));
+    }
+
+    @Test
+    public void linesTest() {
+
+        Chars bc = Chars.wrap("a \n  \r\nbc db").slice(1, 9);
+        //                      ------------
+        List<String> lines = CollectionUtil.map(bc.lines(), Chars::toString);
+        Assert.assertEquals(listOf(" ", "  ", "bc "), lines);
     }
 
 }

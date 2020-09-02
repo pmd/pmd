@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -72,12 +71,9 @@ class NioTextFile extends BaseCloseable implements TextFile {
             if (content.getLineTerminator().equals(TextFileContent.NORMALIZED_LINE_TERM)) {
                 content.getNormalizedText().writeFully(bw);
             } else {
-                try (BufferedReader br = new BufferedReader(content.getNormalizedText().newReader())) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        bw.write(line);
-                        bw.write(content.getLineTerminator());
-                    }
+                for (Chars line : content.getNormalizedText().lines()) {
+                    line.writeFully(bw);
+                    bw.write(content.getLineTerminator());
                 }
             }
         }

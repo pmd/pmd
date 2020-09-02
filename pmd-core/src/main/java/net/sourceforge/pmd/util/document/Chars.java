@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.document;
 
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -14,6 +13,8 @@ import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
@@ -27,6 +28,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * methods here provided provide mediated access to the underlying string,
  * which for many use cases is much more optimal than using this CharSequence
  * directly, eg {@link #appendChars(StringBuilder)}, {@link #writeFully(Writer)}.
+ *
+ * @see Chars#wrap(CharSequence) Chars::wrap, the factory method
  */
 public final class Chars implements CharSequence {
 
@@ -50,7 +53,9 @@ public final class Chars implements CharSequence {
 
     /**
      * Wraps the given char sequence into a {@link Chars}. This may
-     * call {@link CharSequence#toString()}.
+     * call {@link CharSequence#toString()}. If the sequence is already
+     * a {@link Chars}, returns it. This is the main factory method for
+     * this class. You can eg pass a StringBuilder if you want.
      */
     public static Chars wrap(CharSequence chars) {
         if (chars instanceof Chars) {
@@ -181,7 +186,7 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Returns a subsequence which does not start with control characters (<= 32).
+     * Returns a subsequence which does not start with control characters ({@code <= 32}).
      * This is consistent with {@link String#trim()}.
      */
     public Chars trimStart() {
@@ -195,7 +200,7 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Returns a subsequence which does not end with control characters (<= 32).
+     * Returns a subsequence which does not end with control characters ({@code <= 32}).
      * This is consistent with {@link String#trim()}.
      */
     public Chars trimEnd() {
@@ -223,7 +228,7 @@ public final class Chars implements CharSequence {
      * @param cs         Another char sequence
      * @param ignoreCase Whether to ignore case
      *
-     * @return True if both sequences are equal
+     * @return True if both sequences are logically equal
      */
     public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
         if (cs instanceof Chars) {
@@ -243,50 +248,13 @@ public final class Chars implements CharSequence {
     /**
      * Like {@link #contentEquals(CharSequence, boolean)}, considering
      * case distinctions.
+     *
+     * @param cs A char sequence
+     *
+     * @return True if both sequences are logically equal, considering case
      */
     public boolean contentEquals(CharSequence cs) {
         return contentEquals(cs, false);
-    }
-
-    /**
-     * Returns a new reader for the whole contents of this char sequence.
-     */
-    public Reader newReader() {
-        return new Reader() {
-            private int pos = start;
-            private final int max = start + len;
-
-            @Override
-            public int read(char[] cbuf, int off, int len) {
-                if (len >= 0 && off >= 0 && (off + len) <= cbuf.length) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (pos >= max) {
-                    return -1;
-                }
-                int toRead = Integer.min(max - pos, len);
-                str.getChars(pos, pos + toRead, cbuf, off);
-                pos += toRead;
-                return toRead;
-            }
-
-            @Override
-            public int read() {
-                return pos >= max ? -1 : str.charAt(pos++);
-            }
-
-            @Override
-            public long skip(long n) {
-                int oldPos = pos;
-                pos = Math.min(max, pos + (int) n);
-                return pos - oldPos;
-            }
-
-            @Override
-            public void close() {
-                // nothing to do
-            }
-        };
     }
 
     @Override
@@ -312,6 +280,8 @@ public final class Chars implements CharSequence {
      *
      * @param region A region
      *
+     * @return A Chars instance
+     *
      * @throws IndexOutOfBoundsException If the region is not a valid range
      */
     public Chars slice(TextRegion region) {
@@ -321,6 +291,11 @@ public final class Chars implements CharSequence {
     /**
      * Like {@link #subSequence(int, int)} but with offset + length instead
      * of start + end.
+     *
+     * @param off Start of the slice ({@code 0 <= off < this.length()})
+     * @param len Length of the slice ({@code 0 <= len <= this.length() - off})
+     *
+     * @return A Chars instance
      *
      * @throws IndexOutOfBoundsException If the parameters are not a valid range
      */
@@ -339,8 +314,12 @@ public final class Chars implements CharSequence {
      * given length. This differs from {@link String#substring(int, int)}
      * in that it uses offset + length instead of start + end.
      *
-     * @param off Start offset (0 <= off < this.length())
-     * @param len Length of the substring (0 <= len <= this.length() - off)
+     * @param off Start offset ({@code 0 <= off < this.length()})
+     * @param len Length of the substring ({@code 0 <= len <= this.length() - off})
+     *
+     * @return A substring
+     *
+     * @throws IndexOutOfBoundsException If the parameters are not a valid range
      */
     public String substring(int off, int len) {
         validateRange(off, len, this.len);
@@ -394,4 +373,35 @@ public final class Chars implements CharSequence {
     private boolean isFullString() {
         return start == 0 && len == str.length();
     }
+
+    /**
+     * Returns an iterable over the lines of this char sequence. The lines
+     * are yielded without line separators.
+     */
+    public Iterable<Chars> lines() {
+        return () -> new AbstractIterator<Chars>() {
+            final int max = len;
+            int pos = 0;
+
+            @Override
+            protected void computeNext() {
+                if (pos >= max) {
+                    done();
+                    return;
+                }
+                int nl = indexOf('\n', pos);
+                if (nl < 0) {
+                    setNext(subSequence(pos, max));
+                    pos = max;
+                    return;
+                } else if (startsWith("\r", nl - 1)) {
+                    setNext(subSequence(pos, nl - 1));
+                } else {
+                    setNext(subSequence(pos, nl));
+                }
+                pos = nl + 1;
+            }
+        };
+    }
+
 }
