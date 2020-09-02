@@ -12,15 +12,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.util.document.CpdCompat;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.PmdFiles;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.TextFile;
 
 public class CppCharStreamTest {
 
     @NonNull
     public CharStream charStreamFor(String source) throws IOException {
-        TextDocument textDoc = TextDocument.create(PmdFiles.forString(source, TextFile.UNKNOWN_FILENAME, PmdFiles.dummyCpdVersion()));
+        TextDocument textDoc = TextDocument.readOnlyString(source, TextFile.UNKNOWN_FILENAME, CpdCompat.dummyVersion());
         return CharStream.create(new CPPTokenizer().newTokenDoc(textDoc));
     }
 

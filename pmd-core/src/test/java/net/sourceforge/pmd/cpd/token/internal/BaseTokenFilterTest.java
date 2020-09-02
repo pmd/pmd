@@ -57,11 +57,6 @@ public class BaseTokenFilterTest {
         }
 
         @Override
-        public TextRegion getRegion() {
-            return TextRegion.fromBothOffsets(0, text.length());
-        }
-
-        @Override
         public FileLocation getReportLocation() {
             return FileLocation.location("n/a", 0, 0, 0, 0);
         }

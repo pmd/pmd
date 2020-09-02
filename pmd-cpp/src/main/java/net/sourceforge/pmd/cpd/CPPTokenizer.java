@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.cpp.ast.CppEscapeReader;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.TextFileContent;
+import net.sourceforge.pmd.util.document.TextFileContent;
 
 /**
  * The C++ tokenizer.
