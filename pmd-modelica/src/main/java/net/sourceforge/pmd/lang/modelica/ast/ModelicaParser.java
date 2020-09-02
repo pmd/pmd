@@ -4,18 +4,21 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
 
+    private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(ModelicaTokenKinds.TOKEN_NAMES);
+
     @Override
-    protected JavaccTokenDocument newDocumentImpl(TextDocument textDocument) {
-        return new ModelicaTokenDocument(textDocument);
+    protected TokenDocumentBehavior tokenBehavior() {
+        return TOKEN_BEHAVIOR;
     }
 
     @Override

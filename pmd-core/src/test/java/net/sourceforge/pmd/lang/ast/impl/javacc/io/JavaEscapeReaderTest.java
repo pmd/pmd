@@ -10,14 +10,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class JavaEscapeReaderTest {
 
     @NonNull
     public JavaEscapeTranslator readString(String input) {
-        return new JavaEscapeTranslator(Chars.wrap(input));
+        return new JavaEscapeTranslator(TextDocument.readOnlyString(Chars.wrap(input), LanguageRegistry.getDefaultLanguage().getDefaultVersion());
     }
 
 

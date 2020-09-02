@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -24,11 +25,14 @@ import net.sourceforge.pmd.util.document.TextDocument;
 /**
  * {@link JavaccTokenDocument} for Java.
  */
-final class JavaTokenDocument extends JavaccTokenDocument {
+final class JavaTokenDocument extends JavaccTokenDocument.TokenDocumentBehavior {
 
-    JavaTokenDocument(TextDocument fullText) {
-        super(fullText);
+    static final JavaTokenDocument INSTANCE = new JavaTokenDocument();
+
+    private JavaTokenDocument() {
+        super(JavaTokenKinds.TOKEN_NAMES, EscapeTranslator.translatorFor(JavaEscapeTranslator::new));
     }
+
 
     /**
      * Returns true if the given token is a Java comment.
@@ -52,18 +56,14 @@ final class JavaTokenDocument extends JavaccTokenDocument {
         }
     }
 
+
     @Override
     protected boolean isImagePooled(JavaccToken t) {
         return t.kind == IDENTIFIER;
     }
 
     @Override
-    protected @Nullable String describeKindImpl(int kind) {
-        return JavaTokenKinds.describe(kind);
-    }
-
-    @Override
-    public JavaccToken createToken(int kind, CharStream jcs, @Nullable String image) {
+    public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
         case RUNSIGNEDSHIFT:
         case RSIGNEDSHIFT:
@@ -77,7 +77,7 @@ final class JavaTokenDocument extends JavaccTokenDocument {
                 jcs.getTokenDocument()
             );
         default:
-            return super.createToken(kind, jcs, image);
+            return super.createToken(self, kind, jcs, image);
         }
     }
 

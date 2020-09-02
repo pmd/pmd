@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import static java.lang.Integer.min;
 
+import java.util.function.Function;
+
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
@@ -157,6 +159,15 @@ public abstract class EscapeTranslator implements AutoCloseable {
      */
     protected int getColumn(int idxInInput) {
         return StringUtil.columnNumberAt(input, idxInInput);
+    }
+
+
+    public static Function<TextDocument, TextDocument> translatorFor(Function<TextDocument, EscapeTranslator> translatorMaker) {
+        return original -> {
+            try (EscapeTranslator translator = translatorMaker.apply(original)) {
+                return translator.translateDocument();
+            }
+        };
     }
 
 }

@@ -60,7 +60,7 @@
 
     <!-- This will be moved to impl package when all language modules have been ported   -->
     <property name="base-tokenmgr" value="${ast-impl-package}.AbstractTokenManager"/>
-    <property name="charstream-itf" value="${ast-impl-package}.io.CharStream"/>
+    <property name="charstream-itf" value="${ast-impl-package}.CharStream"/>
 
 
     <property name="tokenmgr-name" value="${parser-name}TokenManager" />
@@ -412,6 +412,17 @@ public final class ${token-constants-name} \{${line.separator}
   }
 
     private static final
+]]>            </replacevalue>
+            <fileset file="${token-constants-file}" />
+        </replace>
+
+        <replace>
+            <replacetoken>};</replacetoken>
+            <replacevalue><![CDATA[
+  };
+
+  /** Nams of the tokens, each index corresponds to a kind. See also {@link #describe(int)}. */
+  public static final java.util.List<String> TOKEN_NAMES = java.util.Collections.unmodifiableList(java.util.Arrays.asList(tokenImage));
 ]]>            </replacevalue>
             <fileset file="${token-constants-file}" />
         </replace>

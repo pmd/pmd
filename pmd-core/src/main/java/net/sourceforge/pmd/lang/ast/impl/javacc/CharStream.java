@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.io.EOFException;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
@@ -35,11 +36,12 @@ public final class CharStream {
     }
 
     /**
-     * Create a new char stream for the given document.
+     * Create a new char stream for the given document. Note: this
+     * mutates the token document by translating its escapes.
      */
-    public static CharStream create(JavaccTokenDocument doc) throws MalformedSourceException {
-        doc.doTranslate();
-        return new CharStream(doc);
+    public static CharStream create(TextDocument doc, TokenDocumentBehavior behavior) throws MalformedSourceException {
+        TextDocument translated = behavior.translate(doc);
+        return new CharStream(new JavaccTokenDocument(translated, behavior));
     }
 
     /**

@@ -109,14 +109,6 @@ public final class Chars implements CharSequence {
         str.getChars(start, start + count, cbuf, dstBegin);
     }
 
-    public void getChars(int srcBegin, CharBuffer buffer, int count) {
-        if (count == 0) {
-            return;
-        }
-        int start = idx(srcBegin);
-        str.getChars(start, start + count, cbuf, dstBegin);
-    }
-
     /**
      * Appends the character range identified by offset and length into
      * the string builder. This is much more efficient than calling

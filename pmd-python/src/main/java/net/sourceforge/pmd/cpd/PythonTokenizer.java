@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -23,27 +24,16 @@ public class PythonTokenizer extends JavaCCTokenizer {
 
     private static final Pattern STRING_NL_ESCAPE = Pattern.compile("\\\\\\r?\\n");
 
+    private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(PythonTokenKinds.TOKEN_NAMES);
+
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
         return PythonTokenKinds.newTokenManager(sourceCode);
     }
 
     @Override
-    protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
-        return new PythonTokenDocument(textDoc);
-    }
-
-    private static class PythonTokenDocument extends JavaccTokenDocument {
-
-        PythonTokenDocument(TextDocument fullText) {
-            super(fullText);
-        }
-
-        @Override
-        protected @Nullable String describeKindImpl(int kind) {
-            return PythonTokenKinds.describe(kind);
-        }
-
+    protected JavaccTokenDocument.TokenDocumentBehavior newTokenDoc() {
+        return TOKEN_BEHAVIOR;
     }
 
     @Override

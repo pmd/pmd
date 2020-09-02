@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Base implementation of the {@link Parser} interface for JavaCC language
@@ -23,14 +22,12 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         // inheritance only
     }
 
-    protected abstract JavaccTokenDocument newDocumentImpl(TextDocument textDocument);
+    protected abstract JavaccTokenDocument.TokenDocumentBehavior tokenBehavior();
 
     @Override
     public R parse(ParserTask task) throws ParseException {
-        JavaccTokenDocument doc = newDocumentImpl(task.getTextDocument());
-
         try {
-            CharStream charStream = CharStream.create(doc);
+            CharStream charStream = CharStream.create(task.getTextDocument(), tokenBehavior());
             return parseImpl(charStream, task);
         } catch (FileAnalysisException tme) {
             throw tme.setFileName(task.getFileDisplayName());

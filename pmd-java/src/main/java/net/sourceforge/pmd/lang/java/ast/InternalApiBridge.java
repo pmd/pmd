@@ -182,7 +182,7 @@ public final class InternalApiBridge {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
-    public static JavaccTokenDocument javaTokenDoc(TextDocument fullText) {
-        return new JavaTokenDocument(fullText);
+    public static JavaccTokenDocument.TokenDocumentBehavior javaTokenDoc() {
+        return JavaTokenDocument.INSTANCE;
     }
 }

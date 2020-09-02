@@ -7,47 +7,27 @@ package net.sourceforge.pmd.lang.vm.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Adapter for the VmParser.
  */
 public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
-    @Override
-    protected JavaccTokenDocument newDocumentImpl(TextDocument fullText) {
-        return new VmTokenDocument(fullText);
-    }
-
-    @Override
-    protected ASTTemplate parseImpl(CharStream cs, ParserTask task) throws ParseException {
-        return new VmParserImpl(cs).Template().addTaskInfo(task);
-    }
-
-
-    private static class VmTokenDocument extends JavaccTokenDocument {
-
-        VmTokenDocument(TextDocument fullText) {
-            super(fullText);
-        }
+    private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(VmTokenKinds.TOKEN_NAMES) {
 
         @Override
-        protected @Nullable String describeKindImpl(int kind) {
-            return VmTokenKinds.describe(kind);
-        }
-
-        @Override
-        public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
+        public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream cs, @Nullable String image) {
             String realImage = image == null ? cs.getTokenImage() : image;
             if (kind == VmTokenKinds.ESCAPE_DIRECTIVE) {
                 realImage = escapedDirective(realImage);
             }
 
-            return super.createToken(kind, cs, realImage);
+            return super.createToken(self, kind, cs, realImage);
         }
 
         private String escapedDirective(String strImage) {
@@ -55,7 +35,17 @@ public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
             String strDirective = strImage.substring(iLast + 1);
             return strImage.substring(0, iLast / 2) + strDirective;
         }
+    };
 
+    @Override
+    protected TokenDocumentBehavior tokenBehavior() {
+        return TOKEN_BEHAVIOR;
     }
+
+    @Override
+    protected ASTTemplate parseImpl(CharStream cs, ParserTask task) throws ParseException {
+        return new VmParserImpl(cs).Template().addTaskInfo(task);
+    }
+
 
 }

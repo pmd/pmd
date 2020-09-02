@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import org.junit.rules.ExpectedException;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public class CharStreamImplTest {
@@ -139,19 +140,12 @@ public class CharStreamImplTest {
     }
 
     public CharStream simpleCharStream(String abcd) {
-        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)));
+        return CharStream.create(TextDocument.readOnlyString(abcd, dummyVersion), TokenDocumentBehavior.DEFAULT);
     }
 
     public CharStream javaCharStream(String abcd) {
-        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)) {
-
-            @Override
-            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
-                try (JavaEscapeTranslator translator = new JavaEscapeTranslator(text)) {
-                    return translator.translateDocument();
-                }
-            }
-        });
+        return CharStream.create(TextDocument.readOnlyString(abcd, dummyVersion),
+                                 new TokenDocumentBehavior(Collections.emptyList(), EscapeTranslator.translatorFor(JavaEscapeTranslator::new)));
     }
 
     @Test

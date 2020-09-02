@@ -44,8 +44,8 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
-        return InternalApiBridge.javaTokenDoc(textDoc);
+    protected JavaccTokenDocument.TokenDocumentBehavior newTokenDoc() {
+        return InternalApiBridge.javaTokenDoc();
     }
 
     @Override

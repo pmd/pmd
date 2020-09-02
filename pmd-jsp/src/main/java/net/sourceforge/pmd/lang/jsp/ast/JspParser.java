@@ -4,27 +4,22 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 
 /**
  * JSP language parser.
  */
 public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
+    private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(JspTokenKinds.TOKEN_NAMES);
+
     @Override
-    protected JavaccTokenDocument newDocumentImpl(TextDocument fullText) {
-        return new JavaccTokenDocument(fullText) {
-            @Override
-            protected @Nullable String describeKindImpl(int kind) {
-                return JspTokenKinds.describe(kind);
-            }
-        };
+    protected TokenDocumentBehavior tokenBehavior() {
+        return TOKEN_BEHAVIOR;
     }
 
     @Override
@@ -32,4 +27,8 @@ public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         return new JspParserImpl(cs).CompilationUnit().addTaskInfo(task);
     }
 
+    @InternalApi
+    public static TokenDocumentBehavior getTokenBehavior() {
+        return TOKEN_BEHAVIOR;
+    }
 }
