@@ -22,13 +22,14 @@ import net.sourceforge.pmd.util.document.TextDocument;
  */
 public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
+    private final TokenDocumentBehavior behavior;
     final StringPool stringPool = new StringPool();
 
     private JavaccToken first;
-    private TextDocument translatedDocument;
 
     public JavaccTokenDocument(TextDocument textDocument, TokenDocumentBehavior behavior) {
         super(textDocument);
+        this.behavior = behavior;
     }
 
     public static class TokenDocumentBehavior {
@@ -70,7 +71,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
          * @see EscapeTranslator
          */
         protected TextDocument translate(TextDocument text) throws MalformedSourceException {
-            return text;
+            return translator.apply(text);
         }
 
 
@@ -149,7 +150,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      * {@link CharStream#appendSuffix(StringBuilder, int)} a noop.
      */
     public boolean useMarkSuffix() {
-        return false;
+        return behavior.useMarkSuffix();
     }
 
     /**
@@ -161,19 +162,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      * @see EscapeTranslator
      */
     protected TextDocument translate(TextDocument text) throws MalformedSourceException {
-        return text;
-    }
-
-    @Override
-    public TextDocument getTextDocument() {
-        return translatedDocument == null ? super.getTextDocument()
-                                          : translatedDocument;
-    }
-
-    final void doTranslate() throws MalformedSourceException {
-        if (translatedDocument == null) {
-            translatedDocument = translate(super.getTextDocument());
-        }
+        return behavior.translate(text);
     }
 
     /**
@@ -213,7 +202,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     }
 
     protected boolean isImagePooled(JavaccToken t) {
-        return false;
+        return behavior.isImagePooled(t);
     }
 
     /**
@@ -224,55 +213,14 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      * @return A descriptive string
      */
     public final @NonNull String describeKind(int kind) {
-        if (kind == JavaccToken.IMPLICIT_TOKEN) {
-            return "<implicit token>";
-        }
-        String impl = describeKindImpl(kind);
-        if (impl != null) {
-            return impl;
-        }
-        return "<token of kind " + kind + ">";
+        return behavior.describeKind(kind);
     }
 
     /**
-     * Describe the given kind. If this returns a non-null value, then
-     * that's what {@link #describeKind(int)} will use. Otherwise a default
-     * implementation is used.
-     *
-     * <p>An implementation typically uses the JavaCC-generated array
-     * named {@code <parser name>Constants.tokenImage}. Remember to
-     * check the bounds of the array.
-     *
-     * @param kind Kind of token
-     *
-     * @return A descriptive string, or null to use default
-     */
-    protected @Nullable String describeKindImpl(int kind) {
-        return null;
-    }
-
-
-    /**
-     * Creates a new token with the given kind. This is called back to
-     * by JavaCC-generated token managers (jjFillToken). Note that a
-     * created token is not guaranteed to end up in the final token chain.
-     *
-     * @param kind  Kind of the token
-     * @param cs    Char stream of the file. This can be used to get text
-     *              coordinates and the image
-     * @param image Shared instance of the image token. If this is non-null,
-     *              then no call to {@link CharStream#getTokenImage()} should be
-     *              issued.
-     *
-     * @return A new token
+     * @see TokenDocumentBehavior#createToken(JavaccTokenDocument, int, CharStream, String)
      */
     public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
-        return new JavaccToken(
-            kind,
-            image == null ? cs.getTokenImageCs() : image,
-            cs.getStartOffset(),
-            cs.getEndOffset(),
-            this
-        );
+        return behavior.createToken(this, kind, cs, image);
+
     }
 }

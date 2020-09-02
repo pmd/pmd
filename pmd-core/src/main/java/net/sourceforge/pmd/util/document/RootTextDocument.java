@@ -112,7 +112,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public int inputOffset(int outOffset) {
+    public int inputOffset(int outOffset, boolean inclusive) {
         return outOffset;
     }
 

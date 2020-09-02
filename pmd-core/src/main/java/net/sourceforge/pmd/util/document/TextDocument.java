@@ -94,16 +94,18 @@ public interface TextDocument extends Closeable {
      * </pre>
      *
      * @param outOffset Output offset
+     * @param inclusive Whether the offset is to be interpreted as the index of a character (true),
+     *                  or the position after a character (false)
      *
      * @return Input offset
      */
-    int inputOffset(int outOffset);
+    int inputOffset(int outOffset, boolean inclusive);
 
     /**
      * Translate a region given in the the coordinate system of this
      * document, to the coordinate system of the original document.
      * This works as if creating a new region with both start and end
-     * offsets translated through {@link #inputOffset(int)}. The
+     * offsets translated through {@link #inputOffset(int, boolean)}. The
      * returned region may have a different length.
      *
      * @param outputRegion Output region

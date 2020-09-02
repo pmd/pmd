@@ -38,10 +38,10 @@ final class FragmentedTextDocument implements TextDocument {
     }
 
     @Override
-    public int inputOffset(int outputOffset) {
+    public int inputOffset(int outputOffset, boolean inclusive) {
         // todo this would be pretty slow when we're in the middle of some escapes
         // we could check save the fragment last accessed to speed it up, and look forwards & backwards
-        return base.inputOffset(inputOffsetAt(outputOffset, firstFragment));
+        return base.inputOffset(inputOffsetAt(outputOffset, firstFragment, inclusive), inclusive);
     }
 
     @Override
@@ -86,8 +86,8 @@ final class FragmentedTextDocument implements TextDocument {
 
     @Override
     public @NonNull TextRegion inputRegion(TextRegion outputRegion) {
-        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset()),
-                                          inputOffset(outputRegion.getEndOffset()));
+        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
+                                          inputOffset(outputRegion.getEndOffset(), false));
     }
 
     @Override
@@ -95,13 +95,21 @@ final class FragmentedTextDocument implements TextDocument {
         base.close();
     }
 
-    static int inputOffsetAt(int outputOffset, @Nullable Fragment firstFragment) {
+    static int inputOffsetAt(int outputOffset, @Nullable Fragment firstFragment, boolean inclusive) {
         Fragment f = firstFragment;
         if (f == null) {
             return outputOffset;
         }
-        while (f.next != null && f.inEnd() < outputOffset) {
+        while (f.next != null && f.outEnd() < outputOffset) {
             f = f.next;
+        }
+        if (!inclusive && f.outEnd() == outputOffset) {
+            if (f.next != null) {
+                f = f.next;
+                // fallthrough
+            } else {
+                return f.outToIn(outputOffset) + 1;
+            }
         }
         return f.outToIn(outputOffset);
     }

@@ -75,7 +75,7 @@ public final class FragmentedDocBuilder {
     }
 
     public int inputOffsetAt(int outputOffset) {
-        return FragmentedTextDocument.inputOffsetAt(outputOffset, firstFragment);
+        return FragmentedTextDocument.inputOffsetAt(outputOffset, firstFragment, true);
     }
 
 }
