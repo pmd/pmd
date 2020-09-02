@@ -18,9 +18,7 @@ public class FormalComment extends Comment {
 
     public FormalComment(JavaccToken t) {
         super(t);
-
-//        findJavadocs();
-
+        findJavadocs(t);
     }
 
     @Override

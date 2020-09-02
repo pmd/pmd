@@ -18,16 +18,16 @@ import net.sourceforge.pmd.util.document.TextDocument;
 class CppBlockSkipper extends EscapeTranslator {
 
     private final Pattern skipStart;
-    private final String skipStartMarker;
     private final Pattern skipEnd;
-    private final String skipEndMarker;
 
-    public CppBlockSkipper(TextDocument original, String skipStartMarker, String skipEndMarker) {
+    static Pattern compileSkipMarker(String marker) {
+        return Pattern.compile("^(?i)" + Pattern.quote(marker), Pattern.MULTILINE);
+    }
+
+    public CppBlockSkipper(TextDocument original, Pattern skipStartMarker, Pattern skipEndMarker) {
         super(original);
-        skipStart = Pattern.compile("^(?i)" + Pattern.quote(skipStartMarker), Pattern.MULTILINE);
-        this.skipStartMarker = "\n" + skipStartMarker;
-        skipEnd = Pattern.compile("^(?i)" + Pattern.quote(skipEndMarker), Pattern.MULTILINE);
-        this.skipEndMarker = "\n" + skipEndMarker;
+        skipStart = skipStartMarker;
+        skipEnd = skipEndMarker;
     }
 
     @Override

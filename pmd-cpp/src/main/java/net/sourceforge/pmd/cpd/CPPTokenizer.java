@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -22,8 +23,8 @@ import net.sourceforge.pmd.util.document.TextDocument;
 public class CPPTokenizer extends JavaCCTokenizer {
 
     private boolean skipBlocks;
-    private String skipBlocksStart;
-    private String skipBlocksEnd;
+    private Pattern skipBlocksStart;
+    private Pattern skipBlocksEnd;
 
     public CPPTokenizer() {
         setProperties(new Properties()); // set the defaults
@@ -48,11 +49,11 @@ public class CPPTokenizer extends JavaCCTokenizer {
         if (skipBlocks) {
             String skipBlocksPattern = properties.getProperty(OPTION_SKIP_BLOCKS_PATTERN, DEFAULT_SKIP_BLOCKS_PATTERN);
             String[] split = skipBlocksPattern.split("\\|", 2);
-            skipBlocksStart = split[0];
+            skipBlocksStart = CppBlockSkipper.compileSkipMarker(split[0]);
             if (split.length == 1) {
-                skipBlocksEnd = split[0];
+                skipBlocksEnd = skipBlocksStart;
             } else {
-                skipBlocksEnd = split[1];
+                skipBlocksEnd = CppBlockSkipper.compileSkipMarker(split[1]);
             }
         }
     }
