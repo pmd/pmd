@@ -13,8 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.io.TextFile;
-import net.sourceforge.pmd.util.document.io.TextFileContent;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally

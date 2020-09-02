@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.document.io;
+package net.sourceforge.pmd.util.document;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,8 +15,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-
-import net.sourceforge.pmd.util.document.Chars;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;

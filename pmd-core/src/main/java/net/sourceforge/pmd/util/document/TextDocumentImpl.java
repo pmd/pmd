@@ -9,15 +9,12 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.document.io.TextFile;
-import net.sourceforge.pmd.util.document.io.TextFileContent;
 
 
 final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private final TextFile backend;
 
-    private SourceCodePositioner positioner;
 
     // to support CPD with the same api, we could probably just store
     // a soft reference to the contents, and build the positioner eagerly.
@@ -32,7 +29,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         this.backend = backend;
         this.content = backend.readContents();
         this.langVersion = backend.getLanguageVersion();
-        this.positioner = null;
         this.fileName = backend.getDisplayName();
         this.pathId = backend.getPathId();
 
@@ -64,7 +60,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     @Override
     public FileLocation toLocation(TextRegion region) {
         checkInRange(region);
-        ensureHasPositioner();
+        SourceCodePositioner positioner = content.getPositioner();
 
         long bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
         long epos = region.isEmpty() ? bpos
@@ -81,7 +77,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
-        ensureHasPositioner();
+        SourceCodePositioner positioner = content.getPositioner();
 
         if (!positioner.isValidLine(startLineInclusive)
             || !positioner.isValidLine(endLineInclusive)
@@ -92,13 +88,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         int first = positioner.offsetFromLineColumn(startLineInclusive, 1);
         int last = positioner.offsetOfEndOfLine(endLineInclusive);
         return TextRegion.fromBothOffsets(first, last);
-    }
-
-    private void ensureHasPositioner() {
-        if (positioner == null) {
-            // if nobody cares about lines, this is not computed
-            positioner = SourceCodePositioner.create(getText());
-        }
     }
 
     void checkInRange(TextRegion region) {

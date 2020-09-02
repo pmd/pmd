@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.document.io;
+package net.sourceforge.pmd.util.document;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -23,10 +23,9 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForCharSeq;
-import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForNio;
-import net.sourceforge.pmd.util.document.io.TextFileBuilder.ForReader;
+import net.sourceforge.pmd.util.document.TextFileBuilder.ForCharSeq;
+import net.sourceforge.pmd.util.document.TextFileBuilder.ForNio;
+import net.sourceforge.pmd.util.document.TextFileBuilder.ForReader;
 
 /**
  * Represents some location containing character data. Despite the name,

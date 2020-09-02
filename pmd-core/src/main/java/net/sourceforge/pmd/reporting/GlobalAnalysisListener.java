@@ -22,7 +22,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * Listens to an analysis. This object produces new {@link FileAnalysisListener}

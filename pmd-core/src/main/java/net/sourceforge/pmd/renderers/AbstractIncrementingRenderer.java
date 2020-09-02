@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * Abstract base class for {@link Renderer} implementations which can produce

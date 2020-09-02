@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.document.io;
+package net.sourceforge.pmd.util.document;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -24,9 +24,6 @@ import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 /**
  * Contents of a text file.
@@ -97,10 +94,7 @@ public final class TextFileContent {
         return checkSum;
     }
 
-    /**
-     * Returns a positioner, which knows about line endings in the source document.
-     */
-    public SourceCodePositioner getPositioner() {
+    SourceCodePositioner getPositioner() {
         return positioner;
     }
 

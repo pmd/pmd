@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.CpdCompat;
+import net.sourceforge.pmd.util.document.CpdCompat;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,

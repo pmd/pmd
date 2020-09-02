@@ -17,7 +17,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.TextFile;
 
 public class PMDFilelistTest {
     @Test

@@ -37,8 +37,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.TextFile;
-import net.sourceforge.pmd.util.document.io.TextFileContent;
+import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.util.document.TextFileContent;
 
 @SuppressWarnings("deprecation")
 public class FileAnalysisCacheTest {
