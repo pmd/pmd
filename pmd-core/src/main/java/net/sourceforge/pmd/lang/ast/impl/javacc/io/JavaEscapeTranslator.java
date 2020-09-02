@@ -5,15 +5,16 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
- * An implementation of {@link EscapeAwareReader} that translates Java
+ * An implementation of {@link EscapeTranslator} that translates Java
  * unicode escapes.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
-public final class JavaEscapeReader extends BackslashEscapeReader {
+public final class JavaEscapeTranslator extends BackslashEscapeTranslator {
 
-    public JavaEscapeReader(Chars input) {
+    public JavaEscapeTranslator(TextDocument input) {
         super(input);
     }
 

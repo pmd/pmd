@@ -14,12 +14,11 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.SINGLE_LINE_COMME
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeReader;
-import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -47,8 +46,10 @@ final class JavaTokenDocument extends JavaccTokenDocument {
 
 
     @Override
-    public EscapeAwareReader newReader(Chars text) {
-        return new JavaEscapeReader(text);
+    protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+        try (JavaEscapeTranslator translator = new JavaEscapeTranslator(text)) {
+            return translator.translateDocument();
+        }
     }
 
     @Override

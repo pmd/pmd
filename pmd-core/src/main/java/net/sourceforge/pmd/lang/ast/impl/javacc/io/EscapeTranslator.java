@@ -6,35 +6,25 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import static java.lang.Integer.min;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.FragmentedDocBuilder;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
- * A reader that may interpret escapes in its input text. It records
- * where escapes occurred, and can translate an offset in the translated
- * document (the "output") to an offset in the original input.
- * The implementation is optimised for the case where there are few escapes.
- * {@link CharStream} is the API to navigate on a translated document
- * (with arbitrary backtrack abilities).
+ * An object that can translate an input document into an output document,
+ * typically by replacing escape sequences with the character they represent.
  *
- * <p>This is useful to back a {@link CharStream} for JavaCC implementation,
- * but can also be used as a plain {@link Reader} if using other parser/lexer
- * implementations. The reader behaviour is optimised for block IO and has
- * poor char-by-char performance. Use a {@link BufferedReader} if you need it.
- *
- * <p>The default implementation does not perform any escape translation.
+ * <p>This is an abstract class because the default implementation does not
+ * perform any escape processing. Subclasses refine this behavior.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
-public class EscapeAwareReader extends Reader {
+public abstract class EscapeTranslator implements AutoCloseable {
+    // Note that this can easily be turned into a java.io.Reader with
+    // efficient block IO, optimized for the common case where there are
+    // few or no escapes. This is part of the history of this file, but
+    // was removed for simplicity.
 
     /**
      * Source characters. When there is an escape, eg \ u00a0, the
@@ -51,47 +41,30 @@ public class EscapeAwareReader extends Reader {
     private Chars curEscape;
     private int offInEscape;
 
-    public EscapeAwareReader(Chars input) {
-        AssertionUtil.requireParamNotNull("input", input);
-        this.input = input;
-        bufpos = 0;
-        escapes = new FragmentedDocBuilder(input);
+    public EscapeTranslator(TextDocument original) {
+        AssertionUtil.requireParamNotNull("builder", original);
+        this.input = original.getText();
+        this.bufpos = 0;
+        this.escapes = new FragmentedDocBuilder(original);
     }
+
 
     /**
-     * Translate all the input in the buffer. This is fed to a cursor initialized to zero.
+     * Translate all the input in the buffer.
      */
-    public TextDocument translate(TextDocument source) throws IOException, MalformedSourceException {
-        readUnchecked(null, 0, Integer.MAX_VALUE);
-        return escapes.build(source);
-    }
-
-
-    @Override
-    public int read(final char[] cbuf, final int off, int len) throws IOException, MalformedSourceException {
-        if (off < 0 || len < 0 || len + off > cbuf.length) {
-            throw new IndexOutOfBoundsException("cbuf len=" + cbuf.length + " off=" + off + " len=" + len);
-        }
-        return readUnchecked(cbuf, off, len);
-    }
-
-    // if cbuf is null we just want to record escapes
-    private int readUnchecked(char @Nullable [] cbuf, int off, int len) throws IOException, MalformedSourceException {
+    public TextDocument translateDocument() throws MalformedSourceException {
         ensureOpen();
         if (this.bufpos == input.length()) {
-            return -1;
+            return escapes.build();
         }
 
-        len = min(len, input.length()); // remove Integer.MAX_VALUE
+        final int len = input.length(); // remove Integer.MAX_VALUE
 
         int readChars = 0;
         while (readChars < len && (this.bufpos < input.length() || curEscape != null)) {
             if (curEscape != null) {
                 int toRead = min(len - readChars, curEscape.length() - offInEscape);
 
-                if (cbuf != null) {
-                    curEscape.getChars(0, cbuf, off + readChars, toRead);
-                }
                 readChars += toRead;
                 offInEscape += toRead;
 
@@ -109,17 +82,13 @@ public class EscapeAwareReader extends Reader {
 
             assert newlyReadChars >= 0 && (readChars + newlyReadChars) <= len;
 
-            if (newlyReadChars != 0) {
-                if (cbuf != null) {
-                    input.getChars(bpos, cbuf, off + readChars, newlyReadChars);
-                }
-            } else if (nextJump == input.length()) {
+            if (newlyReadChars == 0 && nextJump == input.length()) {
                 // eof
                 break;
             }
             readChars += newlyReadChars;
         }
-        return readChars;
+        return escapes.build();
     }
 
     /**
@@ -142,24 +111,17 @@ public class EscapeAwareReader extends Reader {
         return startOffsetInclusive;
     }
 
-    @Override
-    public void close() throws IOException {
+    public void close() {
         this.bufpos = -1;
         this.input = null;
     }
 
 
     /** Check to make sure that the stream has not been closed */
-    protected void ensureOpen() throws IOException {
+    protected void ensureOpen() {
         if (input == null) {
-            throw new IOException("Stream closed");
+            throw new IllegalStateException("Closed");
         }
-    }
-
-    @Override
-    public boolean ready() throws IOException {
-        ensureOpen();
-        return true;
     }
 
     /**
@@ -175,7 +137,7 @@ public class EscapeAwareReader extends Reader {
      * inputOffset(2) = 7 // includes the length of the escape
      * </pre>
      */
-    public int inputOffset(int outputOffset) {
+    protected int inputOffset(int outputOffset) {
         return escapes.inputOffsetAt(outputOffset);
     }
 
@@ -186,14 +148,14 @@ public class EscapeAwareReader extends Reader {
      * inefficient but currently is only used for error messages (which
      * obviously are exceptional).
      */
-    public int getLine(int idxInInput) {
+    protected int getLine(int idxInInput) {
         return StringUtil.lineNumberAt(input, idxInInput);
     }
 
     /**
      * @see #getLine(int)
      */
-    public int getColumn(int idxInInput) {
+    protected int getColumn(int idxInInput) {
         return StringUtil.columnNumberAt(input, idxInInput);
     }
 

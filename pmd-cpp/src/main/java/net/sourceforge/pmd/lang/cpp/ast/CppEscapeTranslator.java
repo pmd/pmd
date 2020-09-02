@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.cpp.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.BackslashEscapeReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.BackslashEscapeTranslator;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
-public class CppEscapeReader extends BackslashEscapeReader {
+public class CppEscapeTranslator extends BackslashEscapeTranslator {
 
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
 
-    public CppEscapeReader(Chars input) {
+    public CppEscapeTranslator(TextDocument input) {
         super(input);
     }
 

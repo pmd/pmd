@@ -81,26 +81,36 @@ public interface TextDocument extends Closeable {
     /**
      * Returns the input offset for the given output offset. This maps
      * back an offset in the coordinate system of this document, to the
-     * coordinate system of the original document.
+     * coordinate system of the original document. This includes the
+     * length of any unicode escapes.
+     *
+     * <pre>
+     * input:      "a\u00a0b"   (original document)
+     * translated: "a b"        (this document)
+     *
+     * translateOffset(0) = 0
+     * translateOffset(1) = 1
+     * translateOffset(2) = 7 // includes the length of the escape
+     * </pre>
      *
      * @param outOffset Output offset
      *
      * @return Input offset
      */
-    int translateOffset(int outOffset);
+    int inputOffset(int outOffset);
 
     /**
      * Translate a region given in the the coordinate system of this
      * document, to the coordinate system of the original document.
      * This works as if creating a new region with both start and end
-     * offsets translated through {@link #translateOffset(int)}. The
+     * offsets translated through {@link #inputOffset(int)}. The
      * returned region may have a different length.
      *
-     * @param region Output region
+     * @param outputRegion Output region
      *
      * @return Input region
      */
-    TextRegion translateRegion(TextRegion region);
+    TextRegion inputRegion(TextRegion outputRegion);
 
 
     /**

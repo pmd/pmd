@@ -85,6 +85,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     @Test
     public void testUnicodeEscapes() {
+        // todo i'd like to test the coordinates of the literals, but this has to wait for java-grammar to be merged
         java8.parse("public class Foo { String[] s = { \"Ven\\u00E4j\\u00E4\" }; }");
     }
 

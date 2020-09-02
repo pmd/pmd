@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 
 import java.io.EOFException;
-import java.io.IOException;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.Chars;
@@ -38,8 +37,8 @@ public final class CharStream {
     /**
      * Create a new char stream for the given document.
      */
-    public static CharStream create(JavaccTokenDocument doc) throws IOException, MalformedSourceException {
-        doc.translate();
+    public static CharStream create(JavaccTokenDocument doc) throws MalformedSourceException {
+        doc.doTranslate();
         return new CharStream(doc);
     }
 

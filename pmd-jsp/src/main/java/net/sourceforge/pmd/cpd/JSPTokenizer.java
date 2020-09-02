@@ -9,10 +9,9 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.lang.jsp.ast.JspTokenKinds;
-import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public class JSPTokenizer extends JavaCCTokenizer {
@@ -26,8 +25,10 @@ public class JSPTokenizer extends JavaCCTokenizer {
     protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
         return new JavaccTokenDocument(textDoc) {
             @Override
-            public EscapeAwareReader newReader(Chars text) {
-                return new JavaEscapeReader(text);
+            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                try (JavaEscapeTranslator translator = new JavaEscapeTranslator(text)) {
+                    return translator.translateDocument();
+                }
             }
         };
     }

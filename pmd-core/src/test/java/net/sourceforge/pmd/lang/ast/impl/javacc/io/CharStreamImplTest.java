@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public class CharStreamImplTest {
@@ -139,15 +138,18 @@ public class CharStreamImplTest {
         stream.readChar();
     }
 
-    public CharStream simpleCharStream(String abcd) throws IOException {
+    public CharStream simpleCharStream(String abcd) {
         return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)));
     }
 
-    public CharStream javaCharStream(String abcd) throws IOException {
+    public CharStream javaCharStream(String abcd) {
         return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd, dummyVersion)) {
+
             @Override
-            public EscapeAwareReader newReader(Chars text) {
-                return new JavaEscapeReader(text);
+            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                try (JavaEscapeTranslator translator = new JavaEscapeTranslator(text)) {
+                    return translator.translateDocument();
+                }
             }
         });
     }

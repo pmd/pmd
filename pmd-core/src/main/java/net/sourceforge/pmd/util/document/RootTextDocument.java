@@ -112,13 +112,13 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public int translateOffset(int outOffset) {
+    public int inputOffset(int outOffset) {
         return outOffset;
     }
 
     @Override
-    public TextRegion translateRegion(TextRegion region) {
-        return region;
+    public TextRegion inputRegion(TextRegion outputRegion) {
+        return outputRegion;
     }
 
     @Override

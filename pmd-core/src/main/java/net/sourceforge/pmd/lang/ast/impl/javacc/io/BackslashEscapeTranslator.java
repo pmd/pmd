@@ -7,11 +7,12 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 import static java.lang.Integer.min;
 
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * A base class for readers that handle escapes starting with a backslash.
  */
-public abstract class BackslashEscapeReader extends EscapeAwareReader {
+public abstract class BackslashEscapeTranslator extends EscapeTranslator {
 
     private static final char BACKSLASH = '\\';
 
@@ -24,8 +25,8 @@ public abstract class BackslashEscapeReader extends EscapeAwareReader {
     private int savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
 
 
-    public BackslashEscapeReader(Chars input) {
-        super(input);
+    public BackslashEscapeTranslator(TextDocument builder) {
+        super(builder);
     }
 
     @Override

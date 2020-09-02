@@ -11,11 +11,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
-import net.sourceforge.pmd.lang.cpp.ast.CppEscapeReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
+import net.sourceforge.pmd.lang.cpp.ast.CppEscapeTranslator;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -103,9 +103,12 @@ public class CPPTokenizer extends JavaCCTokenizer {
     protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
         textDoc = TextDocument.readOnlyString(maybeSkipBlocks(textDoc.getText()), textDoc.getDisplayName(), textDoc.getLanguageVersion());
         return new JavaccTokenDocument(textDoc) {
+
             @Override
-            public EscapeAwareReader newReader(Chars text) {
-                return new CppEscapeReader(text);
+            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                try (CppEscapeTranslator translator = new CppEscapeTranslator(text)) {
+                    return translator.translateDocument();
+                }
             }
 
             @Override
