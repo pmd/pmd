@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
-import java.io.IOException;
-
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
@@ -20,7 +18,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
     }
 
     @Override
-    protected int handleBackslash(final int maxOff, final int firstBackslashOff) throws IOException {
+    protected int handleBackslash(final int maxOff, final int firstBackslashOff) throws MalformedSourceException {
         int off = firstBackslashOff;
         while (off < input.length() && input.charAt(off) == '\\') {
             off++;
@@ -43,7 +41,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
         }
     }
 
-    private Chars escapeValue(int posOfFirstBackSlash, int offOfTheU) throws IOException {
+    private Chars escapeValue(int posOfFirstBackSlash, int offOfTheU) throws MalformedSourceException {
         try {
             char c = (char)
                     ( hexVal(input.charAt(++offOfTheU)) << 12 // SUPPRESS CHECKSTYLE paren pad
@@ -54,11 +52,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
 
             return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            String message = "Invalid escape sequence at line "
-                + getLine(posOfFirstBackSlash) + ", column "
-                + getColumn(posOfFirstBackSlash);
-
-            throw new IOException(message, e);
+            throw new MalformedSourceException("Invalid escape sequence", e, posOfFirstBackSlash, getLine(posOfFirstBackSlash), getColumn(posOfFirstBackSlash));
         }
     }
 

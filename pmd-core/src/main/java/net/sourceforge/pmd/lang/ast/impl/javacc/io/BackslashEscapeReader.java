@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import static java.lang.Integer.min;
 
-import java.io.IOException;
-
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
@@ -31,7 +29,7 @@ public abstract class BackslashEscapeReader extends EscapeAwareReader {
     }
 
     @Override
-    protected int gobbleMaxWithoutEscape(final int maxOff) throws IOException {
+    protected int gobbleMaxWithoutEscape(final int maxOff) throws MalformedSourceException {
         int off = this.bufpos;
         boolean seenBackslash = true;
         int notEscapeEnd = this.savedNotEscapeSpecialEnd;
@@ -51,7 +49,7 @@ public abstract class BackslashEscapeReader extends EscapeAwareReader {
         return handleBackslash(maxOff, off);
     }
 
-    protected abstract int handleBackslash(int maxOff, int firstBackslashOff) throws IOException;
+    protected abstract int handleBackslash(int maxOff, int firstBackslashOff) throws MalformedSourceException;
 
     @Override
     protected int recordEscape(int startOffsetInclusive, int endOffsetExclusive, Chars translation) {

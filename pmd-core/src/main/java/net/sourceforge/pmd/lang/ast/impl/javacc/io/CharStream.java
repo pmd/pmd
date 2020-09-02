@@ -31,7 +31,7 @@ public final class CharStream {
     /**
      * Create a new char stream for the given document.
      */
-    public static CharStream create(JavaccTokenDocument doc) throws IOException {
+    public static CharStream create(JavaccTokenDocument doc) throws IOException, MalformedSourceException {
         try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
             return new CharStream(doc, reader.translate());
         }

@@ -13,17 +13,18 @@ import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.CpdCompat;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
-    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
+    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException, MalformedSourceException {
         TextDocument textDocument = TextDocument.create(CpdCompat.cpdCompat(sourceCode));
         JavaccTokenDocument tokenDoc = newTokenDoc(textDocument);
         return makeLexerImpl(CharStream.create(tokenDoc));
@@ -49,15 +50,15 @@ public abstract class JavaCCTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
-        TokenManager<JavaccToken> tokenManager = getLexerForSource(sourceCode);
         try {
+            TokenManager<JavaccToken> tokenManager = getLexerForSource(sourceCode);
             final TokenFilter<JavaccToken> tokenFilter = getTokenFilter(tokenManager);
             JavaccToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
                 tokenEntries.add(processToken(tokenEntries, currentToken, sourceCode.getFileName()));
                 currentToken = tokenFilter.getNextToken();
             }
-        } catch (TokenMgrError e) {
+        } catch (FileAnalysisException e) {
             throw e.setFileName(sourceCode.getFileName());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());

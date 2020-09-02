@@ -59,14 +59,14 @@ public class EscapeAwareReader extends Reader {
     /**
      * Translate all the input in the buffer. This is fed to a cursor initialized to zero.
      */
-    FragmentedDocCursor translate() throws IOException {
+    FragmentedDocCursor translate() throws IOException, MalformedSourceException {
         readUnchecked(null, 0, Integer.MAX_VALUE);
         return escapes.newCursor();
     }
 
 
     @Override
-    public int read(final char[] cbuf, final int off, int len) throws IOException {
+    public int read(final char[] cbuf, final int off, int len) throws IOException, MalformedSourceException {
         if (off < 0 || len < 0 || len + off > cbuf.length) {
             throw new IndexOutOfBoundsException("cbuf len=" + cbuf.length + " off=" + off + " len=" + len);
         }
@@ -74,7 +74,7 @@ public class EscapeAwareReader extends Reader {
     }
 
     // if cbuf is null we just want to record escapes
-    private int readUnchecked(char @Nullable [] cbuf, int off, int len) throws IOException {
+    private int readUnchecked(char @Nullable [] cbuf, int off, int len) throws IOException, MalformedSourceException {
         ensureOpen();
         if (this.bufpos == input.length()) {
             return -1;
@@ -126,7 +126,7 @@ public class EscapeAwareReader extends Reader {
      *
      * @param maxOff Max offset up to which to read ahead
      */
-    protected int gobbleMaxWithoutEscape(int maxOff) throws IOException {
+    protected int gobbleMaxWithoutEscape(int maxOff) throws MalformedSourceException {
         this.bufpos = maxOff;
         return maxOff;
     }

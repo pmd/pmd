@@ -39,7 +39,7 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    FileAnalysisException setFileName(String filename) {
+    public FileAnalysisException setFileName(String filename) {
         this.filename = Objects.requireNonNull(filename);
         return this;
     }

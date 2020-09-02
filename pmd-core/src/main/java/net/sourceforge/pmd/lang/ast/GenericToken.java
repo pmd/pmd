@@ -9,6 +9,7 @@ import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.Reportable;
 import net.sourceforge.pmd.util.document.TextRegion;
 
@@ -56,7 +57,11 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      * @param charSeq A character sequence
      */
     default boolean imageEquals(CharSequence charSeq) {
-        return StringUtils.equals(getImageCs(), charSeq);
+        CharSequence imageCs = getImageCs();
+        if (imageCs instanceof Chars) {
+            return ((Chars) imageCs).contentEquals(charSeq);
+        }
+        return StringUtils.equals(imageCs, charSeq);
     }
 
 
