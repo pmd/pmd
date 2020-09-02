@@ -234,7 +234,7 @@ public final class TextFileContent {
                         // just \n
                         newLineTerm = NORMALIZED_LINE_TERM;
                     }
-                    positionerBuilder.addLineEndAtOffset(bufOffset + i);
+                    positionerBuilder.addLineEndAtOffset(bufOffset + i + 1);
                     detectedLineTerm = detectLineTerm(detectedLineTerm, newLineTerm, fallbackLineSep);
                 }
                 afterCr = c == '\r';

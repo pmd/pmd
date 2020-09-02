@@ -109,6 +109,14 @@ public class TextFileContentTest {
     }
 
     @Test
+    @Parameters(source = TextContentOrigin.class)
+    public void testLfAtStartOfFile(TextContentOrigin origin) throws IOException {
+        TextFileContent content = origin.normalize("\nohio");
+        Assert.assertEquals(Chars.wrap("\nohio"), content.getNormalizedText());
+        Assert.assertEquals("\n", content.getLineTerminator());
+    }
+
+    @Test
     public void testCrCrSplitBuffer() throws IOException {
         StringReader reader = new StringReader("a\r\r");
         // the buffer is of size 2, so we read first [a\r] then [\ro]

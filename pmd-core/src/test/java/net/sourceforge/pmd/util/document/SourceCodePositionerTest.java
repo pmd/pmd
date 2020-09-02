@@ -100,6 +100,21 @@ public class SourceCodePositionerTest {
 
     }
 
+    @Test
+    public void testDocumentStartingWithNl() {
+
+        SourceCodePositioner positioner = SourceCodePositioner.create("\n");
+
+        assertEquals(0, positioner.offsetFromLineColumn(1, 1));
+        assertEquals(1, positioner.offsetFromLineColumn(1, 2));
+        assertEquals(-1, positioner.offsetFromLineColumn(1, 3));
+
+        assertEquals(1, positioner.lineNumberFromOffset(0));
+        assertEquals(2, positioner.lineNumberFromOffset(1));
+        assertEquals(-1, positioner.lineNumberFromOffset(2));
+
+    }
+
 
     @Test
     public void lineToOffsetMappingWithLineFeedShouldSucceed() {
