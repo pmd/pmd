@@ -25,7 +25,7 @@ public class VfTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenDocumentBehavior newTokenDoc() {
+    protected TokenDocumentBehavior tokenBehavior() {
         return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES,
                                                              EscapeTranslator.translatorFor(JavaEscapeTranslator::new));
     }

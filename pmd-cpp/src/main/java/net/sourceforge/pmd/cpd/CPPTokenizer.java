@@ -59,7 +59,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
 
     @Override
-    protected TokenDocumentBehavior newTokenDoc() {
+    protected TokenDocumentBehavior tokenBehavior() {
         return new TokenDocumentBehavior(CppTokenKinds.TOKEN_NAMES) {
 
             @Override

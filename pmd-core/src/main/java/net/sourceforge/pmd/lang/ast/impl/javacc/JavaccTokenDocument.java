@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
@@ -18,12 +19,14 @@ import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Token document for Javacc implementations. This is a helper object
- * for generated token managers.
+ * for generated token managers. Note: the extension point is a custom
+ * implementation of {@link TokenDocumentBehavior}, see {@link JjtreeParserAdapter#tokenBehavior()},
+ * {@link JavaCCTokenizer#tokenBehavior()}
  */
-public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
+public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
     private final TokenDocumentBehavior behavior;
-    final StringPool stringPool = new StringPool();
+    private final StringPool stringPool = new StringPool();
 
     private JavaccToken first;
 
@@ -143,26 +146,8 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         }
     }
 
-    /**
-     * Returns true if the lexer should accumulate the image of MORE
-     * tokens into the StringBuilder jjimage. This is useless in our
-     * current implementations. The default returns false, which makes
-     * {@link CharStream#appendSuffix(StringBuilder, int)} a noop.
-     */
-    public boolean useMarkSuffix() {
+    boolean useMarkSuffix() {
         return behavior.useMarkSuffix();
-    }
-
-    /**
-     * Translate the escapes of the source document. The default implementation
-     * does not perform any escaping.
-     *
-     * @param text Source doc
-     *
-     * @see EscapeTranslator
-     */
-    protected TextDocument translate(TextDocument text) throws MalformedSourceException {
-        return behavior.translate(text);
     }
 
     /**
@@ -193,26 +178,18 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return first.next;
     }
 
-    final String computeImage(JavaccToken t) {
+    String computeImage(JavaccToken t) {
         CharSequence imageCs = t.getImageCs();
         if (imageCs instanceof String) {
             return (String) imageCs;
         }
-        return stringPool.toString(imageCs, isImagePooled(t));
-    }
-
-    protected boolean isImagePooled(JavaccToken t) {
-        return behavior.isImagePooled(t);
+        return stringPool.toString(imageCs, behavior.isImagePooled(t));
     }
 
     /**
-     * Returns a string that describes the token kind.
-     *
-     * @param kind Kind of token
-     *
-     * @return A descriptive string
+     * @see TokenDocumentBehavior#describeKind(int) 
      */
-    public final @NonNull String describeKind(int kind) {
+    public @NonNull String describeKind(int kind) {
         return behavior.describeKind(kind);
     }
 

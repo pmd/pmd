@@ -21,7 +21,7 @@ public class CppCharStreamTest {
     @NonNull
     public CharStream charStreamFor(String source) throws IOException {
         TextDocument textDoc = TextDocument.readOnlyString(source, TextFile.UNKNOWN_FILENAME, CpdCompat.dummyVersion());
-        return CharStream.create(new CPPTokenizer().newTokenDoc(textDoc));
+        return CharStream.create(textDoc, new CPPTokenizer().tokenBehavior());
     }
 
     @Test

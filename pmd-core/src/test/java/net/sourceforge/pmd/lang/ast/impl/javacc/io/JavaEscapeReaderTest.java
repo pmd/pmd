@@ -29,7 +29,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abcdede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input),r.getText());
+            Assert.assertEquals(Chars.wrap(input), r.getText());
         }
     }
 
@@ -38,7 +38,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\dede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input),r.getText());
+            Assert.assertEquals(Chars.wrap(input), r.getText());
         }
     }
 
@@ -47,7 +47,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\\\\\dede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input),r.getText());
+            Assert.assertEquals(Chars.wrap(input), r.getText());
         }
     }
 

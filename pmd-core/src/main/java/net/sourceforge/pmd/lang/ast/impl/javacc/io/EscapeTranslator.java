@@ -113,6 +113,7 @@ public abstract class EscapeTranslator implements AutoCloseable {
         return startOffsetInclusive;
     }
 
+    @Override
     public void close() {
         this.bufpos = -1;
         this.input = null;

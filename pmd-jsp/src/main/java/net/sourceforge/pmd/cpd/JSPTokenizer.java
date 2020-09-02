@@ -23,7 +23,7 @@ public class JSPTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected JavaccTokenDocument.TokenDocumentBehavior newTokenDoc() {
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
         return JspParser.getTokenBehavior();
     }
 

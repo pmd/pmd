@@ -32,7 +32,7 @@ public class PythonTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected JavaccTokenDocument.TokenDocumentBehavior newTokenDoc() {
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
         return TOKEN_BEHAVIOR;
     }
 

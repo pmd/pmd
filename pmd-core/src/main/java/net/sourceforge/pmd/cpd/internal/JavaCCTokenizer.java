@@ -26,10 +26,10 @@ public abstract class JavaCCTokenizer implements Tokenizer {
     @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException, MalformedSourceException {
         TextDocument textDocument = TextDocument.create(CpdCompat.cpdCompat(sourceCode));
-        return makeLexerImpl(CharStream.create(textDocument, newTokenDoc()));
+        return makeLexerImpl(CharStream.create(textDocument, tokenBehavior()));
     }
 
-    protected TokenDocumentBehavior newTokenDoc() {
+    protected TokenDocumentBehavior tokenBehavior() {
         return TokenDocumentBehavior.DEFAULT;
     }
 
