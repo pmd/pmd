@@ -3159,4 +3159,29 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>False positive with try in loop? #2759</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    while (a > 0) {
+                        a--;
+                        try {
+                            if (dummy) {
+                                return somethingThatCanThrowRandomly(1);
+                            } else {
+                                return somethingThatCanThrowRandomly(2);
+                            }
+                        } catch (RuntimeException e) {
+                            // retry
+                        }
+                    }
+                    return 0;
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
