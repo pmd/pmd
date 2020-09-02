@@ -14,7 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -38,8 +38,8 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     @Test
     public void testInvalidUnicodeEscape() {
-        expect.expect(TokenMgrError.class); // previously Error
-        expect.expectMessage("Lexical error at line 1, column 2.  Encountered: Invalid unicode escape");
+        expect.expect(MalformedSourceException.class); // previously Error
+        expect.expectMessage("Source format error at line 1, column 1: Invalid unicode escape");
         java.parse("\\u00k0");
     }
 

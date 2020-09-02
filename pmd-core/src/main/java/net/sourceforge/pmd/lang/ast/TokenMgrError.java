@@ -53,12 +53,14 @@ public final class TokenMgrError extends FileAnalysisException {
         return column;
     }
 
-
+    @Override
+    protected String positionToString() {
+        return super.positionToString() + " at line " + line + ", column " + column;
+    }
 
     @Override
-    public String getMessage() {
-        String leader = hasFileName() ? "Lexical error in file " + getFileName() : "Lexical error";
-        return leader + " at line " + line + ", column " + column + ".  Encountered: " + super.getMessage();
+    protected String errorKind() {
+        return "Lexical error";
     }
 
     /**

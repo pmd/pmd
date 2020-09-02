@@ -27,9 +27,7 @@ public final class ApexParser implements Parser {
 
             final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getTextDocument());
 
-            if (astRoot == null) {
-                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
-            }
+            assert astRoot != null : "Normally replaced by Compilation.INVALID";
 
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task.getTextDocument(), task.getCommentMarker());
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
@@ -37,7 +35,7 @@ public final class ApexParser implements Parser {
             fileNode.setNoPmdComments(treeBuilder.getSuppressMap());
             return fileNode;
         } catch (apex.jorje.services.exception.ParseException e) {
-            throw new ParseException(e);
+            throw new ParseException(e).setFileName(task.getFileDisplayName());
         }
     }
 }

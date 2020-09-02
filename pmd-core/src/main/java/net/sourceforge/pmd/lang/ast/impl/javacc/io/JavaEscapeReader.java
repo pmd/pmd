@@ -52,7 +52,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
 
             return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            throw new MalformedSourceException("Invalid escape sequence", e, posOfFirstBackSlash, getLine(posOfFirstBackSlash), getColumn(posOfFirstBackSlash));
+            throw new MalformedSourceException("Invalid unicode escape " + " at line", e, getLine(posOfFirstBackSlash), getColumn(posOfFirstBackSlash));
         }
     }
 
