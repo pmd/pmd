@@ -26,6 +26,8 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 public interface TextDocument extends Closeable {
     // todo logical sub-documents, to support embedded languages
     //  ideally, just slice the text, and share the positioner
+    //  a problem with document slices becomes reference counting for the close routine
+
 
     // todo text edition (there are some reverted commits in the branch
     //  with part of this, including a lot of tests)
@@ -143,11 +145,16 @@ public interface TextDocument extends Closeable {
      * Returns a region that spans the text of all the given lines.
      * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
+     * <p>Note that, as line numbers may only be obtained from {@link #toLocation(TextRegion)},
+     * and hence are line numbers of the original source, both parameters
+     * must be line numbers of the source text and not the translated text
+     * that this represents.
+     *
      * @param startLineInclusive Inclusive start line number (1-based)
      * @param endLineInclusive   Inclusive end line number (1-based)
      *
      * @throws IndexOutOfBoundsException If the arguments do not identify
-     *                                   a valid region in this document
+     *                                   a valid region in the source document
      */
     TextRegion createLineRange(int startLineInclusive, int endLineInclusive);
 
@@ -185,7 +192,6 @@ public interface TextDocument extends Closeable {
      */
     @Override
     void close() throws IOException;
-
 
     static TextDocument create(TextFile textFile) throws IOException {
         return new RootTextDocument(textFile);

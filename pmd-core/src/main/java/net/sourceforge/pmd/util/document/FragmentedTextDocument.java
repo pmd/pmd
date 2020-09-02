@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.io.IOException;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -14,17 +11,16 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 /**
  * A text document built as a set of deltas over another document.
  */
-final class FragmentedTextDocument implements TextDocument {
+final class FragmentedTextDocument extends BaseMappedDocument implements TextDocument {
 
     private final Fragment firstFragment;
     private final Chars text;
-    private final TextDocument base;
 
     FragmentedTextDocument(TextDocument base, Fragment firstFragment, Fragment lastFragment) {
+        super(base);
         assert firstFragment != lastFragment; // NOPMD
         this.firstFragment = firstFragment;
         this.text = toChars(firstFragment, lastFragment);
-        this.base = base;
     }
 
     private static Chars toChars(Fragment firstFragment, Fragment lastFragment) {
@@ -38,10 +34,10 @@ final class FragmentedTextDocument implements TextDocument {
     }
 
     @Override
-    public int inputOffset(int outputOffset, boolean inclusive) {
+    protected int localOffsetTransform(int outOffset, boolean inclusive) {
         // todo this would be pretty slow when we're in the middle of some escapes
         // we could check save the fragment last accessed to speed it up, and look forwards & backwards
-        return base.inputOffset(inputOffsetAt(outputOffset, firstFragment, inclusive), inclusive);
+        return inputOffsetAt(outOffset, firstFragment, inclusive);
     }
 
     @Override
@@ -49,51 +45,12 @@ final class FragmentedTextDocument implements TextDocument {
         return text;
     }
 
-    @Override
-    public long getChecksum() {
-        return base.getChecksum();
-    }
 
     @Override
     public LanguageVersion getLanguageVersion() {
         return base.getLanguageVersion();
     }
 
-    @Override
-    public String getPathId() {
-        return base.getPathId();
-    }
-
-    @Override
-    public String getDisplayName() {
-        return base.getDisplayName();
-    }
-
-    @Override
-    public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
-        return base.createLineRange(startLineInclusive, endLineInclusive);
-    }
-
-    @Override
-    public Chars sliceOriginalText(TextRegion region) {
-        return base.sliceOriginalText(inputRegion(region));
-    }
-
-    @Override
-    public FileLocation toLocation(TextRegion region) {
-        return base.toLocation(inputRegion(region));
-    }
-
-    @Override
-    public @NonNull TextRegion inputRegion(TextRegion outputRegion) {
-        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
-                                          inputOffset(outputRegion.getEndOffset(), false));
-    }
-
-    @Override
-    public void close() throws IOException {
-        base.close();
-    }
 
     static int inputOffsetAt(int outputOffset, @Nullable Fragment firstFragment, boolean inclusive) {
         Fragment f = firstFragment;

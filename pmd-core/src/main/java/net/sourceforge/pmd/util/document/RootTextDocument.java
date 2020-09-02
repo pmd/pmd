@@ -128,6 +128,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     private static final String NOT_IN_RANGE = "Region [start=%d, end=%d[ is not in range of this document (length %d)";
     private static final String INVALID_LINE_RANGE = "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
+    private static final String INVALID_OFFSET = "Offset %d is not in range of this document (length %d) (line numbers are 0-based)";
 
     static IndexOutOfBoundsException invalidLineRange(int start, int end, int numLines) {
         return new IndexOutOfBoundsException(String.format(INVALID_LINE_RANGE, start, end, numLines));
@@ -135,5 +136,9 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     static IndexOutOfBoundsException regionOutOfBounds(int start, int end, int maxLen) {
         return new IndexOutOfBoundsException(String.format(NOT_IN_RANGE, start, end, maxLen));
+    }
+
+    static IndexOutOfBoundsException invalidOffset(int offset, int maxLen) {
+        return new IndexOutOfBoundsException(String.format(INVALID_OFFSET, offset, maxLen));
     }
 }
