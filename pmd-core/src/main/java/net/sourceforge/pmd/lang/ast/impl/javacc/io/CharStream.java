@@ -11,6 +11,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
@@ -18,14 +19,20 @@ import net.sourceforge.pmd.util.document.TextRegion;
  */
 public final class CharStream {
 
-    private final JavaccTokenDocument tokenDoc;
-    private final FragmentedDocCursor cursor;
-    private final boolean useMarkSuffix;
+    private static final EOFException EOF = new EOFException();
 
-    private CharStream(JavaccTokenDocument tokenDoc, FragmentedDocCursor cursor) {
+    private final JavaccTokenDocument tokenDoc;
+    private final TextDocument textDoc;
+    private final Chars chars;
+    private final boolean useMarkSuffix;
+    private int curOffset;
+    private int markOffset = -1;
+
+    private CharStream(JavaccTokenDocument tokenDoc, TextDocument textDoc) {
         this.tokenDoc = tokenDoc;
-        this.cursor = cursor;
-        useMarkSuffix = tokenDoc.useMarkSuffix();
+        this.textDoc = textDoc;
+        this.chars = textDoc.getText();
+        this.useMarkSuffix = tokenDoc.useMarkSuffix();
     }
 
     /**
@@ -33,7 +40,7 @@ public final class CharStream {
      */
     public static CharStream create(JavaccTokenDocument doc) throws IOException, MalformedSourceException {
         try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
-            return new CharStream(doc, reader.translate());
+            return new CharStream(doc, reader.translate(doc.getTextDocument()));
         }
     }
 
@@ -46,7 +53,10 @@ public final class CharStream {
      * @throws EOFException Upon EOF
      */
     public char readChar() throws EOFException {
-        return cursor.next();
+        if (curOffset == chars.length()) {
+            throw EOF;
+        }
+        return chars.charAt(curOffset++);
     }
 
 
@@ -57,8 +67,8 @@ public final class CharStream {
      * backup correctly.
      */
     public char markTokenStart() throws EOFException {
-        cursor.mark();
-        return cursor.next();
+        markOffset = curOffset;
+        return readChar();
     }
 
 
@@ -75,7 +85,12 @@ public final class CharStream {
      * to the current buffer position.
      */
     public Chars getTokenImageCs() {
-        return cursor.getMarkImage();
+        assert markOffset >= 0;
+        return chars.slice(markOffset, markLen());
+    }
+
+    private int markLen() {
+        return curOffset - markOffset;
     }
 
 
@@ -90,7 +105,8 @@ public final class CharStream {
      */
     public void appendSuffix(StringBuilder sb, int len) {
         if (useMarkSuffix) {
-            cursor.appendMarkSuffix(sb, len);
+            assert len <= markLen() : "Suffix is greater than the mark length? " + len + " > " + markLen();
+            chars.appendChars(sb, curOffset - len, len);
         } // otherwise dead code, kept because Javacc's argument expressions do side effects
     }
 
@@ -108,7 +124,7 @@ public final class CharStream {
      *                        number of read chars
      */
     public void backup(int amount) {
-        cursor.backup(amount);
+        curOffset -= amount;
     }
 
     /**
@@ -130,19 +146,19 @@ public final class CharStream {
 
 
     private FileLocation endLocation() {
-        return tokenDoc.getTextDocument().toLocation(TextRegion.fromOffsetLength(getEndOffset(), 0));
+        return textDoc.toLocation(TextRegion.caretAt(getEndOffset()));
     }
 
 
     /** Returns the start offset of the current token (in the original source), inclusive. */
     public int getStartOffset() {
-        return cursor.markInOffset();
+        return textDoc.translateOffset(markOffset);
     }
 
 
     /** Returns the end offset of the current token (in the original source), exclusive. */
     public int getEndOffset() {
-        return cursor.curInOffset();
+        return textDoc.translateOffset(curOffset);
     }
 
 

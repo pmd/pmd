@@ -184,6 +184,15 @@ public final class TextRegion implements Comparable<TextRegion> {
     }
 
     /**
+     * Builds a new region from offset and length.
+     *
+     * @throws AssertionError If either parameter is negative
+     */
+    public static TextRegion caretAt(int offset) {
+        return fromOffsetLength(offset, 0);
+    }
+
+    /**
      * Builds a new region from start and end offset.
      *
      * @param startOffset Start offset

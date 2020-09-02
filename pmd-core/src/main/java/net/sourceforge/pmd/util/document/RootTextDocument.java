@@ -102,8 +102,13 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public TextFileContent getContent() {
-        return content;
+    public long getChecksum() {
+        return content.getCheckSum();
+    }
+
+    @Override
+    public int translateOffset(int outOffset) {
+        return outOffset;
     }
 
     private static final String NOT_IN_RANGE = "Region [start=%d, end=%d[ is not in range of this document (length %d)";

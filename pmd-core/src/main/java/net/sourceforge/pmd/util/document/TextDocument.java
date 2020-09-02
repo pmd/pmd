@@ -54,9 +54,7 @@ public interface TextDocument extends Closeable {
      *
      * @see TextFileContent#getNormalizedText()
      */
-    default Chars getText() {
-        return getContent().getNormalizedText();
-    }
+    Chars getText();
 
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
@@ -67,9 +65,13 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the current contents of the text file. See also {@link #getText()}.
+     * Returns a checksum for the contents of the file.
+     *
+     * @see TextFileContent#getCheckSum()
      */
-    TextFileContent getContent();
+    long getChecksum();
+
+    int translateOffset(int outOffset);
 
 
     /**

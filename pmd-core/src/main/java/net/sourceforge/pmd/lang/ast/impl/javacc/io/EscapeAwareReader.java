@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * A reader that may interpret escapes in its input text. It records
@@ -59,9 +60,9 @@ public class EscapeAwareReader extends Reader {
     /**
      * Translate all the input in the buffer. This is fed to a cursor initialized to zero.
      */
-    FragmentedDocCursor translate() throws IOException, MalformedSourceException {
+    TextDocument translate(TextDocument source) throws IOException, MalformedSourceException {
         readUnchecked(null, 0, Integer.MAX_VALUE);
-        return escapes.newCursor();
+        return escapes.build(source);
     }
 
 

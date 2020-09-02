@@ -5,8 +5,16 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.FragmentedDocCursor.Fragment;
+import java.io.IOException;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 final class FragmentedDocBuilder {
 
@@ -53,14 +61,12 @@ final class FragmentedDocBuilder {
         this.curOffInInput = endInInput;
     }
 
-    /**
-     * Finalize the construction process.
-     */
-    FragmentedDocCursor newCursor() {
+    TextDocument build(TextDocument document) {
         if (firstFragment == null) {
             // No deltas in whole document, there's a single fragment
             // This is the case for > 97% of Java files (source: OpenJDK)
-            return new FragmentedDocCursor(new Fragment(null, mainBuf.length(), mainBuf));
+            Fragment fragment = new Fragment(null, mainBuf.length(), mainBuf);
+            return new FragmentedTextDocument(document, fragment, fragment);
         } else {
             if (curOffInInput < mainBuf.length()) {
                 // there's some text left between the last fragment and the end of the doc
@@ -68,11 +74,15 @@ final class FragmentedDocBuilder {
                 Chars remainder = mainBuf.slice(curOffInInput, remLen);
                 lastFragment = new Fragment(lastFragment, remLen, remainder);
             }
-            return new FragmentedDocCursor(firstFragment);
+            return new FragmentedTextDocument(document, firstFragment, lastFragment);
         }
     }
 
     int inputOffsetAt(int outputOffset) {
+        return inputOffsetAt(outputOffset, firstFragment);
+    }
+
+    static int inputOffsetAt(int outputOffset, Fragment firstFragment) {
         Fragment f = firstFragment;
         if (f == null) {
             return outputOffset;
@@ -83,5 +93,139 @@ final class FragmentedDocBuilder {
             f = f.next;
         }
         return sum;
+    }
+
+    static class FragmentedTextDocument implements TextDocument {
+
+        private final Fragment firstFragment;
+        private final Chars text;
+        private final TextDocument base;
+
+        FragmentedTextDocument(TextDocument base, Fragment firstFragment, Fragment lastFragment) {
+            this.firstFragment = firstFragment;
+            this.text = toChars(firstFragment, lastFragment);
+            this.base = base;
+        }
+
+        private static Chars toChars(Fragment firstFragment, Fragment lastFragment) {
+            if (firstFragment == lastFragment) {
+                return firstFragment.getChars();
+            }
+            StringBuilder sb = new StringBuilder(lastFragment.outEnd());
+            Fragment f = firstFragment;
+            while (f.next != null) {
+                f.getChars().appendChars(sb);
+                f = f.next;
+            }
+
+            return Chars.wrap(sb);
+        }
+
+        @Override
+        public int translateOffset(int outputOffset) {
+            return base.translateOffset(inputOffsetAt(outputOffset, firstFragment));
+        }
+
+        @Override
+        public Chars getText() {
+            return text;
+        }
+
+        @Override
+        public long getChecksum() {
+            return base.getChecksum();
+        }
+
+        @Override
+        public LanguageVersion getLanguageVersion() {
+            return base.getLanguageVersion();
+        }
+
+        @Override
+        public String getPathId() {
+            return base.getPathId();
+        }
+
+        @Override
+        public String getDisplayName() {
+            return base.getDisplayName();
+        }
+
+        @Override
+        public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
+            throw new NotImplementedException("TODO");
+        }
+
+        @Override
+        public FileLocation toLocation(TextRegion region) {
+            return base.toLocation(TextRegion.fromBothOffsets(translateOffset(region.getStartOffset()),
+                                                              translateOffset(region.getEndOffset())));
+        }
+
+        @Override
+        public void close() throws IOException {
+            base.close();
+        }
+    }
+
+
+    static final class Fragment {
+
+        private final Chars chars;
+
+        final @Nullable Fragment prev;
+        @Nullable Fragment next;
+
+        private final int inLength;
+
+        Fragment(@Nullable Fragment prev, int inLength, Chars chars) {
+            this.chars = chars;
+            this.prev = prev;
+            this.inLength = inLength;
+            if (prev != null) {
+                prev.next = this;
+            }
+        }
+
+        public Chars getChars() {
+            return chars;
+        }
+
+        int outStart() {
+            return prev != null ? prev.outEnd() : 0;
+        }
+
+        int outLen() {
+            return chars.length();
+        }
+
+        int outEnd() {
+            return outStart() + outLen();
+        }
+
+        int inStart() {
+            return prev != null ? prev.inEnd() : 0;
+        }
+
+        int inLen() {
+            return inLength;
+        }
+
+        int inEnd() {
+            return inStart() + inLen();
+        }
+
+        int outToIn(int outOffset) {
+            return inStart() + (outOffset - outStart());
+        }
+
+        boolean contains(int outOffset) {
+            return outStart() <= outOffset && outEnd() > outOffset;
+        }
+
+        @Override
+        public String toString() {
+            return "Fragment[" + inStart() + ".." + inEnd() + " -> " + outStart() + ".." + outEnd() + "]" + chars;
+        }
     }
 }
