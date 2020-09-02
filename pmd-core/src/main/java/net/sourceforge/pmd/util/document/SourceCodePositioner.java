@@ -11,8 +11,11 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 /**
  * Wraps a piece of text, and converts absolute offsets to line/column
  * coordinates, and back. This is used by the {@link TextDocument} implementation.
+ *
+ * <p>This used to be public. We don't need it anymore, {@link TextDocument}
+ * is a higher level abstraction.
  */
-public final class SourceCodePositioner {
+final class SourceCodePositioner {
 
     // Idea from:
     // http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
@@ -203,7 +206,7 @@ public final class SourceCodePositioner {
         return builder.build(len);
     }
 
-    public static final class Builder {
+    static final class Builder {
 
         private int[] buf;
         private int count = 1; // note the first element of the buffer is always 0 (the offset of the first line)

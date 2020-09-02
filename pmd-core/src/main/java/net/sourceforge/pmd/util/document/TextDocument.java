@@ -135,7 +135,7 @@ public interface TextDocument extends Closeable {
 
 
     static TextDocument create(TextFile textFile) throws IOException {
-        return new TextDocumentImpl(textFile);
+        return new RootTextDocument(textFile);
     }
 
     /**

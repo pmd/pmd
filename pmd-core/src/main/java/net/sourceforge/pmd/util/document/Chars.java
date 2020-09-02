@@ -308,8 +308,21 @@ public final class Chars implements CharSequence {
     }
 
     /**
+     * Slice a region of text.
+     *
+     * @param region A region
+     *
+     * @throws IndexOutOfBoundsException If the region is not a valid range
+     */
+    public Chars slice(TextRegion region) {
+        return slice(region.getStartOffset(), region.getLength());
+    }
+
+    /**
      * Like {@link #subSequence(int, int)} but with offset + length instead
      * of start + end.
+     *
+     * @throws IndexOutOfBoundsException If the parameters are not a valid range
      */
     public Chars slice(int off, int len) {
         validateRange(off, len, this.len);

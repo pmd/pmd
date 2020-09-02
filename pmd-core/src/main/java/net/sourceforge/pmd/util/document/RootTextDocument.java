@@ -11,7 +11,12 @@ import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 
-final class TextDocumentImpl extends BaseCloseable implements TextDocument {
+/**
+ * A text document directly backed by a {@link TextFile}. In the future
+ * some other implementations of the interface may be eg views on part
+ * of another document.
+ */
+final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     private final TextFile backend;
 
@@ -25,7 +30,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private final String fileName;
     private final String pathId;
 
-    TextDocumentImpl(TextFile backend) throws IOException {
+    RootTextDocument(TextFile backend) throws IOException {
         this.backend = backend;
         this.content = backend.readContents();
         this.langVersion = backend.getLanguageVersion();
