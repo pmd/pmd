@@ -82,7 +82,7 @@ final class FragmentedDocCursor {
 
         if (cur == mark || cur.outStart() <= curOutPos - suffixLen) {
             // entire suffix is in the last fragment, fast path
-            cur.chars.appendChars(sb, curOutPos - cur.outStart - suffixLen, suffixLen);
+            cur.chars.appendChars(sb, curOutPos - cur.outStart() - suffixLen, suffixLen);
         } else {
             int suffixStart = curOutPos - suffixLen;
             Fragment f = findBackwards(suffixStart);
@@ -161,8 +161,6 @@ final class FragmentedDocCursor {
         final @Nullable Fragment prev;
         @Nullable Fragment next;
 
-        private final int outStart;
-        private final int inStart;
         private final int inLength;
 
         Fragment(@Nullable Fragment prev, int inLength, Chars chars) {
@@ -171,24 +169,19 @@ final class FragmentedDocCursor {
             this.inLength = inLength;
             if (prev != null) {
                 prev.next = this;
-                this.outStart = prev.outEnd();
-                this.inStart = prev.inEnd();
-            } else {
-                this.inStart = 0;
-                this.outStart = 0;
             }
         }
 
         void appendAbs(StringBuilder sb, int absOffset, int absEndOffset) {
-            chars.appendChars(sb, absOffset - outStart, absEndOffset - absOffset);
+            chars.appendChars(sb, absOffset - outStart(), absEndOffset - absOffset);
         }
 
         char charAt(int absPos) {
-            return chars.charAt(absPos - outStart);
+            return chars.charAt(absPos - outStart());
         }
 
         int outStart() {
-            return outStart;
+            return prev != null ? prev.outEnd() : 0;
         }
 
         int outLen() {
@@ -196,11 +189,11 @@ final class FragmentedDocCursor {
         }
 
         int outEnd() {
-            return outStart + outLen();
+            return outStart() + outLen();
         }
 
         int inStart() {
-            return inStart;
+            return prev != null ? prev.inEnd() : 0;
         }
 
         int inLen() {
@@ -208,7 +201,7 @@ final class FragmentedDocCursor {
         }
 
         int inEnd() {
-            return inStart + inLength;
+            return inStart() + inLen();
         }
 
         int outToIn(int outOffset) {
@@ -217,7 +210,7 @@ final class FragmentedDocCursor {
 
         @Override
         public String toString() {
-            return "Fragment[" + inStart + ".." + inEnd() + " -> " + outStart() + ".." + outEnd() + "]" + chars;
+            return "Fragment[" + inStart() + ".." + inEnd() + " -> " + outStart() + ".." + outEnd() + "]" + chars;
         }
     }
 }

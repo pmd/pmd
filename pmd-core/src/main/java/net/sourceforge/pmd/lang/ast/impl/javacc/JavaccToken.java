@@ -141,6 +141,11 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
+    public String getImage() {
+        return document.computeImage(this);
+    }
+
+    @Override
     public TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }

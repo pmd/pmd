@@ -61,7 +61,9 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
      */
-    Chars sliceText(TextRegion region);
+    default Chars sliceText(TextRegion region) {
+        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
+    }
 
 
     /**
