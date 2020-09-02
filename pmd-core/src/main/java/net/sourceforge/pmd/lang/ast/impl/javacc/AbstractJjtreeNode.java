@@ -50,7 +50,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public Chars getText() {
+    public final Chars getText() {
         return getTextDocument().sliceOriginalText(getTextRegion());
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public TextRegion getTextRegion() {
+    public final TextRegion getTextRegion() {
         return TextRegion.fromBothOffsets(getFirstToken().getStartOffset(),
                                           getLastToken().getEndOffset());
     }

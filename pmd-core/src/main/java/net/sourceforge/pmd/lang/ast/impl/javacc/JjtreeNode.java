@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.Reportable;
-import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Base interface for nodes that are produced by a JJTree parser. Our
@@ -21,12 +20,6 @@ public interface JjtreeNode<N extends JjtreeNode<N>> extends GenericNode<N>, Tex
 
     @Override
     Chars getText();
-
-    /**
-     * Returns the region delimiting the text of this node.
-     */
-    @Override
-    TextRegion getTextRegion();
 
 
     JavaccToken getFirstToken();

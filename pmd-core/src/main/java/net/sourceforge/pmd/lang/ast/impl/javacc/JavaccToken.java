@@ -145,7 +145,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
-    public TextRegion getRegion() {
+    public final TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 

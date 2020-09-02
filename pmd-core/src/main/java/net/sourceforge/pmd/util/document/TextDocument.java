@@ -66,8 +66,24 @@ public interface TextDocument extends Closeable {
      * @param region A region, in the coordinate system of this document
      *
      * @return The slice of the original text that corresponds to the region
+     *
+     * @throws IndexOutOfBoundsException If the region is not a valid range
      */
     Chars sliceOriginalText(TextRegion region);
+
+    /**
+     * Returns a slice of the source text. This is always equal to
+     * {@code getText().slice(region)}, as the text is the translated text.
+     *
+     * @param region A region, in the coordinate system of this document
+     *
+     * @return The slice of the original text that corresponds to the region
+     *
+     * @throws IndexOutOfBoundsException If the region is not a valid range
+     */
+    default Chars sliceTranslatedText(TextRegion region) {
+        return getText().slice(region);
+    }
 
 
     /**

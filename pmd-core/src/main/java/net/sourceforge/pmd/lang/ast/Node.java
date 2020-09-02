@@ -89,7 +89,7 @@ public interface Node extends Reportable {
     /**
      * Compare the coordinates of this node with the other one as if
      * with {@link FileLocation#COORDS_COMPARATOR}. The result is useless
-     * if both nodes are not from the same tree (todo check it?).
+     * if both nodes are not from the same tree.
      *
      * @param node Other node
      *
@@ -102,7 +102,7 @@ public interface Node extends Reportable {
     }
 
     // Those are kept here because they're handled specially as XPath
-    // attributes
+    // attributes, for now
 
     @Override
     default int getBeginLine() {
