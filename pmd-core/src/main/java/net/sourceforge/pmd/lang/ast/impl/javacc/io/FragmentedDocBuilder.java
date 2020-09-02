@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -61,12 +60,11 @@ final class FragmentedDocBuilder {
         this.curOffInInput = endInInput;
     }
 
-    TextDocument build(TextDocument document) {
+    TextDocument build(TextDocument original) {
         if (firstFragment == null) {
             // No deltas in whole document, there's a single fragment
             // This is the case for > 97% of Java files (source: OpenJDK)
-            Fragment fragment = new Fragment(null, mainBuf.length(), mainBuf);
-            return new FragmentedTextDocument(document, fragment, fragment);
+            return original;
         } else {
             if (curOffInInput < mainBuf.length()) {
                 // there's some text left between the last fragment and the end of the doc
@@ -74,7 +72,7 @@ final class FragmentedDocBuilder {
                 Chars remainder = mainBuf.slice(curOffInInput, remLen);
                 lastFragment = new Fragment(lastFragment, remLen, remainder);
             }
-            return new FragmentedTextDocument(document, firstFragment, lastFragment);
+            return new FragmentedTextDocument(original, firstFragment, lastFragment);
         }
     }
 
@@ -123,6 +121,8 @@ final class FragmentedDocBuilder {
 
         @Override
         public int translateOffset(int outputOffset) {
+            // todo this would be pretty slow when there are many escapes
+            // we could check save the fragment last accessed and
             return base.translateOffset(inputOffsetAt(outputOffset, firstFragment));
         }
 
@@ -153,7 +153,7 @@ final class FragmentedDocBuilder {
 
         @Override
         public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
-            throw new NotImplementedException("TODO");
+            return base.createLineRange(startLineInclusive, endLineInclusive);
         }
 
         @Override
@@ -177,6 +177,8 @@ final class FragmentedDocBuilder {
         @Nullable Fragment next;
 
         private final int inLength;
+        private final int outStart;
+        private final int inStart;
 
         Fragment(@Nullable Fragment prev, int inLength, Chars chars) {
             this.chars = chars;
@@ -184,6 +186,11 @@ final class FragmentedDocBuilder {
             this.inLength = inLength;
             if (prev != null) {
                 prev.next = this;
+                this.outStart = prev.outEnd();
+                this.inStart = prev.inEnd();
+            } else {
+                this.outStart = 0;
+                this.inStart = 0;
             }
         }
 
@@ -192,7 +199,7 @@ final class FragmentedDocBuilder {
         }
 
         int outStart() {
-            return prev != null ? prev.outEnd() : 0;
+            return outStart;
         }
 
         int outLen() {
@@ -204,7 +211,7 @@ final class FragmentedDocBuilder {
         }
 
         int inStart() {
-            return prev != null ? prev.inEnd() : 0;
+            return inStart;
         }
 
         int inLen() {

@@ -13,6 +13,7 @@ import java.io.Reader;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -60,7 +61,7 @@ public class EscapeAwareReader extends Reader {
     /**
      * Translate all the input in the buffer. This is fed to a cursor initialized to zero.
      */
-    TextDocument translate(TextDocument source) throws IOException, MalformedSourceException {
+    public TextDocument translate(TextDocument source) throws IOException, MalformedSourceException {
         readUnchecked(null, 0, Integer.MAX_VALUE);
         return escapes.build(source);
     }

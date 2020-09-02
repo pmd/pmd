@@ -63,6 +63,11 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public Chars getText() {
+        return content.getNormalizedText();
+    }
+
+    @Override
     public FileLocation toLocation(TextRegion region) {
         checkInRange(region);
         SourceCodePositioner positioner = content.getPositioner();

@@ -11,7 +11,7 @@ import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.util.document.CpdCompat;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextFile;

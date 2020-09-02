@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.io.IOException;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -22,6 +24,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     final StringPool stringPool = new StringPool();
 
     private JavaccToken first;
+    private TextDocument translatedDocument;
 
     public JavaccTokenDocument(TextDocument textDocument) {
         super(textDocument);
@@ -47,6 +50,11 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return new EscapeAwareReader(text);
     }
 
+    final void translate() throws IOException, MalformedSourceException {
+        try (EscapeAwareReader reader = newReader(getTextDocument().getText())) {
+            translatedDocument = reader.translate(getTextDocument());
+        }
+    }
 
     /**
      * Open the document. This is only meant to be used by a Javacc-generated

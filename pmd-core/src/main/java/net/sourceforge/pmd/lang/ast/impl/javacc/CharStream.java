@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.javacc.io;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 
 import java.io.EOFException;
 import java.io.IOException;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -28,9 +28,9 @@ public final class CharStream {
     private int curOffset;
     private int markOffset = -1;
 
-    private CharStream(JavaccTokenDocument tokenDoc, TextDocument textDoc) {
+    private CharStream(JavaccTokenDocument tokenDoc) {
         this.tokenDoc = tokenDoc;
-        this.textDoc = textDoc;
+        this.textDoc = tokenDoc.getTextDocument();
         this.chars = textDoc.getText();
         this.useMarkSuffix = tokenDoc.useMarkSuffix();
     }
@@ -39,9 +39,8 @@ public final class CharStream {
      * Create a new char stream for the given document.
      */
     public static CharStream create(JavaccTokenDocument doc) throws IOException, MalformedSourceException {
-        try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
-            return new CharStream(doc, reader.translate(doc.getTextDocument()));
-        }
+        doc.translate();
+        return new CharStream(doc);
     }
 
     /**
