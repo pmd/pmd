@@ -50,6 +50,12 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return new EscapeAwareReader(text);
     }
 
+    @Override
+    public TextDocument getTextDocument() {
+        return translatedDocument == null ? super.getTextDocument()
+                                          : translatedDocument;
+    }
+
     final void translate() throws IOException, MalformedSourceException {
         try (EscapeAwareReader reader = newReader(getTextDocument().getText())) {
             translatedDocument = reader.translate(getTextDocument());

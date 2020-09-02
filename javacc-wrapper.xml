@@ -407,7 +407,7 @@ public final class ${token-constants-name} \{${line.separator}
     * be used as a basis for a CPD Tokenizer.
     */
   @net.sourceforge.pmd.annotation.InternalApi
-  public static net.sourceforge.pmd.lang.TokenManager<%%%API_PACK%%%.impl.javacc.JavaccToken> newTokenManager(%%%API_PACK%%%.impl.javacc.io.CharStream cs) {
+  public static net.sourceforge.pmd.lang.TokenManager<%%%API_PACK%%%.impl.javacc.JavaccToken> newTokenManager(%%%API_PACK%%%.impl.javacc.CharStream cs) {
     return new %%%TOKEN_MGR_NAME%%%(cs);
   }
 

@@ -154,7 +154,7 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.*;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParserImpl {

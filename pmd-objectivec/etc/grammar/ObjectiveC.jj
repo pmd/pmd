@@ -21,7 +21,7 @@ package net.sourceforge.pmd.lang.objectivec.ast;
 import java.io.*;
 import java.util.*;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**

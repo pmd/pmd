@@ -53,8 +53,8 @@ public class CharStreamImplTest {
         try {
             stream.readChar();
         } catch (Exception e) {
-            assertEquals(stream.getStartOffset(), 0);
-            assertEquals(stream.getEndOffset(), 0);
+            assertEquals(0, stream.getStartOffset());
+            assertEquals(0, stream.getEndOffset());
             throw e;
         }
     }
@@ -162,8 +162,9 @@ public class CharStreamImplTest {
         assertEquals('c', stream.markTokenStart());
         assertEquals('d', stream.readChar());
 
+        stream.backup(2); // ok
         expect.expect(IllegalArgumentException.class);
-        stream.backup(10);
+        stream.backup(1);
     }
 
     @Test

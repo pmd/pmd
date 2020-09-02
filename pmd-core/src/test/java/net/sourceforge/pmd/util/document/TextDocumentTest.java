@@ -43,7 +43,7 @@ public class TextDocumentTest {
         TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
 
         TextRegion region = TextRegion.fromOffsetLength(0, "bonjour\n".length());
-        assertEquals("bonjour\n", doc.sliceText(region).toString());
+        assertEquals("bonjour\n", doc.sliceOriginalText(region).toString());
         FileLocation withLines = doc.toLocation(region);
 
         assertEquals(1, withLines.getBeginLine());
@@ -60,7 +60,7 @@ public class TextDocumentTest {
         //                                                               We consider it's part of the next line
 
         TextRegion region = TextRegion.fromOffsetLength("bonjour\n".length(), 0);
-        assertEquals("", doc.sliceText(region).toString());
+        assertEquals("", doc.sliceOriginalText(region).toString());
 
         FileLocation withLines = doc.toLocation(region);
 
@@ -78,7 +78,7 @@ public class TextDocumentTest {
 
 
         TextRegion region = TextRegion.fromOffsetLength("bonjour".length(), 1);
-        assertEquals("\n", doc.sliceText(region).toString());
+        assertEquals("\n", doc.sliceOriginalText(region).toString());
 
         FileLocation withLines = doc.toLocation(region);
 

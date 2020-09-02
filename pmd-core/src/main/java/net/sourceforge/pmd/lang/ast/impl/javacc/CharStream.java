@@ -26,7 +26,7 @@ public final class CharStream {
     private final Chars chars;
     private final boolean useMarkSuffix;
     private int curOffset;
-    private int markOffset = -1;
+    private int markOffset;
 
     private CharStream(JavaccTokenDocument tokenDoc) {
         this.tokenDoc = tokenDoc;
@@ -120,9 +120,12 @@ public final class CharStream {
      * be used again as the prefix of the next token.
      *
      * @throws AssertionError If the requested amount is greater than the
-     *                        number of read chars
+     *                        length of the mark
      */
     public void backup(int amount) {
+        if (amount > markLen()) {
+            throw new IllegalArgumentException();
+        }
         curOffset -= amount;
     }
 
@@ -149,15 +152,15 @@ public final class CharStream {
     }
 
 
-    /** Returns the start offset of the current token (in the original source), inclusive. */
+    /** Returns the start offset of the current token (in the translated source), inclusive. */
     public int getStartOffset() {
-        return textDoc.translateOffset(markOffset);
+        return markOffset;
     }
 
 
-    /** Returns the end offset of the current token (in the original source), exclusive. */
+    /** Returns the end offset of the current token (in the translated source), exclusive. */
     public int getEndOffset() {
-        return textDoc.translateOffset(curOffset);
+        return curOffset;
     }
 
 

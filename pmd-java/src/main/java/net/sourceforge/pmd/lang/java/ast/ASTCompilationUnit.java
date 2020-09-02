@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -42,11 +41,11 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return doc;
     }
 
-    void addTaskInfo(ParserTask task) {
-        this.doc = task.getTextDocument();
+    void addTaskInfo(TextDocument translatedDoc) {
+        this.doc = translatedDoc;
     }
 
-    void setComments(List<Comment> comments) {
+     void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 

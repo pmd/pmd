@@ -51,7 +51,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public Chars getText() {
-        return getTextDocument().sliceText(getTextRegion());
+        return getTextDocument().sliceOriginalText(getTextRegion());
     }
 
     @Override

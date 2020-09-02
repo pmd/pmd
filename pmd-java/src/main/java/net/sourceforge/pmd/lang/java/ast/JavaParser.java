@@ -40,7 +40,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
-        acu.addTaskInfo(task);
+        acu.addTaskInfo(cs.getTokenDocument().getTextDocument()); // this is the translated document != task.getTextDocument()
         checker.check(acu);
         return acu;
     }

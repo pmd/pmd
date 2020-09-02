@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import java.io.IOException;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -80,49 +81,44 @@ final class FragmentedDocBuilder {
         return inputOffsetAt(outputOffset, firstFragment);
     }
 
-    static int inputOffsetAt(int outputOffset, Fragment firstFragment) {
+    static int inputOffsetAt(int outputOffset, @Nullable Fragment firstFragment) {
         Fragment f = firstFragment;
         if (f == null) {
             return outputOffset;
         }
-        int sum = outputOffset;
-        while (f != null && f.inStart() < sum) {
-            sum += f.inLen();
+        while (f.next != null && f.inEnd() < outputOffset) {
             f = f.next;
         }
-        return sum;
+        return f.outToIn(outputOffset);
     }
 
-    static class FragmentedTextDocument implements TextDocument {
+    static final class FragmentedTextDocument implements TextDocument {
 
         private final Fragment firstFragment;
         private final Chars text;
         private final TextDocument base;
 
         FragmentedTextDocument(TextDocument base, Fragment firstFragment, Fragment lastFragment) {
+            assert firstFragment != lastFragment; // NOPMD
             this.firstFragment = firstFragment;
             this.text = toChars(firstFragment, lastFragment);
             this.base = base;
         }
 
         private static Chars toChars(Fragment firstFragment, Fragment lastFragment) {
-            if (firstFragment == lastFragment) {
-                return firstFragment.getChars();
-            }
             StringBuilder sb = new StringBuilder(lastFragment.outEnd());
             Fragment f = firstFragment;
-            while (f.next != null) {
+            while (f != null) {
                 f.getChars().appendChars(sb);
                 f = f.next;
             }
-
             return Chars.wrap(sb);
         }
 
         @Override
         public int translateOffset(int outputOffset) {
-            // todo this would be pretty slow when there are many escapes
-            // we could check save the fragment last accessed and
+            // todo this would be pretty slow when we're in the middle of some escapes
+            // we could check save the fragment last accessed to speed it up, and look forwards & backwards
             return base.translateOffset(inputOffsetAt(outputOffset, firstFragment));
         }
 
@@ -157,9 +153,19 @@ final class FragmentedDocBuilder {
         }
 
         @Override
+        public Chars sliceOriginalText(TextRegion region) {
+            return base.sliceOriginalText(translateRegion(region));
+        }
+
+        @Override
         public FileLocation toLocation(TextRegion region) {
-            return base.toLocation(TextRegion.fromBothOffsets(translateOffset(region.getStartOffset()),
-                                                              translateOffset(region.getEndOffset())));
+            return base.toLocation(translateRegion(region));
+        }
+
+        @Override
+        public @NonNull TextRegion translateRegion(TextRegion region) {
+            return TextRegion.fromBothOffsets(translateOffset(region.getStartOffset()),
+                                              translateOffset(region.getEndOffset()));
         }
 
         @Override
@@ -168,7 +174,10 @@ final class FragmentedDocBuilder {
         }
     }
 
-
+    /**
+     * A delta from the original text to the translated text. This maps
+     * a region of the original document to some new characters.
+     */
     static final class Fragment {
 
         private final Chars chars;

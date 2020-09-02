@@ -57,11 +57,17 @@ public interface TextDocument extends Closeable {
     Chars getText();
 
     /**
-     * Returns a region of the {@linkplain #getText() text} as a character sequence.
+     * Returns a slice of the original text. Note that this is not the
+     * same as {@code getText().subsequence}, as if this document has
+     * translated escapes, the returned char slice will contain the
+     * untranslated escapes, whereas {@link #getText()} would return
+     * the translated characters.
+     *
+     * @param region A region, in the coordinate system of this document
+     *
+     * @return The slice of the original text that corresponds to the region
      */
-    default Chars sliceText(TextRegion region) {
-        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
-    }
+    Chars sliceOriginalText(TextRegion region);
 
 
     /**
@@ -71,7 +77,30 @@ public interface TextDocument extends Closeable {
      */
     long getChecksum();
 
+
+    /**
+     * Returns the input offset for the given output offset. This maps
+     * back an offset in the coordinate system of this document, to the
+     * coordinate system of the original document.
+     *
+     * @param outOffset Output offset
+     *
+     * @return Input offset
+     */
     int translateOffset(int outOffset);
+
+    /**
+     * Translate a region given in the the coordinate system of this
+     * document, to the coordinate system of the original document.
+     * This works as if creating a new region with both start and end
+     * offsets translated through {@link #translateOffset(int)}. The
+     * returned region may have a different length.
+     *
+     * @param region Output region
+     *
+     * @return Input region
+     */
+    TextRegion translateRegion(TextRegion region);
 
 
     /**
@@ -152,6 +181,7 @@ public interface TextDocument extends Closeable {
      *
      * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
      */
+    @SuppressWarnings("PMD.CloseResource")
     static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {

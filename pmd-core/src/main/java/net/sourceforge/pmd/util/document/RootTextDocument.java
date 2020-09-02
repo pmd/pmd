@@ -116,6 +116,16 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         return outOffset;
     }
 
+    @Override
+    public TextRegion translateRegion(TextRegion region) {
+        return region;
+    }
+
+    @Override
+    public Chars sliceOriginalText(TextRegion region) {
+        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
+    }
+
     private static final String NOT_IN_RANGE = "Region [start=%d, end=%d[ is not in range of this document (length %d)";
     private static final String INVALID_LINE_RANGE = "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
 

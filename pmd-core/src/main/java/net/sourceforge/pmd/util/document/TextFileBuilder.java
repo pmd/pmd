@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 /**
  * A builder for a new text file.
  */
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public abstract class TextFileBuilder {
 
     protected final LanguageVersion languageVersion;
