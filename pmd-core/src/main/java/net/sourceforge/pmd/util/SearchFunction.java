@@ -12,7 +12,7 @@ public interface SearchFunction<E> {
     /**
      * Applies the search function over a single element.
      * @param o The element to analyze.
-     * @return True if the search should continue, false otherwhise.
+     * @return True if the search should continue, false otherwise.
      */
     boolean applyTo(E o);
 }

@@ -438,7 +438,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             ASTStatement lastChild = children.get(children.size() - 1);
 
             // Push on stack if this Node is the LAST Statement associated with
-            // the FOR Statment
+            // the FOR Statement
             if (node.equals(lastChild)) {
                 dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
                 if (LOGGER.isLoggable(Level.FINEST)) {
@@ -455,7 +455,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             ASTStatement lastChild = children.get(children.size() - 1);
 
             // Push on stack if this Node is the LAST Statement associated with
-            // the FOR Statment
+            // the FOR Statement
             if (node.equals(lastChild)) {
                 dataFlow.pushOnStack(NodeType.FOR_END, dataFlow.getLast());
                 if (LOGGER.isLoggable(Level.FINEST)) {
