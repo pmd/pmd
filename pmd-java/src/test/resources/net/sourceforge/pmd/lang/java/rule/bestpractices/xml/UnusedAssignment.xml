@@ -3160,7 +3160,7 @@ public class UnusedAssignmentNative {
     </test-code>
 
     <test-code>
-        <description>False positive with try in loop? #2759</description>
+        <description>False positive with method that may throw in forked state (the if state) #2759</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Test {
