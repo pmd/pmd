@@ -51,9 +51,8 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
      * @see #getTypeMirror()
      */
     public JMethodSig getFunctionalMethod() {
-        // force evaluation
-        getTypeMirror();
-        return functionalMethod;
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(functionalMethod);
     }
 
     void setFunctionalMethod(@Nullable JMethodSig functionalMethod) {

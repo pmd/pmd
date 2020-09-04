@@ -449,7 +449,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context
                 ASTLambdaExpression lambda = id.ancestors(ASTLambdaExpression.class).firstOrThrow();
-                lambda.getTypeMirror(); // force resolution, noop if we're already doing its resolution
+                lambda.forceTypeResolution(); // noop if we're already doing its resolution
             }
         }
 

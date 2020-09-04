@@ -63,7 +63,7 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
 
     @Override
     public @Nullable FieldSig getSignature() {
-        getTypeMirror(); // force evaluation
+        forceTypeResolution();
         return typedSym;
     }
 

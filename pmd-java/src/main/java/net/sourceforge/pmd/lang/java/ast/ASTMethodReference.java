@@ -127,9 +127,8 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * @see #getTypeMirror()
      */
     public JMethodSig getFunctionalMethod() {
-        // force evaluation
-        getTypeMirror();
-        return functionalMethod;
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(functionalMethod);
     }
 
     /**
@@ -146,9 +145,8 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * @see #getTypeMirror()
      */
     public JMethodSig getReferencedMethod() {
-        // force evaluation
-        getTypeMirror();
-        return compileTimeDecl;
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(compileTimeDecl);
     }
 
     void setFunctionalMethod(JMethodSig methodType) {

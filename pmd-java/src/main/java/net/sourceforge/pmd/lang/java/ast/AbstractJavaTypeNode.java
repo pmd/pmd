@@ -23,6 +23,15 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
         super(i);
     }
 
+    void forceTypeResolution() {
+        getTypeMirror();
+    }
+
+    <T> T assertNonNullAfterTypeRes(T value) {
+        assert value != null : "Something went wrong after type resolution of " + this;
+        return value;
+    }
+
     @Override
     public @NonNull JTypeMirror getTypeMirror() {
         if (typeMirror == null) {

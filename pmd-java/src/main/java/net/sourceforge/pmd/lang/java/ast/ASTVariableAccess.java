@@ -60,7 +60,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     @Override
     public @Nullable JVariableSig getSignature() {
         if (typedSym == null) {
-            getTypeMirror(); // force evaluation
+            forceTypeResolution(); // this will do it only once, even if it fails
         }
         return typedSym;
     }

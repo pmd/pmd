@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -103,8 +101,8 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
 
     @Override
     public OverloadSelectionResult getOverloadSelectionInfo() {
-        getTypeMirror(); // force evaluation
-        return Objects.requireNonNull(result, "null result");
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(result);
     }
 
     void setOverload(OverloadSelectionResult result) {

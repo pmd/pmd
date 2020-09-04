@@ -89,8 +89,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
 
     @Override
     public OverloadSelectionResult getOverloadSelectionInfo() {
-        getTypeMirror(); // force evaluation
-        assert result != null : "Something went wrong during overload resolution for " + this;
-        return result;
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(result);
     }
 }
