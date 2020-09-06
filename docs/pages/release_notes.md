@@ -16,9 +16,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+* pmd-java
+   * [#2708](https://github.com/pmd/pmd/pull/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
+
+
 ### API Changes
 
 ### External Contributions
+
+* [#2747](https://github.com/pmd/pmd/pull/2747): \[java] Don't trigger FinalFieldCouldBeStatic when field is annotated with lombok @Builder.Default - [Ollie Abbey](https://github.com/ollieabbey)
 
 {% endtocmaker %}
 

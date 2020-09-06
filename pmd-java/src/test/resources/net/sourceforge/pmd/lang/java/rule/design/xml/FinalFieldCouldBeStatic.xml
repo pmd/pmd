@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>simple failure case</description>
@@ -98,6 +98,57 @@ interface Test {
         <code><![CDATA[
 public @interface MetricType {
     int CHECKBOX = 0, COUNTER = 1, SPINNER = 2, NOTE = 3, STOPWATCH = 4, HEADER = 5;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - False positive with lombok @Builder.Default fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import not.lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should trigger multiple times for fields declared on one line</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+public class ExampleClass {
+
+    private final String one = "one", two = "two";
 }
         ]]></code>
     </test-code>

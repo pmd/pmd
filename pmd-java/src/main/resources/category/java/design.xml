@@ -740,8 +740,11 @@ in each object at runtime.
 <![CDATA[
 //FieldDeclaration
  [@Final= true() and @Static= false()]
-   /VariableDeclarator/VariableInitializer/Expression
-    /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal
+ [not(preceding-sibling::Annotation/MarkerAnnotation/Name[@Image="Builder.Default"]
+    and //ImportDeclaration/Name[@Image="lombok.Builder"])]
+/VariableDeclarator
+ [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal]
+/VariableDeclaratorId
 ]]>
                 </value>
             </property>
