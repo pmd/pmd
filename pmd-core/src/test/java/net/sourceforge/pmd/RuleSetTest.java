@@ -17,7 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +35,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -444,7 +444,7 @@ public class RuleSetTest {
 
     private void verifyRuleSet(RuleSet ruleset, Set<RuleViolation> expected) throws Exception {
 
-        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         assertEquals("Invalid number of Violations Reported", expected.size(), report.getViolations().size());
 
@@ -457,16 +457,16 @@ public class RuleSetTest {
         }
     }
 
-    private List<Node> makeCompilationUnits() {
+    private RootNode makeCompilationUnits() {
         return makeCompilationUnits("sampleFile.dummy");
     }
 
-    private List<Node> makeCompilationUnits(String filename) {
+    private RootNode makeCompilationUnits(String filename) {
         DummyRoot node = new DummyRoot();
         node.setCoords(1, 1, 10, 1);
         node.setImage("Foo");
         node.withFileName(filename);
-        return Collections.singletonList(node);
+        return node;
     }
 
     @Test
@@ -480,7 +480,7 @@ public class RuleSetTest {
                 })
                 .build();
 
-        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
@@ -504,7 +504,7 @@ public class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
@@ -541,7 +541,7 @@ public class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReport(ctx -> ruleset.apply(makeCompilationUnits(), ctx));
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertEquals("Errors expected", 1, errors.size());

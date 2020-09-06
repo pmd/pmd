@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
@@ -537,34 +536,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * Triggers that start lifecycle event on each rule in this ruleset. Some
-     * rules perform initialization tasks on start.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void start(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.start(ctx);
-        }
-    }
-
-    /**
-     * Executes the rules in this ruleset against each of the given nodes.
-     *
-     * @param acuList
-     *            the node list, usually the root nodes like compilation units
-     * @param ctx
-     *            the current context
-     *
-     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
-     */
-    @Deprecated
-    public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        new RuleSets(this).apply(acuList, ctx);
-    }
-
-    /**
      * Does the given Rule apply to the given LanguageVersion? If so, the
      * Language must be the same and be between the minimum and maximums
      * versions on the Rule.
@@ -583,19 +554,6 @@ public class RuleSet implements ChecksumAware {
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
-    }
-
-    /**
-     * Triggers the end lifecycle event on each rule in the ruleset. Some rules
-     * perform a final summary calculation or cleanup in the end.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void end(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.end(ctx);
-        }
     }
 
     /**

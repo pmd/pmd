@@ -4,43 +4,52 @@
 
 package net.sourceforge.pmd;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
-
-import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class RuleContextTest {
 
-    public static Report getReport(Consumer<RuleContext> sideEffects) throws Exception {
+    public static Report getReport(Consumer<FileAnalysisListener> sideEffects) throws Exception {
         ReportBuilderListener listener = new ReportBuilderListener();
         try {
-            sideEffects.accept(RuleContext.create(listener));
+            sideEffects.accept(listener);
         } finally {
             listener.close();
         }
         return listener.getResult();
     }
 
+    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) throws Exception {
+        return getReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
+    }
+
+    public static Report getReportForRuleApply(Rule rule, Node node) throws Exception {
+        return getReport(rule, (r, ctx) -> r.apply(node, ctx));
+    }
+    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) throws Exception {
+        return getReport(listener-> new RuleSets(ruleset).apply(node, listener));
+    }
+
     @Test
     public void testMessage() throws Exception {
-        Report report = getReport(ctx -> ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
+        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
 
         Assert.assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
 
     @Test
     public void testMessageArgs() throws Exception {
-        Report report = getReport(ctx -> ctx.addViolationWithMessage(new FooRule(), DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1"));
+        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1"));
 
         Assert.assertEquals("message with 1 argument: \"testarg1\"", report.getViolations().get(0).getDescription());
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(RuleContextTest.class);
     }
 }

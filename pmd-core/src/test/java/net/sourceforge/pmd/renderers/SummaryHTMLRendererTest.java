@@ -16,8 +16,10 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -149,6 +151,11 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         DummyRoot root = new DummyRoot(Collections.singletonMap(1, "test")).withFileName("");
         root.setCoords(1, 10, 4, 5);
 
-        return RuleContextTest.getReport(ctx -> ctx.addViolationWithPosition(new FooRule(), root, 1, 1, "suppress test"));
+        return RuleContextTest.getReportForRuleApply(new FooRule() {
+            @Override
+            public void apply(Node node, RuleContext ctx) {
+                ctx.addViolationWithPosition(node, 1, 1, "suppress test");
+            }
+        }, root);
     }
 }

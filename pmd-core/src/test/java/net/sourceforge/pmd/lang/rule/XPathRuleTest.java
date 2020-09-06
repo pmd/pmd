@@ -45,7 +45,7 @@ public class XPathRuleTest {
         DummyNode firstNode = newNode();
 
         // with another rule forked from the same one (in multithreaded processor)
-        Report report = RuleContextTest.getReport(ctx -> xpr.apply(firstNode, ctx));
+        Report report = RuleContextTest.getReportForRuleApply(xpr, firstNode);
         assertEquals(1, report.getViolations().size());
 
         String log = loggingRule.getLog();
@@ -56,7 +56,7 @@ public class XPathRuleTest {
         loggingRule.clear();
 
         // with another node
-        report = RuleContextTest.getReport(ctx -> xpr.apply(newNode(), ctx));
+        report = RuleContextTest.getReportForRuleApply(xpr, newNode());
 
         assertEquals(1, report.getViolations().size());
 
@@ -64,7 +64,7 @@ public class XPathRuleTest {
 
 
         // with another rule forked from the same one (in multithreaded processor)
-        report = RuleContextTest.getReport(ctx -> xpr.deepCopy().apply(newNode(), ctx));
+        report = RuleContextTest.getReportForRuleApply(xpr.deepCopy(), newNode());
 
         assertEquals(1, report.getViolations().size());
 
@@ -74,7 +74,7 @@ public class XPathRuleTest {
         XPathRule otherRule = makeRule(version, "OtherRule");
         otherRule.setRuleSetName("rset.xml");
 
-        report = RuleContextTest.getReport(ctx -> otherRule.apply(firstNode, ctx));
+        report = RuleContextTest.getReportForRuleApply(otherRule, firstNode);
 
         assertEquals(1, report.getViolations().size());
 

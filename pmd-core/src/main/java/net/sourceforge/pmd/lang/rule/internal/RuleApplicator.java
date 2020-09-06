@@ -15,6 +15,8 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
@@ -33,19 +35,18 @@ public class RuleApplicator {
     }
 
 
-    public void index(Collection<? extends Node> nodes) {
+    public void index(RootNode root) {
         idx.reset();
-        for (Node root : nodes) {
-            indexTree(root, idx);
-        }
+        indexTree(root, idx);
     }
 
-    public void apply(Collection<? extends Rule> rules, RuleContext ctx) {
-        applyOnIndex(idx, rules, ctx);
+    public void apply(Collection<? extends Rule> rules, FileAnalysisListener listener) {
+        applyOnIndex(idx, rules, listener);
     }
 
-    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, RuleContext ctx) {
+    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
+            RuleContext ctx = RuleContext.create(listener, rule);
 
             Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
             while (targets.hasNext()) {
@@ -60,7 +61,7 @@ public class RuleApplicator {
                 } catch (RuntimeException e) {
                     // The listener handles logging if needed,
                     // it may also rethrow the error.
-                    ctx.reportError(new ProcessingError(e, node.getSourceCodeFile()));
+                    listener.onError(new ProcessingError(e, node.getSourceCodeFile()));
                 }
             }
         }

@@ -40,7 +40,7 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
      * @implNote Call super
      */
     @Override
-    public void close() throws Exception {
+    public void close() {
         closed = true;
     }
 }

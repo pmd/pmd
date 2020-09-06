@@ -6,11 +6,9 @@ package net.sourceforge.pmd.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -67,7 +65,6 @@ abstract class PmdRunnable implements Runnable {
         RuleSets ruleSets = getRulesets();
 
         try (FileAnalysisListener listener = ruleContext.startFileAnalysis(dataSource)) {
-            final RuleContext ruleCtx = RuleContext.create(listener);
 
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
 
@@ -75,16 +72,16 @@ abstract class PmdRunnable implements Runnable {
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(file)) {
                 if (configuration.getAnalysisCache().isUpToDate(file)) {
-                    reportCachedRuleViolations(ruleCtx, file);
+                    reportCachedRuleViolations(listener, file);
                 } else {
                     try {
-                        processSource(ruleCtx, langVersion, ruleSets);
+                        processSource(listener, langVersion, ruleSets);
                     } catch (Exception e) {
                         configuration.getAnalysisCache().analysisFailed(file);
 
                         // The listener handles logging if needed,
                         // it may also rethrow the error, as a FileAnalysisException (which we let through below)
-                        ruleCtx.reportError(new Report.ProcessingError(e, file.getPath()));
+                        listener.onError(new Report.ProcessingError(e, file.getPath()));
                     }
                 }
             }
@@ -97,23 +94,17 @@ abstract class PmdRunnable implements Runnable {
         TimeTracker.finishThread();
     }
 
-    private void processSource(RuleContext ruleCtx, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
+    private void processSource(FileAnalysisListener listener, LanguageVersion languageVersion, RuleSets ruleSets) throws IOException, FileAnalysisException {
         String fullSource = DataSource.readToString(dataSource, configuration.getSourceEncoding());
         String filename = dataSource.getNiceFileName(false, null);
 
-        try {
-            ruleSets.start(ruleCtx);
-            processSource(fullSource, ruleSets, ruleCtx, languageVersion, filename);
-        } finally {
-            ruleSets.end(ruleCtx);
-        }
-
+        processSource(fullSource, ruleSets, listener, languageVersion, filename);
     }
 
 
-    private void reportCachedRuleViolations(final RuleContext ctx, File file) {
+    private void reportCachedRuleViolations(final FileAnalysisListener ctx, File file) {
         for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(file)) {
-            ctx.addViolationNoSuppress(rv);
+            ctx.onRuleViolation(rv);
         }
     }
 
@@ -126,7 +117,7 @@ abstract class PmdRunnable implements Runnable {
 
     private void processSource(String sourceCode,
                                RuleSets ruleSets,
-                               RuleContext ctx,
+                               FileAnalysisListener listener,
                                LanguageVersion languageVersion,
                                String filename) throws FileAnalysisException {
 
@@ -144,7 +135,7 @@ abstract class PmdRunnable implements Runnable {
 
         dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
-        ruleSets.apply(Collections.singletonList(rootNode), ctx);
+        ruleSets.apply(rootNode, listener);
     }
 
 }
