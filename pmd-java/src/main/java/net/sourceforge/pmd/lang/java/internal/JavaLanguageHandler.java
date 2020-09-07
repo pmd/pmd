@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
@@ -81,6 +82,10 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         return JavaRuleViolationFactory.INSTANCE;
     }
 
+    @Override
+    public ViolationDecorator getViolationDecorator() {
+        return JavaViolationDecorator.INSTANCE;
+    }
 
     @Override
     public LanguageMetricsProvider getLanguageMetricsProvider() {

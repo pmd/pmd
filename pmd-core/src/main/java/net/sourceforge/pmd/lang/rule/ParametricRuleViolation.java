@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.util.Collections;
+import java.util.Map;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -11,6 +14,8 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.TransparentDataMap;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
@@ -112,6 +117,11 @@ public class ParametricRuleViolation implements RuleViolation {
     @Override
     public String getVariableName() {
         return variableName;
+    }
+
+    @Override
+    public Map<String, String> getAdditionalInfo() {
+        return Collections.emptyMap();
     }
 
     @Override

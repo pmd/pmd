@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -121,4 +122,13 @@ public interface ViolationSuppressor {
     SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node);
 
 
+    static @Nullable SuppressedViolation suppressOrNull(List<ViolationSuppressor> suppressorList, RuleViolation rv, Node node) {
+        for (ViolationSuppressor suppressor : suppressorList) {
+            SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
+            if (suppressed != null) {
+                return suppressed;
+            }
+        }
+        return null;
+    }
 }

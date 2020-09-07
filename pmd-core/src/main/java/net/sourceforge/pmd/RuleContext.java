@@ -4,14 +4,19 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
@@ -19,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -37,6 +43,9 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
+    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+                                                                                ViolationSuppressor.REGEX_SUPPRESSOR,
+                                                                                ViolationSuppressor.XPATH_SUPPRESSOR);
 
     private final FileAnalysisListener listener;
     private final Rule rule;
@@ -127,17 +136,19 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        LanguageVersionHandler handler = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler();
+        RuleViolationFactory fact = handler.getRuleViolationFactory();
 
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
             location = FileLocation.location(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
+        violation = ViolationDecorator.apply(handler.getViolationDecorator(), violation, location);
 
         RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));
 
-        SuppressedViolation suppressed = fact.suppressOrNull(node, violation);
+        SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
@@ -146,10 +157,18 @@ public final class RuleContext {
         }
     }
 
+    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
+        SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressor(), rv, location);
+        if (suppressed == null) {
+            suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
+        }
+        return suppressed;
+    }
+
     /**
      * Force the recording of a violation, ignoring the violation
      * suppression mechanism ({@link ViolationSuppressor}).
-     * 
+     *
      * @param rv A violation
      */
     @InternalApi

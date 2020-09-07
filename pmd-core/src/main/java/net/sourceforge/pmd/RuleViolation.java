@@ -5,8 +5,10 @@
 package net.sourceforge.pmd;
 
 import java.util.Comparator;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
@@ -34,6 +36,28 @@ public interface RuleViolation {
                   .thenComparingInt(RuleViolation::getEndLine)
                   .thenComparingInt(RuleViolation::getEndColumn)
                   .thenComparing(rv -> rv.getRule().getName());
+
+
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the class in
+     * which the violation was identified.
+     */
+    String CLASS_NAME = "className";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the variable
+     * related to the violation.
+     */
+    String VARIABLE_NAME = "variableName";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the method in
+     * which the violation was identified.
+     */
+    String METHOD_NAME = "methodName";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the package in
+     * which the violation was identified.
+     */
+    String PACKAGE_NAME = "packageName";
 
     /**
      * Get the Rule which identified this violation.
@@ -104,34 +128,57 @@ public interface RuleViolation {
         return getLocation().getEndPos().getColumn();
     }
 
+
+    Map<String, String> getAdditionalInfo();
+
+
     /**
      * Get the package name of the Class in which this violation was identified.
      *
      * @return The package name.
      */
-    // TODO Isn't this Java specific?
-    String getPackageName();
+    default String getPackageName() {
+        return getAdditionalInfo().get(PACKAGE_NAME);
+    }
 
     /**
      * Get the name of the Class in which this violation was identified.
      *
      * @return The Class name.
      */
-    // TODO Isn't this Java specific?
-    String getClassName();
+    default String getClassName() {
+        return getAdditionalInfo().get(CLASS_NAME);
+    }
 
     /**
      * Get the method name in which this violation was identified.
      *
      * @return The method name.
      */
-    // TODO Isn't this Java specific?
-    String getMethodName();
+    default String getMethodName() {
+        return getAdditionalInfo().get(METHOD_NAME);
+    }
 
     /**
      * Get the variable name on which this violation was identified.
      *
      * @return The variable name.
      */
-    String getVariableName();
+    default String getVariableName() {
+        return getAdditionalInfo().get(VARIABLE_NAME);
+    }
+
+
+    final class RuleViolationDataKey implements DataKey<RuleViolationDataKey, String> {
+
+        private final String name;
+
+        public RuleViolationDataKey(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 }
