@@ -106,7 +106,11 @@ public final class TypeTestUtil {
 
         final Class<?> clazz = loadClassWithNodeClassloader(node, canonicalName);
 
+
         if (clazz != null) {
+            if (clazz.getCanonicalName() == null) {
+                return false; // no canonical name, give up: we shouldn't be able to access them
+            }
             return clazz.isAssignableFrom(nodeType);
         } else {
             return fallbackIsA(node, canonicalName, true);
@@ -174,8 +178,16 @@ public final class TypeTestUtil {
         }
 
 
-        return node.getType() == null ? fallbackIsA(node, canonicalName, false)
-                                      : node.getType().getCanonicalName().equals(canonicalName);
+        if (node.getType() == null) {
+            return fallbackIsA(node, canonicalName, false);
+        }
+
+        String canoname = node.getType().getCanonicalName();
+        if (canoname == null) {
+            // anonymous/local class, or class nested within one of those
+            return false;
+        }
+        return canoname.equals(canonicalName);
     }
 
 
