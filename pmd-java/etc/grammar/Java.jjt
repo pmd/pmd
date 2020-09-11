@@ -1997,8 +1997,10 @@ void BlockStatement():
         |
         {
             List<Node> annotationsAndChildren = new ArrayList<Node>();
-            while (jjtree.peekNode() instanceof ASTAnnotation) {
-              annotationsAndChildren.add(jjtree.popNode());
+            if (jjtree.nodeArity() > 0) { // peekNode would throw if the stack is empty
+                while (jjtree.peekNode() instanceof ASTAnnotation) {
+                  annotationsAndChildren.add(jjtree.popNode());
+                }
             }
         }
         LocalVariableDeclaration()
