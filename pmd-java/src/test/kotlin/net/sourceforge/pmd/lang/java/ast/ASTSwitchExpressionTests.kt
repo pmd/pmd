@@ -330,7 +330,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """ should parseAs {
                 switchStmt {
 
-                    // Needs typeres
+                    // TODO Needs typeres
                     // it::isExhaustiveEnumSwitch shouldBe false
                     it::getTestedExpression shouldBe variableAccess("day")
 

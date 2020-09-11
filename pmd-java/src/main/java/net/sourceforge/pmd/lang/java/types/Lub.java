@@ -33,6 +33,8 @@ import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Helper class for {@link TypeSystem#lub(Collection)} and {@link TypeSystem#glb(Collection)}.
+ *
+ * <p>Lub: Least Upper Bound, Glb: Greatest Lower Bound.
  */
 final class Lub {
 

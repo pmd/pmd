@@ -68,7 +68,6 @@ public class Java10Test {
         // second: var stream = list.stream();
         assertNull(localVars.get(1).getTypeNode());
         ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
-        // TODO: return type of method call is unknown
         assertEquals("type should be Stream<String>",
                      ts.parameterise(ts.getClassSymbol(Stream.class), listOf(stringT)),
                      varDecl2.getTypeMirror());

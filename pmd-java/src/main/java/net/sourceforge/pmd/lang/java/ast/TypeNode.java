@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
@@ -50,6 +51,7 @@ public interface TypeNode extends JavaNode {
      */
     @Nullable
     @Deprecated
+    @DeprecatedUntil700
     default Class<?> getType() {
         return null;
     }

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader
  * @deprecated Some rules still use this so we keep it around, but it's dysfunctional
  */
 @Deprecated
+@DeprecatedUntil700
 @InternalApi
 public class ClassTypeResolver extends JavaParserVisitorAdapter implements NullableClassLoader {
 

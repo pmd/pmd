@@ -20,6 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @deprecated This is just a toy rule that counts the proportion of resolved types in a codebase,
  *     not meant as a real rule
  */
+// TODO Move this rule to a (internal) diagnostics category/ruleset
 @Deprecated
 @SuppressWarnings("PMD")
 public class TypeResTestRule extends AbstractJavaRule {

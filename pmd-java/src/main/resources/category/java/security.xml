@@ -32,30 +32,6 @@ public class Foo {
 ]]>
         </example>
     </rule>
-    <rule name="TypeResTest"
-          language="java"
-          since="6.4.0"
-          message="Do not use hard coded encryption keys"
-          class="net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#hardcodedcryptokey">
-        <description>
-Do not use hard coded values for cryptographic operations. Please store keys outside of source code.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    void good() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
-    }
-
-    void bad() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
-    }
-}
-]]>
-        </example>
-    </rule>
 
     <rule name="InsecureCryptoIv"
           language="java"
@@ -88,4 +64,17 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="TypeResTest"
+          language="java"
+          since="7.0.0"
+          message="Type Resolution Test"
+          class="net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#typerestest">
+        <description>
+This is just a toy rule that counts the proportion of resolved types in a codebase, not meant as a real rule.
+
+It is used to test the capability of PMD's own type resolution.
+        </description>
+        <priority>3</priority>
+    </rule>
 </ruleset>
