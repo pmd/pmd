@@ -83,6 +83,17 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
+     * @throws IndexOutOfBoundsException if not in range
+     */
+    public N get(int i) {
+        N n = toStream().get(i);
+        if (n == null) {
+            throw new IndexOutOfBoundsException("Index " + i + " for length " + size());
+        }
+        return n;
+    }
+
+    /**
      * Returns an empty list if the parameter is null, otherwise returns
      * its {@link #toList()}.
      *

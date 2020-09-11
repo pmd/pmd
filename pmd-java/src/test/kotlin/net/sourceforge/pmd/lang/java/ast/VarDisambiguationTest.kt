@@ -85,6 +85,33 @@ class VarDisambiguationTest : ParserTestSpec({
         }
     }
 
+    parserTest("Disambiguation bug") {
+        val code = ("""
+            class Foo {
+               protected void setBandIndexes() {
+                    for (Object[] need : needPredefIndex) {
+                        CPRefBand b     = (CPRefBand) need[0];
+                        Byte      which = (Byte)      need[1];
+                        b.setIndex(getCPIndex(which.byteValue()));
+                    }
+                }
+            }
+        """)
+
+
+        doTest("Without disambig") {
+            val acu = parser.withProcessing(false).parse(code)
+            val (setIndex) = acu.descendants(ASTMethodCall::class.java).toList()
+            setIndex.qualifier!!.shouldMatchN { ambiguousName("b") }
+        }
+
+        doTest("With disambig") {
+            val acu = parser.withProcessing(true).parse(code)
+            val (setIndex) = acu.descendants(ASTMethodCall::class.java).toList()
+            setIndex.qualifier!!.shouldMatchN { variableAccess("b") }
+        }
+    }
+
     parserTest("Failure cases") {
         val code = ("""
 package com.foo.bar;

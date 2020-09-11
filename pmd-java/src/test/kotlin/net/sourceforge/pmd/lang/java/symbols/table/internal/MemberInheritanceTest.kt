@@ -5,20 +5,65 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.component8
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals
-import org.checkerframework.checker.nullness.qual.NonNull
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JVariableSig
+import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class MemberInheritanceTest : ParserTestSpec({
+
+    parserTest("Test problem with values scope in enum") {
+        inContext(ExpressionParsingCtx) {
+
+            val acu = parser.withProcessing().parse(
+                    """
+                        package coco;
+
+                        import static coco.Opcode.Set.*;
+
+                        import coco.Opcode.Set;
+
+                        public enum Opcode {;
+
+                            static {
+                                // Both Set.values() and Opcode.values() are in scope,
+                                Set s =  STANDARD;
+                                for (coco.Opcode o: values()) {
+                                    
+                                }
+                            }
+
+                            public enum Set { STANDARD, PICOJAVA }
+                        }
+
+                    """.trimIndent())
+
+            val (outer, inner) = acu.descendants(ASTEnumDeclaration::class.java).toList { it.symbol }
+
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+            call.shouldMatchN {
+                methodCall("values") {
+
+                    it.symbolTable.methods().resolve("values").shouldBeSingleton {
+                        it.symbol.enclosingClass shouldBe outer
+                    }
+
+                    argList(0) {}
+                }
+            }
+
+        }
+    }
 
 
     parserTest("Comb rule: methods of an inner type shadow methods of the enclosing ones") {
@@ -28,7 +73,8 @@ class MemberInheritanceTest : ParserTestSpec({
 
             class Sup {
                 void f(int i) {}
-                void g() {} // different name, so also in scope in Inner
+                void g() {}
+                static void k() {}
             }
 
             class Sup2 {
@@ -42,7 +88,9 @@ class MemberInheritanceTest : ParserTestSpec({
                 void f() {}
                 // different name, so also in scope in Inner
                 // notice this one *overrides* Sup#g(), yet is still here
-                void g() {} 
+                void g() {}
+                // this one *hides* Sup#k()
+                static void k() {}
 
                 class Inner extends Sup2 {
                     void f() {} // shadows both
@@ -50,39 +98,115 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-        val (supF, supG, sup2F, outerF, outerG, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+
+        val (sup, _, outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
 
         doTest("Inside Sup: Sup#f(int) is in scope") {
 
-            supF.symbolTable.methods().resolve("f").let {
+            sup.symbolTable.methods().resolve("f").let {
                 it.shouldHaveSize(1)
-                it[0] shouldBe supF.symbol
+                it[0] shouldBe supF
             }
         }
 
         doTest("Inside Outer: both Sup#f(int) and Outer#f() are in scope") {
-            outerF.symbolTable.methods().resolve("f").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(supF.symbol, outerF.symbol)
-            }
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, supF)
         }
 
-        doTest("Inside Inner: neither Sup#f(int) nor Outer#f() are in scope") {
-            // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("f").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(sup2F.symbol, innerF.symbol)
-            }
+        doTest("Inside Inner: Outer#f() is shadowed") {
+            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer) are in scope
+            // But Outer#f() is shadowed by Inner#f()
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
+        }
+
+        doTest("Inside Inner: Sup#k() is shadowed by Outer#k()") {
+            inner.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: Sup#k() is shadowed by Outer#k()") {
+            outer.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: g() is overridden, the superclass implementation is not in scope") {
+            // only Outer#g() overrides its parent
+            outer.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
         }
 
         doTest("If there is no shadowing then declarations of outer classes are in scope (g methods)") {
-            // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("g").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(supG.symbol, outerG.symbol)
-            }
+            // only Outer#g() overrides its parent
+            inner.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
         }
+    }
+
+    parserTest("Non-static methods in static inner class") {
+
+        val acu = parser.withProcessing().parse("""
+            package test;
+
+            class Outer {
+
+                void f() {}
+
+                static void f(String s) {}
+
+                static class Inner {
+                    void f(int i) {}
+                }
+            }
+        """)
+
+        val (outerF, staticOuter, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+
+        val (outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+
+
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
+        }
+
+        doTest("Inside Inner: non-static Outer#f() is not in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, staticOuter)
+        }
+
+    }
+
+    parserTest("Non-static methods in inner class") {
+
+        val acu = parser.withProcessing().parse("""
+            package test;
+
+            class Outer {
+
+                void f() {}
+
+                static void f(String s) {}
+
+                class Inner { // not static
+                    void f(int i) {}
+                }
+            }
+        """)
+
+        val (outerF, staticOuter, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+
+        val (outer, inner) =
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+
+
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
+        }
+
+        doTest("Inside Inner: all methods are in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, outerF, staticOuter)
+        }
+
     }
 
 
@@ -104,7 +228,51 @@ class MemberInheritanceTest : ParserTestSpec({
             it.shouldHaveSize(1)
             it[0].apply {
                 formalParameters shouldBe emptyList()
-                enclosingClass shouldBe ReflectSymInternals.OBJECT_SYM
+                declaringType shouldBe acu.typeSystem.OBJECT
+            }
+        }
+
+    }
+
+
+    parserTest("Inner types may be inherited") {
+
+        val acu = parser.withProcessing().parse("""
+
+            class Scratch<T> {
+                class Inner {}
+            }
+
+            class Sub<T> extends Scratch<String> {
+
+                void foo(Inner i) {
+                //       ^^^^^
+                //       This is shorthand for Scratch<String>.Inner
+                    call();
+                }
+
+            }
+        """)
+
+        val (t_Scratch, t_Inner) =
+                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+
+        val insideFoo =
+                acu.descendants(ASTClassOrInterfaceBody::class.java).get(2)!!
+
+        val `t_Scratch{String}Inner` = with (acu.typeDsl) {
+            t_Scratch[gen.t_String].selectInner(t_Inner.symbol, emptyList())
+        }
+
+        insideFoo.symbolTable.types().resolve("Inner").shouldBeSingleton {
+            it.shouldBe(`t_Scratch{String}Inner`)
+        }
+
+        val typeNode = acu.descendants(ASTClassOrInterfaceType::class.java).first { it.simpleName == "Inner" }!!
+
+        typeNode.shouldMatchN {
+            classType("Inner") {
+                it.typeMirror shouldBe `t_Scratch{String}Inner`
             }
         }
 
@@ -147,11 +315,11 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("E", supe)
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("E", supe)
         }
 
         doTest("All member types should be inherited transitively") {
@@ -172,7 +340,7 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideSup, insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
@@ -183,6 +351,8 @@ class MemberInheritanceTest : ParserTestSpec({
             insideSup.symbolTable.shouldResolveTypeTo("K", supk)
         }
     }
+
+    fun ShadowChain<JVariableSig, *>.resolveSyms(name: String) = resolve(name).map { it.symbol }
 
     parserTest("Ambiguity handling when inheriting members from several unrelated interfaces") {
 
@@ -207,7 +377,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -220,7 +390,7 @@ class Impl implements I1, I2 {
             }
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // ambiguous
 
             }
@@ -244,7 +414,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -258,7 +428,7 @@ class Impl implements I1, I2 {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // ambiguous
 
             }
@@ -282,7 +452,7 @@ class Impl implements I2 { // <- difference here
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -296,7 +466,7 @@ class Impl implements I2 { // <- difference here
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol) // unambiguous
 
             }
@@ -322,7 +492,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -334,7 +504,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol, i1a.symbol) // ambiguous
 
             }
@@ -360,7 +530,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -372,7 +542,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol, i1a.symbol) // unambiguous
 
             }
@@ -398,7 +568,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -410,7 +580,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol) // unambiguous
 
             }
@@ -437,7 +607,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -449,7 +619,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i2a.symbol) // unambiguous
 
             }
@@ -481,7 +651,7 @@ class Impl extends Sup  {
 
         """)
 
-            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -493,7 +663,7 @@ class Impl extends Sup  {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(supA.symbol) // unambiguous
 
             }
@@ -526,7 +696,7 @@ class Impl extends Sup {
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -538,7 +708,7 @@ class Impl extends Sup {
 
             withClue("For fields") {
 
-                implA.symbolTable.variables().resolve("A") shouldBe
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // unambiguous
 
             }

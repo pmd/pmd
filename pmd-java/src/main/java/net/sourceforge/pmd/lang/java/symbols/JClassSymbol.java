@@ -12,6 +12,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 
 /**
@@ -25,16 +30,37 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
  * intersection types, parameterized types, wildcard types, etc., which are only
  * compile-time constructs.
  *
+ * <p>Class symbols are used to back {@link JClassType}, {@link JArrayType},
+ * and {@link JPrimitiveType}. See {@link JTypeMirror#getSymbol()}.
+ *
  * @since 7.0.0
  */
 public interface JClassSymbol extends JTypeDeclSymbol,
                                       JTypeParameterOwnerSymbol,
                                       BoundToNode<ASTAnyTypeDeclaration> {
 
+
     /**
      * Returns the binary name of this type, as specified by the JLS:
      * <a href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-13.html#jls-13.1">the JLS</a>.
      * For array types this returns the binary name of the component followed by "[]".
+     * This differs from {@link Class#getName()}, which for array types outputs an
+     * <i>internal name</i>.
+     *
+     * <p>For example:
+     * <pre>{@code
+     * int.class.getName() == "int"
+     * int[].class.getName() == "[I"
+     * String.class.getName() == "java.lang.String"
+     * String[].class.getName() == "[Ljava.lang.String;"
+     * }</pre>
+     * whereas
+     * <pre>{@code
+     * symbolOf(int.class).getBinaryName() == "int"
+     * symbolOf(int[].class).getBinaryName() == "int[]"
+     * symbolOf(String.class).getBinaryName() == "java.lang.String"
+     * symbolOf(String[].class).getBinaryName() == "java.lang.String[]"
+     * }</pre>
      */
     @NonNull
     String getBinaryName();
@@ -55,9 +81,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * <p>Notice, that this returns null also if this class is local to
      * a class or instance initializer.
      */
-    @Nullable
-    JExecutableSymbol getEnclosingMethod();
-
+    @Nullable JExecutableSymbol getEnclosingMethod();
 
     @Override
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
@@ -78,7 +102,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Nullable
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
-            if (klass.getSimpleName().equals(name)) {
+            if (klass.nameEquals(name)) {
                 return klass;
             }
         }
@@ -91,7 +115,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * <i>This excludes bridges and other synthetic methods.</i>
      *
      * <p>For an array type T[], to the difference of {@link Class},
-     * this method returns a one-element list with the {@link Cloneable#clone()}
+     * this method returns a one-element list with the {@link Object#clone()}
      * method, as if declared like so: {@code public final T[] clone() {...}}.
      *
      * @see Class#getDeclaredMethods()
@@ -130,16 +154,26 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Nullable
     default JFieldSymbol getDeclaredField(String name) {
         for (JFieldSymbol field : getDeclaredFields()) {
-            if (field.getSimpleName().equals(name)) {
+            if (field.nameEquals(name)) {
                 return field;
             }
         }
         return null;
     }
 
+
+    /** Returns the list of super interface types, under the given substitution. */
+    List<JClassType> getSuperInterfaceTypes(Substitution substitution);
+
+
+    /** Returns the superclass type, under the given substitution. */
+    @Nullable JClassType getSuperclassType(Substitution substitution);
+
+
     /**
      * Returns the superclass symbol if it exists. Returns null if this
-     * class represents an interface or the class {@link Object}.
+     * class represents the class {@link Object}, or a primitive type.
+     * If this symbol is an interface, returns the symbol for {@link Object}.
      */
     @Nullable
     JClassSymbol getSuperclass();

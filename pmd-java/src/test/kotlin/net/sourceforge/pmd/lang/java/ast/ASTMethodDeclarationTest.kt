@@ -8,7 +8,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
@@ -313,18 +313,15 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 annotationMethod {
                     modifiers { }
 
-                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
-
+                    it::getResultTypeNode shouldBe primitiveType(INT)
                     formalsList(0)
                 }
             }
-
             "int bar() default 2;" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
 
-                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
-
+                    it::getResultTypeNode shouldBe primitiveType(INT)
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe defaultValue { int(2) }
@@ -334,8 +331,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             "int bar() @NonZero [];" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
-                    it::getResultTypeNode shouldBe primitiveType(PrimitiveType.INT)
-
+                    it::getResultTypeNode shouldBe primitiveType(INT)
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe null
@@ -433,14 +429,16 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                             }
                         }
 
-                        it.toList() shouldBe listOf(
-                                child {
-                                    localVarModifiers { }
-                                    primitiveType(PrimitiveType.INT)
-                                    variableId("other")
-                                }
-                        )
-                    }
+                    it.toList() shouldBe listOf(
+                            child {
+                                localVarModifiers {  }
+                            primitiveType(INT)
+                                variableId("other")
+                            }
+                    )
+
+
+            }
 
                     it::getThrowsList shouldBe null
                     it::getBody shouldBe null

@@ -36,9 +36,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     JAVA_PROCESSING("Java processing") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            JavaAstProcessor.create(configuration.getTypeResolutionClassLoader(), configuration.getLanguageVersion(), JavaAstProcessor.defaultLogger())
+            JavaAstProcessor.create(configuration.getTypeResolutionClassLoader(), configuration.getLanguageVersion(), JavaAstProcessor.defaultLogger(), JavaAstProcessor.defaultTypeInfLogger())
                             .process((ASTCompilationUnit) rootNode);
-
         }
     },
 
@@ -50,17 +49,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             // kept for compatibility with existing tests
             new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
-        }
-    },
-
-    /**
-     * Type resolution, depends on QName resolution.
-     */
-    TYPE_RESOLUTION("Type resolution", JAVA_PROCESSING) {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            // removed because of incompatibilities with current AST
-            //            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     };
 

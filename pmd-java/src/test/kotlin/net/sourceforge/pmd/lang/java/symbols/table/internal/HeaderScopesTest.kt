@@ -13,6 +13,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
+import javasymbols.testdata.StaticsSuper
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
@@ -24,8 +25,10 @@ import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.JTypeMirror
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -44,23 +47,23 @@ class HeaderScopesTest : ProcessorTestSpec({
 
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
-    fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
-    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s)
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s)!!.symbol.shouldBeA()
+    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s).map { it.symbol as JMethodSymbol }
 
-    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
-        resolveFirst(simpleName).shouldBeA<JClassSymbol> {
-            it::getBinaryName shouldBe qualName
-            it::getSimpleName shouldBe simpleName
+    fun ShadowChain<JTypeMirror, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
+        resolveFirst(simpleName).shouldBeA<JClassType> {
+            it.symbol::getBinaryName shouldBe qualName
+            it.symbol::getSimpleName shouldBe simpleName
         }
     }
 
-    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
+    fun ShadowChain<JTypeMirror, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
         return sequence {
             val iter = iterateResults(simpleName)
             while (iter.hasNext()) {
                 iter.next()
-                val sym = iter.results.single().shouldBeA<JClassSymbol>()
-                yield(iter.scopeTag to sym.binaryName)
+                val t = iter.results.single().shouldBeA<JClassType>()
+                yield(iter.scopeTag to t.symbol.binaryName)
             }
         }.toList()
     }
@@ -216,6 +219,18 @@ class HeaderScopesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("$staticSingleMemberImports should import inherited members") {
+
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
+        // import javasymbols.testdata.Statics.*;
+
+        acu.symbolTable.let {
+            it.resolveField("oha") shouldBe classSym(StaticsSuper::class.java)!!.getDeclaredField("oha")!!
+            it.resolveMethods("oha").shouldContainExactly(classSym(StaticsSuper::class.java)!!.getDeclaredMethods("oha").toList())
+            it.types().shouldResolveToClass("oha", "javasymbols.testdata.StaticsSuper\$oha")
+        }
+    }
+
 
     parserTest("Method imported through $onDemandStaticImports should be shadowed by $staticSingleMemberImports") {
 
@@ -238,7 +253,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe SINGLE_IMPORT
                     results should haveSize(2)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
                     }
                 }
 
@@ -247,7 +262,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(2)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }
@@ -262,7 +277,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(1)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }

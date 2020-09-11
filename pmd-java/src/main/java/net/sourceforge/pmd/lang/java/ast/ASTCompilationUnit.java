@@ -17,11 +17,12 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
-    private ClassTypeResolver classTypeResolver;
+    private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
@@ -74,7 +75,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     /**
      * Returns the type declarations declared in this compilation unit.
      * This may be empty if this a package-info.java, or a modular
-     * compilation unit.
+     * compilation unit. Note that this only cares for top-level types
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
@@ -84,9 +85,8 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     @InternalApi
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
-        return classTypeResolver;
+        return new ClassTypeResolver();
     }
-
 
     @Override
     public @NonNull JSymbolTable getSymbolTable() {
@@ -95,10 +95,19 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     }
 
 
-    @InternalApi
-    @Deprecated
-    public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
-        this.classTypeResolver = classTypeResolver;
+    @Override
+    public TypeSystem getTypeSystem() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver.getTypeSystem();
+    }
+
+    void setTypeResolver(LazyTypeResolver typeResolver) {
+        this.lazyTypeResolver = typeResolver;
+    }
+
+    @NonNull LazyTypeResolver getLazyTypeResolver() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver;
     }
 
     @Override

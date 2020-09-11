@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
@@ -36,6 +43,17 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
         return true;
     }
 
+    @Override
+    public @NonNull List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+        if (getParent() instanceof ASTConstructorCall) {
+            ASTConstructorCall ctor = (ASTConstructorCall) getParent();
+            @NonNull JTypeMirror type = ctor.getTypeMirror();
+            if (type.isInterface()) {
+                return listOf(ctor.getTypeNode());
+            }
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public Visibility getVisibility() {

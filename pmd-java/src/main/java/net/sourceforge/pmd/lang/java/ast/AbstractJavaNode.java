@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
@@ -95,8 +96,13 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     }
 
     @Override
+    public TypeSystem getTypeSystem() {
+        return getRoot().getTypeSystem();
+    }
+
+    @Override
     public Scope getScope() {
-        if (scope == null) {
+        if (scope == null && getParent() != null) {
             return getParent().getScope();
         }
         return scope;
@@ -158,7 +164,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         setFirstToken(copy.getFirstToken());
         setLastToken(copy.getLastToken());
     }
-
 
     @Override
     public final String getXPathNodeName() {

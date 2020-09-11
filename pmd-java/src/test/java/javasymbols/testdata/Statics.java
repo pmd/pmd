@@ -5,7 +5,7 @@
 package javasymbols.testdata;
 
 
-public class Statics {
+public class Statics extends StaticsSuper {
 
     public static final int PUBLIC_FIELD = 0;
     public final int publicField = 0;

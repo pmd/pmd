@@ -5,10 +5,7 @@
 package javasymbols.testdata.impls;
 
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
-public class GenericClass<T, F extends Node> {
+public class GenericClass<T, F extends T> {
 
 
     public <U, O> void anOverload(int bb) {

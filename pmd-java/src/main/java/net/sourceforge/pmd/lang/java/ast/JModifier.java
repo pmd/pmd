@@ -65,7 +65,7 @@ public enum JModifier {
      * <ul>
      * <li>{@link #DEFAULT}: this doesn't exist at the class file level.
      * A default method is a non-static non-abstract public method declared
-     * in an interface ({@link JMethodSymbol#isDefault()}).
+     * in an interface ({@link JMethodSymbol#isDefaultMethod()}.
      * <li>{@link #SEALED}: a sealed class has an attribute {@code PermittedSubclasses}
      * with a non-zero length (in the compiled class file)
      * <li>{@link #NON_SEALED}: this doesn't exist at the class file level at all.

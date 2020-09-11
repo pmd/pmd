@@ -68,7 +68,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                |  +- VariableDeclarator[@Initializer = "true", @Name = "engine"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "engine", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "package"]
                |     +- MethodCall[@CompileTimeConstant = "false", @Image = "getEngineByName", @MethodName = "getEngineByName", @ParenthesisDepth = "0", @Parenthesized = "false"]
-               |        +- ConstructorCall[@AnonymousClass = "false", @CompileTimeConstant = "false", @DiamondTypeArgs = "false", @ParenthesisDepth = "0", @Parenthesized = "false", @QualifiedInstanceCreation = "false"]
+               |        +- ConstructorCall[@AnonymousClass = "false", @CompileTimeConstant = "false", @DiamondTypeArgs = "false", @MethodName = "new", @ParenthesisDepth = "0", @Parenthesized = "false", @QualifiedInstanceCreation = "false"]
                |        |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "ScriptEngineManager"]
                |        |  +- ArgumentList[@Size = "0"]
                |        +- ArgumentList[@Size = "1"]

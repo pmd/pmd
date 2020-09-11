@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Represents an assignment expression.
  *
@@ -29,6 +31,7 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
 
     /** Returns the left-hand side, ie the expression being assigned to. */
     @Override
+    @NonNull
     public ASTAssignableExpr getLeftOperand() {
         return (ASTAssignableExpr) getChild(0);
     }
@@ -43,6 +46,7 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
 
 
     @Override
+    @NonNull
     public AssignmentOp getOperator() {
         return operator;
     }

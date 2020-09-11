@@ -17,8 +17,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -173,13 +173,6 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
             it::getParenthesisDepth shouldBe depth
         }
 
-// this isn't a node anymore
-fun TreeNodeWrapper<Node, *>.methodCall(name: String, inside: NodeSpec<ASTMethodCall> = EmptyAssertions) =
-        child<ASTMethodCall>(ignoreChildren = inside === EmptyAssertions) {
-            it::getMethodName shouldBe name
-            inside()
-        }
-
 
 fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, ASTUnaryExpression>.() -> ASTExpression) =
         child<ASTUnaryExpression> {
@@ -248,6 +241,11 @@ fun TreeNodeWrapper<Node, *>.emptyStatement(contents: NodeSpec<ASTEmptyStatement
 fun TreeNodeWrapper<Node, *>.ifStatement(contents: NodeSpec<ASTIfStatement> = EmptyAssertions) =
         child<ASTIfStatement>(ignoreChildren = contents == EmptyAssertions) {
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.returnStatement(contents: ValuedNodeSpec<ASTReturnStatement, ASTExpression>) =
+        child<ASTReturnStatement> {
+            it::getExpr shouldBe contents()
         }
 
 fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
@@ -409,10 +407,10 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
         }
 
 
-fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveTypeKind, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
-            it::getModelConstant shouldBe type
-            it::getTypeImage shouldBe type.token
+            it::getKind shouldBe type
+            it::getTypeImage shouldBe type.toString()
             assertions()
         }
 
@@ -525,6 +523,20 @@ fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpr
         }
 
 
+fun TreeNodeWrapper<Node, *>.methodCall(methodName: String, assertions: NodeSpec<ASTMethodCall> = EmptyAssertions) =
+        child<ASTMethodCall>(ignoreChildren = assertions == EmptyAssertions) {
+            it::getMethodName shouldBe methodName
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, out QualifiableExpression>.skipQualifier() =
+        it::getQualifier shouldBe unspecifiedChild()
+
+fun TreeNodeWrapper<Node, *>.argList(assertions: NodeSpec<ASTArgumentList> = EmptyAssertions) =
+        child<ASTArgumentList> {
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference> = EmptyAssertions) =
         child<ASTMethodReference>(ignoreChildren = assertions === EmptyAssertions) {
             it::getMethodName shouldBe methodName
@@ -540,6 +552,11 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
         }
 
 val EmptyAssertions: NodeSpec<out Node> = {}
+
+fun TreeNodeWrapper<Node, *>.ternaryExpr(assertions: NodeSpec<ASTConditionalExpression> = EmptyAssertions) =
+        child<ASTConditionalExpression>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {
@@ -574,24 +591,32 @@ fun TreeNodeWrapper<Node, *>.switchDefaultLabel(assertions: NodeSpec<ASTSwitchLa
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.number(primitiveType: PrimitiveType? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.number(typeKind: PrimitiveTypeKind? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
         child<ASTNumericLiteral> {
-            if (primitiveType != null) {
-                it::getPrimitiveType shouldBe primitiveType
+            if (typeKind != null) {
 
-                it::isIntLiteral shouldBe (primitiveType == INT)
-                it::isDoubleLiteral shouldBe (primitiveType == DOUBLE)
-                it::isFloatLiteral shouldBe (primitiveType == FLOAT)
-                it::isLongLiteral shouldBe (primitiveType == LONG)
+                it::isIntLiteral shouldBe (typeKind == INT)
+                it::isDoubleLiteral shouldBe (typeKind == DOUBLE)
+                it::isFloatLiteral shouldBe (typeKind == FLOAT)
+                it::isLongLiteral shouldBe (typeKind == LONG)
             }
 
             assertions()
         }
 
 fun TreeNodeWrapper<Node, *>.int(value: Int? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
-        number(primitiveType = INT) {
+        number(typeKind = INT) {
             if (value != null) {
                 it::getValueAsInt shouldBe value
+            }
+
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.char(value: Char? = null, assertions: NodeSpec<ASTCharLiteral> = EmptyAssertions) =
+        child<ASTCharLiteral> {
+            if (value != null) {
+                it::getConstValue shouldBe value
             }
 
             assertions()
@@ -623,13 +648,19 @@ fun TreeNodeWrapper<Node, *>.varargsArrayDim(assertions: NodeSpec<ASTArrayTypeDi
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.arrayDimList(assertions: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+        child<ASTArrayDimensions>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
+
+
 fun TreeNodeWrapper<Node, *>.arrayInitializer(assertions: NodeSpec<ASTArrayInitializer> = EmptyAssertions) =
         child<ASTArrayInitializer> {
             assertions()
         }
 
 fun TreeNodeWrapper<Node, *>.arrayAlloc(assertions: NodeSpec<ASTArrayAllocation> = EmptyAssertions) =
-        child<ASTArrayAllocation> {
+        child<ASTArrayAllocation>(ignoreChildren = assertions == EmptyAssertions) {
             assertions()
         }
 
@@ -649,7 +680,6 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
 
             contents()
         }
-
 
 
 fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,52 +18,72 @@ import org.jetbrains.annotations.NotNull;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 
 import kotlin.Pair;
 
 public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTCompilationUnit> {
 
+    /**
+     * Note: this is the default type system for everything parsed with
+     * default options of JavaParsingHelper. This allows constants like
+     * the null type to be compared.
+     */
+    public static final TypeSystem TEST_TYPE_SYSTEM = new TypeSystem(JavaParsingHelper.class.getClassLoader());
+
     /** This just runs the parser and no processing stages. */
-    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), NoopSemanticLogger.INSTANCE);
+    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), NoopSemanticLogger.INSTANCE, TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
     /** This runs all processing stages when parsing. */
-    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), NoopSemanticLogger.INSTANCE);
+    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), NoopSemanticLogger.INSTANCE, TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
 
     private final SemanticChecksLogger semanticLogger;
+    private final TypeSystem ts;
+    private final TypeInferenceLogger typeInfLogger;
 
-    private JavaParsingHelper(Params params, SemanticChecksLogger logger) {
+    private JavaParsingHelper(Params params, SemanticChecksLogger logger, TypeSystem ts, TypeInferenceLogger typeInfLogger) {
         super(JavaLanguageModule.NAME, ASTCompilationUnit.class, params);
         this.semanticLogger = logger;
+        this.ts = ts;
+        this.typeInfLogger = typeInfLogger;
     }
 
     @Override
     protected void postProcessing(@NotNull LanguageVersionHandler handler, @NotNull LanguageVersion lversion, @NotNull ASTCompilationUnit rootNode) {
-        JavaAstProcessor.create(JavaProcessingStage.class.getClassLoader(), lversion, semanticLogger)
+        JavaAstProcessor.create(ts, lversion, semanticLogger, typeInfLogger)
                         .process(rootNode);
     }
 
+    public TypeInferenceLogger getTypeInfLogger() {
+        return typeInfLogger;
+    }
+
     public JavaParsingHelper withLogger(SemanticChecksLogger logger) {
-        return new JavaParsingHelper(this.getParams(), logger);
+        return new JavaParsingHelper(this.getParams(), logger, this.ts, this.typeInfLogger);
     }
 
-    @NonNull
+    public JavaParsingHelper withTypeSystem(TypeSystem ts) {
+        return new JavaParsingHelper(this.getParams(), this.semanticLogger, ts, this.typeInfLogger);
+    }
+
+    public JavaParsingHelper logTypeInference(boolean verbose, PrintStream out) {
+        return logTypeInference(verbose ? new VerboseLogger(out) : new SimpleLogger(out));
+    }
+
+    public JavaParsingHelper logTypeInference(TypeInferenceLogger logger) {
+        return new JavaParsingHelper(this.getParams(), this.semanticLogger, this.ts, logger);
+    }
+
     @Override
-    protected JavaParsingHelper clone(Params params) {
-        return new JavaParsingHelper(params, new TestCheckLogger());
-    }
-
-    public static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
-        List<T> converted = new ArrayList<>();
-        for (Node n : nodes) {
-            converted.add(target.cast(n));
-        }
-        return converted;
+    protected @NonNull JavaParsingHelper clone(@NonNull Params params) {
+        return new JavaParsingHelper(params, semanticLogger, ts, typeInfLogger);
     }
 
     static class NoopSemanticLogger implements SemanticChecksLogger {

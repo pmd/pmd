@@ -16,7 +16,7 @@
                |  +- EnumDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "LocalInterfacesAndEnums$1MyLocalEnum", @CanonicalName = null, @Enum = "true", @Interface = "false", @Local = "true", @Nested = "false", @PackageName = "", @Record = "false", @RegularClass = "false", @SimpleName = "MyLocalEnum", @TopLevel = "false", @Visibility = "local"]
                |     +- ModifierList[@EffectiveModifiers = "{static, final}", @ExplicitModifiers = "{}"]
                |     +- EnumBody[@SeparatorSemi = "false", @Size = "1", @TrailingComma = "false"]
-               |        +- EnumConstant[@AnonymousClass = "false", @Image = "A", @Name = "A", @Visibility = "public"]
+               |        +- EnumConstant[@AnonymousClass = "false", @Image = "A", @MethodName = "new", @Name = "A", @Visibility = "public"]
                |           +- ModifierList[@EffectiveModifiers = "{public, static, final}", @ExplicitModifiers = "{}"]
                |           +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "true", @ExceptionBlockParameter = "false", @Field = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "false", @Name = "A", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "true", @Visibility = "public"]
                +- LocalClassStatement[]

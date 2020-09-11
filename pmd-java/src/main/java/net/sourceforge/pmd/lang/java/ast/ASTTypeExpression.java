@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Wraps a type node but presents the interface of {@link ASTExpression}.
@@ -63,7 +63,8 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
     }
 
     @Override
-    public @Nullable JavaTypeDefinition getTypeDefinition() {
-        return getTypeNode().getTypeDefinition();
+    public @NonNull JTypeMirror getTypeMirror() {
+        return getTypeNode().getTypeMirror();
     }
+
 }

@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -23,12 +26,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  */
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 
+    private JVariableSig typedSym;
+
     /**
      * Constructor promoting an ambiguous name to a variable reference.
      */
     ASTVariableAccess(ASTAmbiguousName name) {
         super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
-        setImage(name.getImage());
+        setImage(name.getFirstToken().getImage());
     }
 
     ASTVariableAccess(JavaccToken identifier) {
@@ -50,6 +55,21 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     public String getName() {
         return getImage();
     }
+
+
+    @Override
+    public @Nullable JVariableSig getSignature() {
+        if (typedSym == null) {
+            forceTypeResolution(); // this will do it only once, even if it fails
+        }
+        return typedSym;
+    }
+
+    void setTypedSym(JVariableSig sig) {
+        this.typedSym = sig;
+        assert typedSym != null : "Null signature?";
+    }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

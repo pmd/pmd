@@ -13,15 +13,18 @@ import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
-import io.kotest.runner.junit.platform.IntelliMarker
-import io.kotest.matchers.should as kotlintestShould
 import io.kotest.matchers.Matcher
+import io.kotest.runner.junit.platform.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
-import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.java.types.JTypeMirror
+import net.sourceforge.pmd.lang.java.types.TypeDslMixin
+import net.sourceforge.pmd.lang.java.types.TypeDslOf
+import io.kotest.matchers.should as kotlintestShould
 
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
@@ -122,7 +125,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             context: TestContext,
             name: String,
             javaVersion: JavaVersion,
-            assertions: ParserTestCtx.() -> Unit) {
+            assertions: suspend ParserTestCtx.() -> Unit) {
 
         context.registerTestCase(
                 name = TestName(name),
@@ -160,7 +163,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
         inner class VersionedTestCtx(private val context: TestContext, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
-            suspend fun doTest(name: String, assertions: VersionedTestCtx.() -> Unit) {
+            suspend fun doTest(name: String, assertions: suspend VersionedTestCtx.() -> Unit) {
                 containedParserTestImpl(context, name, javaVersion = javaVersion) {
                     assertions()
                 }
@@ -186,6 +189,15 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             }
 
             inner class ImplicitNodeParsingCtx<T : Node>(private val nodeParsingCtx: NodeParsingCtx<T>) {
+
+                fun haveType(type: TypeDslMixin.() -> JTypeMirror): Assertions<String> = {
+
+                    val node = doParse(it)
+                    if (node is TypeNode) node::getTypeMirror shouldBe TypeDslOf(node.typeSystem).type()
+                    else throw AssertionError("Not a TypeNode: $node")
+
+                }
+
 
                 fun doParse(s: String): T =
                         nodeParsingCtx.parseNode(s, this@VersionedTestCtx)

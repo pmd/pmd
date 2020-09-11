@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * Wraps a {@link ASTPattern} node but presents the interface of {@link ASTExpression}.
@@ -22,7 +19,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTPatternExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTPatternExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
 
     ASTPatternExpression(int id) {
         super(id);
@@ -57,12 +54,4 @@ public final class ASTPatternExpression extends AbstractJavaNode implements ASTP
         return false;
     }
 
-    @Override
-    public @Nullable JavaTypeDefinition getTypeDefinition() {
-        ASTPattern pattern = getPattern();
-        if (pattern instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeDefinition();
-        }
-        return null;
-    }
 }

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
@@ -19,9 +19,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaExpr
+public final class ASTMethodCall extends AbstractInvocationExpr
     implements ASTPrimaryExpression,
-               QualifiableExpression {
+               QualifiableExpression,
+               InvocationNode {
 
     ASTMethodCall(int id) {
         super(id);
@@ -34,7 +35,7 @@ public final class ASTMethodCall extends AbstractJavaExpr
 
         // we need to set the name.
 
-        if (getImage() != null || getChild(0) instanceof ASTSuperExpression) {
+        if (getMethodName() != null || getChild(0) instanceof ASTSuperExpression) {
             return;
         }
 
@@ -46,22 +47,23 @@ public final class ASTMethodCall extends AbstractJavaExpr
 
         fstChild.shrinkOrDeleteInParentSetImage();
 
-        assert getImage() != null;
+        assert getMethodName() != null;
 
     }
 
-    /**
-     * Returns the name of the called method.
-     */
-    public String getMethodName() {
-        return getImage();
+    @Override
+    public @NonNull String getMethodName() {
+        return super.getImage();
     }
 
+    @Override
+    @NonNull
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) getChild(getNumChildren() - 1);
     }
 
 
+    @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);

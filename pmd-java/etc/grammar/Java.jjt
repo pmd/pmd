@@ -246,6 +246,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 class JavaParserImpl {
 
@@ -1549,16 +1550,14 @@ FloatingPointType:
 void PrimitiveType() :
 {}
 {
-    ( "boolean"
-    | "char"
-    | "byte"
-    | "short"
-    | "int"
-    | "long"
-    | "float"
-    | "double"
-    )
-    {setLastTokenImage(jjtThis);}
+      "boolean" {jjtThis.setKind(PrimitiveTypeKind.BOOLEAN);}
+    | "char"    {jjtThis.setKind(PrimitiveTypeKind.CHAR);}
+    | "byte"    {jjtThis.setKind(PrimitiveTypeKind.BYTE);}
+    | "short"   {jjtThis.setKind(PrimitiveTypeKind.SHORT);}
+    | "int"     {jjtThis.setKind(PrimitiveTypeKind.INT);}
+    | "long"    {jjtThis.setKind(PrimitiveTypeKind.LONG);}
+    | "float"   {jjtThis.setKind(PrimitiveTypeKind.FLOAT);}
+    | "double"  {jjtThis.setKind(PrimitiveTypeKind.DOUBLE);}
 }
 
 

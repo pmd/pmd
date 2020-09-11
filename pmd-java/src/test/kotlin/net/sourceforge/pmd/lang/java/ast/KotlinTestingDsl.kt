@@ -20,7 +20,11 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.WITH_PROCESSING
+import org.apache.commons.io.output.TeeOutputStream
 import java.beans.PropertyDescriptor
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 
 /**
  * Represents the different Java language versions.
@@ -198,6 +202,11 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         return logger
     }
 
+    /** Returns a function that can retrieve the log*/
+    fun logTypeInference(verbose: Boolean = false, to: PrintStream = System.err) {
+        parser = parser.withProcessing(true).logTypeInference(verbose, to)
+    }
+
     var fullSource: String? = null
 
     /** Imports to add to the top of the parsing contexts. */
@@ -232,7 +241,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             "Unsupported class $klass"
         }
 
-        fullSource = javaVersion.parser.readClassSource(klass)
+        fullSource = javaVersion.parser.withResourceContext(javaClass).readClassSource(klass)
     }
 
 

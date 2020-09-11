@@ -7,10 +7,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ParserOptions
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.ast.*
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.io.StringReader
@@ -195,7 +192,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         if (clazz.name.contains("$")) {
             sourceFile = sourceFile.substring(0, clazz.name.indexOf('$')) + ".java"
         }
-        val input = javaClass.classLoader.getResourceAsStream(sourceFile)
+        val input = (params.resourceLoader ?: javaClass).classLoader.getResourceAsStream(sourceFile)
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
         return consume(input)

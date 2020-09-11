@@ -5,7 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 
 /**
@@ -16,6 +18,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @since 7.0.0
  */
-interface BoundToNode<N extends Node> extends JElementSymbol {
+interface BoundToNode<N extends JavaNode> extends JElementSymbol {
 
+
+    @Override
+    default @Nullable N tryGetNode() {
+        return null;
+    }
 }

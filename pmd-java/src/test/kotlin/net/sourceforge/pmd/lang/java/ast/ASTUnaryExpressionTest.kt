@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BOOLEAN
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTUnaryExpressionTest : ParserTestSpec({
 
@@ -57,7 +59,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "+(int)-a" should parseAs {
                 unaryExpr(UNARY_PLUS) {
                     castExpr {
-                        primitiveType(PrimitiveType.INT)
+                        primitiveType(INT)
                         unaryExpr(UNARY_MINUS) {
                             variableAccess("a")
                         }
@@ -68,7 +70,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                 unaryExpr(UNARY_PLUS) {
                     unaryExpr(UNARY_MINUS) {
                         castExpr {
-                            primitiveType(PrimitiveType.INT)
+                            primitiveType(INT)
                             variableAccess("a")
                         }
                     }
@@ -150,9 +152,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             // "++i++" parses, but doesn't compile, so don't test it
             // same for eg "p+++++q" (which doesn't parse)
 
-            PrimitiveType
-                    .values()
-                    .filter { it.isNumeric }
+            (JPrimitiveType.PrimitiveTypeKind.values().toList() - BOOLEAN)
                     .forEach { type ->
 
                         "($type)+q" should parseAs {

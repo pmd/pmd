@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
  * An explicit constructor invocation, occurring at the start of a
@@ -20,9 +23,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTExplicitConstructorInvocation extends AbstractStatement {
+public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
+    implements InvocationNode, ASTStatement {
 
     private boolean isSuper;
+    private OverloadSelectionResult result;
 
     ASTExplicitConstructorInvocation(int id) {
         super(id);
@@ -35,10 +40,9 @@ public final class ASTExplicitConstructorInvocation extends AbstractStatement {
     }
 
 
-    /**
-     * Returns the list of arguments passed to the invocation.
-     */
-    public ASTArgumentList getArgumentsList() {
+    @Override
+    @NonNull
+    public ASTArgumentList getArguments() {
         return (ASTArgumentList) getLastChild();
     }
 
@@ -46,7 +50,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractStatement {
      * Returns the number of arguments of the called constructor.
      */
     public int getArgumentCount() {
-        return getArgumentsList().size();
+        return getArguments().size();
     }
 
     void setIsSuper() {
@@ -80,9 +84,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractStatement {
         return getFirstChild() instanceof ASTPrimaryExpression;
     }
 
-    /**
-     * Returns the explicit type arguments if they exist.
-     */
+    @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
@@ -96,4 +98,15 @@ public final class ASTExplicitConstructorInvocation extends AbstractStatement {
     public ASTExpression getQualifier() {
         return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
+
+    @Override
+    public OverloadSelectionResult getOverloadSelectionInfo() {
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(result);
+    }
+
+    void setOverload(OverloadSelectionResult result) {
+        this.result = result;
+    }
+
 }

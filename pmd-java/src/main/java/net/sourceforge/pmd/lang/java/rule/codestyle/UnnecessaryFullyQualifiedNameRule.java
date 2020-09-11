@@ -348,7 +348,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         // If tests are failing, refer to the history of this file to get the
                         // previously working version.
 
-                        Class<?> importedType = importDeclaration.getRoot().getClassTypeResolver().loadClass(importDeclaration.getImportedName());
+                        Class<?> importedType = importDeclaration.getRoot().getClassTypeResolver().loadClassOrNull(importDeclaration.getImportedName());
                         if (importedType != null) {
                             try {
                                 for (final Method m : importedType.getMethods()) {

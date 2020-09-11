@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.function.Predicate;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Marks nodes that can be annotated. {@linkplain ASTAnnotation Annotations}
@@ -32,7 +30,7 @@ public interface Annotatable extends JavaNode {
      * applied to this node.
      */
     default boolean isAnnotationPresent(String annotQualifiedName) {
-        return getDeclaredAnnotations().any(t -> TypeHelper.isA(t, annotQualifiedName));
+        return getDeclaredAnnotations().any(t -> TypeTestUtil.isA(annotQualifiedName, t));
     }
 
 
@@ -41,6 +39,6 @@ public interface Annotatable extends JavaNode {
      * applied to this node.
      */
     default boolean isAnnotationPresent(Class<?> type) {
-        return getDeclaredAnnotations().any((Predicate<TypeNode>) t -> TypeHelper.subclasses(t, type));
+        return getDeclaredAnnotations().any(t -> TypeTestUtil.isA(type, t));
     }
 }

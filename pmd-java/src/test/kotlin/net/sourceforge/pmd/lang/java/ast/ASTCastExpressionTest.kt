@@ -5,9 +5,10 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.java.ast.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class ASTCastExpressionTest : ParserTestSpec({
 

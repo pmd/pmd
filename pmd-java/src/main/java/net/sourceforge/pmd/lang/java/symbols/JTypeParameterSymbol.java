@@ -10,6 +10,8 @@ import java.lang.reflect.Modifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 
 /**
@@ -27,6 +29,15 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
      * this type parameter.
      */
     JTypeParameterOwnerSymbol getDeclaringSymbol();
+
+
+    JTypeVar getTypeMirror();
+
+    /**
+     * Returns the upper bound of this type variable. This may be an
+     * intersection type. If the variable is unbounded, returns Object.
+     */
+    JTypeMirror computeUpperBound();
 
 
     @Override

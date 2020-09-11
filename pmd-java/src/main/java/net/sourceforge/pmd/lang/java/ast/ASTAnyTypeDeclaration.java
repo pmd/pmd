@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
@@ -41,6 +42,20 @@ public interface ASTAnyTypeDeclaration
     @Override
     @NonNull
     JClassSymbol getSymbol();
+
+
+    /**
+     * Returns the {@linkplain JClassType#getGenericTypeDeclaration() generic type declaration}
+     * of the declared type. Note that for {@linkplain ASTAnonymousClassDeclaration anonymous classes},
+     * this returns a class type whose symbol is the actual anonymous
+     * class. Eg {@code new Runnable() { void foo() { } void run() { } }}
+     * would present both methods, ie not just be a {@code Runnable}.
+     * The {@link ASTConstructorCall} would have type {@code Runnable}
+     * though, not the anonymous class.
+     */
+    @Override
+    @NonNull JClassType getTypeMirror();
+
 
     /**
      * Returns the simple name of this type declaration. Returns the

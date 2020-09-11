@@ -5,13 +5,17 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.TypeOps
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class TypeDisambiguationTest : ParserTestSpec({
 
@@ -176,7 +180,8 @@ class TypeDisambiguationTest : ParserTestSpec({
                 acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
 
         fun assertErrored(t: ASTClassOrInterfaceType, expected: Int, actual: Int) {
-            val errs = logger.errors[SemanticChecksLogger.MALFORMED_GENERIC_TYPE]?.filter { it.first == t } ?: emptyList()
+            val errs = logger.errors[SemanticChecksLogger.MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
+                    ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe listOf(expected, actual)
         }
@@ -196,6 +201,42 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertNoError(s0)
         assertErrored(s1, expected = 1, actual = 2)
         assertNoError(s2)
+    }
+
+    parserTest("Unresolved inner types") {
+        enableProcessing()
+
+        val acu = parser.parse("""
+           package p;
+
+           import k.OuterUnresolved;
+
+           class Scratch<X> {
+               OuterUnresolved.InnerUnresolved m0;
+           }
+        """)
+
+        val (m0) =
+                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
+
+        val outerUnresolved = m0.qualifier!!
+        val outerT = outerUnresolved.typeMirror.shouldBeA<JClassType> {
+            it.symbol.shouldBeA<JClassSymbol> {
+                it::isUnresolved shouldBe true
+                it::getSimpleName shouldBe "OuterUnresolved"
+            }
+        }
+
+        val innerT = m0.typeMirror.shouldBeA<JClassType> {
+            it::getEnclosingType shouldBe outerT
+            it.symbol.shouldBeA<JClassSymbol> {
+                it::isUnresolved shouldBe true
+                it::getSimpleName shouldBe "InnerUnresolved"
+                it.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
+            }
+        }
+
+        outerT.symbol.getDeclaredClass("InnerUnresolved").shouldBeSameInstanceAs(innerT.symbol)
     }
 
     parserTest("Invalid annotations") {
@@ -221,7 +262,8 @@ class TypeDisambiguationTest : ParserTestSpec({
                 acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
 
         fun assertErrored(t: ASTClassOrInterfaceType) {
-            val errs = logger.errors[SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t } ?: emptyList()
+            val errs = logger.errors[SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
+                    ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe emptyList()
         }

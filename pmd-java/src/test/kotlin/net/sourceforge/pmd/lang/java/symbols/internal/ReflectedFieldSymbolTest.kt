@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.property.arbitrary.filterNot
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
 

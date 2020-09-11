@@ -5,9 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import java.lang.reflect.Modifier;
-
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 
 /**
@@ -17,13 +17,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  */
 public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodDeclaration> {
 
-    /** Returns true if this method is a default method of an interface. */
-    default boolean isDefault() {
-        // Default methods are public non-abstract instance methods
-        // declared in an interface.
-        return (getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC
-            && getEnclosingClass().isInterface();
-    }
+
+    // note that for now, bridge methods are filtered out from the ASM
+    // symbols, and bridge methods are not reflected by the AST symbols
+    boolean isBridge();
+
+
+    /** Returns the return type under the given substitution. */
+    JTypeMirror getReturnType(Substitution subst);
 
 
     @Override

@@ -5,76 +5,104 @@
 package net.sourceforge.pmd.lang.java.internal;
 
 import java.text.MessageFormat;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.UnresolvedSymFactory;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 
 /**
  * Processes the output of the parser before rules get access to the AST.
  * This performs all semantic analyses in layered passes.
+ *
+ * <p>This is the root context object for file-specific context. Instances
+ * do not need to be thread-safe. Global information about eg the classpath
+ * is held in a {@link TypeSystem} instance.
  */
 public final class JavaAstProcessor {
 
     private static final Logger DEFAULT_LOG = Logger.getLogger(JavaAstProcessor.class.getName());
 
+    private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
+    private static final Level INFERENCE_LOG_LEVEL;
+
+
+    static {
+        Level level;
+        try {
+            level = Level.parse(System.getenv("PMD_DEBUG_LEVEL"));
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+            level = Level.OFF;
+        }
+        INFERENCE_LOG_LEVEL = level;
+    }
+
+
+    private final TypeInferenceLogger typeInferenceLogger;
     private final SemanticChecksLogger logger;
-    private final LanguageVersion languageVersion; // NOPMD
-    private final AstSymFactory astSymFactory;
-    private final ReflectionSymFactory reflectSymFactory; // NOPMD
-    private final UnresolvedSymFactory unresolvedSymFactory;
+    private final LanguageVersion languageVersion;
+    private final TypeSystem typeSystem;
+
     private SymbolResolver symResolver;
 
+    private final UnresolvedClassStore unresolvedTypes;
 
-    private JavaAstProcessor(ReflectionSymFactory reflectionSymFactory,
-                             AstSymFactory astSymFactory,
+
+    private JavaAstProcessor(TypeSystem typeSystem,
                              SymbolResolver symResolver,
                              SemanticChecksLogger logger,
+                             TypeInferenceLogger typeInfLogger,
                              LanguageVersion languageVersion) {
 
         this.symResolver = symResolver;
         this.logger = logger;
+        this.typeInferenceLogger = typeInfLogger;
         this.languageVersion = languageVersion;
 
-        this.astSymFactory = astSymFactory;
-        this.reflectSymFactory = reflectionSymFactory;
-        this.unresolvedSymFactory = new UnresolvedSymFactory();
+        this.typeSystem = typeSystem;
+        unresolvedTypes = new UnresolvedClassStore(typeSystem);
     }
 
-    public AstSymFactory getAstSymFactory() {
-        return astSymFactory;
-    }
-
-    public JClassSymbol makeUnresolvedReference(String canonicalName) {
-        return makeUnresolvedReference(canonicalName, 0);
-    }
-
-    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerSimpleName) {
-        if (outer instanceof JClassSymbol) {
-            return makeUnresolvedReference(((JClassSymbol) outer).getCanonicalName() + '.' + innerSimpleName);
+    static TypeInferenceLogger defaultTypeInfLogger() {
+        if (INFERENCE_LOG_LEVEL == Level.FINEST) {
+            return new VerboseLogger(System.err);
+        } else if (INFERENCE_LOG_LEVEL == Level.FINE) {
+            return new SimpleLogger(System.err);
+        } else {
+            return TypeInferenceLogger.noop();
         }
-        return makeUnresolvedReference(innerSimpleName); // child of a type variable does not exist
     }
 
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
-        return unresolvedSymFactory.makeUnresolvedReference(canonicalName, typeArity);
+        return unresolvedTypes.makeUnresolvedReference(canonicalName, typeArity);
+    }
+
+    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String simpleName, int typeArity) {
+        if (outer instanceof JClassSymbol) {
+            return unresolvedTypes.makeUnresolvedReference((JClassSymbol) outer, simpleName, typeArity);
+        }
+        return makeUnresolvedReference("error." + simpleName, typeArity);
     }
 
     public SymbolResolver getSymResolver() {
@@ -85,32 +113,33 @@ public final class JavaAstProcessor {
         return logger;
     }
 
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    public int getJdkVersion() {
+        return ((JavaLanguageHandler) languageVersion.getLanguageVersionHandler()).getJdkVersion();
+    }
 
     /**
      * Performs semantic analysis on the given source file.
      */
     public void process(ASTCompilationUnit acu) {
-        /*
-            PASSES:
-
-            - qname resolution, setting symbols on declarations
-              - now AST symbols are only partially initialized, their type-related methods will fail
-            - symbol table resolution
-              - AST symbols are now functional
-            - AST disambiguation here
-            - TODO type resolution initialization
-         */
 
         SymbolResolver knownSyms = bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
-        bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, acu));
+        InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
+        bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
     }
 
+    public TypeSystem getTypeSystem() {
+        return typeSystem;
+    }
 
     public static SemanticChecksLogger defaultLogger() {
         return new SemanticChecksLogger() {
@@ -131,35 +160,43 @@ public final class JavaAstProcessor {
     }
 
     public static JavaAstProcessor create(SymbolResolver symResolver,
-                                          ReflectionSymFactory reflectionSymFactory,
+                                          TypeSystem typeSystem,
                                           LanguageVersion languageVersion,
                                           SemanticChecksLogger logger) {
 
         return new JavaAstProcessor(
-            reflectionSymFactory,
-            new AstSymFactory(),
+            typeSystem,
             symResolver,
             logger,
+            defaultTypeInfLogger(),
             languageVersion
         );
     }
 
     public static JavaAstProcessor create(ClassLoader classLoader,
                                           LanguageVersion languageVersion,
-                                          SemanticChecksLogger logger) {
+                                          SemanticChecksLogger logger,
+                                          TypeInferenceLogger typeInfLogger) {
 
-
-        ReflectionSymFactory reflectionSymFactory = new ReflectionSymFactory();
-        AstSymFactory astSymFactory = new AstSymFactory();
-
-        ClassLoader cloaderImpl = PMDASMClassLoader.getInstance(classLoader);
-        SymbolResolver symResolver = new ClasspathSymbolResolver(cloaderImpl, reflectionSymFactory);
-
+        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
         return new JavaAstProcessor(
-            reflectionSymFactory,
-            astSymFactory,
-            symResolver,
+            typeSystem,
+            typeSystem.bootstrapResolver(),
             logger,
+            typeInfLogger,
+            languageVersion
+        );
+    }
+
+    public static JavaAstProcessor create(TypeSystem typeSystem,
+                                          LanguageVersion languageVersion,
+                                          SemanticChecksLogger semanticLogger,
+                                          TypeInferenceLogger typeInfLogger) {
+        return new JavaAstProcessor(
+            typeSystem,
+            typeSystem.bootstrapResolver(),
+            semanticLogger,
+            typeInfLogger,
             languageVersion
         );
     }

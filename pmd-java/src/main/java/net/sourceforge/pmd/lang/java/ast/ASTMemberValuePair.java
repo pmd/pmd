@@ -18,6 +18,9 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTMemberValuePair extends AbstractJavaNode {
 
+    /** The name of the 'value' attribute. */
+    public static final String VALUE_ATTR = "value";
+
     private boolean isShorthand;
 
     ASTMemberValuePair(int id) {

@@ -4,16 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import kotlin.reflect.KCallable
-import kotlin.reflect.jvm.isAccessible
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.shouldBe as ktShouldBe
-import io.kotest.matchers.should
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.equalityMatcher
-import io.kotest.matchers.collections.haveSize
-import java.util.stream.Stream
-import kotlin.streams.toList
+import io.kotest.matchers.should
+import kotlin.reflect.KCallable
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * Extension to add the name of a property to error messages.

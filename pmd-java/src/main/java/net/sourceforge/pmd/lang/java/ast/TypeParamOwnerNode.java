@@ -9,6 +9,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 /**
+ * A symbol declaration, whose symbol can declare type parameters.
+ *
  * @author Clément Fournier
  */
 public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
@@ -20,8 +22,7 @@ public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
      * Returns the type parameter declaration of this node, or null if
      * there is none.
      */
-    @Nullable
-    default ASTTypeParameters getTypeParameters() {
+    default @Nullable ASTTypeParameters getTypeParameters() {
         return getFirstChildOfType(ASTTypeParameters.class);
     }
 

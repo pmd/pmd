@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 // Use a string for comparison because CharSequence are not necessarily
 // equatable to string

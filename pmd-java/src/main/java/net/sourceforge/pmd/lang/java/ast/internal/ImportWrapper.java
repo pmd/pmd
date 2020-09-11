@@ -61,7 +61,7 @@ public class ImportWrapper {
         // previously working version.
         Class<?> type = null;
         if (node != null) {
-            type = node.getRoot().getClassTypeResolver().loadClass(node.getImportedName());
+            type = node.getRoot().getClassTypeResolver().loadClassOrNull(node.getImportedName());
         }
 
         if (type == null) {

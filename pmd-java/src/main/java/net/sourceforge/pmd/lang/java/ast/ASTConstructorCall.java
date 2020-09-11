@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -21,7 +22,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifiableExpression, LeftRecursiveNode {
+public final class ASTConstructorCall extends AbstractInvocationExpr
+    implements ASTPrimaryExpression,
+               QualifiableExpression,
+               LeftRecursiveNode,
+               InvocationNode {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -42,7 +47,7 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      * the new instance of Outer.
      */
     public boolean isQualifiedInstanceCreation() {
-        return getChild(0) instanceof ASTPrimaryExpression;
+        return getChild(0) instanceof ASTExpression;
     }
 
     /**
@@ -56,15 +61,19 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return QualifiableExpression.super.getQualifier();
     }
 
-    @Nullable
-    public ASTTypeArguments getExplicitTypeArguments() {
+    @Override
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
-    public ASTArgumentList getArguments() {
-        int idx = getNumChildren() - (isAnonymousClass() ? 2 : 1);
-        return (ASTArgumentList) getChild(idx);
+    @Override
+    public @NonNull ASTArgumentList getArguments() {
+        JavaNode child = getLastChild();
+        if (child instanceof ASTAnonymousClassDeclaration) {
+            return (ASTArgumentList) getChild(getNumChildren() - 2);
+        }
+        return (ASTArgumentList) child;
     }
 
     /** Returns true if type arguments to the constructed instance's type are inferred. */

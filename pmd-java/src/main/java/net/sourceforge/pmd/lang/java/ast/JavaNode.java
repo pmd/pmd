@@ -11,6 +11,7 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -67,4 +68,12 @@ public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
      */
     @NonNull
     JSymbolTable getSymbolTable();
+
+    /**
+     * Returns the type system with which this node was created. This is
+     * the object responsible for representing types in the compilation
+     * unit.
+     */
+    TypeSystem getTypeSystem();
+
 }

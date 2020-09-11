@@ -4,12 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
@@ -63,6 +59,9 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * would allow us to remove all the remaining ambiguous names.
  */
 public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTReferenceType, ASTPrimaryExpression {
+    // if true, then this was explitly left in the tree by the disambig
+    // pass, with a warning
+    private boolean wasProcessed = false;
 
     ASTAmbiguousName(int id) {
         super(id);
@@ -76,7 +75,15 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
 
     public String getName() {
-        return getImage();
+        return super.getImage();
+    }
+
+    boolean wasProcessed() {
+        return wasProcessed;
+    }
+
+    void setProcessed() {
+        this.wasProcessed = true;
     }
 
     @Override
@@ -90,13 +97,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     public String getTypeImage() {
         return getImage();
     }
-
-
-    @NoAttribute
-    public List<String> getSegments() {
-        return Arrays.asList(getImage().split("\\."));
-    }
-
 
     // Package-private construction methods:
 
@@ -157,7 +157,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
                                                             BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
-        String image = getImage();
+        String image = getName();
 
         int lastDotIdx = image.lastIndexOf('.');
 
@@ -205,7 +205,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         shrinkOneSegment(
             simpleName -> {
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                parent.setImage(simpleName.getImage());
+                parent.setImage(simpleName.getFirstToken().getImage());
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
             },

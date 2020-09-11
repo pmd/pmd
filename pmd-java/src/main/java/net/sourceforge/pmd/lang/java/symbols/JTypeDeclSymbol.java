@@ -6,7 +6,8 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * A symbol that declares a type. These include
@@ -16,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </ul>
  *
  * <p>Note: type symbols are not <i>types</i>, they <i>declare</i> types.
+ * See {@link JTypeMirror#getSymbol()} for more details.
  *
  * @since 7.0.0
  */
@@ -47,21 +49,10 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
      * scoped, so always resolvable), nor anonymous classes (can only be referenced
      * on their declaration site), type variables, etc.
      */
+    @Override
     default boolean isUnresolved() {
         return false;
     }
-
-
-    /**
-     * Returns the reflected class this node represents, if it's on the auxclasspath.
-     * There's no guarantee that this is even exists (this symbol may be notional).
-     *
-     * <p>This is provided to optimize some stuff, but ideally the symbol
-     * API should reflect everything there is to know about classes,
-     * and this method shouldn't be used.
-     */
-    @Nullable
-    Class<?> getJvmRepr();
 
 
     /**
@@ -80,5 +71,4 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
     default boolean isInterface() {
         return false;
     }
-
 }

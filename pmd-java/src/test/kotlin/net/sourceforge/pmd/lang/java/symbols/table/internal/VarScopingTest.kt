@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.shouldBeEmpty
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
@@ -23,7 +24,7 @@ class VarScopingTest : ProcessorTestSpec({
 
             // TODO test with static import, currently there are no "unresolved field" symbols
 
-            class Outer extends Sup {
+            class Outer<T> extends Sup {
                 private T f;
 
                 {
@@ -124,7 +125,7 @@ class VarScopingTest : ProcessorTestSpec({
 
                     }
 
-                    try (Reader f = r;                      // reader3 
+                    try (Reader f = r;                      // reader3
                          BufferedReader r = f.buffered()) { // br2
                     }
                 }
@@ -241,7 +242,7 @@ class VarScopingTest : ProcessorTestSpec({
                 }
 
                 Cons(int x2, int y2) {
-                    assert false; 
+                    assert false;
                     this.x = x2;
                     x2 = x;
                     this.rest = new int[] { y2 };
@@ -277,4 +278,101 @@ class VarScopingTest : ProcessorTestSpec({
             }
         }
     }
+
+
+    parserTest("Foreach with no braces") {
+
+        val acu = parser.parse("""
+            import java.util.*;
+            import java.io.*;
+            class Outer {
+
+                public File[] listFiles(FilenameFilter filter) {
+                    String ss[] = list();
+                    if (ss == null) return null;
+                    ArrayList<File> files = new ArrayList<>();
+                    for (String s : ss)
+                        if ((filter == null) || filter.accept(this, s)) // s should be resolved
+                            files.add(new File(s, this));
+                    return files.toArray(new File[files.size()]);
+                }
+            }
+        """.trimIndent())
+
+        val foreachVar =
+                acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "s" }!!
+
+        val foreachBody =
+                acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
+
+        foreachBody shouldResolveToLocal foreachVar
+
+    }
+
+    parserTest("Switch on enum has field names in scope") {
+
+        val acu = parser.parse("""
+
+        class Scratch {
+
+            enum SomeEnum { A, B }
+
+            public static void main(String[] args) {
+                SomeEnum e = SomeEnum.A;
+
+                switch (e) {
+                // neither A nor B are in scope
+                case A:
+                    return;
+                case B:
+                    return;
+                }
+
+                A.foo(); // this is an ambiguous name
+
+
+            }
+        }
+
+        """.trimIndent())
+
+        val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val (enumA, enumB) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val (e, caseA, caseB) =
+                acu.descendants(ASTVariableAccess::class.java).toList()
+
+        val (qualifiedA) =
+                acu.descendants(ASTFieldAccess::class.java).toList()
+
+        val (fooCall) =
+                acu.descendants(ASTMethodCall::class.java).toList()
+
+        qualifiedA.referencedSym shouldBe enumA.symbol
+        qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
+        qualifiedA.typeMirror shouldBe t_SomeEnum
+
+        caseA.referencedSym shouldBe enumA.symbol
+        caseA.referencedSym!!.tryGetNode() shouldBe enumA
+        caseA.typeMirror shouldBe t_SomeEnum
+
+        caseB.referencedSym shouldBe enumB.symbol
+        caseB.referencedSym!!.tryGetNode() shouldBe enumB
+        caseB.typeMirror shouldBe t_SomeEnum
+
+        e.typeMirror shouldBe t_SomeEnum
+
+        // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
+        caseB.symbolTable.variables().resolve("A").shouldBeEmpty()
+        caseB.symbolTable.variables().resolve("B").shouldBeEmpty()
+
+        fooCall.qualifier!!.shouldMatchN {
+            ambiguousName("A")
+        }
+
+    }
+
+
 })

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
@@ -33,7 +34,7 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
      * because we need to specify it, eg it would be more useful to have
      * a method return a qualified name with help of the symbol table.
      *
-     * @deprecated We can use the symbol, or better the upcoming type API to pretty print the type.
+     * @deprecated This is not meaningful. Use {@link #getText()}, or {@link TypePrettyPrint}
      */
     @Deprecated
     String getTypeImage();

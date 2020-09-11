@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -34,20 +34,21 @@ class ASTArrayAllocationTest : ParserTestSpec({
             "new @Foo int[3][2]" should parseAs {
                 arrayAlloc {
 
-                    it::getTypeNode shouldBe arrayType({
-                        primitiveType(INT) {
-                            annotation("Foo")
-                        }
-                    }) {
-                        dimExpr {
-                            int(3)
-                        }
-                        dimExpr {
-                            int(2)
-                        }
-                    }
+            it::getTypeNode shouldBe arrayType({
+                primitiveType(INT) {
+                    annotation("Foo")
+                }
+            }) {
+                dimExpr {
+                    int(3)
+                }
+                dimExpr {
+                    int(2)
                 }
             }
+        }
+
+}
             "new @Foo int @Bar [3][2]" should parseAs {
                 arrayAlloc {
 
@@ -68,7 +69,8 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 }
             }
 
-            "(new int[3])[2]" should parseAs {
+
+        "(new int[3])[2]" should parseAs {
                 arrayAccess {
                     parenthesized {
                         arrayAlloc {

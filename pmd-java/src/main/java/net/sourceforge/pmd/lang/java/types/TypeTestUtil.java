@@ -4,30 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
 /**
  * Public utilities to test the type of nodes.
- *
- * <p>This replaces {@link TypeHelper}. Note that in contrast to methods
- * in {@link TypeHelper}, these methods:
- * <ul>
- * <li>Take the node as the second parameter
- * <li>Systematically return false if the node argument is null
- * <li>Systematically throw if the other argument is null
- * </ul>
  */
 public final class TypeTestUtil {
 
@@ -58,7 +46,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("class", clazz);
+        AssertionUtil.requireParamNotNull("class", (Object) clazz);
         if (node == null) {
             return false;
         } else if (node.getType() == clazz) {
@@ -92,27 +80,40 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isA(/*@NonNull*/ String canonicalName, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("canonicalName", canonicalName);
+        AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
         if (node == null) {
+            return false;
+        } else if (isExactlyA(canonicalName, node)) {
+            return true;
+        }
+
+        JTypeMirror thisType = node.getTypeMirror();
+        JTypeDeclSymbol thisClass = thisType.getSymbol();
+        if (thisClass instanceof JClassSymbol && ((JClassSymbol) thisClass).isAnnotation()) {
+            return isAnnotationSuperType(canonicalName);
+        }
+
+        if (thisClass != null && thisClass.isUnresolved()) {
+            // we can't get any useful info from this, isSubtypeOf would return true
             return false;
         }
 
-        Class<?> nodeType = node.getType();
-        if (nodeType == null) {
-            return fallbackIsA(node, canonicalName, true);
-        } else if (nodeType.isAnnotation()) {
-            return isAnnotationSubtype(nodeType, canonicalName);
+        TypeSystem ts = thisType.getTypeSystem();
+        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName);
+        if (otherType == null) {
+            return isExactlyA(canonicalName, node);
         }
 
-        final Class<?> clazz = loadClassWithNodeClassloader(node, canonicalName);
 
-        if (clazz != null) {
-            return clazz.isAssignableFrom(nodeType);
-        } else {
-            return fallbackIsA(node, canonicalName, true);
-        }
+        return thisType.isSubtypeOf(otherType);
     }
 
+    private static boolean isAnnotationSuperType(String clazzName) {
+        // then, the supertype may only be Object, j.l.Annotation
+        // this is used e.g. by the typeIs function in XPath
+        return "java.lang.annotation.Annotation".equals(clazzName)
+            || "java.lang.Object".equals(clazzName);
+    }
 
     /**
      * Checks whether the static type of the node is exactly the type
@@ -136,13 +137,17 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("class", clazz);
+        AssertionUtil.requireParamNotNull("class", (Object) clazz);
         if (node == null) {
             return false;
         }
 
-        return node.getType() == null ? fallbackIsA(node, clazz.getName(), false)
-                                      : node.getType() == clazz;
+        JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
+        if (sym == null || sym instanceof JTypeParameterSymbol) {
+            return false;
+        }
+
+        return ((JClassSymbol) sym).getBinaryName().equals(clazz.getName());
     }
 
 
@@ -168,115 +173,31 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isExactlyA(/*@Nullable*/ String canonicalName, TypeNode node /*@NonNull*/) {
-        requireParamNotNull("canonicalName", canonicalName);
+        AssertionUtil.requireParamNotNull("canonicalName", canonicalName);
         if (node == null) {
             return false;
         }
 
-
-        return node.getType() == null ? fallbackIsA(node, canonicalName, false)
-                                      : node.getType().getCanonicalName().equals(canonicalName);
-    }
-
-
-    // this is in AssertionUtil in 7.0
-    private static void requireParamNotNull(String name, Object o) {
-        if (o == null) {
-            throw new NullPointerException("Parameter '" + name + "' was null");
+        JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
+        if (sym == null || sym instanceof JTypeParameterSymbol) {
+            return false;
         }
+
+        canonicalName = StringUtils.deleteWhitespace(canonicalName);
+
+        JClassSymbol klass = (JClassSymbol) sym;
+        if (klass.getBinaryName().equals(canonicalName)) {
+            // fast path, binary names are easier to find
+            return true;
+        }
+        String canonical = klass.getCanonicalName();
+        return canonical != null && canonical.equals(canonicalName);
     }
+
 
     private static boolean canBeExtended(Class<?> clazz) {
         // Neither final nor an annotation. Enums & records have ACC_FINAL
         return (clazz.getModifiers() & (Opcodes.ACC_ANNOTATION | Opcodes.ACC_FINAL)) == 0;
     }
 
-    // those fallbacks can be removed with the newer symbol resolution,
-    // symbols reflect enough information to do this fallback transparently.
-
-    /**
-     * Returns true if the class n is a subtype of clazzName, given n
-     * is an annotation type.
-     */
-    private static boolean isAnnotationSubtype(Class<?> n, String clazzName) {
-        assert n != null && n.isAnnotation() : "Not an annotation type";
-        // then, the supertype may only be Object, j.l.Annotation, or the class name
-        // this avoids classloading altogether
-        // this is used e.g. by the typeIs function in XPath
-        return "java.lang.annotation.Annotation".equals(clazzName)
-            || "java.lang.Object".equals(clazzName)
-            || clazzName.equals(n.getName());
-    }
-
-    private static boolean fallbackIsA(TypeNode n, String canonicalName, boolean considerSubtype) {
-        if (n.getImage() != null && !n.getImage().contains(".") && canonicalName.contains(".")) {
-            // simple name detected, check the imports to get the full name and use that for fallback
-            List<ASTImportDeclaration> imports = n.getRoot().findChildrenOfType(ASTImportDeclaration.class);
-            for (ASTImportDeclaration importDecl : imports) {
-                if (n.hasImageEqualTo(importDecl.getImportedSimpleName())) {
-                    // found the import, compare the full names
-                    return canonicalName.equals(importDecl.getImportedName());
-                }
-            }
-        }
-
-        if (n instanceof ASTAnyTypeDeclaration) {
-            ASTAnyTypeDeclaration decl = (ASTAnyTypeDeclaration) n;
-            if (decl.getBinaryName().equals(canonicalName)) {
-                return true;
-            } else if (!considerSubtype) { // otherwise fallthrough
-                return false;
-            } else {
-                return isStrictSuperType(decl, canonicalName);
-            }
-        }
-
-        // fall back on using the simple name of the class only
-        return canonicalName.equals(n.getImage()) || canonicalName.endsWith("." + n.getImage());
-    }
-
-    private static boolean isStrictSuperType(ASTAnyTypeDeclaration n, String binaryName) {
-        if (n instanceof ASTClassOrInterfaceDeclaration) {
-
-            ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) n).getSuperClassTypeNode();
-            if (superClass != null) {
-                return isA(binaryName, superClass);
-            }
-
-            for (ASTClassOrInterfaceType itf : n.getSuperInterfaceTypeNodes()) {
-                if (isA(binaryName, itf)) {
-                    return true;
-                }
-            }
-        } else if (n instanceof ASTEnumDeclaration) {
-
-            ASTImplementsList implemented = n.getFirstChildOfType(ASTImplementsList.class);
-            if (implemented != null) {
-                for (ASTClassOrInterfaceType itf : implemented) {
-                    if (isA(binaryName, itf)) {
-                        return true;
-                    }
-                }
-            }
-
-            return "java.lang.Enum".equals(binaryName)
-                // supertypes of Enum
-                || "java.lang.Comparable".equals(binaryName)
-                || "java.io.Serializable".equals(binaryName)
-                || "java.lang.Object".equals(binaryName);
-        } else if (n instanceof ASTAnnotationTypeDeclaration) {
-            return "java.lang.annotation.Annotation".equals(binaryName)
-                || "java.lang.Object".equals(binaryName);
-        }
-
-        return false;
-    }
-
-    static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
-        if (n.getType() != null) {
-            return TypesFromReflection.loadClass(n.getRoot().getClassTypeResolver(), clazzName);
-        }
-
-        return null;
-    }
 }

@@ -8,6 +8,6 @@
             +- FormalParameters[@Size = "0"]
             +- Block[@Size = "1", @containsComment = "false"]
                +- SynchronizedStatement[]
-                  +- NumericLiteral[@Base = "10", @CompileTimeConstant = "true", @DoubleLiteral = "false", @FloatLiteral = "false", @Image = "0", @IntLiteral = "true", @Integral = "true", @LongLiteral = "false", @ParenthesisDepth = "0", @Parenthesized = "false", @PrimitiveType = "int", @ValueAsDouble = "0.0", @ValueAsFloat = "0.0", @ValueAsInt = "0", @ValueAsLong = "0"]
+                  +- NumericLiteral[@Base = "10", @CompileTimeConstant = "true", @DoubleLiteral = "false", @FloatLiteral = "false", @Image = "0", @IntLiteral = "true", @Integral = "true", @LongLiteral = "false", @ParenthesisDepth = "0", @Parenthesized = "false", @ValueAsDouble = "0.0", @ValueAsFloat = "0.0", @ValueAsInt = "0", @ValueAsLong = "0"]
                   +- Block[@Size = "1", @containsComment = "false"]
                      +- ReturnStatement[]

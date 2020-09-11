@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -21,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
-@Ignore("Ignored until the typeres branch is merged")
 public class TypeTestUtilTest extends BaseNonParserTest {
 
     @Rule
@@ -89,8 +87,8 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertNull(annotation.getType());
         Assert.assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
         Assert.assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
-        // if the searched class name is not fully qualified, then the search should still be successful
-        Assert.assertTrue(TypeTestUtil.isA("Stuff", annotation));
+        // we know it's not Stuff, it's foo.Stuff
+        Assert.assertFalse(TypeTestUtil.isA("Stuff", annotation));
     }
 
     @Test

@@ -4,18 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 
 /**
@@ -29,14 +23,16 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  */
 public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
+    private PrimitiveTypeKind kind;
+
     /**
      * @deprecated Made public for one shady usage in {@link ClassScope}
      */
     @Deprecated
     @InternalApi
-    public ASTPrimitiveType(PrimitiveType type) {
+    public ASTPrimitiveType(PrimitiveTypeKind type) {
         super(JavaParserImplTreeConstants.JJTPRIMITIVETYPE);
-        setImage(type.getToken());
+        setKind(type);
     }
 
 
@@ -44,16 +40,26 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
         super(id);
     }
 
-
-    public boolean isBoolean() {
-        return "boolean".equals(getImage());
+    void setKind(PrimitiveTypeKind kind) {
+        assert this.kind == null : "Cannot set kind multiple times";
+        this.kind = kind;
     }
 
+    public PrimitiveTypeKind getKind() {
+        assert kind != null : "Primitive kind not set for " + this;
+        return kind;
+    }
+
+    @Override
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
 
     @Override
     @Deprecated
     public String getTypeImage() {
-        return getImage();
+        return getKind().getSimpleName();
     }
 
 
@@ -62,72 +68,8 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
         return visitor.visit(this, data);
     }
 
-
-    public PrimitiveType getModelConstant() {
-        return Objects.requireNonNull(PrimitiveType.fromToken(getImage()), "Image doesn't denote a primitive type??");
+    @Override
+    public @NonNull JPrimitiveType getTypeMirror() {
+        return (JPrimitiveType) super.getTypeMirror();
     }
-
-
-    /**
-     * Constants to symbolise a primitive type when the tree context is
-     * not important. I expect this may be fleshed out to be used by type
-     * resolution or something.
-     */
-    @Experimental
-    public enum PrimitiveType {
-        BOOLEAN,
-        CHAR,
-        INT,
-        BYTE,
-        SHORT,
-        LONG,
-        DOUBLE,
-        FLOAT;
-
-        private static final Map<String, PrimitiveType> LOOKUP =
-            Collections.unmodifiableMap(
-                Arrays.stream(values()).collect(Collectors.toMap(
-                    PrimitiveType::getToken,
-                    t -> t
-                ))
-            );
-
-
-        /**
-         * Returns true if this denotes a numeric type.
-         */
-        public boolean isNumeric() {
-            return this != BOOLEAN;
-        }
-
-
-        @Override
-        public String toString() {
-            return getToken();
-        }
-
-        /**
-         * Returns the token used to represent the type in source,
-         * e.g. "int" or "double".
-         */
-        public String getToken() {
-            return name().toLowerCase(Locale.ROOT);
-        }
-
-
-        /**
-         * Gets an enum constant from the token used to represent it in source,
-         * e.g. "int" or "double".
-         *
-         * @param token String token
-         *
-         * @return A constant, or null if the string doesn't correspond
-         * to a primitive type
-         */
-        @Nullable
-        public static PrimitiveType fromToken(String token) {
-            return LOOKUP.get(token);
-        }
-    }
-
 }

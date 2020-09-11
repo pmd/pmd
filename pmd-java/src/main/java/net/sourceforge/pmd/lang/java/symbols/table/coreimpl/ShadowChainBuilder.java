@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.Builder;
@@ -66,7 +67,7 @@ public abstract class ShadowChainBuilder<S, I> {
         return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, symbols.build());
     }
 
-    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         if (isPrunable(parent, shadowBarrier, resolver.isDefinitelyEmpty())) {
             return parent;
         }
@@ -88,8 +89,12 @@ public abstract class ShadowChainBuilder<S, I> {
     // resolver itself (the chain node will cache the results of the
     // parents too)
 
-    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
-        return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag);
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+        return augmentWithCache(parent, shadowBarrier, scopeTag, resolver, ShadowChainNodeBase.defaultMerger());
+    }
+
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver, BinaryOperator<List<S>> merger) {
+        return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag, merger);
     }
 
     public ShadowChainNode<S, I> shadowWithCache(ShadowChainNode<S, I> parent,
@@ -100,7 +105,7 @@ public abstract class ShadowChainBuilder<S, I> {
                                                  // is why this parameter is defaulted.
                                                  Map<String, List<S>> cacheMap,
                                                  NameResolver<S> resolver) {
-        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag);
+        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag, ShadowChainNodeBase.defaultMerger());
     }
 
 
@@ -150,6 +155,10 @@ public abstract class ShadowChainBuilder<S, I> {
             this.myBuilder = newMapBuilder();
         }
 
+        public String getSimpleName(S sym) {
+            return ShadowChainBuilder.this.getSimpleName(sym);
+        }
+
         public ResolverBuilder append(S sym) {
             myBuilder.appendValue(getSimpleName(sym), sym);
             return this;
@@ -162,6 +171,11 @@ public abstract class ShadowChainBuilder<S, I> {
 
         public ResolverBuilder overwrite(S sym) {
             myBuilder.replaceValue(getSimpleName(sym), sym);
+            return this;
+        }
+
+        public ResolverBuilder absorb(ShadowChainBuilder<S, ?>.ResolverBuilder other) {
+            myBuilder.absorb(other.myBuilder);
             return this;
         }
 

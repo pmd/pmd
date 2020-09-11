@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 /**
  * Tests new java14 standard features.
  */
-@Ignore("Needs to be fixed for new AST structure")
+@Ignore("Needs to be fixed for new AST structure. All of this is already much better tested in Kotlin, I don't want to port these tests...")
 public class Java14Test {
     private final JavaParsingHelper java14 =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("14")

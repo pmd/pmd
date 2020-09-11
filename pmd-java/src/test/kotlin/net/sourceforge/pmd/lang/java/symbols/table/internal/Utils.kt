@@ -15,15 +15,18 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymResolver
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
+import net.sourceforge.pmd.lang.java.types.JTypeMirror
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
+// TODO remove this and use mocking to test the semantic logger
 internal fun testProcessor(jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =
-        JavaAstProcessor.create(testSymResolver, testSymFactory, jdkVersion.pmdVersion, logger)
+        JavaAstProcessor.create(testSymResolver, testTypeSystem, jdkVersion.pmdVersion, logger)
 
 inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String, expected: JVariableSymbol): T =
-        variables().resolveFirst(simpleName).shouldBeA<T> {
+        variables().resolveFirst(simpleName)!!.symbol.shouldBeA<T> {
             it shouldBe expected
         }
 
@@ -36,11 +39,11 @@ infix fun JavaNode.shouldResolveToLocal(localId: ASTVariableDeclaratorId): JLoca
 
 
 inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String): T =
-        variables().resolveFirst(simpleName).shouldBeA<T>()
+        variables().resolveFirst(simpleName)!!.symbol.shouldBeA<T>()
 
 
-inline fun <reified T : JTypeDeclSymbol> JSymbolTable.shouldResolveTypeTo(simpleName: String, expected: T) =
+inline fun <reified T : JTypeMirror> JSymbolTable.shouldResolveTypeTo(simpleName: String, expected: T) =
         types().resolveFirst(simpleName).shouldBeA<T>().shouldBe(expected)
 
-inline fun <reified T : JTypeDeclSymbol> JSymbolTable.shouldResolveTypeTo(simpleName: String): T =
+inline fun <reified T : JTypeMirror> JSymbolTable.shouldResolveTypeTo(simpleName: String): T =
         types().resolveFirst(simpleName).shouldBeA<T>()

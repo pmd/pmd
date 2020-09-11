@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -54,7 +55,6 @@ public interface NameResolver<S> {
         return OptionalBool.UNKNOWN;
     }
 
-
     /** Returns true if this resolver knows it cannot resolve anything. */
     default boolean isDefinitelyEmpty() {
         return false;
@@ -64,6 +64,43 @@ public interface NameResolver<S> {
     /** Please implement toString to ease debugging. */
     @Override
     String toString();
+
+    /**
+     * Returns a resolver that concatenates the results of every resolver
+     * in the given list.
+     *
+     * @param resolvers Resolvers
+     * @param <T>       Type of symbol
+     */
+    static <T> NameResolver<T> composite(List<? extends NameResolver<? extends T>> resolvers) {
+        if (resolvers.isEmpty()) {
+            return CoreResolvers.emptyResolver();
+        }
+        return new NameResolver<T>() {
+            @Override
+            public @NonNull List<T> resolveHere(String simpleName) {
+                List<T> result = Collections.emptyList();
+                for (NameResolver<? extends T> r : resolvers) {
+                    List<? extends T> ts = r.resolveHere(simpleName);
+                    if (!ts.isEmpty()) {
+                        result = CollectionUtil.concatView(result, ts);
+                    }
+                }
+                return result;
+            }
+
+            @Override
+            public @Nullable T resolveFirst(String simpleName) {
+                for (NameResolver<? extends T> r : resolvers) {
+                    T t = r.resolveFirst(simpleName);
+                    if (t != null) {
+                        return t;
+                    }
+                }
+                return null;
+            }
+        };
+    }
 
 
     /**

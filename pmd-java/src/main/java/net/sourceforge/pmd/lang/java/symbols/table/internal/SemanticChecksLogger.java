@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import java.text.MessageFormat;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 
 /**
- * TODO pull that up to PMD core, use for language level checks
+ * TODO pull that up to PMD core, use for {@link LanguageLevelChecker}
+ * as well
  */
 public interface SemanticChecksLogger {
 
@@ -24,6 +26,7 @@ public interface SemanticChecksLogger {
      * Warning, classpath is misconfigured (or not configured).
      */
     String CANNOT_RESOLVE_SYMBOL = "Cannot resolve symbol {0}";
+    String INACCESSIBLE_SYMBOL = "Symbol {0} is inaccessible";
 
 
     /**
@@ -56,9 +59,25 @@ public interface SemanticChecksLogger {
      * about it at all, classpath is incomplete or code is incorrect.
      * Eg {@code package.that.doesnt.exist.Type}
      */
-    String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
+    String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as {1}";
 
     String AMBIGUOUS_NAME_REFERENCE = "Reference ''{0}'' is ambiguous, both {1} and {2} match";
+
+    /*
+        TODO Checks that are essential for typeres/symtable
+         - no self-reference in initializer
+           - else infinite loop
+         - class or type param doesn't extend/implement itself
+           - else infinite loop
+         - types are well-formed, ie if they are parameterized, then the number of type arguments is the number of formal type params
+           - note that this will be tricky when dealing with unresolved types:
+           for now we give them zero type params, but we must infer that from
+           looking through the file.
+           - else failure when doing type substitution
+         - method reference is well formed, ie a constructor reference
+           has a type as LHS (currently the parser throws, it would need
+           to be more lenient)
+     */
 
 
     /**

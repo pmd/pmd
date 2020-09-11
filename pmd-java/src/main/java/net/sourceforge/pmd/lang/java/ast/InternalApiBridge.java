@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -18,7 +17,14 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -77,7 +83,7 @@ public final class InternalApiBridge {
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.addChild(variableDeclaratorId, 1);
 
-            PrimitiveType primitive = PrimitiveType.fromToken(parameterTypes[i]);
+            PrimitiveTypeKind primitive = PrimitiveTypeKind.fromName(parameterTypes[i]);
             // TODO : this could actually be a primitive array...
             AbstractJavaNode type = primitive != null
                            ? new ASTPrimitiveType(primitive)
@@ -111,12 +117,56 @@ public final class InternalApiBridge {
         }
     }
 
-    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration context, boolean outsideContext) {
-        AstDisambiguationPass.disambig(processor, nodes, context, outsideContext);
+    public static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
+        AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
-    public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
-        AstDisambiguationPass.disambig(processor, root);
+    public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
+        return ((AbstractJavaTypeNode) node).getTypeMirrorInternal();
+    }
+
+    public static void setTypeMirrorInternal(TypeNode node, JTypeMirror inferred) {
+        ((AbstractJavaTypeNode) node).setTypeMirror(inferred);
+    }
+
+    public static void setSignature(ASTFieldAccess node, FieldSig sig) {
+        node.setTypedSym(sig);
+    }
+
+    public static void setSignature(ASTVariableAccess node, JVariableSig sig) {
+        node.setTypedSym(sig);
+    }
+
+    public static void setFunctionalMethod(ASTMethodReference methodReference, JMethodSig methodType) {
+        methodReference.setFunctionalMethod(methodType);
+    }
+
+    public static void setFunctionalMethod(ASTLambdaExpression lambda, @Nullable JMethodSig methodType) {
+        lambda.setFunctionalMethod(methodType);
+    }
+
+    public static void setCompileTimeDecl(ASTMethodReference methodReference, JMethodSig methodType) {
+        methodReference.setCompileTimeDecl(methodType);
+    }
+
+    public static void initTypeResolver(ASTCompilationUnit acu, JavaAstProcessor processor, TypeInferenceLogger typeResolver) {
+        acu.setTypeResolver(new LazyTypeResolver(processor, typeResolver));
+    }
+
+    public static void setOverload(InvocationNode expression, OverloadSelectionResult result) {
+        if (expression instanceof AbstractInvocationExpr) {
+            ((AbstractInvocationExpr) expression).setOverload(result);
+        } else if (expression instanceof ASTExplicitConstructorInvocation) {
+            ((ASTExplicitConstructorInvocation) expression).setOverload(result);
+        } else if (expression instanceof ASTEnumConstant) {
+            ((ASTEnumConstant) expression).setOverload(result);
+        } else {
+            throw new IllegalArgumentException("Wrong type: " + expression);
+        }
+    }
+
+    public static JavaAstProcessor getProcessor(JavaNode n) {
+        return n.getRoot().getLazyTypeResolver().getProcessor();
     }
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
@@ -133,12 +183,6 @@ public final class InternalApiBridge {
 
     public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
-    }
-
-    public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
-        if (node instanceof AbstractJavaTypeNode) {
-            ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
-        }
     }
 
 }

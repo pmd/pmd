@@ -31,7 +31,6 @@ class ASTFieldAccessTest : ParserTestSpec({
                     it::getQualifier shouldBe child<ASTMethodCall> {
                         it::getQualifier shouldBe null
                         it::getMethodName shouldBe "foo"
-                        it::getImage shouldBe "foo"
 
                         it::getArguments shouldBe child {}
                     }

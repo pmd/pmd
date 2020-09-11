@@ -5,9 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 /**
  * A field access expression.
@@ -20,16 +23,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  */
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr, QualifiableExpression {
 
+    private FieldSig typedSym;
+
+
     ASTFieldAccess(int id) {
         super(id);
     }
-
 
     /**
      * Promotes an ambiguous name to the LHS of this node.
      */
     ASTFieldAccess(ASTAmbiguousName lhs, String fieldName) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
+        assert fieldName != null;
         this.addChild(lhs, 0);
         this.setImage(fieldName);
     }
@@ -55,6 +61,20 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return getImage();
     }
 
+    @Override
+    public @Nullable FieldSig getSignature() {
+        forceTypeResolution();
+        return typedSym;
+    }
+
+    @Override
+    public @Nullable JFieldSymbol getReferencedSym() {
+        return (JFieldSymbol) ASTNamedReferenceExpr.super.getReferencedSym();
+    }
+
+    void setTypedSym(@Nullable FieldSig sig) {
+        this.typedSym = sig;
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

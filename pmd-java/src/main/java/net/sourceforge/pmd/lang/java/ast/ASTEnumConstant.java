@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
  *
@@ -15,11 +17,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaNode
+public final class ASTEnumConstant extends AbstractJavaTypeNode
     implements Annotatable,
+               InvocationNode,
                AccessNode,
                ASTBodyDeclaration,
                InternalInterfaces.VariableIdOwner {
+
+    private OverloadSelectionResult result;
 
     ASTEnumConstant(int id) {
         super(id);
@@ -42,9 +47,7 @@ public final class ASTEnumConstant extends AbstractJavaNode
         return getVarId().getImage();
     }
 
-    /**
-     * Returns the arguments list passed to the constructor call, if any.
-     */
+    @Override
     @Nullable
     public ASTArgumentList getArguments() {
         return getFirstChildOfType(ASTArgumentList.class);
@@ -73,4 +76,20 @@ public final class ASTEnumConstant extends AbstractJavaNode
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);
     }
 
+    @Override
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
+        // no syntax for that
+        return null;
+    }
+
+    void setOverload(OverloadSelectionResult result) {
+        assert result != null;
+        this.result = result;
+    }
+
+    @Override
+    public OverloadSelectionResult getOverloadSelectionInfo() {
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(result);
+    }
 }

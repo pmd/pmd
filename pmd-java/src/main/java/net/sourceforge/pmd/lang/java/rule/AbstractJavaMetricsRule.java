@@ -59,6 +59,7 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
 
+
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((MethodLikeNode) node, data);
     }
