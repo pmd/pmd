@@ -18,6 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 * pmd-java
    * [#2708](https://github.com/pmd/pmd/pull/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
+    *   [#2767](https://github.com/pmd/pmd/issues/2767): \[java] IndexOutOfBoundsException when parsing an initializer BlockStatement
 
 
 ### API Changes
