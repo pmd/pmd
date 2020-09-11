@@ -317,4 +317,15 @@ public class ConstantExpressionsTests extends BaseNonParserTest {
     }
 
 
+    @Test
+    public strictfp void testConstFields() {
+        Assertions.assertAll(
+            isConst("Math.PI", Math.PI),
+            isConst("Math.PI > 3", true),
+
+            notConst("System.out")
+        );
+    }
+
+
 }

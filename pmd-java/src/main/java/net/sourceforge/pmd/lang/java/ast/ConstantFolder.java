@@ -9,6 +9,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -26,8 +29,6 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
 
     }
 
-    // TODO references to constant fields
-
     @Override
     public Object visitJavaNode(JavaNode node, Void data) {
         return null;
@@ -36,6 +37,24 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
     @Override
     public @NonNull Number visitLiteral(ASTLiteral num, Void data) {
         throw new AssertionError("Literal nodes implement getConstValue directly");
+    }
+
+    @Override
+    public Object visit(ASTVariableAccess node, Void data) {
+        return fetchConstFieldReference(node);
+    }
+
+    @Override
+    public Object visit(ASTFieldAccess node, Void data) {
+        return fetchConstFieldReference(node);
+    }
+
+    private @Nullable Object fetchConstFieldReference(ASTNamedReferenceExpr node) {
+        JVariableSymbol symbol = node.getReferencedSym();
+        if (symbol instanceof JFieldSymbol) {
+            return ((JFieldSymbol) symbol).getConstValue();
+        }
+        return null;
     }
 
     @Override
