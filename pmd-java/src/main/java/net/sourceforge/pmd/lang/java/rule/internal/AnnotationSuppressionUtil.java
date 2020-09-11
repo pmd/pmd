@@ -15,11 +15,13 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -108,15 +110,19 @@ final class AnnotationSuppressionUtil {
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
         if (TypeTestUtil.isA(SuppressWarnings.class, annotation)) {
-            for (ASTStringLiteral element : annotation.findDescendantsOfType(ASTStringLiteral.class)) {
-                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(
-                    "\"PMD." + rule.getName() + "\"")
-                    // Check for standard annotations values
-                    || element.hasImageEqualTo("\"all\"")
-                    || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
-                    || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())
-                    || element.hasImageEqualTo("\"all\"")) {
-                    return true;
+            for (ASTMemberValue value : annotation.getValuesForName(ASTMemberValuePair.VALUE_ATTR)) {
+                Object constVal = value.getConstValue();
+                if (constVal instanceof String) {
+                    String stringVal = (String) constVal;
+                    if (stringVal.equals("PMD")
+                        || stringVal.equals("PMD." + rule.getName())
+                        // Check for standard annotations values
+                        || stringVal.equals("all")
+                        || stringVal.equals("serial") && SERIAL_RULES.contains(rule.getName())
+                        || stringVal.equals("unused") && UNUSED_RULES.contains(rule.getName())
+                    ) {
+                        return true;
+                    }
                 }
             }
         }
