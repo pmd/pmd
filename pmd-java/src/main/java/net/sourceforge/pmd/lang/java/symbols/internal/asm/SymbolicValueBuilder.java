@@ -64,7 +64,7 @@ class SymbolicValueBuilder extends AnnotationVisitor {
 
         @Override
         public void visitEnd() {
-            finisher.accept(new SymArray(arrayElements));
+            finisher.accept(SymArray.forElements(arrayElements));
         }
     }
 }

@@ -117,13 +117,37 @@ public class SymbolReflectionTest {
         Assert.assertTrue(target.isOfType(Target.class));
         Assert.assertTrue(target.isOfType(Target.class.getName()));
 
-        Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD}));
+        Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD}));
 
     }
 
 
     @Test
     public void testAnnotThatHasDefaults() {
+        // note that this asserts, that the param names are unavailable
+
+        /*
+            @AnnotWithDefaults(valueNoDefault = "ohio",
+                       stringArrayDefault = {})
+
+         */
+        JClassSymbol sym = loadClass(SomeClass.class);
+
+        Assert.assertTrue(sym.isAnnotationPresent(AnnotWithDefaults.class));
+
+        SymAnnot target = sym.getDeclaredAnnotation(AnnotWithDefaults.class);
+
+
+        Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
+        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] {}));
+        Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
+        Assert.assertEquals(UNKNOWN, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
+
+    }
+
+
+    @Test
+    public void testAnnotOnMethod() {
         // note that this asserts, that the param names are unavailable
 
         /*

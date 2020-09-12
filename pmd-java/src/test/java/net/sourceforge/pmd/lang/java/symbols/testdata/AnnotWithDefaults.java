@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  *
  */
-@Target({ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface AnnotWithDefaults {
 
 

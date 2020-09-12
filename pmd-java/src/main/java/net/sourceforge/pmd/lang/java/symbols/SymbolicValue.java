@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
@@ -22,10 +23,9 @@ import net.sourceforge.pmd.util.OptionalBool;
  * Annotations may contain:
  * <ul>
  * <li>Primitive or string values: {@link SymValue}
- * <li>Arrays of primitives or strings: {@link SymValue}
  * <li>Enum constants: {@link SymEnum}
  * <li>Other annotations: {@link SymAnnot}
- * <li>Arrays of annotations, or enum constants, of dimension 1: {@link SymArray}
+ * <li>Arrays of the above, of dimension 1: {@link SymArray}
  * </ul>
  *
  * <p>Any other values, including the null reference, are unsupported and
@@ -164,22 +164,64 @@ public interface SymbolicValue {
     }
 
     /**
-     * An array of enum constants, or of annotations.
-     * Note that arrays of strings, and arrays of primitives,
-     * are represented by an {@link SymValue}.
+     * An array of values.
      */
     final class SymArray implements SymbolicValue {
 
         private final List<SymbolicValue> elements;
+        private final Object primArray; // for equality tests we keep the primitive array
+
+        private SymArray(List<SymbolicValue> elements, Object primArray) {
+            this.elements = Collections.unmodifiableList(elements);
+            this.primArray = primArray;
+        }
+
+        public static SymArray forElements(List<SymbolicValue> values) {
+            return new SymArray(values, null);
+        }
 
         /**
-         * @param elements A list of symbolic values, note that these
-         *                 should not be {@link SymValue}s, instead,
-         *                 arrays of such things should be a {@link SymValue}
-         *                 itself.
+         * Returns a SymArray for the parameter.
+         *
+         * @throws IllegalArgumentException If the parameter is not an array,
+         *                                  or has an unsupported component type
          */
-        public SymArray(List<SymbolicValue> elements) {
-            this.elements = Collections.unmodifiableList(elements);
+        public static SymArray forArray(Object array) {
+            if (array == null || !array.getClass().isArray()) {
+                throw new IllegalArgumentException("Needs an array, got " + array);
+            }
+
+            if (array.getClass().getComponentType().isPrimitive()) {
+                int len = Array.getLength(array);
+                List<SymbolicValue> elements = new ArrayList<>(len);
+                for (int i = 0; i < len; i++) {
+                    elements.add(new SymValue(Array.get(array, i)));
+                }
+                return new SymArray(elements, array);
+            } else {
+                Object[] arr = (Object[]) array;
+                if (!isOkComponentType(arr.getClass().getComponentType())) {
+                    throw new IllegalArgumentException("Unsupported component type" + arr.getClass().getComponentType());
+                }
+
+                List<SymbolicValue> lst = new ArrayList<>(arr.length);
+                for (Object o : arr) {
+                    SymbolicValue elt = AnnotationUtils.symValueFor(o);
+                    if (elt == null) {
+                        throw new IllegalArgumentException("Unsupported array element" + o);
+                    }
+                    lst.add(elt);
+                }
+                return new SymArray(lst, null);
+            }
+        }
+
+        static boolean isOkComponentType(Class<?> compType) {
+            return compType.isPrimitive()
+                || compType == String.class
+                || compType.isEnum();
+            // for now we don't support this
+            // || compType.isAnnotation();
         }
 
         public int length() {
@@ -194,21 +236,23 @@ public interface SymbolicValue {
             if (!o.getClass().isArray()) {
                 return false;
             }
-
-            if (o instanceof Object[]) {// not a primitive array
-                Object[] arr = (Object[]) o;
-                if (arr.length != elements.size()) {
-                    return false;
-                }
-                for (int i = 0; i < elements.size(); i++) {
-                    if (!elements.get(i).valueEquals(arr[i])) {
-                        return false;
-                    }
-                }
-                return true;
+            if (primArray != null) {
+                return Objects.deepEquals(o, primArray);
+            } else if (!(o instanceof Object[])) {
+                return false;
             }
 
-            return false; // not implemented
+            Object[] arr = (Object[]) o;
+            if (arr.length != elements.size()) {
+                return false;
+            }
+            for (int i = 0; i < elements.size(); i++) {
+                if (!elements.get(i).valueEquals(arr[i])) {
+                    return false;
+                }
+            }
+            return true;
+
         }
 
         @Override
@@ -302,15 +346,14 @@ public interface SymbolicValue {
     }
 
     /**
-     * Represents a primitive or string value, or an array of those.
-     * Arrays of enum constants, and of annotations, are represented
-     * by {@link SymArray}.
+     * Represents a primitive or string value.
      */
     final class SymValue implements SymbolicValue {
 
         private final Object value;
 
         SymValue(Object value) {
+            assert value != null && (value.getClass().isPrimitive() || "java.lang.String".equals(value.getClass().getName())) : "Invalid value " + value;
             this.value = value;
         }
 
@@ -318,12 +361,8 @@ public interface SymbolicValue {
             return value;
         }
 
-        public boolean isArray() {
-            return value.getClass().isArray();
-        }
-
         public boolean valueEquals(Object o) {
-            return Objects.deepEquals(value, o);
+            return Objects.equals(value, o);
         }
 
         @Override
@@ -335,7 +374,7 @@ public interface SymbolicValue {
                 return false;
             }
             SymValue symValue = (SymValue) o;
-            return Objects.deepEquals(value, symValue.value);
+            return valueEquals(symValue.value);
         }
 
         @Override
@@ -345,9 +384,6 @@ public interface SymbolicValue {
 
         @Override
         public String toString() {
-            if (value.getClass().isArray()) {
-                return ArrayUtils.toString(value);
-            }
             return value.toString();
         }
     }

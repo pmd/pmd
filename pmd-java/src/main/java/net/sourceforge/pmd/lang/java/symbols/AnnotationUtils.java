@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -50,28 +48,10 @@ public final class AnnotationUtils {
         }
 
         if (value.getClass().isArray()) {
-            Class<?> comp = value.getClass().getComponentType();
-            if (comp.isPrimitive() || comp == String.class) {
-                return new SymValue(value);
-            } else if (comp.isArray()) {
-                return null; // arrays of arrays are not possible in annotations
+            if (!SymArray.isOkComponentType(value.getClass().getComponentType())) {
+                return null;
             }
-
-            Object[] arr = (Object[]) value;
-            List<SymbolicValue> lst = new ArrayList<>(arr.length);
-            for (Object o : arr) {
-                // this must be an annotation, or an enum constant
-                if (o == null) {
-                    return null;
-                }
-                SymbolicValue elt = symValueFor(o);
-                assert !(elt instanceof SymValue || elt instanceof SymArray);
-                if (elt == null) {
-                    return null;
-                }
-                lst.add(elt);
-            }
-            return new SymArray(lst);
+            return SymArray.forArray(value);
         }
 
         return null;
@@ -79,7 +59,7 @@ public final class AnnotationUtils {
 
     // test only
     static SymbolicValue ofArray(SymbolicValue... values) {
-        return new SymArray(Arrays.asList(values.clone()));
+        return SymArray.forElements(Arrays.asList(values.clone()));
     }
 
     // test only
