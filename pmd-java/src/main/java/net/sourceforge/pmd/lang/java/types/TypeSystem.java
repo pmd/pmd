@@ -424,10 +424,12 @@ public final class TypeSystem {
      *                 represents a class or interface type. This does not
      *                 erase type variables, or array types for that matter.
      *
-     * @throws NullPointerException if the symbol is null
+     * @return A type, or null if the symbol is null
      */
-    public JTypeMirror typeOf(JTypeDeclSymbol symbol, boolean isErased) {
-        Objects.requireNonNull(symbol, "Argument shouldn't be null");
+    public JTypeMirror typeOf(@Nullable JTypeDeclSymbol symbol, boolean isErased) {
+        if (symbol == null) {
+            return null;
+        }
 
         // takes care of primitives, and constants like OBJECT or UNRESOLVED_TYPE
         JTypeMirror common = specialCache(symbol);
@@ -468,7 +470,7 @@ public final class TypeSystem {
      *
      * @return An erased class type
      */
-    public JTypeMirror rawType(JTypeDeclSymbol klass) {
+    public JTypeMirror rawType(@Nullable JTypeDeclSymbol klass) {
         return typeOf(klass, true);
     }
 
@@ -481,7 +483,7 @@ public final class TypeSystem {
      *
      * @return An erased class type
      */
-    public JTypeMirror declaration(JClassSymbol klass) {
+    public JTypeMirror declaration(@Nullable JClassSymbol klass) {
         return typeOf(klass, false);
     }
 

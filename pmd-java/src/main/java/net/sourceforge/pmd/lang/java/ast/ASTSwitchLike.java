@@ -82,8 +82,11 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
                 // since this is an enum switch, the labels are necessarily
                 // the simple name of some enum constant.
 
-                constantNames.remove(branch.getLabel().getFirstDescendantOfType(ASTName.class).getImage());
-
+                // descendant can be null for default case
+                ASTName name = branch.getLabel().getFirstDescendantOfType(ASTName.class);
+                if (name != null) {
+                    constantNames.remove(name.getImage());
+                }
             }
 
             return constantNames.isEmpty();

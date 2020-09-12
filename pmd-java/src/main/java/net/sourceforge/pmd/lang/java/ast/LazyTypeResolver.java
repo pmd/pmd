@@ -443,8 +443,9 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         JVariableSymbol symbol = result.getSymbol();
         if (symbol instanceof JLocalVariableSymbol) {
             ASTVariableDeclaratorId id = symbol.tryGetNode();
-            assert id != null : "Expected a local declaration";
-            if (id.isLambdaParameter()) {
+            // id may be null if this is a fake formal param sym, for record components
+            // assert id != null : "Expected a local declaration";
+            if (id != null && id.isLambdaParameter()) {
                 // then the type of the parameter depends on the type
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context

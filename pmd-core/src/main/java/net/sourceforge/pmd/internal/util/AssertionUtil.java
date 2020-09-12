@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
 
-    private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+(\\.\\w+)*|");
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
 
     private AssertionUtil() {
         // utility class

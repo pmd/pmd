@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.concurrent.Callable;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -15,10 +16,12 @@ import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.types.testdata.SomeClassWithAnon;
 
 public class TypeTestUtilTest extends BaseNonParserTest {
 
@@ -71,6 +74,29 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
+    }
+
+    @Test
+    public void testAnonClassTypeNPE() {
+        // #2756
+
+        ASTAnonymousClassDeclaration anon =
+            java.parseClass(SomeClassWithAnon.class)
+                .getFirstDescendantOfType(ASTAnonymousClassDeclaration.class);
+
+
+        Assert.assertTrue("Anon class", anon.getSymbol().isAnonymousClass());
+        Assert.assertTrue("Should be a Runnable", TypeTestUtil.isA(Runnable.class, anon));
+
+        // This is not a canonical name, so we give up early
+        Assert.assertFalse(TypeTestUtil.isA(SomeClassWithAnon.class.getName() + "$1", anon));
+        Assert.assertFalse(TypeTestUtil.isExactlyA(SomeClassWithAnon.class.getName() + "$1", anon));
+
+        // this is the failure case: if the binary name doesn't match, we test the canoname, which was null
+        Assert.assertFalse(TypeTestUtil.isA(Callable.class, anon));
+        Assert.assertFalse(TypeTestUtil.isA(Callable.class.getCanonicalName(), anon));
+        Assert.assertFalse(TypeTestUtil.isExactlyA(Callable.class, anon));
+        Assert.assertFalse(TypeTestUtil.isExactlyA(Callable.class.getCanonicalName(), anon));
     }
 
     /**
