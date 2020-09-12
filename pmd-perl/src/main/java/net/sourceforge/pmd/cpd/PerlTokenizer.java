@@ -6,6 +6,10 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
 
+/**
+ * @deprecated Replaced by an {@link AnyTokenizer}. Use {@link PerlLanguage#getTokenizer()} anyway
+ */
+@Deprecated
 public class PerlTokenizer extends AbstractTokenizer {
     public PerlTokenizer() {
         this.stringToken = new ArrayList<>();
