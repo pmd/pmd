@@ -11,6 +11,43 @@ import org.junit.Test;
 public class StringUtilTest {
 
     @Test
+    public void testColumnNumber() {
+        assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", -1));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 0));
+        assertEquals(2, StringUtil.columnNumberAt("f\rah\nb", 1));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 2));
+        assertEquals(2, StringUtil.columnNumberAt("f\rah\nb", 3));
+        assertEquals(3, StringUtil.columnNumberAt("f\rah\nb", 4));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 5));
+        assertEquals(2, StringUtil.columnNumberAt("f\rah\nb", 6));
+        assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", 7));
+    }
+
+    @Test
+    public void testColumnNumberCrLf() {
+        assertEquals(-1, StringUtil.columnNumberAt("f\r\nb", -1));
+        assertEquals(1, StringUtil.columnNumberAt("f\r\nb", 0));
+        assertEquals(2, StringUtil.columnNumberAt("f\r\nb", 1));
+        assertEquals(3, StringUtil.columnNumberAt("f\r\nb", 2));
+        assertEquals(1, StringUtil.columnNumberAt("f\r\nb", 3));
+        assertEquals(2, StringUtil.columnNumberAt("f\r\nb", 4));
+        assertEquals(-1, StringUtil.columnNumberAt("f\r\nb", 5));
+    }
+
+    @Test
+    public void testColumnNumberTrailing() {
+        assertEquals(1, StringUtil.columnNumberAt("\n", 0));
+        assertEquals(2, StringUtil.columnNumberAt("\n", 1));
+        assertEquals(-1, StringUtil.columnNumberAt("\n", 2));
+    }
+
+    @Test
+    public void testColumnNumberEmpty() {
+        assertEquals(1, StringUtil.columnNumberAt("", 0));
+        assertEquals(-1, StringUtil.columnNumberAt("", 1));
+    }
+
+    @Test
     public void testReplaceWithOneChar() {
         assertEquals("faa", StringUtil.replaceString("foo", 'o', "a"));
     }
