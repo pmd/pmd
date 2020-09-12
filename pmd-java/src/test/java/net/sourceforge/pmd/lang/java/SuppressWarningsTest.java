@@ -173,7 +173,7 @@ public class SuppressWarningsTest extends RuleTst {
     public void testSpecificSuppressionAtTopLevel() {
         Report rpt = new Report();
         runTestFromString(TEST13, new BarRule(), rpt,
-                          LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertEquals(0, rpt.getViolations().size());
     }
 
@@ -183,11 +183,11 @@ public class SuppressWarningsTest extends RuleTst {
         testAboutConstExpr(false, 1, " without the annotation, we should get a violation");
     }
 
-    private void testAboutConstExpr(boolean b, int i, String message) {
+    private void testAboutConstExpr(boolean hasAnnotation, int numExpectedViolations, String message) {
         Report rpt = new Report();
-        runTestFromString(constExprTest(b), new FooRule(), rpt,
+        runTestFromString(constExprTest(hasAnnotation), new FooRule(), rpt,
                           LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(message, i, rpt.getViolations().size());
+        assertEquals(message, numExpectedViolations, rpt.getViolations().size());
     }
 
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";

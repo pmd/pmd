@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -114,12 +113,12 @@ final class AnnotationSuppressionUtil {
                 Object constVal = value.getConstValue();
                 if (constVal instanceof String) {
                     String stringVal = (String) constVal;
-                    if (stringVal.equals("PMD")
-                        || stringVal.equals("PMD." + rule.getName())
+                    if ("PMD".equals(stringVal)
+                        || ("PMD." + rule.getName()).equals(stringVal) // NOPMD uselessparentheses false positive
                         // Check for standard annotations values
-                        || stringVal.equals("all")
-                        || stringVal.equals("serial") && SERIAL_RULES.contains(rule.getName())
-                        || stringVal.equals("unused") && UNUSED_RULES.contains(rule.getName())
+                        || "all".equals(stringVal)
+                        || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
+                        || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
                     ) {
                         return true;
                     }

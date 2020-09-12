@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -363,9 +364,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
             }
             return null;
         }
+        default:
+            throw AssertionUtil.shouldNotReachHere("Unknown operator in " + node);
         }
-
-        return null;
     }
 
     private static @Nullable Object compLE(Object left, Object right) {
@@ -482,7 +483,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
     private static Object numericCoercion(Object v, JTypeMirror target) {
         v = projectCharOntoInt(v); // map chars to a Number (widen it to int, which may be narrowed in the switch)
 
-        if (target.isNumeric() && (v instanceof Number)) {
+        if (target.isNumeric() && v instanceof Number) {
             switch (((JPrimitiveType) target).getKind()) {
             case BOOLEAN:
                 throw new AssertionError("unreachable");
@@ -500,6 +501,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
                 return floatValue(v);
             case DOUBLE:
                 return doubleValue(v);
+            default:
+                throw AssertionUtil.shouldNotReachHere("exhaustive enum");
             }
         }
         return null;
