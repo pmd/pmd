@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [ push ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -26,5 +26,4 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with mvnw
         run: |
-          chmod 777 ./mvnw
           ./mvnw clean install
