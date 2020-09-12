@@ -14,13 +14,32 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### CPD's AnyTokenizer has been improved
+
+The AnyTokenizer is used for languages, that don't have an own lexer/grammar based tokenizer.
+AnyTokenizer now handles string literals and end-of-line comments. Fortran, Perl and Ruby have
+been updated to use AnyTokenizer instead of their old custom tokenizer based on AbstractTokenizer.
+See [#2758](https://github.com/pmd/pmd/pull/2758) for details.
+
+AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprecated now.
+
 ### Fixed Issues
+
+* cpd
+    * [#2758](https://github.com/pmd/pmd/pull/2758): \[cpd] Improve AnyTokenizer
+    * [#2760](https://github.com/pmd/pmd/issues/2760): \[cpd] AnyTokenizer doesn't count columns correctly
 
 ### API Changes
 
 #### Deprecated API
 
-* {% core::cpd.AbstractTokenizer %}
+#### For removal
+
+* {% jdoc !!core::cpd.AbstractTokenizer %}. Use {% jdoc !!core::cpd.AnyTokenizer %} instead.
+* {% jdoc !!fortran::cpd.FortranTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!fortran::cpd.FortranLanguage#getTokenizer() %} anyway.
+* {% jdoc !!perl::cpd.PerlTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!perl::cpd.PerlLanguage#getTokenizer() %} anyway.
+* {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
+
 
 ### External Contributions
 
