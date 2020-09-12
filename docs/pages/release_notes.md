@@ -176,6 +176,7 @@ are deprecated as internal API.
 *   [#2699](https://github.com/pmd/pmd/pull/2699): \[java] ProperCloneImplementation not valid for final class - [Mykhailo Palahuta](https://github.com/Drofff)
 *   [#2700](https://github.com/pmd/pmd/pull/2700): \[java] Fix OnlyOneReturn code example - [Jan-Lukas Else](https://github.com/jlelse)
 *   [#2722](https://github.com/pmd/pmd/pull/2722): \[doc] \[java] ImmutableField: extend description, fixes #2108 - [Mateusz Stefanski](https://github.com/mateusz-stefanski)
+*   [#2735](https://github.com/pmd/pmd/pull/2735): \[ci] Add github actions for a fast view of pr succeed/not - [XenoAmess](https://github.com/XenoAmess)
 
 
 {% endtocmaker %}
