@@ -1419,12 +1419,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <li><a href="https://github.com/pmd/pmd/issues/2708">#2708</a>: [java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default</li>
       <li><a href="https://github.com/pmd/pmd/issues/2738">#2738</a>: [java] Custom rule with @ExhaustiveEnumSwitch throws NPE</li>
       <li><a href="https://github.com/pmd/pmd/issues/2756">#2756</a>: [java] TypeTestUtil fails with NPE for anonymous class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2759">#2759</a>: [java] False positive in UnusedAssignment</li>
       <li><a href="https://github.com/pmd/pmd/issues/2767">#2767</a>: [java] IndexOutOfBoundsException when parsing an initializer BlockStatement</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/RuleViolationComparator.html#"><code>net.sourceforge.pmd.RuleViolationComparator</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#DEFAULT_COMPARATOR"><code>RuleViolation#DEFAULT_COMPARATOR</code></a> instead.</li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
@@ -1449,7 +1458,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 11, 2020 <br />
+ Site last generated: Sep 12, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
