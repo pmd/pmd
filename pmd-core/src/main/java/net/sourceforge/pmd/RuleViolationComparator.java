@@ -17,7 +17,19 @@ import java.util.Comparator;
  * <li>End column</li>
  * <li>Rule name</li>
  * </ol>
+ *
+ * TODO why is begin line/begin column split?? would make more sense to use
+ *  - filename
+ *  - begin line
+ *  - begin column
+ *  - description
+ *  - rule name
+ *  - end line
+ *  - end column
+ *
+ * @deprecated Use {@link RuleViolation#DEFAULT_COMPARATOR}
  */
+@Deprecated
 public final class RuleViolationComparator implements Comparator<RuleViolation> {
 
     public static final RuleViolationComparator INSTANCE = new RuleViolationComparator();

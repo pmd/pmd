@@ -26,6 +26,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+##### For removal
+
+*   {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
+
 ### External Contributions
 
 * [#2747](https://github.com/pmd/pmd/pull/2747): \[java] Don't trigger FinalFieldCouldBeStatic when field is annotated with lombok @Builder.Default - [Ollie Abbey](https://github.com/ollieabbey)
