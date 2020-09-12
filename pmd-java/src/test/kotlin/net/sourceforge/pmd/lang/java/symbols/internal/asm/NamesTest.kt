@@ -29,4 +29,15 @@ class NamesTest : FunSpec({
         names.packageName shouldBe ""
     }
 
+    test("Test cano name") {
+        AsmSymbolResolver.hasCanonicalName("Num") shouldBe true
+        AsmSymbolResolver.hasCanonicalName("") shouldBe false
+        AsmSymbolResolver.hasCanonicalName("a/b/C") shouldBe true
+        AsmSymbolResolver.hasCanonicalName("a/b/C\$D") shouldBe true
+        AsmSymbolResolver.hasCanonicalName("a/b/C\$1D") shouldBe false
+        AsmSymbolResolver.hasCanonicalName("a/b/C\$1D\$D") shouldBe false
+        AsmSymbolResolver.hasCanonicalName("a/b/C\$D\$1") shouldBe false
+        AsmSymbolResolver.hasCanonicalName("a/b/C\$D") shouldBe true
+    }
+
 })

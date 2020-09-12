@@ -14,9 +14,9 @@ import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -80,14 +80,12 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     public void testAnonClassTypeNPE() {
         // #2756
 
-        ASTAllocationExpression anon =
+        ASTAnonymousClassDeclaration anon =
             java.parseClass(SomeClassWithAnon.class)
-                .getFirstDescendantOfType(ASTAllocationExpression.class);
+                .getFirstDescendantOfType(ASTAnonymousClassDeclaration.class);
 
 
-        Assert.assertNotNull("Type should be resolved", anon.getType());
-        Assert.assertTrue("Anon class", anon.isAnonymousClass());
-        Assert.assertTrue("Anon class", anon.getType().isAnonymousClass());
+        Assert.assertTrue("Anon class", anon.getSymbol().isAnonymousClass());
         Assert.assertTrue("Should be a Runnable", TypeTestUtil.isA(Runnable.class, anon));
 
         // This is not a canonical name, so we give up early

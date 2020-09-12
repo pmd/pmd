@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 
@@ -45,7 +46,7 @@ public final class TypeTestUtil {
      *
      * @throws NullPointerException if the class parameter is null
      */
-    public static boolean isA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
+    public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", (Object) clazz);
         if (node == null) {
             return false;
@@ -79,7 +80,7 @@ public final class TypeTestUtil {
      *
      * @throws NullPointerException if the class name parameter is null
      */
-    public static boolean isA(/*@NonNull*/ String canonicalName, /*@Nullable*/ TypeNode node) {
+    public static boolean isA(final @NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
         if (node == null) {
             return false;
@@ -101,9 +102,8 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName);
         if (otherType == null) {
-            return isExactlyA(canonicalName, node);
+            return false; // we know isExactlyA(canonicalName, node); returned false
         }
-
 
         return thisType.isSubtypeOf(otherType);
     }
@@ -136,7 +136,7 @@ public final class TypeTestUtil {
      *
      * @throws NullPointerException if the class parameter is null
      */
-    public static boolean isExactlyA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
+    public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", (Object) clazz);
         if (node == null) {
             return false;
@@ -172,7 +172,7 @@ public final class TypeTestUtil {
      *
      * @throws NullPointerException if the class name parameter is null
      */
-    public static boolean isExactlyA(/*@Nullable*/ String canonicalName, TypeNode node /*@NonNull*/) {
+    public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", canonicalName);
         if (node == null) {
             return false;
@@ -186,10 +186,6 @@ public final class TypeTestUtil {
         canonicalName = StringUtils.deleteWhitespace(canonicalName);
 
         JClassSymbol klass = (JClassSymbol) sym;
-        if (klass.getBinaryName().equals(canonicalName)) {
-            // fast path, binary names are easier to find
-            return true;
-        }
         String canonical = klass.getCanonicalName();
         return canonical != null && canonical.equals(canonicalName);
     }
