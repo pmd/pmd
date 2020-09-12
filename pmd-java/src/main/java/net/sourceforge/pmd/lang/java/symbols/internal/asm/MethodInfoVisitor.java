@@ -29,12 +29,13 @@ class MethodInfoVisitor extends MethodVisitor {
     @Override
     public void visitEnd() {
         execStub.setDefaultAnnotValue(defaultAnnotValue);
+        execStub.finalizeVisit();
         super.visitEnd();
     }
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        return super.visitAnnotation(descriptor, visible);
+        return new AnnotationBuilderVisitor(execStub, execStub.getResolver(), visible, descriptor);
     }
 
     private class DefaultAnnotValueVisitor extends SymbolicValueBuilder {

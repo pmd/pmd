@@ -10,8 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
@@ -20,26 +23,20 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
  */
 final class SymbolicAnnotationImpl implements SymAnnot {
 
-    /** Many annotations have no attributes so this can stay null in this case. */
-    private @Nullable Map<String, SymbolicValue> attributes;
+    private final JClassSymbol typeStub;
+    /** Many annotations have no attributes so this remains the singleton emptyMap in this case. */
+    private @NonNull Map<String, SymbolicValue> attributes = Collections.emptyMap();
     private final boolean runtimeVisible;
-    private final String typeBinaryName;
 
     // TODO would be nice to link back to the class symbol, to get default values
-    SymbolicAnnotationImpl(boolean runtimeVisible, String descriptor) {
+    SymbolicAnnotationImpl(AsmSymbolResolver resolver, boolean runtimeVisible, String descriptor) {
         this.runtimeVisible = runtimeVisible;
-
-        // use a constant for this common values
-        if ("Ljava/lang/Deprecated;".equals(descriptor)) {
-            this.typeBinaryName = "java.lang.Deprecated";
-        } else {
-            this.typeBinaryName = ClassNamesUtil.classDescriptorToBinaryName(descriptor);
-        }
+        this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToBinaryName(descriptor));
     }
 
     void addAttribute(String name, SymbolicValue value) {
-        if (attributes == null) {
-            attributes = new HashMap<>();
+        if (attributes.isEmpty()) {
+            attributes = new HashMap<>(); // make it modifiable
         }
         attributes.put(name, value);
     }
@@ -51,12 +48,31 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public @Nullable SymbolicValue getAttribute(String name) {
-        return attributes == null ? null : attributes.get(name);
+        return attributes.get(name);
+    }
+
+    @Override
+    public @Nullable SymbolicValue getAttributeOrDefault(String name) {
+        SymbolicValue value = getAttribute(name);
+        if (value != null) {
+            return value;
+        }
+        if (!typeStub.isAnnotation()) {
+            return null; // path taken for invalid stuff & unresolved classes
+        }
+        for (JMethodSymbol m : typeStub.getDeclaredMethods()) {
+            if (m.getSimpleName().equals(name)
+                && m.getArity() == 0
+                && !m.isStatic()) {
+                return m.getDefaultAnnotationValue(); // nullable
+            }
+        }
+        return null;
     }
 
     @Override
     public Map<String, SymbolicValue> getExplicitAttributes() {
-        return attributes == null ? Collections.emptyMap() : attributes;
+        return attributes;
     }
 
     @Override
@@ -67,7 +83,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public boolean isOfType(String binaryName) {
-        return typeBinaryName.equals(binaryName);
+        return typeStub.getBinaryName().equals(binaryName);
     }
 
     @Override
@@ -79,21 +95,19 @@ final class SymbolicAnnotationImpl implements SymAnnot {
             return false;
         }
         SymAnnot that = (SymAnnot) o;
-        if (!that.isOfType(typeBinaryName)) {
+        if (!that.isOfType(typeStub.getBinaryName())) {
             return false;
         }
-        return attributes == null
-               ? that.getExplicitAttributes().isEmpty()
-               : attributes.equals(that.getExplicitAttributes());
+        return attributes.equals(that.getExplicitAttributes());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attributes, typeBinaryName);
+        return Objects.hash(attributes, typeStub);
     }
 
     @Override
     public String toString() {
-        return "@" + typeBinaryName + getExplicitAttributes();
+        return "@" + typeStub + getExplicitAttributes();
     }
 }

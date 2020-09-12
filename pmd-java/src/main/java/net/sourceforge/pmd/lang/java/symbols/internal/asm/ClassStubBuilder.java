@@ -11,7 +11,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.NoUrlLoader;
@@ -39,20 +38,8 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        return new SymbolicValueBuilder() {
-            final SymbolicAnnotationImpl annot = new SymbolicAnnotationImpl(visible, descriptor);
-
-            @Override
-            protected void acceptValue(String name, SymbolicValue v) {
-                annot.addAttribute(name, v);
-            }
-
-            @Override
-            public void visitEnd() {
-                myStub.addAnnot(annot);
-            }
-        };
+    public AnnotationBuilderVisitor visitAnnotation(String descriptor, boolean visible) {
+        return new AnnotationBuilderVisitor(myStub, resolver, visible, descriptor);
     }
 
     @Override
@@ -66,7 +53,17 @@ class ClassStubBuilder extends ClassVisitor {
     public FieldVisitor visitField(int access, String name, String descriptor, @Nullable String signature, @Nullable Object value) {
         FieldStub field = new FieldStub(myStub, name, access, descriptor, signature, value);
         myStub.addField(field);
-        return null;
+        return new FieldVisitor(AsmSymbolResolver.ASM_API_V) {
+            @Override
+            public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                return new AnnotationBuilderVisitor(field, resolver, visible, descriptor);
+            }
+
+            @Override
+            public void visitEnd() {
+                field.finalizeVisit();
+            }
+        };
     }
 
     @Override

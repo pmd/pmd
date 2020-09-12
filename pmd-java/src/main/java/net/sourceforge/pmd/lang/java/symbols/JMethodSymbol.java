@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.reflect.Modifier;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -23,6 +25,10 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     // note that for now, bridge methods are filtered out from the ASM
     // symbols, and bridge methods are not reflected by the AST symbols
     boolean isBridge();
+
+    default boolean isStatic() {
+        return Modifier.isStatic(getModifiers());
+    }
 
 
     /** Returns the return type under the given substitution. */

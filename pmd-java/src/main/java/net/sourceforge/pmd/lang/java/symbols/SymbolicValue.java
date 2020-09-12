@@ -66,6 +66,9 @@ public interface SymbolicValue {
             return getExplicitAttributes().get(name);
         }
 
+        /** Returns the value of the attribute of this annotation named so. */
+        @Nullable SymbolicValue getAttributeOrDefault(String name);
+
         /**
          * The explicit attributes, mentioned in the annotation.
          * Attributes that take default values are not in this map.

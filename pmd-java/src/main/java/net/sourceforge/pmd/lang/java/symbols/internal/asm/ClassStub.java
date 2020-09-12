@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
-final class ClassStub implements JClassSymbol, AsmStub {
+final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     static final int UNKNOWN_ARITY = 0;
 
@@ -203,7 +203,8 @@ final class ClassStub implements JClassSymbol, AsmStub {
         ctors.add(methodStub);
     }
 
-    void addAnnot(SymAnnot annot) {
+    @Override
+    public void addAnnotation(SymAnnot annot) {
         annotations.add(annot);
     }
 
@@ -299,7 +300,9 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     @Override
     public String toString() {
-        return SymbolToStrings.ASM.toString(this);
+        // do not use SymbolToString as it triggers the class parsing,
+        // making tests undebuggable
+        return internalName;
     }
 
     @Override

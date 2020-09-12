@@ -61,8 +61,11 @@ public final class ClassNamesUtil {
     }
 
     public static String classDescriptorToBinaryName(String descriptor) {
-        return descriptor.substring(1, descriptor.length() - 1)
-                         .replace('/', '.');
+        return internalToBinaryName(classDescriptorToInternalName(descriptor));
+    }
+
+    public static String classDescriptorToInternalName(String descriptor) {
+        return descriptor.substring(1, descriptor.length() - 1); // remove L and ;
     }
 
     public static String binaryToInternal(String binary) {
