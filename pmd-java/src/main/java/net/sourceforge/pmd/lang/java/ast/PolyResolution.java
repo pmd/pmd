@@ -245,6 +245,16 @@ final class PolyResolution {
             return inferInvocation((InvocationNode) e, e, null); // retry with no context
         }
         infer.LOG.polyResolutionFailure(e);
+
+        // we need to set those additional stuff, which are asserted
+        // not to be null after type resolution
+        // todo test this
+        if (e instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
+        } else if (e instanceof ASTMethodReference) {
+            ((ASTMethodReference) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
+            ((ASTMethodReference) e).setCompileTimeDecl(ts.UNRESOLVED_METHOD);
+        }
         return ts.UNKNOWN;
     }
 
