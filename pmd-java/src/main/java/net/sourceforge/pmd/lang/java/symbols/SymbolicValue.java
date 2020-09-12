@@ -66,6 +66,11 @@ public interface SymbolicValue {
             return getExplicitAttributes().get(name);
         }
 
+        /**
+         * The explicit attributes, mentioned in the annotation.
+         * Attributes that take default values are not in this map.
+         * The map is indexed by attribute name.
+         */
         Map<String, SymbolicValue> getExplicitAttributes();
 
         RetentionPolicy getRetention();
@@ -79,8 +84,8 @@ public interface SymbolicValue {
         /**
          * Returns YES if the annotation has the attribute explicitly
          * set to the given value. Returns NO if it is explicitly set
-         * to another value. Returns UNKNOWN otherwise. Note that this
-         * will return UNKNOWN if the default value is used.
+         * to another value. Returns UNKNOWN if the attribute was not
+         * explicitly set (it could have a default value though).
          *
          * @param attrValue An object value, or a {@link SymbolicValue}
          */
@@ -107,6 +112,12 @@ public interface SymbolicValue {
 
         private final List<SymbolicValue> elements;
 
+        /**
+         * @param elements A list of symbolic values, note that these
+         *                 should not be {@link SymValue}s, instead,
+         *                 arrays of such things should be a {@link SymValue}
+         *                 itself.
+         */
         public SymArray(List<SymbolicValue> elements) {
             this.elements = Collections.unmodifiableList(elements);
         }
@@ -172,22 +183,26 @@ public interface SymbolicValue {
         private final String enumBinaryName;
         private final String enumName;
 
+        private SymEnum(String enumBinaryName, String enumConstName) {
+            this.enumBinaryName = enumBinaryName;
+            this.enumName = enumConstName;
+        }
+
+        /**
+         * @param enumBinaryName A binary name, eg {@code com.MyEnum}
+         * @param enumConstName  Simple name of the enum constant
+         */
+        public static SymEnum fromBinaryName(String enumBinaryName, String enumConstName) {
+            return new SymEnum(enumBinaryName, enumConstName);
+        }
+
         /**
          * @param enumTypeDescriptor The type descriptor, eg {@code Lcom/MyEnum;}
          * @param enumConstName      Simple name of the enum constant
          */
-        public SymEnum(String enumTypeDescriptor, String enumConstName) {
-            this(enumTypeDescriptor, enumConstName, false);
-        }
-
-
-        SymEnum(String enumTypeDescriptor, String enumConstName, boolean isBinaryName) {
-            if (isBinaryName) {
-                this.enumBinaryName = enumTypeDescriptor;
-            } else {
-                this.enumBinaryName = ClassNamesUtil.classDescriptorToBinaryName(enumTypeDescriptor);
-            }
-            this.enumName = enumConstName;
+        public static SymEnum fromTypeDescriptor(String enumTypeDescriptor, String enumConstName) {
+            String enumBinaryName = ClassNamesUtil.classDescriptorToBinaryName(enumTypeDescriptor);
+            return fromBinaryName(enumBinaryName, enumConstName);
         }
 
 

@@ -84,7 +84,7 @@ public final class AnnotationUtils {
 
     // test only
     static <T extends Enum<T>> SymbolicValue ofEnum(Enum<T> value) {
-        return new SymEnum(value.getDeclaringClass().getName(), value.name(), true);
+        return SymEnum.fromBinaryName(value.getDeclaringClass().getName(), value.name());
     }
 
 }

@@ -33,7 +33,7 @@ class SymbolicValueBuilder extends AnnotationVisitor {
 
     @Override
     public void visitEnum(String name, String descriptor, String value) {
-        acceptValue(name, new SymEnum(descriptor, value));
+        acceptValue(name, SymEnum.fromTypeDescriptor(descriptor, value));
     }
 
     @Override
