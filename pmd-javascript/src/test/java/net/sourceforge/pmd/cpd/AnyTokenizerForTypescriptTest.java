@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,27 +11,27 @@ import org.junit.Test;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 /**
- * @author rpelisse
  *
  */
-public class FortranTokenizerTest extends CpdTextComparisonTest {
+public class AnyTokenizerForTypescriptTest extends CpdTextComparisonTest {
 
-    public FortranTokenizerTest() {
-        super(".for");
+    public AnyTokenizerForTypescriptTest() {
+        super(".ts");
     }
 
     @Override
     protected String getResourcePrefix() {
-        return "../lang/fortran/cpd/testdata";
+        return "testdata/ts";
     }
 
     @Override
     public Tokenizer newTokenizer(Properties properties) {
-        return new FortranLanguage().getTokenizer();
+        return new AnyTokenizer();
     }
 
     @Test
-    public void testSample() {
-        doTest("sample");
+    public void testFile1() {
+        doTest("SampleTypeScript");
     }
+
 }
