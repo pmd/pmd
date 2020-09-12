@@ -1411,9 +1411,24 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="cpds-anytokenizer-has-been-improved">CPD’s AnyTokenizer has been improved</h4>
+
+<p>The AnyTokenizer is used for languages, that don’t have an own lexer/grammar based tokenizer.
+AnyTokenizer now handles string literals and end-of-line comments. Fortran, Perl and Ruby have
+been updated to use AnyTokenizer instead of their old custom tokenizer based on AbstractTokenizer.
+See <a href="https://github.com/pmd/pmd/pull/2758">#2758</a> for details.</p>
+
+<p>AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprecated now.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>cpd
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/2758">#2758</a>: [cpd] Improve AnyTokenizer</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2760">#2760</a>: [cpd] AnyTokenizer doesn’t count columns correctly</li>
+    </ul>
+  </li>
   <li>pmd-java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2708">#2708</a>: [java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default</li>
@@ -1433,6 +1448,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/RuleViolationComparator.html#"><code>net.sourceforge.pmd.RuleViolationComparator</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#DEFAULT_COMPARATOR"><code>RuleViolation#DEFAULT_COMPARATOR</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AbstractTokenizer.html#"><code>net.sourceforge.pmd.cpd.AbstractTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>net.sourceforge.pmd.cpd.AnyTokenizer</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/FortranTokenizer.html#"><code>net.sourceforge.pmd.cpd.FortranTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/FortranLanguage.html#getTokenizer()"><code>FortranLanguage#getTokenizer</code></a> anyway.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-perl/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/PerlTokenizer.html#"><code>net.sourceforge.pmd.cpd.PerlTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-perl/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/PerlLanguage.html#getTokenizer()"><code>PerlLanguage#getTokenizer</code></a> anyway.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/RubyTokenizer.html#"><code>net.sourceforge.pmd.cpd.RubyTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/RubyLanguage.html#getTokenizer()"><code>RubyLanguage#getTokenizer</code></a> anyway.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
