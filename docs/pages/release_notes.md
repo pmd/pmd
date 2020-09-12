@@ -22,7 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ##### For removal
 
-*   {% jdoc !!core::RuleViolationComparator %}
+*   {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
 
 ### External Contributions
 
