@@ -43,6 +43,22 @@ public class AnyTokenizerTest {
         assertEquals(2, semi.getEndColumn());
     }
 
+    /**
+     * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
+     */
+    @Test
+    public void testTokenPosition() {
+        AnyTokenizer tokenizer = new AnyTokenizer();
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader("a;\nbbbb\n;"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(code, tokens);
+        TokenEntry bbbbToken = tokens.getTokens().get(2);
+        assertEquals(2, bbbbToken.getBeginLine());
+        assertEquals(1, bbbbToken.getBeginColumn());
+        assertEquals(4, bbbbToken.getEndColumn());
+    }
+
+
     private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
         Tokens tokens = new Tokens();
