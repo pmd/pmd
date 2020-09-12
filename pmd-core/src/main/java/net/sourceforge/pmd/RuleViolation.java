@@ -23,8 +23,14 @@ public interface RuleViolation {
      * of a violation, filename first. The remaining parameters are compared
      * in an unspecified order.
      */
-    // TODO in java 8 this can be a chained Comparator.comparing call
-    Comparator<RuleViolation> DEFAULT_COMPARATOR = RuleViolationComparator.INSTANCE;
+    Comparator<RuleViolation> DEFAULT_COMPARATOR =
+        Comparator.comparing(RuleViolation::getFilename)
+                  .thenComparingInt(RuleViolation::getBeginLine)
+                  .thenComparingInt(RuleViolation::getBeginColumn)
+                  .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
+                  .thenComparingInt(RuleViolation::getEndLine)
+                  .thenComparingInt(RuleViolation::getEndColumn)
+                  .thenComparing(rv -> rv.getRule().getName());
 
     /**
      * Get the Rule which identified this violation.
