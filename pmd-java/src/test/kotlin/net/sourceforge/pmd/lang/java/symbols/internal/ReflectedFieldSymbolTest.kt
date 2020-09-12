@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -49,6 +50,15 @@ class ReflectedFieldSymbolTest : WordSpec({
             classSym(SomeFields::class.java)!!.getDeclaredField("bb")!! shouldNotBe classSym(IdenticalToSomeFields::class.java)!!.getDeclaredField("bb")!!
         }
 
+        "reflect its annotations" {
+            classSym(SomeFields::class.java)!!.getDeclaredField("foo")!!.isAnnotationPresent(java.lang.Deprecated::class.java) shouldBe true
+        }
+
+        "be unmodifiable" {
+            shouldThrow<UnsupportedOperationException> {
+                classSym(SomeFields::class.java)!!.getDeclaredField("foo")!!.declaredAnnotations.add(null)
+            }
+        }
     }
 
 })

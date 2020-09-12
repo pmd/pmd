@@ -61,13 +61,49 @@ public interface SymbolicValue {
      */
     interface SymAnnot extends SymbolicValue {
 
-        /** Returns the value of the attribute of this annotation named so. */
-        default @Nullable SymbolicValue getAttribute(String name) {
-            return getExplicitAttributes().get(name);
+        /**
+         * Returns the explicit value of the attribute. If the attribute
+         * is not mentioned in the {@link #getExplicitAttributes()}, returns
+         * null.
+         *
+         * @see #getAttributeOrDefault(String)
+         */
+        default @Nullable SymbolicValue getAttribute(String attrName) {
+            return getExplicitAttributes().get(attrName);
         }
 
-        /** Returns the value of the attribute of this annotation named so. */
-        @Nullable SymbolicValue getAttributeOrDefault(String name);
+        /**
+         * Returns the default value for the given attribute, as declared
+         * on the annotation method. Returns null if the attribute does
+         * not exist, is unresolved, or has no default. TODO do we need separate sentinels for that?
+         */
+        @Nullable SymbolicValue getDefaultValue(String attrName);
+
+        /**
+         * An alias for {@link #getAttribute(String, boolean)}, which
+         * uses defaults values.
+         */
+        default @Nullable SymbolicValue getAttributeOrDefault(String attrName) {
+            return getAttribute(attrName, true);
+        }
+
+        /**
+         * Returns the value of the attribute. This asks for an explicit
+         * attribute, and may fall back to the default value, if the {@code useDefaults}
+         * parameter is true. Returns null if both {@link #getAttribute(String)}
+         * and {@link #getDefaultValue(String)} return null, see their doc.
+         *
+         * @param attrName    Attribute name
+         * @param useDefaults Whether to fallback to a default value
+         */
+        default @Nullable SymbolicValue getAttribute(String attrName, boolean useDefaults) {
+            SymbolicValue value = getAttribute(attrName);
+            if (value != null || !useDefaults) {
+                return value;
+            }
+
+            return getDefaultValue(attrName);
+        }
 
         /**
          * The explicit attributes, mentioned in the annotation.
@@ -76,24 +112,45 @@ public interface SymbolicValue {
          */
         Map<String, SymbolicValue> getExplicitAttributes();
 
+        /**
+         * The retention policy. Note that naturally, members accessed
+         * from class files cannot reflect annotations with {@link RetentionPolicy#SOURCE}.
+         */
         RetentionPolicy getRetention();
 
         boolean isOfType(String binaryName);
 
+        /**
+         * Whether the annotation has the given type. Note that only
+         * the name of the class is taken into account, because its
+         * {@code Class} instance may be missing from the type system classpath.
+         */
         default boolean isOfType(Class<? extends Annotation> klass) {
             return isOfType(klass.getName());
         }
 
         /**
-         * Returns YES if the annotation has the attribute explicitly
-         * set to the given value. Returns NO if it is explicitly set
-         * to another value. Returns UNKNOWN if the attribute was not
-         * explicitly set (it could have a default value though).
+         * Like the other overloads, but does not use defaults.
          *
-         * @param attrValue An object value, or a {@link SymbolicValue}
+         * @see #attributeMatches(String, Object, boolean)
          */
         default OptionalBool attributeMatches(String name, Object attrValue) {
-            SymbolicValue attr = getAttribute(name);
+            return attributeMatches(name, attrValue, false);
+        }
+
+        /**
+         * Returns YES if the annotation has the attribute set to the
+         * given value. Returns NO if it is set to another value.
+         * Returns UNKNOWN if the attribute does not exist or is unresolved.
+         *
+         * @param attrName   Attribute name
+         * @param attrValue  An object value, or a {@link SymbolicValue}
+         * @param useDefault If true, default values are considered. If false,
+         *                   and the attribute is not explicitly set, this method
+         *                   will return UNKNOWN even if the attribute has a default value
+         */
+        default OptionalBool attributeMatches(String attrName, Object attrValue, boolean useDefault) {
+            SymbolicValue attr = getAttribute(attrName, useDefault);
             if (attr == null) {
                 return OptionalBool.UNKNOWN;
             }

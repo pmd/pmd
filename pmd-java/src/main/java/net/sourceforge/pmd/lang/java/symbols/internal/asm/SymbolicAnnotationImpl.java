@@ -47,21 +47,12 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public @Nullable SymbolicValue getAttribute(String name) {
-        return attributes.get(name);
-    }
-
-    @Override
-    public @Nullable SymbolicValue getAttributeOrDefault(String name) {
-        SymbolicValue value = getAttribute(name);
-        if (value != null) {
-            return value;
-        }
+    public @Nullable SymbolicValue getDefaultValue(String attrName) {
         if (!typeStub.isAnnotation()) {
             return null; // path taken for invalid stuff & unresolved classes
         }
         for (JMethodSymbol m : typeStub.getDeclaredMethods()) {
-            if (m.getSimpleName().equals(name)
+            if (m.getSimpleName().equals(attrName)
                 && m.getArity() == 0
                 && !m.isStatic()) {
                 return m.getDefaultAnnotationValue(); // nullable

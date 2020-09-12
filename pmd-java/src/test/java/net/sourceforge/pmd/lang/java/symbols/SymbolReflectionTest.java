@@ -117,7 +117,7 @@ public class SymbolReflectionTest {
         Assert.assertTrue(target.isOfType(Target.class));
         Assert.assertTrue(target.isOfType(Target.class.getName()));
 
-        Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.ANNOTATION_TYPE, ElementType.TYPE_USE}));
+        Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD}));
 
     }
 
