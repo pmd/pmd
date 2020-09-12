@@ -895,11 +895,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // For the record this has problems with call chains with side effects, like
             //  a.foo(a = 2).bar(a = 3);
 
-            if (!state.isInTryBlock()) {
-                return;
-            }
-            // otherwise any method/ctor call may throw
-
             // In 7.0, with the precise type/overload resolution, we
             // could only target methods that throw checked exceptions
             // (unless some catch block catches an unchecked exceptions)
@@ -907,7 +902,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 if (child instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) child).isArguments()
                     || child instanceof ASTPrimarySuffix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression
                     || child instanceof ASTPrimaryPrefix && child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression) {
-                    state.abruptCompletionByThrow(true);
+                    state.abruptCompletionByThrow(true); // this is a noop if we're outside a try block that has catch/finally
                 }
             }
         }
@@ -1383,11 +1378,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             assert myCatches.isEmpty() || catchStmts.isEmpty() : "Cannot set catch blocks twice";
             myCatches = Collections.unmodifiableList(catchStmts); // we own the list now, to avoid copying
             return this;
-        }
-
-        private boolean isInTryBlock() {
-            // ignore resources, once they're initialized everything's fine in the block
-            return !myCatches.isEmpty() || myFinally != null;
         }
 
         SpanInfo absorb(SpanInfo other) {
