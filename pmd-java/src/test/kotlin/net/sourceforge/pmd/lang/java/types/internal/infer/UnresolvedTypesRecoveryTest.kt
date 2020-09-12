@@ -542,4 +542,38 @@ class C {
         }
     }
 
+    parserTest("Unresolved lambda/mref target type has non-null functional method") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                class Foo {
+
+                    void foo(UnresolvedLambdaTarget lambda) { }
+
+                    void bar() {
+                        foo(() -> null); // the target type is unresolved
+                        foo(this::foo);  // same
+                    }
+
+                }
+                """.trimIndent()
+        )
+
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldTriggerNoApplicableMethods {
+            lambda.typeMirror shouldBe ts.UNKNOWN
+            lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+        }
+
+        spy.resetInteractions()
+
+        spy.shouldTriggerNoApplicableMethods {
+            mref.typeMirror shouldBe ts.UNKNOWN
+            mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+        }
+    }
+
 })

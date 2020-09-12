@@ -6,8 +6,11 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.types.captureMatcher
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.typeDsl
@@ -185,6 +188,35 @@ class SpecialMethodsTest : ProcessorTestSpec({
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    parserTest("Record ctor formal param reference") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+
+           record Foo(int comp) {
+                Foo {
+                    comp = comp - 1;
+                }
+           }
+
+        """.trimIndent())
+
+        val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                it.tryGetNode() shouldBe null // this could be controversial
+                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
+            }
+
+            // same spec
+            compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                it.tryGetNode() shouldBe null
+                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
             }
         }
     }

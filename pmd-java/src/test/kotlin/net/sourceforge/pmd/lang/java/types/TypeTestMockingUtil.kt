@@ -48,6 +48,16 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
         verify(spy, times(1)).noCompileTimeDeclaration(any())
     }
 
+    fun shouldTriggerNoApplicableMethods(block: TypeDslMixin.() -> Unit) {
+        this.shouldHaveNoErrors()
+        TypeDslOf(ts).block()
+        verify(spy, times(1)).noApplicableCandidates(any())
+    }
+
+    fun resetInteractions() {
+        reset(spy)
+    }
+
     fun shouldBeAmbiguous(block: TypeDslMixin.() -> Unit) {
         this.shouldHaveNoErrors()
         TypeDslOf(ts).block()
