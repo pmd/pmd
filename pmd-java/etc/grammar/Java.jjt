@@ -1731,8 +1731,9 @@ void BlockStatement():
         |
         {
             List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
-            while (jjtree.peekNode() instanceof ASTAnnotation) {
-              annotations.add((ASTAnnotation) jjtree.popNode());
+            if (jjtree.nodeArity() > 0) { // peekNode would throw if the stack is empty
+                while (jjtree.peekNode() instanceof ASTAnnotation) {
+                  annotations.add((ASTAnnotation) jjtree.popNode());}
             }
         }
         LocalVariableDeclaration()
