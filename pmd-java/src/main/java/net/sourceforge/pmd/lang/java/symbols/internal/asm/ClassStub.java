@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,6 +22,7 @@ import org.objectweb.asm.Opcodes;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -60,6 +63,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     private List<SymAnnot> annotations = new ArrayList<>();
 
+    private Set<String> annotAttributes;
+
     private final ParseLock parseLock;
 
 
@@ -98,6 +103,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 annotations = Collections.unmodifiableList(annotations);
+                annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
+                                  ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
+                                  : Collections.emptySet();
             }
 
             @Override
@@ -281,6 +289,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
+    public Set<String> getAnnotationAttributeNames() {
+        parseLock.ensureParsed();
+        return annotAttributes;
+    }
+
+    @Override
     public @Nullable JClassSymbol getEnclosingClass() {
         parseLock.ensureParsed();
         return enclosingInfo.getEnclosingClass();
@@ -425,6 +439,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public boolean isAnonymousClass() {
         return getSimpleName().isEmpty();
     }
+
 
     // </editor-fold>
 

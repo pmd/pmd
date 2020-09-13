@@ -49,7 +49,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public Set<String> getAttributeNames() {
-        return null;
+        return typeStub.getAnnotationAttributeNames();
     }
 
     @Override

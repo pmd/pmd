@@ -209,7 +209,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
-    // todo
     default Set<String> getAnnotationAttributeNames() {
         return Collections.emptySet();
     }
