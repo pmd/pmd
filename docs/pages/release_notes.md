@@ -55,6 +55,16 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
 * {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
 * {% jdoc !!core::lang.rule.RuleReference#getOverriddenLanguage() %} and
   {% jdoc !!core::lang.rule.RuleReference#setLanguage(net.sourceforge.pmd.lang.Language) %}
+* Antlr4 generated lexers:
+    * {% jdoc !!cs::lang.cs.antlr4.CSharpLexer %} will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * {% jdoc !!dart::lang.dart.antlr4.Dart2Lexer %} will be renamed to `DartLexer` and moved to package 
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!go::lang.go.antlr4.GolangLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!kotlin::lang.kotlin.antlr4.Kotlin %} will be renamed to `KotlinLexer` and moved to package 
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * {% jdoc !!lua::lang.lua.antlr4.LuaLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
 
 
 ### External Contributions
