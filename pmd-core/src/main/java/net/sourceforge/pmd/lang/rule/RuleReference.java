@@ -85,13 +85,21 @@ public class RuleReference extends AbstractDelegateRule {
         this.setRule(ref.getRule().deepCopy());
     }
 
+    /**
+     * @deprecated overriding the language of a rule is not supported.
+     */
+    @Deprecated
     public Language getOverriddenLanguage() {
         return language;
     }
 
+    /**
+     * @deprecated overriding the language of a rule is not supported.
+     */
     // FIXME should we really allow overriding the language of a rule?
     // I don't see any case where this wouldn't just make the rule fail during execution
     @Override
+    @Deprecated
     public void setLanguage(Language language) {
         // Only override if different than current value, or if already
         // overridden.
