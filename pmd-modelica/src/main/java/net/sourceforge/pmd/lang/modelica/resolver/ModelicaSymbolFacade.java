@@ -9,6 +9,6 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 public class ModelicaSymbolFacade {
     public void initializeWith(ASTStoredDefinition node) {
         ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder();
-        node.jjtAccept(sc, null);
+        node.acceptVisitor(sc, null);
     }
 }

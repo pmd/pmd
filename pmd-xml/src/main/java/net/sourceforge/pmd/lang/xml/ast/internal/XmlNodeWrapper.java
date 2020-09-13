@@ -161,7 +161,6 @@ class XmlNodeWrapper implements XmlNode {
         return new CompoundIterator<>(iterators.toArray(it));
     }
 
-
     @Override
     public org.w3c.dom.Node getNode() {
         return node;

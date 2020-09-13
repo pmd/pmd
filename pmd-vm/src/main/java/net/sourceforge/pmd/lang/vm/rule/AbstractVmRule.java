@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.vm.VmLanguageModule;
-import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.ast.VmParserVisitor;
 
 public abstract class AbstractVmRule extends AbstractRule implements VmParserVisitor {
@@ -20,7 +19,7 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((VmNode) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
 }
