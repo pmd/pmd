@@ -2809,7 +2809,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 1</description>
+        <description>Test ignored name 1 (method param, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2823,7 +2823,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 2 (single underscore, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2841,7 +2841,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -2864,7 +2864,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (!reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
