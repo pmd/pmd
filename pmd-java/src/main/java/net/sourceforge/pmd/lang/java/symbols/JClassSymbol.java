@@ -6,7 +6,9 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -206,6 +208,11 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isLocalClass();
 
     boolean isAnonymousClass();
+
+    // todo
+    default Set<String> getAnnotationAttributeNames() {
+        return Collections.emptySet();
+    }
 
     // todo isSealed + getPermittedSubclasses
     //  (isNonSealed is not so useful I think)

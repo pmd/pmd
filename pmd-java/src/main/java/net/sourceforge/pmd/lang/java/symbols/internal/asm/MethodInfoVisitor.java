@@ -22,7 +22,7 @@ class MethodInfoVisitor extends MethodVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotationDefault() {
-        return new DefaultAnnotValueVisitor();
+        return new DefaultAnnotValueVisitor(execStub.getResolver());
     }
 
 
@@ -39,6 +39,10 @@ class MethodInfoVisitor extends MethodVisitor {
     }
 
     private class DefaultAnnotValueVisitor extends SymbolicValueBuilder {
+
+        DefaultAnnotValueVisitor(AsmSymbolResolver resolver) {
+            super(resolver);
+        }
 
         @Override
         public void visitEnd() {

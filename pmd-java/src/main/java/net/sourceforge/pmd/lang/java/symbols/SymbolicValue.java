@@ -10,13 +10,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -38,6 +41,11 @@ import net.sourceforge.pmd.util.OptionalBool;
  * them in the compile classpath.
  *
  * <p>This is a sealed interface and should not be implemented by clients.
+ *
+ * <p>Note: the point of this api is to enable comparisons between values,
+ * not deep introspection into values. This is why there are very few getter
+ * methods, except in {@link SymAnnot}, which is the API point used by
+ * {@link AnnotableSymbol}.
  */
 public interface SymbolicValue {
     // TODO these should probably be bound to a TypeSystem
@@ -62,34 +70,34 @@ public interface SymbolicValue {
     boolean equals(Object o);
 
     /**
+     * Returns a symbolic value for the given java object
      * Returns an annotation element for the given java value. Returns
      * null if the value cannot be an annotation element.
      *
      * <p>Note: annotations are currently unsupported.
      */
-    static @Nullable SymbolicValue of(Object value) {
+    static @Nullable SymbolicValue of(TypeSystem ts, Object value) {
         if (value == null) {
             return null;
         }
 
-        if (value.getClass() == String.class
-            || ClassUtils.isPrimitiveWrapper(value.getClass())) {
+        if (SymValue.isOkValue(value)) {
             return new SymValue(value);
         }
 
         if (value instanceof Enum<?>) {
-            return SymEnum.fromEnum((Enum<?>) value);
+            return SymEnum.fromEnum(ts, (Enum<?>) value);
         }
 
         if (value instanceof Annotation) {
-            return null;// unsupported for now
+            return AnnotWrapperImpl.wrap(ts, (Annotation) value);
         }
 
         if (value.getClass().isArray()) {
             if (!SymArray.isOkComponentType(value.getClass().getComponentType())) {
                 return null;
             }
-            return SymArray.forArray(value);
+            return SymArray.forArray(ts, value);
         }
 
         return null;
@@ -101,55 +109,16 @@ public interface SymbolicValue {
     interface SymAnnot extends SymbolicValue {
 
         /**
-         * Returns the explicit value of the attribute. If the attribute
-         * is not mentioned in the {@link #getExplicitAttributes()}, returns
-         * null.
-         *
-         * @see #getAttributeOrDefault(String)
+         * Returns the value of the attribute, which may fall back to
+         * the default value of the annotation element. Returns null if
+         * the attribute does not exist, is unresolved, or has no default.
+         * TODO do we need separate sentinels for that?
          */
-        default @Nullable SymbolicValue getAttribute(String attrName) {
-            return getExplicitAttributes().get(attrName);
-        }
+        @Nullable SymbolicValue getAttribute(String attrName);
 
-        /**
-         * Returns the default value for the given attribute, as declared
-         * on the annotation method. Returns null if the attribute does
-         * not exist, is unresolved, or has no default. TODO do we need separate sentinels for that?
-         */
-        @Nullable SymbolicValue getDefaultValue(String attrName);
 
-        /**
-         * An alias for {@link #getAttribute(String, boolean)}, which
-         * uses defaults values.
-         */
-        default @Nullable SymbolicValue getAttributeOrDefault(String attrName) {
-            return getAttribute(attrName, true);
-        }
+        Set<String> getAttributeNames();
 
-        /**
-         * Returns the value of the attribute. This asks for an explicit
-         * attribute, and may fall back to the default value, if the {@code useDefaults}
-         * parameter is true. Returns null if both {@link #getAttribute(String)}
-         * and {@link #getDefaultValue(String)} return null, see their doc.
-         *
-         * @param attrName    Attribute name
-         * @param useDefaults Whether to fallback to a default value
-         */
-        default @Nullable SymbolicValue getAttribute(String attrName, boolean useDefaults) {
-            SymbolicValue value = getAttribute(attrName);
-            if (value != null || !useDefaults) {
-                return value;
-            }
-
-            return getDefaultValue(attrName);
-        }
-
-        /**
-         * The explicit attributes, mentioned in the annotation.
-         * Attributes that take default values are not in this map.
-         * The map is indexed by attribute name.
-         */
-        Map<String, SymbolicValue> getExplicitAttributes();
 
         /**
          * The retention policy. Note that naturally, members accessed
@@ -169,27 +138,13 @@ public interface SymbolicValue {
         }
 
         /**
-         * Like the other overloads, but does not use defaults.
-         *
-         * @see #attributeMatches(String, Object, boolean)
-         */
-        default OptionalBool attributeMatches(String name, Object attrValue) {
-            return attributeMatches(name, attrValue, false);
-        }
-
-        /**
          * Returns YES if the annotation has the attribute set to the
          * given value. Returns NO if it is set to another value.
-         * Returns UNKNOWN if the attribute does not exist or is unresolved.
-         *
-         * @param attrName   Attribute name
-         * @param attrValue  An object value, or a {@link SymbolicValue}
-         * @param useDefault If true, default values are considered. If false,
-         *                   and the attribute is not explicitly set, this method
-         *                   will return UNKNOWN even if the attribute has a default value
+         * Returns UNKNOWN if the attribute does not exist or is
+         * unresolved.
          */
-        default OptionalBool attributeMatches(String attrName, Object attrValue, boolean useDefault) {
-            SymbolicValue attr = getAttribute(attrName, useDefault);
+        default OptionalBool attributeMatches(String attrName, Object attrValue) {
+            SymbolicValue attr = getAttribute(attrName);
             if (attr == null) {
                 return OptionalBool.UNKNOWN;
             }
@@ -200,6 +155,7 @@ public interface SymbolicValue {
                 return OptionalBool.definitely(attr.valueEquals(attrValue));
             }
         }
+
     }
 
     /**
@@ -216,8 +172,17 @@ public interface SymbolicValue {
             this.elements = elements;
             this.primArray = primArray;
             this.length = length;
+            assert elements == null ^ primArray == null : "Either elements or array must be mentioned";
+            assert primArray == null || primArray.getClass().isArray();
         }
 
+        /**
+         * Returns a SymArray for a list of symbolic values.
+         *
+         * @param values The elements
+         *
+         * @throws NullPointerException if the parameter is null
+         */
         public static SymArray forElements(List<SymbolicValue> values) {
             return new SymArray(Collections.unmodifiableList(new ArrayList<>(values)), null, values.size());
         }
@@ -225,11 +190,13 @@ public interface SymbolicValue {
         /**
          * Returns a SymArray for the parameter.
          *
+         * @throws NullPointerException     if the parameter is null
          * @throws IllegalArgumentException If the parameter is not an array,
          *                                  or has an unsupported component type
          */
-        public static SymArray forArray(Object array) {
-            if (array == null || !array.getClass().isArray()) {
+        // package-private, people should use SymbolicValue#of
+        static SymArray forArray(TypeSystem ts, @NonNull Object array) {
+            if (!array.getClass().isArray()) {
                 throw new IllegalArgumentException("Needs an array, got " + array);
             }
 
@@ -239,12 +206,13 @@ public interface SymbolicValue {
             } else {
                 Object[] arr = (Object[]) array;
                 if (!isOkComponentType(arr.getClass().getComponentType())) {
-                    throw new IllegalArgumentException("Unsupported component type" + arr.getClass().getComponentType());
+                    throw new IllegalArgumentException(
+                        "Unsupported component type" + arr.getClass().getComponentType());
                 }
 
                 List<SymbolicValue> lst = new ArrayList<>(arr.length);
                 for (Object o : arr) {
-                    SymbolicValue elt = SymbolicValue.of(o);
+                    SymbolicValue elt = SymbolicValue.of(ts, o);
                     if (elt == null) {
                         throw new IllegalArgumentException("Unsupported array element" + o);
                     }
@@ -266,6 +234,7 @@ public interface SymbolicValue {
             return length;
         }
 
+        @Override
         public boolean valueEquals(Object o) {
             if (!o.getClass().isArray() || !isOkComponentType(o.getClass().getComponentType())) {
                 return false;
@@ -299,17 +268,29 @@ public interface SymbolicValue {
                 return false;
             }
             SymArray array = (SymArray) o;
-            return Objects.equals(elements, array.elements);
+            if (elements != null) {
+                return Objects.equals(elements, array.elements);
+            } else {
+                return Objects.deepEquals(primArray, array.primArray);
+            }
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(elements);
+            if (elements != null) {
+                return elements.hashCode();
+            } else {
+                return primArray.hashCode();
+            }
         }
 
         @Override
         public String toString() {
-            return "[" + elements + ']';
+            if (elements != null) {
+                return "[list " + elements + ']';
+            } else {
+                return "[array " + ArrayUtils.toString(primArray) + ']';
+            }
         }
     }
 
@@ -330,34 +311,37 @@ public interface SymbolicValue {
         /**
          * Returns the symbolic value for the given enum constant.
          *
+         * @param ts    Type system
          * @param value An enum constant
          *
          * @throws NullPointerException if the parameter is null
          */
-        public static SymbolicValue fromEnum(Enum<?> value) {
-            return fromBinaryName(value.getDeclaringClass().getName(), value.name());
+        public static SymbolicValue fromEnum(TypeSystem ts, Enum<?> value) {
+            return fromBinaryName(ts, value.getDeclaringClass().getName(), value.name());
         }
 
         /**
+         * @param ts             Type system
          * @param enumBinaryName A binary name, eg {@code com.MyEnum}
          * @param enumConstName  Simple name of the enum constant
          *
          * @throws NullPointerException if any parameter is null
          */
-        public static SymEnum fromBinaryName(String enumBinaryName, String enumConstName) {
+        public static SymEnum fromBinaryName(TypeSystem ts, String enumBinaryName, String enumConstName) {
             return new SymEnum(enumBinaryName, enumConstName);
         }
 
         /**
+         * @param ts                 Type system
          * @param enumTypeDescriptor The type descriptor, eg {@code Lcom/MyEnum;}
          * @param enumConstName      Simple name of the enum constant
          */
-        public static SymEnum fromTypeDescriptor(String enumTypeDescriptor, String enumConstName) {
+        public static SymEnum fromTypeDescriptor(TypeSystem ts, String enumTypeDescriptor, String enumConstName) {
             String enumBinaryName = ClassNamesUtil.classDescriptorToBinaryName(enumTypeDescriptor);
-            return fromBinaryName(enumBinaryName, enumConstName);
+            return fromBinaryName(ts, enumBinaryName, enumConstName);
         }
 
-
+        @Override
         public boolean valueEquals(Object o) {
             if (!(o instanceof Enum)) {
                 return false;
@@ -400,16 +384,17 @@ public interface SymbolicValue {
 
         private final Object value;
 
-        SymValue(Object value) { // note that the value is always boxed
+        private SymValue(Object value) { // note that the value is always boxed
             assert value != null && isOkValue(value) : "Invalid value " + value;
             this.value = value;
         }
 
-        private static boolean isOkValue(Object value) {
+        private static boolean isOkValue(@NonNull Object value) {
             return ClassUtils.isPrimitiveWrapper(value.getClass())
                 || value instanceof String;
         }
 
+        @Override
         public boolean valueEquals(Object o) {
             return Objects.equals(value, o);
         }
@@ -428,7 +413,7 @@ public interface SymbolicValue {
 
         @Override
         public int hashCode() {
-            return Objects.hash(value);
+            return value.hashCode();
         }
 
         @Override

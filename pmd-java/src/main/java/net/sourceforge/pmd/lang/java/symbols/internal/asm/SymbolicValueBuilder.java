@@ -20,9 +20,11 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 class SymbolicValueBuilder extends AnnotationVisitor {
 
     SymbolicValue result;
+    private final AsmSymbolResolver resolver;
 
-    SymbolicValueBuilder() {
+    SymbolicValueBuilder(AsmSymbolResolver resolver) {
         super(AsmSymbolResolver.ASM_API_V);
+        this.resolver = resolver;
     }
 
     protected void acceptValue(String name, SymbolicValue v) {
@@ -32,17 +34,17 @@ class SymbolicValueBuilder extends AnnotationVisitor {
 
     @Override
     public void visitEnum(String name, String descriptor, String value) {
-        acceptValue(name, SymEnum.fromTypeDescriptor(descriptor, value));
+        acceptValue(name, SymEnum.fromTypeDescriptor(resolver.getTypeSystem(), descriptor, value));
     }
 
     @Override
     public void visit(String name, Object value) {
-        acceptValue(name, SymbolicValue.of(value));
+        acceptValue(name, SymbolicValue.of(resolver.getTypeSystem(), value));
     }
 
     @Override
     public AnnotationVisitor visitArray(String name) {
-        return new ArrayValueBuilder(new ArrayList<>(), v -> acceptValue(name, v));
+        return new ArrayValueBuilder(resolver, new ArrayList<>(), v -> acceptValue(name, v));
     }
 
     static class ArrayValueBuilder extends SymbolicValueBuilder {
@@ -50,8 +52,8 @@ class SymbolicValueBuilder extends AnnotationVisitor {
         private final List<SymbolicValue> arrayElements;
         private final Consumer<SymbolicValue> finisher;
 
-        ArrayValueBuilder(List<SymbolicValue> arrayElements, Consumer<SymbolicValue> finisher) {
-            super();
+        ArrayValueBuilder(AsmSymbolResolver resolver, List<SymbolicValue> arrayElements, Consumer<SymbolicValue> finisher) {
+            super(resolver);
             this.arrayElements = arrayElements;
             this.finisher = finisher;
         }

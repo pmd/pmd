@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -25,7 +26,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     private final JClassSymbol typeStub;
     /** Many annotations have no attributes so this remains the singleton emptyMap in this case. */
-    private @NonNull Map<String, SymbolicValue> attributes = Collections.emptyMap();
+    private @NonNull Map<String, SymbolicValue> explicitAttrs = Collections.emptyMap();
     private final boolean runtimeVisible;
 
     // TODO would be nice to link back to the class symbol, to get default values
@@ -35,10 +36,10 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     void addAttribute(String name, SymbolicValue value) {
-        if (attributes.isEmpty()) {
-            attributes = new HashMap<>(); // make it modifiable
+        if (explicitAttrs.isEmpty()) {
+            explicitAttrs = new HashMap<>(); // make it modifiable
         }
-        attributes.put(name, value);
+        explicitAttrs.put(name, value);
     }
 
     @Override
@@ -47,7 +48,20 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public @Nullable SymbolicValue getDefaultValue(String attrName) {
+    public Set<String> getAttributeNames() {
+        return null;
+    }
+
+    @Override
+    public @Nullable SymbolicValue getAttribute(String attrName) {
+        SymbolicValue value = explicitAttrs.get(attrName);
+        if (value != null) {
+            return value;
+        }
+        return getDefaultValue(attrName);
+    }
+
+    private @Nullable SymbolicValue getDefaultValue(String attrName) {
         if (!typeStub.isAnnotation()) {
             return null; // path taken for invalid stuff & unresolved classes
         }
@@ -59,11 +73,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
             }
         }
         return null;
-    }
-
-    @Override
-    public Map<String, SymbolicValue> getExplicitAttributes() {
-        return attributes;
     }
 
     @Override
@@ -89,16 +98,22 @@ final class SymbolicAnnotationImpl implements SymAnnot {
         if (!that.isOfType(typeStub.getBinaryName())) {
             return false;
         }
-        return attributes.equals(that.getExplicitAttributes());
+
+        for (String attr : getAttributeNames()) {
+            if (!Objects.equals(getAttribute(attr), ((SymAnnot) o).getAttribute(attr))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attributes, typeStub);
+        return Objects.hash(explicitAttrs, typeStub);
     }
 
     @Override
     public String toString() {
-        return "@" + typeStub + getExplicitAttributes();
+        return "@" + typeStub + explicitAttrs;
     }
 }

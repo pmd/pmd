@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import static net.sourceforge.pmd.lang.java.symbols.SymbolicValue.of;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
@@ -36,6 +35,10 @@ public class SymbolReflectionTest {
 
     private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
     private final AsmSymbolResolver loader = (AsmSymbolResolver) ts.bootstrapResolver();
+
+    private SymbolicValue symValueOf(Object o) {
+        return SymbolicValue.of(ts, o);
+    }
 
 
     @Test
@@ -76,13 +79,13 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "valueWithDefault");
-        Assert.assertEquals(of("ddd"), m.getDefaultAnnotationValue());
+        Assert.assertEquals(symValueOf("ddd"), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "valueNoDefault");
         Assert.assertNull(m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayDefault");
-        Assert.assertEquals(of(new String[] {"ddd"}), m.getDefaultAnnotationValue());
+        Assert.assertEquals(symValueOf(new String[] {"ddd"}), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayEmptyDefault");
         Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
@@ -98,11 +101,11 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "enumArr");
-        Assert.assertEquals(ofArray(SymEnum.fromEnum(MyEnum.AA), SymEnum.fromEnum(MyEnum.BB)),
+        Assert.assertEquals(ofArray(SymEnum.fromEnum(ts, MyEnum.AA), SymEnum.fromEnum(ts, MyEnum.BB)),
                             m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "enumSimple");
-        Assert.assertEquals(SymEnum.fromEnum(MyEnum.AA), m.getDefaultAnnotationValue());
+        Assert.assertEquals(SymEnum.fromEnum(ts, MyEnum.AA), m.getDefaultAnnotationValue());
     }
 
 
@@ -174,27 +177,34 @@ public class SymbolReflectionTest {
     @Test
     public void testSymValueEquality() {
         Assert.assertEquals("Array of strings",
-                            of(new String[] {"ddd", "eee"}),
-                            ofArray(of("ddd"), of("eee")));
+                            symValueOf(new String[] {"ddd", "eee"}),
+                            ofArray(symValueOf("ddd"), symValueOf("eee")));
 
         Assert.assertEquals("Array of booleans",
-                            of(new boolean[] {true}),
-                            ofArray(of(true)));
+                            symValueOf(new boolean[] {true}),
+                            symValueOf(new boolean[] {true}));
+
+        Assert.assertNotEquals("Array of booleans",
+                               symValueOf(new boolean[] {true}),
+                               symValueOf(new boolean[] {false}));
 
         Assert.assertTrue("valueEquals for int[]",
-                          of(new int[] {10, 11}).valueEquals(new int[] {10, 11}));
+                          symValueOf(new int[] {10, 11}).valueEquals(new int[] {10, 11}));
+
+        Assert.assertTrue("valueEquals for boolean[]",
+                          symValueOf(new boolean[] {false}).valueEquals(new boolean[] {false}));
 
         Assert.assertFalse("valueEquals for int[]",
-                           of(new int[] {10, 11}).valueEquals(new int[] {10}));
+                           symValueOf(new int[] {10, 11}).valueEquals(new int[] {10}));
 
         Assert.assertFalse("valueEquals for double[] 2",
-                           of(new int[] {10, 11}).valueEquals(new double[] {10, 11}));
+                           symValueOf(new int[] {10, 11}).valueEquals(new double[] {10, 11}));
 
         Assert.assertFalse("valueEquals for empty arrays",
-                           of(new int[] {}).valueEquals(new double[] {}));
+                           symValueOf(new int[] {}).valueEquals(new double[] {}));
 
         Assert.assertTrue("valueEquals for empty arrays",
-                          of(new double[] {}).valueEquals(new double[] {}));
+                          symValueOf(new double[] {}).valueEquals(new double[] {}));
 
     }
 
