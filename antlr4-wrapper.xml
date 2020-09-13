@@ -34,7 +34,18 @@
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
 
-    <target name="adapt-antlr-sources" description="Adapt antlr sources to the PMD codebase">
+    <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages">
+        <!-- We only need the Lexer file. -->
+        <delete file="${parser-file}"/>
+        <delete>
+            <fileset dir="${target-package-dir}">
+                <include name="*"/>
+                <exclude name="*Lexer.java"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="pmd-language" description="Adapt Antlr sources for PMD languages">
 
         <!-- Adapt parser. -->
         <replace file="${parser-file}">

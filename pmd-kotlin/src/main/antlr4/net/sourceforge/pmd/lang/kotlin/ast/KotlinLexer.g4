@@ -10,7 +10,7 @@
  * https://github.com/JetBrains/kotlin/tree/master/compiler/testData/psi
  */
 
-lexer grammar Kotlin;
+lexer grammar KotlinLexer;
 
 /**
  * Taken from http://www.antlr3.org/grammar/1345144569663/AntlrUnicode.txt

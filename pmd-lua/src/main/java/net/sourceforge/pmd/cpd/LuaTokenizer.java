@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.CharStream;
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
-import net.sourceforge.pmd.lang.lua.antlr4.LuaLexer;
+import net.sourceforge.pmd.lang.lua.ast.LuaLexer;
 
 /**
  * The Lua Tokenizer
