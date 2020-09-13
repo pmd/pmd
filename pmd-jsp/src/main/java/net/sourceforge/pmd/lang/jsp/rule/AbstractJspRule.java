@@ -10,9 +10,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor, ImmutableLanguage {
+public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor {
 
     public AbstractJspRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JspLanguageModule.NAME));

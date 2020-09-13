@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-07-25T11:45:36Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-08-31T16:30:18Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -415,12 +415,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.26.0</version>
+                            <version>6.27.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.26.0</version>
+                            <version>6.27.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>

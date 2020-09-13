@@ -13,12 +13,11 @@ import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
 public abstract class AbstractEcmascriptRule extends AbstractRule
-        implements EcmascriptParserVisitor, ImmutableLanguage {
+        implements EcmascriptParserVisitor {
 
     private static final PropertyDescriptor<Boolean> RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;
     private static final PropertyDescriptor<Boolean> RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR;

@@ -63,7 +63,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
         this.thisPackage = node.getPackageName();
 
-        node.children(ASTImportDeclaration.class).forEach(it -> it.jjtAccept(this, data));
+        node.children(ASTImportDeclaration.class).forEach(it -> it.acceptVisitor(this, data));
 
         return data;
     }
