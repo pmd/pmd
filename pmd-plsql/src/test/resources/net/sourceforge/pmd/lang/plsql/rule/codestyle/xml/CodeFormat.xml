@@ -26,11 +26,11 @@ END;
         <expected-problems>6</expected-problems>
         <expected-linenumbers>2,2,3,3,3,4</expected-linenumbers>
         <expected-messages>
-            <message>cmp_id should be on line 4</message>
             <message>version should be on line 3</message>
+            <message>cmp_id should be on line 4</message>
             <message>BULK COLLECT INTO should begin at column 5</message>
-            <message>v_cmp_ids should be on line 5</message>
             <message>v_versions should be on line 4</message>
+            <message>v_cmp_ids should be on line 5</message>
             <message>FROM should begin at column 5</message>
         </expected-messages>
         <code><![CDATA[
@@ -77,9 +77,9 @@ END;
         <expected-problems>4</expected-problems>
         <expected-linenumbers>12,12,12,12</expected-linenumbers>
         <expected-messages>
-            <message>Join condition "caddr.cmp_id = cmer.cmp_id" should be on line 15</message>
             <message>Join condition "insert_entry.cmer_id = cmer.cmer_id" should be on line 13</message>
             <message>Join condition "insert_entry.operation = I" should be on line 14</message>
+            <message>Join condition "caddr.cmp_id = cmer.cmp_id" should be on line 15</message>
             <message>OuterJoinClause should be on line 15</message>
         </expected-messages>
         <code><![CDATA[
@@ -187,10 +187,10 @@ END;
         <expected-problems>4</expected-problems>
         <expected-linenumbers>3,3,4,4</expected-linenumbers>
         <expected-messages>
-            <message>Type persons.firstname%TYPE should begin at column 32</message>
             <message>firstname_in should be on line 4</message>
-            <message>Type persons.lastname%TYPE should begin at column 32</message>
+            <message>Type persons.firstname%TYPE should begin at column 32</message>
             <message>lastname_in should be on line 5</message>
+            <message>Type persons.lastname%TYPE should begin at column 32</message>
         </expected-messages>
         <code><![CDATA[
 -- comment is necessary in order to not trim the whitespace at the beginning
@@ -222,14 +222,14 @@ PROCEDURE create_prospect()
         <expected-problems>8</expected-problems>
         <expected-linenumbers>3,3,3,3,3,3,3,3</expected-linenumbers>
         <expected-messages>
-            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
-            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
-            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
-            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
-            <message>v_address_id addresses.adr_id%TYPE := 1 should be on line 6</message>
-            <message>v_message_rec snapaddy_messages%ROWTYPE should be on line 7</message>
-            <message>v_prospect_id prospects.prosp_id%TYPE should be on line 5</message>
             <message>v_region_id addresses.rgn_id%TYPE should be on line 4</message>
+            <message>Type addresses.rgn_id%TYPE should begin at column 21</message>
+            <message>v_prospect_id prospects.prosp_id%TYPE should be on line 5</message>
+            <message>Type prospects.prosp_id%TYPE should begin at column 21</message>
+            <message>v_address_id addresses.adr_id%TYPE := 1 should be on line 6</message>
+            <message>Type addresses.adr_id%TYPE should begin at column 21</message>
+            <message>v_message_rec snapaddy_messages%ROWTYPE should be on line 7</message>
+            <message>Type snapaddy_messages%ROWTYPE should begin at column 21</message>
         </expected-messages>
         <code><![CDATA[
 PROCEDURE create_prospect()
@@ -300,11 +300,11 @@ END;
             <message>NULL should begin at column 57</message>
             <message>Parameter company_info_in should be on line 5</message>
             <message>Parameter firstname_in should be on line 6</message>
-            <message>Parameter lastname_in should be on line 7</message>
             <message>firstname_in should begin at column 57</message>
+            <message>Parameter lastname_in should be on line 7</message>
             <message>lastname_in should begin at column 57</message>
-            <message>NULL should begin at column 57</message>
             <message>Parameter slt_code_in should be on line 8</message>
+            <message>NULL should begin at column 57</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN

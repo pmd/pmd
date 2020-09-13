@@ -42,6 +42,7 @@
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="PLSQL" />
+                                    <property name="lang-name-camelcase" value="Plsql" />
                                     <property name="lang-terse-name" value="plsql" />
                                 </ant>
                             </target>

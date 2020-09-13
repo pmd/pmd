@@ -20,6 +20,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.
  */
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
@@ -38,6 +39,18 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<AbstractVmNode, VmNode>
     @Override
     public String getXPathNodeName() {
         return VmParserImplTreeConstants.jjtNodeName[id];
+    }
+
+
+    protected abstract <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data);
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof VmVisitor) {
+            return acceptVmVisitor((VmVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return visitor.cannotVisit(this, data);
     }
 
     /*

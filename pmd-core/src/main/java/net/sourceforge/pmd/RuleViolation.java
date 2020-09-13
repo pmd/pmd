@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import java.util.Comparator;
+
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
  * Rule constraints. RuleViolations are simple data holders that are collected
@@ -15,6 +17,20 @@ package net.sourceforge.pmd;
  * @see Rule
  */
 public interface RuleViolation {
+
+    /**
+     * A comparator for rule violations. This compares all exposed attributes
+     * of a violation, filename first. The remaining parameters are compared
+     * in an unspecified order.
+     */
+    Comparator<RuleViolation> DEFAULT_COMPARATOR =
+        Comparator.comparing(RuleViolation::getFilename)
+                  .thenComparingInt(RuleViolation::getBeginLine)
+                  .thenComparingInt(RuleViolation::getBeginColumn)
+                  .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
+                  .thenComparingInt(RuleViolation::getEndLine)
+                  .thenComparingInt(RuleViolation::getEndColumn)
+                  .thenComparing(rv -> rv.getRule().getName());
 
     /**
      * Get the Rule which identified this violation.
