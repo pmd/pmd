@@ -43,7 +43,7 @@ public final class ClassFanOutMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            MutableInt cfo = (MutableInt) node.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
+            MutableInt cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
             return (double) cfo.getValue();
         }
     }
@@ -57,8 +57,7 @@ public final class ClassFanOutMetric {
 
         @Override
         public double computeFor(MethodLikeNode node, MetricOptions options) {
-            MutableInt cfo = (MutableInt) node.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
-
+            MutableInt cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
             return (double) cfo.getValue();
         }
     }

@@ -68,7 +68,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Java" />
                                     <property name="lang-terse-name" value="java" />

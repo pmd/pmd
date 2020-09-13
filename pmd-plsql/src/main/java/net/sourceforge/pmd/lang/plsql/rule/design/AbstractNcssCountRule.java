@@ -56,7 +56,7 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
     private static class NcssVisitor extends PLSQLParserVisitorAdapter {
 
         @Override
-        public Object visitPLSQLNode(PLSQLNode node, Object data) {
+        public Object visitPlsqlNode(PLSQLNode node, Object data) {
             return countNodeChildren(node, data);
         }
 

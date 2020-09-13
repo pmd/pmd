@@ -15,7 +15,6 @@ import java.util.Objects;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -30,7 +29,6 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class RuleReference extends AbstractDelegateRule {
 
-    private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
     private Boolean deprecated;
@@ -69,7 +67,6 @@ public class RuleReference extends AbstractDelegateRule {
     /** copy constructor */
     private RuleReference(RuleReference ref) {
 
-        this.language = ref.language;
         this.minimumLanguageVersion = ref.minimumLanguageVersion;
         this.maximumLanguageVersion = ref.maximumLanguageVersion;
         this.deprecated = ref.deprecated;
@@ -86,22 +83,6 @@ public class RuleReference extends AbstractDelegateRule {
         this.setRule(ref.getRule().deepCopy());
     }
 
-    public Language getOverriddenLanguage() {
-        return language;
-    }
-
-    // FIXME should we really allow overriding the language of a rule?
-    // I don't see any case where this wouldn't just make the rule fail during execution
-    @Override
-    public void setLanguage(Language language) {
-        // Only override if different than current value, or if already
-        // overridden.
-        if (!Objects.equals(language, super.getLanguage()) || this.language != null) {
-            this.language = language;
-            super.setLanguage(language);
-        }
-    }
-
     public LanguageVersion getOverriddenMinimumLanguageVersion() {
         return minimumLanguageVersion;
     }
@@ -111,8 +92,8 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value, or if already
         // overridden.
         if (!Objects.equals(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+            super.setMinimumLanguageVersion(minimumLanguageVersion); // might throw
             this.minimumLanguageVersion = minimumLanguageVersion;
-            super.setMinimumLanguageVersion(minimumLanguageVersion);
         }
     }
 
@@ -125,8 +106,8 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value, or if already
         // overridden.
         if (!Objects.equals(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+            super.setMaximumLanguageVersion(maximumLanguageVersion); // might throw
             this.maximumLanguageVersion = maximumLanguageVersion;
-            super.setMaximumLanguageVersion(maximumLanguageVersion);
         }
     }
 
