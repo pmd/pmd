@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofArray;
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.ofEnum;
-import static net.sourceforge.pmd.lang.java.symbols.AnnotationUtils.symValueFor;
+import static net.sourceforge.pmd.lang.java.symbols.SymbolicValue.of;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -21,6 +20,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults.MyEnum;
@@ -75,13 +76,13 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "valueWithDefault");
-        Assert.assertEquals(symValueFor("ddd"), m.getDefaultAnnotationValue());
+        Assert.assertEquals(of("ddd"), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "valueNoDefault");
         Assert.assertNull(m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayDefault");
-        Assert.assertEquals(symValueFor(new String[] {"ddd"}), m.getDefaultAnnotationValue());
+        Assert.assertEquals(of(new String[] {"ddd"}), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayEmptyDefault");
         Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
@@ -97,11 +98,11 @@ public class SymbolReflectionTest {
         JMethodSymbol m;
 
         m = getMethod(sym, "enumArr");
-        Assert.assertEquals(ofArray(ofEnum(MyEnum.AA), ofEnum(MyEnum.BB)),
+        Assert.assertEquals(ofArray(SymEnum.fromEnum(MyEnum.AA), SymEnum.fromEnum(MyEnum.BB)),
                             m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "enumSimple");
-        Assert.assertEquals(ofEnum(MyEnum.AA), m.getDefaultAnnotationValue());
+        Assert.assertEquals(SymEnum.fromEnum(MyEnum.AA), m.getDefaultAnnotationValue());
     }
 
 
@@ -172,8 +173,29 @@ public class SymbolReflectionTest {
 
     @Test
     public void testSymValueEquality() {
-        Assert.assertEquals(symValueFor(new String[] {"ddd", "eee"}),
-                            ofArray(symValueFor("ddd"), symValueFor("eee")));
+        Assert.assertEquals("Array of strings",
+                            of(new String[] {"ddd", "eee"}),
+                            ofArray(of("ddd"), of("eee")));
+
+        Assert.assertEquals("Array of booleans",
+                            of(new boolean[] {true}),
+                            ofArray(of(true)));
+
+        Assert.assertTrue("valueEquals for int[]",
+                          of(new int[] {10, 11}).valueEquals(new int[] {10, 11}));
+
+        Assert.assertFalse("valueEquals for int[]",
+                           of(new int[] {10, 11}).valueEquals(new int[] {10}));
+
+        Assert.assertFalse("valueEquals for double[] 2",
+                           of(new int[] {10, 11}).valueEquals(new double[] {10, 11}));
+
+        Assert.assertFalse("valueEquals for empty arrays",
+                           of(new int[] {}).valueEquals(new double[] {}));
+
+        Assert.assertTrue("valueEquals for empty arrays",
+                          of(new double[] {}).valueEquals(new double[] {}));
+
     }
 
 
@@ -197,4 +219,8 @@ public class SymbolReflectionTest {
     }
 
 
+    // test only
+    static SymbolicValue ofArray(SymbolicValue... values) {
+        return SymArray.forElements(Arrays.asList(values.clone()));
+    }
 }

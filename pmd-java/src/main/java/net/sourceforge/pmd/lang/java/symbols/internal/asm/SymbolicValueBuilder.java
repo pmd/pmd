@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 import org.objectweb.asm.AnnotationVisitor;
 
-import net.sourceforge.pmd.lang.java.symbols.AnnotationUtils;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
@@ -38,7 +37,7 @@ class SymbolicValueBuilder extends AnnotationVisitor {
 
     @Override
     public void visit(String name, Object value) {
-        acceptValue(name, AnnotationUtils.symValueFor(value));
+        acceptValue(name, SymbolicValue.of(value));
     }
 
     @Override

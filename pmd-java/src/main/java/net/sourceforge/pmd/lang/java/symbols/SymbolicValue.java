@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
@@ -35,8 +36,12 @@ import net.sourceforge.pmd.util.OptionalBool;
  * java value that you compiled against ({@link #valueEquals(Object)}).
  * This may be improved later to allow comparing values without needing
  * them in the compile classpath.
+ *
+ * <p>This is a sealed interface and should not be implemented by clients.
  */
 public interface SymbolicValue {
+    // TODO these should probably be bound to a TypeSystem
+    //  (as the impl of SymAnnot is)
 
 
     /**
@@ -55,6 +60,40 @@ public interface SymbolicValue {
      * to compare to a java object.
      */
     boolean equals(Object o);
+
+    /**
+     * Returns an annotation element for the given java value. Returns
+     * null if the value cannot be an annotation element.
+     *
+     * <p>Note: annotations are currently unsupported.
+     */
+    static @Nullable SymbolicValue of(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value.getClass() == String.class
+            || ClassUtils.isPrimitiveWrapper(value.getClass())) {
+            return new SymValue(value);
+        }
+
+        if (value instanceof Enum<?>) {
+            return SymEnum.fromEnum((Enum<?>) value);
+        }
+
+        if (value instanceof Annotation) {
+            return null;// unsupported for now
+        }
+
+        if (value.getClass().isArray()) {
+            if (!SymArray.isOkComponentType(value.getClass().getComponentType())) {
+                return null;
+            }
+            return SymArray.forArray(value);
+        }
+
+        return null;
+    }
 
     /**
      * Symbolic representation of an annotation.
@@ -168,16 +207,19 @@ public interface SymbolicValue {
      */
     final class SymArray implements SymbolicValue {
 
-        private final List<SymbolicValue> elements;
-        private final Object primArray; // for equality tests we keep the primitive array
+        // exactly one of those is non-null
+        private final @Nullable List<SymbolicValue> elements;
+        private final @Nullable Object primArray; // for primitive arrays we keep this around
+        private final int length;
 
-        private SymArray(List<SymbolicValue> elements, Object primArray) {
-            this.elements = Collections.unmodifiableList(elements);
+        private SymArray(@Nullable List<SymbolicValue> elements, @Nullable Object primArray, int length) {
+            this.elements = elements;
             this.primArray = primArray;
+            this.length = length;
         }
 
         public static SymArray forElements(List<SymbolicValue> values) {
-            return new SymArray(values, null);
+            return new SymArray(Collections.unmodifiableList(new ArrayList<>(values)), null, values.size());
         }
 
         /**
@@ -193,11 +235,7 @@ public interface SymbolicValue {
 
             if (array.getClass().getComponentType().isPrimitive()) {
                 int len = Array.getLength(array);
-                List<SymbolicValue> elements = new ArrayList<>(len);
-                for (int i = 0; i < len; i++) {
-                    elements.add(new SymValue(Array.get(array, i)));
-                }
-                return new SymArray(elements, array);
+                return new SymArray(null, array, len);
             } else {
                 Object[] arr = (Object[]) array;
                 if (!isOkComponentType(arr.getClass().getComponentType())) {
@@ -206,13 +244,13 @@ public interface SymbolicValue {
 
                 List<SymbolicValue> lst = new ArrayList<>(arr.length);
                 for (Object o : arr) {
-                    SymbolicValue elt = AnnotationUtils.symValueFor(o);
+                    SymbolicValue elt = SymbolicValue.of(o);
                     if (elt == null) {
                         throw new IllegalArgumentException("Unsupported array element" + o);
                     }
                     lst.add(elt);
                 }
-                return new SymArray(lst, null);
+                return new SymArray(lst, null, arr.length);
             }
         }
 
@@ -225,25 +263,22 @@ public interface SymbolicValue {
         }
 
         public int length() {
-            return elements.size();
-        }
-
-        public List<SymbolicValue> elements() {
-            return elements;
+            return length;
         }
 
         public boolean valueEquals(Object o) {
-            if (!o.getClass().isArray()) {
+            if (!o.getClass().isArray() || !isOkComponentType(o.getClass().getComponentType())) {
                 return false;
             }
             if (primArray != null) {
-                return Objects.deepEquals(o, primArray);
+                return Objects.deepEquals(primArray, o);
             } else if (!(o instanceof Object[])) {
                 return false;
             }
+            assert elements != null;
 
             Object[] arr = (Object[]) o;
-            if (arr.length != elements.size()) {
+            if (arr.length != length) {
                 return false;
             }
             for (int i = 0; i < elements.size(); i++) {
@@ -288,13 +323,26 @@ public interface SymbolicValue {
         private final String enumName;
 
         private SymEnum(String enumBinaryName, String enumConstName) {
-            this.enumBinaryName = enumBinaryName;
-            this.enumName = enumConstName;
+            this.enumBinaryName = Objects.requireNonNull(enumBinaryName);
+            this.enumName = Objects.requireNonNull(enumConstName);
+        }
+
+        /**
+         * Returns the symbolic value for the given enum constant.
+         *
+         * @param value An enum constant
+         *
+         * @throws NullPointerException if the parameter is null
+         */
+        public static SymbolicValue fromEnum(Enum<?> value) {
+            return fromBinaryName(value.getDeclaringClass().getName(), value.name());
         }
 
         /**
          * @param enumBinaryName A binary name, eg {@code com.MyEnum}
          * @param enumConstName  Simple name of the enum constant
+         *
+         * @throws NullPointerException if any parameter is null
          */
         public static SymEnum fromBinaryName(String enumBinaryName, String enumConstName) {
             return new SymEnum(enumBinaryName, enumConstName);
@@ -352,13 +400,14 @@ public interface SymbolicValue {
 
         private final Object value;
 
-        SymValue(Object value) {
-            assert value != null && (value.getClass().isPrimitive() || "java.lang.String".equals(value.getClass().getName())) : "Invalid value " + value;
+        SymValue(Object value) { // note that the value is always boxed
+            assert value != null && isOkValue(value) : "Invalid value " + value;
             this.value = value;
         }
 
-        public Object getValue() {
-            return value;
+        private static boolean isOkValue(Object value) {
+            return ClassUtils.isPrimitiveWrapper(value.getClass())
+                || value instanceof String;
         }
 
         public boolean valueEquals(Object o) {
