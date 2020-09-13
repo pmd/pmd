@@ -1454,6 +1454,19 @@ See <a href="https://github.com/pmd/pmd/pull/2758">#2758</a> for details.</p>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/RubyTokenizer.html#"><code>net.sourceforge.pmd.cpd.RubyTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0-SNAPSHOT/net/sourceforge/pmd/cpd/RubyLanguage.html#getTokenizer()"><code>RubyLanguage#getTokenizer</code></a> anyway.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleReference.html#getOverriddenLanguage()"><code>RuleReference#getOverriddenLanguage</code></a> and
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleReference.html#setLanguage(net.sourceforge.pmd.lang.Language)"><code>RuleReference#setLanguage</code></a></li>
+  <li>Antlr4 generated lexers:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/antlr4/CSharpLexer.html#"><code>net.sourceforge.pmd.lang.cs.antlr4.CSharpLexer</code></a> will be moved to package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.cs.ast</code> with PMD 7.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-dart/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">DartLexer</code> and moved to package 
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.dart.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-go/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/go/antlr4/GolangLexer.html#"><code>net.sourceforge.pmd.lang.go.antlr4.GolangLexer</code></a> will be moved to package
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.go.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">KotlinLexer</code> and moved to package 
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.kotlin.ast</code> with PMD 7.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lua/6.28.0-SNAPSHOT/net/sourceforge/pmd/lang/lua/antlr4/LuaLexer.html#"><code>net.sourceforge.pmd.lang.lua.antlr4.LuaLexer</code></a> will be moved to package
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.lua.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
