@@ -13,12 +13,11 @@ import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor;
 import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
 /**
  * Base class for rules for Modelica language.
  */
-public abstract class AbstractModelicaRule extends AbstractRule implements ModelicaParserVisitor, ImmutableLanguage {
+public abstract class AbstractModelicaRule extends AbstractRule implements ModelicaParserVisitor {
     public AbstractModelicaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(ModelicaLanguageModule.NAME));
     }

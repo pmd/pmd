@@ -446,8 +446,6 @@ public abstract class AbstractRuleSetFactoryTest {
             if (rule1 instanceof RuleReference) {
                 RuleReference ruleReference1 = (RuleReference) rule1;
                 RuleReference ruleReference2 = (RuleReference) rule2;
-                assertEquals(message + ", RuleReference overridden language", ruleReference1.getOverriddenLanguage(),
-                        ruleReference2.getOverriddenLanguage());
                 assertEquals(message + ", RuleReference overridden minimum language version",
                         ruleReference1.getOverriddenMinimumLanguageVersion(),
                         ruleReference2.getOverriddenMinimumLanguageVersion());

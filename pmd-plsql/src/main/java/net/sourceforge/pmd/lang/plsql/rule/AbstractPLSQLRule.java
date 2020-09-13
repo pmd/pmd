@@ -22,9 +22,8 @@ import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage {
+public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
     private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
     private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
 
