@@ -16,7 +16,7 @@ Happily for you, to add CPD support for a new language is now easier than ever!
 
 All you need to do is follow this few steps:
 
-1. Create a new module for your language, you can take [GO as an example](https://github.com/pmd/pmd/tree/master/pmd-go)    
+1. Create a new module for your language, you can take [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go) as an example
 2. Create a Tokenizer
     
     - For Antlr grammars you can take the grammar from [here](https://github.com/antlr/grammars-v4)  and extend [AntlrTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java)  taking Go as an example
@@ -34,6 +34,8 @@ All you need to do is follow this few steps:
     
     - For JavaCC grammars you should subclass [JavaCCTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/JavaCCTokenizer.java) wich has many examples you could follow, you should also take the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/src/main/java/net/sourceforge/pmd/cpd/PythonTokenizer.java) as reference
     - For any other scenario you can use [AnyTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AnyTokenizer.java)
+
+ If you're using Antlr or JavaCC, update the pom.xml of your submodule to use the appropriate ant wrapper. See `pmd-go/pom.xml` and `pmd-python/pom.xml` for examples.
 
 3. Create your [Language](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AbstractLanguage.java) class
     
