@@ -47,22 +47,27 @@ public class RuleApplicator {
     private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
             RuleContext ctx = RuleContext.create(listener, rule);
+            rule.start(ctx);
+            try {
 
-            Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
-            while (targets.hasNext()) {
-                Node node = targets.next();
-                if (!RuleSet.applies(rule, node.getLanguageVersion())) {
-                    continue;
-                }
+                Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
+                while (targets.hasNext()) {
+                    Node node = targets.next();
+                    if (!RuleSet.applies(rule, node.getLanguageVersion())) {
+                        continue;
+                    }
 
-                try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                    rule.apply(node, ctx);
-                    rcto.close(1);
-                } catch (RuntimeException e) {
-                    // The listener handles logging if needed,
-                    // it may also rethrow the error.
-                    listener.onError(new ProcessingError(e, node.getSourceCodeFile()));
+                    try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                        rule.apply(node, ctx);
+                        rcto.close(1);
+                    } catch (RuntimeException e) {
+                        // The listener handles logging if needed,
+                        // it may also rethrow the error.
+                        listener.onError(new ProcessingError(e, node.getSourceCodeFile()));
+                    }
                 }
+            } finally {
+                rule.end(ctx);
             }
         }
     }
