@@ -1,566 +1,818 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [options/extend_source]                 8         29
+    [options]                               8         15
+    [/]                                     15        16
+    [extend_source]                         16        29
 L2
     [program]                               8         15
     [tp3]                                   16        19
 L3
     [implicit]                              8         16
     [none]                                  17        21
-L5
-    [! ce programme va demander la sais[    1         88
-L6
-    [!parties de la chaine en plusieurs[    1         93
-L7
-    [!sous programme correspondant.]        1         31
 L9
-    [character*60]                          8         20
-    [commande]                              21        29
+    [character]                             8         17
+    [*]                                     17        18
+    [60]                                    18        20
+    [COMMANDE]                              21        29
 L10
-    [integer*4]                             8         17
-    [ios]                                   18        21
+    [integer]                               8         15
+    [*]                                     15        16
+    [4]                                     16        17
+    [IOS]                                   18        21
+    [,]                                     21        22
 L11
     [1]                                     8         9
-    [compteur]                              18        26
+    [COMPTEUR]                              18        26
+    [,]                                     26        27
 L12
     [1]                                     8         9
-    [sortie]                                18        24
+    [SORTIE]                                18        24
+    [,]                                     24        25
 L13
     [1]                                     8         9
-    [errone]                                18        24
+    [ERRONE]                                18        24
+    [,]                                     24        25
 L14
     [1]                                     8         9
-    [conf]                                  18        22
+    [CONF]                                  18        22
+    [,]                                     22        23
 L15
     [1]                                     8         9
-    [position_espace]                       18        33
+    [POSITION_ESPACE]                       18        33
+    [,]                                     33        34
 L16
     [1]                                     8         9
-    [debut_mot]                             18        27
+    [DEBUT_MOT]                             18        27
+    [,]                                     27        28
 L17
     [1]                                     8         9
-    [fin_mot]                               18        25
+    [FIN_MOT]                               18        25
+    [,]                                     25        26
 L18
     [1]                                     8         9
-    [nb_mots]                               18        25
+    [NB_MOTS]                               18        25
+    [,]                                     25        26
 L19
     [1]                                     8         9
-    [nb_mots_max]                           18        29
+    [NB_MOTS_MAX]                           18        29
+    [,]                                     29        30
 L20
     [1]                                     8         9
-    [fin_chaine]                            18        28
+    [FIN_CHAINE]                            18        28
+    [,]                                     28        29
 L21
     [1]                                     8         9
-    [trouver_fin]                           18        29
+    [TROUVER_FIN]                           18        29
+    [,]                                     29        30
 L22
     [1]                                     8         9
-    [num_caractere]                         18        31
+    [NUM_CARACTERE]                         18        31
+    [,]                                     31        32
 L23
     [1]                                     8         9
-    [action]                                18        24
+    [ACTION]                                18        24
+    [,]                                     24        25
 L24
     [1]                                     8         9
-    [premiere_lettre]                       18        33
+    [PREMIERE_LETTRE]                       18        33
+    [,]                                     33        34
 L25
     [1]                                     8         9
-    [derniere_lettre]                       18        33
+    [DERNIERE_LETTRE]                       18        33
+    [,]                                     33        34
 L26
     [1]                                     8         9
-    [intervalle_maj_min]                    18        36
+    [INTERVALLE_MAJ_MIN]                    18        36
+    [,]                                     36        37
 L27
     [1]                                     8         9
-    [apres_maj]                             18        27
+    [APRES_MAJ]                             18        27
+    [,]                                     27        28
 L28
     [1]                                     8         9
-    [taille_colonne]                        18        32
+    [TAILLE_COLONNE]                        18        32
+    [,]                                     32        33
 L29
     [1]                                     8         9
-    [taille_ligne]                          18        30
+    [TAILLE_LIGNE]                          18        30
+    [,]                                     30        31
 L30
     [1]                                     8         9
-    [lignes_desc]                           18        29
+    [LIGNES_DESC]                           18        29
 L32
     [parameter]                             8         17
-    [nb_mots_max]                           18        29
+    [(]                                     17        18
+    [NB_MOTS_MAX]                           18        29
     [=]                                     30        31
     [9]                                     32        33
-    [ !une saisie correcte ne contient [    35        90
-L33
-    [!elle en contient 9, alors la sais[    1         60
+    [)]                                     33        34
 L34
     [parameter]                             8         17
-    [errone]                                18        24
+    [(]                                     17        18
+    [ERRONE]                                18        24
     [=]                                     25        26
     [1]                                     27        28
+    [)]                                     28        29
 L35
     [parameter]                             8         17
-    [sortie]                                18        24
+    [(]                                     17        18
+    [SORTIE]                                18        24
     [=]                                     25        26
     [-]                                     27        28
     [1]                                     29        30
+    [)]                                     30        31
 L36
     [parameter]                             8         17
-    [action]                                18        24
+    [(]                                     17        18
+    [ACTION]                                18        24
     [=]                                     25        26
     [1]                                     27        28
-    [ !il s'agit du 1er mot de la chain[    31        79
+    [)]                                     28        29
 L37
     [parameter]                             8         17
-    [premiere_lettre]                       18        33
+    [(]                                     17        18
+    [PREMIERE_LETTRE]                       18        33
     [=]                                     34        35
     [1]                                     36        37
-    [ !correspond a la 1ere lettre d'un[    40        77
+    [)]                                     37        38
 L38
     [parameter]                             8         17
-    [derniere_lettre]                       18        33
+    [(]                                     17        18
+    [DERNIERE_LETTRE]                       18        33
     [=]                                     34        35
     [18]                                    36        38
-    [ !correspond a la derniere lettre [    41        82
+    [)]                                     38        39
 L39
     [parameter]                             8         17
-    [intervalle_maj_min]                    18        36
+    [(]                                     17        18
+    [INTERVALLE_MAJ_MIN]                    18        36
     [=]                                     37        38
     [32]                                    39        41
-    [ !nombre separant un meme caracter[    44        78
-L40
-    [!minuscule de son majuscule]           1         28
+    [)]                                     41        42
 L41
     [parameter]                             8         17
-    [apres_maj]                             18        27
+    [(]                                     17        18
+    [APRES_MAJ]                             18        27
     [=]                                     28        29
     [96]                                    30        32
-    [ !correspond au dernier caractere [    35        81
+    [)]                                     32        33
 L42
     [parameter]                             8         17
-    [taille_colonne]                        18        32
+    [(]                                     17        18
+    [TAILLE_COLONNE]                        18        32
     [=]                                     33        34
     [7]                                     35        36
+    [)]                                     36        37
 L43
     [parameter]                             8         17
-    [taille_ligne]                          18        30
+    [(]                                     17        18
+    [TAILLE_LIGNE]                          18        30
     [=]                                     31        32
     [12]                                    33        35
+    [)]                                     35        36
 L44
     [parameter]                             8         17
-    [lignes_desc]                           18        29
+    [(]                                     17        18
+    [LIGNES_DESC]                           18        29
     [=]                                     30        31
     [11]                                    32        34
+    [)]                                     34        35
 L46
-    [character*19]                          9         21
-    [n]                                     22        23
-    [taille_colonne]                        24        38
-    [taille_ligne]                          39        51
+    [character]                             9         18
+    [*]                                     18        19
+    [19]                                    19        21
+    [N]                                     22        23
+    [(]                                     23        24
+    [TAILLE_COLONNE]                        24        38
+    [,]                                     38        39
+    [TAILLE_LIGNE]                          39        51
+    [)]                                     51        52
 L47
-    [character*19]                          8         20
-    [mots_commande]                         21        34
-    [nb_mots_max]                           35        46
+    [character]                             8         17
+    [*]                                     17        18
+    [19]                                    18        20
+    [MOTS_COMMANDE]                         21        34
+    [(]                                     34        35
+    [NB_MOTS_MAX]                           35        46
+    [)]                                     46        47
 L48
-    [character*60]                          8         20
-    [desc]                                  21        25
-    [lignes_desc]                           26        37
+    [character]                             8         17
+    [*]                                     17        18
+    [60]                                    18        20
+    [DESC]                                  21        25
+    [(]                                     25        26
+    [LIGNES_DESC]                           26        37
+    [)]                                     37        38
 L50
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L51
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     ['      ---------------------------[    19        80
 L52
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['      | bonjour, et bienvenue dan[    19        80
+    [)]                                     17        18
+    ['      | Bonjour, et bienvenue dan[    19        80
 L53
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     ['      ---------------------------[    19        80
 L54
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L55
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L56
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    [' voici un rappel des fonctions di[    19        84
+    [)]                                     17        18
+    [' Voici un rappel des fonctions di[    19        84
 L57
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L58
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['   _ task pour creer une tache (e[    19        84
+    [)]                                     17        18
+    ['   _ TASK pour creer une tache (e[    19        84
 L59
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L60
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['   _ show pour voir la descriptio[    19        75
+    [)]                                     17        18
+    ['   _ SHOW pour voir la descriptio[    19        75
 L61
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L62
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['   _ remove pour enlever une tach[    19        77
+    [)]                                     17        18
+    ['   _ REMOVE pour enlever une tach[    19        77
 L63
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L64
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['   _ clear pour effacer le dashbo[    19        70
+    [)]                                     17        18
+    ['   _ CLEAR pour effacer le DASHBO[    19        70
 L65
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
 L66
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
-    ['   _ cancel, done, todo pour modi[    19        100
+    [)]                                     17        18
+    ['   _ CANCEL, DONE, TODO pour modi[    19        100
 L67
     [write]                                 8         13
+    [(]                                     13        14
     [*]                                     14        15
+    [,]                                     15        16
     [*]                                     16        17
+    [)]                                     17        18
     [' ']                                   19        22
-L69
-    [! la boucle de sortie pour quitter[    1         58
 L70
-    [ios]                                   18        21
-    [.ne.]                                  22        26
-    [sortie]                                27        33
-L72
-    [! initialisons les variables, afin[    1         96
+    [do]                                    8         10
+    [while]                                 11        16
+    [(]                                     17        18
+    [IOS]                                   18        21
+    [.]                                     22        23
+    [ne]                                    23        25
+    [.]                                     25        26
+    [SORTIE]                                27        33
+    [)]                                     33        34
 L73
-    [position_espace]                       16        31
+    [POSITION_ESPACE]                       16        31
     [=]                                     32        33
     [0]                                     34        35
 L74
-    [debut_mot]                             16        25
+    [DEBUT_MOT]                             16        25
     [=]                                     26        27
     [0]                                     28        29
 L75
-    [fin_mot]                               16        23
+    [FIN_MOT]                               16        23
     [=]                                     24        25
     [0]                                     26        27
 L76
-    [nb_mots]                               16        23
+    [NB_MOTS]                               16        23
     [=]                                     24        25
     [0]                                     26        27
 L77
-    [fin_chaine]                            16        26
+    [FIN_CHAINE]                            16        26
     [=]                                     27        28
     [0]                                     29        30
-L79
-    [! initialisons aussi le tableau de[    1         50
 L80
-    [compteur]                              19        27
+    [do]                                    16        18
+    [COMPTEUR]                              19        27
     [=]                                     28        29
-    [action]                                30        36
-    [nb_mots_max]                           38        49
+    [ACTION]                                30        36
+    [,]                                     36        37
+    [NB_MOTS_MAX]                           38        49
 L81
-    [mots_commande]                         24        37
-    [compteur]                              39        47
+    [MOTS_COMMANDE]                         24        37
+    [(]                                     38        39
+    [COMPTEUR]                              39        47
+    [)]                                     47        48
     [=]                                     49        50
     [' ']                                   51        54
-L84
-    [! appelons le sous prgramme qui ge[    1         86
-L85
-    [!l'utilisateur le demande]             1         26
+L82
+    [end]                                   16        19
+    [do]                                    20        22
 L86
     [call]                                  16        20
-    [saisie]                                21        27
-    [commande]                              28        36
-    [ios]                                   38        41
+    [SAISIE]                                21        27
+    [(]                                     27        28
+    [COMMANDE]                              28        36
+    [,]                                     36        37
+    [IOS]                                   38        41
+    [)]                                     41        42
 L88
-    [ios]                                   20        23
-    [.eq.]                                  24        28
+    [if]                                    16        18
+    [(]                                     19        20
+    [IOS]                                   20        23
+    [.]                                     24        25
+    [eq]                                    25        27
+    [.]                                     27        28
     [0]                                     29        30
+    [)]                                     30        31
     [then]                                  32        36
-L90
-    [! trouvons la fin de la chaine]        1         31
 L91
-    [fin_chaine]                            24        34
+    [FIN_CHAINE]                            24        34
     [=]                                     35        36
-    [trouver_fin]                           37        48
-    [commande]                              50        58
+    [TROUVER_FIN]                           37        48
+    [(]                                     49        50
+    [COMMANDE]                              50        58
+    [)]                                     58        59
 L92
-    [compteur]                              24        32
+    [COMPTEUR]                              24        32
     [=]                                     33        34
     [1]                                     35        36
 L93
-    [position_espace]                       34        49
-    [.lt.]                                  50        54
-    [fin_chaine]                            55        65
-    [.and.]                                 66        71
-    [nb_mots]                               72        79
-    [.lt.]                                  80        84
-    [nb_mots_max]                           85        96
+    [do]                                    24        26
+    [while]                                 27        32
+    [(]                                     33        34
+    [POSITION_ESPACE]                       34        49
+    [.]                                     50        51
+    [lt]                                    51        53
+    [.]                                     53        54
+    [FIN_CHAINE]                            55        65
+    [.]                                     66        67
+    [and]                                   67        70
+    [.]                                     70        71
+    [NB_MOTS]                               72        79
+    [.]                                     80        81
+    [lt]                                    81        83
+    [.]                                     83        84
+    [NB_MOTS_MAX]                           85        96
+    [)]                                     96        97
 L94
-    [debut_mot]                             32        41
+    [DEBUT_MOT]                             32        41
     [=]                                     42        43
-    [position_espace]                       44        59
+    [POSITION_ESPACE]                       44        59
     [+]                                     60        61
     [1]                                     62        63
-L96
-    [! decoupons les mots]                  1         21
 L97
-    [position_espace]                       32        47
+    [POSITION_ESPACE]                       32        47
     [=]                                     48        49
-    [position_espace]                       50        65
+    [POSITION_ESPACE]                       50        65
     [+]                                     66        67
     [index]                                 68        73
-    [commande]                              75        83
-    [debut_mot:]                            85        95
+    [(]                                     74        75
+    [COMMANDE]                              75        83
+    [(]                                     84        85
+    [DEBUT_MOT]                             85        94
+    [:]                                     94        95
+    [)]                                     95        96
+    [,]                                     96        97
     [' ']                                   98        101
+    [)]                                     101       102
 L98
-    [fin_mot]                               32        39
+    [FIN_MOT]                               32        39
     [=]                                     40        41
-    [position_espace]                       42        57
+    [POSITION_ESPACE]                       42        57
     [-]                                     58        59
     [1]                                     60        61
-L100
-    [! ensuite on les enregistre dans m[    1         47
 L101
-    [mots_commande]                         32        45
-    [compteur]                              47        55
+    [MOTS_COMMANDE]                         32        45
+    [(]                                     46        47
+    [COMPTEUR]                              47        55
+    [)]                                     55        56
     [=]                                     57        58
-    [commande]                              59        67
-    [debut_mot]                             69        78
+    [COMMANDE]                              59        67
+    [(]                                     68        69
+    [DEBUT_MOT]                             69        78
     [:]                                     79        80
-    [fin_mot]                               81        88
-L103
-    [! comptons les mots]                   1         20
+    [FIN_MOT]                               81        88
+    [)]                                     88        89
 L104
-    [mots_commande]                         36        49
-    [compteur]                              51        59
-    [.ne.]                                  61        65
+    [if]                                    32        34
+    [(]                                     35        36
+    [MOTS_COMMANDE]                         36        49
+    [(]                                     50        51
+    [COMPTEUR]                              51        59
+    [)]                                     59        60
+    [.]                                     61        62
+    [ne]                                    62        64
+    [.]                                     64        65
     [' ']                                   66        69
+    [)]                                     69        70
     [then]                                  71        75
 L105
-    [nb_mots]                               40        47
+    [NB_MOTS]                               40        47
     [=]                                     48        49
-    [nb_mots]                               50        57
+    [NB_MOTS]                               50        57
     [+]                                     58        59
     [1]                                     60        61
 L106
-    [compteur]                              40        48
+    [COMPTEUR]                              40        48
     [=]                                     49        50
-    [compteur]                              51        59
+    [COMPTEUR]                              51        59
     [+]                                     60        61
     [1]                                     62        63
-L110
-    [! le programme ne doit pas tenir c[    1         82
-L111
-    [!dont est ecrit le mot, il sera mi[    1         49
+L107
+    [end]                                   32        35
+    [if]                                    36        38
+L108
+    [end]                                   24        27
+    [do]                                    28        30
 L112
-    [compteur]                              27        35
+    [do]                                    24        26
+    [COMPTEUR]                              27        35
     [=]                                     36        37
     [1]                                     38        39
-    [nb_mots]                               41        48
+    [,]                                     39        40
+    [NB_MOTS]                               41        48
 L113
-    [num_caractere]                         35        48
+    [do]                                    32        34
+    [NUM_CARACTERE]                         35        48
     [=]                                     49        50
-    [premiere_lettre]                       51        66
-    [derniere_lettre]                       68        83
+    [PREMIERE_LETTRE]                       51        66
+    [,]                                     66        67
+    [DERNIERE_LETTRE]                       68        83
 L114
+    [if]                                    40        42
+    [(]                                     43        44
     [ichar]                                 44        49
-    [mots_commande]                         50        63
-    [compteur]                              65        73
-    [num_caractere:num_caractere]           75        102
+    [(]                                     49        50
+    [MOTS_COMMANDE]                         50        63
+    [(]                                     64        65
+    [COMPTEUR]                              65        73
+    [)]                                     73        74
+    [(]                                     74        75
+    [NUM_CARACTERE]                         75        88
+    [:]                                     88        89
+    [NUM_CARACTERE]                         89        102
+    [)]                                     102       103
+    [)]                                     103       104
 L115
     [1]                                     8         9
-    [.gt.]                                  10        14
-    [apres_maj]                             15        24
+    [.]                                     10        11
+    [gt]                                    11        13
+    [.]                                     13        14
+    [APRES_MAJ]                             15        24
+    [)]                                     24        25
     [then]                                  26        30
 L116
-    [mots_commande]                         48        61
-    [compteur]                              63        71
-    [num_caractere:num_caractere]           73        100
+    [MOTS_COMMANDE]                         48        61
+    [(]                                     62        63
+    [COMPTEUR]                              63        71
+    [)]                                     71        72
+    [(]                                     72        73
+    [NUM_CARACTERE]                         73        86
+    [:]                                     86        87
+    [NUM_CARACTERE]                         87        100
+    [)]                                     100       101
     [=]                                     102       103
 L117
     [1]                                     8         9
     [char]                                  10        14
+    [(]                                     14        15
     [ichar]                                 15        20
-    [mots_commande]                         21        34
-    [compteur]                              36        44
-    [num_caractere:num_caractere]           46        73
+    [(]                                     20        21
+    [MOTS_COMMANDE]                         21        34
+    [(]                                     35        36
+    [COMPTEUR]                              36        44
+    [)]                                     44        45
+    [(]                                     45        46
+    [NUM_CARACTERE]                         46        59
+    [:]                                     59        60
+    [NUM_CARACTERE]                         60        73
+    [)]                                     73        74
+    [)]                                     74        75
     [-]                                     76        77
-    [intervalle_maj_min]                    78        96
-L122
-    [!! affichons les mots (provisoire)]    1         35
-L123
-    [!!                     do compteur[    1         48
-L124
-    [!!                             wri[    1         83
-L125
-    [!!                     end do]         1         30
-L126
-    [!!]                                    1         3
-L127
-    [!! testons si le mot est bien en m[    1         62
-L128
-    [!!                     write(*,*) [    1         80
-L131
-    [! si la commande contient plus de [    1         68
+    [INTERVALLE_MAJ_MIN]                    78        96
+    [)]                                     96        97
+L118
+    [end]                                   40        43
+    [if]                                    44        46
+L119
+    [end]                                   32        35
+    [do]                                    36        38
+L120
+    [end]                                   24        27
+    [do]                                    28        30
 L133
-    [nb_mots]                               28        35
-    [.eq.]                                  36        40
-    [nb_mots_max]                           41        52
+    [if]                                    24        26
+    [(]                                     27        28
+    [NB_MOTS]                               28        35
+    [.]                                     36        37
+    [eq]                                    37        39
+    [.]                                     39        40
+    [NB_MOTS_MAX]                           41        52
+    [)]                                     52        53
     [then]                                  54        58
 L134
     [write]                                 32        37
+    [(]                                     37        38
     [*]                                     38        39
+    [,]                                     39        40
     [*]                                     40        41
+    [)]                                     41        42
     [' ']                                   43        46
 L135
     [write]                                 32        37
+    [(]                                     37        38
     [*]                                     38        39
+    [,]                                     39        40
     [*]                                     40        41
-    ['err> trop de mot, veuillez ressai[    43        81
+    [)]                                     41        42
+    ['ERR> Trop de mot, veuillez ressai[    43        81
 L136
     [else]                                  24        28
-L138
-    [! maintenant, en fonction du premi[    1         94
 L139
-    [mots_commande]                         36        49
-    [action]                                51        57
-    [.eq.]                                  59        63
-    ['task']                                64        70
+    [if]                                    32        34
+    [(]                                     35        36
+    [MOTS_COMMANDE]                         36        49
+    [(]                                     50        51
+    [ACTION]                                51        57
+    [)]                                     57        58
+    [.]                                     59        60
+    [eq]                                    60        62
+    [.]                                     62        63
+    ['TASK']                                64        70
+    [)]                                     70        71
     [then]                                  72        76
 L140
     [call]                                  40        44
-    [tache]                                 45        50
-    [mots_commande]                         51        64
-    [desc]                                  66        70
-    [n]                                     72        73
+    [TACHE]                                 45        50
+    [(]                                     50        51
+    [MOTS_COMMANDE]                         51        64
+    [,]                                     64        65
+    [DESC]                                  66        70
+    [,]                                     70        71
+    [N]                                     72        73
+    [)]                                     73        74
 L141
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['show']                                69        75
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['SHOW']                                69        75
+    [)]                                     75        76
     [then]                                  77        81
-L142
-    [!                                 [    1         82
 L143
     [call]                                  40        44
-    [show]                                  45        49
-    [mots_commande]                         50        63
-    [n]                                     65        66
+    [SHOW]                                  45        49
+    [(]                                     49        50
+    [MOTS_COMMANDE]                         50        63
+    [,]                                     63        64
+    [N]                                     65        66
+    [)]                                     66        67
 L144
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['remove']                              69        77
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['REMOVE']                              69        77
+    [)]                                     77        78
     [then]                                  79        83
-L145
-    [!                                 [    1         84
 L146
     [call]                                  40        44
-    [remove]                                45        51
-    [mots_commande]                         52        65
-    [desc]                                  67        71
-    [n]                                     73        74
+    [REMOVE]                                45        51
+    [(]                                     51        52
+    [MOTS_COMMANDE]                         52        65
+    [,]                                     65        66
+    [DESC]                                  67        71
+    [,]                                     71        72
+    [N]                                     73        74
+    [)]                                     74        75
 L147
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['clear']                               69        76
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['CLEAR']                               69        76
+    [)]                                     76        77
     [then]                                  78        82
-L148
-    [!                                 [    1         83
 L149
     [call]                                  40        44
-    [clear]                                 45        50
-    [mots_commande]                         51        64
-    [n]                                     66        67
+    [CLEAR]                                 45        50
+    [(]                                     50        51
+    [MOTS_COMMANDE]                         51        64
+    [,]                                     64        65
+    [N]                                     66        67
+    [)]                                     67        68
 L150
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['cancel']                              69        77
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['CANCEL']                              69        77
+    [)]                                     77        78
     [then]                                  79        83
-L151
-    [!                                 [    1         84
 L152
     [call]                                  40        44
-    [cancel]                                45        51
-    [mots_commande]                         52        65
-    [n]                                     67        68
+    [CANCEL]                                45        51
+    [(]                                     51        52
+    [MOTS_COMMANDE]                         52        65
+    [,]                                     65        66
+    [N]                                     67        68
+    [)]                                     68        69
 L153
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['done']                                69        75
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['DONE']                                69        75
+    [)]                                     75        76
     [then]                                  77        81
-L154
-    [!                                 [    1         82
 L155
     [call]                                  40        44
-    [done]                                  45        49
-    [mots_commande]                         50        63
-    [n]                                     65        66
+    [DONE]                                  45        49
+    [(]                                     49        50
+    [MOTS_COMMANDE]                         50        63
+    [,]                                     63        64
+    [N]                                     65        66
+    [)]                                     66        67
 L156
     [else]                                  32        36
-    [mots_commande]                         41        54
-    [action]                                56        62
-    [.eq.]                                  64        68
-    ['todo']                                69        75
+    [if]                                    37        39
+    [(]                                     40        41
+    [MOTS_COMMANDE]                         41        54
+    [(]                                     55        56
+    [ACTION]                                56        62
+    [)]                                     62        63
+    [.]                                     64        65
+    [eq]                                    65        67
+    [.]                                     67        68
+    ['TODO']                                69        75
+    [)]                                     75        76
     [then]                                  77        81
-L157
-    [!                                 [    1         82
 L158
     [call]                                  40        44
-    [todo]                                  45        49
-    [mots_commande]                         50        63
-    [n]                                     65        66
+    [TODO]                                  45        49
+    [(]                                     49        50
+    [MOTS_COMMANDE]                         50        63
+    [,]                                     63        64
+    [N]                                     65        66
+    [)]                                     66        67
 L159
     [else]                                  32        36
 L160
     [write]                                 40        45
+    [(]                                     45        46
     [*]                                     46        47
+    [,]                                     47        48
     [*]                                     48        49
+    [)]                                     49        50
     [' ']                                   51        54
 L161
     [write]                                 40        45
+    [(]                                     45        46
     [*]                                     46        47
+    [,]                                     47        48
     [*]                                     48        49
-    ['l']                                   51        54
+    [)]                                     49        50
+    ['L']                                   51        54
     ['action suivante n']                   54        73
     ['a pas ete']                           73        84
+    [,]                                     84        85
 L162
     [1]                                     8         9
     [' comprise: ']                         10        23
-    [mots_commande]                         25        38
-    [action]                                40        46
+    [,]                                     23        24
+    [MOTS_COMMANDE]                         25        38
+    [(]                                     39        40
+    [ACTION]                                40        46
+    [)]                                     46        47
+L163
+    [end]                                   32        35
+    [if]                                    36        38
+L164
+    [end]                                   24        27
+    [if]                                    28        30
+L165
+    [end]                                   16        19
+    [if]                                    20        22
+L166
+    [end]                                   8         11
+    [do]                                    12        14
+L167
+    [end]                                   8         11
 EOF

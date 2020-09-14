@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
@@ -33,7 +32,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((PLSQLNode) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
     /**
@@ -100,6 +99,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      */
     public Object visit(ExecutableCode node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ExecutableCode)");
-        return visitPLSQLNode(node, data);
+        return visitPlsqlNode(node, data);
     }
 }

@@ -159,7 +159,7 @@ public class Report {
      */
     public void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
-            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+            int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
             violations.add(index < 0 ? -index - 1 : index, violation);
         }
     }
@@ -221,7 +221,7 @@ public class Report {
      * Returns an unmodifiable list of violations that have been
      * recorded until now. None of those violations were suppressed.
      *
-     * <p>The violations list is sorted with {@link RuleViolationComparator#INSTANCE}.
+     * <p>The violations list is sorted with {@link RuleViolation#DEFAULT_COMPARATOR}.
      */
     public final List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);

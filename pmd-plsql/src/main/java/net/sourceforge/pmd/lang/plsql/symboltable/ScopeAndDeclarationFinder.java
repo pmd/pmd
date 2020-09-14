@@ -364,7 +364,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     // }
 
     private void cont(PLSQLNode node) {
-        super.visitPLSQLNode(node, null);
+        super.visitPlsqlNode(node, null);
         scopes.pop();
     }
 }

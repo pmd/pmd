@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class VfParserVisitorAdapter implements VfParserVisitor {
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
+@Deprecated
+@DeprecatedUntil700
+public class VfParserVisitorAdapter extends VfVisitorBase<Object, Object> implements VfParserVisitor {
 
 }

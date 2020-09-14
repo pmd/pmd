@@ -173,6 +173,16 @@ public class ParserCornersTest {
     }
 
     @Test
+    public void testGitHubBug2767() {
+        // PMD fails to parse an initializer block.
+        // PMD 6.26.0 parses this code just fine.
+        java.withDefaultVersion("15-preview")
+            .parse("class Foo {\n"
+                       + "    {final int I;}\n"
+                       + "}\n");
+    }
+
+    @Test
     public void testBug206() {
         java8.parse("public @interface Foo {" + "\n"
                         + "static final ThreadLocal<Interner<Integer>> interner =" + "\n"

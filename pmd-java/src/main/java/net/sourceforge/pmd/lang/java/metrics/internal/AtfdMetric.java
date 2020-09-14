@@ -35,7 +35,7 @@ public final class AtfdMetric {
 
         @Override
         public double computeFor(MethodLikeNode node, MetricOptions options) {
-            return ((MutableInt) node.jjtAccept(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
+            return ((MutableInt) node.acceptVisitor(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
         }
 
     }

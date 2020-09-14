@@ -7,6 +7,8 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Comparator;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -45,7 +47,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 11, 3);
         RuleViolation r1 = new ParametricRuleViolation<Node>(rule, "filename1", s, "description");
@@ -59,7 +61,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
         DummyNode s1 = new DummyNode();
@@ -74,7 +76,7 @@ public class RuleViolationTest {
     @Test
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleViolationComparator comp = RuleViolationComparator.INSTANCE;
+        Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
         DummyNode s1 = new DummyNode();
