@@ -35,8 +35,9 @@ public class RuleContextTest {
     public static Report getReportForRuleApply(Rule rule, Node node) throws Exception {
         return getReport(rule, (r, ctx) -> r.apply(node, ctx));
     }
+
     public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) throws Exception {
-        return getReport(listener-> new RuleSets(ruleset).apply(node, listener));
+        return getReport(listener -> new RuleSets(ruleset).apply(node, listener));
     }
 
     @Test

@@ -294,32 +294,32 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * @see RuleContext#addViolation(Rule, Node, Object...)
      */
     public void addViolation(Object data, Node node) {
-        ((RuleContext) data).addViolation(this, node);
+        ((RuleContext) data).addViolation(node);
     }
 
     /**
      * @see RuleContext#addViolation(Rule, Node, Object...)
      */
     public void addViolation(Object data, Node node, Object... args) {
-        ((RuleContext) data).addViolation(this, node, args);
+        ((RuleContext) data).addViolation(node, args);
     }
 
     /**
      * @see RuleContext#addViolationWithMessage(Rule, Node, String, Object...)
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
-        ((RuleContext) data).addViolationWithMessage(this, node, message);
+        ((RuleContext) data).addViolationWithMessage(node, message);
     }
 
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
-        ((RuleContext) data).addViolationWithPosition(this, node, beginLine, endLine, message);
+        ((RuleContext) data).addViolationWithPosition(node, beginLine, endLine, message);
     }
 
     /**
      * @see RuleContext#addViolationWithMessage(Rule, Node, String, Object...)
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
-        ((RuleContext) data).addViolationWithMessage(this, node, message, args);
+        ((RuleContext) data).addViolationWithMessage(node, message, args);
     }
 
     /**

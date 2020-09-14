@@ -95,7 +95,12 @@ public class AbstractRuleTest {
 
     @Test
     public void testRuleWithVariableInMessage() throws Exception {
-        MyRule r = new MyRule();
+        MyRule r = new MyRule() {
+            @Override
+            public void apply(Node target, RuleContext ctx) {
+                ctx.addViolation(target);
+            }
+        };
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
@@ -103,7 +108,7 @@ public class AbstractRuleTest {
         s.setCoords(5, 1, 6, 1);
         s.setImage("TestImage");
 
-        RuleViolation rv = RuleContextTest.getReport(ctx -> r.addViolation(ctx, s)).getViolations().get(0);
+        RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 
