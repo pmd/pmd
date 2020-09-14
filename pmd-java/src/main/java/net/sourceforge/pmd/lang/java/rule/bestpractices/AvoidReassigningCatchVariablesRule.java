@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -16,12 +16,12 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
 
     public AvoidReassigningCatchVariablesRule() {
-        addRuleChainVisit(ASTCatchStatement.class);
+        addRuleChainVisit(ASTCatchClause.class);
     }
 
     @Override
-    public Object visit(ASTCatchStatement catchStatement, Object data) {
-        ASTVariableDeclaratorId caughtExceptionId = catchStatement.getExceptionId();
+    public Object visit(ASTCatchClause catchStatement, Object data) {
+        ASTVariableDeclaratorId caughtExceptionId = catchStatement.getParameter().getVarId();
         String caughtExceptionVar = caughtExceptionId.getName();
         for (NameOccurrence usage : caughtExceptionId.getUsages()) {
             JavaNode operation = getOperationOfUsage(usage);

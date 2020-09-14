@@ -27,8 +27,8 @@ public class SuppressWarningsTest {
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
-            for (ASTClassOrInterfaceDeclaration c : cu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class)) {
-                if (c.getImage().equalsIgnoreCase("bar")) {
+            for (ASTClassOrInterfaceDeclaration c : cu.descendants(ASTClassOrInterfaceDeclaration.class)) {
+                if ("bar".equalsIgnoreCase(c.getSimpleName())) {
                     addViolation(ctx, cu);
                 }
             }

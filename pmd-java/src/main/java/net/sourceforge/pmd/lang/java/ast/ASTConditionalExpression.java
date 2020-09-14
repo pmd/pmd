@@ -4,72 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
- * Represents a conditional expression, aka ternary expression. This operation has
- * a greater precedence as {@linkplain ASTExpression assignment expressions},
- * and lower as {@link ASTConditionalOrExpression}.
+ * Represents a conditional expression, aka ternary expression.
  *
- * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
- * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
+ * <pre class="grammar">
  *
- * <pre>
- *
- * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
+ * ConditionalExpression ::= {@linkplain ASTExpression Expression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTExpression Expression}
  *
  * </pre>
  */
-public class ASTConditionalExpression extends AbstractJavaTypeNode {
+public final class ASTConditionalExpression extends AbstractJavaExpr {
 
 
-    @InternalApi
-    @Deprecated
-    public ASTConditionalExpression(int id) {
+    ASTConditionalExpression(int id) {
         super(id);
     }
 
 
     /**
-     * @deprecated To be removed in 7.0.0
-     */
-    @InternalApi
-    @Deprecated
-    public void setTernary() {
-        // noop
-    }
-
-
-    /**
-     * This method always returns true.
-     *
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public boolean isTernary() {
-        return true;
-    }
-
-
-    /**
-     * Returns the node that represents the guard of this conditional.
-     * That is the expression before the '?'.
-     *
-     * @deprecated Use {@link #getCondition()}
-     */
-    @Deprecated
-    public Node getGuardExpressionNode() {
-        return getChild(0);
-    }
-
-    /**
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
      */
-    public JavaNode getCondition() {
-        return getChild(0);
+    public ASTExpression getCondition() {
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -77,7 +34,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to true.
      */
-    public ASTExpression getTrueAlternative() {
+    public ASTExpression getThenBranch() {
         return (ASTExpression) getChild(1);
     }
 
@@ -86,8 +43,8 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to false.
      */
-    public Node getFalseAlternative() {
-        return getChild(2);
+    public ASTExpression getElseBranch() {
+        return (ASTExpression) getChild(2);
     }
 
 

@@ -191,6 +191,7 @@ public interface Node {
         return children(childType).first();
     }
 
+
     /**
      * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
      * boundaries.
@@ -476,7 +477,6 @@ public interface Node {
     default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
         return StreamImpl.ancestors(this, rClass);
     }
-
 
     /**
      * Returns the root of the tree this node is declared in.

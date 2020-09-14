@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
@@ -24,14 +23,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -52,10 +51,6 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
-
-        if (node.isForeach()) {
-            return data;
-        }
 
         final ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
         final ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
@@ -135,14 +130,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .children(ASTStatementExpressionList.class)
                          .filter(it -> it.getNumChildren() == 1)
                          .children(ASTStatementExpression.class)
-                         .children()
-                         .filter(
-                             it -> it instanceof ASTPostfixExpression && it.hasImageEqualTo("++")
-                                 || it instanceof ASTPreIncrementExpression
-                         )
-                         .children(ASTPrimaryExpression.class)
-                         .children(ASTPrimaryPrefix.class)
-                         .children(ASTName.class)
+                         .children(ASTUnaryExpression.class)
+                         .filter(it -> it.getOperator().isIncrement())
+                         .map(ASTUnaryExpression::getOperand)
+                         .filterIs(ASTVariableAccess.class)
                          .firstOpt()
                          .map(Node::getImage);
     }
@@ -184,6 +175,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
      *
      * @return The name, or null if it couldn't be found or the guard condition is not safe to refactor (then abort)
      */
+    @SuppressWarnings("unchecked")
     private Optional<String> findIterableName(ASTExpression guardCondition, String itName) {
 
 
@@ -210,17 +202,18 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                     guardCondition.children(ASTRelationalExpression.class),
                     rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
                     rel -> NodeStream.of(rel)
-                                     .filterMatching(Node::getImage, "<=")
-                                     .children(ASTAdditiveExpression.class)
-                                     .filter(expr ->
-                                                 expr.getNumChildren() == 2
-                                                     && "-".equals(expr.getOperator())
-                                                     && expr.children(ASTPrimaryExpression.class)
-                                                            .children(ASTPrimaryPrefix.class)
-                                                            .children(ASTLiteral.class)
-                                                            .filterMatching(Node::getImage, "1")
-                                                            .nonEmpty()
-                                     )
+                    // TODO fix
+                    // .filterMatching(Node::getImage, "<=")
+                    // .children(ASTAdditiveExpression.class)
+                    // .filter(expr ->
+                    //             expr.getNumChildren() == 2
+                    //                 && "-".equals(expr.getOperator())
+                    //                 && expr.children(ASTPrimaryExpression.class)
+                    //                        .children(ASTPrimaryPrefix.class)
+                    //                        .children(ASTLiteral.class)
+                    //                        .filterMatching(Node::getImage, "1")
+                    //                        .nonEmpty()
+                    // )
                     )
                     .children(ASTPrimaryExpression.class)
                     .children(ASTPrimaryPrefix.class)

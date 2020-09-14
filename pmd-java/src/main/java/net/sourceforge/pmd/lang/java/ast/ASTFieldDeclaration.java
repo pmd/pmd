@@ -4,47 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
  * Represents a field declaration in the body of a type declaration.
  *
- * <p>This statement may define several variables, possibly of different types (see {@link
- * ASTVariableDeclaratorId#getType()}).
- * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ * <p>This declaration may define several variables, possibly of different
+ * types (see {@link ASTVariableDeclaratorId#getType()}). The nodes
+ * corresponding to the declared variables are accessible through {@link #iterator()}.
  *
- * <p>{@link AccessNode} methods take into account the syntactic context of the
- * declaration, e.g. {@link #isPublic()} will always return true if the field is
- * declared inside an interface, regardless of whether the {@code public} modifier
- * was specified or not. If you want to know whether the modifier was explicitly
- * stated, use e.g {@link #isSyntacticallyPublic()}.
+ * <pre class="grammar">
  *
- * <pre>
- *
- * FieldDeclaration ::= Modifiers {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
- *
- * Modifiers        ::= "public" | "static" | "protected" | "private"
- *                    | "final"  | "abstract" | "synchronized"
- *                    | "native" | "transient" | "volatile" | "strictfp"
- *                    | "default"  | {@linkplain ASTAnnotation Annotation}
+ * FieldDeclaration ::= {@link ASTModifierList ModifierList} {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )* ";"
  *
  * </pre>
  */
-public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
+public final class ASTFieldDeclaration extends AbstractJavaNode
+    implements SignedNode<ASTFieldDeclaration>,
+               Iterable<ASTVariableDeclaratorId>,
+               LeftRecursiveNode,
+               AccessNode,
+               ASTBodyDeclaration,
+               InternalInterfaces.MultiVariableIdOwner {
 
     private JavaFieldSignature signature;
 
-
-    @InternalApi
-    @Deprecated
-    public ASTFieldDeclaration(int id) {
+    ASTFieldDeclaration(int id) {
         super(id);
     }
 
@@ -52,115 +40,6 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    public boolean isSyntacticallyPublic() {
-        return super.isPublic();
-    }
-
-    @Override
-    public boolean isPublic() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isPublic();
-    }
-
-    public boolean isSyntacticallyStatic() {
-        return super.isStatic();
-    }
-
-    @Override
-    public boolean isStatic() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isStatic();
-    }
-
-    public boolean isSyntacticallyFinal() {
-        return super.isFinal();
-    }
-
-    @Override
-    public boolean isFinal() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isFinal();
-    }
-
-    @Override
-    public boolean isPrivate() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isPrivate();
-    }
-
-    @Override
-    public boolean isPackagePrivate() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isPackagePrivate();
-    }
-
-    @Override
-    public boolean isProtected() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isProtected();
-    }
-
-    public boolean isAnnotationMember() {
-        return getNthParent(2) instanceof ASTAnnotationTypeBody;
-    }
-
-    public boolean isInterfaceMember() {
-        if (getNthParent(2) instanceof ASTEnumBody) {
-            return false;
-        }
-        ASTClassOrInterfaceBody classOrInterfaceBody = getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        if (classOrInterfaceBody == null || classOrInterfaceBody.isAnonymousInnerClass()) {
-            return false;
-        }
-        if (classOrInterfaceBody.getParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.getParent();
-            return n.isInterface();
-        }
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return checkType() + checkDecl() > 0;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        if (!isArray()) {
-            return 0;
-        }
-        return checkType() + checkDecl();
-    }
-
-    private int checkType() {
-        if (getNumChildren() == 0 || !(getChild(0) instanceof ASTType)) {
-            return 0;
-        }
-        return ((ASTType) getChild(0)).getArrayDepth();
-    }
-
-    private int checkDecl() {
-        if (getNumChildren() < 2 || !(getChild(1) instanceof ASTVariableDeclarator)) {
-            return 0;
-        }
-        return ((ASTVariableDeclaratorId) getChild(1).getChild(0)).getArrayDepth();
     }
 
     /**
@@ -193,35 +72,14 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return signature;
     }
 
-
     /**
-     * Returns an iterator over the ids of the fields
-     * declared in this statement.
+     * Returns the type node at the beginning of this field declaration.
+     * The type of this node is not necessarily the type of the variables,
+     * see {@link ASTVariableDeclaratorId#getType()}.
      */
     @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTVariableDeclarator.iterateIds(this);
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public Class<?> getType() {
-        return super.getType();
-    }
-
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public JavaTypeDefinition getTypeDefinition() {
-        return super.getTypeDefinition();
-    }
 }

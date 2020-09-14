@@ -38,7 +38,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeTestUtil.isA(String.class, node) || node.isArray()
+        if (!TypeTestUtil.isA(String.class, node) || node.hasArrayType()
                 || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }

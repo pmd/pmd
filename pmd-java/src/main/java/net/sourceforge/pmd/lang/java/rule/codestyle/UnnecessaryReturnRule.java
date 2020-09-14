@@ -16,7 +16,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if (node.getResultType().isVoid()) {
+        if (node.isVoid()) {
             super.visit(node, data);
         }
         return data;

@@ -13,7 +13,7 @@ public class EncodingTest extends BaseParserTest {
     @Test
     public void testDecodingOfUTF8() {
         ASTCompilationUnit acu = java.parse(TEST_UTF8);
-        String methodName = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0).getImage();
+        String methodName = acu.getFirstDescendantOfType(ASTMethodDeclaration.class).getImage();
         assertEquals("é", methodName);
     }
 

@@ -31,7 +31,7 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
 
         @Override
         public Report.SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            if (JavaRuleViolation.isSupressed(node, rv.getRule())) { // todo use AnnotationSuppressionUtil
+            if (AnnotationSuppressionUtil.contextSuppresses(node, rv.getRule())) {
                 return new SuppressedViolation(rv, this, null);
             }
             return null;

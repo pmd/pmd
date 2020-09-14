@@ -53,16 +53,20 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName)
+        val language = LanguageRegistry.getLanguage(langName) ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
         return if (version == null) language.defaultVersion
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-     val defaultVersion: LanguageVersion
+    val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
 
 
     protected abstract fun clone(params: Params): Self
+
+    @JvmOverloads
+    fun withProcessing(boolean: Boolean = true): Self =
+            clone(params.copy(doProcess = boolean))
 
     /**
      * Returns an instance of [Self] for which all parsing methods
@@ -191,7 +195,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         if (clazz.name.contains("$")) {
             sourceFile = sourceFile.substring(0, clazz.name.indexOf('$')) + ".java"
         }
-        val input = javaClass.classLoader.getResourceAsStream(sourceFile)
+        val input = (params.resourceLoader ?: javaClass).classLoader.getResourceAsStream(sourceFile)
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
         return consume(input)

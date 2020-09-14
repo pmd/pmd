@@ -27,6 +27,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public class JavaRuleViolationTest {
 
+    // TODO there are no tests for anon or local classes
+
     /**
      * Verifies that {@link JavaRuleViolation} sets the variable name for an
      * {@link ASTFormalParameter} node.

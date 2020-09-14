@@ -6,29 +6,92 @@ package net.sourceforge.pmd.internal.util;
 
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
+
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
 
     private AssertionUtil() {
         // utility class
     }
 
+
     /** @throws NullPointerException if $name */
     public static void requireContainsNoNullValue(String name, Collection<?> c) {
         for (Object o : c) {
             if (o == null) {
-                throw new IllegalArgumentException(name + " contains null elements");
+                throw new NullPointerException(name + " contains null elements");
             }
         }
     }
 
-    /** @throws NullPointerException if empty */
+    /** @throws IllegalArgumentException if empty */
     public static void requireNotEmpty(String name, Collection<?> c) {
         if (c.isEmpty()) {
             throw new IllegalArgumentException(name + " is empty");
         }
+    }
+
+    public static boolean isValidJavaPackageName(CharSequence name) {
+        requireParamNotNull("name", name);
+        return PACKAGE_PATTERN.matcher(name).matches();
+    }
+
+    public static boolean isJavaBinaryName(CharSequence name) {
+        return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
+    }
+
+    private static boolean isValidRange(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
+        return startInclusive <= endExclusive && minIndex <= startInclusive && endExclusive <= maxIndex;
+    }
+
+    private static String invalidRangeMessage(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
+        return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
+    }
+
+    /**
+     * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
+     *                                  not a valid substring range for the given string
+     */
+    public static void validateStringRange(CharSequence string, int startInclusive, int endExclusive) {
+        if (!isValidRange(startInclusive, endExclusive, 0, string.length())) {
+            throw new IllegalArgumentException(invalidRangeMessage(startInclusive, endExclusive, 0, string.length()));
+        }
+    }
+
+    /**
+     * Like {@link #validateStringRange(CharSequence, int, int)} but eliminated
+     * at runtime if running without assertions.
+     */
+    public static void assertValidStringRange(CharSequence string, int startInclusive, int endExclusive) {
+        assert isValidRange(startInclusive, endExclusive, 0, string.length())
+            : invalidRangeMessage(startInclusive, endExclusive, 0, string.length());
+    }
+
+    /**
+     * Returns true if the charsequence is a valid java identifier.
+     *
+     * @param name Name (non-null)
+     *
+     * @throws NullPointerException If the name is null
+     */
+    public static boolean isJavaIdentifier(CharSequence name) {
+        int len = name.length();
+        if (len == 0 || !Character.isJavaIdentifierStart(name.charAt(0))) {
+            return false;
+        }
+
+        for (int i = 1; i < len; i++) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static int requireOver1(String name, final int value) {
@@ -57,4 +120,12 @@ public final class AssertionUtil {
 
         return obj;
     }
+
+    public static @NonNull AssertionError shouldNotReachHere(String message) {
+        String prefix = "This should be unreachable";
+        message = StringUtils.isBlank(message) ? prefix
+                                               : prefix + ": " + message;
+        return new AssertionError(message);
+    }
+
 }

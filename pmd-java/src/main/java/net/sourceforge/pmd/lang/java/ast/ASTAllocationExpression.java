@@ -4,24 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+/**
+ * @deprecated Replaced with {@link ASTArrayAllocation} and {@link ASTConstructorCall}
+ */
+@Deprecated
+public class ASTAllocationExpression extends AbstractJavaTypeNode {
 
-
-public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
-
-    private JavaTypeQualifiedName qualifiedName;
-
-    @InternalApi
-    @Deprecated
-    public ASTAllocationExpression(int id) {
+    ASTAllocationExpression(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 
@@ -39,22 +35,5 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         return false;
     }
 
-    /**
-     * Gets the qualified name of the anonymous class
-     * declared by this node, or null if this node
-     * doesn't declare any.
-     *
-     * @see #isAnonymousClass()
-     */
-    @Override
-    public JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setQualifiedName(JavaTypeQualifiedName qname) {
-        this.qualifiedName = qname;
-    }
 
 }

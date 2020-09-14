@@ -4,18 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTNullLiteral extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTNullLiteral(int id) {
+/**
+ * The null literal.
+ *
+ * <pre class="grammar">
+ *
+ * NullLiteral ::= "null"
+ *
+ * </pre>
+ */
+public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral {
+    ASTNullLiteral(int id) {
         super(id);
     }
+
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public boolean isCompileTimeConstant() {
+        return false;
     }
 }

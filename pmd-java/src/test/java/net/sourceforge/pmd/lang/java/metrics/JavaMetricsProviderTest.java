@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 /**
  * @author Clément Fournier
  */
+@Ignore("metrics are like rules, they've not been ported to the new grammar yet")
 public class JavaMetricsProviderTest {
 
     private final JavaParsingHelper java8 = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("1.8");

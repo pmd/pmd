@@ -5,15 +5,12 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import net.sourceforge.pmd.Report
 import net.sourceforge.pmd.RuleViolation
-import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
-import kotlin.streams.toList
 import kotlin.test.assertEquals
 
 /**
@@ -68,16 +65,19 @@ infix fun <N, V : N> KCallable<N>.shouldBe(expected: V?) = this.shouldEqual(expe
 infix fun <T> KCallable<T>.shouldMatch(expected: T.() -> Unit) = assertWrapper(this, expected) { n, v -> n should v }
 
 
-inline  fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
+inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
     if (this is T) {
         f(this)
         return this
     } else throw AssertionError("Expected an instance of ${T::class.java}, got $this")
 }
 
-fun Stream<*>.shouldHaveSize(i: Int) {
-    toList() should haveSize(i)
-}
+operator fun <T> List<T>.component6() = get(5)
+operator fun <T> List<T>.component7() = get(6)
+operator fun <T> List<T>.component8() = get(7)
+operator fun <T> List<T>.component9() = get(8)
+operator fun <T> List<T>.component10() = get(9)
+operator fun <T> List<T>.component11() = get(10)
 
 
 /** Assert number of violations. */

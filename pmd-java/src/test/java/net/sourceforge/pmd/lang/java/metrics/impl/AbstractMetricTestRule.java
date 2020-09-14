@@ -11,7 +11,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
@@ -162,7 +163,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
                 valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
+                addViolation(data, node, new String[] {node.getBinaryName(), valueReport, });
             }
         }
         return super.visit(node, data);
@@ -170,11 +171,11 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public Object visit(MethodLikeNode node, Object data) {
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
             double methodValue = MetricsUtil.computeMetric(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(),
+                addViolation(data, node, new String[] {node.getEnclosingType().getBinaryName() + "#" + PrettyPrintingUtil.displaySignature(node),
                                                        "" + niceDoubleString(methodValue), });
             }
         }

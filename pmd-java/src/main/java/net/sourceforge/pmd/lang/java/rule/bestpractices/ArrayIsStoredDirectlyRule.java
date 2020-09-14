@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -167,17 +166,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     }
 
     private ASTFormalParameter[] getArrays(ASTFormalParameters params) {
-        final List<ASTFormalParameter> l = params.findChildrenOfType(ASTFormalParameter.class);
-        if (l != null && !l.isEmpty()) {
-            List<ASTFormalParameter> l2 = new ArrayList<>();
-            for (ASTFormalParameter fp : l) {
-                if (fp.isArray() || fp.isVarargs()) {
-                    l2.add(fp);
-                }
-            }
-            return l2.toArray(new ASTFormalParameter[0]);
-        }
-        return new ASTFormalParameter[0];
+        return params.children(ASTFormalParameter.class)
+                     .filter(it -> it.getTypeNode().isArrayType() || it.isVarargs())
+                     .toList()
+                     .toArray(new ASTFormalParameter[0]);
     }
 
 }

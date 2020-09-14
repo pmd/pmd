@@ -60,8 +60,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName name = node.getFirstChildOfType(ASTName.class);
-        if (!lombokImported && name != null && name.getImage() != null & name.getImage().startsWith(LOMBOK_PACKAGE)) {
+        if (!lombokImported && node.getImage() != null & node.getImage().startsWith(LOMBOK_PACKAGE)) {
             lombokImported = true;
         }
         return super.visit(node, data);
@@ -141,6 +140,6 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
      * @return <code>true</code> if a lombok annotation has been found
      */
     protected boolean hasLombokAnnotation(Annotatable node) {
-        return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
+        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
     }
 }

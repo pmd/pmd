@@ -1550,8 +1550,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement/Statement
- [EmptyStatement or Block[not(*)]]
+//IfStatement[EmptyStatement or Block[not(*)]]
 ]]>
                 </value>
             </property>

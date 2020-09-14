@@ -26,16 +26,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
@@ -125,27 +124,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
      */
     private void checkIncrementAndDecrement(Object data, Set<String> loopVariables, ASTStatement loopBody, IgnoreFlags... ignoreFlags) {
 
-        // foo ++ and foo --
-        for (ASTPostfixExpression expression : loopBody.findDescendantsOfType(ASTPostfixExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // ++ foo
-        for (ASTPreIncrementExpression expression : loopBody.findDescendantsOfType(ASTPreIncrementExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // -- foo
-        for (ASTPreDecrementExpression expression : loopBody.findDescendantsOfType(ASTPreDecrementExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
+        for (ASTUnaryExpression expression : loopBody.findDescendantsOfType(ASTUnaryExpression.class)) {
+            if (expression.getOperator().isPure() || ignoreNode(expression, loopBody, ignoreFlags)) {
                 continue;
             }
 
@@ -294,7 +274,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
     /**
      * Add a violation, if the node image is one of the loop variables.
      */
-    private void checkVariable(Object data, Set<String> loopVariables, Node node) {
+    private void checkVariable(Object data, Set<String> loopVariables, JavaNode node) {
         if (node != null && loopVariables.contains(node.getImage())) {
             addViolation(data, node, node.getImage());
         }

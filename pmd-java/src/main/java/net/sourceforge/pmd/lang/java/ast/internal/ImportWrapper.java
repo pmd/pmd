@@ -51,13 +51,25 @@ public class ImportWrapper {
      * @param node
      */
     private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node) {
-        if (!this.isStaticDemand || node == null || node.getType() == null) {
+        if (!this.isStaticDemand || node == null) {
+            return Collections.emptySet();
+        }
+
+        // This was edited during the grammar updating process, because
+        // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
+        // If tests are failing, refer to the history of this file to get the
+        // previously working version.
+        Class<?> type = null;
+        if (node != null) {
+            type = node.getRoot().getClassTypeResolver().loadClassOrNull(node.getImportedName());
+        }
+
+        if (type == null) {
             return Collections.emptySet();
         }
 
         try {
             Set<String> names = new HashSet<>();
-            Class<?> type = node.getType();
             // consider static fields, public and non-public
             for (Field f : type.getDeclaredFields()) {
                 if (Modifier.isStatic(f.getModifiers())) {

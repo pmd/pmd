@@ -17,7 +17,8 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * <pre class="grammar">
  *
- * RecordDeclaration ::= "record"
+ * RecordDeclaration ::= {@link ASTModifierList ModifierList}
+ *                       "record"
  *                       &lt;IDENTIFIER&gt;
  *                       {@linkplain ASTTypeParameters TypeParameters}?
  *                       {@linkplain ASTRecordComponentList RecordComponents}
@@ -40,13 +41,8 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     }
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.RECORD;
-    }
-
-    @Override
-    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTRecordBody.class).children(ASTAnyTypeBodyDeclaration.class);
+    public NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTRecordBody.class).children(ASTBodyDeclaration.class);
     }
 
     @Override
@@ -55,19 +51,8 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     }
 
     @Override
-    public boolean isFinal() {
-        // A record is implicitly final
-        return true;
-    }
-
-    @Override
-    public boolean isLocal() {
-        return getParent() instanceof ASTBlockStatement;
-    }
-
-
-    @Override
-    public @NonNull ASTRecordComponentList getRecordComponents() {
+    @NonNull
+    public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }

@@ -4,19 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+@Deprecated
+public final class ASTResources extends AbstractJavaNode {
 
-public class ASTResources extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTResources(int id) {
+    ASTResources(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }
