@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * The boolean literal, either "true" or "false".
  */
-public final class ASTBooleanLiteral extends AbstractJavaExpr implements ASTLiteral {
+public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiteral {
 
     private boolean isTrue;
 
@@ -26,7 +28,7 @@ public final class ASTBooleanLiteral extends AbstractJavaExpr implements ASTLite
     }
 
     @Override
-    public Boolean getConstValue() {
+    public @NonNull Boolean getConstValue() {
         return isTrue;
     }
 
