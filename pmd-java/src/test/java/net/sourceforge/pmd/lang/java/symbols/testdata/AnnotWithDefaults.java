@@ -26,6 +26,8 @@ public @interface AnnotWithDefaults {
 
     MyEnum enumSimple() default MyEnum.AA;
 
+    Class<?> classAttr() default String.class;
+
     enum MyEnum {
         AA, BB, CC
     }

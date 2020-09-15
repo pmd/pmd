@@ -43,11 +43,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public boolean valueEquals(Object o) {
-        return false; // TODO? look into lang3/AnnotationUtils for a template
-    }
-
-    @Override
     public Set<String> getAttributeNames() {
         return typeStub.getAnnotationAttributeNames();
     }

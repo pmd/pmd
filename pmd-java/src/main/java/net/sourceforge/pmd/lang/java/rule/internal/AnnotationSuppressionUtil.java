@@ -109,7 +109,7 @@ final class AnnotationSuppressionUtil {
     // @formatter:on
     private static boolean annotationSuppresses(ASTAnnotation annotation, Rule rule) {
         if (TypeTestUtil.isA(SuppressWarnings.class, annotation)) {
-            for (ASTMemberValue value : annotation.getValuesForName(ASTMemberValuePair.VALUE_ATTR)) {
+            for (ASTMemberValue value : annotation.getFlatValue(ASTMemberValuePair.VALUE_ATTR)) {
                 Object constVal = value.getConstValue();
                 if (constVal instanceof String) {
                     String stringVal = (String) constVal;

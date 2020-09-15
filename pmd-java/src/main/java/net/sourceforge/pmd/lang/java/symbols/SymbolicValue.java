@@ -7,15 +7,18 @@ package net.sourceforge.pmd.lang.java.symbols;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -29,6 +32,7 @@ import net.sourceforge.pmd.util.OptionalBool;
  * <ul>
  * <li>Primitive or string values: {@link SymValue}
  * <li>Enum constants: {@link SymEnum}
+ * <li>Class instances: {@link SymClass}
  * <li>Other annotations: {@link SymAnnot}
  * <li>Arrays of the above, of dimension 1: {@link SymArray}
  * </ul>
@@ -49,17 +53,11 @@ import net.sourceforge.pmd.util.OptionalBool;
  * {@link AnnotableSymbol}.
  */
 public interface SymbolicValue {
-    // TODO these should probably be bound to a TypeSystem
-    //  (as the impl of SymAnnot is)
 
 
     /**
      * Returns true if this symbolic value represents the same value as
      * the given object. If the parameter is null, returns false.
-     *
-     * <p>Note that this is partially implemented and will always return
-     * false if the tested value is an annotation, or an array of annotation
-     * values.
      */
     boolean valueEquals(Object o);
 
@@ -76,6 +74,7 @@ public interface SymbolicValue {
      * null if the value cannot be an annotation element.
      */
     static @Nullable SymbolicValue of(TypeSystem ts, Object value) {
+        Objects.requireNonNull(ts);
         if (value == null) {
             return null;
         }
@@ -90,6 +89,10 @@ public interface SymbolicValue {
 
         if (value instanceof Annotation) {
             return AnnotWrapperImpl.wrap(ts, (Annotation) value);
+        }
+
+        if (value instanceof Class<?>) {
+            return SymClass.ofBinaryName(ts, ((Class<?>) value).getName());
         }
 
         if (value.getClass().isArray()) {
@@ -118,6 +121,33 @@ public interface SymbolicValue {
 
         Set<String> getAttributeNames();
 
+        @Override
+        default boolean valueEquals(Object o) {
+            if (!(o instanceof Annotation)) {
+                return false;
+            }
+            Annotation annot = (Annotation) o;
+            if (!this.isOfType(annot.annotationType())) {
+                return false;
+            }
+
+            for (String attrName : getAttributeNames()) { // todo this is not symmetric...
+
+                Object attr = null;
+                try {
+                    attr = MethodUtils.invokeExactMethod(annot, attrName);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                }
+                if (attr == null || !AnnotationUtils.isValidAnnotationMemberType(attr.getClass())) {
+                    continue;
+                }
+
+                if (!getAttribute(attrName).valueEquals(attr)) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         /**
          * The retention policy. Note that naturally, members accessed
@@ -224,9 +254,9 @@ public interface SymbolicValue {
         static boolean isOkComponentType(Class<?> compType) {
             return compType.isPrimitive()
                 || compType == String.class
-                || compType.isEnum();
-            // for now we don't support this
-            // || compType.isAnnotation();
+                || compType == Class.class
+                || compType.isEnum()
+                || compType.isAnnotation();
         }
 
         public int length() {
@@ -430,6 +460,46 @@ public interface SymbolicValue {
         @Override
         public String toString() {
             return value.toString();
+        }
+    }
+
+
+    /**
+     * Represents a class constant.
+     */
+    final class SymClass implements SymbolicValue {
+
+        private final String binaryName;
+
+        private SymClass(String binaryName) {
+            this.binaryName = binaryName;
+        }
+
+
+        public static SymClass ofBinaryName(TypeSystem ts, String binaryName) {
+            return new SymClass(binaryName);
+        }
+
+        @Override
+        public boolean valueEquals(Object o) {
+            return o instanceof Class<?> && ((Class<?>) o).getName().equals(binaryName);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SymClass symClass = (SymClass) o;
+            return Objects.equals(binaryName, symClass.binaryName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(binaryName);
         }
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Type;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
@@ -39,7 +40,11 @@ class SymbolicValueBuilder extends AnnotationVisitor {
 
     @Override
     public void visit(String name, Object value) {
-        acceptValue(name, SymbolicValue.of(resolver.getTypeSystem(), value));
+        if (value instanceof Type) {
+            acceptValue(name, SymbolicValue.SymClass.ofBinaryName(resolver.getTypeSystem(), ((Type) value).getClassName()));
+        } else {
+            acceptValue(name, SymbolicValue.of(resolver.getTypeSystem(), value));
+        }
     }
 
     @Override

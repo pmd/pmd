@@ -85,10 +85,16 @@ public class SymbolReflectionTest {
         Assert.assertNull(m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayDefault");
+        Assert.assertNotNull(m.getDefaultAnnotationValue());
         Assert.assertEquals(symValueOf(new String[] {"ddd"}), m.getDefaultAnnotationValue());
 
         m = getMethod(sym, "stringArrayEmptyDefault");
+        Assert.assertNotNull(m.getDefaultAnnotationValue());
         Assert.assertEquals(ofArray(), m.getDefaultAnnotationValue());
+
+        m = getMethod(sym, "classAttr");
+        Assert.assertNotNull(m.getDefaultAnnotationValue());
+        Assert.assertEquals(symValueOf(String.class), m.getDefaultAnnotationValue());
     }
 
 
