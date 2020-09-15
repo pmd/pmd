@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -73,8 +74,6 @@ public interface SymbolicValue {
      * Returns a symbolic value for the given java object
      * Returns an annotation element for the given java value. Returns
      * null if the value cannot be an annotation element.
-     *
-     * <p>Note: annotations are currently unsupported.
      */
     static @Nullable SymbolicValue of(TypeSystem ts, Object value) {
         if (value == null) {
@@ -306,6 +305,18 @@ public interface SymbolicValue {
         private SymEnum(String enumBinaryName, String enumConstName) {
             this.enumBinaryName = Objects.requireNonNull(enumBinaryName);
             this.enumName = Objects.requireNonNull(enumConstName);
+        }
+
+        /**
+         * If this enum constant is declared in the given enum class,
+         * returns its value. Otherwise returns null.
+         *
+         * @param enumClass Class of an enum
+         * @param <E>       Return type
+         */
+        public <E extends Enum<E>> @Nullable E toEnum(Class<E> enumClass) {
+            return enumClass.getName().equals(enumBinaryName) ? EnumUtils.getEnum(enumClass, enumName)
+                                                              : null;
         }
 
         /**

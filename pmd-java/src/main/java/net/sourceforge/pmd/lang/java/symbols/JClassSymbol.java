@@ -5,15 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -211,6 +215,22 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     default Set<String> getAnnotationAttributeNames() {
         return Collections.emptySet();
+    }
+
+    /**
+     * Returns the retention policy of this annotation, if this is an
+     * annotation symbol. Otherwise returns null.
+     */
+    default @Nullable RetentionPolicy getAnnotationRetention() {
+        if (!isAnnotation()) {
+            return null;
+        }
+        return Optional.of(this)
+                       .map(sym -> sym.getDeclaredAnnotation(Retention.class))
+                       .map(annot -> annot.getAttribute("value"))
+                       .filter(value -> value instanceof SymEnum)
+                       .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
+                       .orElse(RetentionPolicy.CLASS);
     }
 
     // todo isSealed + getPermittedSubclasses
