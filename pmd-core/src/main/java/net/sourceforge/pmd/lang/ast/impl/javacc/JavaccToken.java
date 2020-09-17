@@ -50,7 +50,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     public final int kind;
 
-    protected final JavaccTokenDocument document;
+    private final JavaccTokenDocument document;
     private final CharSequence image;
     private final int startInclusive;
     private final int endExclusive;
@@ -116,7 +116,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     /**
      * Returns the document owning this token.
      */
-    public JavaccTokenDocument getDocument() {
+    public final JavaccTokenDocument getDocument() {
         return document;
     }
 
