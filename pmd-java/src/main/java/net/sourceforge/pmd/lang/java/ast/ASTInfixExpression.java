@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike;
 
@@ -68,7 +70,7 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements Binary
 
     /** Returns the operator. */
     @Override
-    public BinaryOp getOperator() {
+    public @NonNull BinaryOp getOperator() {
         return operator;
     }
 
