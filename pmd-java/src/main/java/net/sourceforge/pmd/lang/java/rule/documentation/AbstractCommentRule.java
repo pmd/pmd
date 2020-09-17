@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,11 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.CommentUtil;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavadocElement;
-import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
@@ -40,28 +35,6 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 public abstract class AbstractCommentRule extends AbstractJavaRule {
 
     public static final SimpleDataKey<Comment> COMMENT_KEY = DataMap.simpleDataKey("java.comment");
-
-    /**
-     * Returns a list of indices of javadoc tag occurrences in the comment.
-     *
-     * <p>Note: if the same tag occurs multiple times, only the last occurrence is returned.
-     *
-     * @param comments the complete comment text
-     * @return list of indices.
-     *
-     * @deprecated This method is deprecated and will be removed with PMD 7.0.0.
-     *      It is not very useful, since it doesn't extract the information
-     *      in a useful way. You would still need check, which tags have been found, and with which
-     *      data they might be accompanied.
-     *      A more useful solution will be added around the AST node {@link FormalComment},
-     *      which contains as children {@link JavadocElement} nodes, which in
-     *      turn provide access to the {@link JavadocTag}.
-     */
-    @Deprecated // the method will be removed with PMD 7.0.0
-    protected List<Integer> tagsIndicesIn(String comments) {
-        Map<String, Integer> tags = CommentUtil.javadocTagsIn(comments);
-        return new ArrayList<>(tags.values());
-    }
 
     protected String filteredCommentIn(Comment comment) {
         return comment.getFilteredComment();

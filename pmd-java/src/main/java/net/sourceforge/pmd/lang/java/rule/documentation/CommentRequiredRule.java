@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 
+import java.io.ObjectStreamField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,9 +21,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -106,18 +111,18 @@ public class CommentRequiredRule extends AbstractCommentRule {
         }
     }
 
-    private void checkCommentMeetsRequirement(Object data, JavaNode node,
+    private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
         switch (propertyValues.get(descriptor)) {
         case Ignored:
             break;
         case Required:
-            if (node.comment() == null) {
+            if (node.getJavadocComment() == null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
         case Unwanted:
-            if (node.comment() != null) {
+            if (node.getJavadocComment() != null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
@@ -166,7 +171,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
-    private void checkMethodOrConstructorComment(AccessNode decl, Object data) {
+    private void checkMethodOrConstructorComment(ASTMethodOrConstructorDeclaration decl, Object data) {
         if (decl.isPublic()) {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.isProtected()) {
@@ -196,11 +201,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return false; // FIXME, commented out because of incompatibility, needs typeres
-        //        return "serialVersionUID".equals(field.getVariableName())
-        //               && field.isStatic()
-        //               && field.isFinal()
-        //               && field.getType() == long.class;
+        return field.getVarIds().any(it -> "serialVersionUID".equals(it.getName()))
+            && field.hasModifiers(JModifier.FINAL, JModifier.STATIC)
+            && field.getTypeNode().getTypeMirror().isPrimitive(PrimitiveTypeKind.LONG);
     }
 
     /**
@@ -215,13 +218,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
      */
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return false; // FIXME, commented out because of incompatibility, needs typeres
-        //        return "serialPersistentFields".equals(field.getVariableName())
-        //                && field.isPrivate()
-        //                && field.isStatic()
-        //                && field.isFinal()
-        //                && field.isArray()
-        //                && "ObjectStreamField".equals(field.getFirstToken().getImage()); // .getType() returns null
+        return field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()))
+            && field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
+            && TypeTestUtil.isA(ObjectStreamField.class, field.getTypeNode());
     }
 
     @Override
