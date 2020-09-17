@@ -178,6 +178,11 @@ public class ParserCornersTest {
     }
 
     @Test
+    public void testLambda2783() {
+        java8.parseResource("LambdaBug2783.java");
+    }
+
+    @Test
     public void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
