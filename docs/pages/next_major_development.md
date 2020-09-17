@@ -18,6 +18,8 @@ the logo in anywhere without offense.
 
 The current tasks are listed here: [Integrate new PMD logo #1931](https://github.com/pmd/pmd/issues/1931)
 
+The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
