@@ -81,15 +81,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
 
 
     /**
-     * @deprecated This is used by a few deprecated tests about comments,
-     *     will be removed when they're updated.
-     */
-    @Deprecated
-    public JavaccToken(String image) {
-        this(-1, image, -1, -1, null);
-    }
-
-    /**
      * Builds a new token of the specified kind.
      *
      * @param kind           Kind of token

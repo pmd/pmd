@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -26,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
@@ -36,7 +36,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * @author Brian Remedios
  */
-public class CommentRequiredRule extends AbstractCommentRule {
+public class CommentRequiredRule extends AbstractJavaRule {
     private static final Logger LOG = Logger.getLogger(CommentRequiredRule.class.getName());
 
     // Used to pretty print a message
@@ -227,12 +227,6 @@ public class CommentRequiredRule extends AbstractCommentRule {
     public Object visit(ASTEnumDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR);
         return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
-        assignCommentsToDeclarations(cUnit);
-        return super.visit(cUnit, data);
     }
 
     private boolean allCommentsAreIgnored() {
