@@ -1492,9 +1492,21 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
  * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
 */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
-| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
-| PostfixExpression()
+| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExprNotPmStart()) CastExpression()
+| PostfixExpression() // this may be a parenthesized expr, which is why we have lookaheads
 | SwitchExpression()
+}
+
+
+private void UnaryExprNotPmStart() #void:
+{}
+{
+   //  Condensed FIRST set of UnaryExpressionNotPlusMinus
+   //  Avoid looking ahead for a whole UnaryExpressionNotPlusMinus, but just for a token
+
+   "~" | "!" | "(" | "switch" | "new" | "this" | "super" | Literal() | "@"
+   | <IDENTIFIER>
+   | "void" | PrimitiveType()
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
