@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
+@org.junit.Ignore("Rule has not been updated yet")
 public class UnusedPrivateFieldTest extends PmdRuleTst {
 
     /**

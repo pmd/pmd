@@ -121,7 +121,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/lang/java/rule/*/*.java</exclude>
                         <exclude>**/net/sourceforge/pmd/coverage/PMDCoverageTest.java</exclude>
                     </excludes>
                 </configuration>

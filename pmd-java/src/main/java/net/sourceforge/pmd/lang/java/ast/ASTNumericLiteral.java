@@ -34,9 +34,8 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         return visitor.visit(this, data);
     }
 
-    @NonNull
     @Override
-    public Number getConstValue() {
+    public @NonNull Number getConstValue() {
         // don't use ternaries, the compiler messes up autoboxing.
         if (isIntegral()) {
             if (isIntLiteral()) {

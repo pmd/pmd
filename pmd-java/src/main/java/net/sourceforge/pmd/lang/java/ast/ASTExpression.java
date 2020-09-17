@@ -80,14 +80,7 @@ public interface ASTExpression
         return getParenthesisDepth() > 0;
     }
 
-
-    /**
-     * Returns the constant value of this expression, if this is a constant
-     * expression. Otherwise, or if some references couldn't be resolved,
-     * returns null. Note that the constant value of the {@linkplain ASTNullLiteral null literal}
-     * is also {@code null}.
-     * TODO this is now implemented on all literals, implement that on other expressions
-     */
+    @Override
     default @Nullable Object getConstValue() {
         return null;
     }
