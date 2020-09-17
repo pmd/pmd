@@ -35,6 +35,7 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
     * [#2756](https://github.com/pmd/pmd/issues/2756): \[java] TypeTestUtil fails with NPE for anonymous class
     * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
     * [#2767](https://github.com/pmd/pmd/issues/2767): \[java] IndexOutOfBoundsException when parsing an initializer BlockStatement
+    * [#2783](https://github.com/pmd/pmd/issues/2783): \[java] Error while parsing with lambda of custom interface
 
 
 ### API Changes
