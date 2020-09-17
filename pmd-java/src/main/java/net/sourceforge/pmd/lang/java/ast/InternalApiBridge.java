@@ -185,4 +185,7 @@ public final class InternalApiBridge {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
+    public static void assignComments(ASTCompilationUnit root) {
+        CommentAssignmentPass.assignCommentsToDeclarations(root);
+    }
 }

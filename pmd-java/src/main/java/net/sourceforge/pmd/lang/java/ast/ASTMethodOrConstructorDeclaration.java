@@ -35,7 +35,8 @@ public interface ASTMethodOrConstructorDeclaration
             SignedNode<ASTMethodOrConstructorDeclaration>,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
-            GenericNode<JavaNode> {
+            GenericNode<JavaNode>,
+            JavadocCommentOwner {
 
 
     @Override

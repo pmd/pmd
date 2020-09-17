@@ -46,7 +46,7 @@ public final class DataMap<K> {
      * @return Value associated with the key (nullable)
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(DataKey<? extends K, ? super T> key) {
+    public <T> T get(DataKey<? extends K, ? extends T> key) {
         return map == null ? null : (T) map.get(key);
     }
 

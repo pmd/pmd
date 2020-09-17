@@ -38,6 +38,9 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
         return getImage();
     }
 
+    public final JavaccToken getToken() {
+        return super.getFirstToken();
+    }
 
     /**
      * Filters the comment by removing the leading comment marker (like {@code *}) of each line

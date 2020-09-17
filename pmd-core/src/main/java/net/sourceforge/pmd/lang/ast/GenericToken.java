@@ -122,4 +122,19 @@ public interface GenericToken<T extends GenericToken<T>> {
         return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
 
+
+    /**
+     * Returns an iterable that enumerates all special tokens belonging
+     * to the given token.
+     *
+     * @param from Token from which to start
+     *
+     * @return An iterator
+     *
+     * @throws NullPointerException If the parameter s null
+     */
+    static Iterable<JavaccToken> previousSpecials(JavaccToken from) {
+        return () -> IteratorUtil.generate(from.getPreviousComment(), JavaccToken::getPreviousComment);
+    }
+
 }
