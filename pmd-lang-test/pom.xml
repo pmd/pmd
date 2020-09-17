@@ -13,7 +13,6 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>6.30.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -62,29 +61,8 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <!--
-                              once https://github.com/Kotlin/dokka/issues/294 is fixed, use goal javadocJar instead
-                              and remove the additional jar plugin execution
-                             -->
-                            <goal>dokka</goal>
+                            <goal>javadocJar</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>kotlin-javadoc</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classesDirectory>${project.build.directory}/dokka/pmd-lang-test</classesDirectory>
-                            <classifier>javadoc</classifier>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
