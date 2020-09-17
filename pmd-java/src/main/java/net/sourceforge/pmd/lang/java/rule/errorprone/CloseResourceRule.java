@@ -175,7 +175,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         Map<ASTVariableDeclarator, TypeNode> resVars = new HashMap<>();
         for (ASTVariableDeclarator var : vars) {
             TypeNode varType = getTypeOfVariable(var);
-            if (isResourceTypeOrSubtype(varType)) {
+            if (varType != null && isResourceTypeOrSubtype(varType)) {
                 resVars.put(var, wrappedResourceTypeOrReturn(var, varType));
             }
         }
@@ -189,7 +189,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private TypeNode getDeclaredTypeOfVariable(ASTVariableDeclarator var) {
         ASTLocalVariableDeclaration localVar = (ASTLocalVariableDeclaration) var.getParent();
-        return localVar.getTypeNode();
+        return localVar.getTypeNode(); // note: can be null, if type is inferred (var)
     }
 
     private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclarator var) {
