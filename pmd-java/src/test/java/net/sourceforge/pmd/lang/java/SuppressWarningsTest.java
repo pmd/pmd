@@ -149,15 +149,13 @@ public class SuppressWarningsTest {
 
     @Test
     public void testConstExpr() {
-        testAboutConstExpr(true, 0, " with the annotation, we should get no violation");
-        testAboutConstExpr(false, 1, " without the annotation, we should get a violation");
+        testAboutConstExpr(true, 0); // with the annotation, we should get no violation
+        testAboutConstExpr(false, 1); // without the annotation, we should get a violation
     }
 
-    private void testAboutConstExpr(boolean hasAnnotation, int numExpectedViolations, String message) {
-        Report rpt = new Report();
-        runTestFromString(constExprTest(hasAnnotation), new FooRule(), rpt,
-                          LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(message, numExpectedViolations, rpt.getViolations().size());
+    private void testAboutConstExpr(boolean hasAnnotation, int numExpectedViolations) {
+        Report rpt = java.executeRule(new FooRule(), constExprTest(hasAnnotation));
+        assertSize(rpt, numExpectedViolations);
     }
 
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";

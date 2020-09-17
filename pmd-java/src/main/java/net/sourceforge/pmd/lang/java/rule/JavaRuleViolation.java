@@ -6,9 +6,8 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Iterator;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
