@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
+@org.junit.Ignore("Rule has not been updated yet")
 public class DoNotUseThreadsTest extends PmdRuleTst {
     // no additional unit tests
 }
