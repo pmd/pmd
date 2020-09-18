@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
@@ -17,9 +21,29 @@ final class AstSymFactory {
 
 
     private final TypeSystem ts;
+    private final JavaAstProcessor processor;
 
-    AstSymFactory(TypeSystem ts) {
-        this.ts = ts;
+
+    AstSymFactory(JavaAstProcessor processor) {
+        this.ts = processor.getTypeSystem();
+        this.processor = processor;
+    }
+
+    JClassType recordSuperclass() {
+        return (JClassType) ts.declaration(processor.findSymbolCannotFail("java.lang.Record"));
+    }
+
+    JClassType enumSuperclass(JClassSymbol enumT) {
+        return (JClassType) ts.parameterise(processor.findSymbolCannotFail("java.lang.Enum"),
+                                            listOf(ts.declaration(enumT)));
+    }
+
+    JClassSymbol annotationSym() {
+        return processor.findSymbolCannotFail("java.lang.annotation.Annotation");
+    }
+
+    JClassType annotationType() {
+        return (JClassType) ts.declaration(annotationSym());
     }
 
     public TypeSystem types() {

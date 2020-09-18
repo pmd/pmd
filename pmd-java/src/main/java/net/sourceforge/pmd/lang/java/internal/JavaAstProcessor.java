@@ -94,6 +94,13 @@ public final class JavaAstProcessor {
         }
     }
 
+
+    public JClassSymbol findSymbolCannotFail(String name) {
+        JClassSymbol found = getSymResolver().resolveClassFromCanonicalName(name);
+        return found == null ? makeUnresolvedReference(name, 0)
+                             : found;
+    }
+
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
         return unresolvedTypes.makeUnresolvedReference(canonicalName, typeArity);
     }
