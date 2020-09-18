@@ -127,9 +127,10 @@ public interface GenericToken<T extends GenericToken<T>> {
      * Returns an iterable that enumerates all special tokens belonging
      * to the given token.
      *
-     * @param from Token from which to start
+     * @param from Token from which to start, note that the returned iterable
+     *             does not contain that token
      *
-     * @return An iterator
+     * @return An iterator, possibly empty, not containing the parameter
      *
      * @throws NullPointerException If the parameter s null
      */

@@ -7,18 +7,29 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
-/**
- *
- */
 final class CommentAssignmentPass {
 
-    static final SimpleDataKey<FormalComment> FORMAL_COMMENT_KEY = DataMap.simpleDataKey("java.comment");
+    private static final SimpleDataKey<FormalComment> FORMAL_COMMENT_KEY = DataMap.simpleDataKey("java.comment");
+
+    private CommentAssignmentPass() {
+        // utility class
+    }
+
+    static @Nullable FormalComment getComment(JavadocCommentOwner commentOwner) {
+        return commentOwner.getUserMap().get(CommentAssignmentPass.FORMAL_COMMENT_KEY);
+    }
+
+    private static void setComment(JavadocCommentOwner commentableNode, FormalComment comment) {
+        commentableNode.getUserMap().set(FORMAL_COMMENT_KEY, comment);
+    }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
         final List<Comment> comments = root.getComments();
@@ -38,7 +49,7 @@ final class CommentAssignmentPass {
                     assert idx >= 0 : "Formal comment not found? " + comment;
                     comment = (FormalComment) comments.get(idx);
 
-                    commentableNode.getUserMap().set(FORMAL_COMMENT_KEY, comment);
+                    setComment(commentableNode, comment);
                     continue outer;
                 }
             }
