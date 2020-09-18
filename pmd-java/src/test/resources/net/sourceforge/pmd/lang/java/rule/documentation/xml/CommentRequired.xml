@@ -165,6 +165,7 @@ public class CommentRequired implements Serializable {
         <description>#1684 whitelist serialPersistentFields</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.ObjectStreamField;
 /** The class comment */
 public class CommentRequired implements Serializable {
     /** My list */

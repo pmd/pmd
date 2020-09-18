@@ -220,7 +220,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()))
             && field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
-            && TypeTestUtil.isA(ObjectStreamField.class, field.getTypeNode());
+            && TypeTestUtil.isA(ObjectStreamField[].class, field.getTypeNode());
     }
 
     @Override
