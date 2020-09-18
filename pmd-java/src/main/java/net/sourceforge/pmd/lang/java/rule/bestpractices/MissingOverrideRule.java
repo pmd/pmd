@@ -48,14 +48,30 @@ public class MissingOverrideRule extends AbstractJavaRule {
     }
 
     private void visitTypeDecl(ASTAnyTypeDeclaration node, RuleContext data) {
-        RelevantMethodSet relevantMethods = node.getDeclarations()
-                                                .filterIs(ASTMethodDeclaration.class)
-                                                .collect(RelevantMethodSet.collector(node.getSymbol()));
+        // collect methods that may be violations, ie:
+        // - may override another method (non private, non static)
+        // - not already annotated @Override
+
+        RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getSymbol());
+
+        for (ASTMethodDeclaration methodDecl : node.getDeclarations().filterIs(ASTMethodDeclaration.class)) {
+            relevantMethods.addIfRelevant(methodDecl);
+        }
+
+        if (relevantMethods.tracked.isEmpty()) {
+            return;
+        }
 
         Set<ASTMethodDeclaration> violatingMethods =
+            // stream all methods of supertypes
             SuperTypesEnumerator.ALL_STRICT_SUPERTYPES
                 .stream(node.getTypeMirror())
+                // Filter down to those that may be overridden by one of the possible violations
+                // This considers name, arity, and accessibility
+                //                                      vvvvvvvvvvvvvvvvvvvvvvvvvvv
                 .flatMap(st -> st.streamDeclaredMethods(relevantMethods::isRelevant))
+                // For those methods, a simple override-equivalence check is enough,
+                // because we already know they're accessible
                 .collect(collectOverriddenRelevantMethods(relevantMethods));
 
         for (ASTMethodDeclaration violatingMethod : violatingMethods) {
@@ -72,22 +88,13 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
         // name to arity
         private final Map<String, BitSet> map = new HashMap<>();
+        // note: this is mutated by the other collector
         private final Set<ASTMethodDeclaration> tracked = new LinkedHashSet<>();
 
         private final JClassSymbol site;
 
         private RelevantMethodSet(JClassSymbol site) {
             this.site = site;
-        }
-
-        static Collector<ASTMethodDeclaration, ?, RelevantMethodSet> collector(JClassSymbol site) {
-            return Collector.of(
-                () -> new RelevantMethodSet(site),
-                RelevantMethodSet::addMethod,
-                (map1, map2) -> {
-                    throw new UnsupportedOperationException("Dont use a parallel stream");
-                }
-            );
         }
 
         boolean isRelevant(JMethodSymbol superMethod) {
@@ -98,7 +105,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
             return aritySet != null && aritySet.get(superMethod.getArity());
         }
 
-        void addMethod(ASTMethodDeclaration m) {
+        void addIfRelevant(ASTMethodDeclaration m) {
             if (m.isAnnotationPresent(Override.class)
                 || m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE)) {
                 return;
@@ -112,8 +119,8 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     static Collector<JMethodSig, ?, Set<ASTMethodDeclaration>> collectOverriddenRelevantMethods(RelevantMethodSet relevant) {
         return Collector.of(
-            () -> new SuperMethodSet(relevant),
-            SuperMethodSet::addMethod,
+            () -> new OverridingMethodCollector(relevant),
+            OverridingMethodCollector::addMethod,
             (map1, map2) -> {
                 throw new UnsupportedOperationException("Dont use a parallel stream");
             },
@@ -121,29 +128,29 @@ public class MissingOverrideRule extends AbstractJavaRule {
         );
     }
 
-    private static final class SuperMethodSet {
+    private static final class OverridingMethodCollector {
 
-
-        // set of methods declared with
+        // set of violations
         private final Set<ASTMethodDeclaration> overriding = new LinkedHashSet<>();
         private final RelevantMethodSet relevant;
 
-        private SuperMethodSet(RelevantMethodSet relevant) {
+        private OverridingMethodCollector(RelevantMethodSet relevant) {
             this.relevant = relevant;
         }
 
         void addMethod(JMethodSig superSig) {
-            // we know the sig is relevant
             ASTMethodDeclaration subSig = null;
             for (ASTMethodDeclaration it : relevant.tracked) {
                 if (TypeOps.areOverrideEquivalent(it.getGenericSignature(), superSig)) {
                     subSig = it;
+                    // we assume there is a single relevant method that may match,
+                    // otherwise it would be a compile-time error
                     break;
                 }
             }
             if (subSig != null) {
                 overriding.add(subSig);
-                relevant.tracked.remove(subSig);
+                relevant.tracked.remove(subSig); // speedup the check for later
             }
         }
     }
