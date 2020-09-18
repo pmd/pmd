@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
-
-import org.objectweb.asm.Opcodes;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -65,8 +64,11 @@ public final class TypeTestUtil {
             return true;
         }
 
-        return canBeExtended(clazz) ? isA(clazz.getName(), node)
-                                    : isExactlyA(clazz, node);
+        if (hasNoSubtypes(clazz)) {
+            return isExactlyA(clazz, node);
+        }
+        String canoName = clazz.getCanonicalName();
+        return canoName != null && isA(canoName, node);
     }
 
 
@@ -198,9 +200,12 @@ public final class TypeTestUtil {
         }
     }
 
-    private static boolean canBeExtended(Class<?> clazz) {
+
+    private static boolean hasNoSubtypes(Class<?> clazz) {
         // Neither final nor an annotation. Enums & records have ACC_FINAL
-        return (clazz.getModifiers() & (Opcodes.ACC_ANNOTATION | Opcodes.ACC_FINAL)) == 0;
+        // Note: arrays have ACC_FINAL, but have subtypes by covariance
+        // Note: annotations may be implemented by classes
+        return Modifier.isFinal(clazz.getModifiers()) && !clazz.isArray();
     }
 
     // those fallbacks can be removed with the newer symbol resolution,
