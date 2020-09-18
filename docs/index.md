@@ -92,7 +92,7 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="rule_references"
        datagroups='["userdocs"]'
        description="Pick your language to find out about the rule it supports."
-       image="fa-database"
+       fa-icon="fa-database"
        titlemaker="page.language_name" %}
 
     {% include custom/shuffle_panel.html
@@ -107,7 +107,7 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="userdocs"
        except_tags="extending,tools"
        datagroups='["userdocs"]'
-       image="fa-cog"
+       fa-icon="fa-cog"
        description="Learn how to build effective and versatile rulesets."
     %}
 
@@ -117,7 +117,8 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="devdocs"
        except_tags="extending"
        datagroups='["contributing"]'
-       image="fa-github"
+       fa-style="fab"
+       fa-icon="fa-github"
        description="If you'd like to help us build PMD, these topics may interest you. See you around!"
     %}
 
