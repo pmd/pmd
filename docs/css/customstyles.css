@@ -213,7 +213,7 @@ p.post-meta {font-size: 80%; color: #777;}
     font-size: 12px;
     background-color: white;
     position: absolute;
-    top: 40px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
+    top: 50px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
     left: 20px;
     z-index: -1;
     width:223px;
@@ -230,20 +230,8 @@ ul#results-container a:hover {
     color: black;
 }
 
-
 #search-demo-container a:hover {
     color: black;
-}
-#search-input {
-    padding: .5em;
-    margin-left:20px;
-    width:20em;
-    font-size: 0.8em;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    float: right;
-    margin-top:10px;
 }
 /* end search */
 
@@ -394,6 +382,7 @@ background-color: #347DBE;
 }
 
 ul#mysidebar {
+    display: block;
     border-radius:0px;
 }
 
