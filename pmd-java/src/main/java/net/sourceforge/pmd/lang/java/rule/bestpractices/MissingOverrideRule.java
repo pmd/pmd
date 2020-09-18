@@ -86,7 +86,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
      */
     private static final class RelevantMethodSet {
 
-        // name to arity
+        // name to considered arities
         private final Map<String, BitSet> map = new HashMap<>();
         // note: this is mutated by the other collector
         private final Set<ASTMethodDeclaration> tracked = new LinkedHashSet<>();
@@ -110,6 +110,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 || m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE)) {
                 return;
             }
+            // then add it
             BitSet aritySet = map.computeIfAbsent(m.getName(), n -> new BitSet(m.getArity() + 1));
             aritySet.set(m.getArity());
             tracked.add(m);

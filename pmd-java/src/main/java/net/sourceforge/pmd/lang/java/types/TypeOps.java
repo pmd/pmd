@@ -1209,7 +1209,10 @@ public final class TypeOps {
      * m1 is a subsignature of m2 or m2 is a subsignature of m1. This does
      * not look at the origin of the methods (their declaring class).
      *
-     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2
+     * <p>This is a prerequisite for one method to override the other,
+     * but not the only condition. See {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)}.
+     *
+     * See <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2">JLS§8</a>
      */
     public static boolean areOverrideEquivalent(JMethodSig m1, JMethodSig m2) {
         // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
@@ -1219,31 +1222,9 @@ public final class TypeOps {
             return false; // easy case
         } else if (m1 == m2) {
             return true;
-        }
-        // Two methods can only have the same signature if they have the same type parameters
-        // But a generic method is allowed to override a non-generic one, and vice versa
-        // So we first project both methods into a form that has the same number of type parameters
-        boolean m1Gen = m1.isGeneric();
-        boolean m2Gen = m2.isGeneric();
-        if (m1Gen ^ m2Gen) {
-            if (m1Gen) {
-                m1 = m1.getErasure();
-            } else {
-                m2 = m2.getErasure();
-            }
-        }
-        return haveSameSignature(m1, m2);
-    }
-
-    public static boolean areOverrideEquivalentFast(JMethodSig m1, JMethodSig m2) {
-        // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
-        // methods from overload candidates before overload resolution.
-        // Any optimization makes a big impact.
-        if (m1.getArity() != m2.getArity()) {
-            return false; // easy case
-        } else if (m1 == m2) {
-            return true;
         } else if (!m1.getName().equals(m2.getName())) {
+            // note: most call sites statically know this is true
+            // profile to figure out whether this matters
             return false;
         }
 
@@ -1257,7 +1238,11 @@ public final class TypeOps {
                 return false;
             }
         }
-        return true;
+
+        // a non-generic method may override a generic one
+        return !m1.isGeneric() || !m2.isGeneric()
+            // if both are generic, they must have the same type params
+            || haveSameTypeParams(m1, m2);
     }
 
     /**
