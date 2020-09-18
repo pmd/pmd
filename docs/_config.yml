@@ -46,6 +46,7 @@ exclude:
   - pdfconfigs/
   - pdf/
   - assets/*.zip
+  - assets/README.md
 
 feedback_subject_line: PMD Source Code Analyzer
 

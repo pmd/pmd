@@ -1,9 +1,9 @@
-<script src="../../js/jquery-ui.min.js"></script>
+<script src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
 // Adds a pretty animation to links to shuffle panels
 $(function () {
-    $('a[href^=#shuffle-panel]').click(function () {
+    $("a[href^='#shuffle-panel']").click(function () {
         if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '')
             && location.hostname === this.hostname) {
             var target = $(this.hash);
