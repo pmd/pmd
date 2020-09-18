@@ -881,15 +881,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private <T extends InvocationNode & QualifiableExpression> SpanInfo visitInvocationExpr(T node, SpanInfo state) {
-            // Note that this doesn't really respect the order of evaluation of subexpressions
-            // This can be easily fixed in the 7.0 tree, but this is rare enough to not deserve
-            // the effort on master.
-
-            // For the record this has problems with call chains with side effects, like
-            //  a.foo(a = 2).bar(a = 3);
             state = acceptOpt(node.getQualifier(), state);
             state = acceptOpt(node.getArguments(), state);
-
 
             // todo In 7.0, with the precise type/overload resolution, we
             //  could only target methods that throw checked exceptions

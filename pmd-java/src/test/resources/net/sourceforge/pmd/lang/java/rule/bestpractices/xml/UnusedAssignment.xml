@@ -3184,4 +3184,29 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <!-- This was an unhandled edge case in PMD 6, fixed in PMD 7 -->
+        <description>Call chain with side-effects in try</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    try {
+                        // both method calls may throw, so a = 2 and a = 4 reach after the try,
+                        // but not a = 10
+                        "".substring(a = 2)
+                          .substring(a = 4);
+                    } catch (RuntimeException e) {
+
+                    }
+                    return a;
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
