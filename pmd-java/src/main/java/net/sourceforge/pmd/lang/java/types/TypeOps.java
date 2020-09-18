@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -1323,7 +1324,7 @@ public final class TypeOps {
         JTypeMirror m1Owner = m1.getDeclaringType();
         JClassType m2Owner = (JClassType) m2.getDeclaringType();
 
-        if (isOverridableIn(m2, m2Owner.getSymbol(), m1Owner.getSymbol())) {
+        if (isOverridableIn(m2, m1Owner.getSymbol())) {
             JClassType m2AsM1Supertype = (JClassType) m1Owner.getAsSuper(m2Owner.getSymbol());
             if (m2AsM1Supertype != null) {
                 JMethodSig m2Prime = m2AsM1Supertype.getDeclaredMethod(m2.getSymbol());
@@ -1337,7 +1338,7 @@ public final class TypeOps {
         // todo that is very weird
         if (m1.isAbstract()
             || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
-            || !isOverridableIn(m2, m2Owner.getSymbol(), origin.getSymbol())
+            || !isOverridableIn(m2, origin.getSymbol())
             || !(m1Owner instanceof JClassType)) {
             return false;
         }
@@ -1353,6 +1354,10 @@ public final class TypeOps {
         return false;
     }
 
+    private static boolean isOverridableIn(JMethodSig m, JTypeDeclSymbol origin) {
+        return isOverridableIn(m.getSymbol(), origin);
+    }
+
     /**
      * Returns true if the given method can be overridden in the origin
      * class. This only checks access modifiers and not eg whether the
@@ -1365,10 +1370,13 @@ public final class TypeOps {
      * if the method is static.
      *
      * @param m         Method to test
-     * @param declaring Symbol of the declaring type of m
      * @param origin    Site of the potential override
      */
-    private static boolean isOverridableIn(JMethodSig m, JClassSymbol declaring, JTypeDeclSymbol origin) {
+    public static boolean isOverridableIn(JExecutableSymbol m, JTypeDeclSymbol origin) {
+        if (m instanceof JConstructorSymbol) {
+            return false;
+        }
+
         final int accessFlags = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
         // JLS 8.4.6.1
@@ -1380,7 +1388,7 @@ public final class TypeOps {
         case 0:
             // package private
             return
-                declaring.getPackageName().equals(origin.getPackageName())
+                m.getPackageName().equals(origin.getPackageName())
                     && !origin.isInterface();
         default:
             // private

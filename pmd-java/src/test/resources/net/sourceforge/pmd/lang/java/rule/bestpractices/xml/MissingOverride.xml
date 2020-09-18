@@ -156,7 +156,7 @@ public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
     </test-code>
 
     <test-code>
-        <description>Consider enum methods</description>
+        <description>Consider enum methods 2</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>9,15</expected-linenumbers>
         <code><![CDATA[
@@ -377,8 +377,13 @@ public class CovariantReturnType extends AbstractClass {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation</description>
-        <expected-problems>0</expected-problems>
+        <!-- Note: in a former implementation of the rule, which counted bridge methods, this was an unhandled edge case -->
+        <description>Override of generic method with some other overload</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The method 'compare(StringBuilder, StringBuilder)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -403,8 +408,13 @@ public class AmbiguousOverload implements Comparator<StringBuilder> {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation</description>
-        <expected-problems>0</expected-problems>
+        <!-- Note: in a former implementation of the rule, which counted bridge methods, this was an unhandled edge case -->
+        <description>Hierarchy with several bridges</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>30</expected-linenumbers>
+        <expected-messages>
+            <message>The method 'foo(ASTType)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -552,15 +562,13 @@ public enum EmptyEnum {
     </test-code>
 
     <test-code>
-        <description>EmptyStackException with record top level</description>
-        <expected-problems>0</expected-problems>
+        <description>Record override</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public record Point(int x, int y) {
 
-    public static void main(String[] args) {
-        Point p = new Point(1, 2);
-        System.out.println("p = " + p);
-    }
+    // @Override
+    public String toString() {return null;}
 }
         ]]></code>
         <source-type>java 14-preview</source-type>
