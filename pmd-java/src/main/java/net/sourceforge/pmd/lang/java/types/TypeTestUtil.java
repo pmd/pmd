@@ -41,10 +41,10 @@ public final class TypeTestUtil {
      * if the type of the node is parameterized. Examples:
      *
      * <pre>{@code
-     * isA(<new ArrayList<String>()>, List.class)      = true
-     * isA(<new ArrayList<String>()>, ArrayList.class) = true
-     * isA(<new int[0]>, int[].class)                  = true
-     * isA(<new String[0]>, Object[].class)            = true
+     * isA(List.class, <new ArrayList<String>()>)      = true
+     * isA(ArrayList.class, <new ArrayList<String>()>) = true
+     * isA(int[].class, <new int[0]>)                  = true
+     * isA(Object[].class, <new String[0]>)            = true
      * isA(_, null) = false
      * isA(null, _) = NullPointerException
      * }</pre>
@@ -78,10 +78,10 @@ public final class TypeTestUtil {
      * if the type of the node is parameterized. Examples:
      *
      * <pre>{@code
-     * isA(<new ArrayList<String>()>, "java.util.List")      = true
-     * isA(<new ArrayList<String>()>, "java.util.ArrayList") = true
-     * isA(<new int[0]>, "int[]")                            = true
-     * isA(<new String[0]>, "java.lang.Object[]")            = true
+     * isA("java.util.List", <new ArrayList<String>()>)      = true
+     * isA("java.util.ArrayList", <new ArrayList<String>()>) = true
+     * isA("int[]", <new int[0]>)                            = true
+     * isA("java.lang.Object[]", <new String[0]>)            = true
      * isA(_, null) = false
      * isA(null, _) = NullPointerException
      * }</pre>
@@ -158,10 +158,10 @@ public final class TypeTestUtil {
      * if the type of the node is parameterized.
      *
      * <pre>{@code
-     * isExactlyA(<new ArrayList<String>()>, List.class)      = false
-     * isExactlyA(<new ArrayList<String>()>, ArrayList.class) = true
-     * isExactlyA(<new int[0]>, int[].class)                  = true
-     * isExactlyA(<new String[0]>, Object[].class)            = false
+     * isExactlyA(List.class, <new ArrayList<String>()>)      = false
+     * isExactlyA(ArrayList.class, <new ArrayList<String>()>) = true
+     * isExactlyA(int[].class, <new int[0]>)                  = true
+     * isExactlyA(Object[].class, <new String[0]>)            = false
      * isExactlyA(_, null) = false
      * isExactlyA(null, _) = NullPointerException
      * }</pre>
