@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.lang.reflect.Modifier;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -47,15 +48,26 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
-        AssertionUtil.requireParamNotNull("class", (Object) clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         } else if (node.getType() == clazz) {
             return true;
         }
 
-        return canBeExtended(clazz) ? isA(clazz.getName(), node)
-                                    : isExactlyA(clazz, node);
+        return hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror());
+    }
+
+
+    private static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
+        AssertionUtil.requireParamNotNull("klass", clazz);
+        if (type == null) {
+            return false;
+        }
+
+        JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
+        return type.isSubtypeOf(otherType);
     }
 
 
@@ -137,17 +149,30 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
-        AssertionUtil.requireParamNotNull("class", (Object) clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         }
 
-        JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
-        if (sym == null || sym instanceof JTypeParameterSymbol) {
+        return isExactlyA(clazz, node.getTypeMirror().getSymbol());
+    }
+
+    private static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
+        AssertionUtil.requireParamNotNull("klass", klass);
+        if (!(type instanceof JClassSymbol)) {
+            // Class cannot reference a type parameter
             return false;
         }
 
-        return ((JClassSymbol) sym).getBinaryName().equals(clazz.getName());
+        JClassSymbol symClass = (JClassSymbol) type;
+
+        if (klass.isArray()) {
+            return symClass.isArray() && isExactlyA(klass.getComponentType(), symClass.getArrayComponent());
+        }
+
+        // Note: klass.getName returns a type descriptor for arrays,
+        // which is why we have to destructure the array above
+        return symClass.getBinaryName().equals(klass.getName());
     }
 
 
@@ -191,9 +216,11 @@ public final class TypeTestUtil {
     }
 
 
-    private static boolean canBeExtended(Class<?> clazz) {
+    private static boolean hasNoSubtypes(Class<?> clazz) {
         // Neither final nor an annotation. Enums & records have ACC_FINAL
-        return (clazz.getModifiers() & (Opcodes.ACC_ANNOTATION | Opcodes.ACC_FINAL)) == 0;
+        // Note: arrays have ACC_FINAL, but have subtypes by covariance
+        // Note: annotations may be implemented by classes
+        return Modifier.isFinal(clazz.getModifiers()) && !clazz.isArray();
     }
 
 }

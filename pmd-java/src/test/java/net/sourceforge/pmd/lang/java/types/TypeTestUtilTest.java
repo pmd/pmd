@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
@@ -17,6 +18,7 @@ import org.junit.rules.ExpectedException;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -59,6 +61,22 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         assertIsA(klass, Enum.class);
         assertIsA(klass, Serializable.class);
         assertIsA(klass, Object.class);
+    }
+
+
+    @Test
+    public void testIsAnArrayClass() {
+
+        ASTArrayType arrayT =
+            java.parse("import java.io.ObjectStreamField; "
+                           + "class Foo { private static final ObjectStreamField[] serialPersistentFields; }")
+                .getFirstDescendantOfType(ASTArrayType.class);
+
+
+        assertIsA(arrayT, ObjectStreamField[].class);
+        assertIsA(arrayT, Object[].class);
+        assertIsA(arrayT, Serializable.class);
+        assertIsA(arrayT, Object.class);
     }
 
     @Test
