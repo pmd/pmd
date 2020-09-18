@@ -3209,4 +3209,28 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code regressionTest="true">
+        <!-- TODO for later -->
+        <description>Explicit this ctor call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for field 'field' is never used (overwritten on line 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+
+                private int field = 0;
+
+                Test() {
+                    this(0);
+                }
+
+                Test(int i) {
+                    field = i;
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
