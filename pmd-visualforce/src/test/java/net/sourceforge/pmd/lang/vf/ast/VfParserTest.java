@@ -26,4 +26,9 @@ public class VfParserTest extends AbstractVfNodesTest {
         vf.parse("<span escape='false' attrib=\"{!call}\">${\"yes\"}</span>");
     }
 
+    @Test
+    public void testAttributeNameWithDot() {
+        vf.parse("<table-row keep-together.within-page=\"always\" >");
+    }
+
 }
