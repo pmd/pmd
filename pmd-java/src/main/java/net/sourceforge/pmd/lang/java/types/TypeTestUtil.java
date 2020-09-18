@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Modifier;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
