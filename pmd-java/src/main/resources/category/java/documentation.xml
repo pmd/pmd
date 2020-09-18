@@ -97,10 +97,11 @@ and unintentional empty constructors.
                 <value>
 <![CDATA[
 //ConstructorDeclaration[@Private= false()]
-                        [@containsComment = false()]
-                        [not(BlockStatement)]
-                        [$ignoreExplicitConstructorInvocation = true() or not(ExplicitConstructorInvocation)]
-                        [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
+                        [not(ModifierList/Annotation[pmd-java:typeIs('javax.inject.Inject')])]
+                        /Block[
+                            @containsComment = false()
+                            and (count(*) = 0 or ($ignoreExplicitConstructorInvocation = true() and count(*) = 1 and ExplicitConstructorInvocation))
+                        ]
 ]]>
                 </value>
             </property>
@@ -132,7 +133,7 @@ empty methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = false()]
+//MethodDeclaration/Block[count(*) = 0 and @containsComment = false()]
 ]]>
                 </value>
             </property>
