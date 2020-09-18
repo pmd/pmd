@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
@@ -12,26 +11,41 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
  * than {@link ASTMultiplicativeExpression}.
  *
+ *
+ * <pre class="grammar">
+ *
+ * AdditiveExpression ::= {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
+ *
+ * </pre>
+ *
  * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
  * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
  *
- * <pre>
+ * <p>The first child may be another AdditiveExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 + 2 + 3}</td><td>{@code (1 + 2 + 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 / 3}</td><td>{@code (1 + (2 / 3))}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 / 4}</td><td>{@code ((1 + 2) - 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4}</td><td>{@code ((1 + 2) - 3 - 4)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4 + 5}</td><td>{@code (((1 + 2) - 3 - 4) + 5)}</td></tr>
+ * </table>
  *
- * AdditiveExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
  *
- * </pre>
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTAdditiveExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTAdditiveExpression extends AbstractJavaExpr {
 
-    @InternalApi
-    @Deprecated
-    public ASTAdditiveExpression(int id) {
+    ASTAdditiveExpression(int id) {
         super(id);
     }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
     /**

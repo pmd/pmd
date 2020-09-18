@@ -64,9 +64,9 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
 
         @Override
-        public Object visit(ASTStatement statement, Object data) {
+        public Object visitStatement(ASTStatement statement, Object data) {
             stmts++;
-            return super.visit(statement, data);
+            return super.visitStatement(statement, data);
         }
 
         @Override

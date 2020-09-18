@@ -70,7 +70,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if (node.isAnnotationPresent("java.lang.Override")) {
+        if (node.isAnnotationPresent(Override.class)) {
             return super.visit(node, data);
         }
 

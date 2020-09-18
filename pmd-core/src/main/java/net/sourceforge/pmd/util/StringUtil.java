@@ -145,6 +145,20 @@ public final class StringUtil {
     }
 
     /**
+     * Returns the substring following the last occurrence of the
+     * given character. If the character doesn't occur, returns
+     * the whole string. This contrasts with {@link StringUtils#substringAfterLast(String, String)},
+     * which returns the empty string in that case.
+     *
+     * @param str String to cut
+     * @param c   Delimiter
+     */
+    public static String substringAfterLast(String str, int c) {
+        int i = str.lastIndexOf(c);
+        return i < 0 ? str : str.substring(i + 1);
+    }
+
+    /**
      * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
      *
      * @param val         a double value between 0 and 1

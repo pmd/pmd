@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
@@ -38,29 +38,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         target.acceptVisitor(this, ctx);
     }
 
-    /**
-     * Gets the Image of the first parent node of type
-     * ASTClassOrInterfaceDeclaration or <code>null</code>
-     *
-     * @param node
-     *            the node which will be searched
-     *
-     * @deprecated This method just returns the type name as a string
-     *     which doesn't leverage any type resolution. Use {@link Node#getFirstParentOfType(Class)}
-     *     directly to find the node of type {@link ASTClassOrInterfaceBodyDeclaration} via the
-     *     {@code getType} method.
-     */
-    @Deprecated
-    protected final String getDeclaringType(Node node) {
-        ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (c != null) {
-            return c.getImage();
-        }
-        return null;
-    }
-
-    public static boolean isQualifiedName(Node node) {
-        return node.getImage().indexOf('.') != -1;
+    public static boolean isQualifiedName(@Nullable String node) {
+        return node != null && node.indexOf('.') != -1;
     }
 
     public static boolean importsPackage(ASTCompilationUnit node, String packageName) {

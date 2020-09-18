@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J14__PREVIEW
@@ -26,14 +27,21 @@ class ASTPatternTest : ParserTestSpec({
     parserTest("Test simple patterns", javaVersions = listOf(J14__PREVIEW, J15__PREVIEW)) {
 
         importedTypes += IOException::class.java
+        inContext(ExpressionParsingCtx) {
 
-        "obj instanceof Class c" should matchExpr<ASTInstanceOfExpression> {
-            unspecifiedChild()
-            child<ASTTypeTestPattern> {
-                it::getTypeNode shouldBe child(ignoreChildren = true) {}
-
-                it::getVarId shouldBe child {
-                    it::getVariableName shouldBe "c"
+            "obj instanceof Class c" should parseAs {
+                infixExpr(BinaryOp.INSTANCEOF) {
+                    variableAccess("obj")
+                    child<ASTPatternExpression> {
+                        it::getPattern shouldBe child<ASTTypeTestPattern> {
+                            it::getTypeNode shouldBe classType("Class")
+                            it::getVarId shouldBe variableId("c") {
+                                it::getModifiers shouldBe modifiers {  } // dummy modifier list
+                                it.hasExplicitModifiers(JModifier.FINAL) shouldBe false
+                                it.hasModifiers(JModifier.FINAL) shouldBe true
+                            }
+                        }
+                    }
                 }
             }
         }

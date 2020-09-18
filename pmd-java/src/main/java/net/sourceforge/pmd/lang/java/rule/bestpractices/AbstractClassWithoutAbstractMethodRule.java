@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
@@ -30,12 +28,9 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRule {
         }
 
         int countOfAbstractMethods = 0;
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.getKind() == DeclarationKind.METHOD) {
-                ASTMethodDeclaration methodDecl = (ASTMethodDeclaration) decl.getDeclarationNode();
-                if (methodDecl.isAbstract()) {
-                    countOfAbstractMethods++;
-                }
+        for (ASTMethodDeclaration methodDecl : node.descendants(ASTMethodDeclaration.class)) {
+            if (methodDecl.isAbstract()) {
+                countOfAbstractMethods++;
             }
         }
         if (countOfAbstractMethods == 0) {

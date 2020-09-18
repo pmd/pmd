@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java;
 
 import static org.junit.Assert.assertEquals;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -23,8 +24,8 @@ public class SuppressWarningsTest extends RuleTst {
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
-            for (ASTClassOrInterfaceDeclaration c : cu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class)) {
-                if (c.getImage().equalsIgnoreCase("bar")) {
+            for (ASTClassOrInterfaceDeclaration c : cu.descendants(ASTClassOrInterfaceDeclaration.class)) {
+                if ("bar".equalsIgnoreCase(c.getSimpleName())) {
                     addViolation(ctx, cu);
                 }
             }
@@ -176,6 +177,19 @@ public class SuppressWarningsTest extends RuleTst {
         assertEquals(0, rpt.getViolations().size());
     }
 
+    @Test
+    public void testConstExpr() {
+        testAboutConstExpr(true, 0, " with the annotation, we should get no violation");
+        testAboutConstExpr(false, 1, " without the annotation, we should get a violation");
+    }
+
+    private void testAboutConstExpr(boolean hasAnnotation, int numExpectedViolations, String message) {
+        Report rpt = new Report();
+        runTestFromString(constExprTest(hasAnnotation), new FooRule(), rpt,
+                          LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        assertEquals(message, numExpectedViolations, rpt.getViolations().size());
+    }
+
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";
 
     private static final String TEST2 = "@SuppressWarnings(\"PMD\")\npublic class Foo {\n void bar() {\n  int foo;\n }\n}";
@@ -211,4 +225,15 @@ public class SuppressWarningsTest extends RuleTst {
     private static final String TEST12 = "public class Bar {\n @SuppressWarnings(\"all\") int foo;\n}";
 
     private static final String TEST13 = "@SuppressWarnings(\"PMD.NoBar\")\npublic class Bar {\n}";
+
+    private static @NonNull String constExprTest(boolean withAnnot) {
+        return "public class NewClass {\n"
+            + "    private final static String SUPPRESS_PMD = \"PMD.\";\n"
+            + "\n"
+            + (withAnnot ? "    @SuppressWarnings(SUPPRESS_PMD + \"NoFoo\")\n" : "")
+            + "    public void someMethod1(Object Foo) {\n"
+            + "        System.out.println(\"someMethod1\");\n"
+            + "    }\n"
+            + "}";
+    }
 }

@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -13,39 +15,50 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * @see AbstractJavaNode
  * @see TypeNode
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
+abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
-    private JavaTypeDefinition typeDefinition;
+    private JTypeMirror typeMirror;
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(int i) {
+    AbstractJavaTypeNode(int i) {
         super(i);
     }
 
-    @Override
-    public Class<?> getType() {
-        return typeDefinition == null ? null : typeDefinition.getType();
+    void forceTypeResolution() {
+        getTypeMirror();
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
+    <T> T assertNonNullAfterTypeRes(T value) {
+        assert value != null : "Something went wrong after type resolution of " + this;
+        return value;
     }
 
     @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
+    public @NonNull JTypeMirror getTypeMirror() {
+        if (typeMirror == null) {
+            try {
+                LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
+                typeMirror = this.acceptVisitor(resolver, null);
+                assert typeMirror != null : "LazyTypeResolver returned null";
+            } catch (Exception | AssertionError e) {
+                // this will add every type in the chain
+                throw addContextValue(e, "Resolving type of", this);
+            }
+        }
+        return typeMirror;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
+    private static ContextedRuntimeException addContextValue(Throwable e, String label, Object value) {
+        return e instanceof ContextedRuntimeException ? ((ContextedRuntimeException) e).addContextValue(label, value)
+                                                      : new ContextedRuntimeException(e).addContextValue(label, value);
     }
+
+    JTypeMirror getTypeMirrorInternal() {
+        return typeMirror;
+    }
+
+    void setTypeMirror(JTypeMirror mirror) {
+        typeMirror = mirror;
+    }
+
+
 }

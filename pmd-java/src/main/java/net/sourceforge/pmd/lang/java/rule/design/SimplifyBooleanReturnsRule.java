@@ -9,27 +9,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         // only boolean methods should be inspected
-        ASTResultType r = node.getResultType();
-
-        if (!r.isVoid()) {
-            Node t = r.getChild(0);
-            if (t.getNumChildren() == 1) {
-                t = t.getChild(0);
-                if (t instanceof ASTPrimitiveType && ((ASTPrimitiveType) t).isBoolean()) {
-                    return super.visit(node, data);
-                }
-            }
+        if (node.getResultType().getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
+            return super.visit(node, data);
         }
         // skip method
         return data;

@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -89,7 +89,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         if (calledOnType == null) {
             calledOnType = getTypeOfMethodCall(primarySuffix);
         }
-        return calledOnType != null && TypeHelper.isA(calledOnType, Collection.class);
+        return TypeTestUtil.isA(Collection.class, calledOnType);
     }
 
     private ASTClassOrInterfaceType getTypeOfVariable(ASTPrimarySuffix primarySuffix) {

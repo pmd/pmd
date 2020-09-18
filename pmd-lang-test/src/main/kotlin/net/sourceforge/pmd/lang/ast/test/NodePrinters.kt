@@ -38,19 +38,30 @@ open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
  */
 open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
+    data class AttributeInfo(val name: String, val value: Any?)
+
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
+
+    protected open fun fillAttributes(node: Node, result: MutableList<AttributeInfo>) {
+        node.xPathAttributesIterator
+                .asSequence()
+                .filterNot { ignoreAttribute(node, it) }
+                .map { AttributeInfo(it.name, it.value?.toString()) }
+                .forEach { result += it }
+    }
+
 
     override fun appendNodeInfoLn(out: Appendable, node: Node) {
         out.append(node.xPathNodeName)
 
-        node.xPathAttributesIterator
-            .asSequence()
-            // sort to get deterministic results
-            .sortedBy { it.name }
-            .filterNot { ignoreAttribute(node, it) }
-            .joinTo(buffer = out, prefix = "[", postfix = "]") {
-                "@${it.name} = ${valueToString(it.value)}"
-            }
+        val attrs = mutableListOf<AttributeInfo>().also { fillAttributes(node, it) }
+
+        // sort to get deterministic results
+        attrs.sortBy { it.name }
+
+        attrs.joinTo(buffer = out, prefix = "[", postfix = "]") {
+            "@${it.name} = ${valueToString(it.value)}"
+        }
 
         out.append("\n")
     }

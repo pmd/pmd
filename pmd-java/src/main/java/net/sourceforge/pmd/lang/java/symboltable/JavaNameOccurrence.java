@@ -9,13 +9,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -122,13 +120,20 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
-        if (!(primaryExpression instanceof ASTPostfixExpression)
-                || !(primaryExpression.getParent() instanceof ASTStatementExpression)) {
+        if (!(primaryExpression instanceof ASTUnaryExpression)) {
+            return false;
+        }
+
+        ASTUnaryExpression unaryExpr = (ASTUnaryExpression) primaryExpression;
+
+        if (unaryExpr.getOperator().isPure()
+            || unaryExpr.getOperator().isPrefix()
+            || !(primaryExpression.getParent() instanceof ASTStatementExpression)) {
             return false;
         }
 
         ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.getChild(0))
-                .getChild(0);
+            .getChild(0);
         if (pf.usesThisModifier()) {
             return true;
         }
@@ -154,8 +159,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             Node p = l.getParent();
             Node gp = p.getParent();
             Node node = gp.getParent();
-            if (node instanceof ASTPreDecrementExpression || node instanceof ASTPreIncrementExpression
-                    || node instanceof ASTPostfixExpression) {
+            if (node instanceof ASTUnaryExpression && !((ASTUnaryExpression) node).getOperator().isPure()) {
                 return true;
             }
 
@@ -177,8 +181,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             }
 
             // catch this.i++ or ++this.i
-            return gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression
-                    || gp instanceof ASTPostfixExpression;
+            return node instanceof ASTUnaryExpression && !((ASTUnaryExpression) node).getOperator().isPure();
         }
     }
 

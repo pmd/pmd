@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
+@Ignore
 public class ImageFinderFunctionTest {
 
     @Test

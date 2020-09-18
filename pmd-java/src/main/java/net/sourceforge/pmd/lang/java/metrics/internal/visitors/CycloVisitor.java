@@ -8,15 +8,16 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -63,33 +64,23 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
         return handleSwitch(node, data);
     }
 
-    private Void handleSwitch(JavaNode node, MutableInt data) {
+    private Void handleSwitch(ASTSwitchLike node, MutableInt data) {
         if (considerBooleanPaths) {
             data.add(CycloMetric.booleanExpressionComplexity(node.getChild(0)));
         }
 
-        for (ASTSwitchLabel label : node.findChildrenOfType(ASTSwitchLabel.class)) {
-            if (label.isDefault()) {
+        for (ASTSwitchBranch branch : node) {
+            if (branch.getLabel().isDefault()) {
                 // like for "else", default is not a decision point
                 continue;
             }
 
             if (considerBooleanPaths) {
-                data.add(label.findChildrenOfType(ASTExpression.class).size());
-            } else if (node.getNumChildren() > 1 + label.getIndexInParent()
-                && node.getChild(label.getIndexInParent() + 1) instanceof ASTBlockStatement) {
+                data.add(branch.findChildrenOfType(ASTExpression.class).size());
+            } else if (node.getNumChildren() > 1 + branch.getIndexInParent()
+                && node.getChild(branch.getIndexInParent() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
                 data.increment();
-            }
-        }
-
-        for (ASTSwitchLabeledRule rule : node.findChildrenOfType(ASTSwitchLabeledRule.class)) {
-            ASTSwitchLabel label = rule.getFirstChildOfType(ASTSwitchLabel.class);
-            if (label.isDefault()) {
-                continue;
-            }
-            if (considerBooleanPaths) {
-                data.add(label.findChildrenOfType(ASTExpression.class).size());
             }
         }
 
@@ -132,13 +123,18 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTForStatement node, MutableInt data) {
         data.increment();
 
-        if (considerBooleanPaths && !node.isForeach()) {
+        if (considerBooleanPaths) {
             data.add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
     }
 
+    @Override
+    public Void visit(ASTForeachStatement node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
+    }
 
     @Override
     public Void visit(ASTDoStatement node, MutableInt data) {
@@ -152,7 +148,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
 
     @Override
-    public Void visit(ASTCatchStatement node, MutableInt data) {
+    public Void visit(ASTCatchClause node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }

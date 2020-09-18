@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
+@Deprecated
 public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     private boolean usesThisModifier;
@@ -15,20 +14,9 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public void setUsesThisModifier() {
-        usesThisModifier = true;
-    }
 
     public boolean usesThisModifier() {
         return this.usesThisModifier;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setUsesSuperModifier() {
-        usesSuperModifier = true;
     }
 
     public boolean usesSuperModifier() {
@@ -38,6 +26,6 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

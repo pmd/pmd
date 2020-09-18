@@ -4,15 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+/**
+ * The declaration of an annotation type.
+ *
+ * <p>Note that in contrast to interface types, no {@linkplain ASTExtendsList extends clause}
+ * is permitted, and an annotation type cannot be generic.
+ *
+ * <pre class="grammar">
+ *
+ * AnnotationTypeDeclaration ::= {@link ASTModifierList ModifierList}
+ *                               "@" "interface"
+ *                               &lt;IDENTIFIER&gt;
+ *                               {@link ASTAnnotationTypeBody AnnotationTypeBody}
+ *
+ * </pre>
+ *
+ */
+public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
-public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
-
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationTypeDeclaration(int id) {
+    ASTAnnotationTypeDeclaration(int id) {
         super(id);
     }
 
@@ -24,17 +35,7 @@ public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ANNOTATION;
-    }
-
-    @Override
-    public boolean isLocal() {
-        return getParent() instanceof ASTBlockStatement;
-    }
-
-    @Override
-    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return children(ASTAnnotationTypeBody.class).children(ASTAnyTypeBodyDeclaration.class);
+    public boolean isInterface() {
+        return true;
     }
 }
