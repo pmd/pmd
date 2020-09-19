@@ -30,6 +30,7 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
     @Override
     public @Nullable Object getConstValue() {
         if (constValue == NOT_COMPUTED) { // NOPMD we want identity semantics
+            constValue = null; // remove the sentinel, so that we don't reenter on cycle
             constValue = buildConstValue();
         }
         return constValue;
