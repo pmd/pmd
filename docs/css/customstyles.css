@@ -208,17 +208,16 @@ p.post-meta {font-size: 80%; color: #777;}
 .entry-date{font-size:14px;font-size:0.875rem;line-height:1.71429;margin-bottom:0;text-transform:uppercase;}
 
 /* search area */
-#search-demo-container ul#results-container {
+ul#results-container {
     list-style: none;
     font-size: 12px;
     background-color: white;
     position: absolute;
     top: 50px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
-    left: 20px;
     z-index: -1;
-    width:223px;
     border-left: 1px solid #dedede;
     box-shadow: 2px 3px 2px #dedede;
+    padding: 0px;
 }
 
 
@@ -230,9 +229,11 @@ ul#results-container a:hover {
     color: black;
 }
 
-#search-demo-container a:hover {
-    color: black;
+ul#results-container li a {
+    border-top:1px solid whitesmoke;
+    margin:10px;
 }
+
 /* end search */
 
 .filter-options {

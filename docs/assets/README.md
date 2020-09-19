@@ -31,3 +31,6 @@ https://github.com/tefra/navgoco/releases/tag/0.2.1
 https://jqueryui.com/
 https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip
 
+## Simple Jekyll Search
+
+https://github.com/christian-fei/Simple-Jekyll-Search
