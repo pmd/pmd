@@ -40,3 +40,8 @@ https://github.com/christian-fei/Simple-Jekyll-Search
 https://github.com/Vestride/Shuffle
 https://github.com/Vestride/Shuffle/releases/tag/v5.2.3
 Example: https://vestride.github.io/Shuffle/
+
+## jekyll-table-of-contents
+
+https://github.com/ghiculescu/jekyll-table-of-contents
+
