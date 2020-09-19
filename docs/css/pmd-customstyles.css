@@ -1,7 +1,4 @@
 
-.panel-body {
-    padding-top: 0cm;
-}
 
 .landing-page.cat-title {
     margin-bottom: .5cm;
@@ -10,6 +7,16 @@
 
 .landing-page.cat-description {
     margin-top: .4cm;
+}
+
+#grid > div {
+    margin: 10px 0px;
+}
+#grid .card-body {
+    padding-top: 0cm;
+}
+#grid .card-header {
+    font-weight: bold;
 }
 
 /* Offsets contents by the height of the nav bar */

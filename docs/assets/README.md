@@ -34,3 +34,9 @@ https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip
 ## Simple Jekyll Search
 
 https://github.com/christian-fei/Simple-Jekyll-Search
+
+## Shuffle
+
+https://github.com/Vestride/Shuffle
+https://github.com/Vestride/Shuffle/releases/tag/v5.2.3
+Example: https://vestride.github.io/Shuffle/

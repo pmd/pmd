@@ -792,9 +792,6 @@ dd {margin-left:20px;}
     margin:0px;
     margin-bottom:6px;
 }
-.panel-heading {
-    font-weight: bold;
-}
 
 .note code, .alert code, .warning code, div#toc code, h2 code, h3 code, h4 code {
     color: inherit;

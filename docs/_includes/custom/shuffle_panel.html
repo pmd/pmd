@@ -1,10 +1,10 @@
+{% comment %}
 <!-- Argument summary: -->
 
 <!-- tags: comma-separated tags determining the pages included in the panel -->
 <!-- except_tags: comma-separated tags to filter out some pages -->
 
 <!-- A page is included if it has all the include tags and none of the exclude tags -->
-
 
 <!-- title: Display title of the panel -->
 <!-- description: Description of the panel -->
@@ -13,7 +13,7 @@
 <!-- fa-style (optional) : Name of the fontawesome style, e.g. "fas" (for solid), or "fab" (for brands). Default is "fas" -->
 <!-- fa-icon (optional) : Name of the fontwaresome icon to use, as a css class, eg. "fa-list" -->
 <!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+{% endcomment %}
 
 {% assign titlemaker = include.titlemaker | default: "page.title" %}
 {% assign include_tags = include.tags | split: "," %}
@@ -23,21 +23,20 @@
 {% assign panel_id = include.title | downcase | strip | replace: ' ', '-' | prepend: "shuffle-panel-" %}
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups='{{ include.datagroups }}' id="{{ panel_id }}">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         {% if include.fa-icon != "" and include.fa-icon != nil %}
-            <div class="panel-heading text-center">
-                     <span class="fa-stack fa-5x">
-                       <i class="fas fa-circle fa-stack-2x text-secondary"></i>
-                       <i class="{{ include.fa-style | default: "fas" }} {{ include.fa-icon }} fa-stack-1x fa-inverse"></i>
-                     </span>
+            <div class="card-header text-center">
+                <p class="fa-stack fa-5x">
+                    <i class="fas fa-circle fa-stack-2x text-secondary"></i>
+                    <i class="{{ include.fa-style | default: "fas" }} {{ include.fa-icon }} fa-stack-1x fa-inverse"></i>
+                </p>
             </div>
         {% endif %}
+        <div class="card-header text-center">
+            {{ include.title }}
+        </div>
 
-        <div class="panel-heading text-center">{{ include.title }}</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 {{ include.description }}
             </p>

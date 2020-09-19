@@ -15,10 +15,9 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 
 {% unless site.output == "pdf" %}
-<script src="js/jquery.shuffle.min.js"></script>
-<script src="js/jquery.ba-throttle-debounce.min.js"></script>
-
-{% include custom/panel_scroll.html %}
+<script src="assets/Shuffle-5.2.3/dist/shuffle.min.js"></script>
+<script src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="js/shuffle.js"></script>
 {% endunless %}
 
 
@@ -76,7 +75,6 @@ you may also use the search bar in the top right, or the sidebar on the left.
 
 
 
-<div class="container-fluid" >
 <div id="grid" class="row">
 
 <!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
@@ -138,21 +136,11 @@ you may also use the search bar in the top right, or the sidebar on the left.
        description=""
     %}
 
-
-<!-- sizer -->
-<div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
-
-</div>
+    <!-- sizer -->
+    <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
 </div>
 
 <!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
-
-{% unless site.output == "pdf" %}
-
-{% include initialize_shuffle.html %}
-
-{% endunless %}
-
 
 
 {% include links.html %}
