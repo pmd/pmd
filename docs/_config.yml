@@ -39,9 +39,6 @@ exclude:
   - README.md
   - Dockerfile
   - build-docs.sh
-  - pdf-*.sh
-  - pdfconfigs/
-  - pdf/
   - assets/*.zip
   - assets/README.md
 
