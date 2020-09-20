@@ -31,5 +31,21 @@
     <!-- /.container -->
 </div>
 </div>
+
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+{% if page.additional_js %}
+{% for js in page.additional_js %}
+<script type="application/javascript" src="{{ js }}"></script>
+{% endfor %}
+{% endif %}
+
 </body>
 </html>

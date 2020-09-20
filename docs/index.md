@@ -10,13 +10,13 @@ summary: >
 last_updated: August 2017
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
         Clément Fournier <clement.fournier76@gmail.com>
+
+additional_js:
+ - assets/Shuffle-5.2.3/dist/shuffle.min.js
+ - assets/jquery-ui-1.12.1/jquery-ui.min.js
+ - js/shuffle.js
 ---
 
-
-
-<script type="application/javascript" src="assets/Shuffle-5.2.3/dist/shuffle.min.js"></script>
-<script type="application/javascript" src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="application/javascript" src="js/shuffle.js"></script>
 
 
 ## Overview
