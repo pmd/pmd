@@ -6,28 +6,6 @@ layout: default
    <h1 class="post-title-main">{{ page.title }}</h1>
 </div>
 
-{% if page.simple_map == true %}
-
-<script>
-    $(document).ready ( function(){
-        $('.box{{page.box_number}}').addClass('active');
-    });
-</script>
-
-{% include custom/{{page.map_name}}.html %}
-
-{% elsif page.complex_map == true %}
-
-<script>
-    $(document).ready ( function(){
-        $('.modalButton{{page.box_number}}').addClass('active');
-    });
-</script>
-
-{% include custom/{{page.map_name}}.html %}
-
-{% endif %}
-
 <div class="post-content">
 
    {% if page.summary %}
@@ -63,8 +41,6 @@ layout: default
         {% endfor %}
         {% endif %}
     </div>
-
-{% include disqus.html %}
 
 </div>
 

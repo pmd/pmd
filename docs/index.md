@@ -15,9 +15,9 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 
 {% unless site.output == "pdf" %}
-<script src="assets/Shuffle-5.2.3/dist/shuffle.min.js"></script>
-<script src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script src="js/shuffle.js"></script>
+<script type="application/javascript" src="assets/Shuffle-5.2.3/dist/shuffle.min.js"></script>
+<script type="application/javascript" src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="application/javascript" src="js/shuffle.js"></script>
 {% endunless %}
 
 

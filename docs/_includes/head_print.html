@@ -6,26 +6,22 @@
 <title>{% if page.homepage == true %} {{site.homepage_title}} {% elsif page.title %}{{ page.title }}{% endif %}  | {{ site.site_title }}</title>
 
 
-<link rel="stylesheet" type="text/css" href="{{ "/assets/fontawesome-free-5.14.0-web/css/all.min.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" type="text/css" href="{{ "assets/bootstrap-4.5.2-dist/css/bootstrap.min.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" href="{{ "/css/modern-business.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" href="{{ "/css/customstyles.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" href="{{ "/css/theme-green.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" href="{{ "/css/syntax.css" | prepend: site.baseurl | prepend: site.url }}">
-<link rel="stylesheet" href="{{ "/css/printstyles.css" | prepend: site.baseurl }}">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/printstyles.css">
 
-<script>
+<script type="application/javascript">
     Prince.addScriptFunc("datestamp", function() {
         return "PDF last generated: {{ site.time | date: '%B %d, %Y' }}";
     });
-</script>
 
-<script>
     Prince.addScriptFunc("guideName", function() {
         return "{{site.print_title}} User Guide";
     });
 </script>
-
-
 
 

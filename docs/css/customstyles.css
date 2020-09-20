@@ -483,9 +483,6 @@ figcaption {
 }
 
 
-table.dataTable thead {
-    background-color: #444;
-}
 table td {
     hyphens: auto;
 }
