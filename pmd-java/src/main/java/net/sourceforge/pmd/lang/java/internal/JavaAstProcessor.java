@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.text.MessageFormat;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -16,16 +15,15 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
@@ -60,7 +58,7 @@ public final class JavaAstProcessor {
 
 
     private final TypeInferenceLogger typeInferenceLogger;
-    private final SemanticChecksLogger logger;
+    private final SemanticErrorReporter logger;
     private final LanguageVersion languageVersion;
     private final TypeSystem typeSystem;
 
@@ -71,7 +69,7 @@ public final class JavaAstProcessor {
 
     private JavaAstProcessor(TypeSystem typeSystem,
                              SymbolResolver symResolver,
-                             SemanticChecksLogger logger,
+                             SemanticErrorReporter logger,
                              TypeInferenceLogger typeInfLogger,
                              LanguageVersion languageVersion) {
 
@@ -109,7 +107,7 @@ public final class JavaAstProcessor {
         return symResolver;
     }
 
-    public SemanticChecksLogger getLogger() {
+    public SemanticErrorReporter getLogger() {
         return logger;
     }
 
@@ -141,28 +139,14 @@ public final class JavaAstProcessor {
         return typeSystem;
     }
 
-    public static SemanticChecksLogger defaultLogger() {
-        return new SemanticChecksLogger() {
-            private String locPrefix(JavaNode loc) {
-                return "[" + loc.getBeginLine() + "," + loc.getBeginColumn() + "] ";
-            }
-
-            @Override
-            public void warning(JavaNode location, String message, Object... args) {
-                DEFAULT_LOG.fine(() -> locPrefix(location) + MessageFormat.format(message, args));
-            }
-
-            @Override
-            public void error(JavaNode location, String message, Object... args) {
-                DEFAULT_LOG.severe(() -> locPrefix(location) + MessageFormat.format(message, args));
-            }
-        };
+    public static SemanticErrorReporter defaultLogger() {
+        return SemanticErrorReporter.reportToLogger(DEFAULT_LOG);
     }
 
     public static JavaAstProcessor create(SymbolResolver symResolver,
                                           TypeSystem typeSystem,
                                           LanguageVersion languageVersion,
-                                          SemanticChecksLogger logger) {
+                                          SemanticErrorReporter logger) {
 
         return new JavaAstProcessor(
             typeSystem,
@@ -175,7 +159,7 @@ public final class JavaAstProcessor {
 
     public static JavaAstProcessor create(ClassLoader classLoader,
                                           LanguageVersion languageVersion,
-                                          SemanticChecksLogger logger,
+                                          SemanticErrorReporter logger,
                                           TypeInferenceLogger typeInfLogger) {
 
         TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
@@ -190,7 +174,7 @@ public final class JavaAstProcessor {
 
     public static JavaAstProcessor create(TypeSystem typeSystem,
                                           LanguageVersion languageVersion,
-                                          SemanticChecksLogger semanticLogger,
+                                          SemanticErrorReporter semanticLogger,
                                           TypeInferenceLogger typeInfLogger) {
         return new JavaAstProcessor(
             typeSystem,
