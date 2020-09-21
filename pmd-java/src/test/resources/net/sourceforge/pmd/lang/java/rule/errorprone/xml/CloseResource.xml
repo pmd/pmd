@@ -1413,4 +1413,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>CloseResource with var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+public class CloseResourceWithVar {
+    public int bar() throws IOException {
+        var inputStream = new FileInputStream("bar.txt");
+        int c = inputStream.read();
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
