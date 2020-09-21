@@ -999,6 +999,8 @@ public class Foo {
         }
         return -1;
     }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
 }
         ]]></code>
     </test-code>
@@ -1406,6 +1408,8 @@ public class Foo {
         }
         return -1;
     }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
 }
         ]]></code>
     </test-code>
