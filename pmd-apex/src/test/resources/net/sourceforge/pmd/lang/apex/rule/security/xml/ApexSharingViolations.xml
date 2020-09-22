@@ -159,4 +159,28 @@ trigger MyTrigger on Account(after insert, after update) {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Issue #2774(false positive). Sharing correctly declared on inner class.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Outer {
+   public with sharing class Inner {
+      public List<Contact> getAllInnerSoqlSecrets() { return [SELECT Name FROM Contact]; }
+   }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #2774(false negative). Sharing incorrectly declared on outer class.</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public with sharing class Outer {
+   public class Inner {
+      public List<Contact> getAllInnerSoqlSecrets() { return [SELECT Name FROM Contact]; }
+   }
+}
+     ]]></code>
+    </test-code>
 </test-data>
