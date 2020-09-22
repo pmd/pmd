@@ -67,7 +67,7 @@ PARSER_END(VfParser)
 | <#ALPHANUM_CHAR: ( <ALPHA_CHAR> | <NUM_CHAR> ) >
 | <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ":" ] ) >
 | <#IDENTIFIER: <ALPHA_CHAR> (<IDENTIFIER_CHAR>)* >
-| <#IDENTIFIER_DOTTED: <IDENTIFIER> (<DOT> <IDENTIFIER>)* >
+| <#IDENTIFIER_DOTTED: <IDENTIFIER> (<DOT> <IDENTIFIER>)+ >
 | <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
 | <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" )
                     | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
@@ -217,7 +217,7 @@ PARSER_END(VfParser)
 
 <InTagState> TOKEN :
 {
-  <ATTR_NAME: <IDENTIFIER_DOTTED> >
+  <ATTR_NAME: <IDENTIFIER> | <IDENTIFIER_DOTTED> >
 | <TAG_END: ">"            >            : AfterTagState
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
 | <TAG_SLASHEND: ("/>" | "/ >") >       : AfterTagState
