@@ -34,13 +34,18 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
     * [#2758](https://github.com/pmd/pmd/pull/2758): \[cpd] Improve AnyTokenizer
     * [#2760](https://github.com/pmd/pmd/issues/2760): \[cpd] AnyTokenizer doesn't count columns correctly
 
-* pmd-java
-    * [#2708](https://github.com/pmd/pmd/issues/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
+* apex-security
+    * [#2774](https://github.com/pmd/pmd/issues/2774): \[apex] ApexSharingViolations does not correlate sharing settings with class that contains data access
+
+* java
     * [#2738](https://github.com/pmd/pmd/issues/2738): \[java] Custom rule with @ExhaustiveEnumSwitch throws NPE
     * [#2756](https://github.com/pmd/pmd/issues/2756): \[java] TypeTestUtil fails with NPE for anonymous class
-    * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
     * [#2767](https://github.com/pmd/pmd/issues/2767): \[java] IndexOutOfBoundsException when parsing an initializer BlockStatement
     * [#2783](https://github.com/pmd/pmd/issues/2783): \[java] Error while parsing with lambda of custom interface
+* java-bestpractices
+    * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
+* java-design
+    * [#2708](https://github.com/pmd/pmd/issues/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
 
 
 ### API Changes
@@ -74,6 +79,7 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
 * [#2747](https://github.com/pmd/pmd/pull/2747): \[java] Don't trigger FinalFieldCouldBeStatic when field is annotated with lombok @Builder.Default - [Ollie Abbey](https://github.com/ollieabbey)
 * [#2773](https://github.com/pmd/pmd/pull/2773): \[java] issue-2738: Adding null check to avoid npe when switch case is default - [Nimit Patel](https://github.com/nimit-patel)
 * [#2789](https://github.com/pmd/pmd/pull/2789): Add badge for reproducible build - [Dan Rollo](https://github.com/bhamail)
+* [#2791](https://github.com/pmd/pmd/pull/2791): \[apex] Analyze inner classes for sharing violations - [Jeff Bartolotta](https://github.com/jbartolotta-sfdc)
 
 {% endtocmaker %}
 
