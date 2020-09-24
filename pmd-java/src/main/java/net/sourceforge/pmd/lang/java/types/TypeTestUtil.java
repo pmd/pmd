@@ -48,18 +48,26 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
-        AssertionUtil.requireParamNotNull("class", (Object) clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         } else if (node.getType() == clazz) {
             return true;
         }
 
-        if (hasNoSubtypes(clazz)) {
-            return isExactlyA(clazz, node);
+        return hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror());
+    }
+
+
+    private static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
+        AssertionUtil.requireParamNotNull("klass", clazz);
+        if (type == null) {
+            return false;
         }
-        String canoName = clazz.getCanonicalName();
-        return canoName != null && isA(canoName, node);
+
+        JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
+        return type.isSubtypeOf(otherType);
     }
 
 
@@ -141,17 +149,30 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
-        AssertionUtil.requireParamNotNull("class", (Object) clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         }
 
-        JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
-        if (sym == null || sym instanceof JTypeParameterSymbol) {
+        return isExactlyA(clazz, node.getTypeMirror().getSymbol());
+    }
+
+    private static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
+        AssertionUtil.requireParamNotNull("klass", klass);
+        if (!(type instanceof JClassSymbol)) {
+            // Class cannot reference a type parameter
             return false;
         }
 
-        return ((JClassSymbol) sym).getBinaryName().equals(clazz.getName());
+        JClassSymbol symClass = (JClassSymbol) type;
+
+        if (klass.isArray()) {
+            return symClass.isArray() && isExactlyA(klass.getComponentType(), symClass.getArrayComponent());
+        }
+
+        // Note: klass.getName returns a type descriptor for arrays,
+        // which is why we have to destructure the array above
+        return symClass.getBinaryName().equals(klass.getName());
     }
 
 
