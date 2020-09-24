@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -71,11 +72,11 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 //                                      vvvvvvvvvvvvvvvvvvvvvvvvvvv
                 .flatMap(st -> st.streamDeclaredMethods(relevantMethods::isRelevant))
                 // For those methods, a simple override-equivalence check is enough,
-                // because we already know they're accessible
-                .collect(collectOverriddenRelevantMethods(relevantMethods));
+                // because we already know they're accessible, and declared in a supertype
+                .collect(relevantMethods.overriddenRelevantMethodsCollector());
 
         for (ASTMethodDeclaration violatingMethod : violatingMethods) {
-            addViolation(data, violatingMethod, new Object[] {PrettyPrintingUtil.displaySignature(violatingMethod)});
+            addViolation(data, violatingMethod, new Object[] { PrettyPrintingUtil.displaySignature(violatingMethod) });
         }
     }
 
@@ -88,7 +89,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
         // name to considered arities
         private final Map<String, BitSet> map = new HashMap<>();
-        // note: this is mutated by the other collector
+        // nodes that may be violations
         private final Set<ASTMethodDeclaration> tracked = new LinkedHashSet<>();
 
         private final JClassSymbol site;
@@ -97,14 +98,9 @@ public class MissingOverrideRule extends AbstractJavaRule {
             this.site = site;
         }
 
-        boolean isRelevant(JMethodSymbol superMethod) {
-            if (!TypeOps.isOverridableIn(superMethod, site)) {
-                return false;
-            }
-            BitSet aritySet = map.get(superMethod.getSimpleName());
-            return aritySet != null && aritySet.get(superMethod.getArity());
-        }
 
+        // add a method if it may be a violation
+        // this builds the data structure for isRelevant to work
         void addIfRelevant(ASTMethodDeclaration m) {
             if (m.isAnnotationPresent(Override.class)
                 || m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE)) {
@@ -115,33 +111,24 @@ public class MissingOverrideRule extends AbstractJavaRule {
             aritySet.set(m.getArity());
             tracked.add(m);
         }
-    }
 
-
-    static Collector<JMethodSig, ?, Set<ASTMethodDeclaration>> collectOverriddenRelevantMethods(RelevantMethodSet relevant) {
-        return Collector.of(
-            () -> new OverridingMethodCollector(relevant),
-            OverridingMethodCollector::addMethod,
-            (map1, map2) -> {
-                throw new UnsupportedOperationException("Dont use a parallel stream");
-            },
-            sms -> sms.overriding
-        );
-    }
-
-    private static final class OverridingMethodCollector {
-
-        // set of violations
-        private final Set<ASTMethodDeclaration> overriding = new LinkedHashSet<>();
-        private final RelevantMethodSet relevant;
-
-        private OverridingMethodCollector(RelevantMethodSet relevant) {
-            this.relevant = relevant;
+        // we use this to only consider methods that may produce a violation,
+        // among the supertype methods
+        boolean isRelevant(JMethodSymbol superMethod) {
+            if (!TypeOps.isOverridableIn(superMethod, site)) {
+                return false;
+            }
+            BitSet aritySet = map.get(superMethod.getSimpleName());
+            return aritySet != null && aritySet.get(superMethod.getArity());
         }
 
-        void addMethod(JMethodSig superSig) {
+        // then, if the superSig, which comes from a supertype, is overridden
+        // by a relevant method (ie a method that is a violation), then that
+        // node truly is a violation, and is added to the output set.
+        void addToSetIfIsOverridden(Set<ASTMethodDeclaration> relevantOverridingMethods,
+                                    JMethodSig superSig) {
             ASTMethodDeclaration subSig = null;
-            for (ASTMethodDeclaration it : relevant.tracked) {
+            for (ASTMethodDeclaration it : tracked) {
                 if (TypeOps.areOverrideEquivalent(it.getGenericSignature(), superSig)) {
                     subSig = it;
                     // we assume there is a single relevant method that may match,
@@ -150,12 +137,23 @@ public class MissingOverrideRule extends AbstractJavaRule {
                 }
             }
             if (subSig != null) {
-                overriding.add(subSig);
-                relevant.tracked.remove(subSig); // speedup the check for later
+                relevantOverridingMethods.add(subSig);
+                tracked.remove(subSig); // speedup the check for later
             }
         }
-    }
 
+        Collector<JMethodSig, ?, Set<ASTMethodDeclaration>> overriddenRelevantMethodsCollector() {
+            return Collector.of(
+                HashSet<ASTMethodDeclaration>::new,
+                this::addToSetIfIsOverridden,
+                (map1, map2) -> {
+                    throw new UnsupportedOperationException("Dont use a parallel stream");
+                },
+                set -> set
+            );
+        }
+
+    }
 }
 
 
