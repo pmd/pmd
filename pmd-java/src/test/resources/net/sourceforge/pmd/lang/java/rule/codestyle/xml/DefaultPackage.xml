@@ -59,6 +59,7 @@ public class Foo {
         <description>#1410 DefaultPackage triggers on field annotated with @VisibleForTesting</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
 public class Foo {
     @VisibleForTesting static final int[] ints = {};
 }

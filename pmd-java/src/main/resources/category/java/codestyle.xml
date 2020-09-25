@@ -404,21 +404,19 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Interface= false()]
 /ClassOrInterfaceBody
-/ClassOrInterfaceBodyDeclaration
-[not(Annotation//Name[
-    pmd-java:typeIs('org.junit.jupiter.api.Test')
-    or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:typeIs('org.junit.jupiter.api.ParameterizedTest')
-    or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-    or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-    or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-    or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-    or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
-    or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
-    or ends-with(@Image, 'VisibleForTesting')])]
-[
-FieldDeclaration[@PackagePrivate= true()]
-or MethodDeclaration[@PackagePrivate= true()]
+/*[ self::FieldDeclaration or self::MethodDeclaration ]
+[@Visibility = "package"]
+[ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterAll')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeEach')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterEach')
+    or pmd-java:hasAnnotation('com.google.common.annotations.VisibleForTesting')
+  )
 ]
 ]]>
                 </value>
