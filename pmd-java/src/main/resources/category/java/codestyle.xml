@@ -173,8 +173,8 @@ prefix for these methods.
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
     [
-        ResultType/Type/PrimitiveType[@Image = 'boolean']
-        and not(../Annotation//Name[@Image = 'Override'])
+        PrimitiveType[@Kind = 'boolean']
+        and not(ModifierList/Annotation//Name[@Image = 'Override'])
     ]
 ]]>
                 </value>
