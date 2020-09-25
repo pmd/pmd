@@ -1304,7 +1304,7 @@ public class GCCall {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallsystemexit">
         <description>
 Web applications should not call System.exit(), since only the web container or the
-application server should stop the JVM. This rule also checks for the equivalent call Runtime.getRuntime().exit().
+application server should stop the JVM. This rule also checks for the equivalent calls Runtime.getRuntime().exit() and Runtime.getRuntime().halt().
         </description>
         <priority>3</priority>
         <properties>
@@ -1315,8 +1315,8 @@ application server should stop the JVM. This rule also checks for the equivalent
 //Name[
     starts-with(@Image,'System.exit')
     or
-    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit')])
-]
+    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
+][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
 ]]>
                 </value>
             </property>
