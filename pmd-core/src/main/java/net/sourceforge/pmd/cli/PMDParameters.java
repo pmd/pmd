@@ -75,6 +75,10 @@ public class PMDParameters {
             description = "Specifies the string that marks a line which PMD should ignore; default is NOPMD.")
     private String suppressmarker = "NOPMD";
 
+    @Parameter(names = "-multifileanalysisdirectory",
+            description = "Specifies a directory that contains sources the may be used in a multi-file analysis; default is empty.")
+    private String multifileanalysisdirectory = "";
+
     @Parameter(names = { "-minimumpriority", "-min" },
             description = "Rule priority threshold; rules with lower priority than configured here won't be used. "
                     + "Valid values are integers between 1 and 5 (inclusive), with 5 being the lowest priority.",
@@ -198,6 +202,7 @@ public class PMDParameters {
         configuration.setSourceEncoding(this.getEncoding());
         configuration.setStressTest(this.isStress());
         configuration.setSuppressMarker(this.getSuppressmarker());
+        configuration.setMultiFileAnalysisDirectory(this.getMultiFileAnalysisDirectory());
         configuration.setThreads(this.getThreads());
         configuration.setFailOnViolation(this.isFailOnViolation());
         configuration.setAnalysisCacheLocation(this.cacheLocation);
@@ -264,6 +269,10 @@ public class PMDParameters {
 
     public String getSuppressmarker() {
         return suppressmarker;
+    }
+
+    public String getMultiFileAnalysisDirectory() {
+        return multifileanalysisdirectory;
     }
 
     public RulePriority getMinimumPriority() {

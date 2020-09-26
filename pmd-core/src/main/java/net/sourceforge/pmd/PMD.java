@@ -168,6 +168,7 @@ public class PMD {
         ParserOptions options = languageVersionHandler.getDefaultParserOptions();
         if (configuration != null) {
             options.setSuppressMarker(configuration.getSuppressMarker());
+            options.setMultiFileAnalysisDirectory(configuration.getMultiFileAnalysisDirectory());
         }
         return languageVersionHandler.getParser(options);
     }

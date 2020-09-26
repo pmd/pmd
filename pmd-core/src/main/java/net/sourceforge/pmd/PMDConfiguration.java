@@ -82,6 +82,7 @@ import net.sourceforge.pmd.util.IOUtil;
 public class PMDConfiguration extends AbstractConfiguration {
     // General behavior options
     private String suppressMarker = PMD.SUPPRESS_MARKER;
+    private String multiFileAnalysisDirectory = "";
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
@@ -126,6 +127,26 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setSuppressMarker(String suppressMarker) {
         this.suppressMarker = suppressMarker;
+    }
+
+    /**
+     * Get a multi-file analysis directory. This may be used to locate source file
+     * for a multi-file analysis support on some languages.
+     *
+     * @return The multi-file analysis directory (optional config).
+     */
+    public String getMultiFileAnalysisDirectory() {
+        return multiFileAnalysisDirectory;
+    }
+
+    /**
+     * Set a multi-file analysis directory.
+     *
+     * @param multiFileAnalysisDirectory
+     *            The directory to read for secondary multi-file analysis support.
+     */
+    public void setMultiFileAnalysisDirectory(String multiFileAnalysisDirectory) {
+        this.multiFileAnalysisDirectory = multiFileAnalysisDirectory;
     }
 
     /**

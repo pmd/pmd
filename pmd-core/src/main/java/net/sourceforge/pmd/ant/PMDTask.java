@@ -27,6 +27,7 @@ public class PMDTask extends Task {
     private boolean failOnRuleViolation;
     private boolean shortFilenames;
     private String suppressMarker;
+    private String multiFileAnalysisDirectory;
     private String rulesetFiles;
     private boolean noRuleSetCompatibility;
     private String encoding;
@@ -93,6 +94,10 @@ public class PMDTask extends Task {
 
     public void setSuppressMarker(String suppressMarker) {
         this.suppressMarker = suppressMarker;
+    }
+
+    public void setMultiFileAnalysisDirectory(String multiFileAnalysisDirectory) {
+        this.multiFileAnalysisDirectory = multiFileAnalysisDirectory;
     }
 
     public void setFailOnError(boolean fail) {
@@ -206,6 +211,10 @@ public class PMDTask extends Task {
 
     public String getSuppressMarker() {
         return suppressMarker;
+    }
+
+    public String getMultiFileAnalysisDirectory() {
+        return multiFileAnalysisDirectory;
     }
 
     public String getRulesetFiles() {

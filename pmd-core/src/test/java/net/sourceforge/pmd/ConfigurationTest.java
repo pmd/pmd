@@ -35,6 +35,14 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void testMultiFileAnalysisDirectory() {
+        PMDConfiguration configuration = new PMDConfiguration();
+        assertEquals("Default multi-file analysis directory", "", configuration.getMultiFileAnalysisDirectory());
+        configuration.setMultiFileAnalysisDirectory("CUSTOM_DIRECTORY");
+        assertEquals("Changed multi-file analysis directory", "CUSTOM_DIRECTORY", configuration.getMultiFileAnalysisDirectory());
+    }
+
+    @Test
     public void testThreads() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals("Default threads", Runtime.getRuntime().availableProcessors(), configuration.getThreads());

@@ -64,6 +64,7 @@ public class PMDTaskImpl {
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
         configuration.setSuppressMarker(task.getSuppressMarker());
+        configuration.setMultiFileAnalysisDirectory(task.getMultiFileAnalysisDirectory());
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();

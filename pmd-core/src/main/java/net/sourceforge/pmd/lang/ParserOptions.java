@@ -12,6 +12,7 @@ package net.sourceforge.pmd.lang;
  */
 public class ParserOptions {
     protected String suppressMarker;
+    protected String multiFileAnalysisDirectory;
 
     public String getSuppressMarker() {
         return suppressMarker;
@@ -19,6 +20,14 @@ public class ParserOptions {
 
     public void setSuppressMarker(String suppressMarker) {
         this.suppressMarker = suppressMarker;
+    }
+
+    public String getMultiFileAnalysisDirectory() {
+        return multiFileAnalysisDirectory;
+    }
+
+    public void setMultiFileAnalysisDirectory(String multiFileAnalysisDirectory) {
+        this.multiFileAnalysisDirectory = multiFileAnalysisDirectory;
     }
 
     @Override
