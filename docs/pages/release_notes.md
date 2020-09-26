@@ -77,5 +77,10 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
 * [#2789](https://github.com/pmd/pmd/pull/2789): Add badge for reproducible build - [Dan Rollo](https://github.com/bhamail)
 * [#2791](https://github.com/pmd/pmd/pull/2791): \[apex] Analyze inner classes for sharing violations - [Jeff Bartolotta](https://github.com/jbartolotta-sfdc)
 
+### Stats
+* 58 commits
+* 24 closed tickets & PRs
+* Days since last release: 25
+
 {% endtocmaker %}
 
