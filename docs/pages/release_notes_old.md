@@ -5,6 +5,93 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 26-September-2020 - 6.28.0
+
+The PMD team is pleased to announce PMD 6.28.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [CPD's AnyTokenizer has been improved](#cpd's-anytokenizer-has-been-improved)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated API](#deprecated-api)
+        * [For removal](#for-removal)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### CPD's AnyTokenizer has been improved
+
+The AnyTokenizer is used for languages, that don't have an own lexer/grammar based tokenizer.
+AnyTokenizer now handles string literals and end-of-line comments. Fortran, Perl and Ruby have
+been updated to use AnyTokenizer instead of their old custom tokenizer based on AbstractTokenizer.
+See [#2758](https://github.com/pmd/pmd/pull/2758) for details.
+
+AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprecated now.
+
+### Fixed Issues
+
+* cpd
+    * [#2758](https://github.com/pmd/pmd/pull/2758): \[cpd] Improve AnyTokenizer
+    * [#2760](https://github.com/pmd/pmd/issues/2760): \[cpd] AnyTokenizer doesn't count columns correctly
+
+* apex-security
+    * [#2774](https://github.com/pmd/pmd/issues/2774): \[apex] ApexSharingViolations does not correlate sharing settings with class that contains data access
+
+* java
+    * [#2738](https://github.com/pmd/pmd/issues/2738): \[java] Custom rule with @ExhaustiveEnumSwitch throws NPE
+    * [#2755](https://github.com/pmd/pmd/issues/2755): \[java] \[6.27.0] Exception applying rule CloseResource on file ... java.lang.NullPointerException
+    * [#2756](https://github.com/pmd/pmd/issues/2756): \[java] TypeTestUtil fails with NPE for anonymous class
+    * [#2767](https://github.com/pmd/pmd/issues/2767): \[java] IndexOutOfBoundsException when parsing an initializer BlockStatement
+    * [#2783](https://github.com/pmd/pmd/issues/2783): \[java] Error while parsing with lambda of custom interface
+* java-bestpractices
+    * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
+* java-design
+    * [#2708](https://github.com/pmd/pmd/issues/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
+
+
+### API Changes
+
+#### Deprecated API
+
+##### For removal
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/RuleViolationComparator.html#"><code>net.sourceforge.pmd.RuleViolationComparator</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/RuleViolation.html#DEFAULT_COMPARATOR"><code>RuleViolation#DEFAULT_COMPARATOR</code></a> instead.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/cpd/AbstractTokenizer.html#"><code>net.sourceforge.pmd.cpd.AbstractTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>net.sourceforge.pmd.cpd.AnyTokenizer</code></a> instead.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.28.0/net/sourceforge/pmd/cpd/FortranTokenizer.html#"><code>net.sourceforge.pmd.cpd.FortranTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.28.0/net/sourceforge/pmd/cpd/FortranLanguage.html#getTokenizer()"><code>FortranLanguage#getTokenizer</code></a> anyway.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-perl/6.28.0/net/sourceforge/pmd/cpd/PerlTokenizer.html#"><code>net.sourceforge.pmd.cpd.PerlTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-perl/6.28.0/net/sourceforge/pmd/cpd/PerlLanguage.html#getTokenizer()"><code>PerlLanguage#getTokenizer</code></a> anyway.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0/net/sourceforge/pmd/cpd/RubyTokenizer.html#"><code>net.sourceforge.pmd.cpd.RubyTokenizer</code></a>. Was replaced by an <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.28.0/net/sourceforge/pmd/cpd/RubyLanguage.html#getTokenizer()"><code>RubyLanguage#getTokenizer</code></a> anyway.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/lang/rule/RuleReference.html#getOverriddenLanguage()"><code>RuleReference#getOverriddenLanguage</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.28.0/net/sourceforge/pmd/lang/rule/RuleReference.html#setLanguage(net.sourceforge.pmd.lang.Language)"><code>RuleReference#setLanguage</code></a>
+* Antlr4 generated lexers:
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.28.0/net/sourceforge/pmd/lang/cs/antlr4/CSharpLexer.html#"><code>net.sourceforge.pmd.lang.cs.antlr4.CSharpLexer</code></a> will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-dart/6.28.0/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to `DartLexer` and moved to package 
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.28.0/net/sourceforge/pmd/lang/go/antlr4/GolangLexer.html#"><code>net.sourceforge.pmd.lang.go.antlr4.GolangLexer</code></a> will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/6.28.0/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to `KotlinLexer` and moved to package 
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lua/6.28.0/net/sourceforge/pmd/lang/lua/antlr4/LuaLexer.html#"><code>net.sourceforge.pmd.lang.lua.antlr4.LuaLexer</code></a> will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
+
+
+### External Contributions
+
+* [#2735](https://github.com/pmd/pmd/pull/2735): \[ci] Add github actions for a fast view of pr succeed/not - [XenoAmess](https://github.com/XenoAmess)
+* [#2747](https://github.com/pmd/pmd/pull/2747): \[java] Don't trigger FinalFieldCouldBeStatic when field is annotated with lombok @Builder.Default - [Ollie Abbey](https://github.com/ollieabbey)
+* [#2773](https://github.com/pmd/pmd/pull/2773): \[java] issue-2738: Adding null check to avoid npe when switch case is default - [Nimit Patel](https://github.com/nimit-patel)
+* [#2789](https://github.com/pmd/pmd/pull/2789): Add badge for reproducible build - [Dan Rollo](https://github.com/bhamail)
+* [#2791](https://github.com/pmd/pmd/pull/2791): \[apex] Analyze inner classes for sharing violations - [Jeff Bartolotta](https://github.com/jbartolotta-sfdc)
+
+### Stats
+* 58 commits
+* 24 closed tickets & PRs
+* Days since last release: 25
+
 ## 31-August-2020 - 6.27.0
 
 The PMD team is pleased to announce PMD 6.27.0.
