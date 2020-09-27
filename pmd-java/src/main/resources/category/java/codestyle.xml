@@ -626,11 +626,7 @@ Some for loops can be simplified to while loops, this makes them more concise.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement
-  [not(LocalVariableDeclaration)]
-  [not(ForInit)]
-  [not(ForUpdate)]
-  [Expression]
+//ForStatement[not(ForInit | ForUpdate) and count(*) = 2]
 ]]>
                 </value>
             </property>
