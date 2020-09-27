@@ -36,6 +36,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
             BaseContextNodeTestFun.TYPE_IS_EXACTLY,
             BaseContextNodeTestFun.TYPE_IS,
             BaseContextNodeTestFun.HAS_ANNOTATION,
+            BaseContextNodeTestFun.NODE_IS,
             GetModifiersFun.GET_EFFECTIVE,
             GetModifiersFun.GET_EXPLICIT,
             MetricFunction.INSTANCE,

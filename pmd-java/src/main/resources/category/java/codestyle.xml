@@ -1072,7 +1072,7 @@ Detects when a class, interface, enum or annotation does not have a package defi
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
+                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("AnyTypeDeclaration")][1]</value>
             </property>
         </properties>
         <example>

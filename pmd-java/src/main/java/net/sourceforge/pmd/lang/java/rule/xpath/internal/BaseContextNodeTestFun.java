@@ -37,6 +37,16 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
     public static final BaseJavaXPathFunction TYPE_IS_EXACTLY = new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
     public static final BaseJavaXPathFunction TYPE_IS = new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
     public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(Annotatable.class, "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
+    public static final BaseJavaXPathFunction NODE_IS =
+        new BaseContextNodeTestFun<>(JavaNode.class, "nodeIs", (name, node) -> {
+            Class<?> klass;
+            try {
+                klass = Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + name);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("No class AST" + name);
+            }
+            return klass.isInstance(node);
+        });
 
     protected BaseContextNodeTestFun(Class<T> klass, String localName, BiPredicate<String, T> checker) {
         super(localName);
