@@ -1106,14 +1106,9 @@ public class ClassInDefaultPackage {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//Literal[
-     @IntLiteral = true()
-  or @LongLiteral = true()
-  or @DoubleLiteral = true()
-  or @FloatLiteral = true()
-]
+//NumericLiteral
  (: Filter out literals in base other than 10 :)
- [not(matches(@Image, "^0[^.]"))]
+ [@Base = 10]
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
