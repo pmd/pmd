@@ -1372,13 +1372,13 @@ Fields, local variables, or parameter names that are very short are not helpful 
 <![CDATA[
 //VariableDeclaratorId[string-length(@Name) < $minimum]
  (: ForStatement :)
- [not(../../..[self::ForInit])]
+ [not(../../parent::ForInit)]
  (: Foreach statement :)
- [not(../../..[self::ForStatement])]
+ [not(../../parent::ForeachStatement)]
  (: Catch statement parameter :)
- [not(../..[self::CatchStatement])]
+ [not(parent::CatchParameter)]
  (: Lambda expression parameter :)
- [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
+ [not(parent::LambdaParameter)]
 ]]>
                 </value>
             </property>
