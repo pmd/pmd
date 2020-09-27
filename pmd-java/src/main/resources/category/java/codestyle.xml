@@ -696,10 +696,10 @@ Names for references to generic values should be limited to a single uppercase l
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
-  string-length(@Image) > 1
+//TypeParameter[
+  string-length(@Name) > 1
   or
-  upper-case(@Image) != @Image
+  upper-case(@Name) != @Name
 ]
 ]]>
                 </value>
