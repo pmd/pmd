@@ -494,20 +494,13 @@ usage by developers who should be implementing their own versions in the concret
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Abstract = true()]
+//ClassOrInterfaceDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
     /ClassOrInterfaceBody
-    /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Abstract = false() and @Native = false()]
-    [
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = true() )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = true() )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = true() )
-        or
-        (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
-        or
-        ( not (./Block/*) )
+    /MethodDeclaration
+    /Block[
+      let $size := count(*[not(self::EmptyStatement)])
+      return $size = 0
+             or $size = 1 and ReturnStatement[ NullLiteral or NumericLiteral[@ValueAsInt = 0] or StringLiteral[@Empty = true()]]
     ]
 ]]>
                 </value>
