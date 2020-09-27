@@ -8,11 +8,11 @@
         <description>simple violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import static K.Lennon;
-import static K.Ringo;
-import static K.George;
-import static K.Paul;
-import static K.Yoko; // Too much !
+import static Lennon;
+import static Ringo;
+import static George;
+import static Paul;
+import static Yoko; // Too much !
 public class Split {}
         ]]></code>
     </test-code>
