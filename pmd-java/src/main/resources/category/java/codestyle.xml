@@ -37,12 +37,25 @@ public class Foo {
           language="java"
           since="1.5"
           message="Avoid using dollar signs in variable/method/class/interface names"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.AvoidDollarSignsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoiddollarsigns">
         <description>
 Avoid using dollar signs in variable/method/class/interface names.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+    (//ClassOrInterfaceDeclaration | //EnumDeclaration | //AnnotationTypeDeclaration | //RecordDeclaration)
+     [contains(@SimpleName, '$')]
+    | //VariableDeclaratorId[contains(@Name, '$')]
+    | //MethodDeclaration[contains(@Name, '$')]
+
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Fo$o {  // not a recommended name
