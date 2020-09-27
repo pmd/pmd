@@ -533,7 +533,7 @@ public abstract class ShouldBeAbstract {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+//ExtendsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Object')]
 ]]>
                 </value>
             </property>
