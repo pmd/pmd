@@ -1781,12 +1781,8 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments= false() and @ArrayDereference = false()]]
-[not(PrimarySuffix/MemberSelector)]
-[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass= false()]]
-/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
+//ThisExpression/ClassOrInterfaceType
+[ ancestor::*[pmd-java:nodeIs('AnyTypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
 ]]>
                 </value>
             </property>
