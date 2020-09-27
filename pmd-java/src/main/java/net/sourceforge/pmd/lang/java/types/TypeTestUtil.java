@@ -11,10 +11,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 
 /**
  * Public utilities to test the type of nodes.
@@ -121,7 +123,8 @@ public final class TypeTestUtil {
         }
 
         TypeSystem ts = thisType.getTypeSystem();
-        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName);
+        UnresolvedClassStore unresolvedStore = InternalApiBridge.getProcessor(node).getUnresolvedStore();
+        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
         if (otherType == null) {
             return false; // we know isExactlyA(canonicalName, node); returned false
         }

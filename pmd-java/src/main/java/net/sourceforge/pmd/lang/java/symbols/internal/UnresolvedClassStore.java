@@ -69,4 +69,8 @@ public final class UnresolvedClassStore {
 
         return makeUnresolvedReference(qualifier.getCanonicalName() + '.' + simpleName, typeArity);
     }
+
+    public static JClassSymbol untrackedUnresolvedReference(TypeSystem ts, String canonicalName) {
+        return new FlexibleUnresolvedClassImpl(ts, null, canonicalName);
+    }
 }

@@ -838,14 +838,8 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'LocalHome')
-    )
+    pmd-java:typeIs('javax.ejb.EJBLocalHome')
+    and not(ends-with(@SimpleName, 'LocalHome'))
 ]
 ]]>
                 </value>
@@ -876,14 +870,8 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Local')
-    )
+    pmd-java:typeIs('javax.ejb.EJBLocalObject')
+    and not(ends-with(@SimpleName, 'Local'))
 ]
 ]]>
                 </value>
@@ -1005,18 +993,11 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration/ClassOrInterfaceDeclaration
+//ClassOrInterfaceDeclaration
 [
-    (
-        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
-        or
-        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'MessageDrivenBean')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Bean')
-    )
+    (pmd-java:typeIs('javax.ejb.SessionBean')
+     or pmd-java:typeIs('javax.ejb.MessageDrivenBean'))
+    and not(ends-with(@SimpleName, 'Bean'))
 ]
 ]]>
                 </value>
