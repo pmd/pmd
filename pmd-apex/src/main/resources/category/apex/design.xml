@@ -35,6 +35,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidUnusedMethod"
+          since="5.5.0"
+          message="Deeply nested if..then statements are hard to read"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidUnusedMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidunusedmethod">
+        <description>
+            Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    public void bar(Integer x, Integer y, Integer z) {
+        if (x>y) {
+            if (y>z) {
+                if (z==x) {
+                    // !! too deep
+                }
+            }
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="CyclomaticComplexity"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="6.0.0"

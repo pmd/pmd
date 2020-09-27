@@ -7,15 +7,21 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.services.Version;
 
+@SuppressWarnings("PMD")
 public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
 
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
+
+    private String fileName;
+
+    private ApexMultifileAnalysis multifileAnalysis;
 
     public ApexRootNode(T node) {
         super(node);
@@ -47,5 +53,18 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
 
     void setNoPmdComments(Map<Integer, String> noPmdComments) {
         this.noPmdComments = noPmdComments;
+    }
+
+    void setMultifileAnalysis(String fileName, ApexMultifileAnalysis multifileAnalysis) {
+        this.fileName = fileName;
+        this.multifileAnalysis = multifileAnalysis;
+    }
+
+    public ApexMultifileAnalysis getMultifileAnalysis() {
+        return multifileAnalysis;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

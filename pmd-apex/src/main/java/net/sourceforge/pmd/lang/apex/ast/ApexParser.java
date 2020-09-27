@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
 import apex.jorje.data.Locations;
@@ -39,7 +40,7 @@ public class ApexParser {
         return visitor.getTopLevel();
     }
 
-    public ApexNode<Compilation> parse(final Reader reader) {
+    public ApexNode<Compilation> parse(final String fileName, final Reader reader) {
         try {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);
@@ -49,8 +50,12 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
+            ApexMultifileAnalysis analysisHandler =
+                    ApexMultifileAnalysis.getAnalysisInstance(parserOptions.getMultiFileAnalysisDirectory());
+
             ApexRootNode<Compilation> treeRoot = (ApexRootNode) treeBuilder.build(astRoot);
             treeRoot.setNoPmdComments(treeBuilder.getSuppressMap());
+            treeRoot.setMultifileAnalysis(fileName, analysisHandler);
             return treeRoot;
         } catch (IOException | apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
