@@ -1172,7 +1172,7 @@ Detects when a package definition contains uppercase characters.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//PackageDeclaration/Name[lower-case(@Image)!=@Image]</value>
+                <value>//PackageDeclaration[lower-case(@Name) != @Name]</value>
             </property>
         </properties>
         <example>
