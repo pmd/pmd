@@ -79,9 +79,9 @@ Clarify your intent by using private or package access modifiers instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final= true()]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected= true()]
+//ClassOrInterfaceDeclaration[@Final = true()]
+/ClassOrInterfaceBody
+/FieldDeclaration[@Visibility = "protected"]
 ]]>
                 </value>
             </property>
@@ -114,8 +114,8 @@ visibility cannot be reduced). Clarify your intent by using private or package a
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected=true() and @Name != 'finalize']
+/ClassOrInterfaceBody
+/MethodDeclaration[@Visibility="protected" and @Name != 'finalize']
  ]]>
                 </value>
             </property>
