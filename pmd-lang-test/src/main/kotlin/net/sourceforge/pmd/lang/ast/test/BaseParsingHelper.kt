@@ -3,12 +3,14 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
-import net.sourceforge.pmd.lang.ParserOptions
-import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.*
+import net.sourceforge.pmd.lang.*
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext
+import net.sourceforge.pmd.lang.ast.AstProcessingStage
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.RootNode
 import org.apache.commons.io.IOUtils
+import java.io.File
 import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
@@ -53,10 +55,14 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName) ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
+        val language = language
         return if (version == null) language.defaultVersion
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
+
+    private val language: Language
+        get() = LanguageRegistry.getLanguage(langName)
+                ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
 
     val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
@@ -197,6 +203,29 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         return consume(input)
     }
+
+    /**
+     * Execute the given [rule] on the [code]. Produce a report with the violations
+     * found by the rule. The language version of the piece of code is determined by the [params].
+     */
+    @JvmOverloads
+    fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
+        val p = PMD()
+        val ctx = RuleContext()
+        val report = Report()
+        ctx.report = report
+        ctx.sourceCodeFile = File(filename)
+        val rules = RuleSetFactory().createSingleRuleRuleSet(rule)
+        try {
+            p.sourceCodeProcessor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
+        } catch (e: PMDException) {
+            throw AssertionError(e)
+        }
+        return report
+    }
+
+    fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
+            executeRule(rule, readResource(resourcePath))
 
 
 }

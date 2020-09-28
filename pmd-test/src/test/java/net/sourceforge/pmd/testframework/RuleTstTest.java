@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,7 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -40,12 +38,12 @@ public class RuleTstTest {
 
     @Test
     public void shouldCallStartAndEnd() {
-        Report report = new Report();
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
-        ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
+        ruleTester.executeRule("the code", rule, dummyLanguage, false);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
@@ -56,7 +54,6 @@ public class RuleTstTest {
         verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
-        verifyNoMoreInteractions(rule);
     }
 
     @Test
@@ -64,20 +61,21 @@ public class RuleTstTest {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
         Mockito.doAnswer(new Answer<Void>() {
-            private RuleViolation createViolation(RuleContext context, int beginLine, String message) {
+            private RuleViolation createViolation(int beginLine, String message) {
                 DummyNode node = new DummyNode();
                 node.setCoords(beginLine, 1, beginLine + 1, 2);
-                return new ParametricRuleViolation<Node>(rule, context, node, message);
+                return new ParametricRuleViolation<Node>(rule, "someFile", node, message);
             }
 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 RuleContext context = invocation.getArgument(1, RuleContext.class);
                 // the violations are reported out of order
-                context.getReport().addRuleViolation(createViolation(context, 15, "first reported violation"));
-                context.getReport().addRuleViolation(createViolation(context, 5, "second reported violation"));
+                context.getReport().addRuleViolation(createViolation(15, "first reported violation"));
+                context.getReport().addRuleViolation(createViolation(5, "second reported violation"));
                 return null;
             }
         }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));

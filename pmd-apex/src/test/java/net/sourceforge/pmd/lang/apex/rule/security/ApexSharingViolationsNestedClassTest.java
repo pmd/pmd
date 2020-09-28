@@ -85,9 +85,8 @@ public class ApexSharingViolationsNestedClassTest extends RuleTst {
     @Test
     public void testSharingPermutation() {
         String apexClass = generateClass(outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation);
-        Report rpt = new Report();
-        runTestFromString(apexClass, new ApexSharingViolationsRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        Report rpt = executeRule(apexClass, new ApexSharingViolationsRule(),
+                                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
         List<RuleViolation> violations = rpt.getViolations();
         assertEquals("Unexpected Violation Size\n" + apexClass, expectedViolations, violations.size());
         List<Integer> lineNumbers = violations.stream().map(v -> v.getBeginLine()).collect(Collectors.toList());

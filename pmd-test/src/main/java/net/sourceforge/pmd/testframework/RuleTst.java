@@ -255,13 +255,29 @@ public abstract class RuleTst {
         return report;
     }
 
+    public Report executeRule(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
+        Report result = new Report();
+        runTestFromString(code, rule, result, languageVersion, isUseAuxClasspath);
+        return result;
+    }
+
+    public Report executeRule(String code, Rule rule, LanguageVersion languageVersion) {
+        return executeRule(code, rule, languageVersion, true);
+    }
+
     /**
      * Run the rule on the given code and put the violations in the report.
+     * @deprecated Use {@link #executeRule(String, Rule, LanguageVersion)}
      */
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
         runTestFromString(code, rule, report, languageVersion, true);
     }
 
+    /**
+     * @deprecated Use {@link #executeRule(String, Rule, LanguageVersion, boolean)}
+     */
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
         try {
