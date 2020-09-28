@@ -11,29 +11,29 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -83,7 +83,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodThrowingType(ASTMethodDeclaration node, Class<? extends Exception> exceptionType) {
-        ASTNameList thrownExceptions = node.getThrows();
+        @Nullable ASTThrowsList thrownExceptions = node.getThrowsList();
         if (thrownExceptions != null) {
             List<ASTName> names = thrownExceptions.findChildrenOfType(ASTName.class);
             for (ASTName name : names) {
@@ -166,20 +166,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR)) {
-            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getParent();
-            for (int i = 0; i < parent.getNumChildren(); i++) {
-                Node n = parent.getChild(i);
-                if (n instanceof ASTAnnotation) {
-                    if (n.getChild(0) instanceof ASTMarkerAnnotation) {
-                        // @Override is ignored
-                        if ("Override".equals(((ASTName) n.getChild(0).getChild(0)).getImage())) {
-                            continue;
-                        }
-                    }
-                    return super.visit(node, data);
-                }
-            }
+        if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR) && node.getDeclaredAnnotations().any(it -> !TypeTestUtil.isA(Override.class, it))) {
+            return super.visit(node, data);
         }
 
         // different number of args
@@ -284,7 +272,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         // since AccessNode#PROTECTED != Modifier#PROTECTED.
         boolean elevatingFromProtected = Modifier.isProtected(superMethod.getModifiers())
                 && !overridingMethod.isProtected();
-        boolean elevatingFromPackagePrivate = superMethod.getModifiers() == 0 && overridingMethod.getModifiers() != 0;
+        boolean elevatingFromPackagePrivate = superMethod.getModifiers() == 0
+            && !overridingMethod.getModifiers().getExplicitModifiers().isEmpty();
         boolean elevatingIntoDifferentPackage = !packageName.equals(superPackageName)
                 && !Modifier.isPublic(superMethod.getModifiers());
 

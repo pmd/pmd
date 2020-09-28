@@ -21,13 +21,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessTypeNode;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.CommentUtil;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocElement;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -67,22 +68,24 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     }
 
     protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
+        // FIXME make that a processing stage!
 
         SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
         FormalComment lastComment = null;
-        AbstractJavaNode lastNode = null;
+        JavaNode lastNode = null;
 
         for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
             Node value = entry.getValue();
-            if (value instanceof AbstractJavaAccessNode || value instanceof ASTPackageDeclaration) {
-                AbstractJavaNode node = (AbstractJavaNode) value;
+            if (value instanceof AccessNode || value instanceof ASTPackageDeclaration) {
+                JavaNode node = (JavaNode) value;
+
                 // maybe the last comment is within the last node
                 if (lastComment != null && isCommentNotWithin(lastComment, lastNode, value)
                         && isCommentBefore(lastComment, value)) {
-                    node.comment(lastComment);
+                    InternalApiBridge.setComment(node, lastComment);
                     lastComment = null;
                 }
-                if (!(node instanceof AbstractJavaAccessTypeNode)) {
+                if (!(node instanceof TypeNode)) {
                     lastNode = node;
                 }
             } else if (value instanceof FormalComment) {

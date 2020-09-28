@@ -11,12 +11,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -29,22 +28,22 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
 
-    private boolean areEquivalent(ASTCatchStatement st1, ASTCatchStatement st2) {
-        return hasSameSubTree(st1.getBody(), st2.getBody(), st1.getExceptionName(), st2.getExceptionName());
+    private boolean areEquivalent(ASTCatchClause st1, ASTCatchClause st2) {
+        return hasSameSubTree(st1.getBody(), st2.getBody(), st1.getParameter().getName(), st2.getParameter().getName());
     }
 
 
-    /** groups catch statements by equivalence class, according to the equivalence {@link #areEquivalent(ASTCatchStatement, ASTCatchStatement)}. */
-    private Set<List<ASTCatchStatement>> equivalenceClasses(List<ASTCatchStatement> catches) {
-        Set<List<ASTCatchStatement>> result = new HashSet<>(catches.size());
-        for (ASTCatchStatement stmt : catches) {
+    /** groups catch statements by equivalence class, according to the equivalence {@link #areEquivalent(ASTCatchClause, ASTCatchClause)}. */
+    private Set<List<ASTCatchClause>> equivalenceClasses(List<ASTCatchClause> catches) {
+        Set<List<ASTCatchClause>> result = new HashSet<>(catches.size());
+        for (ASTCatchClause stmt : catches) {
             if (result.isEmpty()) {
                 result.add(newEquivClass(stmt));
                 continue;
             }
 
             boolean isNewClass = true;
-            for (List<ASTCatchStatement> equivClass : result) {
+            for (List<ASTCatchClause> equivClass : result) {
                 if (areEquivalent(stmt, equivClass.get(0))) {
                     equivClass.add(stmt);
                     isNewClass = false;
@@ -61,37 +60,27 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
     }
 
 
-    private List<ASTCatchStatement> newEquivClass(ASTCatchStatement stmt) {
+    private List<ASTCatchClause> newEquivClass(ASTCatchClause stmt) {
         // Each equivalence class is sorted by document order
-        List<ASTCatchStatement> result = new ArrayList<>(2);
+        List<ASTCatchClause> result = new ArrayList<>(2);
         result.add(stmt);
         return result;
     }
 
 
     // Gets the representation of the set of catch statements as a single multicatch
-    private String getCaughtExceptionsAsString(ASTCatchStatement stmt) {
-
-        StringBuilder sb = new StringBuilder();
-
-        final String delim = " | ";
-        for (ASTType type : stmt.getCaughtExceptionTypeNodes()) {
-            sb.append(type.getTypeImage()).append(delim);
-        }
-
-        // remove the last delimiter
-        sb.replace(sb.length() - 3, sb.length(), "");
-        return sb.toString();
+    private String getCaughtExceptionsAsString(ASTCatchClause stmt) {
+        return stmt.getParameter().getTypeNode().getTypeImage();
     }
 
 
     @Override
     public Object visit(ASTTryStatement node, Object data) {
 
-        List<ASTCatchStatement> catchStatements = node.getCatchClauses();
-        Set<List<ASTCatchStatement>> equivClasses = equivalenceClasses(catchStatements);
+        List<ASTCatchClause> catchStatements = node.getCatchClauses().toList();
+        Set<List<ASTCatchClause>> equivClasses = equivalenceClasses(catchStatements);
 
-        for (List<ASTCatchStatement> identicalStmts : equivClasses) {
+        for (List<ASTCatchClause> identicalStmts : equivClasses) {
             if (identicalStmts.size() > 1) {
                 String identicalBranchName = getCaughtExceptionsAsString(identicalStmts.get(0));
 

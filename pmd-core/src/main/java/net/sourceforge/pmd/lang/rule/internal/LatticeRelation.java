@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.internal;
 
 import static java.util.stream.Collectors.toSet;
+import static net.sourceforge.pmd.internal.GraphUtils.DotColor;
 import static net.sourceforge.pmd.util.CollectionUtil.any;
 import static net.sourceforge.pmd.util.CollectionUtil.finish;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
@@ -25,8 +26,8 @@ import java.util.stream.Collector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.GraphUtils;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.rule.internal.GraphUtils.DotColor;
 
 /**
  * Indexes data of type {@code <V>} with keys of type {@code <K>}, where

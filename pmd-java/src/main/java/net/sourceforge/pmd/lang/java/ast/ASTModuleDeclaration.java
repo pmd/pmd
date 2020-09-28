@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTModuleDeclaration extends AbstractJavaNode {
+public final class ASTModuleDeclaration extends AbstractJavaNode {
 
     private boolean open;
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleDeclaration(int id) {
+    ASTModuleDeclaration(int id) {
         super(id);
     }
 
@@ -23,9 +19,7 @@ public class ASTModuleDeclaration extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public void setOpen(boolean open) {
+    void setOpen(boolean open) {
         this.open = open;
     }
 

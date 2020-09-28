@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetric;
@@ -27,7 +28,7 @@ public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<Met
      */
     @Override
     public boolean supports(MethodLikeNode node) {
-        return !node.isAbstract();
+        return !(node instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) node).isAbstract());
     }
 
 

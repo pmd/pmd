@@ -4,15 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTInitializer extends AbstractJavaNode {
+/**
+ * A class or instance initializer. Don't confuse with {@link ASTVariableInitializer}.
+ *
+ * <pre class="grammar">
+ *
+ * Initializer ::= "static"? {@link ASTBlock Block}
+ *
+ * </pre>
+ *
+ */
+public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDeclaration {
 
     private boolean isStatic;
 
-    @InternalApi
-    @Deprecated
-    public ASTInitializer(int id) {
+    ASTInitializer(int id) {
         super(id);
     }
 
@@ -27,9 +33,7 @@ public class ASTInitializer extends AbstractJavaNode {
         return isStatic;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setStatic() {
+    void setStatic() {
         isStatic = true;
     }
 }

@@ -4,25 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
  * Represents the {@code implements} clause of a class declaration.
  *
- * <pre>
- *  ExtendsList ::= "implements" (TypeAnnotation)* ClassOrInterfaceType
- *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * <pre class="grammar">
+ *
+ * ImplementsList ::= "implements" {@link ASTClassOrInterfaceType ClassOrInterfaceType} ( "," {@link ASTClassOrInterfaceType ClassOrInterfaceType})*
+ *
  * </pre>
  */
-public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTImplementsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTImplementsList(int id) {
-        super(id);
+    ASTImplementsList(int id) {
+        super(id, ASTClassOrInterfaceType.class);
     }
 
 
@@ -31,9 +28,4 @@ public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTC
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return children(ASTClassOrInterfaceType.class).iterator();
-    }
 }

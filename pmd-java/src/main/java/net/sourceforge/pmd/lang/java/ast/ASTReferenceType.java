@@ -6,44 +6,16 @@ package net.sourceforge.pmd.lang.java.ast;
 
 /**
  * Represents a reference type, i.e. a {@linkplain ASTClassOrInterfaceType class or interface type},
- * or an array type.
+ * or an {@linkplain ASTArrayType array type}.
  *
- * <pre>
+ * <pre class="grammar">
  *
- *  ReferenceType ::= {@linkplain ASTPrimitiveType PrimitiveType} {@linkplain ASTAnnotation Annotation}* ( "[" "]" )+
- *                  | {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} {@linkplain ASTAnnotation Annotation}* ( "[" "]" )*
+ *  ReferenceType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType}
+ *                  | {@link ASTArrayType ArrayType}
+ *                  | {@link ASTIntersectionType IntersectionType}
+ *                  | {@link ASTWildcardType WildcardType}
  *
  * </pre>
  */
-public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensionable {
-
-    private int arrayDepth;
-
-    ASTReferenceType(int id) {
-        super(id);
-    }
-
-
-    @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
-    }
-
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
-    }
-
+public interface ASTReferenceType extends ASTType {
 }

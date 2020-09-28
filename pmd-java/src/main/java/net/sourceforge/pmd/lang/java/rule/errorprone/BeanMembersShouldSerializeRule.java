@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -78,9 +77,9 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
-        List<ASTMethodDeclarator> getSetMethList = new ArrayList<>(methods.size());
+        List<ASTMethodDeclaration> getSetMethList = new ArrayList<>(methods.size());
         for (MethodNameDeclaration d : methods.keySet()) {
-            ASTMethodDeclarator mnd = d.getMethodNameDeclaratorNode();
+            ASTMethodDeclaration mnd = d.getDeclarator();
             if (isBeanAccessor(mnd)) {
                 getSetMethList.add(mnd);
             }
@@ -119,9 +118,9 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         return img;
     }
 
-    private boolean isBeanAccessor(ASTMethodDeclarator meth) {
+    private boolean isBeanAccessor(ASTMethodDeclaration meth) {
 
-        String methodName = meth.getImage();
+        String methodName = meth.getMethodName();
 
         if (methodName.startsWith("get") || methodName.startsWith("set")) {
             return true;
@@ -129,7 +128,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         if (methodName.startsWith("is")) {
             ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
             List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
-            if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
+            if (!primitives.isEmpty() && primitives.get(0).getTypeMirror() == meth.getTypeSystem().BOOLEAN) {
                 return true;
             }
         }

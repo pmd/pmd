@@ -58,24 +58,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
     }
 
     /***
-     * Extend the number of children of the current node of one to the left.
-     * If the node is closed, one additional node from the stack will be popped
-     * and added to its children. This allows mimicking "left-recursive" nodes,
-     * while keeping the parsing iterative.
-     *
-     * <p>Note that when the total number of children is definitely known, you
-     * can use "definite nodes", ie write the expected number of children (including
-     * the ones to the left) in the JJTree annotation (eg {@code #AdditiveExpression(2)}).
-     * So this is only useful when the number of children of the current node is not certain.
-     *
-     * <p>This method does not affect the stack unless the current jjtThis is
-     * closed in the future.
-     */
-    public void extendLeft() {
-        mk--;
-    }
-
-    /***
      * Peek the nth node from the top of the stack.
      * peekNode(0) == peekNode()
      */

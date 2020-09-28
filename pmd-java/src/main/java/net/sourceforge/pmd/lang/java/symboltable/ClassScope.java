@@ -17,19 +17,20 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -78,7 +79,7 @@ public class ClassScope extends AbstractJavaScope {
     public ClassScope(final ClassNameDeclaration classNameDeclaration) {
         // this.className = getParent().getEnclosingClassScope().getClassName()
         // + "$" + String.valueOf(anonymousInnerClassCounter);
-        int v = anonymousInnerClassCounter.get().intValue();
+        int v = anonymousInnerClassCounter.get();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
         classDeclaration = classNameDeclaration;
@@ -173,8 +174,8 @@ public class ClassScope extends AbstractJavaScope {
             matchMethodDeclaration(occurrence, methodDeclarations.keySet(), hasAuxclasspath, result);
 
             if (isEnum && "valueOf".equals(occurrence.getImage())) {
-                ASTMethodDeclarator declarator = createBuiltInMethodDeclaration("valueOf", "String");
-                declarator.setScope(this);
+                ASTMethodDeclaration declarator = createBuiltInMethodDeclaration("valueOf", "String");
+                InternalApiBridge.setScope(declarator, this);
                 result.add(new MethodNameDeclaration(declarator));
             }
 
@@ -275,8 +276,9 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode()
-                .findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getDeclarator()
+                                                 .getFormalParameters()
+                                                 .findChildrenOfType(ASTFormalParameter.class);
         if (parameters.isEmpty()) {
             return Collections.emptyList();
         }
@@ -286,9 +288,6 @@ public class ClassScope extends AbstractJavaScope {
         Map<String, Node> qualifiedTypeNames = fileScope.getQualifiedTypeNames();
 
         for (ASTFormalParameter p : parameters) {
-            if (p.isExplicitReceiverParameter()) {
-                continue;
-            }
 
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type,
@@ -538,8 +537,7 @@ public class ClassScope extends AbstractJavaScope {
     private Class<?> resolveGenericType(Node argument, String typeImage) {
         List<ASTTypeParameter> types = new ArrayList<>();
         // first search only within the same method
-        ASTClassOrInterfaceBodyDeclaration firstParentOfType = argument
-                .getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        ASTBodyDeclaration firstParentOfType = argument.getFirstParentOfType(ASTBodyDeclaration.class);
         if (firstParentOfType != null) {
             types.addAll(firstParentOfType.findDescendantsOfType(ASTTypeParameter.class));
         }

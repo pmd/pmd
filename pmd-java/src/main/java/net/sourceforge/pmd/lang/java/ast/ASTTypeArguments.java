@@ -4,26 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
  *
- * <pre>
+ * <pre class="grammar">
  *
- *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
- *                  | "<" ">"
+ *  TypeArguments ::= "&lt;" {@linkplain ASTReferenceType TypeArgument} ( "," {@linkplain ASTReferenceType TypeArgument} )* "&gt;"
+ *                  | "&lt;" "&gt;"
  * </pre>
  */
-public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {
+public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeArguments(int id) {
-        super(id);
+    ASTTypeArguments(int id) {
+        super(id, ASTType.class);
     }
 
 
@@ -35,15 +30,11 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
 
     /**
      * Returns true if this is a diamond, that is, the
-     * actual type arguments are inferred.
+     * actual type arguments are inferred. In this case
+     * this list has no children.
      */
     public boolean isDiamond() {
-        return getNumChildren() == 0;
+        return size() == 0;
     }
 
-
-    @Override
-    public Iterator<ASTTypeArgument> iterator() {
-        return children(ASTTypeArgument.class).iterator();
-    }
 }

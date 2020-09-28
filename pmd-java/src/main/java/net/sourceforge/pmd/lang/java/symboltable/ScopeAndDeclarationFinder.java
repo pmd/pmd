@@ -9,9 +9,9 @@ import java.util.Deque;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -20,12 +20,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -86,7 +86,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     private void addScope(Scope newScope, JavaNode node) {
         newScope.setParent(scopes.peek());
         scopes.push(newScope);
-        node.setScope(newScope);
+        InternalApiBridge.setScope(node, newScope);
     }
 
     /**
@@ -132,7 +132,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
         s.addDeclaration(classNameDeclaration);
 
-        if (node instanceof ASTClassOrInterfaceBody) {
+        if (node instanceof ASTAnonymousClassDeclaration) {
             addScope(new ClassScope(classNameDeclaration), node);
         } else {
             addScope(new ClassScope(node.getImage(), classNameDeclaration), node);
@@ -152,14 +152,14 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         SourceFileScope scope;
         ASTPackageDeclaration n = node.getPackageDeclaration();
         if (n != null) {
-            scope = new SourceFileScope(classLoader, n.getChild(0).getImage());
+            scope = new SourceFileScope(classLoader, n.getPackageNameImage());
         } else {
             scope = new SourceFileScope(classLoader);
         }
         scope.configureImports(node.findChildrenOfType(ASTImportDeclaration.class));
 
         scopes.push(scope);
-        node.setScope(scope);
+        InternalApiBridge.setScope(node, scope);
     }
 
     @Override
@@ -199,13 +199,9 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        if (node.isAnonymousInnerClass() || node.isEnumChild()) {
-            createClassScope(node);
-            cont(node);
-        } else {
-            super.visit(node, data);
-        }
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
+        createClassScope(node);
+        cont(node);
         return data;
     }
 
@@ -216,7 +212,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         if (node.getParent() instanceof ASTMethodDeclaration
                 || node.getParent() instanceof ASTConstructorDeclaration
                 || node.getParent() instanceof ASTLambdaExpression
-                || node.getParent() instanceof ASTCatchStatement
+                || node.getParent() instanceof ASTCatchClause
                 || node.getParent() instanceof ASTForStatement) {
             super.visit(node, null);
         } else {
@@ -227,7 +223,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
+    public Object visit(ASTCatchClause node, Object data) {
         createLocalScope(node);
         cont(node);
         return data;
@@ -243,8 +239,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         createMethodScope(node);
-        ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
-        node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
+        node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(node));
         cont(node);
         return data;
     }

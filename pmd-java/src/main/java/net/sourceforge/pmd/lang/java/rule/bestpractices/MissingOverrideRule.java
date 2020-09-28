@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -215,11 +214,9 @@ public class MissingOverrideRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        for (ASTAnnotation annot : node.getDeclaredAnnotations()) {
-            if (Override.class.equals(annot.getType())) {
-                // we assume the compiler has already checked it, so it's correct
-                return super.visit(node, data);
-            }
+        if (node.isAnnotationPresent(Override.class)) {
+            // we assume the compiler has already checked it, so it's correct
+            return super.visit(node, data);
         }
 
         try {

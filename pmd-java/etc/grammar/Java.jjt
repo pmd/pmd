@@ -235,7 +235,10 @@ PARSER_BEGIN(JavaParserImpl)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -243,6 +246,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 class JavaParserImpl {
 
@@ -257,9 +261,23 @@ class JavaParserImpl {
     this.preview = preview;
   }
 
+  private void throwParseException(String message) {
+    int line = -1;
+    int col = -1;
+    if (jj_lastpos != null) {
+      line = jj_lastpos.beginLine;
+      col = jj_lastpos.beginColumn;
+    }
+    throw new ParseException("Line " + line + ", Column " + col + ": " + message);
+  }
+
 
   private boolean isRecordTypeSupported() {
     return (jdkVersion == 14 || jdkVersion == 15) && preview;
+  }
+
+  private boolean localTypesSupported() {
+    return isRecordTypeSupported();
   }
 
   private boolean isSealedClassSupported() {
@@ -277,26 +295,24 @@ class JavaParserImpl {
    */
   private boolean inSwitchLabel = false;
 
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
-  private boolean isNextTokenAnAssert() {
+  private boolean isAssertStart() {
     if (jdkVersion <= 3) {
       return false;
     }
 
-    return getToken(1).image.equals("assert");
+    return getToken(1).getImage().equals("assert");
   }
 
-  private boolean isPrecededByComment(JavaccToken tok) {
-      boolean res = false;
-      while (!res && tok.specialToken != null) {
-          tok = tok.specialToken;
-          res = tok.kind == SINGLE_LINE_COMMENT ||
-                tok.kind == FORMAL_COMMENT ||
-                tok.kind == MULTI_LINE_COMMENT;
-      }
-      return res;
+  private boolean isRecordStart() {
+    return isRecordTypeSupported() && isKeyword("record");
+  }
+
+  private boolean isEnumStart() {
+    return jdkVersion >= 5 && isKeyword("enum");
   }
 
   /**
@@ -354,13 +370,22 @@ class JavaParserImpl {
         || isSealedClassSupported() && isNonSealedModifier();
   }
 
-  private boolean localTypeDeclLookahead() {
+  private boolean localTypeDeclAfterModifiers() {
       Token next = getToken(1);
       return next.kind == CLASS
-        || isRecordTypeSupported() && next.kind == INTERFACE
-        || isRecordTypeSupported() && next.kind == AT && isToken(2, INTERFACE)
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
+        || localTypesSupported() && (
+              next.kind == INTERFACE
+           || next.kind == AT && isToken(2, INTERFACE)
+           || next.kind == IDENTIFIER && next.getImage().equals("enum")
+           ||
+           next.kind == IDENTIFIER && next.image.equals("record")
+      );
+  }
+
+  private boolean localTypeDeclGivenNextIsIdent() {
+      return localTypesSupported() && (
+          isNonSealedModifier() || isRecordStart() || isEnumStart()
+      );
   }
 
   /**
@@ -378,7 +403,7 @@ class JavaParserImpl {
   private boolean mayStartExprAfterYield(final int offset) {
       // based off of https://hg.openjdk.java.net/jdk/jdk/file/bc3da0226ffa/src/jdk.compiler/share/classes/com/sun/tools/javac/parser/JavacParser.java#l2580
       // please don't sue me
-      Token token = getToken(offset);
+      JavaccToken token = getToken(offset);
       if (token == null) return false; // eof
       switch (token.kind) {
            case PLUS: case MINUS: case STRING_LITERAL: case CHARACTER_LITERAL:
@@ -391,7 +416,7 @@ class JavaParserImpl {
            case LPAREN:
                int lookahead = offset + 1;
                int balance = 1;
-               Token t;
+               JavaccToken t;
                while ((t = getToken(lookahead)) != null && balance > 0) {
                    switch (t.kind) {
                        case LPAREN: balance++; break;
@@ -429,6 +454,65 @@ class JavaParserImpl {
     token_source.setSuppressMarker(marker);
   }
 
+  private void setLastTokenImage(AbstractJavaNode node) {
+    node.setImage(getToken(0).getImage());
+  }
+
+  private void fixLastToken() {
+       AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+       top.setLastToken(getToken(0));
+  }
+
+  private void forceExprContext() {
+       AbstractJavaNode top = jjtree.peekNode();
+
+       if (top instanceof ASTAmbiguousName) {
+           // see doc on the method
+           AbstractJavaNode replacement = (AbstractJavaNode) ((ASTAmbiguousName) top).forceExprContext();
+           jjtree.popNode();
+           jjtree.pushNode(replacement);
+       }
+  }
+
+  private void pushEmptyModifierList() {
+        ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
+
+        emptyMods.setDeclaredModifiers(Collections.emptySet());
+
+        JavaccToken tok = JavaccToken.implicitBefore(getToken(1));
+        emptyMods.setFirstToken(tok);
+        emptyMods.setLastToken(tok);
+
+        jjtree.pushNode(emptyMods);
+  }
+
+  private void forceTypeContext() {
+      AbstractJavaNode top = jjtree.peekNode();
+
+      if (top instanceof ASTAmbiguousName) {
+          // see doc on the method
+          AbstractJavaNode replacement = ((ASTAmbiguousName) top).forceTypeContext();
+          jjtree.popNode();
+          jjtree.pushNode(replacement);
+      }
+  }
+
+
+  // make the top node the last child of the second node on the stack
+  // If the stack ends with ..[A][B], then it becomes ..[A[B]]
+  private void injectTop() {
+       AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
+       AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
+       prev.addChild(top, prev.getNumChildren());
+       prev.setLastToken(top.getLastToken());
+  }
+
+  /**
+     * Keeps track during tree construction, whether we are currently building an
+     * explicit constructor invocation. Then the PrimaryExpression that may prefix
+     * a qualified super constructor call may not consume "super" tokens.
+     */
+    private boolean inExplicitConstructorInvoc = false;
 
 }
 PARSER_END(JavaParserImpl)
@@ -450,9 +534,12 @@ SPECIAL_TOKEN :
 | < WHITESPACE: ([" ", "\t", "\f", "\n", "\r"])+ >
 }
 
+/* COMMENTS */
+
+
 SPECIAL_TOKEN :
 {
-< SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+  < SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
     {
         int startOfNOPMD = matchedToken.getImage().indexOf(suppressMarker);
         if (startOfNOPMD != -1) {
@@ -462,7 +549,6 @@ SPECIAL_TOKEN :
     }
 }
 
-/* COMMENTS */
 
 MORE :
 {
@@ -572,66 +658,52 @@ TOKEN :
 TOKEN :
 {
   < INTEGER_LITERAL:
-        <DECIMAL_LITERAL> (["l","L"])?
-      | <HEX_LITERAL> (["l","L"])?
-      | <BINARY_LITERAL> (["l","L"])?
-      | <OCTAL_LITERAL> (["l","L"])?
+        <DECIMAL_NUMERAL> (["l","L"])?
+      | <HEX_NUMERAL>     (["l","L"])?
+      | <BINARY_NUMERAL>  (["l","L"])?
+      | <OCTAL_NUMERAL>   (["l","L"])?
   >
-|
-  < #DECIMAL_LITERAL: (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
-|
-  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?) >
-|
-  < #BINARY_LITERAL: "0" ["b","B"] (["0","1"]((["0","1","_"])*["0","1"])?) >
-|
-  < #OCTAL_LITERAL: "0" (["0"-"7"]((["0"-"7","_"])*["0"-"7"])?) >
+| < #DECIMAL_NUMERAL:               ["1"-"9"]  (("_")* ["0"-"9"])* >
+| < #HEX_NUMERAL:     "0" ["x","X"] <HEX_DIGIT_SEQ>                >
+| < #BINARY_NUMERAL:  "0" ["b","B"] ["0","1"]  (("_")* ["0","1"])* >
+| < #OCTAL_NUMERAL:   "0"                      (("_")* ["0"-"7"])* >
 |
   < FLOATING_POINT_LITERAL:
-        (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?)? (<EXPONENT>)? (["f","F","d","D"])?
-      | "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? (["f","F","d","D"])?
-      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) <EXPONENT> (["f","F","d","D"])?
-      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? ["f","F","d","D"]
+      <DECIMAL_FLOATING_POINT_LITERAL>
+    | <HEX_FLOATING_POINT_LITERAL>
   >
-|
-  < HEX_FLOATING_POINT_LITERAL:
-      (<HEX_LITERAL> (".")? | "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)? "." (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)) ["p","P"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (["f","F","d","D"])?
+| < #DECIMAL_FLOATING_POINT_LITERAL:
+      <DIGIT_SEQ> "." (<DIGIT_SEQ>)? (<EXPONENT>)? (["f","F", "d","D"])?
+    |             "."  <DIGIT_SEQ>   (<EXPONENT>)? (["f","F", "d","D"])?
+    | <DIGIT_SEQ>                     <EXPONENT>   (["f","F", "d","D"])?
+    | <DIGIT_SEQ>                    (<EXPONENT>)?  ["f","F", "d","D"]
   >
-|
-  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
-|
-  < CHARACTER_LITERAL:
-      "'"
-      (   (~["'","\\","\n","\r"])
-        | ("\\"
-            ( ["n","t","b","r","f","\\","'","\""]
-            | ["0"-"7"] ( ["0"-"7"] )?
-            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-            )
-          )
-      )
-      "'"
+| < #HEX_FLOATING_POINT_LITERAL:
+      "0" ["x","X"]  <HEX_DIGIT_SEQ>   (".")?               <HEX_EXPONENT> (["f","F", "d","D"])?
+    | "0" ["x","X"] (<HEX_DIGIT_SEQ>)?  "." <HEX_DIGIT_SEQ> <HEX_EXPONENT> (["f","F", "d","D"])?
   >
-| < #STRING_ESCAPE:
-      "\\"
-      ( ["n","t","b","r","f", "s", "\\","'","\""]
-      // octal escapes
-      | ["0"-"7"] ( ["0"-"7"] )?
-      | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-      )
-  >
-|
-  < STRING_LITERAL:
-      "\""
-      (   (~["\"","\\","\n","\r"])
-        | <STRING_ESCAPE>
-      )*
-      "\""
-  >
+| < #DIGIT_SEQ:     ["0"-"9"]                 (("_")* ["0"-"9"])*                 >
+| < #HEX_DIGIT_SEQ: ["0"-"9","a"-"f","A"-"F"] (("_")* ["0"-"9","a"-"f","A"-"F"])* >
+
+| < #EXPONENT:      ["e","E"] <EXPONENT_TAIL> >
+| < #HEX_EXPONENT:  ["p","P"] <EXPONENT_TAIL> >
+| < #EXPONENT_TAIL: (["+","-"])? <DIGIT_SEQ>  >
+
+| < CHARACTER_LITERAL: "'"  ( ~["'", "\\","\n","\r"] | <STRING_ESCAPE> )  "'"  >
+| < STRING_LITERAL:    "\"" ( ~["\"","\\","\n","\r"] | <STRING_ESCAPE> )* "\"" >
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
         ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
      "\"\"\""
+  >
+| < #STRING_ESCAPE:
+        "\\"
+        ( ["n","t","b","r","f","s","\\","'","\""]
+        // octal escapes
+        | ["0"-"7"] ( ["0"-"7"] )?
+        | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+        )
   >
 }
 
@@ -844,13 +916,13 @@ TOKEN :
 ASTCompilationUnit CompilationUnit() :
 {}
 {
-  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
-  ( ImportDeclaration() ( EmptyStatement() )* )*
+  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyDeclaration() )* ]
+  ( ImportDeclaration() ( EmptyDeclaration() )* )*
   // the module decl lookahead needs to be before the type declaration branch,
   // looking for annotations + "open" | "module" will fail faster if it's *not*
   // a module (most common case)
-  [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyStatement() )* ]
-  ( TypeDeclaration() ( EmptyStatement() )* )*
+  [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyDeclaration() )* ]
+  ( TypeDeclaration() ( EmptyDeclaration() )* )*
   ( < "\u001a" > )?
   ( < "~[]" > )? // what's this for? Do you mean ( < ~[] > )*, i.e. "any character"?
   <EOF>
@@ -868,15 +940,17 @@ private void ModuleDeclLahead() #void:
 
 
 void PackageDeclaration() :
-{}
+{String image;}
 {
-  ( Annotation() )* "package" Name() ";"
+  ModAnnotationList() "package" image=VoidName() { jjtThis.setImage(image); } ";"
 }
 
 void ImportDeclaration() :
-{}
+{String image;}
 {
-  "import" [ "static" {jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import" [ "static" {jjtThis.setStatic();} ]
+  image=VoidName() { jjtThis.setImage(image); }
+  [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 /*
@@ -884,64 +958,56 @@ void ImportDeclaration() :
  * syntax errors for simple modifier mistakes. It will also enable us to give
  * better error messages.
  */
-int Modifiers() #void:
+void ModifierList():
 {
-   int modifiers = 0;
+   EnumSet<JModifier> modifiers = EnumSet.noneOf(JModifier.class);
 }
 {
  (
   LOOKAHEAD(2)
   (
-   "public" { modifiers |= AccessNode.PUBLIC; }
-  | "static" { modifiers |= AccessNode.STATIC; }
-  | "protected" { modifiers |= AccessNode.PROTECTED; }
-  | "private" { modifiers |= AccessNode.PRIVATE; }
-  | "final" { modifiers |= AccessNode.FINAL; }
-  | "abstract" { modifiers |= AccessNode.ABSTRACT; }
-  | "synchronized" { modifiers |= AccessNode.SYNCHRONIZED; }
-  | "native" { modifiers |= AccessNode.NATIVE; }
-  | "transient" { modifiers |= AccessNode.TRANSIENT; }
-  | "volatile" { modifiers |= AccessNode.VOLATILE; }
-  | "strictfp" { modifiers |= AccessNode.STRICTFP; }
-  | "default" { modifiers |= AccessNode.DEFAULT; }
-  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; }
-  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; }
+    "public"        { modifiers.add(JModifier.PUBLIC); }
+  | "static"        { modifiers.add(JModifier.STATIC); }
+  | "protected"     { modifiers.add(JModifier.PROTECTED); }
+  | "private"       { modifiers.add(JModifier.PRIVATE); }
+  | "final"         { modifiers.add(JModifier.FINAL); }
+  | "abstract"      { modifiers.add(JModifier.ABSTRACT); }
+  | "synchronized"  { modifiers.add(JModifier.SYNCHRONIZED); }
+  | "native"        { modifiers.add(JModifier.NATIVE); }
+  | "transient"     { modifiers.add(JModifier.TRANSIENT); }
+  | "volatile"      { modifiers.add(JModifier.VOLATILE); }
+  | "strictfp"      { modifiers.add(JModifier.STRICTFP); }
+  | "default"       { modifiers.add(JModifier.DEFAULT); }
+  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers.add(JModifier.SEALED); }
+  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers.add(JModifier.NON_SEALED); }
   | Annotation()
   )
  )*
- {
-    return modifiers;
- }
+ { jjtThis.setDeclaredModifiers(modifiers); }
+ { jjtree.injectRight(1); } // inject the modifier node in the follower
 }
 
 /*
  * Declaration syntax follows.
  */
-void TypeDeclaration():
+void TypeDeclaration() #void:
+{}
 {
-   int modifiers;
-}
-{
-  modifiers = Modifiers()
+  ModifierList()
   (
-     ClassOrInterfaceDeclaration(modifiers)
-   |
-     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
-   |
-     AnnotationTypeDeclaration(modifiers)
-   |
-     LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
+     ClassOrInterfaceDeclaration()
+   | AnnotationTypeDeclaration()
+   | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+   | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
+
   )
 }
 
-void ClassOrInterfaceDeclaration(int modifiers):
-{
-    Token t = null;
-    jjtThis.setModifiers(modifiers);
-}
+void ClassOrInterfaceDeclaration():
+{}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
-  t=<IDENTIFIER> { jjtThis.setImage(t.image); }
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -950,19 +1016,17 @@ void ClassOrInterfaceDeclaration(int modifiers):
 }
 
 void ExtendsList():
+{}
 {
-   boolean extendsMoreThanOne = false;
-}
-{
-   "extends" (TypeAnnotation())* ClassOrInterfaceType()
-   ( "," (TypeAnnotation())* ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
+   "extends" AnnotatedClassOrInterfaceType()
+   ( "," AnnotatedClassOrInterfaceType() )*
 }
 
 void ImplementsList():
 {}
 {
-   "implements" (TypeAnnotation())* ClassOrInterfaceType()
-   ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+   "implements" AnnotatedClassOrInterfaceType()
+   ( "," AnnotatedClassOrInterfaceType() )*
 }
 
 void PermittedSubclasses() #PermitsList:
@@ -979,11 +1043,9 @@ void PermittedSubclasses() #PermitsList:
     ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
 }
 
-void EnumDeclaration(int modifiers):
+void EnumDeclaration():
 {
-
-Token t;
-jjtThis.setModifiers(modifiers);
+  JavaccToken t;
 }
 {
   t = <IDENTIFIER> {
@@ -1000,22 +1062,21 @@ void EnumBody():
 {}
 {
    "{"
-   [( Annotation() )* EnumConstant() ( LOOKAHEAD(2) "," ( Annotation() )* EnumConstant() )* ]
-	[ "," ]
-   [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
+    [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
+    [ "," { jjtThis.setTrailingComma(); } ]
+    [ ";" { jjtThis.setSeparatorSemi(); } ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
 }
 
 void EnumConstant():
-{Token t;}
+{}
 {
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ Arguments() ] [ ClassOrInterfaceBody() ]
+  ModAnnotationList() VariableDeclaratorId() [ ArgumentList() ] [ AnonymousClassDeclaration() ]
 }
 
-void RecordDeclaration(int modifiers):
+void RecordDeclaration():
 {
-    Token t;
-    jjtThis.setModifiers(modifiers);
+    JavaccToken t;
 }
 {
   t = <IDENTIFIER> {
@@ -1039,10 +1100,9 @@ void RecordComponentList() :
 void RecordComponent():
 {}
 {
-  (Annotation())*
-  Type()
-  [ "..." {jjtThis.setVarargs();} ]
-  VariableDeclaratorId()
+  ModAnnotationList()
+  FormalParamType()
+  VariableIdWithDims()
 }
 
 void RecordBody():
@@ -1056,7 +1116,7 @@ void RecordBody():
 void RecordBodyDeclaration() #void :
 {}
 {
-  LOOKAHEAD(RecordCtorLookahead()) RecordConstructorDeclaration()
+  LOOKAHEAD(RecordCtorLookahead()) ModifierList() RecordConstructorDeclaration()
   |
   ClassOrInterfaceBodyDeclaration()
 }
@@ -1064,15 +1124,12 @@ void RecordBodyDeclaration() #void :
 private void RecordCtorLookahead() #void:
 {}
 {
-    Modifiers() <IDENTIFIER> "{"
+    ModifierList() <IDENTIFIER> "{"
 }
 
 void RecordConstructorDeclaration():
+{}
 {
-  int modifiers;
-}
-{
-  modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
   <IDENTIFIER> { jjtThis.setImage(token.image); }
   Block()
 }
@@ -1084,16 +1141,10 @@ void TypeParameters():
 }
 
 void TypeParameter():
-{Token t;}
-{
-   (TypeAnnotation())*
-   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
-}
-
-void TypeBound():
 {}
 {
-   "extends" (TypeAnnotation())* ClassOrInterfaceType() ( "&" (TypeAnnotation())* ClassOrInterfaceType() )*
+   AnnotationList()
+   <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
 }
 
 void ClassOrInterfaceBody():
@@ -1102,27 +1153,25 @@ void ClassOrInterfaceBody():
   "{" ( ClassOrInterfaceBodyDeclaration() )* "}"
 }
 
-void ClassOrInterfaceBodyDeclaration():
-{
-   int modifiers;
-}
+void ClassOrInterfaceBodyDeclaration() #void:
+{}
 { LOOKAHEAD(["static"] "{" ) Initializer()
-|  modifiers = Modifiers()
-  ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
-    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
-    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
-    | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
-    | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
-    | LOOKAHEAD(2) MethodDeclaration(modifiers)
-    | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
+|  ModifierList()
+  ( LOOKAHEAD(3) ClassOrInterfaceDeclaration()
+    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
+    | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration()
+    | LOOKAHEAD( Type() <IDENTIFIER> (AnnotationList() "[" "]")* ( "," | "=" | ";" ) )  FieldDeclaration()
+    | LOOKAHEAD(2) MethodDeclaration()
+    | LOOKAHEAD(2) AnnotationTypeDeclaration()
   )
 |
-  ";"
+  ";" #EmptyDeclaration
 }
 
 
-void FieldDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);}
+void FieldDeclaration() :
+{}
 {
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
@@ -1130,23 +1179,35 @@ void FieldDeclaration(int modifiers) :
 void VariableDeclarator() :
 {}
 {
-  VariableDeclaratorId() [ "=" VariableInitializer() ]
+  VariableIdWithDims() [ "=" VariableInitializer() ]
 }
 
 void VariableDeclaratorId() :
+{}
 {
-  Token t;
-  String image;
-}
-{
-  (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
-   | t=<THIS> { jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
-  )
-  { jjtThis.setImage( image ); }
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
 
-void VariableInitializer() :
+void BindingVarId() #VariableDeclaratorId:
+{ pushEmptyModifierList(); }
+{
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+}
+
+void VariableIdWithDims() #VariableDeclaratorId :
+{}
+{
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  [ Dims() ]
+}
+
+void ReceiverParameter():
+{}
+{
+    AnnotatedClassOrInterfaceType() [ <IDENTIFIER> "." ] "this"
+}
+
+void VariableInitializer() #void:
 {}
 {
   ArrayInitializer()
@@ -1159,61 +1220,94 @@ void ArrayInitializer() :
   "{" [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ] "}"
 }
 
-void MethodDeclaration(int modifiers) :
-{
-    jjtThis.setModifiers(modifiers);
-}
+void MethodDeclaration() :
+{}
 {
   [ TypeParameters() ]
-  (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ]
+  ResultType()
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  FormalParameters()
+  [ Dims() ]
+  [ ThrowsList() ]
   ( Block() | ";" )
-}
-
-void MethodDeclarator() :
-{Token t;}
-{
-  t=<IDENTIFIER> { jjtThis.setImage( t.image ); }
-  FormalParameters() ( "[" "]" )*
 }
 
 
 void FormalParameters() :
 {}
 {
-  "(" [ FormalParameter() ( "," FormalParameter() )* ] ")"
+  "(" [ ( LOOKAHEAD(ReceiverParameter()) ReceiverParameter() | FormalParameter() ) ( "," FormalParameter() )* ] ")"
 }
 
 void FormalParameter() :
+{}
 {
-}
-{
-   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
-   [ "..." {jjtThis.setVarargs();} ]
-   VariableDeclaratorId()
+   LocalVarModifierList()
+   FormalParamType() ("|" FormalParamType())* // remove this stuff when #2202 is merged
+   VariableIdWithDims()
 }
 
-void ConstructorDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);
-Token t;}
+void FormalParamType() #void:
+{}
 {
-    [ TypeParameters() ]
-   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
-  "{"
-    [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
-    ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+   PrimitiveType()        [ LOOKAHEAD(2) VarargsDimensions() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) VarargsDimensions() #ArrayType(2) ]
+}
+
+void VarargsDimensions() #ArrayDimensions:
+{}
+{
+    // like ArrayDimensions but allows for a varargs ellipsis at the end ("...")
+    LOOKAHEAD(AnnotationList() "[") (LOOKAHEAD(AnnotationList() "[") ArrayTypeDim())+ [ VarargsDim() ]
+  | VarargsDim()
+}
+
+void VarargsDim() #ArrayTypeDim:
+{}
+{
+    TypeAnnotListNoInject() "..." {jjtThis.setVarargs();}
+}
+
+
+void ConstructorDeclaration() :
+{}
+{
+   [ TypeParameters() ]
+   <IDENTIFIER>  {setLastTokenImage(jjtThis);}
+   FormalParameters()
+   [ ThrowsList() ]
+   ConstructorBlock()
+}
+
+private void ConstructorBlock() #Block:
+{}
+{
+    "{"
+        [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        ( BlockStatement() )*
+    "}"
 }
 
 void ExplicitConstructorInvocation() :
-{}
+{inExplicitConstructorInvoc = true;}
 {
-  LOOKAHEAD("this" Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
-|
-  LOOKAHEAD(TypeArguments() "this" Arguments() ";") TypeArguments() "this" {jjtThis.setIsThis();} Arguments() ";"
-|
-  [ LOOKAHEAD(PrimaryExpression() ".") PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();} Arguments() ";"
+   // We may only lookahead one token here, because:
+   // * "this" or "super" can't appear in the primary expression in case of
+   //   qualified super call (last branch), or else compile error, so if we
+   //   see one of them, then the rest is necessarily the arguments
+   //   But: "this" may appear if it's qualified!
+   // * No primary expression may start with "<", meaning we can use it to
+   //   know we're looking forward to type arguments
+  ( LOOKAHEAD("<")      TypeArguments() ( "this" | "super" {jjtThis.setIsSuper();} )
+  | LOOKAHEAD("this")   "this"
+  | LOOKAHEAD("super")  "super"                            {jjtThis.setIsSuper();}
+  | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
+  )
+  // reset this before parsing the arguments list
+  {inExplicitConstructorInvoc = false;}
+  ArgumentList() ";"
 }
+
 
 void Initializer() :
 {}
@@ -1222,41 +1316,197 @@ void Initializer() :
 }
 
 
+
+
+/* JLS: https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.3
+
+ReferenceType:
+    ClassOrInterfaceType
+    TypeVariable
+    ArrayType
+ClassOrInterfaceType:
+    ClassType
+    InterfaceType
+ClassType:
+    {Annotation} Identifier [TypeArguments]
+    ClassOrInterfaceType . {Annotation} Identifier [TypeArguments]
+InterfaceType:
+    ClassType
+TypeVariable:
+    {Annotation} Identifier
+ArrayType:
+    PrimitiveType Dims
+    ClassOrInterfaceType Dims
+    TypeVariable Dims
+Dims:
+    {Annotation} [ ] {{Annotation} [ ]}
+
+*/
+
+
+void IntersectionType() #IntersectionType(isIntersection):
+{boolean isIntersection=false;}
+{
+  AnnotatedType() ( "&" {isIntersection=true;} AnnotatedClassOrInterfaceType() )*
+}
+
+void AnnotationList() #void:
+{}
+{
+  (Annotation())*
+}
+
+void ModAnnotationList() #ModifierList:
+{jjtThis.setDeclaredModifiers(Collections.emptySet());}
+{
+  (Annotation())*
+}
+
+int TypeAnnotListNoInject() #void:
+{int num = 0;}
+{
+   ( TypeAnnotation() {num++;} )*
+   {
+     return num;
+   }
+}
+
+// Type annotation lists are by default injected in the
+// next node to be opened (most likely a type).
+// Sometimes (array dims), this need not be and TypeAnnotListNoInject
+// should be used.
+void TypeAnnotationList() #void:
+{int size=0;}
+{
+   size=TypeAnnotListNoInject() { jjtree.injectRight(size); }
+}
+
+void AnnotatedType() #void:
+{}
+{
+  TypeAnnotationList() Type()
+}
+
+
+void AnnotatedRefType() #void:
+{}
+{
+  TypeAnnotationList() ReferenceType()
+}
+
+void AnnotatedClassOrInterfaceType() #void:
+{}
+{
+  TypeAnnotationList() ClassOrInterfaceType()
+}
+
 /*
  * Type, name and expression syntax follows.
  * Type is the same as "UnannType" in JLS
  *
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
-void Type():
-{
-    Token t;
-}
-{
- LOOKAHEAD(2) ReferenceType()
- | PrimitiveType()
-}
-
-void ReferenceType():
+void Type() #void:
 {}
 {
-  // The grammar here is mildly wrong, the annotations can be before each []
-  // This will wait for #997
-   PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
-  |
-   ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   PrimitiveType()        [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
 }
 
-void ClassOrInterfaceType():
+void Dims() #ArrayDimensions:
+{}
 {
-  StringBuilder s = new StringBuilder();
-  Token t;
+  // the list of dimensions is flat, but annotations are
+  // preserved within each specific dim.
+  (ArrayTypeDim())+
 }
+
+void ArrayTypeDim():
+{}
 {
-  t=<IDENTIFIER> {s.append(t.image);}
-  [ LOOKAHEAD(2) TypeArguments() ]
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
-  {jjtThis.setImage(s.toString());}
+   TypeAnnotListNoInject() "[" "]"
+}
+
+void ReferenceType() #void:
+{}
+{
+    // We parse it that way because the right injection considers node openings,
+    // which means if we want the annotations to belong to the element type, then
+    // the ArrayType node needs to be opened after eg the PrimitiveType
+    PrimitiveType()                       Dims() #ArrayType(2)
+  | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
+}
+
+
+/**
+ * Parses a ClassOrInterfaceType. The production itself is #void,
+ * but the node exists (declared inline within the production).
+ */
+void ClassOrInterfaceType() #void:
+{}
+{
+
+  (LOOKAHEAD({jjtree.isInjectionPending()})
+        // Perhaps surprisingly a type annotation binds to the closest segment
+        // So in "@B Map.Entry", "@B" binds to "Map", and Map is required to be a type name.
+        // If the annotation is not applicable to TYPE_USE then it doesn't compile
+
+        // So if there are annotations pending injection here, then they're necessarily
+        // type annotations, since otherwise they would have been consumed in the
+        // annotation list of a declaration.
+
+        // Eg in "public abstract @F int foo();", "@F" is part of the modifier list of the method.
+        // but in "public abstract <T> @F T foo();", "@F" is necessarily a type annotation, and indeed
+        // is in a separate AnnotationList (it follows the type parameters so is not a modifier).
+
+        // To sum it up, if we have annotations pending, then the first segment is necessarily
+        // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
+        // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
+
+        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassOrInterfaceType
+  |
+
+
+       // Otherwise, for now we have no clue until the first type arguments
+       // or annotation is found. The name is ambiguous between package or
+       // type name unless type arguments are present, in which case we can
+       // be sure that the last segment is a type name.
+
+      AmbiguousName()
+      [ TypeArguments() #ClassOrInterfaceType(2) ]
+      {
+        // At this point the first ClassOrInterfaceType may be on top of the stack,
+        // but its image is not set. If it is on the stack we need to shrink the bounds
+        // of the ambiguous name, or delete it.
+        Node first = jjtree.peekNode();
+        if (first instanceof ASTClassOrInterfaceType) {
+          // then we saw type arguments, so the last segment is definitely a type name
+          ASTAmbiguousName name = first.getFirstChildOfType(ASTAmbiguousName.class);
+          name.shrinkOrDeleteInParentSetImage();
+        }
+      }
+   )
+
+  /*
+    Now if there are other segments, either the previous segment specified type
+    arguments, or the next has an annotation. Either way we know that all the
+    following segments is a type name. Each segment is parsed as its own ClassOrInterfaceType
+    which encloses the previous one. The resulting structure appears left-recursive, but the parser just
+    executes a loop. That scheme preserves the position of type arguments and annotations.
+    See #1150.
+  */
+  ( LOOKAHEAD(2) "." ClassTypeSegment() )*
+  { forceTypeContext(); }
+}
+
+private void ClassTypeSegment() #ClassOrInterfaceType(jjtree.nodeArity() + 1):
+{}
+{
+     TypeAnnotListNoInject()
+     <IDENTIFIER>
+     // We'll enclose the previous segment
+     { setLastTokenImage(jjtThis); }
+     [ TypeArguments() ]
 }
 
 void TypeArguments():
@@ -1268,64 +1518,61 @@ void TypeArguments():
    "<" ">"
 }
 
-void TypeArgument():
+void TypeArgument() #void:
 {}
 {
-   (TypeAnnotation())* (ReferenceType() | "?" [ WildcardBounds() ])
+   TypeAnnotationList() (ReferenceType() | WildcardType())
 }
 
-void WildcardBounds():
+void WildcardType():
 {}
 {
-   ("extends" | "super") (TypeAnnotation())* ReferenceType()
+    "?" [  ("extends" {jjtThis.setUpperBound(true);}| "super") AnnotatedRefType() ]
 }
+
+
+/* JLS https://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-PrimitiveType
+
+PrimitiveType:
+    {Annotation} NumericType
+    {Annotation} boolean
+NumericType:
+    IntegralType
+    FloatingPointType
+IntegralType:
+    (one of)
+    byte short int long char
+FloatingPointType:
+    (one of)
+    float double
+*/
 
 void PrimitiveType() :
 {}
 {
-  "boolean" {jjtThis.setImage("boolean");}
-| "char" {jjtThis.setImage("char");}
-| "byte" {jjtThis.setImage("byte");}
-| "short" {jjtThis.setImage("short");}
-| "int" {jjtThis.setImage("int");}
-| "long" {jjtThis.setImage("long");}
-| "float" {jjtThis.setImage("float");}
-| "double" {jjtThis.setImage("double");}
+      "boolean" {jjtThis.setKind(PrimitiveTypeKind.BOOLEAN);}
+    | "char"    {jjtThis.setKind(PrimitiveTypeKind.CHAR);}
+    | "byte"    {jjtThis.setKind(PrimitiveTypeKind.BYTE);}
+    | "short"   {jjtThis.setKind(PrimitiveTypeKind.SHORT);}
+    | "int"     {jjtThis.setKind(PrimitiveTypeKind.INT);}
+    | "long"    {jjtThis.setKind(PrimitiveTypeKind.LONG);}
+    | "float"   {jjtThis.setKind(PrimitiveTypeKind.FLOAT);}
+    | "double"  {jjtThis.setKind(PrimitiveTypeKind.DOUBLE);}
 }
 
 
-void ResultType() :
+void ResultType() #void:
 {}
 {
-  "void" | Type()
+   "void" #VoidType
+   | AnnotatedType()
 }
 
-void Name() :
-/*
- * A lookahead of 2 is required below since "Name" can be followed
- * by a ".*" when used in the context of an "ImportDeclaration".
- */
-{
-  StringBuilder s = new StringBuilder();
-  Token t;
-}
-{
-  t=<IDENTIFIER>
-  {
-    s.append(t.image);
-  }
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER>
-    {s.append('.').append(t.image);}
-  )*
-  {jjtThis.setImage(s.toString());}
-}
 
-void NameList() :
+void ThrowsList() :
 {}
 {
-  (TypeAnnotation())* Name()
-  ( "," (TypeAnnotation())* Name()
-  )*
+  "throws" AnnotatedClassOrInterfaceType() ( "," AnnotatedClassOrInterfaceType())*
 }
 
 
@@ -1333,7 +1580,7 @@ void NameList() :
  * Expression syntax follows.
  */
 
-void Expression() :
+void Expression() #AssignmentExpression(>1):
 /*
  * This expansion has been written this way instead of:
  *   Assignment() | ConditionalExpression()
@@ -1343,160 +1590,205 @@ void Expression() :
  * a primary expression.  Consider adding a semantic predicate to work
  * around this.
  */
- // It also allows lambda expressions in many more contexts as allowed by the JLS.
- // Lambda expressions are not a PrimaryExpression in the JLS, instead they're
- // separated from the AssignmentExpression production. Their use is restricted
- // to method and constructor argument, cast operand, and the RHS of assignments.
- // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
- //
- // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
- // as a workaround.
-{}
+{AssignmentOp op = null;}
 {
   ConditionalExpression()
   [
-    LOOKAHEAD(2) AssignmentOperator() Expression()
+    LOOKAHEAD(1) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
   ]
 }
 
-void AssignmentOperator() :
+AssignmentOp AssignmentOperator() #void:
 {}
 {
-      "="     {jjtThis.setImage("=");}
-    | "*="    {jjtThis.setImage("*="); jjtThis.setCompound();}
-    | "/="    {jjtThis.setImage("/="); jjtThis.setCompound();}
-    | "%="    {jjtThis.setImage("%="); jjtThis.setCompound();}
-    | "+="    {jjtThis.setImage("+="); jjtThis.setCompound();}
-    | "-="    {jjtThis.setImage("-="); jjtThis.setCompound();}
-    | "<<="   {jjtThis.setImage("<<="); jjtThis.setCompound();}
-    | ">>="   {jjtThis.setImage(">>="); jjtThis.setCompound();}
-    | ">>>="  {jjtThis.setImage(">>>="); jjtThis.setCompound();}
-    | "&="    {jjtThis.setImage("&="); jjtThis.setCompound();}
-    | "^="    {jjtThis.setImage("^="); jjtThis.setCompound();}
-    | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
+      "="    { return AssignmentOp.ASSIGN; }
+    | "*="   { return AssignmentOp.MUL_ASSIGN; }
+    | "/="   { return AssignmentOp.DIV_ASSIGN; }
+    | "%="   { return AssignmentOp.MOD_ASSIGN; }
+    | "+="   { return AssignmentOp.ADD_ASSIGN; }
+    | "-="   { return AssignmentOp.SUB_ASSIGN; }
+    | "<<="  { return AssignmentOp.LEFT_SHIFT_ASSIGN; }
+    | ">>="  { return AssignmentOp.RIGHT_SHIFT_ASSIGN; }
+    | ">>>=" { return AssignmentOp.UNSIGNED_RIGHT_SHIFT_ASSIGN; }
+    | "&="   { return AssignmentOp.AND_ASSIGN; }
+    | "^="   { return AssignmentOp.XOR_ASSIGN; }
+    | "|="   { return AssignmentOp.OR_ASSIGN; }
 }
 
-// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
-// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ LOOKAHEAD(2) "?" Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [LOOKAHEAD(1) "?" Expression() ":" ConditionalExpression() ]
 }
 
-void ConditionalOrExpression() #ConditionalOrExpression(>1):
+void ConditionalOrExpression() #void:
 {}
 {
-  ConditionalAndExpression() ( LOOKAHEAD(2) "||" ConditionalAndExpression() )*
+  ConditionalAndExpression() (LOOKAHEAD(1) ("||" {jjtThis.setOp(BinaryOp.CONDITIONAL_OR);} ConditionalAndExpression()) #InfixExpression(2))*
 }
 
-void ConditionalAndExpression() #ConditionalAndExpression(>1):
+void ConditionalAndExpression() #void:
 {}
 {
-  InclusiveOrExpression() ( LOOKAHEAD(2) "&&" InclusiveOrExpression() )*
+  InclusiveOrExpression() (LOOKAHEAD(1) ("&&" {jjtThis.setOp(BinaryOp.CONDITIONAL_AND);} InclusiveOrExpression())  #InfixExpression(2))*
 }
 
-void InclusiveOrExpression() #InclusiveOrExpression(>1) :
+void InclusiveOrExpression() #void:
 {}
 {
-  ExclusiveOrExpression() ( LOOKAHEAD(2) "|" ExclusiveOrExpression() )*
+  ExclusiveOrExpression() (LOOKAHEAD(1) ("|" {jjtThis.setOp(BinaryOp.OR);} ExclusiveOrExpression())  #InfixExpression(2))*
 }
 
-void ExclusiveOrExpression() #ExclusiveOrExpression(>1) :
+void ExclusiveOrExpression() #void:
 {}
 {
-  AndExpression()  ( LOOKAHEAD(2) "^" AndExpression() )*
+  AndExpression()  (LOOKAHEAD(1) ("^" {jjtThis.setOp(BinaryOp.XOR);} AndExpression()) #InfixExpression(2))*
 }
 
-void AndExpression() #AndExpression(>1):
+void AndExpression() #void:
 {}
 {
-  EqualityExpression() ( LOOKAHEAD(2) "&" EqualityExpression() )*
+  EqualityExpression() (LOOKAHEAD(1) ("&" {jjtThis.setOp(BinaryOp.AND);} EqualityExpression()) #InfixExpression(2))*
 }
 
-void EqualityExpression() #EqualityExpression(>1):
+void EqualityExpression() #void:
 {}
 {
-  InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
+  InstanceOfExpression()
+  (LOOKAHEAD(1)
+    (
+        ( "==" {jjtThis.setOp(BinaryOp.EQ);}
+        | "!=" {jjtThis.setOp(BinaryOp.NE);}
+        )
+        InstanceOfExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void InstanceOfExpression() #InstanceOfExpression(>1):
+void InstanceOfExpression() #void:
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ VariableDeclaratorId() #TypeTestPattern(2) ] ]
+  RelationalExpression() [
+    LOOKAHEAD(1)
+    ("instanceof"
+        AnnotatedRefType() [ BindingVarId() #TypeTestPattern(2) ]
+        {
+            jjtThis.setOp(BinaryOp.INSTANCEOF);
+            AbstractJavaNode top = jjtree.popNode();
+            if (top instanceof ASTPattern) {
+               top = new ASTPatternExpression((ASTPattern) top);
+            } else {
+               top = new ASTTypeExpression((ASTType) top);
+            }
+            jjtree.pushNode(top);
+        }
+        {}
+    ) #InfixExpression(2)
+  ]
 }
 
-void RelationalExpression() #RelationalExpression(>1):
+void RelationalExpression() #void:
 {}
 {
+  // There technically cannot be more than one, because it wouldn't compile
+  // But we give it some leeway to not make the parser too knowledgeable
+  // From the JLS:
+  // For example, a<b<c parses as (a<b)<c, which is always a compile-time
+  // error, because the type of a<b is always boolean and < is not an operator
+  // on boolean values.
   ShiftExpression()
-   ( LOOKAHEAD(2)
-    ( "<" {jjtThis.setImage("<");}
-     | ">" {jjtThis.setImage(">");}
-     | "<=" {jjtThis.setImage("<=");}
-     | ">=" {jjtThis.setImage(">=");}
-    ) ShiftExpression() )*
+  (LOOKAHEAD(1)
+    (
+      (
+          "<"  {jjtThis.setOp(BinaryOp.LT);}
+        | ">"  {jjtThis.setOp(BinaryOp.GT);}
+        | "<=" {jjtThis.setOp(BinaryOp.LE);}
+        | ">=" {jjtThis.setOp(BinaryOp.GE);}
+      )
+      ShiftExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void ShiftExpression() #ShiftExpression(>1):
+void ShiftExpression() #void:
 {}
 {
   AdditiveExpression()
-   ( LOOKAHEAD(2)
-    ( "<<" { jjtThis.setImage("<<");}
-     | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
-     | RUNSIGNEDSHIFT() { jjtThis.setImage(">>>"); }
-    ) AdditiveExpression() )*
+  (LOOKAHEAD(1)
+    (
+      ( "<<"                     {jjtThis.setOp(BinaryOp.LEFT_SHIFT);}
+      | RSIGNEDSHIFT()           {jjtThis.setOp(BinaryOp.RIGHT_SHIFT);}
+      | RUNSIGNEDSHIFT()         {jjtThis.setOp(BinaryOp.UNSIGNED_RIGHT_SHIFT);}
+      )
+      AdditiveExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void AdditiveExpression() #AdditiveExpression(>1):
+void AdditiveExpression() #void:
 {}
 {
-  MultiplicativeExpression() ( LOOKAHEAD(2) ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) MultiplicativeExpression() )*
+  MultiplicativeExpression()
+  (LOOKAHEAD(1)
+    (
+      ( "+" {jjtThis.setOp(BinaryOp.ADD);}
+      | "-" {jjtThis.setOp(BinaryOp.SUB);}
+      )
+      MultiplicativeExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void MultiplicativeExpression() #MultiplicativeExpression(>1):
+void MultiplicativeExpression() #void:
 {}
 {
-  UnaryExpression() ( LOOKAHEAD(2) ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
+  UnaryExpression()
+  (LOOKAHEAD(1)
+    (
+      ( "*" {jjtThis.setOp(BinaryOp.MUL);}
+      | "/" {jjtThis.setOp(BinaryOp.DIV);}
+      | "%" {jjtThis.setOp(BinaryOp.MOD);}
+      )
+      UnaryExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
+// TODO update operator setting for those expressions
+
+void UnaryExpression() #void:
 {}
 {
-  ("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()
-  | PreIncrementExpression()
-  | PreDecrementExpression()
+    (("+" {jjtThis.setOp(UnaryOp.UNARY_PLUS);} | "-" {jjtThis.setOp(UnaryOp.UNARY_MINUS);}) UnaryExpression()) #UnaryExpression
+  | PrefixIncrementExpression()
   | UnaryExpressionNotPlusMinus()
 }
 
-void PreIncrementExpression() :
+void PrefixIncrementExpression() #UnaryExpression:
 {}
 {
-  "++" PrimaryExpression()
+  ("++" {jjtThis.setOp(UnaryOp.PRE_INCREMENT);}
+  | "--" {jjtThis.setOp(UnaryOp.PRE_DECREMENT);}
+  )
+  PrimaryExpression()
 }
 
-void PreDecrementExpression() :
+void UnaryExpressionNotPlusMinus() #void:
 {}
 {
-  "--" PrimaryExpression()
-}
-
-void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImage() != null)):
-{}
-{
- ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-/*
- * This is really ugly... we are repeating the CastExpression lookahead and full expression...
- * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
- * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
-*/
-| LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
-| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExprNotPmStart()) CastExpression()
-| PostfixExpression() // this may be a parenthesized expr, which is why we have lookaheads
+ (( "~" {jjtThis.setOp(UnaryOp.COMPLEMENT);} | "!" {jjtThis.setOp(UnaryOp.NEGATION);}) UnaryExpression()) #UnaryExpression
+ // There's no separate production for CastExpression, because that would force
+ // us to repeat the lookahead
+ // Those lookaheads are quite expensive, they're run to disambiguate between
+ // ParenthesizedExpression and CastExpression.
+| LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
+    ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
+ // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
+| LOOKAHEAD("(" IntersectionType() ")" UnaryExprNotPmStart() )
+    ("(" IntersectionType() ")" UnaryExpressionNotPlusMinus()) #CastExpression
+| PostfixExpression()
 | SwitchExpression()
 }
-
 
 private void UnaryExprNotPmStart() #void:
 {}
@@ -1509,20 +1801,19 @@ private void UnaryExprNotPmStart() #void:
    | "void" | PrimitiveType()
 }
 
-void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
+void PostfixExpression() #void:
 {}
 {
-  PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
+
+  PrimaryExpression()
+  [
+    LOOKAHEAD(1)
+    ("++" {jjtThis.setOp(UnaryOp.POST_INCREMENT);}
+    | "--" {jjtThis.setOp(UnaryOp.POST_DECREMENT);}
+    ) #UnaryExpression(1)
+  ]
 }
 
-void CastExpression() :
-{}
-{
-  LOOKAHEAD(
-    "(" (Annotation())* PrimitiveType() ")"
-  ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
-| "(" (TypeAnnotation())* Type() ( "&" {jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
-}
 
 void SwitchExpression() :
 {boolean prevInSwitchBlock = inSwitchExprBlock;}
@@ -1533,157 +1824,325 @@ void SwitchExpression() :
     {inSwitchExprBlock = prevInSwitchBlock;}
 }
 
-void PrimaryExpression() :
+/**
+ * A primary expression. This includes call chains, etc.
+ *
+ * A PrimaryPrefix corresponds to an unqualified primary expression,
+ * e.g "new Foo()". Then, if any, suffixes of the form e.g. ".method()",
+ * ".field" or "::ref" are added, each time enclosing the previous node.
+ * Iteration stops after the first method reference, or we can't continue.
+ *
+ * The resulting subtree looks left-recursive, but the parsing is iterative.
+ */
+void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+  // the lookahead here stops iteration after the first method reference,
+  // because nothing can be chained after a method reference.
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead(), {!(jjtree.peekNode() instanceof ASTMethodReference)}) PrimarySuffix() )* {forceExprContext();}
 }
 
-void MemberSelector():
-{
-Token t;
-}
-{
-  "." TypeArguments() t=<IDENTIFIER> {jjtThis.setImage(t.image);}
-| MethodReference()
-}
-
-void MethodReference() :
-{Token t;}
-{
-  "::" [TypeArguments()] ( "new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
-}
-
-void PrimaryPrefix() :
-{Token t;}
+/*
+  Expressions that may be present at the start of a primary expression.
+ */
+void PrimaryPrefix() #void :
+{JavaccToken savedStart;}
 {
   Literal()
-| LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
-| "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD(3) "(" Expression() ")"
-| AllocationExpression()
-| LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
-| LOOKAHEAD( Name() "::" ) Name()
-| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
-| Name()
+| "this"                                  #ThisExpression
+| "super"                                 #SuperExpression(true)
+    ("." MemberSelector() | MethodReference())
+| UnqualifiedAllocationExpr()
+| ("void" #VoidType "." "class")          #ClassLiteral
+| LOOKAHEAD(1) // suppress the warning here.
+  (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
+    (
+       MethodReference()
+     | "." "class"                        #ClassLiteral(1)
+    )
+
+// If annotations start the expression, it's necessarily a method or ctor reference
+// This is because types in class literals or in qualified super/this may not be annotated
+| LOOKAHEAD("@") AnnotatedRefType() MethodReference()
+
+| LOOKAHEAD(LambdaLahead()) LambdaExpression()
+
+// Parenthesized expr, we need to adjust start/end tokens
+| "(" {savedStart = getToken(0);} Expression() ")"
+  {
+    AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode());
+    AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+    top.setFirstToken(savedStart);
+    top.setLastToken(getToken(0));
+  }
+// If it is an ambiguous name, then we may go on
+// into the next step, which is less restricted
+// than PrimarySuffix
+| AmbiguousName() [ LOOKAHEAD(Step2Lahead()) PrimaryStep2() ]
 }
 
-void LambdaExpression() :
+// This describes the cases where the PrimaryPrefix may fall
+// into PrimaryStep2, after seeing an AmbiguousName. Notice
+// that type arguments is still possible, as well as annotations
+// ("@") before an annotated array type, or qualified "this".
+// If we are in an explicit constructor invocation, then super is disallowed.
+private void Step2Lahead() #void:
 {}
 {
-  VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+   "::" | "(" | "@" | "["
+   // the type arguments must be followed by what may complete a class type + method ref
+   // otherwise we choke on eg `i < w >> 1`, because `< w >` matches type arguments
+   | TypeArguments() ("[" | "." | "@" | "::")
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new" | "this") // not super in this case
 }
 
-void LambdaParameters() #FormalParameters :
+private void SuffixLAhead() #void:
 {}
 {
-    "(" [ LambdaParameterList() ] ")"
+   // this is simpler than the step 2 lookahead
+   "::" | "["
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
 }
 
-void LambdaParameterList() #void :
+
+// Step right after the *first* ambiguous name if any.
+// Then we have more options than a primary suffix,
+// we can still expect to have some class type and a
+// class literal, or some type arguments and a method reference
+void PrimaryStep2() #void:
 {}
 {
-    LambdaParameter() ( "," LambdaParameter() )*
+      // If we find type parameters, then we can only expect a method reference
+      // class literals or qualifiers to static member access/call may not be parameterised
+      {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* [ Dims() #ArrayType(2) ] MethodReference()
+    | MethodReference()
+    | ArgumentList()                          #MethodCall(2)
+    | "." (
+          {forceTypeContext();} "class"       #ClassLiteral(1)
+          // qualified this or super
+        | {forceTypeContext();} "this"        #ThisExpression(1)
+        | {forceTypeContext();} "super"       #SuperExpression(1)
+            // here we force the super to be followed by something,
+            // "super" alone is not a valid expression
+            ("." MemberSelector() | MethodReference())
+        | MemberSelector()
+    )
+    // catches the case where the ambig name is the start of an array type
+    | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
+    // and here, the array expr in an array access
+    | {forceExprContext();} "[" Expression() "]"            #ArrayAccess(2)
 }
 
-void LambdaParameter() #FormalParameter :
+/**
+ * Productions that may be present after a PrimaryPrefix. Basically
+ * allows for call chains. We loop on this production in PrimaryExpression.
+ */
+void PrimarySuffix() #void :
 {}
 {
-    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-    LambdaParameterType()
-    [ "..." {jjtThis.setVarargs();} ]
+  MethodReference()
+| {forceExprContext();} "[" Expression() "]"              #ArrayAccess(2)
+| "." MemberSelector()
+}
+
+/**
+ * Part of a primary suffix that immediately follows a dot. Also
+ * part of step 2.
+ */
+void MemberSelector() #void :
+{}
+{
+  /* JLS §6.5.1:
+   *  A name is syntactically classified as an ExpressionName [...] as the
+   * qualifying expression in a qualified class instance creation expression (§15.9)*
+   */
+  {forceExprContext();} QualifiedAllocationExpr()
+  // if there are type arguments, this is a method call
+|              (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
+| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                   #MethodCall(2)
+|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
+}
+
+void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injected
+{}
+{
+  "::"
+  [TypeArguments()]
+  ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
+  {/* empty, to set the image before jjtClose */}
+}
+
+// This factorises the lookahead for a lambda expression
+// It's necessary because in all contexts a lambda may appear in,
+// the arguments could be interpreted as a variable reference,
+// or the start of a parenthesized expression
+private void LambdaLahead() #void :
+{}
+{
+  LOOKAHEAD({!inSwitchLabel}) LambdaParameterList() "->"
+}
+
+// Lambda expressions are not a PrimaryExpression in the JLS, instead they're
+// separated from the AssignmentExpression production. Their use is restricted
+// to method and constructor call argument, cast operand, the RHS of assignments,
+// and the tail of a ternary expression
+// https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
+//
+// To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
+// as a workaround.
+void LambdaExpression():
+{ }
+{
+  LambdaParameterList() "->" ( Expression() | Block() )
+}
+
+void LambdaParameterList():
+{}
+{
+      SimpleLambdaParam()
+    | LOOKAHEAD("(" <IDENTIFIER> ("," | ")"))
+        "(" [ SimpleLambdaParam() ( "," SimpleLambdaParam())* ] ")"
+    | "(" [ LambdaParameter() ( "," LambdaParameter() )* ] ")"
+}
+
+void SimpleLambdaParam() #LambdaParameter:
+{pushEmptyModifierList();}
+{
     VariableDeclaratorId()
 }
 
-void LambdaParameterType() #void :
+void LambdaParameter():
 {}
 {
-    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
-    | Type()
+    LocalVarModifierList() // this weakens the grammar a bit
+    [
+       LambdaParameterType()
+    ]
+    VariableIdWithDims()
 }
 
-void PrimarySuffix() :
-{Token t;}
-{ LOOKAHEAD(2) "." "this"
-| LOOKAHEAD(2) "." "super"
-| LOOKAHEAD(2) "." AllocationExpression()
-| LOOKAHEAD(3) MemberSelector()
-| "[" Expression() "]" {jjtThis.setIsArrayDereference();}
-| "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
-| Arguments() {jjtThis.setIsArguments();}
-}
-
-void Literal() :
-{ Token t;}
-{
-  t=<INTEGER_LITERAL> { jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
-| t=<FLOATING_POINT_LITERAL> { jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<HEX_FLOATING_POINT_LITERAL> { jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
-| t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| t=<TEXT_BLOCK_LITERAL> { jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| BooleanLiteral()
-| NullLiteral()
-}
-
-void BooleanLiteral() :
+/** Returns true if this is "var". */
+boolean LambdaParameterType() #void :
 {}
 {
-  "true" { jjtThis.setTrue(); } | "false"
+    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } )
+        <IDENTIFIER>    { return true; }
+    | FormalParamType() { return false; }
 }
 
-void NullLiteral() :
-{}
-{ "null" }
-
-void Arguments() :
+void Literal() #void :
 {}
 {
-  "(" [ ArgumentList() ] ")"
+  NumericLiteral()
+| StringLiteral()
+| CharLiteral()
+| ("true" { jjtThis.setTrue(); } | "false") #BooleanLiteral
+| "null"                                    #NullLiteral
+}
+
+
+void NumericLiteral():
+{}
+{
+  ( <INTEGER_LITERAL>             { jjtThis.setIntLiteral(); }
+  | <FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
+  )
+  { setLastTokenImage(jjtThis); }
+}
+
+void CharLiteral():
+{}
+{
+  <CHARACTER_LITERAL> { setLastTokenImage(jjtThis); }
+}
+
+void StringLiteral():
+{}
+{
+   ( <STRING_LITERAL>
+   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); }
+   )
+   { setLastTokenImage(jjtThis); }
 }
 
 void ArgumentList() :
 {}
 {
-  Expression() ( "," Expression() )*
+ "(" [ Expression() ( "," Expression() )* ] ")"
 }
 
-void AllocationExpression():
+
+// more straightforward because can't be an array creation expr
+void QualifiedAllocationExpr() #ConstructorCall(jjtree.nodeArity() + 1):
 {}
 {
-  "new" (TypeAnnotation())*
-  (LOOKAHEAD(2)
-    PrimitiveType() ArrayDimsAndInits()
-  |
-    ClassOrInterfaceType()
-     (
-      ArrayDimsAndInits()
-     |
-      Arguments()
-        [
-            ClassOrInterfaceBody()
-        ]
-     )
-  )
+   "new"
+   [ TypeArguments() ]
+   AnnotatedClassOrInterfaceType()
+   ArgumentList()
+   [ AnonymousClassDeclaration() ]
+
 }
+
+
+void AnonymousClassDeclaration():
+{
+  pushEmptyModifierList();
+}
+{
+    ClassOrInterfaceBody()
+}
+
+
+// this is much weaker than the JLS but since we parse compilable code
+// the actual terms we get respect the JLS.
+
+// only used in PrimaryPrefix
+void UnqualifiedAllocationExpr() #void :
+{
+    boolean isArrayInit=false;
+}
+{
+   (
+     (
+       "new" [ TypeArguments() ] TypeAnnotationList()
+       (
+         PrimitiveType() ArrayDimsAndInits(){isArrayInit=true;}
+       |
+         ClassOrInterfaceType()
+           (
+              ArrayDimsAndInits() {isArrayInit=true;}
+           |
+             ArgumentList() [ AnonymousClassDeclaration() ]
+           )
+       )
+       {/*Empty unit, important*/}
+     )
+     #ArrayAllocation(isArrayInit)
+   )
+   #ConstructorCall(!isArrayInit)
+
+}
+
 
 /*
- * The second LOOKAHEAD specification below is to parse to PrimarySuffix
- * if there is an expression between the "[...]".
+ * The array dimensions are appended to the array type and they're both
+ * enclosed into an ArrayType node.
  */
-void ArrayDimsAndInits() :
+void ArrayDimsAndInits() #void:
 {}
 {
+   LOOKAHEAD(TypeAnnotationList() "[" "]" ) (((ArrayTypeDim())+) #ArrayDimensions) #ArrayType(2) [ ArrayInitializer() ]
+     | ( (ArrayDimExpr())+ #ArrayDimensions ) #ArrayType(2)
+}
 
-  LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
-|
-  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
+// may push either an ArrayDimExpr or ArrayTypeDim
+void ArrayDimExpr() #void:
+{boolean hasExpr=false;}
+{
+  ((TypeAnnotListNoInject() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
 }
 
 
@@ -1691,15 +2150,24 @@ void ArrayDimsAndInits() :
  * Statement syntax follows.
  */
 
-void Statement() :
+void Statement() #void:
 {}
 {
-  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+  StatementNoIdent()
+// testing the hard cases last optimises the code gen
+// all the previous cases are trivial for the parser
+// because they start with a different token
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
+| LOOKAHEAD( { isAssertStart() } ) AssertStatement()
 | LOOKAHEAD(2) LabeledStatement()
-| Block()
+| ( StatementExpression() ";" ) #ExpressionStatement
+}
+
+void StatementNoIdent() #void:
+{}
+{
+  Block()
 | EmptyStatement()
-| StatementExpression() ";"
 | SwitchStatement()
 | IfStatement()
 | WhileStatement()
@@ -1714,74 +2182,72 @@ void Statement() :
 }
 
 void LabeledStatement() :
-{Token t;}
+{}
 {
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);} ":" Statement()
+  <IDENTIFIER> { setLastTokenImage(jjtThis); } ":" Statement()
 }
 
 void Block() :
-{Token t;}
+{}
 {
-      "{"
-
-      ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+    "{" ( BlockStatement() )* "}"
 }
 
-void BlockStatement():
-{int mods = 0;}
+void BlockStatement() #void:
+{} // Note: this has been written this way to minimize lookaheads
+   // This generates a table switch with very few lookaheads
 {
-  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
-| LOOKAHEAD( "@" | "final" )
+  LOOKAHEAD(1, "@" | "final" )
     // this eagerly parses all modifiers and annotations. After that, either a local type declaration
     // or a local variable declaration follows.
     // This allows more modifiers for local variables than actually allowed
-    // and the annotations for local variables need to be moved in the AST down again.
-    mods=Modifiers()
-    (
-        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl(mods)
-        |
-        {
-            List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
-            if (jjtree.nodeArity() > 0) { // peekNode would throw if the stack is empty
-                while (jjtree.peekNode() instanceof ASTAnnotation) {
-                  annotations.add((ASTAnnotation) jjtree.popNode());}
-            }
-        }
-        LocalVariableDeclaration()
-        {
-            ASTLocalVariableDeclaration localVarDecl = (ASTLocalVariableDeclaration) jjtree.peekNode();
-            if ((mods & AccessNode.FINAL) == AccessNode.FINAL) {
-                localVarDecl.setFinal(true);
-            }
-            if (!annotations.isEmpty()) {
-                Collections.reverse(annotations);
-                for (ASTAnnotation a : annotations) {
-                    localVarDecl.insertChild(a, 0);
-                }
-            }
-        }
-        ";"
+
+    // The ModifierList is adopted by the next node to open
+    ModifierList() (
+        LOOKAHEAD({localTypeDeclAfterModifiers()}) LocalTypeDecl()
+      | LOOKAHEAD({true})                          LocalVariableDeclarationPendingModifiers() ";" { fixLastToken(); }
     )
-| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
-    mods=Modifiers()
-    LocalTypeDecl(mods)
-| LOOKAHEAD(Type() <IDENTIFIER>)
-    LocalVariableDeclaration() ";"
-|
-  Statement()
+| LOOKAHEAD(1, <IDENTIFIER>)
+ (
+      LOOKAHEAD({ localTypeDeclGivenNextIsIdent() }) ModifierList() LocalTypeDecl()
+    | LOOKAHEAD({ isAssertStart() })                 AssertStatement()
+    | LOOKAHEAD({ isYieldStart() })                  YieldStatement()
+    | LOOKAHEAD({ getToken(2).kind == COLON })       LabeledStatement()
+    | LOOKAHEAD(ReferenceType() <IDENTIFIER>)        LocalVariableDeclaration() ";"  { fixLastToken(); }
+    | LOOKAHEAD({true})                              ExpressionStatement()
+ )
+| LOOKAHEAD(1, LocalTypeStartNoIdent()) ModifierList() LocalTypeDecl()
+| LOOKAHEAD(1)                          StatementNoIdent()
+| LOOKAHEAD(Type() <IDENTIFIER>)        LocalVariableDeclaration() ";" { fixLastToken(); }
+| LOOKAHEAD({true})                     ExpressionStatement()
 }
 
-void LocalTypeDecl(int mods) #void:
+private void LocalTypeStartNoIdent() #void: // A lookahead
 {}
-{
-    (
-          LOOKAHEAD(<CLASS>) ClassOrInterfaceDeclaration(mods)
-        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods)
-        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods)
-        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods)
-        | AnnotationTypeDeclaration(mods)
-    )
+{ // notice: not default, not synchronized, not final
+    "public" | "static" | "protected" | "private"
+  | "abstract" | "native" | "transient"
+  | "volatile" | "strictfp"
+
+  | "class" | "interface"
+}
+
+void LocalTypeDecl() #void:
+{} // At the point this is called, a ModifierList is on the top of the stack,
+{  // waiting for the next node to open. We want that node to be the type declaration,
+   // not the wrapper statement node.
+  ( ClassOrInterfaceDeclaration()
+  | AnnotationTypeDeclaration()
+  | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
+  | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+  ) {
+    // Wrap the type decl into a statement
+    // This can't be done with regular jjtree constructs, as the ModifierList
+    // is adopted by the first node to be opened.
+    ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) jjtree.popNode();
+    ASTLocalClassStatement stmt = new ASTLocalClassStatement(type);
+    jjtree.pushNode(stmt);
+  }
 }
 
 /*
@@ -1790,13 +2256,29 @@ void LocalTypeDecl(int mods) #void:
 void LocalVariableDeclaration() :
 {}
 {
-  ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+  LocalVarModifierList()
   LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
 }
 
-void LocalVariableType() #void :
+void LocalVariableDeclarationPendingModifiers() #LocalVariableDeclaration:
+{}
+{
+  // no ModifierList, it's pending at this time
+  LocalVariableType()
+  VariableDeclarator()
+  ( "," VariableDeclarator() )*
+}
+
+private void LocalVarModifierList() #ModifierList:
+{Set<JModifier> set = Collections.emptySet(); }
+{
+    ( "final" { set = ASTModifierList.JUST_FINAL; } | Annotation() )*
+    {jjtThis.setDeclaredModifiers(set);}
+}
+
+void LocalVariableType() #void:
 {}
 {
   LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) <IDENTIFIER>
@@ -1809,16 +2291,26 @@ void EmptyStatement() :
   ";"
 }
 
-void StatementExpression() :
+void EmptyDeclaration() :
 {}
 {
-  PreIncrementExpression()
+  ";"
+}
+
+void ExpressionStatement():
+{}
+{
+    StatementExpression() ";"
+}
+
+void StatementExpression() #void:
+{AssignmentOp op = null;}
+{
+  PrefixIncrementExpression()
 |
-  PreDecrementExpression()
-|
-  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
-|
-  PostfixExpression()
+  // using PostfixExpression here allows us to skip the part of the production tree
+  // between Expression() and PostfixExpression()
+  (PostfixExpression() [ op=AssignmentOperator() {jjtThis.setOp(op);} Expression() ]) #AssignmentExpression(>1)
 }
 
 void SwitchStatement():
@@ -1827,51 +2319,30 @@ void SwitchStatement():
   "switch" "(" Expression() ")" SwitchBlock()
 }
 
-void SwitchBlock() #void :
+void SwitchBlock() #void:
 {}
 {
     "{"
         (
-            SwitchLabel()
-            (
-                "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
-            |
-                ":" (LOOKAHEAD(2) SwitchLabel() ":")*
-                    // the lookahead is to prevent choosing BlockStatement when the token is "default",
-                    // which could happen as local class declarations accept the "default" modifier.
-                    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement())*
-                    (SwitchLabeledStatementGroup())*
-            )
-        )?
+          LOOKAHEAD(SwitchLabel() ":") (SwitchFallthroughBranch())+
+        | (SwitchArrowBranch())*
+        )
     "}"
 }
 
-void SwitchLabeledRule() #void :
+void SwitchArrowBranch():
 {}
 {
-    SwitchLabel() "->" SwitchLabeledRulePart()
+    SwitchLabel() "->" (Expression() ";" | Block() | ThrowStatement())
 }
 
-void SwitchLabeledRulePart() #void:
+void SwitchFallthroughBranch():
 {}
 {
-    (
-        ( Expression() ";" ) #SwitchLabeledExpression(2)
-      |
-        ( Block() ) #SwitchLabeledBlock(2)
-      |
-        ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
-    )
-}
-
-// For PMD 7, make this a real node to group the labels + statements
-void SwitchLabeledStatementGroup() #void:
-{}
-{
-    (LOOKAHEAD(2) SwitchLabel() ":")+
-        // the lookahead is to prevent choosing BlockStatement when the token is "default",
-        // which could happen as local class declarations accept the "default" modifier.
-        (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
+    SwitchLabel() ":"
+    // the lookahead is to prevent choosing BlockStatement when the token is "default",
+    // which could happen as local class declarations accept the "default" modifier.
+    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
 }
 
 void SwitchLabel() :
@@ -1879,7 +2350,7 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ( ConditionalExpression() #Expression ) ("," ( ConditionalExpression() #Expression ) )*
+  "case" ConditionalExpression() ( "," ConditionalExpression() )*
 |
   "default" {jjtThis.setDefault();}
 )
@@ -1887,7 +2358,7 @@ void SwitchLabel() :
 }
 
 void YieldStatement() :
-{}
+{ }
 {
   <IDENTIFIER> Expression() ";"
 }
@@ -1915,19 +2386,21 @@ void DoStatement() :
   "do" Statement() "while" "(" Expression() ")" ";"
 }
 
-void ForStatement() :
-{}
+void ForStatement() #void:
+{JavaccToken t;}
 {
-  "for" "("
+  t="for" "("
 (
       LOOKAHEAD(LocalVariableDeclaration() ":")
-      LocalVariableDeclaration() ":" Expression()
-|
+      (LocalVariableDeclaration() ":" Expression() ")" Statement() { jjtThis.setFirstToken(t); }) #ForeachStatement
+| (
   [ ForInit() ] ";"
   [ Expression() ] ";"
   [ ForUpdate() ]
-)
   ")" Statement()
+   { jjtThis.setFirstToken(t); }
+  ) #ForStatement
+)
 }
 
 void ForInit() :
@@ -1952,15 +2425,15 @@ void ForUpdate() :
 }
 
 void BreakStatement() :
-{Token t;}
+{}
 {
-  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "break" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
 }
 
 void ContinueStatement() :
-{Token t;}
+{}
 {
-  "continue" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "continue" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
 }
 
 void ReturnStatement() :
@@ -1988,54 +2461,64 @@ void TryStatement() :
  */
 {}
 {
-  "try" (ResourceSpecification())? Block()
-  ( CatchStatement() )*
-  [ FinallyStatement() ]
+  "try" (ResourceList())?
+  Block()
+  ( CatchClause() )*
+  [ FinallyClause() ]
 }
 
-void ResourceSpecification() :
+void ResourceList():
 {}
 {
-    "("
-	Resources()
-	(LOOKAHEAD(2) ";")?
-	")"
-}
-
-void Resources() :
-{}
-{
+	"("
 	Resource() (LOOKAHEAD(2) ";" Resource())*
+	(";" {jjtThis.setTrailingSemi();})?
+	")"
 }
 
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
+        (
+            LocalVarModifierList()
+            LocalVariableType() VariableDeclarator()
+        ) #LocalVariableDeclaration
    |
-   Name()
+   PrimaryExpression()
+   {
+    Node top = jjtree.peekNode();
+    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess))
+      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+   }
+   {}
 }
 
-void CatchStatement() :
+void CatchClause() :
 {}
 {
   "catch"
-  "(" FormalParameter() ")"
+  "(" CatchParameter() ")"
   Block()
 }
 
-void FinallyStatement() :
+
+void CatchParameter():
+{boolean multi=false;}
+{
+   LocalVarModifierList()
+   ( AnnotatedClassOrInterfaceType() ( "|" AnnotatedClassOrInterfaceType()  {multi=true;} )* ) #UnionType(multi)
+   VariableDeclaratorId()
+}
+
+void FinallyClause() :
 {}
 {
     "finally" Block()
 }
 
 void AssertStatement() :
-{
-    if (jdkVersion <= 3) {
-        throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
-    }
-}
+{}
 {
   <IDENTIFIER> Expression() [ ":" Expression() ] ";"
 }
@@ -2044,14 +2527,14 @@ void AssertStatement() :
  * type declaration syntax with generics clean
  */
 
-void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
+void RUNSIGNEDSHIFT() #void:
 {}
 {
    LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
    ">" ">" ">"
 }
 
-void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
+void RSIGNEDSHIFT() #void:
 {}
 {
   LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RSIGNEDSHIFT})
@@ -2063,53 +2546,42 @@ void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 void Annotation():
 {}
 {
-   LOOKAHEAD( "@" Name() "(" ( <IDENTIFIER> "=" | ")" ))
-   NormalAnnotation()
- |
-   LOOKAHEAD( "@" Name() "(" )
-   SingleMemberAnnotation()
- |
-   MarkerAnnotation()
+    "@" ClassName() [ AnnotationMemberList() ]
 }
 
-void NormalAnnotation():
+void AnnotationMemberList():
 {}
 {
-   "@" Name() "(" [ MemberValuePairs() ] ")"
+   "("
+    ( LOOKAHEAD(<IDENTIFIER> "=")
+      MemberValuePair() ( "," MemberValuePair() )*
+    | [ ShorthandAnnotationValue() ]
+    )
+    ")"
 }
 
-void MarkerAnnotation():
-{}
+void ShorthandAnnotationValue() #MemberValuePair:
 {
-  "@" Name()
+    jjtThis.setImage("value");
+    jjtThis.setShorthand();
+}
+{
+    MemberValue()
 }
 
-void SingleMemberAnnotation():
-{}
-{
-  "@" Name() "(" MemberValue() ")"
-}
-
-void MemberValuePairs():
-{}
-{
-   MemberValuePair() ( "," MemberValuePair() )*
-}
 
 void MemberValuePair():
-{Token t;}
+{}
 {
-    t=<IDENTIFIER> { jjtThis.setImage(t.image); } "=" MemberValue()
+    <IDENTIFIER> { setLastTokenImage(jjtThis); } "=" MemberValue()
 }
 
-void MemberValue():
+void MemberValue() #void:
 {}
 {
    Annotation()
- |
-   MemberValueArrayInitializer()
- |
-   ConditionalExpression()
+ | MemberValueArrayInitializer()
+ | ConditionalExpression() // Constant expression
 }
 
 void  MemberValueArrayInitializer():
@@ -2130,13 +2602,10 @@ void TypeAnnotation() #void:
 
 /* Annotation Types. */
 
-void AnnotationTypeDeclaration(int modifiers):
+void AnnotationTypeDeclaration():
+{}
 {
-Token t;
-jjtThis.setModifiers(modifiers);
-}
-{
-  "@" "interface" t=<IDENTIFIER> { jjtThis.setImage(t.image); }
+  "@" "interface" <IDENTIFIER> { setLastTokenImage(jjtThis); }
   AnnotationTypeBody()
 }
 
@@ -2146,37 +2615,33 @@ void AnnotationTypeBody():
   "{" ( AnnotationTypeMemberDeclaration() )* "}"
 }
 
-void AnnotationTypeMemberDeclaration():
+void AnnotationTypeMemberDeclaration() #void:
+{}
 {
-   int modifiers;
-}
-{
- modifiers = Modifiers()
+ ModifierList()
  (
-   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration(modifiers)
+   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration()
   |
-   ClassOrInterfaceDeclaration(modifiers)
+   ClassOrInterfaceDeclaration()
   |
-   LOOKAHEAD(3) EnumDeclaration(modifiers)
+   LOOKAHEAD(3) EnumDeclaration()
   |
-   AnnotationTypeDeclaration(modifiers)
+   AnnotationTypeDeclaration()
   |
-   FieldDeclaration(modifiers)
+   FieldDeclaration()
  )
  |
-   ( ";" )
+   ";" #EmptyDeclaration
 }
 
-void AnnotationMethodDeclaration(int modifiers):
+void AnnotationMethodDeclaration() #MethodDeclaration:
+{}
 {
-  Token t;
-  jjtThis.setModifiers(modifiers);
-}
-{
-  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
-  {
-    jjtThis.setImage(t.image);
-  }
+  Type()
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  ("(" ")") #FormalParameters
+  [ Dims() ]
+  [ DefaultValue() ] ";"
 }
 
 void DefaultValue():
@@ -2188,12 +2653,12 @@ void DefaultValue():
 void ModuleDeclaration():
 {
     StringBuilder s = new StringBuilder();
-    Token t;
+    JavaccToken t;
 }
 {
   ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
-  t=<IDENTIFIER> { s.append(t.image); }
-  ( "." t=<IDENTIFIER> { s.append('.').append(t.image); } )* { jjtThis.setImage(s.toString()); }
+  t=<IDENTIFIER> { s.append(t.getImage()); }
+  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )* { jjtThis.setImage(s.toString()); }
   "{" (ModuleDirective())* "}"
 }
 
@@ -2210,14 +2675,56 @@ void ModuleDirective():
   | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
 }
 
-// Similar to Name()
 void ModuleName():
+{ String name; }
+{
+  name=VoidName() { jjtThis.setImage(name); }
+}
+
+void Name():
+{ String name; }
+{
+  name=VoidName() { jjtThis.setImage(name); }
+}
+
+void AmbiguousName():
+{ String name; }
+{
+  name=VoidName() { jjtThis.setImage(name); }
+}
+
+String VoidName() #void:
+/*
+ * A lookahead of 2 is required below since "Name" can be followed
+ * by a ".*" when used in the context of an "ImportDeclaration",
+ * or with "this" or "super" in PrimaryPrefix (AmbiguousName).
+ */
 {
   StringBuilder s = new StringBuilder();
-  Token t;
+  JavaccToken t;
 }
 {
-  t=<IDENTIFIER> { s.append(t.image); }
-  ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
-  {jjtThis.setImage(s.toString());}
+  t=<IDENTIFIER>                    { s.append(t.getImage()); }
+  ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
+  )*
+  {return s.toString();}
 }
+
+// Produces a ClassOrInterfaceType, possibly with an ambiguous LHS
+void ClassName() #void:
+{}
+{
+    AmbiguousName() { forceTypeContext(); }
+}
+
+// This is used to get JJTree to generate a node.
+// Variable references are always ambiguous
+// when they're parsed, so they're not created
+// normally by jjtree, but rather by the disambiguation
+// hooks spread across the parser
+//noinspection UnusedProduction
+void VariableAccess(): {} { <IDENTIFIER> }
+// those are created manually
+void TypeExpression(): {} { <IDENTIFIER> }
+void PatternExpression(): {} { <IDENTIFIER> }
+void LocalClassStatement(): {} { TypeDeclaration() }

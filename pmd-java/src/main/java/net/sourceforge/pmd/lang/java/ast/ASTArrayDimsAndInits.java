@@ -4,22 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
+/**
+ * @deprecated Replaced by {@link ASTArrayDimensions}
+ */
+@Deprecated
+public class ASTArrayDimsAndInits extends AbstractJavaNode {
 
     private int arrayDepth;
 
-    @InternalApi
-    @Deprecated
-    public ASTArrayDimsAndInits(int id) {
+    ASTArrayDimsAndInits(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 
@@ -28,13 +28,11 @@ public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensiona
         arrayDepth++;
     }
 
-    @Override
     @Deprecated
     public int getArrayDepth() {
         return arrayDepth;
     }
 
-    @Override
     @Deprecated
     public boolean isArray() {
         return arrayDepth > 0; // should always be true...

@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -20,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -61,8 +61,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
         if (Objects.equals(node, exploredClass)) {
             methodAttributeAccess = new HashMap<>();
             super.visitTypeDecl(node, data);
-        } else if (node instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
+        } else if (node.isLocal()) {
             super.visitTypeDecl(node, data);
         }
         return methodAttributeAccess;
@@ -74,8 +73,8 @@ public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
 
         if (!node.isAbstract()) {
             if (node.getFirstParentOfType(ASTAnyTypeDeclaration.class) == exploredClass) {
-                currentMethodName = node.getQualifiedName().getOperation();
-                methodAttributeAccess.put(currentMethodName, new HashSet<String>());
+                currentMethodName = PrettyPrintingUtil.displaySignature(node);
+                methodAttributeAccess.put(currentMethodName, new HashSet<>());
 
                 super.visit(node, data);
                 currentMethodName = null;

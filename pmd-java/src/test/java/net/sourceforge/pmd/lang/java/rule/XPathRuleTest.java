@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
@@ -114,6 +116,7 @@ public class XPathRuleTest extends RuleTst {
      *             any error
      */
     @Test
+    @Ignore("Primary suffix has been removed")
     public void testImageOfPrimarySuffix() throws Exception {
         final String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
                 + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
@@ -143,19 +146,13 @@ public class XPathRuleTest extends RuleTst {
      */
     @Test
     public void testFollowingSibling() {
-        final String source = "public class dummy {\n"
-            + "  public String toString() {\n"
-            + "    String test = \"bad example\";\n"
-            + "    test = \"a\";\n"
-            + "    return test;\n"
-            + "  }\n"
-            + "}";
+        final String source = "public interface dummy extends Foo, Bar, Baz {}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
-        String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
+        String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
 
         // XPATH version 2.0
         SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
@@ -165,8 +162,8 @@ public class XPathRuleTest extends RuleTst {
                                                                      DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
-        assertEquals(4, nodes.get(0).getBeginLine());
-        assertEquals(5, nodes.get(1).getBeginLine());
+        assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
+        assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {

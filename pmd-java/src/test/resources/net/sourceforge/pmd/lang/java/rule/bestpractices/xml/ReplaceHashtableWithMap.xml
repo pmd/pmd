@@ -8,6 +8,7 @@
         <description>bad, local variable of type Hashtable</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Hashtable;
 public class Foo {
     void bar() {
         Hashtable h = new Hashtable();
@@ -20,6 +21,18 @@ public class Foo {
         <description>bad, param of type Hashtable</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Hashtable;
+public class Foo {
+ void bar(Hashtable h) {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description> ok, not java.util.Vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.Hashtable;
 public class Foo {
     void bar(Hashtable h) {
     }

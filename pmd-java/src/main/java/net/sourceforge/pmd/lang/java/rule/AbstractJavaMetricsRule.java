@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -58,11 +57,6 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
     @Override
     public final Object visit(ASTConstructorDeclaration node, Object data) {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
-    }
-
-    @Override
-    public final Object visit(ASTLambdaExpression node, Object data) {
-        return visit((MethodLikeNode) node, data);
     }
 
 

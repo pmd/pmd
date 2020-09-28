@@ -4,25 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTModuleDirective extends AbstractJavaNode {
+public final class ASTModuleDirective extends AbstractJavaNode {
 
     public enum DirectiveType {
-        REQUIRES, EXPORTS, OPENS, USES, PROVIDES;
+        REQUIRES, EXPORTS, OPENS, USES, PROVIDES
     }
 
     public enum RequiresModifier {
-        STATIC, TRANSITIVE;
+        STATIC, TRANSITIVE
     }
 
     private DirectiveType type;
 
     private RequiresModifier requiresModifier;
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleDirective(int id) {
+    ASTModuleDirective(int id) {
         super(id);
     }
 
@@ -33,9 +29,7 @@ public class ASTModuleDirective extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public void setType(DirectiveType type) {
+    void setType(DirectiveType type) {
         this.type = type;
     }
 
@@ -43,9 +37,7 @@ public class ASTModuleDirective extends AbstractJavaNode {
         return String.valueOf(type);
     }
 
-    @InternalApi
-    @Deprecated
-    public void setRequiresModifier(RequiresModifier requiresModifier) {
+    void setRequiresModifier(RequiresModifier requiresModifier) {
         this.requiresModifier = requiresModifier;
     }
 

@@ -7,23 +7,20 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java15PreviewTreeDumpTest extends BaseTreeDumpTest {
+public class Java15PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java15p =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("15-preview")
                     .withResourceContext(Java15PreviewTreeDumpTest.class, "jdkversiontests/java15p/");
     private final JavaParsingHelper java15 = java15p.withDefaultVersion("15");
 
-    public Java15PreviewTreeDumpTest() {
-        super(new RelevantAttributePrinter(), ".java");
-    }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
@@ -52,14 +49,14 @@ public class Java15PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
+    @Ignore("Ignored, this will be reactivated on the typeresolution branch")
     public void recordPoint() {
         doTest("Point");
 
         // extended tests for type resolution etc.
         ASTCompilationUnit compilationUnit = java15p.parseResource("Point.java");
         ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
-        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
-                .findChildrenOfType(ASTRecordComponent.class);
+        List<ASTRecordComponent> components = recordDecl.getRecordComponents().toList();
         Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
         Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
         Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());

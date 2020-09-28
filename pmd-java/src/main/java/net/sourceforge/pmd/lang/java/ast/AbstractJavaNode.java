@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,32 +6,33 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
+abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
     private Scope scope;
+    protected JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaNode(int id) {
+    AbstractJavaNode(int id) {
         super(id);
     }
 
+
     @Override
-    public Scope getScope() {
-        if (scope == null) {
-            return getParent().getScope();
+    public void jjtClose() {
+        super.jjtClose();
+        if (this instanceof LeftRecursiveNode && getNumChildren() > 0) {
+            fitTokensToChildren(0);
         }
-        return scope;
     }
+    // override those to make them accessible in this package
 
     @Override
     @SuppressWarnings("unchecked")
@@ -46,7 +47,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
 
     // override those to make them accessible in this package
 
-    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    @Override
     protected void addChild(AbstractJavaNode child, int index) {
         super.addChild(child, index);
     }
@@ -56,24 +57,68 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
         super.insertChild(child, index);
     }
 
-    @Override // override to make it accessible to parser
+    @Override
+    protected void removeChildAtIndex(int childIndex) {
+        super.removeChildAtIndex(childIndex);
+    }
+
+    @Override
     protected void setImage(String image) {
         super.setImage(image);
     }
 
-    @InternalApi
-    @Deprecated
+
     @Override
-    public void setScope(Scope scope) {
+    protected void setFirstToken(JavaccToken token) {
+        super.setFirstToken(token);
+    }
+
+    @Override
+    protected void setLastToken(JavaccToken token) {
+        super.setLastToken(token);
+    }
+
+    @Override
+    protected void setChild(AbstractJavaNode child, int index) {
+        super.setChild(child, index);
+    }
+
+    void setSymbolTable(JSymbolTable table) {
+        this.symbolTable = table;
+    }
+
+    @Override
+    @NonNull
+    public JSymbolTable getSymbolTable() {
+        if (symbolTable == null) {
+            return getParent().getSymbolTable();
+        }
+        return symbolTable;
+    }
+
+    @Override
+    public TypeSystem getTypeSystem() {
+        return getRoot().getTypeSystem();
+    }
+
+    @Override
+    public Scope getScope() {
+        if (scope == null && getParent() != null) {
+            return getParent().getScope();
+        }
+        return scope;
+    }
+
+    void setScope(Scope scope) {
         this.scope = scope;
     }
 
-    @InternalApi
-    @Deprecated
-    public void comment(Comment theComment) {
+    void comment(Comment theComment) {
         comment = theComment;
     }
 
+
+    @Override
     public Comment comment() {
         return comment;
     }
@@ -89,8 +134,40 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
         return root;
     }
 
+
+    /**
+     * Shift the start and end tokens by the given offsets.
+     * @throws IllegalStateException if the right shift identifies
+     * a token that is left of this node
+     */
+    void shiftTokens(int leftShift, int rightShift) {
+        if (leftShift != 0) {
+            setFirstToken(findTokenSiblingInThisNode(getFirstToken(), leftShift));
+        }
+        if (rightShift != 0) {
+            setLastToken(findTokenSiblingInThisNode(getLastToken(), rightShift));
+        }
+    }
+
+    private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
+        if (shift == 0) {
+            return token;
+        } else if (shift < 0) {
+            // expects a positive shift
+            return TokenUtils.nthPrevious(getFirstToken(), token, -shift);
+        } else {
+            return TokenUtils.nthFollower(token, shift);
+        }
+    }
+
+
+    void copyTextCoordinates(AbstractJavaNode copy) {
+        setFirstToken(copy.getFirstToken());
+        setLastToken(copy.getLastToken());
+    }
+
     @Override
-    public String getXPathNodeName() {
+    public final String getXPathNodeName() {
         return JavaParserImplTreeConstants.jjtNodeName[id];
     }
 }

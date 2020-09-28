@@ -41,6 +41,6 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
 
     @Override
     protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
-        return node.getParameterCount() > reportLevel;
+        return node.size() > reportLevel;
     }
 }
