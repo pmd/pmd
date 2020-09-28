@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
