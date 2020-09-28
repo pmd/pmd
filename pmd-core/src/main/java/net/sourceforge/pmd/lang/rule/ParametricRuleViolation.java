@@ -67,6 +67,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     protected String expandVariables(String message) {
+        // TODO move that to RuleContext with the rest of the formatting logic
 
         if (!message.contains("${")) {
             return message;
@@ -158,6 +159,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
+        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
         beginLine = theBeginLine;
         endLine = theEndLine;
     }

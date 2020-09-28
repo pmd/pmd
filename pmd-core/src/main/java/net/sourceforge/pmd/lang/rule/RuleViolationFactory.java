@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -51,6 +52,9 @@ public interface RuleViolationFactory {
 
     @Deprecated
     default void addViolation(RuleContext ruleContext, Rule rule, @NonNull Node node, @NonNull String message, int beginLine, int endLine, @NonNull Object[] args) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(message);
+        Objects.requireNonNull(args);
         RuleViolation rv = formatViolation(rule, node, ruleContext.getSourceCodeFilename(), message, args);
         ((ParametricRuleViolation<?>) rv).setLines(beginLine, endLine);
         SuppressedViolation suppressed = suppressOrNull(node, rv);
