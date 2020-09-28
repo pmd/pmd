@@ -5,17 +5,16 @@
 package net.sourceforge.pmd.lang.rule;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class DefaultRuleViolationFactoryTest {
-    private RuleContext ruleContext;
-    private RuleViolationFactory factory = DefaultRuleViolationFactory.defaultInstance();
 
     private static class TestRule extends AbstractRule {
         @Override
@@ -24,24 +23,11 @@ public class DefaultRuleViolationFactoryTest {
         }
     }
 
-    @Before
-    public void setup() {
-        ruleContext = new RuleContext();
-    }
-
     @Test
     public void testMessage() {
-        factory.addViolation(ruleContext, new TestRule(), null, "message with \"'{'\"", null);
+        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new TestRule(), DummyTreeUtil.tree(DummyRoot::new), "file", "Some message");
 
-        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
-        Assert.assertEquals("message with \"{\"", violation.getDescription());
+        Assert.assertEquals("Some message", violation.getDescription());
     }
 
-    @Test
-    public void testMessageArgs() {
-        factory.addViolation(ruleContext, new TestRule(), null, "message with 1 argument: \"{0}\"", new Object[] {"testarg1"});
-
-        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
-        Assert.assertEquals("message with 1 argument: \"testarg1\"", violation.getDescription());
-    }
 }

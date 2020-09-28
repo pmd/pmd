@@ -6,8 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -18,8 +17,9 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -146,13 +146,16 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Report createEmptyReportWithSuppression() {
-        Map<Integer, String> suppressions = new HashMap<>();
-        suppressions.put(1, "test");
-        RuleContext ctx = new RuleContext();
-        DummyRoot root = new DummyRoot(suppressions);
+    private Report createEmptyReportWithSuppression() throws Exception {
+
+        DummyRoot root = new DummyRoot(Collections.singletonMap(1, "test"));
         root.setCoords(1, 10, 4, 5);
-        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, new FooRule(), root, "suppress test", 1, 1, new Object[0]);
-        return ctx.getReport();
+
+        return RuleContextTest.getReportForRuleApply(new FooRule() {
+            @Override
+            public void apply(Node node, RuleContext ctx) {
+                addViolationWithMessage(ctx, node, "suppress test", 1, 1);
+            }
+        }, root);
     }
 }

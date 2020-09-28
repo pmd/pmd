@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.impl;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
@@ -31,58 +29,23 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  */
 public class DefaultRuleViolationFactory implements RuleViolationFactory {
 
-    private static final Object[] NO_ARGS = new Object[0];
-
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
     private Set<ViolationSuppressor> allSuppressors;
 
-    private String cleanup(String message, Object[] args) {
-
-        if (message != null) {
-            // Escape PMD specific variable message format, specifically the {
-            // in the ${, so MessageFormat doesn't bitch.
-            final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-            return MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
-        } else {
-            return message;
-        }
-    }
-
-
     @Override
-    public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
-
-        String formattedMessage = cleanup(message, args);
-
-        RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage);
-        maybeSuppress(ruleContext, node, rv);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
+        return new ParametricRuleViolation<>(rule, filename, location, formattedMessage);
     }
 
     @Override
-    public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine, Object[] args) {
-
-        String formattedMessage = cleanup(message, args);
-
-        RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage, beginLine, endLine);
-        maybeSuppress(ruleContext, node, rv);
-    }
-
-    private void maybeSuppress(RuleContext ruleContext, @Nullable Node node, RuleViolation rv) {
-
-        if (node != null) {
-            // note: no suppression when node is null.
-            // Node should in fact never be null, this is todo for later
-
-            for (ViolationSuppressor suppressor : getAllSuppressors()) {
-                SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
-                if (suppressed != null) {
-                    ruleContext.getReport().addSuppressedViolation(suppressed);
-                    return;
-                }
+    public SuppressedViolation suppressOrNull(Node location, RuleViolation violation) {
+        for (ViolationSuppressor suppressor : getAllSuppressors()) {
+            SuppressedViolation suppressed = suppressor.suppressOrNull(violation, location);
+            if (suppressed != null) {
+                return suppressed;
             }
         }
-
-        ruleContext.getReport().addRuleViolation(rv);
+        return null;
     }
 
     /**

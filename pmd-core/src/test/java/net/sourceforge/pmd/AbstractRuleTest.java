@@ -7,16 +7,14 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -73,11 +71,9 @@ public class AbstractRuleTest {
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation(r, ctx, s, r.getMessage());
+        RuleViolation rv = new ParametricRuleViolation<>(r, "filename", s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -88,11 +84,9 @@ public class AbstractRuleTest {
     @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode();
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, ctx, s, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation<>(r, "filename", s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -100,34 +94,33 @@ public class AbstractRuleTest {
     }
 
     @Test
-    public void testRuleWithVariableInMessage() {
-        MyRule r = new MyRule();
+    public void testRuleWithVariableInMessage() throws Exception {
+        MyRule r = new MyRule() {
+            @Override
+            public void apply(Node target, RuleContext ctx) {
+                addViolation(ctx, target);
+            }
+        };
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        ctx.setReport(new Report());
-        ctx.setSourceCodeFile(new File("filename"));
+
         DummyNode s = new DummyRoot();
         s.setCoords(5, 1, 6, 1);
         s.setImage("TestImage");
-        r.addViolation(ctx, s);
-        RuleViolation rv = ctx.getReport().getViolations().get(0);
+
+        RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test
     public void testRuleSuppress() {
-        MyRule r = new MyRule();
-        RuleContext ctx = new RuleContext();
-        Map<Integer, String> m = new HashMap<>();
-        m.put(5, "");
-        ctx.setSourceCodeFile(new File("filename"));
+        Map<Integer, String> m = Collections.singletonMap(5, "");
         DummyRoot n = new DummyRoot(m);
         n.setCoords(5, 1, 6, 1);
-        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
+        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "file", "specificdescription");
+        SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
-        assertTrue(ctx.getReport().getViolations().isEmpty());
+        assertNotNull(suppressed);
     }
 
     @Test
