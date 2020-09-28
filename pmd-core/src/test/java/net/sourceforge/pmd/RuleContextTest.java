@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
@@ -23,10 +25,13 @@ public class RuleContextTest {
     public static Report getReport(Consumer<RuleContext> sideEffects) throws Exception {
         Report report = new Report();
         RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFile(new File("test.dummy"));
         ctx.setReport(report);
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         sideEffects.accept(ctx);
         return report;
     }
+
     public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) throws Exception {
         return getReport(ctx -> sideEffects.accept(rule, ctx));
     }

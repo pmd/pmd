@@ -60,7 +60,9 @@ public interface RuleViolationFactory {
     }
 
 
-    RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage);
+    default RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
+        return null;
+    }
 
 
     SuppressedViolation suppressOrNull(Node location, RuleViolation violation);

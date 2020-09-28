@@ -66,6 +66,7 @@ public class ReportTest {
                 hasViolation = true;
             }
         }
+
         Report rpt = new Report();
         MyListener listener = new MyListener();
         rpt.addListener(listener);

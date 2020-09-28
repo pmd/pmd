@@ -130,7 +130,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL
                 + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
-                + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"left\"><a href=\"link_prefix.html#line_prefix1\"></a></td>" + PMD.EOL
+                + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"left\"><a href=\"link_prefixtest.html#line_prefix1\">test</a></td>" + PMD.EOL
                 + "<td align=\"center\">1</td>" + PMD.EOL + "<td align=\"center\">Foo</td>" + PMD.EOL
                          + "<td align=\"center\">//NOPMD</td>" + PMD.EOL + "<td align=\"center\">test</td>" + PMD.EOL
                          + "</tr>"

@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -54,17 +53,6 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
      */
     protected List<ViolationSuppressor> getSuppressors() {
         return Collections.emptyList();
-    }
-
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-        return new ParametricRuleViolation<>(rule, ruleContext, node, message);
-    }
-
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                                                int beginLine, int endLine) {
-        ParametricRuleViolation<Node> rv = new ParametricRuleViolation<>(rule, ruleContext, node, message);
-        rv.setLines(beginLine, endLine);
-        return rv;
     }
 
     private Set<ViolationSuppressor> getAllSuppressors() {
