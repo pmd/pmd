@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-08-31T16:30:18Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-09-26T08:25:16Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -95,7 +95,7 @@
         <checkstyle.version>8.30</checkstyle.version>
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
-        <ant.version>1.10.1</ant.version>
+        <ant.version>1.10.8</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 

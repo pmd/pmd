@@ -31,7 +31,7 @@ public final class SymbolResolutionPass {
      */
     public static SymbolResolver traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
         AstSymbolMakerVisitor visitor = new AstSymbolMakerVisitor(root);
-        root.acceptVisitor(visitor, new AstSymFactory(processor.getTypeSystem()));
+        root.acceptVisitor(visitor, new AstSymFactory(processor));
         return visitor.makeKnownSymbolResolver();
     }
 }

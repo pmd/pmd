@@ -119,12 +119,6 @@ final class SymTableFactory {
         return processor.getSymResolver().resolveClassFromCanonicalName(fqcn);
     }
 
-    JClassSymbol findSymbolCannotFail(String name) {
-        JClassSymbol found = processor.getSymResolver().resolveClassFromCanonicalName(name);
-        return found == null ? processor.makeUnresolvedReference(name, 0)
-                             : found;
-    }
-
     // </editor-fold>
 
     @NonNull
@@ -288,7 +282,7 @@ final class SymTableFactory {
 
             } else {
                 // Single-Type-Import Declaration
-                JClassSymbol type = findSymbolCannotFail(name);
+                JClassSymbol type = processor.findSymbolCannotFail(name);
                 importedTypes.append(type.getTypeSystem().typeOf(type, false));
             }
         }

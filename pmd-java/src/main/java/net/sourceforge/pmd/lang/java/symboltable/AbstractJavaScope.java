@@ -28,7 +28,10 @@ public abstract class AbstractJavaScope extends AbstractScope {
 
     protected void checkForDuplicatedNameDeclaration(NameDeclaration declaration) {
         if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
-            throw new RuntimeException(declaration + " is already in the symbol table");
+            // don't throw anymore
+            // Scopes will be removed before 7.0, and this sometimes triggers for no reason
+            // because Scopes were not ported to the newer grammar
+            // throw new RuntimeException(declaration + " is already in the symbol table");
         }
     }
 
