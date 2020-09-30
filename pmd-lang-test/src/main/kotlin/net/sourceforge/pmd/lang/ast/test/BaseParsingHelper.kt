@@ -211,6 +211,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
         val p = PMD()
+        p.configuration.suppressMarker = this.params.parserOptions?.suppressMarker ?: PMD.SUPPRESS_MARKER
         val ctx = RuleContext()
         val report = Report()
         ctx.report = report

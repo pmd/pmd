@@ -119,7 +119,7 @@ public abstract class RuleTst {
      * violations.
      */
     @SuppressWarnings("unchecked")
-    public void runTest(TestDescriptor test) {
+    void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
         if (test.getReinitializeRule()) {
@@ -250,36 +250,11 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    }
+
+    Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         Report report = new Report();
-        runTestFromString(test, rule, report);
-        return report;
-    }
-
-    public Report executeRule(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
-        Report result = new Report();
-        runTestFromString(code, rule, result, languageVersion, isUseAuxClasspath);
-        return result;
-    }
-
-    public Report executeRule(String code, Rule rule, LanguageVersion languageVersion) {
-        return executeRule(code, rule, languageVersion, true);
-    }
-
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     * @deprecated Use {@link #executeRule(String, Rule, LanguageVersion)}
-     */
-    @Deprecated
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
-    }
-
-    /**
-     * @deprecated Use {@link #executeRule(String, Rule, LanguageVersion, boolean)}
-     */
-    @Deprecated
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
@@ -309,13 +284,10 @@ public abstract class RuleTst {
             ctx.setIgnoreExceptions(false);
             RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            return report;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -339,13 +311,13 @@ public abstract class RuleTst {
      * ./xml/RuleName.xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
-    public TestDescriptor[] extractTestsFromXml(Rule rule) {
+    TestDescriptor[] extractTestsFromXml(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
 
         return extractTestsFromXml(rule, testsFileName);
     }
 
-    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
+    private TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
 
@@ -354,7 +326,7 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
-    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
+    private TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
 
         Document doc;
@@ -375,7 +347,7 @@ public abstract class RuleTst {
      * should be ./xml/RuleName.xml relative to the test-class. The format is
      * defined in test-data.xsd.
      */
-    public void runTests(Rule rule) {
+    private void runTests(Rule rule) {
         runTests(extractTestsFromXml(rule));
     }
 
@@ -384,16 +356,16 @@ public abstract class RuleTst {
      * ./xml/[testsFileName].xml relative to the test-class. The format is
      * defined in test-data.xsd.
      */
-    public void runTests(Rule rule, String testsFileName) {
+    private void runTests(Rule rule, String testsFileName) {
         runTests(extractTestsFromXml(rule, testsFileName));
     }
 
     /**
      * Run a set of tests of a certain sourceType.
      */
-    public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+    private void runTests(TestDescriptor[] tests) {
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 

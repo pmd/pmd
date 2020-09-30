@@ -43,7 +43,7 @@ public class RuleTstTest {
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
-        ruleTester.executeRule("the code", rule, dummyLanguage, false);
+        ruleTester.runTestFromString("the code", rule, dummyLanguage, false);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
