@@ -38,6 +38,21 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
         return getImage();
     }
 
+
+    @Override
+    public CharSequence getText() {
+        return super.getText();
+    }
+
+    /**
+     * @deprecated Use {@link #getText()}
+     */
+    @Override
+    @Deprecated
+    public String getImage() {
+        return super.getImage();
+    }
+
     public final JavaccToken getToken() {
         return super.getFirstToken();
     }
