@@ -84,3 +84,15 @@ details[open] summary {
 .xpath-fun-doc .code-examples dt {
     font-weight: normal;
 }
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.footer p img {
+    margin-left: 1em;
+}

@@ -999,6 +999,8 @@ public class Foo {
         }
         return -1;
     }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
 }
         ]]></code>
     </test-code>
@@ -1384,6 +1386,45 @@ public class Foo {
             Flushables.flush(stream, false);
         }
         Closeables.close(stream, false);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] [6.27.0] Exception applying rule CloseResource on file ... java.lang.NullPointerException #2755</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class Foo {
+    public int bar() {
+        var inputStream = getInputStreamFromSomewhere();
+        if (inputStream != null) {
+            try (InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8")) {
+                char c = reader.read();
+                return c;
+            }
+        }
+        return -1;
+    }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource with var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+public class CloseResourceWithVar {
+    public int bar() throws IOException {
+        var inputStream = new FileInputStream("bar.txt");
+        int c = inputStream.read();
+        return c;
     }
 }
         ]]></code>
