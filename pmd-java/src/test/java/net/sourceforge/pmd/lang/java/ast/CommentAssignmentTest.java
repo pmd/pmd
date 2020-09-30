@@ -100,9 +100,30 @@ public class CommentAssignmentTest extends BaseNonParserTest {
         assertCommentEquals(types.get(3), "/** enum */");
     }
 
+    @Test
+    public void testCommentAssignmentOnEnum() {
+
+        ASTCompilationUnit node = java.parse("enum Foo { "
+                                                 + " /** A */ A,"
+                                                 + " /** B */ @Oha B,"
+                                                 + " C,"
+                                                 + " /* not javadoc */ D,"
+                                                 + "}");
+
+        List<ASTEnumConstant> constants = node.descendants(ASTEnumConstant.class).toList();
+        assertCommentEquals(constants.get(0), "/** A */");
+        assertCommentEquals(constants.get(1), "/** B */");
+        assertHasNoComment(constants.get(2));
+        assertHasNoComment(constants.get(3));
+    }
+
 
     private void assertCommentEquals(JavadocCommentOwner pack, String expected) {
         Assert.assertNotNull("null comment on " + pack, pack.getJavadocComment());
         Assert.assertEquals(expected, pack.getJavadocComment().getText().toString());
+    }
+
+    private void assertHasNoComment(JavadocCommentOwner pack) {
+        Assert.assertNull("Expected null comment on " + pack, pack.getJavadocComment());
     }
 }

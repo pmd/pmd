@@ -22,7 +22,8 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
                InvocationNode,
                AccessNode,
                ASTBodyDeclaration,
-               InternalInterfaces.VariableIdOwner {
+               InternalInterfaces.VariableIdOwner,
+               JavadocCommentOwner {
 
     private OverloadSelectionResult result;
 

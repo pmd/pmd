@@ -40,7 +40,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
 
 
     @Override
-    public CharSequence getText() {
+    public final CharSequence getText() {
         return super.getText();
     }
 
