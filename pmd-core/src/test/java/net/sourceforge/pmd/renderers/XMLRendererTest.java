@@ -5,11 +5,16 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +29,6 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -102,7 +106,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         String surrogatePair = "\ud801\udc1c";
         String msg = "The String 'literal' \"TokénizĀr " + surrogatePair + "\" appears...";
         report.addRuleViolation(createRuleViolation(msg));
-        String actual = ReportTest.renderTempFile(renderer, report, charset);
+        String actual = renderTempFile(renderer, report, charset);
         Assert.assertTrue(actual.contains(shouldContain));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new InputSource(new StringReader(actual)));
@@ -145,7 +149,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         String originalChars = formFeed + specialChars; // u000C should be removed, é should be encoded correctly as UTF-8
         String msg = "The String literal \"" + originalChars + "\" appears...";
         report.addRuleViolation(createRuleViolation(msg));
-        String actual = ReportTest.renderTempFile(renderer, report, StandardCharsets.UTF_8);
+        String actual = renderTempFile(renderer, report, StandardCharsets.UTF_8);
         Assert.assertTrue(actual.contains(specialChars));
         Assert.assertFalse(actual.contains(formFeed));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -153,5 +157,22 @@ public class XMLRendererTest extends AbstractRendererTest {
         NodeList violations = doc.getElementsByTagName("violation");
         Assert.assertEquals(1, violations.getLength());
         Assert.assertEquals(msg.replaceAll(formFeed, ""), violations.item(0).getTextContent().trim());
+    }
+
+    private String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
+        Path tempFile = Files.createTempFile("pmd-report-test", null);
+        String absolutePath = tempFile.toAbsolutePath().toString();
+
+        renderer.setReportFile(absolutePath);
+        renderer.start();
+        renderer.renderFileReport(report);
+        renderer.end();
+        renderer.flush();
+
+        try (FileInputStream input = new FileInputStream(absolutePath)) {
+            return IOUtils.toString(input, expectedCharset);
+        } finally {
+            Files.delete(tempFile);
+        }
     }
 }
