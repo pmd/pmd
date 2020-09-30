@@ -18,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.StandardErrorStreamLog;
 import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
 
@@ -28,6 +29,9 @@ public class PMDCoverageTest {
 
     @Rule
     public StandardErrorStreamLog errorStream = new StandardErrorStreamLog();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * Test some of the PMD command line options
@@ -46,9 +50,8 @@ public class PMDCoverageTest {
         String[] args;
         args = commandLine.split("\\s");
 
-        File f = null;
         try {
-            f = File.createTempFile("pmd", ".txt");
+            File f = folder.newFile();
             int n = args.length;
             String[] a = new String[n + 2 + 2];
             System.arraycopy(args, 0, a, 0, n);
@@ -74,10 +77,6 @@ public class PMDCoverageTest {
             assertEquals("No parsing error expected", 0, StringUtils.countMatches(report, "Error while parsing"));
         } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
-        } finally {
-            if (f != null) {
-                f.delete();
-            }
         }
     }
 

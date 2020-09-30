@@ -35,8 +35,8 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
     public void runRuleTests() throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source/" + language + "/").getAbsolutePath();
 
-        ExecutionResult result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/all-"
-                + language + ".xml");
+        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir,
+                "src/test/resources/rulesets/all-" + language + ".xml");
         assertDefaultExecutionResult(result);
     }
 
