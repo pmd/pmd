@@ -8,11 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
@@ -84,37 +81,8 @@ public class PMDCoverageTest {
         }
     }
 
-    /**
-     * Name of the configuration file used by testResourceFileCommands().
-     */
-    private static final String PMD_CONFIG_FILE = "pmd_tests.conf";
-
-    /**
-     * Run PMD using the command lines found in PMD_CONFIG_FILE.
-     */
     @Test
-    public void testResourceFileCommands() {
-
-        InputStream is = getClass().getResourceAsStream(PMD_CONFIG_FILE);
-
-        if (is != null) {
-            try {
-                BufferedReader r = new BufferedReader(new InputStreamReader(is));
-                String l;
-                while ((l = r.readLine()) != null) {
-                    l = l.trim();
-                    if (l.length() == 0 || l.charAt(0) == '#') {
-                        continue;
-                    }
-
-                    runPmd(l);
-                }
-                r.close();
-            } catch (IOException ioe) {
-                fail("Problem reading config file: " + ioe.getLocalizedMessage());
-            }
-        } else {
-            fail("Missing config file: " + PMD_CONFIG_FILE);
-        }
+    public void runAllJavaPmdOnSourceTree() {
+        runPmd("-d src/main/java -f text -R rulesets/internal/all-java.xml -language java");
     }
 }
