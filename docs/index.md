@@ -12,6 +12,7 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
         Clément Fournier <clement.fournier76@gmail.com>
 ---
 
+<!-- {% include image.html file="logo/pmd-logo-300px.png" alt="PMD Logo" %} -->
 
 
 {% unless site.output == "pdf" %}
@@ -143,8 +144,6 @@ you may also use the search bar in the top right, or the sidebar on the left.
 
 </div>
 </div>
-
-<!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
 
 {% unless site.output == "pdf" %}
 
