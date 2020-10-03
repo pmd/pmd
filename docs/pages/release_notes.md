@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#2810](https://github.com/pmd/pmd/pull/2810): \[core] Move method "renderTempFile" to XMLRendererTest - [Stefan Birkner](https://github.com/stefanbirkner)
+
 {% endtocmaker %}
 
