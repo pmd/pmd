@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#2809](https://github.com/pmd/pmd/pull/2809): \[java] Move test config from file to test class - [Stefan Birkner](https://github.com/stefanbirkner)
+
 {% endtocmaker %}
 
