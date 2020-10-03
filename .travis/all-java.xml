@@ -165,11 +165,11 @@
 
     <!-- documentation.xml -->
 
-    <!-- <rule ref="category/java/documentation.xml/CommentContent"/> -->
-    <!-- <rule ref="category/java/documentation.xml/CommentRequired"/> -->
-    <!-- <rule ref="category/java/documentation.xml/CommentSize"/> -->
+    <rule ref="category/java/documentation.xml/CommentContent"/>
+    <rule ref="category/java/documentation.xml/CommentRequired"/>
+    <rule ref="category/java/documentation.xml/CommentSize"/>
     <!-- <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/> -->
-    <!-- <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody"/> -->
+    <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody"/>
 
     <!-- errorprone.xml -->
 
