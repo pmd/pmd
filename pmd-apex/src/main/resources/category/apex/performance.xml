@@ -80,4 +80,26 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="AvoidDatabaseMethodCallsInLoops"
+          language="apex"
+          since="6.29.0"
+          message="Avoid database method calls inside loops"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDatabaseMethodCallsInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddatabasemethodcallsinloops">
+        <description>
+            Database method calls within loops can cause governor limit exceptions.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class AccountService {
+    public void insertAccounts(List<Account> accounts) {
+        for (Account a : accounts) {
+            Database.insert(a);
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

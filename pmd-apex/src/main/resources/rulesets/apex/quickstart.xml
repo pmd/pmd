@@ -108,6 +108,15 @@
    <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
 
    <!-- PERFORMANCE -->
+   <rule ref="category/apex/performance.xml/AvoidDatabaseMethodCallsInLoops" message="Avoid Database method calls inside loops">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Performance" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
    <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
       <priority>3</priority>
       <properties>

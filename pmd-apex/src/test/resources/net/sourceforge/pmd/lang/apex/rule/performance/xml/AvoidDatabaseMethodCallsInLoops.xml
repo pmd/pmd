@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic Database Statement in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(Integer i : new List<Integer>{1,2}) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(;;) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        while(true) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        do {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your Database method once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        List<Account> accounts = new List<Account>();
+
+        while(true) {
+            Account account = new Account();
+            accounts.add(account);
+        }
+
+        Database.insert(accounts, true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return database method call is even ok in loop.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Database.SaveResult[] foo() {
+        List<Account> accounts = new List<Account>();
+
+        while(true) {
+            Account account = new Account();
+            return Database.insert(accounts, true);
+        }
+
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Database statement as foreach iterator is allowed.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for (SObject sobject : Database.query('SELECT Id, Name FROM Account')) {
+            System.debug(sobject.id);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

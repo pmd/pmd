@@ -106,7 +106,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        if (Helper.isMethodName(node, "Database", Helper.ANY_METHOD)) {
+        if (Helper.isAnyDatabaseMethodCall(node)) {
             checkForViolation(node, data);
         }
 
