@@ -409,12 +409,24 @@ final class Lub {
     }
 
     private static boolean containsDuplicateParameterizations(List<JTypeMirror> bounds) {
+        // note: this could be more efficient if we used a tree depth
+        // measure to order types, like what the JVM does internally.
+        // Eg if depth(T) < depth(S), then T <: S is definitely false.
+
         for (int i = 0; i < bounds.size(); i++) {
             JTypeMirror bi = bounds.get(i);
-            for (int j = i + 1; j < bounds.size(); j++) {
+            for (int j = 0; j < bounds.size(); j++) {
+                if (i == j) {
+                    continue;
+                }
                 JTypeMirror bj = bounds.get(j);
-                if (bi.getErasure().equals(bj.getErasure())) {
-                    return true;
+                if (bj instanceof JClassType) {
+                    if (bi.getAsSuper(((JClassType) bj).getSymbol()) != null) {
+                        // since we know bi and bj are unrelated,
+                        // this must mean that bi has an unrelated
+                        // parameterization of |bj| in its supertypes
+                        return true;
+                    }
                 }
             }
         }

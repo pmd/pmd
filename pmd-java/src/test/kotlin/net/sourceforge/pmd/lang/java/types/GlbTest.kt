@@ -46,7 +46,7 @@ class GlbTest : FunSpec({
 
             test("Test intersection left associativity") {
 
-                checkAll(PropTestConfig(-1697903442944791680), ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
+                checkAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
                     if (canIntersect(t, s, r)) {
                         glb(glb(t, s), r) shouldBe glb(t, s, r)
                     }
@@ -67,6 +67,14 @@ class GlbTest : FunSpec({
                 glb(ts.SERIALIZABLE, t_ArrayList) shouldBe t_ArrayList
                 glb(t_ArrayList, ts.SERIALIZABLE) shouldBe t_ArrayList
                 glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
+
+            }
+
+            test("Test GLB corner cases") {
+
+                glb(t_Iterable[`?` extends t_Number], t_Iterable[t_String]) shouldBe ts.NULL_TYPE
+                glb(`t_ArrayList{Integer}`, ts.NULL_TYPE) shouldBe ts.NULL_TYPE
+                glb(`t_ArrayList{Integer}`, t_Iterable[`?` extends t_Number], t_Iterable[t_String]) shouldBe ts.NULL_TYPE
 
             }
         }
