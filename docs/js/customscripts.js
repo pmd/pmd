@@ -21,34 +21,23 @@ $( document ).ready(function() {
      */
     anchors.add('h2,h3,h4,h5');
 
+    // This highlights the active parent class in the navgoco sidebar. This is critical so that the parent expands
+    // when you're viewing a page.
+    // Note: the class needs to be added before navgoco is initialized. Navgoco uses then this information
+    // to expand the menus.
+    $("li.active").parents('li').toggleClass("active");
+
     // Initialize navgoco with default options
     $("#mysidebar").navgoco({
         caretHtml: '',
         accordion: true,
-        openClass: 'active', // open
-        save: false, // leave false or nav highlighting doesn't work right
-        cookie: {
-            name: 'navgoco',
-            expires: false,
-            path: '/'
-        },
+        openClass: 'active',
+        save: false,
         slide: {
             duration: 400,
             easing: 'swing'
         }
     });
-    $("#collapseAll").click(function(e) {
-        e.preventDefault();
-        $("#mysidebar").navgoco('toggle', false);
-    });
-    $("#expandAll").click(function(e) {
-        e.preventDefault();
-        $("#mysidebar").navgoco('toggle', true);
-    });
-
-    // This highlights the active parent class in the navgoco sidebar. This is critical so that the parent expands
-    // when you're viewing a page.
-    $("li.active").parents('li').toggleClass("active");
 
     // This handles the automatic toc. Use ## for subheads to auto-generate the on-page minitoc.
     // If you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc.
