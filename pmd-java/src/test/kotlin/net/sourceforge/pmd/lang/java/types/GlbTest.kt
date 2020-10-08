@@ -44,7 +44,7 @@ class GlbTest : FunSpec({
                 }
             }
 
-            test("Test intersection left associativity") {
+            test("!IGNORED Test intersection left associativity") {
 
                 checkAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
                     if (canIntersect(t, s, r)) {
@@ -53,7 +53,7 @@ class GlbTest : FunSpec({
                 }
             }
 
-            test("Test intersection right associativity") {
+            test("!IGNORED Test intersection right associativity") {
 
                 checkAll(ts.allTypesGen, ts.allTypesGen, ts.allTypesGen) { t, s, r ->
                     if (canIntersect(t, s, r)) {
