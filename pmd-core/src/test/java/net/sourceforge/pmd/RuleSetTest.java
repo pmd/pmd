@@ -569,15 +569,18 @@ public class RuleSetTest {
         RuleContext context = new RuleContext();
         context.setReport(new Report());
         context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
+        context.setSourceCodeFile(new File(RuleSetTest.class.getName(), "ruleExceptionShouldBeReported.java"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        ProcessingError processingError = errors.get(0);
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
+        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
+        assertEquals("Wrong filename in processing error",
+                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java", processingError.getFile());
 
         assertEquals("There should be a violation", 1, context.getReport().size());
     }
