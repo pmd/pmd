@@ -6,7 +6,14 @@ require 'logger'
 
 def run_pmdtester
   Dir.chdir('..') do
-    argv = ['-r', './pmd', '-b', "#{ENV['TRAVIS_BRANCH']}", '-p', 'FETCH_HEAD', '-m', 'online', '-a']
+    argv = ['--local-git-repo, './pmd',
+            '--base-branch', "#{ENV['TRAVIS_BRANCH']}",
+            '--patch-branch', 'HEAD',
+            '--patch-config', './pmd/.travis/all-java.xml',
+            '--mode', 'online',
+            '--auto-gen-config',
+            # '--debug',
+            ]
     begin
       runner = PmdTester::Runner.new(argv)
       @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
