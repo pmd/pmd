@@ -14,12 +14,23 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Renamed Rules
+
+*   The Java rule {% rule "java/errorprone/DoNotCallSystemExit" %} has been renamed to
+    {% rule "java/errorprone/DoNotTerminateVM" %}, since it checks for all the following calls:
+    `System.exit(int)`, `Runtime.exit(int)`, `Runtime.halt(int)`. All these calls terminate
+    the Java VM, which is bad, if the VM runs an application server which many independent applications.
+
 ### Fixed Issues
+
+* java-errorprone
+    * [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
 
 ### API Changes
 
 ### External Contributions
 
+*   [#2803](https://github.com/pmd/pmd/pull/2803): \[java] Improve DoNotCallSystemExit (Fixes #2157) - [Vitaly Polonetsky](https://github.com/mvitaly)
 *   [#2809](https://github.com/pmd/pmd/pull/2809): \[java] Move test config from file to test class - [Stefan Birkner](https://github.com/stefanbirkner)
 *   [#2810](https://github.com/pmd/pmd/pull/2810): \[core] Move method "renderTempFile" to XMLRendererTest - [Stefan Birkner](https://github.com/stefanbirkner)
 
