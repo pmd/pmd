@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 
 * java-errorprone
     * [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
+* miscellaneous
+    * [#2823](https://github.com/pmd/pmd/issues/2823): \[doc] Renamed/Moved rules are missing in documentation
 
 ### API Changes
 
