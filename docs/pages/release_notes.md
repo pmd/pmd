@@ -23,6 +23,13 @@ See [#2758](https://github.com/pmd/pmd/pull/2758) for details.
 
 AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprecated now.
 
+#### Renamed Rules
+
+*   The Java rule {% rule "java/errorprone/DoNotCallSystemExit" %} has been renamed to
+    {% rule "java/errorprone/DoNotTerminateVM" %}, since it checks for all the following calls:
+    `System.exit(int)`, `Runtime.exit(int)`, `Runtime.halt(int)`. All these calls terminate
+    the Java VM, which is bad, if the VM runs an application server which many independent applications.
+
 ### Fixed Issues
 
 * cpd
@@ -41,6 +48,8 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
     * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
 * java-design
     * [#2708](https://github.com/pmd/pmd/issues/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
+* java-errorprone
+    * [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
 
 
 ### API Changes
@@ -75,6 +84,7 @@ AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprec
 * [#2773](https://github.com/pmd/pmd/pull/2773): \[java] issue-2738: Adding null check to avoid npe when switch case is default - [Nimit Patel](https://github.com/nimit-patel)
 * [#2789](https://github.com/pmd/pmd/pull/2789): Add badge for reproducible build - [Dan Rollo](https://github.com/bhamail)
 * [#2791](https://github.com/pmd/pmd/pull/2791): \[apex] Analyze inner classes for sharing violations - [Jeff Bartolotta](https://github.com/jbartolotta-sfdc)
+* [#2803](https://github.com/pmd/pmd/pull/2803): \[java] Improve DoNotCallSystemExit (Fixes #2157) - [Vitaly Polonetsky](https://github.com/mvitaly)
 
 {% endtocmaker %}
 
