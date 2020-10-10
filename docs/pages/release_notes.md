@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Renamed Rules
 
-*   The Java rule {% rule "java/errorprone/DoNotCallSystemExit" %} has been renamed to
+*   The Java rule [`DoNotCallSystemExit`](https://pmd.github.io/latest/pmd_rules_java_errorprone.html#donotcallsystemexit) has been renamed to
     {% rule "java/errorprone/DoNotTerminateVM" %}, since it checks for all the following calls:
     `System.exit(int)`, `Runtime.exit(int)`, `Runtime.halt(int)`. All these calls terminate
     the Java VM, which is bad, if the VM runs an application server which many independent applications.
