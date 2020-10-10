@@ -1296,42 +1296,7 @@ public class GCCall {
         </example>
     </rule>
 
-    <rule name="DoNotCallSystemExit"
-          language="java"
-          since="4.1"
-          message="System.exit() should not be used in J2EE/JEE apps"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallsystemexit">
-        <description>
-Web applications should not call System.exit(), since only the web container or the
-application server should stop the JVM. This rule also checks for the equivalent calls Runtime.getRuntime().exit() and Runtime.getRuntime().halt().
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Name[
-    starts-with(@Image,'System.exit')
-    or
-    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
-][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public void bar() {
-    System.exit(0);                 // never call this when running in an application server!
-}
-public void foo() {
-    Runtime.getRuntime().exit(0);   // never stop the JVM manually, the container will do this.
-}
-]]>
-        </example>
-    </rule>
+    <rule name="DoNotCallSystemExit" ref="category/java/errorprone.xml/DoNotTerminateVM" deprecated="true" />
 
     <rule name="DoNotExtendJavaLangThrowable"
           language="java"
@@ -1385,6 +1350,48 @@ public class MyActivity extends Activity {
 
        storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotTerminateVM"
+          language="java"
+          since="4.1"
+          message="System.exit() should not be used in J2EE/JEE apps"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotterminatevm">
+        <description>
+Web applications should not call `System.exit()`, since only the web container or the
+application server should stop the JVM. Otherwise a web application would terminate all other applications
+running on the same application server.
+
+This rule also checks for the equivalent calls `Runtime.getRuntime().exit()` and `Runtime.getRuntime().halt()`.
+
+This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Name[
+    starts-with(@Image,'System.exit')
+    or
+    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
+][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    System.exit(0);                 // never call this when running in an application server!
+}
+public void foo() {
+    Runtime.getRuntime().exit(0);   // never stop the JVM manually, the container will do this.
 }
 ]]>
         </example>
