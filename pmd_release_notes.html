@@ -1411,15 +1411,34 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="renamed-rules">Renamed Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="https://pmd.github.io/latest/pmd_rules_java_errorprone.html#donotcallsystemexit"><code class="language-plaintext highlighter-rouge">DoNotCallSystemExit</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a>, since it checks for all the following calls:
+<code class="language-plaintext highlighter-rouge">System.exit(int)</code>, <code class="language-plaintext highlighter-rouge">Runtime.exit(int)</code>, <code class="language-plaintext highlighter-rouge">Runtime.halt(int)</code>. All these calls terminate
+the Java VM, which is bad, if the VM runs an application server which many independent applications.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
+
+<ul>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2157">#2157</a>: [java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2803">#2803</a>: [java] Improve DoNotCallSystemExit (Fixes #2157) - <a href="https://github.com/mvitaly">Vitaly Polonetsky</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2809">#2809</a>: [java] Move test config from file to test class - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2810">#2810</a>: [core] Move method “renderTempFile” to XMLRendererTest - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2813">#2813</a>: [core] Use JUnit’s TemporaryFolder rule - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
 </ul>
 
 
@@ -1438,7 +1457,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 9, 2020 <br />
+ Site last generated: Oct 10, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1641,9 +1641,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis">DataflowAnomalyAnalysis</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The dataflow analysis tracks local definitions, undefinitions and references to variables on diff…</li>
   <li><a href="pmd_rules_java_errorprone.html#detachedtestcase">DetachedTestCase</a>: The method appears to be a test case since it has public or default visibility, non-static access…</li>
   <li><a href="pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly">DoNotCallGarbageCollectionExplicitly</a>: Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Co…</li>
-  <li><a href="pmd_rules_java_errorprone.html#donotcallsystemexit">DoNotCallSystemExit</a>: Web applications should not call System.exit(), since only the web container or the application s…</li>
   <li><a href="pmd_rules_java_errorprone.html#donotextendjavalangthrowable">DoNotExtendJavaLangThrowable</a>: Extend Exception or RuntimeException instead of Throwable.</li>
   <li><a href="pmd_rules_java_errorprone.html#donothardcodesdcard">DoNotHardCodeSDCard</a>: Use Environment.getExternalStorageDirectory() instead of "/sdcard"</li>
+  <li><a href="pmd_rules_java_errorprone.html#donotterminatevm">DoNotTerminateVM</a>: Web applications should not call ‘System.exit()’, since only the web container or the application…</li>
   <li><a href="pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">DoNotThrowExceptionInFinally</a>: Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptions or…</li>
   <li><a href="pmd_rules_java_errorprone.html#dontimportsun">DontImportSun</a>: Avoid importing anything from the ‘sun.’ packages.  These packages are not portable and are likel…</li>
   <li><a href="pmd_rules_java_errorprone.html#dontusefloattypeforloopindices">DontUseFloatTypeForLoopIndices</a>: Don’t use floating point for loop indices. If you must use floating point, use double unless you’…</li>
@@ -1890,7 +1890,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     <p>It contains the following rules:</p>
 
-    <p><a href="pmd_rules_java_errorprone.html#donotcallsystemexit">DoNotCallSystemExit</a>, <a href="pmd_rules_java_multithreading.html#donotusethreads">DoNotUseThreads</a>, <a href="pmd_rules_java_codestyle.html#localhomenamingconvention">LocalHomeNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention">LocalInterfaceSessionNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#mdbandsessionbeannamingconvention">MDBAndSessionBeanNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#remoteinterfacenamingconvention">RemoteInterfaceNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#remotesessioninterfacenamingconvention">RemoteSessionInterfaceNamingConvention</a>, <a href="pmd_rules_java_errorprone.html#staticejbfieldshouldbefinal">StaticEJBFieldShouldBeFinal</a>, <a href="pmd_rules_java_errorprone.html#useproperclassloader">UseProperClassLoader</a></p>
+    <p><a href="pmd_rules_java_errorprone.html#donotterminatevm">DoNotCallSystemExit</a>, <a href="pmd_rules_java_multithreading.html#donotusethreads">DoNotUseThreads</a>, <a href="pmd_rules_java_codestyle.html#localhomenamingconvention">LocalHomeNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention">LocalInterfaceSessionNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#mdbandsessionbeannamingconvention">MDBAndSessionBeanNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#remoteinterfacenamingconvention">RemoteInterfaceNamingConvention</a>, <a href="pmd_rules_java_codestyle.html#remotesessioninterfacenamingconvention">RemoteSessionInterfaceNamingConvention</a>, <a href="pmd_rules_java_errorprone.html#staticejbfieldshouldbefinal">StaticEJBFieldShouldBeFinal</a>, <a href="pmd_rules_java_errorprone.html#useproperclassloader">UseProperClassLoader</a></p>
   </li>
   <li>
     <p>JavaBeans (<code class="language-plaintext highlighter-rouge">rulesets/java/javabeans.xml</code>):</p>
@@ -2073,7 +2073,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 9, 2020 <br />
+ Site last generated: Oct 10, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

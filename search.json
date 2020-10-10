@@ -3651,15 +3651,6 @@
 ,
 
 {
-"title": "DoNotCallSystemExit (Java, Error Prone)",
-"tags": "",
-"keywords": "DoNotCallSystemExit",
-"url": "pmd_rules_java_errorprone.html#donotcallsystemexit",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "DoNotExtendJavaLangThrowable (Java, Error Prone)",
 "tags": "",
 "keywords": "DoNotExtendJavaLangThrowable",
@@ -3673,6 +3664,15 @@
 "tags": "",
 "keywords": "DoNotHardCodeSDCard",
 "url": "pmd_rules_java_errorprone.html#donothardcodesdcard",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "DoNotTerminateVM (Java, Error Prone)",
+"tags": "",
+"keywords": "DoNotTerminateVM",
+"url": "pmd_rules_java_errorprone.html#donotterminatevm",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
