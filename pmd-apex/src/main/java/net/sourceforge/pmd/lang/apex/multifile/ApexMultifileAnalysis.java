@@ -8,14 +8,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.nawforce.common.api.IssueOptions;
+import com.nawforce.common.api.FileIssueOptions;
 import com.nawforce.common.api.Org;
 import com.nawforce.common.api.ServerOps;
-import com.nawforce.common.diagnostics.IssueLog;
-import com.nawforce.common.org.OrgImpl;
+import com.nawforce.common.diagnostics.Issue;
 
 /**
- * Stores multi-file analysis data.
+ * Stores multi-file analysis data. The 'Org' here is the primary ApexLink structure for maintaining information
+ * about the Salesforce metadata. We load 'Packages' into it to perform analysis. Once constructed you
+ * can get 'Issue' information from it on what was found. The 'Org' holds mutable state for IDE use that can get quite
+ * large (a few hundred MB on very large projects). An alternative way to use this would be to cache the
+ * issues after packages are loaded and throw away the 'Org'. That would be a better model if all you wanted was the
+ * issues but more complex rules will need the ability to traverse the internal graph of the 'Org'.
  *
  * @author Kevin Jones
  */
@@ -25,32 +29,34 @@ public final class ApexMultifileAnalysis {
 
     private static Map<String, ApexMultifileAnalysis> instanceMap = new HashMap<>();
 
-    private static final Integer MAGIX = 10;
+    // An arbitrary large number of errors to report
+    private static final Integer MAX_ERRORS_PER_FILE = 100;
 
-    private static IssueLog issues;
+    // Create a new org for each analysis
+    private Org org = Org.newOrg(true);
+    private FileIssueOptions options = new FileIssueOptions();
 
     private ApexMultifileAnalysis(String multiFileAnalysisDirectory) {
         LOG.fine("MultiFile Analysis created for " + multiFileAnalysisDirectory);
-
         if (multiFileAnalysisDirectory != null && !multiFileAnalysisDirectory.isEmpty()) {
-            Org org = Org.newOrg(true);
+            // Default issue options, zombies gets us unused methods & fields as well as deploy problems
+            options.includeZombies_$eq(true);
+            options.maxErrorsPerFile_$eq(MAX_ERRORS_PER_FILE);
+
+            // Load the package into the org, this can take some time!
             org.newSFDXPackage(multiFileAnalysisDirectory);
             org.flush();
-            IssueOptions options = new IssueOptions();
-            options.includeZombies_$eq(true);
-            issues = org.getIssues(options);
-            LOG.fine("Issues\n" + issues.asString(true, MAGIX, ""));
-            LOG.fine("Root package created");
-
         }
     }
 
-    public IssueLog getIssues() {
-        return issues;
+    public Issue[] getFileIssues(String filename) {
+        // Extract issues for a specific metadata file from the org
+        return org.getFileIssues(filename, options);
     }
 
     public static ApexMultifileAnalysis getAnalysisInstance(String multiFileAnalysisDirectory) {
         if (instanceMap.isEmpty()) {
+            // Default some library wide settings
             ServerOps.setAutoFlush(false);
             ServerOps.setLogger(new AnalysisLogger());
             ServerOps.setDebugLogging(new String[] {"ALL"});
@@ -68,6 +74,9 @@ public final class ApexMultifileAnalysis {
         return new ApexMultifileAnalysis(multiFileAnalysisDirectory);
     }
 
+    /*
+     * Very simple logger to aid debugging, relays ApexLink logging into PMD
+     */
     private static class AnalysisLogger implements com.nawforce.common.api.Logger {
         @Override
         public void error(String message) {

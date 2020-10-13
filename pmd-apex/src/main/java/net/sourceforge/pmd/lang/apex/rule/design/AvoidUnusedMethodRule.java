@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import com.nawforce.common.diagnostics.Issue;
-import com.nawforce.common.diagnostics.IssueLog;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ApexRootNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -15,9 +15,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-import scala.collection.JavaConverters;
-
-import java.util.List;
+import com.nawforce.common.diagnostics.Issue;
 
 public class AvoidUnusedMethodRule extends AbstractApexRule {
 
@@ -32,9 +30,10 @@ public class AvoidUnusedMethodRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        List<Issue> issues = getIssues(node);
-        if (issues != null) {
-            for (Issue issue: issues) {
+        // Check if any 'Unused' Issues align with this method
+        for (Issue issue: getIssues(node)) {
+            if (issue.diagnostic().category().value().equals("Unused")) {
+                // Check for basic line alignment for now, Note: ASTMethod end line = block end line
                 if (issue.diagnostic().location().startLine() == node.getBeginLine()
                         && issue.diagnostic().location().endLine() <= node.getEndLine()) {
                     addViolation(data, node);
@@ -44,18 +43,14 @@ public class AvoidUnusedMethodRule extends AbstractApexRule {
         return data;
     }
 
-    private List<Issue> getIssues(ASTMethod node) {
+    private Issue[] getIssues(ASTMethod node) {
+        // Locate multifileAnalysis handler via method root node
         List<RootNode> parents = node.getParentsOfType(RootNode.class);
         if (!parents.isEmpty()) {
+            // This first parent is outermost
             ApexRootNode<?> root = (ApexRootNode<?>) parents.get(parents.size() - 1);
-            IssueLog issues = root.getMultifileAnalysis().getIssues();
-            if (issues != null) {
-                Boolean hasIssues = issues.getIssues().get(root.getFileName()).nonEmpty();
-                if (hasIssues) {
-                    return JavaConverters.asJava(issues.getIssues().get(root.getFileName()).get());
-                }
-            }
+            return root.getMultifileAnalysis().getFileIssues(root.getFileName());
         }
-        return null;
+        return new Issue[0];
     }
 }
