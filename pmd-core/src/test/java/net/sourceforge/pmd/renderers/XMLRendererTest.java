@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
@@ -19,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -38,6 +37,9 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 public class XMLRendererTest extends AbstractRendererTest {
     @Rule // Restores system properties after test
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Override
     public Renderer getRenderer() {
@@ -156,19 +158,16 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     private String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
-        Path tempFile = Files.createTempFile("pmd-report-test", null);
-        String absolutePath = tempFile.toAbsolutePath().toString();
+        File reportFile = folder.newFile();
 
-        renderer.setReportFile(absolutePath);
+        renderer.setReportFile(reportFile.getAbsolutePath());
         renderer.start();
         renderer.renderFileReport(report);
         renderer.end();
         renderer.flush();
 
-        try (FileInputStream input = new FileInputStream(absolutePath)) {
+        try (FileInputStream input = new FileInputStream(reportFile)) {
             return IOUtils.toString(input, expectedCharset);
-        } finally {
-            Files.delete(tempFile);
         }
     }
 }

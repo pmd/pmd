@@ -6,9 +6,15 @@
 
     <test-code>
         <description>basic violations</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Bar {
+
+    static {
+        // NEVER DO THIS IN A APP SERVER !!!
+        System.exit(0);
+    }
+
     public void foo() {
         // NEVER DO THIS IN A APP SERVER !!!
         System.exit(0);
@@ -32,14 +38,46 @@ public class SystemCall {
 
     <test-code>
         <description>basic violations with Runtime</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Bar {
     public void foo() {
         // NEVER DO THIS IN A APP SERVER !!!
         Runtime.getRuntime().exit(0);
+        Runtime.getRuntime().halt(0);
     }
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>system exit in main</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SystemCall {
+    public static void main(String[] args) {
+        // OK in main()
+        System.exit(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>system exit in anonymous class inside main</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SystemCall {
+    public static void main(String[] args) {
+        new Runnable() {
+            public void run() {
+                // NEVER DO THIS IN A APP SERVER !!!
+                System.exit(0);
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

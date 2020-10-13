@@ -9,19 +9,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -34,11 +32,14 @@ public class RuleDocGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();
     private Path root;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
     public void setup() throws IOException {
         writer.reset();
 
-        root = Files.createTempDirectory("pmd-ruledocgenerator-test");
+        root = folder.newFolder().toPath();
         Files.createDirectories(root.resolve("docs/_data/sidebars"));
         List<String> mockedSidebar = Arrays.asList(
                 "entries:",
@@ -49,23 +50,6 @@ public class RuleDocGeneratorTest {
                 "  - title: 3",
                 "  - title: Rules");
         Files.write(root.resolve("docs/_data/sidebars/pmd_sidebar.yml"), mockedSidebar);
-    }
-
-    @After
-    public void cleanup() throws IOException {
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
     }
 
     private static String loadResource(String name) throws IOException {
