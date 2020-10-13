@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoNotTerminateVM extends PmdRuleTst {
+public class DoNotTerminateVMTest extends PmdRuleTst {
     // no additional unit tests
 }
