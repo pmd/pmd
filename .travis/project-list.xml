@@ -7,15 +7,17 @@ xsi:noNamespaceSchemaLocation="projectlist_1_0_0.xsd">
   <project>
     <name>checkstyle</name>
     <type>git</type>
-    <connection>https://github.com/checkstyle/checkstyle</connection>
-    <tag>checkstyle-8.10</tag>
+<!--     <connection>https://github.com/checkstyle/checkstyle</connection> -->
+    <connection>https://github.com/pmd/checkstyle</connection>
+    <tag>checkstyle-8.10-pmd-regression</tag>
   </project>
 
   <project>
     <name>spring-framework</name>
     <type>git</type>
-    <connection>https://github.com/spring-projects/spring-framework</connection>
-    <tag>v5.0.6.RELEASE</tag>
+<!--     <connection>https://github.com/spring-projects/spring-framework</connection> -->
+    <connection>https://github.com/pmd/spring-framework</connection>
+    <tag>v5.0.6.RELEASE-pmd-regression</tag>
   </project>
 
   <!---<project>

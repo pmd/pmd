@@ -21,7 +21,7 @@ This ruleset contains links to rules that are new in PMD v4.1
   <rule ref="rulesets/java/design.xml/SingularField"/>
 
   <rule ref="rulesets/java/imports.xml/TooManyStaticImports"/>
-  <rule ref="rulesets/java/j2ee.xml/DoNotCallSystemExit"/>
+  <rule ref="category/java/errorprone.xml/DoNotTerminateVM"/>
   <rule ref="rulesets/java/j2ee.xml/DoNotUseThreads"/>
   <rule ref="rulesets/java/j2ee.xml/StaticEJBFieldShouldBeFinal"/>
   <rule ref="rulesets/java/strings.xml/UseEqualsToCompareStrings"/>
