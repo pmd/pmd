@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+* core
+    * [#2831](https://github.com/pmd/pmd/pull/2831): \[core] Fix XMLRenderer newlines when running under IBM Java
 * java-errorprone
     * [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
 
