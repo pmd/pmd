@@ -46,7 +46,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     private XMLStreamWriter xmlWriter;
     private OutputStream stream;
-    private byte[] lineSeparator = new byte[0];
+    private byte[] lineSeparator;
 
     public XMLRenderer() {
         super(NAME, "XML format.");
