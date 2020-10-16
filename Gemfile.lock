@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/pmd/pmd-regression-tester.git
-  revision: 1bd28df6762922a320d553c6012edcad3ae825d0
+  revision: 2d250897c6f4f51cb8f9a372887193e9e5e2c7b1
   specs:
     pmdtester (1.1.0.pre.SNAPSHOT)
       differ (~> 0.1)
