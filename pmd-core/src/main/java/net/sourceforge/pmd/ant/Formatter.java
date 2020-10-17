@@ -231,7 +231,7 @@ public class Formatter {
         return null;
     }
 
-    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths, Report errorReport) throws IOException {
+    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
         start(project.getBaseDir().toString());
         Renderer renderer = getRenderer();
         renderer.setUseShortNames(inputPaths);
@@ -245,7 +245,10 @@ public class Formatter {
 
             @Override
             public void close() throws Exception {
-                end(errorReport);
+                listener.close();
+                if (!toConsole) {
+                    writer.close();
+                }
             }
         };
     }

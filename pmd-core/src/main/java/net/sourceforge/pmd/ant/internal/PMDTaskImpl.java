@@ -6,8 +6,6 @@ package net.sourceforge.pmd.ant.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -19,11 +17,10 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -127,14 +124,6 @@ public class PMDTaskImpl {
         }
 
 
-        // log("Setting Language Version " + languageVersion.getShortName(),
-        // Project.MSG_VERBOSE);
-
-        // TODO Do we really need all this in a loop over each FileSet? Seems
-        // like a lot of redundancy
-        Report errorReport = new Report();
-        final String separator = System.getProperty("file.separator");
-
         @SuppressWarnings("PMD.CloseResource")
         ViolationCounterListener reportSizeListener = new ViolationCounterListener();
 
@@ -144,7 +133,7 @@ public class PMDTaskImpl {
         for (FileSet fs : filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             for (String srcFile : ds.getIncludedFiles()) {
-                File file = new File(ds.getBasedir() + separator + srcFile);
+                File file = new File(ds.getBasedir() + File.separator + srcFile);
                 files.add(new FileDataSource(file));
             }
 
@@ -156,15 +145,10 @@ public class PMDTaskImpl {
         }
         configuration.setInputPaths(fullInputPath.toString());
 
-        GlobalAnalysisListener listener = getListener(errorReport, reportSizeListener, reportShortNamesPaths);
-        if (listener == null) {
-            return;
-        }
-
-        try (GlobalAnalysisListener ignored = listener) {
+        try (GlobalAnalysisListener listener = getListener(reportSizeListener, reportShortNamesPaths)) {
             PMD.processFiles(configuration, rules, files, listener);
         } catch (Exception e) {
-            handleError(errorReport, e);
+            throw new BuildException("Exception while closing data sources", e);
         }
 
         int problemCount = reportSizeListener.getResult();
@@ -180,14 +164,14 @@ public class PMDTaskImpl {
         }
     }
 
-    private @Nullable GlobalAnalysisListener getListener(Report errorReport, ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
+    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
             renderers.add(makeLogListener(configuration.getInputPaths()));
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                renderers.add(formatter.newListener(project, reportShortNamesPaths, errorReport));
+                renderers.add(formatter.newListener(project, reportShortNamesPaths));
             }
         } catch (IOException e) {
             // close those opened so far
@@ -195,8 +179,7 @@ public class PMDTaskImpl {
             if (e2 != null) {
                 e.addSuppressed(e2);
             }
-            handleError(errorReport, e);
-            return null;
+            throw new BuildException("Exception while initializing renderers", e);
         }
 
         return GlobalAnalysisListener.tee(renderers);
@@ -207,8 +190,8 @@ public class PMDTaskImpl {
 
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
-                project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
-                            Project.MSG_VERBOSE);
+                String name = dataSource.getNiceFileName(false, commonInputPath);
+                project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }
 
@@ -238,32 +221,6 @@ public class PMDTaskImpl {
         final boolean parentFirst = true;
         return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
                 project, classpath, parentFirst));
-    }
-
-    private void handleError(Report errorReport, Throwable pmde) {
-
-        pmde.printStackTrace();
-        project.log(pmde.toString(), Project.MSG_VERBOSE);
-
-        Throwable cause = pmde.getCause();
-
-        if (cause != null) {
-            try (StringWriter strWriter = new StringWriter();
-                 PrintWriter printWriter = new PrintWriter(strWriter)) {
-                cause.printStackTrace(printWriter);
-                project.log(strWriter.toString(), Project.MSG_VERBOSE);
-            } catch (IOException e) {
-                project.log("Error while closing stream", e, Project.MSG_ERR);
-            }
-            if (StringUtils.isNotBlank(cause.getMessage())) {
-                project.log(cause.getMessage(), Project.MSG_VERBOSE);
-            }
-        }
-
-        if (failOnError) {
-            throw new BuildException(pmde);
-        }
-        errorReport.addError(new Report.ProcessingError(pmde, "(unknown file)"));
     }
 
     private void setupClassLoader() {
