@@ -119,7 +119,7 @@ public abstract class RuleTst {
      * violations.
      */
     @SuppressWarnings("unchecked")
-    void runTest(TestDescriptor test) {
+    public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
         if (test.getReinitializeRule()) {
@@ -253,7 +253,7 @@ public abstract class RuleTst {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
-    Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         Report report = new Report();
         try {
             PMD p = new PMD();
@@ -311,13 +311,13 @@ public abstract class RuleTst {
      * ./xml/RuleName.xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
-    TestDescriptor[] extractTestsFromXml(Rule rule) {
+    public TestDescriptor[] extractTestsFromXml(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
 
         return extractTestsFromXml(rule, testsFileName);
     }
 
-    private TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
+    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
 
@@ -326,7 +326,7 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
-    private TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
+    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
 
         Document doc;
@@ -347,7 +347,7 @@ public abstract class RuleTst {
      * should be ./xml/RuleName.xml relative to the test-class. The format is
      * defined in test-data.xsd.
      */
-    private void runTests(Rule rule) {
+    public void runTests(Rule rule) {
         runTests(extractTestsFromXml(rule));
     }
 
@@ -356,14 +356,14 @@ public abstract class RuleTst {
      * ./xml/[testsFileName].xml relative to the test-class. The format is
      * defined in test-data.xsd.
      */
-    private void runTests(Rule rule, String testsFileName) {
+    public void runTests(Rule rule, String testsFileName) {
         runTests(extractTestsFromXml(rule, testsFileName));
     }
 
     /**
      * Run a set of tests of a certain sourceType.
      */
-    private void runTests(TestDescriptor[] tests) {
+    public void runTests(TestDescriptor[] tests) {
         for (TestDescriptor test : tests) {
             runTest(test);
         }
