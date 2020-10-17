@@ -235,9 +235,10 @@ public class Formatter {
         start(project.getBaseDir().toString());
         Renderer renderer = getRenderer();
         renderer.setUseShortNames(inputPaths);
-        GlobalAnalysisListener listener = renderer.newListener();
 
         return new GlobalAnalysisListener() {
+            final GlobalAnalysisListener listener = renderer.newListener();
+
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
                 return listener.startFileAnalysis(file);
