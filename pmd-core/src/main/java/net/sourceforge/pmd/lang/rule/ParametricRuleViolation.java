@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -30,25 +28,15 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     protected String methodName = "";
     protected String variableName = "";
 
-    // FUTURE Fix to understand when a violation _must_ have a Node, and when it
-    // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
-    // RuleViolationFactory to support identifying without a Node, and update
-    // Rule base classes too.
-    // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
-    @Deprecated
-    public ParametricRuleViolation(Rule theRule, String filename, @NonNull T node, String message) {
+    public ParametricRuleViolation(Rule theRule, T node, String message) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
+        this.filename = node.getSourceCodeFile();
 
         beginLine = node.getBeginLine();
         beginColumn = node.getBeginColumn();
         endLine = node.getEndLine();
         endColumn = node.getEndColumn();
-    }
-
-    public ParametricRuleViolation(Rule theRule, T node, String message) {
-        this(theRule, node.getSourceCodeFile(), node, message);
     }
 
     protected String expandVariables(String message) {
