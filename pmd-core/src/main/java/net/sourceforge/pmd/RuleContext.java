@@ -71,7 +71,7 @@ public final class RuleContext {
 
         RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
-        RuleViolation violation = fact.createViolation(rule, location, location.getSourceCodeFile(), makeMessage(message, formatArgs));
+        RuleViolation violation = fact.createViolation(rule, location, makeMessage(message, formatArgs));
         if (beginLine != -1 && endLine != -1) {
             // fixme, this is needed until we have actual Location objects
             ((ParametricRuleViolation<?>) violation).setLines(beginLine, endLine);

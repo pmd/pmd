@@ -48,8 +48,8 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     }
 
     @Override
-    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
-        return new JavaRuleViolation(rule, (JavaNode) location, filename, formattedMessage);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+        return new JavaRuleViolation(rule, (JavaNode) location, formattedMessage);
     }
 
 }

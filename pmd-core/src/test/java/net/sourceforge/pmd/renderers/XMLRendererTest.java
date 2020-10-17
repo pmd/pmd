@@ -90,9 +90,9 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     private RuleViolation createRuleViolation(String description) {
-        DummyNode node = new DummyNode();
+        DummyNode node = new DummyNode().withFileName(getSourceCodeFilename());
         node.setCoords(1, 1, 1, 1);
-        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, description);
+        return new ParametricRuleViolation<Node>(new FooRule(), node, description);
     }
 
     private void verifyXmlEscaping(Renderer renderer, String shouldContain, Charset charset) throws Exception {

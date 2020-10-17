@@ -67,7 +67,7 @@ public class RuleTstTest {
             private RuleViolation createViolation(int beginLine, String message) {
                 DummyNode node = new DummyNode();
                 node.setCoords(beginLine, 1, beginLine + 1, 2);
-                return new ParametricRuleViolation<Node>(rule, "someFile", node, message);
+                return new ParametricRuleViolation<Node>(rule, node, message);
             }
 
             @Override

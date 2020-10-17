@@ -21,7 +21,7 @@ public interface RuleViolationFactory {
     // todo move to package reporting
 
 
-    RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage);
+    RuleViolation createViolation(Rule rule, @NonNull Node location, String formattedMessage);
 
 
     SuppressedViolation suppressOrNull(Node location, RuleViolation violation);

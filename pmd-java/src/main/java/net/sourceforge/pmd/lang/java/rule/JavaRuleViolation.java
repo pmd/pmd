@@ -40,8 +40,8 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 @Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
-    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String filename, String message) {
-        super(rule, filename, node, message);
+    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String message) {
+        super(rule, node, message);
 
         ASTCompilationUnit root = node.getRoot();
 

@@ -45,7 +45,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     private RuleViolation newRuleViolation(int endColumn, final String packageNameArg, final String classNameArg) {
         DummyNode node = createNode(endColumn);
-        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, "blah") {
+        return new ParametricRuleViolation<Node>(new FooRule(), node, "blah") {
             {
                 packageName = packageNameArg;
                 className = classNameArg;
