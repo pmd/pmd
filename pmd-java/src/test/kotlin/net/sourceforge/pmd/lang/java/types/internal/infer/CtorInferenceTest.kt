@@ -99,7 +99,6 @@ class CtorInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Generic enum constant ctors") {
-        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
