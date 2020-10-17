@@ -4,39 +4,45 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.testframework.RuleTst;
-import net.sourceforge.pmd.testframework.TestDescriptor;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
-public class ExcludeLinesTest extends RuleTst {
-    private Rule rule;
-
-    @Before
-    public void setUp() {
-        rule = findRule("java-unusedcode", "UnusedLocalVariable");
-    }
+public class ExcludeLinesTest extends BaseNonParserTest {
 
     @Test
     public void testAcceptance() {
-        runTest(new TestDescriptor(TEST1, "NOPMD should work", 0, rule));
-        runTest(new TestDescriptor(TEST2, "Should fail without exclude marker", 1, rule));
+        assertSize(java.executeRule(getRule(), TEST1), 0);
+        assertSize(java.executeRule(getRule(), TEST2), 1);
+    }
+
+    public Rule getRule() {
+        return new AbstractJavaRule() {
+            {
+                setMessage("!");
+            }
+
+            @Override
+            public Object visit(ASTVariableDeclaratorId node, Object data) {
+                addViolation(data, node);
+                return data;
+            }
+        };
     }
 
     @Test
     public void testAlternateMarker() {
-
-        Report r = JavaParsingHelper.WITH_PROCESSING.withParserOptions(new ParserOptions("FOOBAR"))
-                                                    .executeRule(rule, TEST3);
-
-        assertTrue(r.getViolations().isEmpty());
-        assertEquals(r.getSuppressedViolations().size(), 1);
+        ParserOptions options = new ParserOptions();
+        options.setSuppressMarker("FOOBAR");
+        Report rpt = java.withParserOptions(options).executeRule(getRule(), TEST3);
+        assertSize(rpt, 0);
+        assertSuppressed(rpt, 1);
     }
 
     private static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int x; //NOPMD "

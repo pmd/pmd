@@ -10,17 +10,13 @@ summary: >
 last_updated: August 2017
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
         Clément Fournier <clement.fournier76@gmail.com>
+
+additional_js:
+ - assets/Shuffle-5.2.3/dist/shuffle.min.js
+ - assets/jquery-ui-1.12.1/jquery-ui.min.js
+ - js/shuffle.js
 ---
 
-<!-- {% include image.html file="logo/pmd-logo-300px.png" alt="PMD Logo" %} -->
-
-
-{% unless site.output == "pdf" %}
-<script src="js/jquery.shuffle.min.js"></script>
-<script src="js/jquery.ba-throttle-debounce.min.js"></script>
-
-{% include custom/panel_scroll.html %}
-{% endunless %}
 
 
 ## Overview
@@ -77,7 +73,6 @@ you may also use the search bar in the top right, or the sidebar on the left.
 
 
 
-<div class="container-fluid" >
 <div id="grid" class="row">
 
 <!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
@@ -93,7 +88,7 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="rule_references"
        datagroups='["userdocs"]'
        description="Pick your language to find out about the rule it supports."
-       image="fa-database"
+       fa-icon="fa-database"
        titlemaker="page.language_name" %}
 
     {% include custom/shuffle_panel.html
@@ -108,7 +103,7 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="userdocs"
        except_tags="extending,tools"
        datagroups='["userdocs"]'
-       image="fa-cog"
+       fa-icon="fa-cog"
        description="Learn how to build effective and versatile rulesets."
     %}
 
@@ -118,7 +113,8 @@ you may also use the search bar in the top right, or the sidebar on the left.
        tags="devdocs"
        except_tags="extending"
        datagroups='["contributing"]'
-       image="fa-github"
+       fa-style="fab"
+       fa-icon="fa-github"
        description="If you'd like to help us build PMD, these topics may interest you. See you around!"
     %}
 
@@ -138,19 +134,11 @@ you may also use the search bar in the top right, or the sidebar on the left.
        description=""
     %}
 
-
-<!-- sizer -->
-<div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
-
-</div>
+    <!-- sizer -->
+    <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
 </div>
 
-{% unless site.output == "pdf" %}
-
-{% include initialize_shuffle.html %}
-
-{% endunless %}
-
+<!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
 
 
 {% include links.html %}

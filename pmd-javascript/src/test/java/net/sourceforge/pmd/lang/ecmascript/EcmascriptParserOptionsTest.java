@@ -63,7 +63,6 @@ public class EcmascriptParserOptionsTest {
 
         options.setSuppressMarker("foo");
         assertEquals("foo", options.getSuppressMarker());
-        options.setSuppressMarker(null);
     }
 
     @Test

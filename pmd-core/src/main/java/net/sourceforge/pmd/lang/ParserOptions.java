@@ -17,14 +17,13 @@ import net.sourceforge.pmd.PMD;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
-
-    private @NonNull String suppressMarker;
+    private String suppressMarker = PMD.SUPPRESS_MARKER;
 
     public final @NonNull String getSuppressMarker() {
         return suppressMarker;
     }
 
-    public final void setSuppressMarker(String suppressMarker) {
+    public final void setSuppressMarker(@NonNull String suppressMarker) {
         Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
     }
@@ -46,11 +45,11 @@ public class ParserOptions {
             return false;
         }
         final ParserOptions that = (ParserOptions) obj;
-        return this.suppressMarker.equals(that.suppressMarker);
+        return this.getSuppressMarker().equals(that.getSuppressMarker());
     }
 
     @Override
     public int hashCode() {
-        return suppressMarker != null ? suppressMarker.hashCode() : 0;
+        return getSuppressMarker() != null ? getSuppressMarker().hashCode() : 0;
     }
 }

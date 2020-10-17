@@ -53,10 +53,14 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName) ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
+        val language = language
         return if (version == null) language.defaultVersion
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
+
+    private val language: Language
+        get() = LanguageRegistry.getLanguage(langName)
+                ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
 
     val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
@@ -206,7 +210,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * Execute the given [rule] on the [code]. Produce a report with the violations
      * found by the rule. The language version of the piece of code is determined by the [params].
      */
-    fun executeRule(rule: Rule, code: String): Report {
+    @JvmOverloads
+    fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
         val rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)
 
         val configuration = PMDConfiguration()

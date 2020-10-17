@@ -8,7 +8,17 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
+import java.io.File;
+import java.util.Collections;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.lang.ast.Node;

@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
@@ -509,8 +510,12 @@ public class RuleSetTest {
         List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        ProcessingError processingError = errors.get(0);
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
+        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
+        assertEquals("Wrong filename in processing error",
+                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
+                FilenameUtils.normalize(processingError.getFile(), true));
 
         assertEquals("There should be a violation", 1, report.getViolations().size());
     }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -33,9 +34,9 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // Rule base classes too.
     // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
     public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
-        rule = theRule;
-        description = message;
-        this.filename = filename == null ? "" : filename;
+        this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
+        this.description = AssertionUtil.requireParamNotNull("message", message);
+        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
 
         if (node != null) {
             beginLine = node.getBeginLine();
@@ -43,10 +44,10 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             endLine = node.getEndLine();
             endColumn = node.getEndColumn();
         }
-
     }
 
     protected String expandVariables(String message) {
+        // TODO move that to RuleContext with the rest of the formatting logic
 
         if (!message.contains("${")) {
             return message;
@@ -138,6 +139,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
+        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
         beginLine = theBeginLine;
         endLine = theEndLine;
     }

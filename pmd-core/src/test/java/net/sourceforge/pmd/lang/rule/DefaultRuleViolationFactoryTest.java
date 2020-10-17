@@ -25,9 +25,27 @@ public class DefaultRuleViolationFactoryTest {
 
     @Test
     public void testMessage() {
-        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new TestRule(), DummyTreeUtil.tree(DummyRoot::new), "file", "Some message");
+        RuleViolation violation = makeViolation("Some message");
 
         Assert.assertEquals("Some message", violation.getDescription());
+    }
+
+    @Test
+    public void testMessageEscaping() {
+        RuleViolation violation = makeViolation("message with \"'{'\"");
+
+        Assert.assertEquals("message with \"{\"", violation.getDescription());
+    }
+
+    @Test
+    public void testMessageEscaping2() {
+        RuleViolation violation = makeViolation("message with ${ohio}");
+
+        Assert.assertEquals("message with ${ohio}", violation.getDescription());
+    }
+
+    private RuleViolation makeViolation(String unescapedMessage, Object... args) {
+        return DefaultRuleViolationFactory.defaultInstance().formatViolation(new TestRule(), DummyTreeUtil.tree(DummyRoot::new), "file", unescapedMessage, args);
     }
 
 }

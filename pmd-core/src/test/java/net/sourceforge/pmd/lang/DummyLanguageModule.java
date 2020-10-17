@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
@@ -61,7 +63,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
 
         @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage) {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
             return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
                 {
                     this.packageName = "foo"; // just for testing variable expansion
