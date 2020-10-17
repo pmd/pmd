@@ -14,6 +14,9 @@ import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
 import java.io.Serializable
 
 /**
+ * Tests "least upper bound" (lub).
+ * See net.sourceforge.pmd.lang.java.types.TypeSystem.lub(Collection<? extends JTypeMirror>).
+ *
  * @author Clément Fournier
  */
 class LubTest : FunSpec({

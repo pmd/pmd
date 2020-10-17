@@ -19,6 +19,9 @@ import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
 import java.io.Serializable
 
 /**
+ * Tests "the greatest lower bound" (glb).
+ * See net.sourceforge.pmd.lang.java.types.TypeSystem.glb(Collection<? extends JTypeMirror>).
+ *
  * @author Clément Fournier
  */
 class GlbTest : FunSpec({
