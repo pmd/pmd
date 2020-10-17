@@ -11,7 +11,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
@@ -20,7 +19,6 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -37,9 +35,10 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -139,8 +138,9 @@ public class PMDTaskImpl {
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
         Report errorReport = new Report();
-        final AtomicInteger reportSize = new AtomicInteger();
         final String separator = System.getProperty("file.separator");
+        @SuppressWarnings("PMD.CloseResource")
+        ViolationCounterListener reportSizeListener = new ViolationCounterListener();
 
         for (FileSet fs : filesets) {
             List<DataSource> files = new LinkedList<>();
@@ -158,11 +158,12 @@ public class PMDTaskImpl {
                 reportShortNamesPaths.add(commonInputPath);
             }
 
-            Renderer logRenderer = makeRenderer(reportSize, commonInputPath);
+
             List<GlobalAnalysisListener> renderers;
             try {
                 renderers = new ArrayList<>(formatters.size() + 1);
-                renderers.add(logRenderer.newListener());
+                renderers.add(makeLogListener(commonInputPath));
+                renderers.add(reportSizeListener);
                 for (Formatter formatter : formatters) {
                     Renderer renderer = formatter.getRenderer();
                     renderer.setUseShortNames(reportShortNamesPaths);
@@ -173,14 +174,14 @@ public class PMDTaskImpl {
                 return;
             }
 
-            try {
-                PMD.processFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
+            try (GlobalAnalysisListener globalListener = GlobalAnalysisListener.tee(renderers)) {
+                PMD.processFiles(configuration, rules, files, globalListener);
             } catch (Exception pmde) {
                 handleError(errorReport, pmde);
             }
         }
 
-        int problemCount = reportSize.get();
+        int problemCount = reportSizeListener.getResult();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 
         for (Formatter formatter : formatters) {
@@ -197,37 +198,20 @@ public class PMDTaskImpl {
         }
     }
 
-    @NonNull
-    private AbstractRenderer makeRenderer(AtomicInteger reportSize, String commonInputPath) {
-        return new AbstractRenderer("log", "Logging renderer") {
-            @Override
-            public void start() {
-                // Nothing to do
-            }
+    private GlobalAnalysisListener makeLogListener(String commonInputPath) {
+        return new GlobalAnalysisListener() {
 
             @Override
-            public void startFileAnalysis(DataSource dataSource) {
+            public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
                 project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
                             Project.MSG_VERBOSE);
+                return FileAnalysisListener.noop();
             }
 
             @Override
-            public void renderFileReport(Report r) {
-                int size = r.getViolations().size();
-                if (size > 0) {
-                    reportSize.addAndGet(size);
-                }
+            public void close() {
+                // nothing to do
             }
-
-            @Override
-            public void end() {
-                // Nothing to do
-            }
-
-            @Override
-            public String defaultFileExtension() {
-                return null;
-            } // not relevant
         };
     }
 
