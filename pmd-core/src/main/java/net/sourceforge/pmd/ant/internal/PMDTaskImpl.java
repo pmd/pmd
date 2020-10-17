@@ -181,6 +181,8 @@ public class PMDTaskImpl {
             }
         }
 
+        reportSizeListener.close();
+
         int problemCount = reportSizeListener.getResult();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 

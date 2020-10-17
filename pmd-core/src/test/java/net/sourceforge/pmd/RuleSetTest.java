@@ -505,7 +505,7 @@ public class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
@@ -514,7 +514,7 @@ public class RuleSetTest {
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
         assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
         assertEquals("Wrong filename in processing error",
-                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
+                "samplefile.dummy",
                 FilenameUtils.normalize(processingError.getFile(), true));
 
         assertEquals("There should be a violation", 1, report.getViolations().size());
