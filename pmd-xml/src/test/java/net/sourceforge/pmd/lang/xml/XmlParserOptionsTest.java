@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.ParserOptionsTest.verifyOptionsEqualsHash
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -89,8 +88,6 @@ public class XmlParserOptionsTest {
 
         options.setSuppressMarker("foo");
         assertEquals("foo", options.getSuppressMarker());
-        options.setSuppressMarker(null);
-        assertNull(options.getSuppressMarker());
 
         options.setCoalescing(true);
         assertTrue(options.isCoalescing());

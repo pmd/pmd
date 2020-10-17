@@ -8,9 +8,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * @author Philip Graf
@@ -34,8 +37,7 @@ public class JavaRuleViolationTest {
     public void testASTFormalParameterVariableName() {
         ASTCompilationUnit ast = parse("class Foo { void bar(int x) {} }");
         final ASTFormalParameter node = ast.getFirstDescendantOfType(ASTFormalParameter.class);
-        final RuleContext context = new RuleContext();
-        final JavaRuleViolation violation = new JavaRuleViolation(null, context, node, null);
+        final RuleViolation violation = violationAt(node);
         assertEquals("x", violation.getVariableName());
     }
 
@@ -52,9 +54,12 @@ public class JavaRuleViolationTest {
     public void testMethodName() {
         ASTCompilationUnit ast = parse("class Foo { void bar(int x) {} }");
         ASTMethodDeclaration md = ast.getFirstDescendantOfType(ASTMethodDeclaration.class);
-        final RuleContext context = new RuleContext();
-        final JavaRuleViolation violation = new JavaRuleViolation(null, context, md, null);
-        assertEquals("bar", violation.getMethodName());
+        assertEquals("bar", violationAt(md).getMethodName());
+    }
+
+    @NonNull
+    public RuleViolation violationAt(JavaNode md) {
+        return new JavaRuleViolation(new FooRule(), md, "", "");
     }
 
     /**
@@ -64,9 +69,7 @@ public class JavaRuleViolationTest {
     public void testEnumName() {
         ASTCompilationUnit ast = parse("enum Foo {FOO; void bar(int x) {} }");
         ASTMethodDeclaration md = ast.getFirstDescendantOfType(ASTMethodDeclaration.class);
-        final RuleContext context = new RuleContext();
-        final JavaRuleViolation violation = new JavaRuleViolation(null, context, md, null);
-        assertEquals("Foo", violation.getClassName());
+        assertEquals("Foo", violationAt(md).getClassName());
     }
 
     /**
@@ -80,7 +83,7 @@ public class JavaRuleViolationTest {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public class Foo { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
-        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        RuleViolation violation = violationAt(importNode);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
     }
@@ -91,12 +94,11 @@ public class JavaRuleViolationTest {
         ASTClassOrInterfaceDeclaration classDeclaration = ast.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         ASTFieldDeclaration field = ast.getFirstDescendantOfType(ASTFieldDeclaration.class);
 
-        JavaRuleViolation violation;
-        violation = new JavaRuleViolation(null, new RuleContext(), classDeclaration, null);
+        RuleViolation violation = violationAt(classDeclaration);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
 
-        violation = new JavaRuleViolation(null, new RuleContext(), field, null);
+        violation = violationAt(field);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
     }
@@ -106,7 +108,7 @@ public class JavaRuleViolationTest {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public enum FooE { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
-        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        RuleViolation violation = violationAt(importNode);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("FooE", violation.getClassName());
     }
@@ -116,7 +118,7 @@ public class JavaRuleViolationTest {
         ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
-        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        RuleViolation violation = violationAt(importNode);
         assertEquals("", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
     }
@@ -126,7 +128,7 @@ public class JavaRuleViolationTest {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
-        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        RuleViolation violation = violationAt(importNode);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Bar", violation.getClassName());
     }
@@ -136,7 +138,7 @@ public class JavaRuleViolationTest {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
-        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        RuleViolation violation = violationAt(importNode);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
     }
@@ -151,19 +153,20 @@ public class JavaRuleViolationTest {
         List<ASTClassOrInterfaceDeclaration> classes = ast.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
         assertEquals(2, classes.size());
 
-        JavaRuleViolation fooViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(0), null);
+        RuleViolation fooViolation = violationAt(classes.get(0));
         assertEquals("Foo", fooViolation.getClassName());
 
-        JavaRuleViolation barViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(1), null);
+        RuleViolation barViolation = violationAt(classes.get(1));
         assertEquals("Foo$Bar", barViolation.getClassName());
 
         List<ASTFieldDeclaration> fields = ast.findDescendantsOfType(ASTFieldDeclaration.class, true);
         assertEquals(2, fields.size());
 
-        JavaRuleViolation fieldViolation = new JavaRuleViolation(null, new RuleContext(), fields.get(0), null);
+        RuleViolation fieldViolation = violationAt(fields.get(0));
         assertEquals("Foo", fieldViolation.getClassName());
 
-        JavaRuleViolation innerFieldViolation = new JavaRuleViolation(null, new RuleContext(), fields.get(1), null);
+        RuleViolation innerFieldViolation = violationAt(fields.get(1));
         assertEquals("Foo$Bar", innerFieldViolation.getClassName());
     }
+
 }

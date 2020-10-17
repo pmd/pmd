@@ -5,17 +5,16 @@
 package net.sourceforge.pmd.lang.rule;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class DefaultRuleViolationFactoryTest {
-    private RuleContext ruleContext;
-    private RuleViolationFactory factory = DefaultRuleViolationFactory.defaultInstance();
 
     private static class TestRule extends AbstractRule {
         @Override
@@ -24,24 +23,29 @@ public class DefaultRuleViolationFactoryTest {
         }
     }
 
-    @Before
-    public void setup() {
-        ruleContext = new RuleContext();
+    @Test
+    public void testMessage() {
+        RuleViolation violation = makeViolation("Some message");
+
+        Assert.assertEquals("Some message", violation.getDescription());
     }
 
     @Test
-    public void testMessage() {
-        factory.addViolation(ruleContext, new TestRule(), null, "message with \"'{'\"", null);
+    public void testMessageEscaping() {
+        RuleViolation violation = makeViolation("message with \"'{'\"");
 
-        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
         Assert.assertEquals("message with \"{\"", violation.getDescription());
     }
 
     @Test
-    public void testMessageArgs() {
-        factory.addViolation(ruleContext, new TestRule(), null, "message with 1 argument: \"{0}\"", new Object[] {"testarg1"});
+    public void testMessageEscaping2() {
+        RuleViolation violation = makeViolation("message with ${ohio}");
 
-        RuleViolation violation = ruleContext.getReport().getViolations().get(0);
-        Assert.assertEquals("message with 1 argument: \"testarg1\"", violation.getDescription());
+        Assert.assertEquals("message with ${ohio}", violation.getDescription());
     }
+
+    private RuleViolation makeViolation(String unescapedMessage, Object... args) {
+        return DefaultRuleViolationFactory.defaultInstance().formatViolation(new TestRule(), DummyTreeUtil.tree(DummyRoot::new), "file", unescapedMessage, args);
+    }
+
 }

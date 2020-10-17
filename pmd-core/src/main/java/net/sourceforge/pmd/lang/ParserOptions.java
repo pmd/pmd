@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.PMD;
+
 /**
  * Represents a set of configuration options for a {@link Parser}. For each
  * unique combination of ParserOptions a Parser will be used to create an AST.
@@ -11,13 +17,14 @@ package net.sourceforge.pmd.lang;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
-    protected String suppressMarker;
+    private String suppressMarker = PMD.SUPPRESS_MARKER;
 
     public String getSuppressMarker() {
         return suppressMarker;
     }
 
-    public void setSuppressMarker(String suppressMarker) {
+    public final void setSuppressMarker(@NonNull String suppressMarker) {
+        Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
     }
 
@@ -30,11 +37,11 @@ public class ParserOptions {
             return false;
         }
         final ParserOptions that = (ParserOptions) obj;
-        return this.suppressMarker.equals(that.suppressMarker);
+        return this.getSuppressMarker().equals(that.getSuppressMarker());
     }
 
     @Override
     public int hashCode() {
-        return suppressMarker != null ? suppressMarker.hashCode() : 0;
+        return getSuppressMarker() != null ? getSuppressMarker().hashCode() : 0;
     }
 }

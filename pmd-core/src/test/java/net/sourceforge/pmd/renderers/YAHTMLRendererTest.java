@@ -26,7 +26,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -46,9 +45,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     private RuleViolation newRuleViolation(int endColumn, final String packageNameArg, final String classNameArg) {
         DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah") {
+        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, "blah") {
             {
                 packageName = packageNameArg;
                 className = classNameArg;
