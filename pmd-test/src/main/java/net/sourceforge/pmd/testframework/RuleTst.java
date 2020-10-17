@@ -251,12 +251,11 @@ public abstract class RuleTst {
         System.out.println("--------------------------------------------------------------");
     }
 
-    private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+    private Report processUsingStringReader(TestDescriptor test, Rule rule) {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
-        Report report = new Report();
         try {
             PMDConfiguration config = new PMDConfiguration();
             config.setIgnoreIncrementalAnalysis(true);

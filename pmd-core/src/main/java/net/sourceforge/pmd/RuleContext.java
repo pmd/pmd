@@ -90,7 +90,7 @@ public final class RuleContext {
         listener.onRuleViolation(rv);
     }
 
-    private String makeMessage(@NonNull String message, Object[] args) {
+    private static String makeMessage(@NonNull String message, Object[] args) {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
         final String escapedMessage = StringUtils.replace(message, "${", "$'{'");

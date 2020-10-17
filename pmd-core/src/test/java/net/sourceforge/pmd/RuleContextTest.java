@@ -8,17 +8,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
-import java.io.File;
-import java.util.Collections;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 import org.junit.Test;
-
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -63,4 +53,24 @@ public class RuleContextTest {
 
         Assert.assertEquals("message with 1 argument: \"testarg1\"", report.getViolations().get(0).getDescription());
     }
+
+    @Test
+    public void testMessageEscaping() throws Exception {
+        RuleViolation violation = makeViolation("message with \"'{'\"");
+
+        Assert.assertEquals("message with \"{\"", violation.getDescription());
+    }
+
+    @Test
+    public void testMessageEscaping2() throws Exception {
+        RuleViolation violation = makeViolation("message with ${ohio}");
+
+        Assert.assertEquals("message with ${ohio}", violation.getDescription());
+    }
+
+    private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {
+        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), unescapedMessage, args));
+        return report.getViolations().get(0);
+    }
+
 }
