@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
@@ -49,6 +50,11 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getModifiers().getLastToken().getNext();
+    }
 
     /**
      * Returns the simple name of the method.

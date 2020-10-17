@@ -375,6 +375,8 @@ public class CommentRequired {
         <description>Test @override methods unwanted</description>
         <rule-property name="methodWithOverrideCommentRequirement">Unwanted</rule-property>
         <expected-problems>2</expected-problems>
+        <!-- Not the line of the annotation, the line of the identifier. -->
+        <expected-linenumbers>9,16</expected-linenumbers>
         <code><![CDATA[
 /**
  * Comment required test class.
