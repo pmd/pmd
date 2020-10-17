@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
@@ -19,6 +19,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -35,7 +36,6 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
@@ -126,11 +126,6 @@ public class PMDTaskImpl {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
-        // Start the Formatters
-        for (Formatter formatter : formatters) {
-            project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-            formatter.start(project.getBaseDir().toString());
-        }
 
         // log("Setting Language Version " + languageVersion.getShortName(),
         // Project.MSG_VERBOSE);
@@ -139,56 +134,41 @@ public class PMDTaskImpl {
         // like a lot of redundancy
         Report errorReport = new Report();
         final String separator = System.getProperty("file.separator");
+
         @SuppressWarnings("PMD.CloseResource")
         ViolationCounterListener reportSizeListener = new ViolationCounterListener();
 
+        final List<DataSource> files = new ArrayList<>();
+        final List<String> reportShortNamesPaths = new ArrayList<>();
+        StringJoiner fullInputPath = new StringJoiner(",");
         for (FileSet fs : filesets) {
-            List<DataSource> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
-            String[] srcFiles = ds.getIncludedFiles();
-            for (String srcFile : srcFiles) {
+            for (String srcFile : ds.getIncludedFiles()) {
                 File file = new File(ds.getBasedir() + separator + srcFile);
                 files.add(new FileDataSource(file));
             }
 
             final String commonInputPath = ds.getBasedir().getPath();
-            configuration.setInputPaths(commonInputPath);
-            final List<String> reportShortNamesPaths = new ArrayList<>();
+            fullInputPath.add(commonInputPath);
             if (configuration.isReportShortNames()) {
                 reportShortNamesPaths.add(commonInputPath);
             }
+        }
+        configuration.setInputPaths(fullInputPath.toString());
 
-
-            List<GlobalAnalysisListener> renderers;
-            try {
-                renderers = new ArrayList<>(formatters.size() + 1);
-                renderers.add(makeLogListener(commonInputPath));
-                renderers.add(reportSizeListener);
-                for (Formatter formatter : formatters) {
-                    Renderer renderer = formatter.getRenderer();
-                    renderer.setUseShortNames(reportShortNamesPaths);
-                    renderers.add(renderer.newListener());
-                }
-            } catch (IOException e) {
-                handleError(errorReport, e);
-                return;
-            }
-
-            try (GlobalAnalysisListener globalListener = GlobalAnalysisListener.tee(renderers)) {
-                PMD.processFiles(configuration, rules, files, globalListener);
-            } catch (Exception pmde) {
-                handleError(errorReport, pmde);
-            }
+        GlobalAnalysisListener listener = getListener(errorReport, reportSizeListener, reportShortNamesPaths);
+        if (listener == null) {
+            return;
         }
 
-        reportSizeListener.close();
+        try (GlobalAnalysisListener ignored = listener) {
+            PMD.processFiles(configuration, rules, files, listener);
+        } catch (Exception e) {
+            handleError(errorReport, e);
+        }
 
         int problemCount = reportSizeListener.getResult();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
-
-        for (Formatter formatter : formatters) {
-            formatter.end(errorReport);
-        }
 
         if (failuresPropertyName != null && problemCount > 0) {
             project.setProperty(failuresPropertyName, String.valueOf(problemCount));
@@ -198,6 +178,28 @@ public class PMDTaskImpl {
         if (failOnRuleViolation && problemCount > maxRuleViolations) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
         }
+    }
+
+    private @Nullable GlobalAnalysisListener getListener(Report errorReport, ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
+        List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
+        try {
+            renderers.add(makeLogListener(configuration.getInputPaths()));
+            renderers.add(reportSizeListener);
+            for (Formatter formatter : formatters) {
+                project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+                renderers.add(formatter.newListener(project, reportShortNamesPaths, errorReport));
+            }
+        } catch (IOException e) {
+            // close those opened so far
+            Exception e2 = IOUtil.closeAll(renderers);
+            if (e2 != null) {
+                e.addSuppressed(e2);
+            }
+            handleError(errorReport, e);
+            return null;
+        }
+
+        return GlobalAnalysisListener.tee(renderers);
     }
 
     private GlobalAnalysisListener makeLogListener(String commonInputPath) {
