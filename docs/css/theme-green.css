@@ -37,24 +37,15 @@ a[data-toggle="tooltip"] {
     cursor: default;
 }
 
-.navbar-inverse {
+.navbar {
     background-color: #01c172;
     border-color: #5b893c;
 }
 
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
-    color: #5b893c;
+.navbar .nav-item > .nav-link {
+    color: white !important; /* bootstrap adds 0.5 transparency which we must override */
 }
 
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
-    background-color: #5b893c;
-    color: #ffffff;
-}
-
-/* not sure if using this ...*/
-.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
-    border-color: #01c172 !important;
-}
 
 .btn-primary {
     color: #ffffff;

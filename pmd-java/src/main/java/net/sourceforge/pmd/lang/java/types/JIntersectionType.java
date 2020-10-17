@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -53,9 +52,6 @@ public final class JIntersectionType implements JTypeMirror {
             : "Wrong primary intersection bound: " + toString(primaryBound, allBounds);
         assert primaryBound != ts.OBJECT || allBounds.size() > 1
             : "Intersection of a single bound: " + toString(primaryBound, allBounds); // should be caught by GLB
-        assert !(primaryBound instanceof JArrayType)
-            : "Intersection with an array is not well-formed: "
-            + toString(primaryBound, allBounds); // should be caught by GLB
 
         checkWellFormed(primaryBound, allBounds);
 
@@ -95,20 +91,20 @@ public final class JIntersectionType implements JTypeMirror {
     /**
      * Every intersection type induces a notional class or interface
      * for the purpose of identifying its members. This may be a functional
-     * interface.
+     * interface. This returns null for the non-implemented cases.
      *
-     * @experimental currently this is only relevant to check for functional
+     * @experimental this is only relevant to check for functional
      *     interface parameterization, eg {@code Runnable & Serializable}. Do
      *     not use this to find out the members of this type, rather, use {@link #streamMethods(Predicate)}
      *     or so.
      */
     @Experimental
-    public JClassType getInducedClassType() {
+    public @Nullable JClassType getInducedClassType() {
         JTypeMirror primary = getPrimaryBound();
-        if (primary instanceof JTypeVar) {
+        if (primary instanceof JTypeVar || primary instanceof JArrayType) {
             // Normally, should generate an interface which has all the members of Ti
             // But as per the experimental notice, this case may be ignored until needed
-            throw new NotImplementedException("Intersection with type variable is not implemented yet");
+            return null;
         }
 
         if (induced == null) {
