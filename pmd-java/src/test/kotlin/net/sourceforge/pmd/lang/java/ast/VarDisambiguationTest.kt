@@ -140,7 +140,7 @@ class Foo<T> {
 
         fun JavaParsingHelper.TestCheckLogger.getWarning(key: String, idx: Int, testCode: (JavaNode, List<String>) -> Unit) {
             val (node, args) = warnings[key]!![idx]
-            testCode(node, args.map { it.toString() })
+            testCode(node as JavaNode, args.map { it.toString() })
         }
 
         // Hmm, since shouldMatchN looks into the children of the parent, what it sees here
