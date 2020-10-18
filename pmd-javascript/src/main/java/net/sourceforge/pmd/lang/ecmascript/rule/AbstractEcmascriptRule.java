@@ -13,9 +13,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 public abstract class AbstractEcmascriptRule extends AbstractRule
         implements EcmascriptParserVisitor {
 
-    public AbstractEcmascriptRule() {
-    }
-
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);

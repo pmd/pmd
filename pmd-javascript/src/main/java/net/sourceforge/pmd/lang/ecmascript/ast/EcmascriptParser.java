@@ -27,8 +27,6 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
     private final int esVersion;
     private final String suppressMarker;
 
-    private Map<Integer, String> suppressMap;
-
     public EcmascriptParser(int version, String suppressMarker) {
         this.esVersion = version;
         this.suppressMarker = AssertionUtil.requireParamNotNull("suppression marker", suppressMarker);
@@ -72,7 +70,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
             final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
             ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
-            suppressMap = new HashMap<>();
+            Map<Integer, String> suppressMap = new HashMap<>();
             if (astRoot.getComments() != null) {
                 for (Comment comment : astRoot.getComments()) {
                     int nopmd = comment.getValue().indexOf(suppressMarker);
