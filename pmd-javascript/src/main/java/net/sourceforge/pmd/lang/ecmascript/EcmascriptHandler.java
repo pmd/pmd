@@ -7,20 +7,22 @@ package net.sourceforge.pmd.lang.ecmascript;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 
 /**
  * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
  */
-public class Ecmascript3Handler extends AbstractPmdLanguageVersionHandler {
+class EcmascriptHandler extends AbstractPmdLanguageVersionHandler {
 
-    @Override
-    public ParserOptions getDefaultParserOptions() {
-        return new EcmascriptParserOptions();
+    private final int rhinoVersion;
+
+    EcmascriptHandler(int rhinoVersion) {
+        this.rhinoVersion = rhinoVersion;
     }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new Ecmascript3Parser(parserOptions);
+        return new EcmascriptParser(rhinoVersion, parserOptions.getSuppressMarker());
     }
 
 }

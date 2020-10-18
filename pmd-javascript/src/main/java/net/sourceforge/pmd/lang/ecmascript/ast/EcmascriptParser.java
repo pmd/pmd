@@ -19,28 +19,33 @@ import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
-public class EcmascriptParser {
-    protected final EcmascriptParserOptions parserOptions;
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
+    private final int esVersion;
+    private final String suppressMarker;
 
     private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD"; // that's the default value
 
-    public EcmascriptParser(EcmascriptParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
+    public EcmascriptParser(int version, String suppressMarker) {
+        this.esVersion = version;
+        this.suppressMarker = AssertionUtil.requireParamNotNull("suppression marker", suppressMarker);
     }
 
-    protected AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems)
-            throws ParseException {
+    @Override
+    public ParserOptions getParserOptions() {
+        ParserOptions options = new ParserOptions();
+        options.setSuppressMarker(suppressMarker);
+        return options;
+    }
+
+    private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
-        compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
-        compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
+        compilerEnvirons.setRecordingComments(true);
+        compilerEnvirons.setRecordingLocalJsDocComments(true);
+        compilerEnvirons.setLanguageVersion(esVersion);
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -58,7 +63,8 @@ public class EcmascriptParser {
         return astRoot;
     }
 
-    public ASTAstRoot parse(final Reader reader) {
+    @Override
+    public ASTAstRoot parse(String filename, final Reader reader) throws ParseException {
         try {
             final List<ParseProblem> parseProblems = new ArrayList<>();
             final String sourceCode = IOUtils.toString(reader);
@@ -84,7 +90,4 @@ public class EcmascriptParser {
         }
     }
 
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
-    }
 }
