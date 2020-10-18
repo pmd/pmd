@@ -8,6 +8,4 @@ public abstract class EcmascriptParserTestBase {
 
     protected final JsParsingHelper js = JsParsingHelper.DEFAULT.withResourceContext(getClass());
 
-    protected final JsParsingHelper js18 = JsParsingHelper.DEFAULT.withResourceContext(getClass());
-
 }

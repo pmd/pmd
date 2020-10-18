@@ -21,7 +21,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, "3",
+        return Arrays.asList(new Object[][] { { EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, "",
             LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }
