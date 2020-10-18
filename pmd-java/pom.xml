@@ -26,6 +26,12 @@
             <testResource>
                 <directory>${project.basedir}/src/test/kotlin</directory>
             </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/kotlin</directory>
+                <includes>
+                    <include>**/testdata/**/*.java</include>
+                </includes>
+            </testResource>
         </testResources>
         <resources>
             <resource>
@@ -109,6 +115,16 @@
                     <suppressionsLocation>pmd-java-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/net/sourceforge/pmd/coverage/PMDCoverageTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -186,8 +202,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.kotest</groupId>
             <artifactId>kotest-assertions-core-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -4,20 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTPrimaryExpression extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTPrimaryExpression(int id) {
-        super(id);
-    }
-
-
-    @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
-    }
-
+/**
+ * Tags those {@link ASTExpression expressions} that are categorised as primary
+ * by the JLS.
+ *
+ * <pre class="grammar">
+ *
+ * PrimaryExpression ::= {@link ASTAssignableExpr AssignableExpr}
+ *                     | {@link ASTLiteral Literal}
+ *                     | {@link ASTClassLiteral ClassLiteral}
+ *                     | {@link ASTMethodCall MethodCall}
+ *                     | {@link ASTConstructorCall ConstructorCall}
+ *                     | {@link ASTArrayAllocation ArrayAllocation}
+ *                     | {@link ASTMethodReference MethodReference}
+ *                     | {@link ASTThisExpression ThisExpression}
+ *                     | {@link ASTSuperExpression SuperExpression}
+ *
+ *                     | {@link ASTAmbiguousName AmbiguousName}
+ *                     | {@link ASTTypeExpression TypeExpression}
+ *
+ * </pre>
+ *
+ *
+ */
+public interface ASTPrimaryExpression extends ASTExpression {
 }

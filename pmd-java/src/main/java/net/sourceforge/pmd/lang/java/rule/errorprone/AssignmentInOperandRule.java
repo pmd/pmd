@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -12,9 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -62,15 +59,17 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
                 || parent instanceof ASTForStatement && parent.getChild(1) == node
                         && !getProperty(ALLOW_FOR_DESCRIPTOR))
                 && (node.hasDescendantOfType(ASTAssignmentOperator.class)
-                        || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && node.descendants()
-                                       .map(asInstanceOf(ASTPreIncrementExpression.class, ASTPreDecrementExpression.class, ASTPostfixExpression.class))
-                                       .nonEmpty())) {
+                        || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && hasIncrement(node))) {
 
             addViolation(data, node);
             return data;
         }
         return super.visit(node, data);
+    }
+
+    private boolean hasIncrement(ASTExpression node) {
+        // todo use node streams
+        return node.findDescendantsOfType(ASTUnaryExpression.class).stream().anyMatch(it -> !it.getOperator().isPure());
     }
 
     public boolean allowsAllAssignments() {

@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTModuleName extends AbstractJavaNode {
 
-public class ASTModuleName extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTModuleName(int id) {
+    ASTModuleName(int id) {
         super(id);
     }
 

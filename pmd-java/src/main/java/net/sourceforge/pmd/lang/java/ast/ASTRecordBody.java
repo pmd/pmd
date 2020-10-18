@@ -14,13 +14,14 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <pre class="grammar">
  *
  * RecordBody ::= "{" (   {@linkplain ASTRecordConstructorDeclaration RecordConstructorDeclaration}
- *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* "}"
+ *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )*
+ *                "}"
  *
  * </pre>
  *
  */
 @Experimental
-public final class ASTRecordBody extends AbstractJavaNode {
+public final class ASTRecordBody extends ASTTypeBody {
     ASTRecordBody(int id) {
         super(id);
     }

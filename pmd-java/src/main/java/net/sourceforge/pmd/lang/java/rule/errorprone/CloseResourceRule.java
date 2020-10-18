@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -159,11 +159,11 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTVariableDeclarator resVar = resVarEntry.getKey();
             TypeNode resVarType = resVarEntry.getValue();
             if (isWrappingResourceSpecifiedInTry(resVar)) {
-                reportedVarNames.add(resVar.getVariableId().getName());
+                reportedVarNames.add(resVar.getVarId().getName());
                 addViolationWithMessage(data, resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE);
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
-                reportedVarNames.add(resVar.getVariableId().getName());
-                addCloseResourceViolation(resVar.getVariableId(), resVarType, data);
+                reportedVarNames.add(resVar.getVarId().getName());
+                addCloseResourceViolation(resVar.getVarId(), resVarType, data);
             }
         }
     }
@@ -173,7 +173,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         Map<ASTVariableDeclarator, TypeNode> resVars = new HashMap<>();
         for (ASTVariableDeclarator var : vars) {
             TypeNode varType = getTypeOfVariable(var);
-            if (isResourceTypeOrSubtype(varType)) {
+            if (varType != null && isResourceTypeOrSubtype(varType)) {
                 resVars.put(var, wrappedResourceTypeOrReturn(var, varType));
             }
         }
@@ -187,7 +187,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private TypeNode getDeclaredTypeOfVariable(ASTVariableDeclarator var) {
         ASTLocalVariableDeclaration localVar = (ASTLocalVariableDeclaration) var.getParent();
-        return localVar.getTypeNode();
+        return localVar.getTypeNode(); // note: can be null, if type is inferred (var)
     }
 
     private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclarator var) {
@@ -461,7 +461,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private List<JavaNode> getResourcesSpecifiedInTryWith(ASTTryStatement tryWithResource) {
-        ASTResourceSpecification resSpecification = tryWithResource.getFirstChildOfType(ASTResourceSpecification.class);
+        ASTResourceList resSpecification = tryWithResource.getFirstChildOfType(ASTResourceList.class);
         List<ASTVariableDeclaratorId> initializedVars = resSpecification
                 .findDescendantsOfType(ASTVariableDeclaratorId.class);
         List<ASTName> specifiedVars = resSpecification.findDescendantsOfType(ASTName.class);
@@ -654,7 +654,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean isNotInFinallyBlock(ASTPrimaryPrefix prefix) {
-        return prefix.getFirstParentOfType(ASTFinallyStatement.class) == null;
+        return prefix.getFirstParentOfType(ASTFinallyClause.class) == null;
     }
 
     private String closeInFinallyBlockMessageForVar(String var) {

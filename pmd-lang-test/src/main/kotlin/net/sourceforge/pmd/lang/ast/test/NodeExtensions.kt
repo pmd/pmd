@@ -78,7 +78,7 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     // fixme, the end column should be exclusive
     fun isEmpty(): Boolean =
             beginPos.line == endPos.line
-                    && beginPos.column - 1 == endPos.column
+                    && beginPos.column == endPos.column
 
     fun assertOrdered() {
         assert(beginPos <= endPos || isEmpty()) {
@@ -93,5 +93,6 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     operator fun contains(other: TextRange): Boolean =
             other.beginPos in this && other.endPos in this
                     || this.isEmpty() && other == this
+                    || other.isEmpty() && other.beginPos in this
 
 }

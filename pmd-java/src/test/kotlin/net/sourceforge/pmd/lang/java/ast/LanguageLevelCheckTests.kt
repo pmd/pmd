@@ -25,7 +25,7 @@ class LanguageLevelCheckTests : ParserTestSpec({
                 }
             }
 
-            inContext(EnclosedDeclarationParsingCtx) {
+            inContext(TypeBodyParsingCtx) {
 
                 "public enum var { A }" should throwParseException { ex ->
                     ex.message.shouldContain("'var' is reserved and cannot be used as a type name")

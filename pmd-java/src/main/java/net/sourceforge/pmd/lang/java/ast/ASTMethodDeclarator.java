@@ -7,12 +7,20 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
- * @deprecated This node will be removed with 7.0.0. You
- *     can directly use {@link ASTMethodDeclaration#getName()},
- *     {@link ASTMethodDeclaration#getFormalParameters()}, {@link ASTMethodDeclaration#getArity()} instead.
+ * Child of an {@link ASTMethodDeclaration}.
+ *
+ * <p>
+ *
+ * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
+ *
+ * </p>
+ *
+ * @deprecated Removed, former children are direct children of {@link ASTMethodDeclaration}.
+ * This is because the node is not even shared with {@link ASTAnnotationMethodDeclaration} and is
+ * really not useful, mostly worked around everywhere.
  */
 @Deprecated
-public class ASTMethodDeclarator extends AbstractJavaNode {
+public final class ASTMethodDeclarator extends AbstractJavaNode {
 
     ASTMethodDeclarator(int id) {
         super(id);
@@ -24,7 +32,11 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
     @DeprecatedAttribute(replaceWith = "MethodDeclaration/@Arity")
     @Deprecated
     public int getParameterCount() {
-        return getFirstChildOfType(ASTFormalParameters.class).size();
+        return getFormalParameters().size();
+    }
+
+    public ASTFormalParameters getFormalParameters() {
+        return (ASTFormalParameters) getChild(0);
     }
 
     /**
@@ -44,6 +56,6 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

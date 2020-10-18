@@ -2,8 +2,8 @@ repository: pmd/pmd
 
 pmd:
     version: 7.0.0-SNAPSHOT
-    previous_version: 6.27.0
-    date: ??-????-2020
+    previous_version: 6.28.0
+    date: ??-?????-2020
     release_type: major
 
 # release types: major, minor, bugfix
@@ -23,9 +23,6 @@ company_name: PMD Open Source Project
 github_editme_path: pmd/pmd/blob/master/docs/
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
-disqus_shortname:
-# if you're using disqus for comments, add the shortname here. if not, leave this value blank.
-
 host: 127.0.0.1
 # the preview server used. Leave as is.
 
@@ -42,9 +39,8 @@ exclude:
   - README.md
   - Dockerfile
   - build-docs.sh
-  - pdf-*.sh
-  - pdfconfigs/
-  - pdf/
+  - assets/*.zip
+  - assets/README.md
 
 feedback_subject_line: PMD Source Code Analyzer
 

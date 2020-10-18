@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
+@SuppressWarnings("PMD")
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
@@ -82,9 +83,10 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             List<ASTLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
                 ASTLiteral first = occurrences.get(0);
-                String rawImage = first.getEscapedStringLiteral();
-                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
-                addViolation(data, first, args);
+                //  FIXME - REVERT ME
+                //                String rawImage = first.getEscapedStringLiteral();
+                //                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
+                //                addViolation(data, first, args);
             }
         }
     }

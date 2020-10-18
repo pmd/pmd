@@ -8,7 +8,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 
 /**
  * A type test pattern (JDK 14 preview feature). This can be found on
- * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
+ * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
+ * in a {@link ASTPatternExpression PatternExpression}.
  *
  * <pre class="grammar">
  *

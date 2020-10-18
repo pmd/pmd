@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
@@ -23,19 +22,14 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public final class ASTPermitsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTPermitsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
     ASTPermitsList(int id) {
-        super(id);
+        super(id, ASTClassOrInterfaceType.class);
     }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return children(ASTClassOrInterfaceType.class).iterator();
     }
 }

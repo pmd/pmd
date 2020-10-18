@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTAnnotationTypeBody extends ASTTypeBody {
 
-public class ASTAnnotationTypeBody extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationTypeBody(int id) {
+    ASTAnnotationTypeBody(int id) {
         super(id);
     }
 

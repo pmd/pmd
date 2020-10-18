@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
+/**
+ * @deprecated Replaced by {@link ASTArgumentList}
+ */
+@Deprecated
 public class ASTArguments extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(int id) {
+    ASTArguments(int id) {
         super(id);
     }
 
@@ -38,6 +39,6 @@ public class ASTArguments extends AbstractJavaNode {
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

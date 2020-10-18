@@ -8,20 +8,15 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java15TreeDumpTest extends BaseTreeDumpTest {
+public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java15 =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("15")
                     .withResourceContext(Java15TreeDumpTest.class, "jdkversiontests/java15/");
     private final JavaParsingHelper java15p = java15.withDefaultVersion("15-preview");
     private final JavaParsingHelper java14 = java15.withDefaultVersion("14");
-
-    public Java15TreeDumpTest() {
-        super(new RelevantAttributePrinter(), ".java");
-    }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {

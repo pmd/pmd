@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
@@ -58,15 +57,7 @@ public final class ClassFanOutMetric {
 
         @Override
         public double computeFor(MethodLikeNode node, MetricOptions options) {
-            MutableInt cfo;
-            // look at the parent to catch annotations
-            if (node.getParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
-                ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getParent();
-                cfo = (MutableInt) parent.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
-            } else {
-                cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
-            }
-
+            MutableInt cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
             return (double) cfo.getValue();
         }
     }

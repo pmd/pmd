@@ -4,13 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
+ * Since 7.0, there is no {@linkplain ASTName Name} node anymore. Use
+ * {@link #getPackageNameImage()} instead.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * PackageDeclaration ::= {@link ASTModifierList AnnotationList} "package" Name ";"
+ *
+ * </pre>
+ *
+ */
+public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable, ASTTopLevelDeclaration {
 
-public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(int id) {
+    ASTPackageDeclaration(int id) {
         super(id);
     }
 
@@ -20,8 +29,18 @@ public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
         return visitor.visit(this, data);
     }
 
-
+    /**
+     * Returns the name of the package.
+     *
+     * @since 4.2
+     */
     public String getPackageNameImage() {
-        return ((ASTName) getChild(this.getNumChildren() - 1)).getImage();
+        return super.getImage();
+    }
+
+    @Override
+    public String getImage() {
+        // the image was null before 7.0, best keep it that way
+        return null;
     }
 }

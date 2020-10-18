@@ -135,7 +135,7 @@ public class EcmascriptParserOptions extends ParserOptions {
             return false;
         }
         final EcmascriptParserOptions that = (EcmascriptParserOptions) obj;
-        return Objects.equals(this.suppressMarker, that.suppressMarker)
+        return Objects.equals(this.getSuppressMarker(), that.getSuppressMarker())
                 && this.recordingComments == that.recordingComments
                 && this.recordingLocalJsDocComments == that.recordingLocalJsDocComments
                 && this.rhinoLanguageVersion == that.rhinoLanguageVersion;

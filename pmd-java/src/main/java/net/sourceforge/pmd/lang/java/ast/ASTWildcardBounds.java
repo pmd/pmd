@@ -4,22 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a type bound on a wildcard {@linkplain ASTTypeArgument type argument}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WildcardBounds ::=  ( "extends" | "super" ) ( {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTReferenceType ReferenceType}
  *
  * </pre>
+ * @deprecated Replaced by {@link ASTWildcardType}
  */
-public class ASTWildcardBounds extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTWildcardBounds extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTWildcardBounds(int id) {
+    private boolean isUpperBound;
+
+    ASTWildcardBounds(int id) {
         super(id);
     }
 
@@ -29,7 +29,7 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
      * in {@code <? extends Integer>}.
      */
     public boolean isUpperBound() {
-        return "extends".equals(getFirstToken().getImage());
+        return isUpperBound;
     }
 
 
@@ -53,6 +53,6 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

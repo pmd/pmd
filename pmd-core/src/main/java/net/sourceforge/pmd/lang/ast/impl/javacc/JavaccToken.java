@@ -279,6 +279,5 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
                                offset,
                                document);
     }
-
 }
 

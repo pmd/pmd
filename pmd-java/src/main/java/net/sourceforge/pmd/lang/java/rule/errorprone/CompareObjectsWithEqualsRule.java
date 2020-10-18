@@ -51,7 +51,7 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
         }
 
         // skip if either is a qualified name
-        if (isQualifiedName(c0.getChild(0)) || isQualifiedName(c1.getChild(0))) {
+        if (isQualifiedName(c0.getChild(0).getImage()) || isQualifiedName(c1.getChild(0).getImage())) {
             return data;
         }
 

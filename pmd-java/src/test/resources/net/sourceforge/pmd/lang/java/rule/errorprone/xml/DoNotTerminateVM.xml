@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>basic violations</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Bar {
+
+    static {
+        // NEVER DO THIS IN A APP SERVER !!!
+        System.exit(0);
+    }
+
+    public void foo() {
+        // NEVER DO THIS IN A APP SERVER !!!
+        System.exit(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SystemCall {
+    public void methode() {
+        // OK
+        application.exit(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>basic violations with Runtime</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public void foo() {
+        // NEVER DO THIS IN A APP SERVER !!!
+        Runtime.getRuntime().exit(0);
+        Runtime.getRuntime().halt(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>system exit in main</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SystemCall {
+    public static void main(String[] args) {
+        // OK in main()
+        System.exit(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>system exit in anonymous class inside main</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SystemCall {
+    public static void main(String[] args) {
+        new Runnable() {
+            public void run() {
+                // NEVER DO THIS IN A APP SERVER !!!
+                System.exit(0);
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

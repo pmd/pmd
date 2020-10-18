@@ -30,7 +30,7 @@ public abstract class JavaSignature<N extends SignedNode<N>> implements Signatur
 
 
     /**
-     * The visibility of a node.
+     * The visibility of a node. TODO replace with {@link AccessNode.Visibility}
      */
     public enum Visibility {
         PUBLIC, PACKAGE, PROTECTED, PRIVATE;

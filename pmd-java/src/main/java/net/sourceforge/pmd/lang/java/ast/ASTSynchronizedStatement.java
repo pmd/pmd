@@ -4,13 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * A synchronized statement.
+ *
+ * <pre class="grammar">
+ *
+ * SynchronizedStatement ::= "synchronized" "(" {@link ASTExpression Expression} ")" {@link ASTBlock Block}
+ *
+ * </pre>
 
-public class ASTSynchronizedStatement extends AbstractJavaNode {
+ */
+public final class ASTSynchronizedStatement extends AbstractStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTSynchronizedStatement(int id) {
+    ASTSynchronizedStatement(int id) {
         super(id);
     }
 
@@ -18,5 +24,19 @@ public class ASTSynchronizedStatement extends AbstractJavaNode {
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    /**
+     * Returns the expression evaluating to the lock object.
+     */
+    public ASTExpression getLockExpression() {
+        return (ASTExpression) getChild(0);
+    }
+
+    /**
+     * Returns the body of the statement.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) getChild(1);
     }
 }

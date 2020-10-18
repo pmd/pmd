@@ -2809,7 +2809,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 1</description>
+        <description>Test ignored name 1 (method param, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2823,7 +2823,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 2 (single underscore, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2841,7 +2841,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -2864,7 +2864,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (!reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -3179,6 +3179,55 @@ public class UnusedAssignmentNative {
                         }
                     }
                     return 0;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <!-- This was an unhandled edge case in PMD 6, fixed in PMD 7 -->
+        <description>Call chain with side-effects in try</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    try {
+                        // both method calls may throw, so a = 2 and a = 4 reach after the try,
+                        // but not a = 10
+                        "".substring(a = 2)
+                          .substring(a = 4);
+                    } catch (RuntimeException e) {
+
+                    }
+                    return a;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <!-- TODO for later -->
+        <description>Explicit this ctor call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for field 'field' is never used (overwritten on line 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+
+                private int field = 0;
+
+                Test() {
+                    this(0);
+                }
+
+                Test(int i) {
+                    field = i;
                 }
             }
             ]]></code>

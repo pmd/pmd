@@ -18,6 +18,8 @@ the logo in anywhere without offense.
 
 The current tasks are listed here: [Integrate new PMD logo #1931](https://github.com/pmd/pmd/issues/1931)
 
+The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
@@ -62,12 +64,131 @@ API change.
 Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
+{% jdoc_nspace :jast java::lang.java.ast %}
+
+* {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
+interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
+subtrees, and allows to explore them more easily and consistently.
+
+* {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now.
+TODO document that when we're done discussing the semantic rewrite phase.
+
+* **Migrating**:
+  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
+  and `ReferenceType` name tests won't match anything anymore.
+  * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
+  * `Type/PrimitiveType` -> `PrimitiveType`.
+  * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
+  * Note that in most cases you should check the type of a variable with e.g.
+  `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+  considers the additional dimensions on declarations like `String foo[];`.
+  The Java equivalent is `TypeHelper.isA(id, String[].class);`
+
+
+#### Expression grammar changes
+
+* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
+been turned into interfaces. These added no information to the AST and increased
+its depth unnecessarily. All expressions implement the first interface. Both of
+those nodes can no more be found in ASTs.
+
+* **Migrating**:
+  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
+  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression`  name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
+
+* {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
+and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
+by it was inconsistent, and ultimately that level of nesting was unnecessary.
+  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
+  and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
+  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
+
+* **Migrating**:
+  * Remove all `/Literal/` segments from your XPath expressions
+  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
+  * As is usual, use the designer to explore the new AST structure
+
+* The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the grammar.
+Subtrees for primary expressions appear to be left-recursive now. For example,
+
+```java
+new Foo().bar.foo(1)
+```
+used to be parsed as
+```
+Expression
++ PrimaryExpression
+  + PrimaryPrefix
+    + AllocationExpression
+      + ClassOrInterfaceType[@Image="Foo"]
+  + PrimarySuffix
+    + Arguments
+  + PrimarySuffix
+    + Name[@Image="bar.foo"]
+  + PrimarySuffix
+    + Arguments
+      + ArgumentsList
+        + Expression
+          + PrimaryExpression
+            + Literal[@ValueAsInt=1]
+```
+It's now parsed as
+```
+MethodCall[@MethodName="foo"]
++ FieldAccess[@FieldName="bar"]
+  + ConstructorCall
+    + ClassOrInterfaceType[@TypeImage="Foo"]
+    + ArgumentsList
++ ArgumentsList
+  + NumericLiteral[@ValueAsInt=1]
+```
+Instead of being flat, the subexpressions are now nested within one another.
+The nesting follows the naturally recursive structure of expressions:
+
+```java
+new Foo().bar.foo(1)
+---------            ConstructorCall
+-------------        FieldAccess
+-------------------- MethodCall
+```
+This makes the AST more regular and easier to navigate. Each node contains 
+the other nodes that are relevant to it (e.g. arguments) instead of them 
+being spread out over several siblings. The API of all nodes has been 
+enriched with high-level accessors to query the AST in a semantic way,
+without bothering with the placement details.
+
+The amount of changes in the grammar that this change entails is enormous, 
+but hopefully firing up the designer to inspect the new structure should 
+give you the information you need quickly.
+
+TODO write a summary of changes in the javadoc of the package, will be more
+accessible.
+
+Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+E.g. `a+b+c` is not parsed as
+```
+AdditiveExpression
++ AdditiveExpression
+  + (a)
+  + (b)
++ (c)  
+``` 
+It's still
+```
+AdditiveExpression
++ (a)
++ (b)
++ (c)  
+``` 
+which is easier to navigate, especially from XPath.
+
 ### Miscellaneous
 
 There are also some small improvements, refactoring and internal tasks that are planned for PMD 7.
 
 The current tasks are listed here: [PMD 7 Miscellaneous Tasks #2524](https://github.com/pmd/pmd/issues/2524)
-
 
 ## New API support guidelines
 
@@ -124,6 +245,30 @@ the breaking API changes will be performed in 7.0.0.
 {% include warning.html content="This list is not exhaustive. The ultimate reference is whether
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
+
+#### 6.28.0
+
+##### Deprecated API
+
+###### For removal
+
+* {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
+* {% jdoc !!core::cpd.AbstractTokenizer %}. Use {% jdoc !!core::cpd.AnyTokenizer %} instead.
+* {% jdoc !!fortran::cpd.FortranTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!fortran::cpd.FortranLanguage#getTokenizer() %} anyway.
+* {% jdoc !!perl::cpd.PerlTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!perl::cpd.PerlLanguage#getTokenizer() %} anyway.
+* {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
+* {% jdoc !!core::lang.rule.RuleReference#getOverriddenLanguage() %} and
+  {% jdoc !!core::lang.rule.RuleReference#setLanguage(net.sourceforge.pmd.lang.Language) %}
+* Antlr4 generated lexers:
+    * {% jdoc !!cs::lang.cs.antlr4.CSharpLexer %} will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * {% jdoc !!dart::lang.dart.antlr4.Dart2Lexer %} will be renamed to `DartLexer` and moved to package 
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!go::lang.go.antlr4.GolangLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!kotlin::lang.kotlin.antlr4.Kotlin %} will be renamed to `KotlinLexer` and moved to package 
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * {% jdoc !!lua::lang.lua.antlr4.LuaLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
 
 #### 6.27.0
 

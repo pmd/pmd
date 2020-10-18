@@ -27,7 +27,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
         String localVarName = null;
         String returnVariableName = null;
 
-        if (node.getResultType().isVoid()) {
+        if (node.isVoid()) {
             return super.visit(node, data);
         }
 

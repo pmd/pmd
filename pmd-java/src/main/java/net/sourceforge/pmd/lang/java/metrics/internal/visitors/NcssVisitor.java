@@ -11,7 +11,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -19,8 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
@@ -32,7 +33,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
@@ -162,7 +162,7 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTStatementExpression node, Object data) {
+    public Object visit(ASTExpressionStatement node, Object data) {
         if (!(node.getParent().getParent() instanceof ASTForUpdate)) {
             ((MutableInt) data).increment();
         }
@@ -220,7 +220,7 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
+    public Object visit(ASTCatchClause node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
@@ -234,7 +234,7 @@ public class NcssVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTFinallyStatement node, Object data) {
+    public Object visit(ASTFinallyClause node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
