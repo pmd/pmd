@@ -11,6 +11,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 
+/**
+ * @deprecated use {@link OperationWithLimitsInLoopRule}
+ */
+@Deprecated
 public class AvoidDmlStatementsInLoopsRule extends AbstractAvoidNodeInLoopsRule {
     public AvoidDmlStatementsInLoopsRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Performance");

@@ -12,7 +12,6 @@
    <rule ref="rulesets/apex/quickstart.xml/TooManyFields" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidDeeplyNestedIfStmts" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/CyclomaticComplexity" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/AvoidDatabaseMethodCallsInLoops" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidSoqlInLoops" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidSoslInLoops" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidDmlStatementsInLoops" deprecated="true" />

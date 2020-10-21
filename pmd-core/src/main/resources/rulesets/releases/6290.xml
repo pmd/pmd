@@ -8,6 +8,6 @@
 This ruleset contains links to rules that are new in PMD v6.29.0
   </description>
 
-    <rule ref="category/apex/performance.xml/AvoidDatabaseMethodCallsInLoops" />
+    <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop" />
 
 </ruleset>

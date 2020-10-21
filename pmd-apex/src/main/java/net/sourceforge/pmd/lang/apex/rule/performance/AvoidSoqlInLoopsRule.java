@@ -6,6 +6,10 @@ package net.sourceforge.pmd.lang.apex.rule.performance;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 
+/**
+ * @deprecated use {@link OperationWithLimitsInLoopRule}
+ */
+@Deprecated
 public class AvoidSoqlInLoopsRule extends AbstractAvoidNodeInLoopsRule {
     public AvoidSoqlInLoopsRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Performance");
