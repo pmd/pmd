@@ -53,7 +53,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     @Override
     protected @Nullable JavaccToken getPreferredReportLocation() {
-        return getModifiers().getLastToken().getNext();
+        return TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
     }
 
     /**
