@@ -81,6 +81,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -321,6 +322,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             this.enclosingClassScope = scope;
         }
 
+        /**
+         * If true, we're also tracking fields of the {@code this} instance,
+         * because we're in a ctor or initializer.
+         */
+        private boolean trackThisInstance() {
+            return enclosingClassScope != null;
+        }
 
         // following deals with control flow structures
 
@@ -810,7 +818,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             if (lhs instanceof ASTNamedReferenceExpr) {
                 JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
-                if (lhsVar != null) {
+                if (lhsVar != null
+                    && (lhsVar instanceof JLocalVariableSymbol
+                    || isThisFieldAccess(lhs) && trackThisInstance())) {
+
                     if (node.getOperator().isCompound()) {
                         // compound assignment, to use BEFORE assigning
                         result.use(lhsVar);
@@ -822,6 +833,42 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
             result = acceptOpt(lhs, result);
             return result;
+        }
+
+        /**
+         * Whether the expression is an access to a field of this instance,
+         * not inherited, qualified or not ({@code this.field} or just {@code field}).
+         */
+        private static boolean isThisFieldAccess(ASTExpression e) {
+            if (!(e instanceof ASTNamedReferenceExpr)) {
+                return false;
+            }
+            JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
+            if (sym instanceof JFieldSymbol) {
+                return !((JFieldSymbol) sym).isStatic()
+                    // not inherited
+                    && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
+                    // correct syntactic form
+                    && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
+            }
+            return false;
+        }
+
+        /**
+         * Whether the expression is a {@code this.field}, with no outer
+         * instance qualifier ({@code Outer.this.field}). The field symbol
+         * is not checked to resolve to a field declared in this class (it
+         * may be inherited)
+         */
+        private static boolean isSyntacticThisFieldAccess(ASTExpression e) {
+            if (e instanceof ASTFieldAccess) {
+                ASTExpression qualifier = ((ASTFieldAccess) e).getQualifier();
+                if (qualifier instanceof ASTThisExpression) {
+                    // unqualified this
+                    return ((ASTThisExpression) qualifier).getQualifier() == null;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -854,7 +901,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public SpanInfo visit(ASTFieldAccess node, SpanInfo data) {
             data = node.getQualifier().acceptVisitor(this, data);
 
-            if (enclosingClassScope != null && node.getQualifier() instanceof ASTThisExpression) {
+            if (trackThisInstance() && node.getQualifier() instanceof ASTThisExpression) {
                 data.use(node.getReferencedSym());
             }
             return data;
@@ -862,7 +909,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
-            if (enclosingClassScope != null) {
+            if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
                 data.recordThisLeak(true, enclosingClassScope);
             }
             return data;

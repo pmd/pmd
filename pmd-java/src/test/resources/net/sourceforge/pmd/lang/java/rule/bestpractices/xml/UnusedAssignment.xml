@@ -3233,4 +3233,20 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Field access on something else than this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int field;
+                void foo(Test t) {
+                    t.field = 2 * t.field;
+                    if (t.field > 5) {
+                        t.field = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

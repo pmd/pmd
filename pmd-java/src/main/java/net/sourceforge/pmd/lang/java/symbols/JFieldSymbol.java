@@ -21,6 +21,11 @@ public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol 
     /** Returns true if this field is an enum constant. */
     boolean isEnumConstant();
 
+    /** Returns true if this field is declared static (also true for enum constants). */
+    default boolean isStatic() {
+        return Modifier.isStatic(getModifiers());
+    }
+
 
     @Override
     default boolean isFinal() {
