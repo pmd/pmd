@@ -28,7 +28,6 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -93,9 +92,7 @@ public class XMLRendererTest extends AbstractRendererTest {
     private RuleViolation createRuleViolation(String description) {
         DummyNode node = new DummyNode();
         node.setCoords(1, 1, 1, 1);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);
+        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, description);
     }
 
     private void verifyXmlEscaping(Renderer renderer, String shouldContain, Charset charset) throws Exception {

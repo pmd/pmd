@@ -63,7 +63,9 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
-        configuration.setSuppressMarker(task.getSuppressMarker());
+        if (task.getSuppressMarker() != null) {
+            configuration.setSuppressMarker(task.getSuppressMarker());
+        }
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();

@@ -250,20 +250,11 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    }
+
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         Report report = new Report();
-        runTestFromString(test, rule, report);
-        return report;
-    }
-
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
-    }
-
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
@@ -293,13 +284,10 @@ public abstract class RuleTst {
             ctx.setIgnoreExceptions(false);
             RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            return report;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -376,8 +364,8 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 

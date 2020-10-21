@@ -199,7 +199,7 @@ public class XmlParserOptions extends ParserOptions {
             return false;
         }
         final XmlParserOptions that = (XmlParserOptions) obj;
-        return Objects.equals(this.suppressMarker, that.suppressMarker)
+        return Objects.equals(this.getSuppressMarker(), that.getSuppressMarker())
                 && this.coalescing == that.coalescing && this.expandEntityReferences == that.expandEntityReferences
                 && this.ignoringComments == that.ignoringComments
                 && this.ignoringElementContentWhitespace == that.ignoringElementContentWhitespace

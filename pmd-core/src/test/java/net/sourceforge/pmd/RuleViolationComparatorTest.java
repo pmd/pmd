@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,10 +70,8 @@ public class RuleViolationComparatorTest {
 
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
             int beginColumn, int endLine, int endColumn) {
-        RuleContext ruleContext = new RuleContext();
-        ruleContext.setSourceCodeFile(new File(fileName));
         DummyNode simpleNode = new DummyNode();
         simpleNode.setCoords(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation<Node>(rule, ruleContext, simpleNode, description);
+        return new ParametricRuleViolation<Node>(rule, fileName, simpleNode, description);
     }
 }
