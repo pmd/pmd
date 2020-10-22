@@ -3651,6 +3651,15 @@
 ,
 
 {
+"title": "DoNotCallSystemExit (Java, Error Prone)",
+"tags": "",
+"keywords": "DoNotCallSystemExit",
+"url": "pmd_rules_java_errorprone.html#donotcallsystemexit",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "DoNotExtendJavaLangThrowable (Java, Error Prone)",
 "tags": "",
 "keywords": "DoNotExtendJavaLangThrowable",
@@ -3871,6 +3880,15 @@
 "tags": "",
 "keywords": "InstantiationToGetClass",
 "url": "pmd_rules_java_errorprone.html#instantiationtogetclass",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InvalidSlf4jMessageFormat (Java, Error Prone)",
+"tags": "",
+"keywords": "InvalidSlf4jMessageFormat",
+"url": "pmd_rules_java_errorprone.html#invalidslf4jmessageformat",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
