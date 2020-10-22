@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-   <description>Default ruleset used by the Code Climate Engine for Salesforce.com Apex</description>
+   <description>
+Default ruleset used by the Code Climate Engine for Salesforce.com Apex
+
+Note: This ruleset is deprecated. Use "rulesets/apex/quickstart.xml" instead.
+   </description>
 
    <rule ref="rulesets/apex/quickstart.xml/ExcessiveClassLength" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/ExcessiveParameterList" deprecated="true" />
@@ -12,9 +16,9 @@
    <rule ref="rulesets/apex/quickstart.xml/TooManyFields" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidDeeplyNestedIfStmts" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/CyclomaticComplexity" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/AvoidSoqlInLoops" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/AvoidSoslInLoops" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/AvoidDmlStatementsInLoops" deprecated="true" />
+   <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" deprecated="true" />
+   <rule ref="category/apex/performance.xml/AvoidSoslInLoops" deprecated="true" />
+   <rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidDirectAccessTriggerMap" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidLogicInTrigger" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/AvoidGlobalModifier" deprecated="true" />
