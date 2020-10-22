@@ -1429,4 +1429,51 @@ public class CloseResourceWithVar {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2764 false-negative when re-assigning connection</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>'c' is reassigned, but the original instance is not closed</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.sql.Connection;
+
+public class Foo {
+    void bar() {
+        Connection c = pool.getConnection();
+        try {
+          c = pool.getConnection();
+        } catch (Exception e) {
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2764 false-negative when re-assigning connection - no problem when closed before</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+
+public class Foo {
+    void bar() {
+        Connection c = pool.getConnection();
+        try {
+          c.close();
+          c = pool.getConnection();
+        } catch (Exception e) {
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
