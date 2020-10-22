@@ -11,6 +11,7 @@ import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
+import apex.jorje.semantic.symbol.type.TypeInfo;
 
 /**
  * @deprecated Use {@link ApexNode}
@@ -82,18 +83,28 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         }
     }
 
+    private TypeInfo getDefiningTypeOrNull() {
+        try {
+            return node.getDefiningType();
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
+    }
+
     @Override
     public String getDefiningType() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getApexName();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getApexName();
         }
         return null;
     }
 
     @Override
     public String getNamespace() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getNamespace().toString();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getNamespace().toString();
         }
         return null;
     }
