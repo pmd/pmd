@@ -46,6 +46,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     private XMLStreamWriter xmlWriter;
     private OutputStream stream;
+    private byte[] lineSeparator;
 
     public XMLRenderer() {
         super(NAME, "XML format.");
@@ -65,10 +66,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
+        lineSeparator = PMD.EOL.getBytes(encoding);
 
         try {
             xmlWriter.writeStartDocument(encoding, "1.0");
-            xmlWriter.writeCharacters(PMD.EOL);
+            writeNewLine();
             xmlWriter.setDefaultNamespace(PMD_REPORT_NS_URI);
             xmlWriter.writeStartElement(PMD_REPORT_NS_URI, "pmd");
             xmlWriter.writeDefaultNamespace(PMD_REPORT_NS_URI);
@@ -82,6 +84,33 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         } catch (XMLStreamException e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * Outputs a platform dependent line separator.
+     *
+     * @throws XMLStreamException if XMLStreamWriter couldn't be flushed.
+     * @throws IOException if an I/O error occurs.
+     */
+    private void writeNewLine() throws XMLStreamException, IOException {
+        /*
+         * Note: we are not using xmlWriter.writeCharacters(PMD.EOL), because some
+         * XMLStreamWriter implementations might do extra encoding for \r and/or \n.
+         * Notably IBM's Java 8 will escape "\r" with "&#xD;" which will render an
+         * invalid XML document. IBM's Java 8 would also output a platform dependent
+         * line separator when writing "\n" which results under Windows, that "\r"
+         * actually is written twice (once escaped, once raw).
+         *
+         * Note2: Before writing the raw bytes to the underlying stream, we need
+         * to flush XMLStreamWriter. Notably IBM's Java 8 might still need to output
+         * data.
+         *
+         * Note3: Before writing the raw bytes, we issue a empty writeCharacters,
+         * so that any open tags are closed and we are ready for writing raw bytes.
+         */
+        xmlWriter.writeCharacters("");
+        xmlWriter.flush();
+        stream.write(lineSeparator);
     }
 
     @Override
@@ -100,10 +129,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                         xmlWriter.writeEndElement();
                     }
                     filename = nextFilename;
-                    xmlWriter.writeCharacters(PMD.EOL);
+                    writeNewLine();
                     xmlWriter.writeStartElement("file");
                     xmlWriter.writeAttribute("name", filename);
-                    xmlWriter.writeCharacters(PMD.EOL);
+                    writeNewLine();
                 }
 
                 xmlWriter.writeStartElement("violation");
@@ -119,11 +148,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 maybeAdd("variable", rv.getVariableName());
                 maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
                 xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeEndElement();
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
             }
             if (filename != null) { // Not first file ?
                 xmlWriter.writeEndElement();
@@ -138,20 +167,20 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         try {
             // errors
             for (Report.ProcessingError pe : errors) {
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeStartElement("error");
                 xmlWriter.writeAttribute("filename", determineFileName(pe.getFile()));
                 xmlWriter.writeAttribute("msg", pe.getMsg());
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeCData(pe.getDetail());
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeEndElement();
             }
 
             // suppressed violations
             if (showSuppressedViolations) {
                 for (Report.SuppressedViolation s : suppressed) {
-                    xmlWriter.writeCharacters(PMD.EOL);
+                    writeNewLine();
                     xmlWriter.writeStartElement("suppressedviolation");
                     xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFilename()));
                     xmlWriter.writeAttribute("suppressiontype", s.suppressedByNOPMD() ? "nopmd" : "annotation");
@@ -163,14 +192,15 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
             // config errors
             for (final Report.ConfigurationError ce : configErrors) {
-                xmlWriter.writeCharacters(PMD.EOL);
+                writeNewLine();
                 xmlWriter.writeEmptyElement("configerror");
                 xmlWriter.writeAttribute("rule", ce.rule().getName());
                 xmlWriter.writeAttribute("msg", ce.issue());
             }
-            xmlWriter.writeCharacters(PMD.EOL);
+            writeNewLine();
             xmlWriter.writeEndElement(); // </pmd>
-            xmlWriter.writeCharacters(PMD.EOL);
+            writeNewLine();
+            xmlWriter.writeEndDocument();
             xmlWriter.flush();
         } catch (XMLStreamException e) {
             throw new IOException(e);

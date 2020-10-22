@@ -22,6 +22,9 @@ This is a {{ site.pmd.release_type }} release.
     the Java VM, which is bad, if the VM runs an application server which many independent applications.
 
 ### Fixed Issues
+
+*   core
+    *   [#2831](https://github.com/pmd/pmd/pull/2831): \[core] Fix XMLRenderer newlines when running under IBM Java
 *   java-errorprone
     *   [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
     *   [#2764](https://github.com/pmd/pmd/issues/2764): \[java] CloseResourceRule does not recognize multiple assignment done to resource
