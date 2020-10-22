@@ -357,4 +357,9 @@ public class TestAccessEvaluator implements AccessEvaluator {
     public boolean hasNamespaceGuardedAccess(Namespace namespace, String arg1) {
         return false;
     }
+
+    @Override
+    public boolean isNamespaceGuardNamespace(Namespace arg0) {
+        return false;
+    }
 }
