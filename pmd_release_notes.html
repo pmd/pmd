@@ -1411,6 +1411,15 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a> (<code class="language-plaintext highlighter-rouge">apex-performance</code>)
+finds operations in loops that may hit governor limits such as DML operations, SOQL
+queries and more. The rule replaces the three rules “AvoidDmlStatementsInLoops”, “AvoidSoqlInLoops”,
+and “AvoidSoslInLoops”.</li>
+</ul>
+
 <h4 id="renamed-rules">Renamed Rules</h4>
 
 <ul>
@@ -1420,9 +1429,24 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 the Java VM, which is bad, if the VM runs an application server which many independent applications.</li>
 </ul>
 
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+
+<ul>
+  <li>The Apex rules <a href="pmd_rules_apex_performance.html#avoiddmlstatementsinloops"><code class="language-plaintext highlighter-rouge">AvoidDmlStatementsInLoops</code></a>,
+<a href="pmd_rules_apex_performance.html#avoidsoqlinloops"><code class="language-plaintext highlighter-rouge">AvoidSoqlInLoops</code></a> and <a href="pmd_rules_apex_performance.html#avoidsoslinloops"><code class="language-plaintext highlighter-rouge">AvoidSoslInLoops</code></a>
+(<code class="language-plaintext highlighter-rouge">apex-performance</code>) are deprecated in favour of the new rule
+<a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>. The deprecated rules will be removed
+with PMD 7.0.0.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>apex-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1713">#1713</a>: [apex] Mark Database DML statements in For Loop</li>
+    </ul>
+  </li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/2831">#2831</a>: [core] Fix XMLRenderer newlines when running under IBM Java</li>
@@ -1456,6 +1480,7 @@ the Java VM, which is bad, if the VM runs an application server which many indep
   <li><a href="https://github.com/pmd/pmd/pull/2810">#2810</a>: [core] Move method “renderTempFile” to XMLRendererTest - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2811">#2811</a>: [java] CloseResource - Fix #2764: False-negative when re-assigning variable - <a href="https://github.com/andipabst">Andi Pabst</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2813">#2813</a>: [core] Use JUnit’s TemporaryFolder rule - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2816">#2816</a>: [apex] Detect ‘Database’ method invocations inside loops - <a href="https://github.com/jbartolotta-sfdc">Jeff Bartolotta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2829">#2829</a>: [doc] Small correction in pmd_report_formats.md - <a href="https://github.com/gustavopcassol">Gustavo Krieger</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2834">#2834</a>: [vf] Allow attributes with dot in Visualforce - <a href="https://github.com/rmohan20">rmohan20</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2842">#2842</a>: [core] Bump antlr4 from 4.7 to 4.7.2 - <a href="https://github.com/alecharp">Adrien Lecharpentier</a></li>

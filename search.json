@@ -4801,6 +4801,15 @@
 "url": "pmd_rules_apex_performance.html#avoidsoslinloops",
 "summary": "Rules that flag suboptimal code."
 }
+,
+
+{
+"title": "OperationWithLimitsInLoop (Apex, Performance)",
+"tags": "",
+"keywords": "OperationWithLimitsInLoop",
+"url": "pmd_rules_apex_performance.html#operationwithlimitsinloop",
+"summary": "Rules that flag suboptimal code."
+}
 
 
 
