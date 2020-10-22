@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Renamed Rules
 
-*   The Java rule [`DoNotCallSystemExit`](https://pmd.github.io/latest/pmd_rules_java_errorprone.html#donotcallsystemexit) has been renamed to
+*   The Java rule {% rule "java/errorprone/DoNotCallSystemExit" %} has been renamed to
     {% rule "java/errorprone/DoNotTerminateVM" %}, since it checks for all the following calls:
     `System.exit(int)`, `Runtime.exit(int)`, `Runtime.halt(int)`. All these calls terminate
     the Java VM, which is bad, if the VM runs an application server which many independent applications.
@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#2157](https://github.com/pmd/pmd/issues/2157): \[java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt
     *   [#2764](https://github.com/pmd/pmd/issues/2764): \[java] CloseResourceRule does not recognize multiple assignment done to resource
+*   miscellaneous
+    *   [#2823](https://github.com/pmd/pmd/issues/2823): \[doc] Renamed/Moved rules are missing in documentation
 
 ### API Changes
 
