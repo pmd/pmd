@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Bad example #1</description>
         <expected-problems>1</expected-problems>
@@ -12,8 +13,7 @@
         stuff
     #end
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -25,8 +25,7 @@
         stuff
     #end
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -36,8 +35,7 @@
 #macro( mymacro $v1 )
     #set($v2 = "${X} $v1 ${X}" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -47,8 +45,7 @@
 #macro( mymacro $v1 )
     #set($v2 = "${X}${v1}${X}" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -58,8 +55,7 @@
 #macro( mymacro $v1 )
     #set($v2 = "${X}$!v1${X}" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -69,8 +65,7 @@
 #macro( mymacro $v1 )
     #set($v2 = "${X}${v1.val}${X}" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -80,8 +75,7 @@
 #macro( mymacro $v1 )
     <div class="c1 $!v1">
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -89,7 +83,6 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )$context.getSomething()${v1}#end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 </test-data>

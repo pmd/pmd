@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Valid example</description>
         <expected-problems>0</expected-problems>
@@ -11,6 +12,7 @@ package Test
 end Test;
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Invalid example</description>
         <expected-problems>1</expected-problems>

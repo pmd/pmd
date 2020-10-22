@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -58,8 +58,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
             if (child instanceof ASTMethodDeclaration) {
                 boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
                 if (inAnnotation || isJUnitMethod) {
-                    List<Node> found = new ArrayList<>();
-                    found.addAll((List<Node>) visit((ASTMethodDeclaration) child, data));
+                    List<Node> found = new ArrayList<>((List<Node>) visit((ASTMethodDeclaration) child, data));
                     for (Node name : found) {
                         addViolation(data, name);
                     }
@@ -79,7 +78,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
             return found;
         }
         for (ASTTryStatement trySt : catches) {
-            ASTCatchStatement cStatement = getCatch(trySt);
+            ASTCatchClause cStatement = getCatch(trySt);
             if (cStatement != null) {
                 ASTBlock block = (ASTBlock) cStatement.getChild(1);
                 if (block.getNumChildren() != 0) {
@@ -105,10 +104,10 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         return found;
     }
 
-    private ASTCatchStatement getCatch(Node n) {
+    private ASTCatchClause getCatch(Node n) {
         for (int i = 0; i < n.getNumChildren(); i++) {
-            if (n.getChild(i) instanceof ASTCatchStatement) {
-                return (ASTCatchStatement) n.getChild(i);
+            if (n.getChild(i) instanceof ASTCatchClause) {
+                return (ASTCatchClause) n.getChild(i);
             }
         }
         return null;

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +82,7 @@ public class AtfdBaseVisitor extends JavaParserVisitorAdapter {
             result = false;
         } else if (nameImage == null && node.getFirstDescendantOfType(ASTPrimaryPrefix.class).usesThisModifier()) {
             result = false;
-        } else if (nameImage == null && node.hasDescendantOfAnyType(ASTLiteral.class, ASTAllocationExpression.class)) {
+        } else if (nameImage == null && node.descendants().map(asInstanceOf(ASTLiteral.class, ASTAllocationExpression.class)).nonEmpty()) {
             result = false;
         } else {
             result = true;

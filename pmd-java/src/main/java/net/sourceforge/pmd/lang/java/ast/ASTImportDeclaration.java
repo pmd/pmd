@@ -4,45 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an import declaration in a Java file.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * ImportDeclaration ::= "import" "static"? {@linkplain ASTName Name} ( "." "*" )? ";"
+ * ImportDeclaration ::= "import" "static"? Name ( "." "*" )? ";"
  *
  * </pre>
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
  */
-// TODO should this really be a type node?
-// E.g. for on-demand imports, what's the type of this node? There's no type name, just a package name
-// for on-demand static imports?
-// for static imports of a field? the type of the field or the type of the enclosing type?
-// for static imports of a method?
-// I don't think we can work out a spec without surprising corner cases, and #1207 will abstract
-// things away anyway, so I think we should make it a regular node
-public class ASTImportDeclaration extends AbstractJavaTypeNode {
+public final class ASTImportDeclaration extends AbstractJavaNode implements ASTTopLevelDeclaration {
 
     private boolean isImportOnDemand;
     private boolean isStatic;
-    private Package pkg;
 
-    @InternalApi
-    @Deprecated
-    public ASTImportDeclaration(int id) {
+    ASTImportDeclaration(int id) {
         super(id);
     }
 
 
-    /**
-     * @deprecated Will be made private with 7.0.0
-     */
-    @InternalApi
-    @Deprecated
-    public void setImportOnDemand() {
+    void setImportOnDemand() {
         isImportOnDemand = true;
     }
 
@@ -65,12 +48,7 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     }
 
 
-    /**
-     * @deprecated Will be made private with 7.0.0
-     */
-    @InternalApi
-    @Deprecated
-    public void setStatic() {
+    void setStatic() {
         isStatic = true;
     }
 
@@ -83,23 +61,21 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return isStatic;
     }
 
-    /**
-     * @deprecated this will be removed with PMD 7.0.0
-     */
-    @Deprecated
-    public ASTName getImportedNameNode() {
-        return (ASTName) getChild(0);
-    }
-
 
     /**
      * Returns the full name of the import. For on-demand imports, this is the name without
      * the final dot and asterisk.
      */
     public String getImportedName() {
-        return getChild(0).getImage();
+        return super.getImage();
     }
 
+
+    @Override
+    public String getImage() {
+        // the image was null before 7.0, best keep it that way
+        return null;
+    }
 
     /**
      * Returns the simple name of the type or method imported by this declaration.
@@ -133,32 +109,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setPackage(Package packge) {
-        this.pkg = packge;
-    }
-
-
-    /**
-     * Returns the {@link Package} instance representing the package of the
-     * type or method imported by this declaration. This may be null if the
-     * auxclasspath is not correctly set, as this method depends on correct
-     * type resolution.
-     *
-     * @deprecated this will be removed with PMD 7.0.0
-     */
-    @Deprecated
-    public Package getPackage() {
-        return this.pkg;
-    }
 }

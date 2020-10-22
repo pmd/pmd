@@ -40,7 +40,9 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     {% include custom/cli_option_row.html options="-auxclasspath"
                option_arg="cp"
                description="Specifies the classpath for libraries used by the source code.
-               This is used to resolve types in source files. Alternatively, a `file://` URL
+               This is used to resolve types in source files. The platform specific path delimiter
+               (\":\" on Linux, \";\" on Windows) is used to separate the entries.
+               Alternatively, a single `file:` URL
                to a text file containing path elements on consecutive lines can be specified."
                languages="Java"
     %}
@@ -183,7 +185,7 @@ Example:
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [java](pmd_rules_java.html)
     *   Supported Versions: 1.3, 1.4, 1.5, 5, 1.6, 6, 1.7, 7, 1.8, 8, 9, 1.9, 10, 1.10, 11, 12,
-        13, 13-preview, 14 (default), 14-preview
+        13, 14, 14-preview, 15 (default), 15-preview
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [modelica](pmd_rules_modelica.html)
@@ -198,76 +200,5 @@ Example:
 ## Available Report Formats
 
 PMD comes with many different renderers.
-The mnemonics in bold are used to select them on the command line, as
-arguments to the `-format` option. Some formats accept *properties*,
-which can be specified with the `-property` option on the command-line.
+All formats are described at [PMD Report formats](pmd_userdocs_report_formats.html)
 
-*   **codeclimate**: Renderer for Code Climate JSON format.
-
-*   **csv**: Comma-separated values tabular format.
-
-    Properties:
-
-    *   problem: Include problem column. Default: true.
-    *   package: Include package column. Default: true.
-    *   file: Include file column. Default: true.
-    *   priority: Include priority column. Default: true.
-    *   line: Include line column. Default: true.
-    *   desc: Include description column. Default: true.
-    *   ruleSet: Include Rule set column. Default: true.
-    *   rule: Include Rule column. Default: true.
-
-*   **emacs**: GNU Emacs integration.
-
-*   **html**: HTML format.
-
-    Properties:
-
-    *   linePrefix: Prefix for line number anchor in the source file.
-    *   linkPrefix: Path to HTML source.
-
-*   **ideaj**: IntelliJ IDEA integration.
-
-    Properties:
-
-    *   classAndMethodName: Class and method name, pass `.method` when processing a directory.
-    *   sourcePath:
-    *   fileName:
-
-*   **summaryhtml**: Summary HTML format.
-
-    Properties:
-
-    *   linePrefix: Prefix for line number anchor in the source file.
-    *   linkPrefix: Path to HTML source.
-
-*   **text**: Text format.
-
-*   **textcolor**: Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).
-
-    Properties:
-
-    *   color: Enables colors with anything other than `false` or `0`. Default: yes.
-
-*   **textpad**: TextPad integration.
-
-*   **vbhtml**: Vladimir Bossicard HTML format.
-
-*   **xml**: XML format.
-
-    Properties:
-
-    *   encoding: XML encoding format, defaults to UTF-8.
-
-*   **xslt**: XML with a XSL transformation applied.
-
-    Properties:
-
-    *   encoding: XML encoding format, defaults to UTF-8.
-    *   xsltFilename: The XSLT file name.
-
-*   **yahtml**: Yet Another HTML format.
-
-    Properties:
-
-    *   outputDir: Output directory.

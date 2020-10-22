@@ -38,13 +38,13 @@ public final class StreamImpl {
         // utility class
     }
 
-    public static <T extends Node> NodeStream<T> singleton(@NonNull T node) {
+    public static <T extends Node> DescendantNodeStream<T> singleton(@NonNull T node) {
         return new SingletonNodeStream<>(node);
     }
 
-    public static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+    public static <T extends Node> NodeStream<T> fromIterable(Iterable<? extends @Nullable T> iterable) {
         if (iterable instanceof Collection) {
-            Collection<@Nullable T> coll = (Collection<T>) iterable;
+            Collection<? extends @Nullable T> coll = (Collection<T>) iterable;
             if (coll.isEmpty()) {
                 return empty();
             } else if (coll.size() == 1) {
@@ -70,7 +70,7 @@ public final class StreamImpl {
         return EMPTY;
     }
 
-    public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
+    public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<? extends R> target) {
         return sliceChildren(node, Filtermap.isInstance(target), 0, node.getNumChildren());
     }
 
@@ -82,13 +82,13 @@ public final class StreamImpl {
         return node.getNumChildren() == 0 ? empty() : new DescendantStream(node, TreeWalker.DEFAULT);
     }
 
-    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
+    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<? extends R> rClass) {
         return node.getNumChildren() == 0 ? empty()
-                                             : new FilteredDescendantStream<>(node, TreeWalker.DEFAULT, Filtermap.isInstance(rClass));
+                                          : new FilteredDescendantStream<>(node, TreeWalker.DEFAULT, Filtermap.isInstance(rClass));
     }
 
     public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
+        return node.getNumChildren() == 0 ? singleton(node) : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
@@ -110,7 +110,7 @@ public final class StreamImpl {
         return sliceChildren(parent, Filtermap.NODE_IDENTITY, 0, node.getIndexInParent());
     }
 
-    static <T extends Node> NodeStream<T> sliceChildren(Node parent, Filtermap<Node, T> filtermap, int from, int length) {
+    static <T extends Node> NodeStream<T> sliceChildren(Node parent, Filtermap<Node, ? extends T> filtermap, int from, int length) {
         // these assertions are just for tests
         assert parent != null;
         assert from >= 0 && from <= parent.getNumChildren() : "from should be a valid index";
@@ -139,26 +139,32 @@ public final class StreamImpl {
         return ancestorsOrSelf(node, Filtermap.NODE_IDENTITY);
     }
 
-    static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, T> target) {
+    static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, ? extends T> target) {
         if (node == null) {
             return empty();
-        } else if (node.getParent() == null) {
-            T apply = target.apply(node);
-            return apply != null ? singleton(apply) : empty();
         }
-        return target == Filtermap.NODE_IDENTITY ? (NodeStream<T>) new AncestorOrSelfStream(node)
-                                                 : new FilteredAncestorOrSelfStream<>(node, target);
+
+        if (target == Filtermap.NODE_IDENTITY) {
+            return (NodeStream<T>) new AncestorOrSelfStream(node);
+        }
+
+        T first = TraversalUtils.getFirstParentOrSelfMatching(node, target);
+        if (first == null) {
+            return empty();
+        }
+
+        return new FilteredAncestorOrSelfStream<>(first, target);
     }
 
     public static NodeStream<Node> ancestors(@NonNull Node node) {
         return ancestorsOrSelf(node.getParent());
     }
 
-    static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Filtermap<Node, R> target) {
+    static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Filtermap<Node, ? extends R> target) {
         return ancestorsOrSelf(node.getParent(), target);
     }
 
-    public static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Class<R> target) {
+    public static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Class<? extends R> target) {
         return ancestorsOrSelf(node.getParent(), Filtermap.isInstance(target));
     }
 
@@ -181,7 +187,7 @@ public final class StreamImpl {
         }
 
         @Override
-        protected @NonNull <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<R>> mapper) {
+        protected @NonNull <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<? extends R>> mapper) {
             return StreamImpl.empty();
         }
 

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 
 /**
@@ -31,7 +31,7 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
     RegexPropertyBuilder defaultProp(String displayName) {
-        return defaultProp(StringUtil.toCamelCase(displayName, true), displayName);
+        return defaultProp(CaseConvention.SPACE_SEPARATED.convertTo(CaseConvention.CAMEL_CASE, displayName), displayName);
     }
 
     /** Returns a pre-filled builder with the given name and display name (for the description). */

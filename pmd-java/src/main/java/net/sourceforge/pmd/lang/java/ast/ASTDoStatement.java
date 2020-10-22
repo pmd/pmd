@@ -4,38 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents a {@code do ... while} statement.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * DoStatement ::= "do" {@linkplain ASTStatement Statement} "while" "(" {@linkplain ASTExpression Expression} ")" ";"
  *
  * </pre>
  */
-public class ASTDoStatement extends AbstractJavaNode {
+public final class ASTDoStatement extends AbstractStatement implements ASTLoopStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTDoStatement(int id) {
+    ASTDoStatement(int id) {
         super(id);
     }
 
-
-    /**
-     * Returns the node that represents the guard of this loop.
-     * This may be any expression of type boolean.
-     *
-     * @deprecated Use {@link #getCondition()}
-     */
-    @Deprecated
-    public ASTExpression getGuardExpressionNode() {
-        return getCondition();
-    }
 
     /**
      * Returns the node that represents the guard of this loop.
@@ -56,13 +40,7 @@ public class ASTDoStatement extends AbstractJavaNode {
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

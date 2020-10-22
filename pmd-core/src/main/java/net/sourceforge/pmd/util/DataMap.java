@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public final class DataMap<K> {
 
-    private final Map<DataKey<? extends K, ?>, Object> map = new IdentityHashMap<>();
+    private Map<DataKey<? extends K, ?>, Object> map;
 
     private DataMap() {
 
@@ -34,7 +34,7 @@ public final class DataMap<K> {
      */
     @SuppressWarnings("unchecked")
     public <T> T set(DataKey<? extends K, ? super T> key, T data) {
-        return (T) map.put(key, data);
+        return (T) getMap().put(key, data);
     }
 
     /**
@@ -47,7 +47,20 @@ public final class DataMap<K> {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(DataKey<? extends K, ? super T> key) {
-        return (T) map.get(key);
+        return map == null ? null : (T) map.get(key);
+    }
+
+    private Map<DataKey<? extends K, ?>, Object> getMap() {
+        // the map is lazily created, it's only needed if set() is called
+        // at least once, but get() might be called many more times, as
+        // sometimes you cache a key sparsely on some nodes, and default
+        // to the first parent for which the key is set. The default expected
+        // max size is also 21, which is *way* bigger than what data maps
+        // typically contain (1/2 keys)
+        if (map == null) {
+            map = new IdentityHashMap<>(1);
+        }
+        return map;
     }
 
     /**
@@ -58,7 +71,7 @@ public final class DataMap<K> {
      * @return True if some value is set
      */
     public boolean isSet(DataKey<? extends K, ?> key) {
-        return map.containsKey(key);
+        return map != null && map.containsKey(key);
     }
 
     public static <K> DataMap<K> newDataMap() {

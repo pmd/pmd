@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,16 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.VariableInitializer;
 
-public class ASTVariableInitializer extends AbstractEcmascriptNode<VariableInitializer> implements DestructuringNode {
-    public ASTVariableInitializer(VariableInitializer variableInitializer) {
+public final class ASTVariableInitializer extends AbstractEcmascriptNode<VariableInitializer> implements DestructuringNode {
+    ASTVariableInitializer(VariableInitializer variableInitializer) {
         super(variableInitializer);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

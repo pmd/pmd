@@ -3,76 +3,71 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Failure Case: Empty Try Block
-     ]]></description>
+        <description>Failure Case: Empty Try Block</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-    try {
+    void foo() {
+        try {
+        } catch(Exception e) {
+            system.debug(e);
+        }
     }
-    catch(Exception e) {
-      system.debug(e);
-    }
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Success Case: Empty Try Block
-     ]]></description>
+        <description>Success Case: Empty Try Block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-    try {
-      insert account;
-    } catch(Exception e) {
-      system.debug(e);
+    void foo() {
+        try {
+            insert account;
+        } catch(Exception e) {
+            system.debug(e);
+        }
     }
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-Failure Case: Empty Finally Block
-     ]]></description>
+
+    <test-code>
+        <description>Failure Case: Empty Finally Block</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-    try {
-      insert account;
-    } catch(Exception e) {
-        // Generic exception handling code
-        system.debug(e);
-    } finally {
+    void foo() {
+        try {
+            insert account;
+        } catch(Exception e) {
+            // Generic exception handling code
+            system.debug(e);
+        } finally {
+        }
     }
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Success Case: Empty Finally Block
-     ]]></description>
+        <description>Success Case: Empty Finally Block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-    try {
-      insert account;
-    } catch(Exception e) {
-      system.debug(e);
-    } finally {
-      someAction();
+    void foo() {
+        try {
+            insert account;
+        } catch(Exception e) {
+            system.debug(e);
+        } finally {
+            someAction();
+        }
     }
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

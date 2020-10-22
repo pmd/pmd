@@ -3,29 +3,43 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad, local variable of type Vector
-     ]]></description>
+        <description>bad, local variable of type Vector</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Vector;
 public class Foo {
- void bar() {
-  Vector v = new Vector();
- }
+    void bar() {
+        Vector v = new Vector();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad, param of type Vector
-     ]]></description>
+        <description>bad, param of type Vector</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Vector;
+
 public class Foo {
- void bar(Vector v) {
- }
+    void bar(Vector v) {
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, not java.util.Vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.Vector;
+
+public class Foo {
+    void bar(Vector v) {
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

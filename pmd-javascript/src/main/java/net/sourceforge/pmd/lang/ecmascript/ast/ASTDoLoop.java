@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,16 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.DoLoop;
 
-public class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
-    public ASTDoLoop(DoLoop doLoop) {
+public final class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
+    ASTDoLoop(DoLoop doLoop) {
         super(doLoop);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

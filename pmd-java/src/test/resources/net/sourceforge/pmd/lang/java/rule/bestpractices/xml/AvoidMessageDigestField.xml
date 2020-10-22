@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description>
-            Basic test case for AvoidStringBufferField
-        </description>
+        <description>Basic test case for AvoidStringBufferField</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.security.MessageDigest;
@@ -15,13 +14,11 @@ public class Foo {
     private MessageDigest md;
     private static MessageDigest staticMd;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            Valid MessageDigest usage example
-        </description>
+        <description>Valid MessageDigest usage example</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.security.MessageDigest;
@@ -33,6 +30,6 @@ public class Foo {
         return md.digest();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

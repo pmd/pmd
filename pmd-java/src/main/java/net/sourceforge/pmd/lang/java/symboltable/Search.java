@@ -8,10 +8,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
+@Deprecated
+@InternalApi
 public class Search {
     private static final boolean TRACE = false;
 

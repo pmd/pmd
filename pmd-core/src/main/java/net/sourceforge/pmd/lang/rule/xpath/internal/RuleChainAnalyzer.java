@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -13,17 +16,18 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
-import net.sf.saxon.expr.LazyExpression;
-import net.sf.saxon.expr.PathExpression;
+import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.RootExpression;
-import net.sf.saxon.om.Axis;
+import net.sf.saxon.expr.SlashExpression;
+import net.sf.saxon.expr.VennExpression;
+import net.sf.saxon.expr.sort.DocumentSorter;
+import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.pattern.NameTest;
-import net.sf.saxon.sort.DocumentSorter;
 import net.sf.saxon.type.Type;
 
 /**
  * Analyzes the xpath expression to find the root path selector for a element. If found,
- * the element name is available via {@link RuleChainAnalyzer#getRootElement()} and the
+ * the element name is available via {@link RuleChainAnalyzer#getRootElements()} and the
  * expression is rewritten to start at "node::self()" instead.
  *
  * <p>It uses a visitor to visit all the different expressions.
@@ -35,21 +39,22 @@ import net.sf.saxon.type.Type;
  * after all (sub)expressions have been executed.
  */
 public class RuleChainAnalyzer extends SaxonExprVisitor {
+
     private final Configuration configuration;
-    private String rootElement;
+    private List<String> rootElement;
     private boolean rootElementReplaced;
-    private boolean insideLazyExpression;
-    private boolean foundPathInsideLazy;
+    private boolean insideExpensiveExpr;
+    private boolean foundPathInsideExpensive;
 
     public RuleChainAnalyzer(Configuration currentConfiguration) {
         this.configuration = currentConfiguration;
     }
 
-    public String getRootElement() {
-        if (!foundPathInsideLazy && rootElementReplaced) {
-            return rootElement;
+    public List<String> getRootElements() {
+        if (!foundPathInsideExpensive && rootElementReplaced) {
+            return rootElement == null ? Collections.emptyList() : rootElement;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -59,34 +64,59 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         return result.getBaseExpression();
     }
 
+    public Expression visitSlashPreserveRootElement(SlashExpression e) {
+        Expression start = visit(e.getStart());
+
+        // save state
+        List<String> elt = rootElement;
+        boolean replaced = rootElementReplaced;
+
+        Expression step = visit(e.getStep());
+
+        if (!(e.getStart() instanceof RootExpression)) {
+            // restore
+            rootElement = elt;
+            rootElementReplaced = replaced;
+        }
+
+        return new SlashExpression(start, step);
+    }
+
     @Override
-    public Expression visit(PathExpression e) {
-        if (!insideLazyExpression && rootElement == null) {
-            Expression result = super.visit(e);
+    public Expression visit(SlashExpression e) {
+        if (!insideExpensiveExpr && rootElement == null) {
+            Expression result = visitSlashPreserveRootElement(e);
             if (rootElement != null && !rootElementReplaced) {
-                if (result instanceof PathExpression) {
-                    PathExpression newPath = (PathExpression) result;
-                    if (newPath.getStepExpression() instanceof FilterExpression) {
-                        FilterExpression filterExpression = (FilterExpression) newPath.getStepExpression();
-                        result = new FilterExpression(new AxisExpression(Axis.SELF, null), filterExpression.getFilter());
+                if (result instanceof SlashExpression) {
+                    SlashExpression newPath = (SlashExpression) result;
+                    Expression step = newPath.getStep();
+                    if (step instanceof FilterExpression) {
+                        FilterExpression filterExpression = (FilterExpression) step;
+                        result = new FilterExpression(new AxisExpression(AxisInfo.SELF, null), filterExpression.getFilter());
                         rootElementReplaced = true;
-                    } else if (newPath.getStepExpression() instanceof AxisExpression) {
-                        if (newPath.getStartExpression() instanceof RootExpression) {
-                            result = new AxisExpression(Axis.SELF, null);
+                    } else if (step instanceof AxisExpression) {
+                        Expression start = newPath.getStart();
+                        if (start instanceof RootExpression) {
+                            result = new AxisExpression(AxisInfo.SELF, null);
+                        } else if (start instanceof VennExpression) {
+                            // abort, set rootElementReplaced so that the
+                            // nodes above won't try to replace themselves
+                            rootElement = null;
+                            result = e;
                         } else {
-                            result = new PathExpression(newPath.getStartExpression(), new AxisExpression(Axis.SELF, null));
+                            result = new SlashExpression(start, new AxisExpression(AxisInfo.SELF, null));
                         }
                         rootElementReplaced = true;
                     }
                 } else {
-                    result = new AxisExpression(Axis.DESCENDANT_OR_SELF, null);
+                    result = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null);
                     rootElementReplaced = true;
                 }
             }
             return result;
         } else {
-            if (insideLazyExpression) {
-                foundPathInsideLazy = true;
+            if (insideExpensiveExpr) {
+                foundPathInsideExpensive = true;
             }
             return super.visit(e);
         }
@@ -96,26 +126,47 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     public Expression visit(AxisExpression e) {
         if (rootElement == null && e.getNodeTest() instanceof NameTest) {
             NameTest test = (NameTest) e.getNodeTest();
-            if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.DESCENDANT) {
-                rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
-            } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.CHILD) {
-                rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
+            if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.DESCENDANT) {
+                rootElement = listOf(configuration.getNamePool().getClarkName(test.getFingerprint()));
+            } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.CHILD) {
+                rootElement = listOf(configuration.getNamePool().getClarkName(test.getFingerprint()));
             }
         }
         return super.visit(e);
     }
 
     @Override
-    public Expression visit(LazyExpression e) {
-        boolean prevCtx = insideLazyExpression;
-        insideLazyExpression = true;
-        Expression result = super.visit(e);
-        insideLazyExpression = prevCtx;
-        return result;
+    public Expression visit(LetExpression e) {
+        // lazy expressions are not a thing in saxon HE
+        // instead saxon hoists expensive subexpressions into LetExpressions
+        // Eg //A[//B]
+        // is transformed to let bs := //B in //A
+        // so that the //B is done only once.
+
+        // The cost of an expr is an abstract measure of its expensiveness,
+        // Eg the cost of //A or //* is 40, the cost of //A//B is 820
+        // (a path expr multiplies the cost of its lhs and rhs)
+
+        if (e.getSequence().getCost() >= 20) {
+            boolean prevCtx = insideExpensiveExpr;
+            insideExpensiveExpr = true;
+            Expression result = super.visit(e);
+            insideExpensiveExpr = prevCtx;
+            return result;
+        } else {
+            return super.visit(e);
+        }
+    }
+
+    @Override
+    public Expression visit(VennExpression e) {
+        // stop visiting subtree. We assume all unions were at the root
+        // and flattened, here we find one that couldn't be flattened
+        return e;
     }
 
     public static Comparator<Node> documentOrderComparator() {
-        return net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter.INSTANCE;
+        return PmdDocumentSorter.INSTANCE;
     }
 
     /**

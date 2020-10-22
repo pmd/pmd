@@ -14,12 +14,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
 
 
@@ -29,7 +34,7 @@ import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
  * @author Clément Fournier
  * @author Jason Bennett
  */
-public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
+public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
@@ -40,7 +45,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         int product = 1;
 
         for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+            JavaNode n = node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newProduct = product * childComplexity;
@@ -62,7 +67,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         int sum = 0;
 
         for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+            JavaNode n = node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newSum = sum + childComplexity;
@@ -80,13 +85,13 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
 
     @Override
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+    public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
         return multiplyChildrenComplexities(node, data);
     }
 
 
     @Override
-    public Object visit(JavaNode node, Object data) {
+    public Object visitJavaNode(JavaNode node, Object data) {
         return multiplyChildrenComplexities(node, data);
     }
 
@@ -167,20 +172,33 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
 
     @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return handleSwitch(node, data);
+    }
+
+    @Override
     public Object visit(ASTSwitchStatement node, Object data) {
+        return handleSwitch(node, data);
+    }
+
+    public int handleSwitch(ASTSwitchLike node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
         int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
         int npath = 0;
         int caseRange = 0;
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.getChild(i);
+
+        for (ASTSwitchBranch n : node) {
 
             // Fall-through labels count as 1 for complexity
-            if (n instanceof ASTSwitchLabel) {
+            if (n instanceof ASTSwitchFallthroughBranch) {
                 npath += caseRange;
                 caseRange = 1;
+            } else if (n instanceof ASTSwitchArrowBranch) {
+                npath += caseRange;
+                int complexity = (int) n.jjtAccept(this, data);
+                caseRange = complexity;
             } else {
                 int complexity = (int) n.jjtAccept(this, data);
                 caseRange *= complexity;
@@ -191,12 +209,19 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         return boolCompSwitch + npath;
     }
 
+    @Override
+    public Object visit(ASTSwitchLabel node, Object data) {
+        if (node.isDefault()) {
+            return 1;
+        }
+        return node.findChildrenOfType(ASTExpression.class).size();
+    }
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        int boolCompTernary = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
+        int boolCompTernary = CycloMetric.booleanExpressionComplexity(node.getCondition());
 
         return boolCompTernary + sumChildrenComplexities(node, data) - 1;
     }

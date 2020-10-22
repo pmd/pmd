@@ -9,9 +9,9 @@ import java.io.File;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
@@ -35,28 +35,41 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // RuleViolationFactory to support identifying without a Node, and update
     // Rule base classes too.
     // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
-    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
-        rule = theRule;
-        description = message;
 
-        File file = ctx.getSourceCodeFile();
-        if (file != null) {
-            filename = file.getPath();
-        } else {
-            filename = "";
-        }
+    /**
+     * @deprecated Use {@link #ParametricRuleViolation(Rule, String, Node, String)}
+     */
+    @Deprecated
+    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
+        this(theRule, getFilename(ctx), node, message);
+    }
+
+    public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
+        this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
+        this.description = AssertionUtil.requireParamNotNull("message", message);
+        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
+
         if (node != null) {
             beginLine = node.getBeginLine();
             beginColumn = node.getBeginColumn();
             endLine = node.getEndLine();
             endColumn = node.getEndColumn();
         }
+    }
 
+    private static String getFilename(RuleContext ctx) {
+        File file = ctx.getSourceCodeFile();
+        if (file != null) {
+            return file.getPath();
+        } else {
+            return "";
+        }
     }
 
     protected String expandVariables(String message) {
+        // TODO move that to RuleContext with the rest of the formatting logic
 
-        if (message.indexOf("${") < 0) {
+        if (!message.contains("${")) {
             return message;
         }
 
@@ -66,17 +79,13 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             final int endIndex = buf.indexOf("}", startIndex);
             if (endIndex >= 0) {
                 final String name = buf.substring(startIndex + 2, endIndex);
-                if (isVariable(name)) {
-                    buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+                String variableValue = getVariableValue(name);
+                if (variableValue != null) {
+                    buf.replace(startIndex, endIndex + 1, variableValue);
                 }
             }
         }
         return buf.toString();
-    }
-
-    protected boolean isVariable(String name) {
-        return StringUtil.isAnyOf(name, "variableName", "methodName", "className", "packageName")
-                || rule.getPropertyDescriptor(name) != null;
     }
 
     protected String getVariableValue(String name) {
@@ -90,7 +99,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             return packageName;
         } else {
             final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return String.valueOf(rule.getProperty(propertyDescriptor));
+            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
         }
     }
 
@@ -150,6 +159,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
+        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
         beginLine = theBeginLine;
         endLine = theEndLine;
     }

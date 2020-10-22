@@ -91,8 +91,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
 
         // Is the clone method just throwing CloneNotSupportedException?
         final ASTClassOrInterfaceDeclaration classOrInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (classOrInterface != null && //Don't analyze enums, which cannot subclass clone()
-            (node.isFinal() || classOrInterface.isFinal())) {
+        if (classOrInterface != null //Don't analyze enums, which cannot subclass clone()
+            && (node.isFinal() || classOrInterface.isFinal())) {
             if (node.findDescendantsOfType(ASTBlock.class).size() == 1) {
                 final List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {

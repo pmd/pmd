@@ -3,24 +3,24 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Bad example #1</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    #if ($otherValue)
-        do stuff
+    #set( $br = "<br />" )
+    #if ($someValue)
+        #if ($otherValue)
+            do stuff
+        #end
     #end
-  #end
 #else
-  #set( $br = "<br>" )
-  stuff
+    #set( $br = "<br>" )
+    stuff
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -29,17 +29,16 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    #if ($otherValue)
-        do stuff
+    #set( $br = "<br />" )
+    #if ($someValue)
+        #if ($otherValue)
+            do stuff
+        #end
     #end
-  #end
 #else
-  #set( $br = "<br>" )
-  stuff
+    #set( $br = "<br>" )
+    stuff
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 </test-data>

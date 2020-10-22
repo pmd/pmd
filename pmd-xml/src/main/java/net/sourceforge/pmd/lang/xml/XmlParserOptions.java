@@ -5,49 +5,67 @@
 package net.sourceforge.pmd.lang.xml;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
+/**
+ * @deprecated Parser options will be removed with 7.0, these options
+ *             will assume their default values then.
+ */
+@Deprecated
 public class XmlParserOptions extends ParserOptions {
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
-    public static final BooleanProperty COALESCING_DESCRIPTOR = new BooleanProperty("coalescing",
-            "Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.",
-            Boolean.FALSE, 3.0f);
-    public static final BooleanProperty EXPAND_ENTITY_REFERENCES_DESCRIPTOR = new BooleanProperty(
-            "expandEntityReferences", "Specifies that the XML parser expand entity reference nodes.", Boolean.TRUE,
-            4.0f);
-    public static final BooleanProperty IGNORING_COMMENTS_DESCRIPTOR = new BooleanProperty("ignoringComments",
-            "Specifies that the XML parser ignore comments.", Boolean.FALSE, 5.0f);
-    public static final BooleanProperty IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = new BooleanProperty(
-            "ignoringElementContentWhitespace",
-            "Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.",
-            Boolean.FALSE, 6.0f);
-    public static final BooleanProperty NAMESPACE_AWARE_DESCRIPTOR = new BooleanProperty("namespaceAware",
-            "Specifies that the XML parser will provide support for XML namespaces.", Boolean.TRUE, 7.0f);
-    public static final BooleanProperty VALIDATING_DESCRIPTOR = new BooleanProperty("validating",
-            "Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.",
-            Boolean.FALSE, 8.0f);
-    public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = new BooleanProperty("xincludeAware",
-            "Specifies that the XML parser will process XInclude markup.", Boolean.FALSE, 9.0f);
-    public static final BooleanProperty LOOKUP_DESCRIPTOR_DTD = new BooleanProperty("xincludeAware",
-            "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
+    public static final PropertyDescriptor<Boolean> COALESCING_DESCRIPTOR =
+        PropertyFactory.booleanProperty("coalescing")
+                       .desc("deprecated!Specifies that the XML parser convert CDATA nodes to Text nodes and append it to the adjacent (if any) text node.")
+                       .defaultValue(false)
+                       .build();
+    public static final PropertyDescriptor<Boolean> EXPAND_ENTITY_REFERENCES_DESCRIPTOR =
+        PropertyFactory.booleanProperty("expandEntityReferences")
+                       .desc("deprecated!Specifies that the XML parser expand entity reference nodes.")
+                       .defaultValue(true)
+                       .build();
+    public static final PropertyDescriptor<Boolean> IGNORING_COMMENTS_DESCRIPTOR =
+        PropertyFactory.booleanProperty("ignoringComments")
+                       .desc("deprecated!Specifies that the XML parser ignore comments.")
+                       .defaultValue(false)
+                       .build();
+    public static final PropertyDescriptor<Boolean> IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR =
+        PropertyFactory.booleanProperty("ignoringElementContentWhitespace")
+                       .desc("deprecated!Specifies that the XML parser eliminate whitespace in element content.  Setting this to 'true' will force validating.")
+                       .defaultValue(false)
+                       .build();
+    public static final PropertyDescriptor<Boolean> NAMESPACE_AWARE_DESCRIPTOR =
+        PropertyFactory.booleanProperty("namespaceAware")
+                       .desc("deprecated!Specifies that the XML parser will provide support for XML namespaces.")
+                       .defaultValue(true)
+                       .build();
+    public static final PropertyDescriptor<Boolean> VALIDATING_DESCRIPTOR =
+        PropertyFactory.booleanProperty("validating")
+                       .desc("deprecated!Specifies that the XML parser will validate documents as they are parsed.  This only works for DTDs.")
+                       .defaultValue(false)
+                       .build();
+    public static final PropertyDescriptor<Boolean> XINCLUDE_AWARE_DESCRIPTOR =
+        PropertyFactory.booleanProperty("xincludeAware")
+                       .desc("deprecated!Specifies that the XML parser will process XInclude markup.")
+                       .defaultValue(false)
+                       .build();
+    public static final PropertyDescriptor<Boolean> LOOKUP_DESCRIPTOR_DTD =
+        PropertyFactory.booleanProperty("xincludeAware")
+                       .desc("deprecated!Specifies whether XML parser will attempt to lookup the DTD.")
+                       .defaultValue(false)
+                       .build();
 
-    public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
-        @Override
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            return new InputSource(new ByteArrayInputStream("".getBytes()));
-        }
-    };
+    public static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
 
     private boolean coalescing;
     private boolean expandEntityReferences;
@@ -59,15 +77,14 @@ public class XmlParserOptions extends ParserOptions {
     private boolean lookupDescriptorDoc;
 
     public XmlParserOptions() {
-        this.coalescing = COALESCING_DESCRIPTOR.defaultValue().booleanValue();
-        this.expandEntityReferences = EXPAND_ENTITY_REFERENCES_DESCRIPTOR.defaultValue().booleanValue();
-        this.ignoringComments = IGNORING_COMMENTS_DESCRIPTOR.defaultValue().booleanValue();
-        this.ignoringElementContentWhitespace = IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR.defaultValue()
-                .booleanValue();
-        this.namespaceAware = NAMESPACE_AWARE_DESCRIPTOR.defaultValue().booleanValue();
-        this.validating = VALIDATING_DESCRIPTOR.defaultValue().booleanValue();
-        this.xincludeAware = XINCLUDE_AWARE_DESCRIPTOR.defaultValue().booleanValue();
-        this.lookupDescriptorDoc = LOOKUP_DESCRIPTOR_DTD.defaultValue().booleanValue();
+        this.coalescing = COALESCING_DESCRIPTOR.defaultValue();
+        this.expandEntityReferences = EXPAND_ENTITY_REFERENCES_DESCRIPTOR.defaultValue();
+        this.ignoringComments = IGNORING_COMMENTS_DESCRIPTOR.defaultValue();
+        this.ignoringElementContentWhitespace = IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR.defaultValue();
+        this.namespaceAware = NAMESPACE_AWARE_DESCRIPTOR.defaultValue();
+        this.validating = VALIDATING_DESCRIPTOR.defaultValue();
+        this.xincludeAware = XINCLUDE_AWARE_DESCRIPTOR.defaultValue();
+        this.lookupDescriptorDoc = LOOKUP_DESCRIPTOR_DTD.defaultValue();
     }
 
     public XmlParserOptions(Rule rule) {
@@ -182,7 +199,7 @@ public class XmlParserOptions extends ParserOptions {
             return false;
         }
         final XmlParserOptions that = (XmlParserOptions) obj;
-        return Objects.equals(this.suppressMarker, that.suppressMarker)
+        return Objects.equals(this.getSuppressMarker(), that.getSuppressMarker())
                 && this.coalescing == that.coalescing && this.expandEntityReferences == that.expandEntityReferences
                 && this.ignoringComments == that.ignoringComments
                 && this.ignoringElementContentWhitespace == that.ignoringElementContentWhitespace

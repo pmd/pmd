@@ -26,6 +26,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Implementations are based on the iterator rather than the stream.
@@ -70,7 +71,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+    public <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
         return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.isInstance(rClass)));
     }
 
@@ -85,13 +86,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
+    public <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass) {
         return flatMapDescendants(node -> node.descendants(rClass));
     }
 
 
     @NonNull
-    protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<R>> mapper) {
+    protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<? extends R>> mapper) {
         return new DescendantMapping<>(this, mapper);
     }
 
@@ -103,6 +104,9 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public @Nullable T get(int n) {
+        if (n == 0) {
+            return first();
+        }
         return IteratorUtil.getNth(iterator(), n);
     }
 
@@ -124,16 +128,11 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <R, A> R collect(Collector<? super T, A, R> collector) {
         A container = collector.supplier().get();
         BiConsumer<A, ? super T> accumulator = collector.accumulator();
         forEach(u -> accumulator.accept(container, u));
-        if (collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
-            return (R) container;
-        } else {
-            return collector.finisher().apply(container);
-        }
+        return CollectionUtil.finish(collector, container);
     }
 
     @Override
@@ -199,7 +198,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+    public <R extends Node> @Nullable R first(Class<? extends R> r1Class) {
         for (T t : this) {
             if (r1Class.isInstance(t)) {
                 return r1Class.cast(t);
@@ -254,25 +253,29 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     private static class DescendantMapping<T extends Node, S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
 
-        private final Function<T, DescendantNodeStream<S>> fun;
+        private final Function<? super T, ? extends DescendantNodeStream<? extends S>> fun;
         private final TreeWalker walker;
         private final IteratorBasedNStream<T> upstream;
 
 
-        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TreeWalker walker) {
+        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<? super T, ? extends DescendantNodeStream<? extends S>> fun, TreeWalker walker) {
             this.fun = fun;
             this.walker = walker;
             this.upstream = upstream;
         }
 
-        DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun) {
+        DescendantMapping(IteratorBasedNStream<T> upstream, Function<? super T, ? extends DescendantNodeStream<? extends S>> fun) {
             this(upstream, fun, TreeWalker.DEFAULT);
         }
 
         @Override
         public Iterator<S> iterator() {
-            return IteratorUtil.flatMap(upstream.iterator(),
-                                        fun.andThen(walker::apply).andThen(NodeStream::iterator));
+            return IteratorUtil.flatMap(
+                upstream.iterator(),
+                t -> {
+                    DescendantNodeStream<? extends S> app = fun.apply(t);
+                    return walker.apply(app).iterator();
+                });
         }
 
         @Override

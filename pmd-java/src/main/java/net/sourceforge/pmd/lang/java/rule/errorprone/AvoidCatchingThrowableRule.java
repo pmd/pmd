@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -18,12 +19,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class AvoidCatchingThrowableRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
-        ASTType type = node.getFirstDescendantOfType(ASTType.class);
-        ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (name.hasImageEqualTo("Throwable")) {
-            addViolation(data, name);
+    public Object visit(ASTCatchClause catchStatement, Object data) {
+        for (@NonNull ASTClassOrInterfaceType caughtException : catchStatement.getParameter().getAllExceptionTypes()) {
+            if (Throwable.class.equals(caughtException.getType())) {
+                addViolation(data, catchStatement);
+            }
         }
-        return super.visit(node, data);
+        return super.visit(catchStatement, data);
     }
 }

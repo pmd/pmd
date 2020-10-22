@@ -4,53 +4,41 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Properties;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class PLSQLTokenizerTest extends AbstractTokenizerTest {
+public class PLSQLTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "sample-plsql.sql";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new PLSQLTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public PLSQLTokenizerTest() {
+        super(".sql");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(PLSQLTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/plsql/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new PLSQLTokenizer();
+    }
+
+    
+    @Test
+    public void testSimple() {
+        doTest("sample-plsql");
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 1422;
-        super.tokenizeTest();
+    public void testSpecialComments() {
+        doTest("specialComments");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() throws IOException {
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("-- CPD-OFF" + PMD.EOL
-                + "CREATE OR REPLACE" + PMD.EOL
-                + "PACKAGE \"test_schema\".\"BANK_DATA\"" + PMD.EOL
-                + "IS" + PMD.EOL
-                + "pi      CONSTANT NUMBER := 3.1415;" + PMD.EOL
-                + "--CPD-ON" + PMD.EOL
-                + "END;"
-        ));
-        Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(3, tokens.size()); // 3 tokens: "END" + ";" + EOF
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

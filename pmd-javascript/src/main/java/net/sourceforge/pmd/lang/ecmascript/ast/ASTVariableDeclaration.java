@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,17 +9,14 @@ import java.util.Locale;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.VariableDeclaration;
 
-public class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDeclaration> {
-    public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
+public final class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDeclaration> {
+    ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
         super.setImage(Token.typeToName(variableDeclaration.getType()).toLowerCase(Locale.ROOT));
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

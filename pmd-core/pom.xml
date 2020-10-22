@@ -8,6 +8,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -60,34 +61,6 @@
                     <suppressionsLocation>pmd-core-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <artifactSet>
-                        <includes>jaxen:jaxen</includes>
-                    </artifactSet>
-                    <filters>
-                        <filter>
-                            <artifact>jaxen:jaxen</artifact>
-                            <includes>
-                                <include>org/jaxen/**</include>
-                            </includes>
-                            <excludes>
-                                <exclude>org/w3c/dom/**</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -96,6 +69,12 @@
             <artifactId>ant</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.javacc</groupId>
+            <artifactId>javacc</artifactId>
+            <scope>provided</scope> <!-- only needed for generating the parser via ant -->
+        </dependency>
+
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
@@ -108,26 +87,10 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <!--
-                Jaxen is optionally, so that it doesn't get inherited by default.
-                Jaxen is shaded into pmd-core (without org.w3c.dom.UserDataHandler).
-                Adding Jaxen again as a dependency would reintroduce the duplicated
-                org.w3c.dom.UserDataHandler interface.
-                See https://github.com/pmd/pmd/issues/1074
-                and https://github.com/pmd/pmd/pull/1201
-            -->
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -146,15 +109,10 @@
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
-            <version>2.5.2</version>
         </dependency>
-
-
         <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <classifier>dom</classifier>
-            <scope>runtime</scope>
+            <groupId>org.pcollections</groupId>
+            <artifactId>pcollections</artifactId>
         </dependency>
 
         <dependency>
@@ -163,13 +121,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -184,7 +142,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -193,45 +151,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>m2e</id>
-            <!-- This profile is only activated when building in Eclipse with m2e -->
-            <activation>
-                <property>
-                    <name>m2e.version</name>
-                </property>
-            </activation>
-            <dependencies>
-                <!--
-                    the maven-shade-plugin runs during package phase,
-                    but inside eclipse, this phase is not executed during development.
-                    Therefore this profile adds back the jaxen dependency in eclipse.
-                 -->
-                <dependency>
-                    <groupId>jaxen</groupId>
-                    <artifactId>jaxen</artifactId>
-                    <optional>false</optional>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>idea</id>
-            <!-- This profile is only activated when building in IntelliJ -->
-            <!-- It serves the same purpose as the above for eclipse-->
-            <activation>
-                <property>
-                    <name>idea.maven.embedder.version</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>jaxen</groupId>
-                    <artifactId>jaxen</artifactId>
-                    <optional>false</optional>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

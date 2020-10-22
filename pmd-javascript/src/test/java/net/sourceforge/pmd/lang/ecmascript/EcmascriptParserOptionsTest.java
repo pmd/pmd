@@ -5,17 +5,19 @@
 package net.sourceforge.pmd.lang.ecmascript;
 
 import static net.sourceforge.pmd.lang.ParserOptionsTest.verifyOptionsEqualsHashcode;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class EcmascriptParserOptionsTest {
 
@@ -24,13 +26,13 @@ public class EcmascriptParserOptionsTest {
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
         assertTrue(parserOptions.isRecordingComments());
         assertTrue(parserOptions.isRecordingLocalJsDocComments());
-        assertEquals(EcmascriptParserOptions.Version.VERSION_DEFAULT, parserOptions.getRhinoLanguageVersion());
+        assertEquals(EcmascriptParserOptions.Version.VERSION_ES6, parserOptions.getRhinoLanguageVersion());
 
         MyRule rule = new MyRule();
         parserOptions = (EcmascriptParserOptions) rule.getParserOptions();
         assertTrue(parserOptions.isRecordingComments());
         assertTrue(parserOptions.isRecordingLocalJsDocComments());
-        assertEquals(EcmascriptParserOptions.Version.VERSION_DEFAULT, parserOptions.getRhinoLanguageVersion());
+        assertEquals(EcmascriptParserOptions.Version.VERSION_ES6, parserOptions.getRhinoLanguageVersion());
     }
 
     @Test
@@ -61,18 +63,15 @@ public class EcmascriptParserOptionsTest {
 
         options.setSuppressMarker("foo");
         assertEquals("foo", options.getSuppressMarker());
-        options.setSuppressMarker(null);
-        assertNull(options.getSuppressMarker());
     }
 
     @Test
     public void testEqualsHashcode() throws Exception {
-        BooleanProperty[] properties = {EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
-                                        EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR, };
+        @SuppressWarnings("unchecked")
+        List<PropertyDescriptor<Boolean>> properties = listOf(EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
+                                                              EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
 
-        for (int i = 0; i < properties.length; i++) {
-            BooleanProperty property = properties[i];
-
+        for (PropertyDescriptor<Boolean> property : properties) {
             MyRule rule = new MyRule();
             rule.setProperty(property, true);
             ParserOptions options1 = rule.getParserOptions();
@@ -107,9 +106,5 @@ public class EcmascriptParserOptionsTest {
     }
 
     private static final class MyRule extends AbstractEcmascriptRule {
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(EcmascriptParserOptionsTest.class);
     }
 }

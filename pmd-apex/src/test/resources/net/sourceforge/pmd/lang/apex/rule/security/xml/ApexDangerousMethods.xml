@@ -1,95 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>Apex dangerous FileForce method</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex dangerous FileForce method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo extends fflib_SObjectDomain {
-	public Foo() {
-		Configuration.disableTriggerCRUDSecurity();
-	}	
+    public Foo() {
+        Configuration.disableTriggerCRUDSecurity();
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex non FileForce method</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex non FileForce method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public Foo() {
-		Configurations.disableTriggerCRUDSecurity();
-	}	
+    public Foo() {
+        Configurations.disableTriggerCRUDSecurity();
+    }
 }
-		]]></code>
-	</test-code>
-	
-	<test-code>
-		<description>Apex logging sessions</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Apex logging sessions</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo  {
-	public void foo(String session) {
-		System.debug('Session is' + session + 'user');
-	}	
+    public void foo(String session) {
+        System.debug('Session is' + session + 'user');
+    }
 }
-		]]></code>
-	</test-code>
-	
-	<test-code>
-		<description>Apex logging passcode</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void foo(String passcode) {
-		System.debug(passcode);
-		System.debug('Passcode is' + passcode);
-	}	
-}
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Apex logging boolean values of properties</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	private boolean isAuthenticated { get; set; }
-	public void foo() {
-		System.debug('is authenticated' + isAuthenticated);
-	}	
-}
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex logging boolean values of class variables</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex logging passcode</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	boolean isAuthenticated = false;
-	public void foo() {		
-		System.debug('is authenticated' + isAuthenticated);
-	}	
+    public void foo(String passcode) {
+        System.debug(passcode);
+        System.debug('Passcode is' + passcode);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex logging boolean values of variables</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex logging boolean values of properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {
-		boolean isAuthenticated = false;		
-		System.debug('is authenticated' + isAuthenticated);
-	}	
+    private boolean isAuthenticated { get; set; }
+    public void foo() {
+        System.debug('is authenticated' + isAuthenticated);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Apex logging boolean values of class variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean isAuthenticated = false;
+    public void foo() {
+        System.debug('is authenticated' + isAuthenticated);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Apex logging boolean values of variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        boolean isAuthenticated = false;
+        System.debug('is authenticated' + isAuthenticated);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

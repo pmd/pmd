@@ -3,59 +3,54 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int x;
+    private int x;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad
-     ]]></description>
+        <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- int x;
+    int x;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface methods are always public
-     ]]></description>
+        <description>interface methods are always public</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- void bar();
+    void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface field are always public
-     ]]></description>
+        <description>interface field are always public</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- int bar = 10;
+    int bar = 10;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad
-        ]]></description>
+        <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
- }
+    void bar() {
+    }
 }
         ]]></code>
     </test-code>
@@ -66,6 +61,114 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @VisibleForTesting static final int[] ints = {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @Test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.Test
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @RepeatedTest</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.RepeatedTest
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @ParameterizedTest</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.ParameterizedTest
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @TestFactory</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.TestFactory
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @TestTemplate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.TestTemplate
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @BeforeAll</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.BeforeAll
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @AfterAll</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.AfterAll
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @BeforeEach</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.BeforeEach
+    void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2573 DefaultPackage triggers on field annotated with JUnit 5 @AfterEach</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.jupiter.api.AfterEach
+    void bar() {
+    }
 }
         ]]></code>
     </test-code>

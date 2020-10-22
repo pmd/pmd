@@ -99,7 +99,11 @@ public class PMDParameters {
     private String language = null;
 
     @Parameter(names = "-auxclasspath",
-            description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
+            description = "Specifies the classpath for libraries used by the source code. "
+                    + "This is used by the type resolution. The platform specific path delimiter "
+                    + "(\":\" on Linux, \";\" on Windows) is used to separate the entries. "
+                    + "Alternatively, a single 'file:' URL to a text file containing path elements on consecutive lines "
+                    + "can be specified.")
     private String auxclasspath;
 
     @Parameter(names = { "-failOnViolation", "--failOnViolation" }, arity = 1,

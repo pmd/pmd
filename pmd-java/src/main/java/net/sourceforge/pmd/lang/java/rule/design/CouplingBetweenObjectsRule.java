@@ -54,14 +54,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        Object returnObj = cu.childrenAccept(this, data);
+        cu.children().forEach(it -> it.acceptVisitor(this, data));
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
                     "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
-        return returnObj;
+        return data;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * convience method to handle hierarchy. This is probably too much work and
+     * Convenience method to handle hierarchy. This is probably too much work and
      * will go away once I figure out the framework
      */
     private void handleASTTypeChildren(Node node) {

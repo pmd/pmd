@@ -4,98 +4,72 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
  * Abstract class for type declarations nodes.
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
-    private JavaTypeQualifiedName qualifiedName;
-
+    private String binaryName;
+    private @Nullable String canonicalName;
 
     AbstractAnyTypeDeclaration(int i) {
         super(i);
     }
 
-    @Override
+    /**
+     * @deprecated Use {@link #getSimpleName()}
+     */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
+    @Override
     public String getImage() {
+        return getSimpleName();
+    }
+
+    @NonNull
+    @Override
+    public String getSimpleName() {
+        assert super.getImage() != null : "Null simple name";
         return super.getImage();
     }
 
+    @NonNull
     @Override
     public String getBinaryName() {
-        return getQualifiedName().getBinaryName();
+        assert binaryName != null : "Null binary name";
+        return binaryName;
+    }
+
+    @Nullable
+    @Override
+    public String getCanonicalName() {
+        assert binaryName != null : "Canonical name wasn't set";
+        return canonicalName;
     }
 
     @Override
-    public String getSimpleName() {
-        return getImage();
+    public Visibility getVisibility() {
+        return isLocal() ? Visibility.V_LOCAL : ASTAnyTypeDeclaration.super.getVisibility();
     }
 
+    void setBinaryName(String binaryName, @Nullable String canon) {
+        assert binaryName != null : "Null binary name";
+        this.binaryName = binaryName;
+        this.canonicalName = canon;
+    }
+
+    @NonNull
     @Override
-    public boolean isFindBoundary() {
-        return isNested() || isLocal();
-    }
-
-    /**
-     * Returns true if the enclosing type of this type declaration
-     * is any of the given kinds. If this declaration is a top-level
-     * declaration, returns false. This won't consider anonymous classes
-     * until #905 is tackled. TODO 7.0.0
-     *
-     * @param kinds Kinds to test
-     */
-    // TODO 7.0.0 move that up to ASTAnyTypeDeclaration
-    public final boolean enclosingTypeIsA(TypeKind... kinds) {
-
-        ASTAnyTypeDeclaration parent = getEnclosingTypeDeclaration();
-        if (parent == null) {
-            return false;
-        }
-
-        for (TypeKind k : kinds) {
-            if (parent.getTypeKind() == k) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Returns the enclosing type of this type, if it is nested.
-     * Otherwise returns null. This won't consider anonymous classes
-     * until #905 is tackled. TODO 7.0.0
-     */
-    public final ASTAnyTypeDeclaration getEnclosingTypeDeclaration() {
-        if (!isNested()) {
-            return null;
-        }
-        Node parent = getNthParent(3);
-
-        return parent instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) parent : null;
-    }
-
-    @Override
-    public final JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());
+    public JClassType getTypeMirror() {
+        return (JClassType) super.getTypeMirror();
     }
 }
 

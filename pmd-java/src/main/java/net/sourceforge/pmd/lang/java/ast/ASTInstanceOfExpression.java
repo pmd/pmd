@@ -4,50 +4,45 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
- * Represents a type test on an object. This has a precedence greater than {@link ASTEqualityExpression},
- * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTRelationalExpression}.
+ * Represents a type test on an object.
  *
- * <p>Note that the children of this node are not necessarily {@link ASTRelationalExpression},
- * rather, they are expressions with an operator precedence greater or equal to RelationalExpression.
+ * <pre class="grammar">
  *
- *
- * <pre>
- *
- * InstanceOfExpression ::= {@linkplain ASTShiftExpression ShiftExpression} "instanceof" ({@linkplain ASTType Type} | {@link ASTPattern Pattern})
+ * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" ({@linkplain ASTTypeExpression TypeExpression} | {@link ASTPattern Pattern})
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
+@Deprecated
+public class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpression {
 
-    @InternalApi
-    @Deprecated
-    public ASTInstanceOfExpression(int id) {
+    ASTInstanceOfExpression(int id) {
         super(id);
     }
 
 
+    public BinaryOp getOperator() {
+        return BinaryOp.INSTANCEOF;
+    }
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
 
+    public ASTTypeExpression getRightOperand() {
+        return (ASTTypeExpression) getChild(1);
+    }
 
     /**
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        JavaNode child = getChild(1);
-        return child instanceof ASTType ? (ASTType) child
-                                        : ((ASTTypeTestPattern) child).getTypeNode();
+        return getRightOperand().getTypeNode();
     }
 
 }

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>ok, literal comes first in .equals comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return "2".equals(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, literal comes last in .equals comparison</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return x.equals("2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, empty literal in .equals comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if ((str == null) || (str.equals(""))) {
+            str = "snafu";
+        }
+        if (str == null || str.equals("")) {
+            str = "snafu";
+        }
+        if ((str != null) && (str.equals(""))) {
+            str = "snafu";
+        }
+        if (str != null && str.equals("")) {
+            str = "snafu";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void bug()
+    {
+        if (number.equals(new BigDecimal("123"))) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void testMethod(String str)
+    {
+        if (str.equals(getAnotherString("abc"))){}
+    }
+
+    private String getAnotherString(String str)
+    {
+        return "xyz";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1256 PositionLiteralsFirstInComparisons .equals false positive with Characters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class LiteralTest {
+    protected final boolean check;
+    public LiteralTest(Character c) {
+        check = c.equals('x');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, literal comes first in .equalsIgnoreCase comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return "2".equalsIgnoreCase(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, literal comes last in .equalsIgnoreCase comparison</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return x.equalsIgnoreCase("2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, testing .equalsIgnoreCase false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if ((str == null) || (equalsIgnoreCase(""))) {
+            str = "snafu";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void bug()
+    {
+        if (equalsIgnoreCase(new BigDecimal("123"))) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void testMethod(String str)
+    {
+        if (equalsIgnoreCase(getAnotherString("abc"))){}
+    }
+
+    private String getAnotherString(String str)
+    {
+        return "xyz";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, literal comes first in .compareTo comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return "2".compareTo(x) < 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, literal comes last in .compareTo comparison</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return x.compareTo("2") > 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, testing for .compareTo false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        return compareTo("randomStringArg");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, literal comes first in .compareToIgnoreCase comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return "2".compareToIgnoreCase(x) < 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, literal comes last in .compareToIgnoreCase comparison</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return x.compareToIgnoreCase("2") > 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, testing ,compareToIgnoreCase false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String bar() {
+        return compareToIgnoreCase("randomStringArg");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, literal comes first in .contentEquals comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return "2".contentEquals(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, literal comes last in .contentEquals comparison</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return x.contentEquals("2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, testing .contentEquals false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(String x) {
+        return contentEquals("2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, testing false negative at the end of a chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean bar() {
+        File f;
+        return f.getFileType().equals("testStr");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, should be ignored in case both operands are string literals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean isFoo;
+    public void bar() {
+        this.isFoo = "Hello".equals("World");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Equals on method result with String argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String getStr(String a) {
+        return "a" + a;
+    }
+    public void bar() {
+        if (getStr("b").equals("ab")) { }   // nok
+        if ("ab".equals(getStr("b"))) { }   // ok
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

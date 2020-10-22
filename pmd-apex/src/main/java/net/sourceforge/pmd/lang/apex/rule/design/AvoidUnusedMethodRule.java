@@ -8,8 +8,8 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTApexFile;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ApexRootNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -32,7 +32,7 @@ public class AvoidUnusedMethodRule extends AbstractApexRule {
     public Object visit(ASTMethod node, Object data) {
         // Check if any 'Unused' Issues align with this method
         for (Issue issue: getIssues(node)) {
-            if (issue.diagnostic().category().value().equals("Unused")) {
+            if ("Unused".equals(issue.diagnostic().category().value())) {
                 // Check for basic line alignment for now, Note: ASTMethod end line = block end line
                 if (issue.diagnostic().location().startLine() == node.getBeginLine()
                         && issue.diagnostic().location().endLine() <= node.getEndLine()) {
@@ -48,7 +48,7 @@ public class AvoidUnusedMethodRule extends AbstractApexRule {
         List<RootNode> parents = node.getParentsOfType(RootNode.class);
         if (!parents.isEmpty()) {
             // This first parent is outermost
-            ApexRootNode<?> root = (ApexRootNode<?>) parents.get(parents.size() - 1);
+            ASTApexFile root = (ASTApexFile) parents.get(parents.size() - 1);
             return root.getMultifileAnalysis().getFileIssues(root.getFileName());
         }
         return new Issue[0];

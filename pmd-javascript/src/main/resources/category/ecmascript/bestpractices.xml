@@ -36,6 +36,7 @@ with (object) {
     </rule>
 
     <rule name="ConsistentReturn"
+          language="ecmascript"
           since="5.0"
           message="A function should not mix 'return' statements with and without a result."
           class="net.sourceforge.pmd.lang.ecmascript.rule.bestpractices.ConsistentReturnRule"
@@ -82,7 +83,7 @@ Global variables can lead to side-effects that are hard to debug.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Assignment[Name/@GlobalName = 'true']
+//Assignment[Name/@GlobalName = true()]
 ]]>
                 </value>
             </property>

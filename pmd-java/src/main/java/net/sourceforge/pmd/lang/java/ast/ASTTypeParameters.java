@@ -5,42 +5,28 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
  * Represents a list of type parameters.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * TypeParameters ::= "<" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
+ * TypeParameters ::= "&lt;" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* "&gt;"
  *
  * </pre>
  */
-public class ASTTypeParameters extends AbstractJavaNode implements Iterable<ASTTypeParameter> {
+public final class ASTTypeParameters extends ASTNonEmptyList<ASTTypeParameter> {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeParameters(int id) {
-        super(id);
+    ASTTypeParameters(int id) {
+        super(id, ASTTypeParameter.class);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override
-    public Iterator<ASTTypeParameter> iterator() {
-        return children(ASTTypeParameter.class).iterator();
-    }
 }

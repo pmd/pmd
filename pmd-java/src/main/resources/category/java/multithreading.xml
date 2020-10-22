@@ -23,30 +23,50 @@ gets it.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized='true']</value>
+                <value>//MethodDeclaration[@Synchronized = true()]</value>
             </property>
         </properties>
         <example>
 <![CDATA[
 public class Foo {
-  // Try to avoid this:
-  synchronized void foo() {
-  }
-  // Prefer this:
-  void bar() {
-    synchronized(this) {
+    // Try to avoid this:
+    synchronized void foo() {
+        // code, that doesn't need synchronization
+        // ...
+        // code, that requires synchronization
+        if (!sharedData.has("bar")) {
+            sharedData.add("bar");
+        }
+        // more code, that doesn't need synchronization
+        // ...
     }
-  }
-
-  // Try to avoid this for static methods:
-  static synchronized void fooStatic() {
-  }
-
-  // Prefer this:
-  static void barStatic() {
-    synchronized(Foo.class) {
+    // Prefer this:
+    void bar() {
+        // code, that doesn't need synchronization
+        // ...
+        synchronized(this) {
+            if (!sharedData.has("bar")) {
+                sharedData.add("bar");
+            }
+        }
+        // more code, that doesn't need synchronization
+        // ...
     }
-  }
+
+    // Try to avoid this for static methods:
+    static synchronized void fooStatic() {
+    }
+
+    // Prefer this:
+    static void barStatic() {
+        // code, that doesn't need synchronization
+        // ...
+        synchronized(Foo.class) {
+            // code, that requires synchronization
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
 }
 ]]>
         </example>
@@ -101,7 +121,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//FieldDeclaration[contains(@Volatile,'true')]</value>
+                <value>//FieldDeclaration[@Volatile = true()]</value>
             </property>
         </properties>
         <example>
@@ -145,10 +165,28 @@ public class UsingThread extends Thread {
 }
 
 // Neither this,
-public class OtherThread implements Runnable {
-    // Nor this ...
-    public void methode() {
-        Runnable thread = new Thread(); thread.run();
+public class UsingExecutorService {
+
+    public void methodX() {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+    }
+}
+
+// Nor this,
+public class Example implements ExecutorService {
+
+}
+
+// Nor this,
+public class Example extends AbstractExecutorService {
+
+}
+
+// Nor this
+public class UsingExecutors {
+
+    public void methodX() {
+        Executors.newSingleThreadExecutor().submit(() -> System.out.println("Hello!"));
     }
 }
 ]]>
@@ -172,12 +210,12 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
 //StatementExpression/PrimaryExpression
 [
     PrimaryPrefix
+    [pmd-java:typeIs('java.lang.Thread')]
     [
-        ./Name[ends-with(@Image, '.run') or @Image = 'run']
-        and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
-        or (./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
-        and ../PrimarySuffix[@Image = 'run'])
+            ./Name[ends-with(@Image, '.run') or @Image = 'run']
+        or
+            ./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
+            and ../PrimarySuffix[@Image = 'run']
     ]
 ]
 ]]>
@@ -230,6 +268,7 @@ public class Foo {
     </rule>
 
     <rule name="NonThreadSafeSingleton"
+          language="java"
           since="3.4"
           message="Singleton is not thread safe"
           class="net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule"
@@ -264,6 +303,7 @@ public static Foo getFoo() {
     </rule>
 
     <rule name="UnsynchronizedStaticFormatter"
+          language="java"
           since="6.11.0"
           message="Static Formatter objects should be accessed in a synchronized manner"
           class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule"
@@ -345,7 +385,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
                 <value>
 <![CDATA[
 //StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = '0']]
+[PrimarySuffix/Arguments[@Size = 0]]
 [
     PrimaryPrefix[
         ./Name[@Image='notify' or ends-with(@Image,'.notify')]

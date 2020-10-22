@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
 
 /**
@@ -269,8 +269,8 @@ public class XmlTreeRendererTest {
 
         MyDummyNode dummy2 = new MyDummyNode();
 
-        dummy.jjtAddChild(dummy1, 0);
-        dummy.jjtAddChild(dummy2, 1);
+        dummy.addChild(dummy1, 0);
+        dummy.addChild(dummy2, 1);
         return dummy;
     }
 

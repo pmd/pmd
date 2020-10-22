@@ -12,7 +12,7 @@ public class Foo {
     public static void main(String a[]) { // a should trigger it.
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -24,7 +24,7 @@ public class Foo {
        int bugleDeWump = -1;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -34,11 +34,11 @@ public class Foo {
 public class Foo {
 
     public static void main(String args[]) {
-       int ab = -1; 
+       int ab = -1;
        // Should trigger ShortVariable rule.
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -50,7 +50,7 @@ public class Foo {
        for (int i = 0; i < 10; i++) { } // Should NOT!! trigger.
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -60,7 +60,7 @@ public class Foo {
 public class Foo {
     private int qx; // Should cause a problem.
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -72,9 +72,8 @@ public class Foo {
      try {} catch (Exception e) {}
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-
 
     <test-code>
         <description>ShortVariable false positive with for-each loops</description>

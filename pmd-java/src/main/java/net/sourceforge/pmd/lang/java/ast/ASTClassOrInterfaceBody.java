@@ -4,43 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents the body of a {@linkplain ASTClassOrInterfaceDeclaration class or interface declaration}.
  * This includes anonymous classes, including those defined within an {@linkplain ASTEnumConstant enum constant}.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
+ * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
  *
  * </pre>
  */
-public class ASTClassOrInterfaceBody extends AbstractJavaNode {
+public final class ASTClassOrInterfaceBody extends ASTTypeBody {
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBody(int id) {
+    ASTClassOrInterfaceBody(int id) {
         super(id);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    public boolean isAnonymousInnerClass() {
-        return getParent() instanceof ASTAllocationExpression;
-    }
-
-    public boolean isEnumChild() {
-        return getParent() instanceof ASTEnumConstant;
-    }
 }

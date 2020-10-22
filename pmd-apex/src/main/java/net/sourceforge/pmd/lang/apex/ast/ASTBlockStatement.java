@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,15 +6,16 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.BlockStatement;
 
-public class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
+public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
     private boolean curlyBrace;
 
-    public ASTBlockStatement(BlockStatement blockStatement) {
+    ASTBlockStatement(BlockStatement blockStatement) {
         super(blockStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

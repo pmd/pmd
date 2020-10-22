@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import io.kotlintest.matchers.string.shouldContain
-import net.sourceforge.pmd.lang.ast.AbstractNode
+import io.kotest.matchers.string.shouldContain
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import java.util.*
 
 
@@ -16,13 +18,6 @@ import java.util.*
 
 // kotlin converts getters of java types into property accessors
 // but it doesn't recognise jjtGet* methods as getters
-
-
-val Node.firstToken: GenericToken
-    get() = (this as AbstractNode).jjtGetFirstToken()
-
-val Node.lastToken: GenericToken
-    get() = (this as AbstractNode).jjtGetLastToken()
 
 fun Node.safeGetChild(i: Int): Node? = when {
     i < numChildren -> getChild(i)
@@ -83,7 +78,7 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     // fixme, the end column should be exclusive
     fun isEmpty(): Boolean =
             beginPos.line == endPos.line
-                    && beginPos.column - 1 == endPos.column
+                    && beginPos.column == endPos.column
 
     fun assertOrdered() {
         assert(beginPos <= endPos || isEmpty()) {
@@ -98,5 +93,6 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     operator fun contains(other: TextRange): Boolean =
             other.beginPos in this && other.endPos in this
                     || this.isEmpty() && other == this
+                    || other.isEmpty() && other.beginPos in this
 
 }

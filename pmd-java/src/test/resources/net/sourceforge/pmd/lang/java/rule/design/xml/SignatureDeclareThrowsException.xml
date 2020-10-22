@@ -3,184 +3,169 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-method throws Exception
-     ]]></description>
+        <description>method throws Exception</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() throws Exception {}
+    void foo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {}
+    void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-constructor throws Exception
-     ]]></description>
+        <description>constructor throws Exception</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- Foo() throws Exception {}
+    Foo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit setUp method
-     ]]></description>
+        <description>skip junit setUp method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.*;
 public class Foo {
- void setUp() throws Exception {}
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit tearDown method
-     ]]></description>
+        <description>skip junit tearDown method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.*;
 public class Foo {
- void tearDown() throws Exception {}
+    void tearDown() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-JUnit 4 testcase
-     ]]></description>
+        <description>JUnit 4 testcase</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.*;
 public class Foo {
- @Before
- void setUp() throws Exception {}
+    @Before
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip method in class that extends TestCase
-     ]]></description>
+        <description>skip method in class that extends TestCase</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.*;
 public class Foo extends TestCase {
- void setUp() throws Exception {}
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Don't skip other methods
-     ]]></description>
+        <description>Don't skip other methods</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.*;
 public class Foo extends TestCase {
- void bar() throws Exception {}
+    void bar() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unless 
-     ]]></description>
+        <description>Unless</description>
         <rule-property name="IgnoreJUnitCompletely">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.*;
 public class Foo extends TestCase {
- void bar() throws Exception {}
+    void bar() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit setUp method where the superclass is TestCase
-     ]]></description>
+        <description>skip junit setUp method where the superclass is TestCase</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase {
- void setUp() throws Exception {}
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit setUp method where the superclass is TestCase, imported explicitly
-     ]]></description>
+        <description>skip junit setUp method where the superclass is TestCase, imported explicitly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase;
 public class Foo extends MyTestCase {
- void setUp() throws Exception {}
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit setUp method where the superclass is TestCase, but is imported implicitly
-     ]]></description>
+        <description>skip junit setUp method where the superclass is TestCase, but is imported implicitly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.*;
 public class Foo extends MyTestCase {
  void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip junit setUp method where the superclass is TestCase  and is in the same package
-     ]]></description>
+        <description>skip junit setUp method where the superclass is TestCase  and is in the same package</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception;
 
 public class Foo extends MyTestCase {
- void setUp() throws Exception {}
+    void setUp() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Generics
-     ]]></description>
+        <description>Generics</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public <T> Bar<T> foo() { /* blah */}
+    public <T> Bar<T> foo() { /* blah */}
 }
-     ]]></code>
-        <source-type>java 1.5</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip any method starting with 'test'
-     ]]></description>
+        <description>skip any method starting with 'test'</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooTest {
- void testFoo() throws Exception {}
+    void testFoo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#913 SignatureDeclareThrowsException is raised twice</description>
         <expected-problems>1</expected-problems>
@@ -194,7 +179,7 @@ public class BugSignature {
     };
   }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -204,17 +189,17 @@ public class BugSignature {
 public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#350 allow throws exception when overriding a method defined elsewhere</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class BugSignature implements LousyInterface {
-  @Override
-  public void record() throws Exception {
-  }
+    @Override
+    public void record() throws Exception {
+    }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -228,9 +213,9 @@ public class JUnitAnnotationTest extends TestCase {
     public JUnitAnnotationTest() throws Exception {
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1369 ClassCastException in annotated extends</description>
         <expected-problems>0</expected-problems>
@@ -248,6 +233,6 @@ public final class Namespace {
     }
 
 }
-]]></code>
+        ]]></code>
     </test-code>
 </test-data>

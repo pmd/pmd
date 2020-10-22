@@ -16,11 +16,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -35,7 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -76,8 +77,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
-        BLOCK_PARENTS.add(ASTCatchStatement.class);
-        BLOCK_PARENTS.add(ASTFinallyStatement.class);
+        BLOCK_PARENTS.add(ASTCatchClause.class);
+        BLOCK_PARENTS.add(ASTFinallyClause.class);
+        BLOCK_PARENTS.add(ASTLambdaExpression.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
@@ -119,7 +121,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
             currentBlock = getFirstParentBlock(n);
 
-            if (InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+            if (InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
                 // append method call detected
                 ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
                 int numChildren = s.getNumChildren();
@@ -257,7 +259,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private int processAdditive(Object data, int concurrentCount, Node sn, Node rootNode) {
         ASTAdditiveExpression additive = sn.getFirstDescendantOfType(ASTAdditiveExpression.class);
         // The additive expression must of be type String to count
-        if (additive == null || additive.getType() != null && !TypeHelper.isA(additive, String.class)) {
+        if (additive == null || additive.getType() != null && !TypeTestUtil.isA(String.class, additive)) {
             return 0;
         }
         // check for at least one string literal
@@ -394,14 +396,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         return n instanceof ASTLiteral;
     }
 
-    private static boolean isStringBuilderOrBuffer(ASTVariableDeclaratorId node) {
-        if (node.getType() != null) {
-            return TypeHelper.isEither(node, StringBuffer.class, StringBuilder.class);
-        }
-        Node nn = node.getTypeNameNode();
-        if (nn == null || nn.getNumChildren() == 0) {
-            return false;
-        }
-        return TypeHelper.isEither((TypeNode) nn.getChild(0), StringBuffer.class, StringBuilder.class);
+    static boolean isStringBuilderOrBuffer(TypeNode node) {
+        return TypeTestUtil.isA(StringBuffer.class, node)
+            || TypeTestUtil.isA(StringBuilder.class, node);
     }
 }

@@ -5,23 +5,21 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a single type argument in a {@linkplain ASTTypeArguments type arguments list}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeArgument ::= ( {@linkplain ASTAnnotation Annotation} )* ( {@linkplain ASTReferenceType ReferenceType} | "?" {@linkplain ASTWildcardBounds WildcardBounds}? )
  *
  * </pre>
+ *
+ * @deprecated Replaced by just an {@link ASTType}
  */
-// TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
-public class ASTTypeArgument extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTTypeArgument extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeArgument(int id) {
+    ASTTypeArgument(int id) {
         super(id);
     }
 
@@ -44,13 +42,7 @@ public class ASTTypeArgument extends AbstractJavaTypeNode {
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

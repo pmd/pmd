@@ -4,30 +4,25 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * Tests to use XPath rules with PLSQL.
  */
 public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
-    private ASTInput node = plsql.parse(
+    private static final String SOURCE =
         "create or replace\n" + "package pkg_xpath_problem\n" + "AS\n" + "    PROCEDURE pkg_minimal\n" + "    IS\n"
             + "        a_variable VARCHAR2(1);\n" + "    BEGIN \n" + "        --PRAGMA INLINE(output,'YES');\n"
-            + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n" + "");
-
-    private RuleContext ctx = new RuleContext();
+            + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n";
 
     public PLSQLXPathRuleTest() {
-        ctx.setLanguageVersion(plsql.getDefaultVersion());
     }
 
     /**
@@ -35,10 +30,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      */
     @Test
     public void testXPathRule1() {
-        XPathRule rule = createRule("1.0");
-
-        rule.apply(Arrays.asList(node), ctx);
-        Assert.assertEquals(2, ctx.getReport().treeSize());
+        testOnVersion(XPathVersion.XPATH_1_0);
     }
 
     /**
@@ -46,10 +38,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      */
     @Test
     public void testXPathRule1Compatibility() {
-        XPathRule rule = createRule("1.0 compatibility");
-
-        rule.apply(Arrays.asList(node), ctx);
-        Assert.assertEquals(2, ctx.getReport().treeSize());
+        testOnVersion(XPathVersion.XPATH_1_0_COMPATIBILITY);
     }
 
     /**
@@ -57,18 +46,18 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      */
     @Test
     public void testXPathRule2() {
-        XPathRule rule = createRule("2.0");
-
-        rule.apply(Arrays.asList(node), ctx);
-        Assert.assertEquals(2, ctx.getReport().treeSize());
+        testOnVersion(XPathVersion.XPATH_2_0);
     }
 
-    private XPathRule createRule(String version) {
-        XPathRule rule = new XPathRule("//PrimaryPrefix");
+
+    private void testOnVersion(XPathVersion xpath10) {
+        XPathRule rule = new XPathRule(xpath10, "//PrimaryPrefix");
         rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-        rule.setVersion(version);
         rule.setMessage("Test Violation");
-        return rule;
+
+        Report report = plsql.executeRule(rule, SOURCE);
+        Assert.assertEquals(2, report.getViolations().size());
     }
+
 
 }

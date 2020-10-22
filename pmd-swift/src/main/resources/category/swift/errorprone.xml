@@ -25,11 +25,10 @@
             <property name="xpath">
                 <value>
                     <![CDATA[
-//TypeCastingOperator[starts-with(@Text,'as!')]
+//TypeCastingOperator[T-as and T-bang]
 ]]>
                 </value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
             <![CDATA[
@@ -55,11 +54,10 @@ NSNumber() as? Int // no violation
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryOperator[@Text='try!']
+//TryOperator[T-bang]
 ]]>
                 </value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
             <![CDATA[

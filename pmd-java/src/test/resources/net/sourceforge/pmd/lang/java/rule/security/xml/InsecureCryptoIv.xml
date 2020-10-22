@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data xmlns="http://pmd.sourceforge.net/rule-tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Hard coded inline IvSpec, bad</description>
         <expected-problems>1</expected-problems>
@@ -13,7 +16,7 @@ public class Foo {
     void outOfScope() {
         byte[] ivBytes = new byte[16];
     }
-    byte[] ivBytes = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };  	
+    byte[] ivBytes = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
 
     void encrypt() {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -22,6 +25,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Randomly generated IV, good</description>
         <expected-problems>0</expected-problems>
@@ -38,6 +42,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Hard coded Iv from string, bad</description>
         <expected-problems>1</expected-problems>
@@ -53,6 +58,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
         <description>Hard coded Iv field, bad</description>
         <expected-problems>1</expected-problems>
@@ -69,6 +75,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
         <description>Hard coded Iv local var, bad</description>
         <expected-problems>1</expected-problems>
@@ -84,6 +91,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Random IV, good</description>
         <expected-problems>0</expected-problems>
@@ -101,6 +109,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
         <description>Inline IvSpec Random IV, good</description>
         <expected-problems>0</expected-problems>

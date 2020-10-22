@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,8 +29,12 @@ public class ApexParserTest extends ApexParserTestBase {
     public void understandsSimpleFile() {
 
         // Setup
-        String code = "@isTest\n public class SimpleClass {\n" + "    @isTest\n public static void testAnything() {\n"
-            + "        \n" + "    }\n" + "}";
+        String code = "@isTest\n"
+            + " public class SimpleClass {\n"
+            + "    @isTest\n public static void testAnything() {\n"
+            + "        \n"
+            + "    }\n"
+            + "}";
 
         // Exercise
         ApexNode<Compilation> rootNode = parse(code);
@@ -41,7 +44,7 @@ public class ApexParserTest extends ApexParserTestBase {
         assertEquals(4, methods.size());
     }
 
-    private String testCodeForLineNumbers =
+    private final String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2
             + "        System.out.println('abc');\n" // line 3
@@ -50,13 +53,13 @@ public class ApexParserTest extends ApexParserTestBase {
             + "}\n"; // line 6
 
     @Test
-    public void verifyLineColumNumbers() {
+    public void verifyLineColumnNumbers() {
         ApexNode<Compilation> rootNode = parse(testCodeForLineNumbers);
         assertLineNumbersForTestCode(rootNode);
     }
 
     @Test
-    public void verifyLineColumNumbersWithWindowsLineEndings() {
+    public void verifyLineColumnNumbersWithWindowsLineEndings() {
         String windowsLineEndings = testCodeForLineNumbers.replaceAll(" \n", "\r\n");
         ApexNode<Compilation> rootNode = parse(windowsLineEndings);
         assertLineNumbersForTestCode(rootNode);
@@ -127,8 +130,6 @@ public class ApexParserTest extends ApexParserTestBase {
         ApexNode<?> comment = root.getChild(0);
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
-        assertNotEquals(comment.getNode(), null);
-        assertThat(comment.getNode(), instanceOf(ASTFormalComment.AstComment.class));
         assertPosition(comment, 1, 9, 1, 31);
         assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
 

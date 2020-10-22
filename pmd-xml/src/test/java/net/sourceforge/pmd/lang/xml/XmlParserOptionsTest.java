@@ -5,16 +5,18 @@
 package net.sourceforge.pmd.lang.xml;
 
 import static net.sourceforge.pmd.lang.ParserOptionsTest.verifyOptionsEqualsHashcode;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.xml.rule.AbstractXmlRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class XmlParserOptionsTest {
 
@@ -86,8 +88,6 @@ public class XmlParserOptionsTest {
 
         options.setSuppressMarker("foo");
         assertEquals("foo", options.getSuppressMarker());
-        options.setSuppressMarker(null);
-        assertNull(options.getSuppressMarker());
 
         options.setCoalescing(true);
         assertTrue(options.isCoalescing());
@@ -127,15 +127,15 @@ public class XmlParserOptionsTest {
 
     @Test
     public void testEqualsHashcode() throws Exception {
-        BooleanProperty[] properties = new BooleanProperty[] { XmlParserOptions.COALESCING_DESCRIPTOR,
-            XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR, XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR,
-            XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR,
-            XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR, XmlParserOptions.VALIDATING_DESCRIPTOR,
-            XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR, };
+        List<PropertyDescriptor<Boolean>> properties = listOf(XmlParserOptions.COALESCING_DESCRIPTOR,
+                                                              XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR,
+                                                              XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR,
+                                                              XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR,
+                                                              XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR,
+                                                              XmlParserOptions.VALIDATING_DESCRIPTOR,
+                                                              XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR);
 
-        for (int i = 0; i < properties.length; i++) {
-            BooleanProperty property = properties[i];
-
+        for (PropertyDescriptor<Boolean> property : properties) {
             MyRule rule = new MyRule();
             rule.setProperty(property, true);
             ParserOptions options1 = rule.getParserOptions();

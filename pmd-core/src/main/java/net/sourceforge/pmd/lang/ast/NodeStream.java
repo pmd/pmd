@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -69,7 +71,9 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
- * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.</li>
+ * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
+ * <li><tt>node.getFirstParentOfAnyType(c1, c2) ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</tt></li>
+ * <li><tt>node.hasDescendantOfAnyType(c1, c2) ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</tt></li>
  * </ul>
  * The new way to write those is as efficient as the old way.
  *
@@ -110,7 +114,10 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * of the receiver stream. This extends to methods defined in terms of map or flatMap, e.g.
  * {@link #descendants()} or {@link #children()}.
  *
- * @param <T> Type of nodes this stream contains
+ * @param <T> Type of nodes this stream contains. This parameter is
+ *           covariant, which means for maximum flexibility, methods
+ *           taking a node stream argument should declare it with an
+ *           "extends" wildcard.
  *
  * @author Clément Fournier
  * @implNote Choosing to wrap a stream instead of extending the interface is to
@@ -203,6 +210,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> append(NodeStream<? extends T> right);
 
@@ -214,6 +223,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> prepend(NodeStream<? extends T> right);
 
@@ -337,7 +348,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns a node stream containing all the (first-degree) parents of the nodes
      * contained in this stream.
      *
-     * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
+     * <p>This is equivalent to {@code map(Node::getParent)}.
      *
      * @return A stream of parents
      *
@@ -432,7 +443,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#children(Class)
      */
-    default <R extends Node> NodeStream<R> children(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> children(Class<? extends R> rClass) {
         return flatMap(it -> it.children(rClass));
     }
 
@@ -449,7 +460,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see Node#children(Class)
      */
-    default <R extends Node> NodeStream<R> firstChild(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> firstChild(Class<? extends R> rClass) {
         return flatMap(it -> it.children(rClass).take(1));
     }
 
@@ -469,7 +480,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#descendants(Class)
      */
-    <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass);
+    <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass);
 
 
     /**
@@ -486,7 +497,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#ancestors(Class)
      */
-    default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
         return flatMap(it -> it.ancestors(rClass));
     }
 
@@ -543,9 +554,10 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A filtered node stream
      *
      * @see #filter(Predicate)
+     * @see #asInstanceOf(Class, Class[])
      */
     @SuppressWarnings("unchecked")
-    default <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
         return (NodeStream<R>) filter(rClass::isInstance);
     }
 
@@ -572,6 +584,25 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     @Override
     void forEach(Consumer<? super @NonNull T> action);
+
+
+    /**
+     * Reduce the elements of this stream sequentially.
+     *
+     * @param identity   Identity element
+     * @param accumulate Combine an intermediate result with a new node from this stream,
+     *                   returns the next intermediate result
+     * @param <R>        Result type
+     *
+     * @return The last intermediate result (identity if this stream is empty)
+     */
+    default <R> R reduce(R identity, BiFunction<? super R, ? super T, ? extends R> accumulate) {
+        R result = identity;
+        for (T node : this) {
+            result = accumulate.apply(result, node);
+        }
+        return result;
+    }
 
 
     /**
@@ -671,7 +702,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns the first element of this stream, or {@code null} if the
      * stream is empty.
      *
-     * <p>If you'd rather continue processingthe first element as a node
+     * <p>If you'd rather continue processing the first element as a node
      * stream, you can use {@link #take(int) take(1)}.
      *
      * <p>This is equivalent to {@link #get(int) get(0)}.
@@ -683,6 +714,26 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #firstOpt()
      */
     @Nullable T first();
+
+
+    /**
+     * Returns the first element of this stream, or throws a {@link NoSuchElementException}
+     * if the stream is empty.
+     *
+     * @return the first element of this stream
+     *
+     * @see #first(Predicate)
+     * @see #first(Class)
+     * @see #firstOpt()
+     */
+    @NonNull
+    default T firstOrThrow() {
+        T first = first();
+        if (first == null) {
+            throw new NoSuchElementException("Empty node stream");
+        }
+        return first;
+    }
 
 
     /**
@@ -732,8 +783,28 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #first()
      * @see #first(Predicate)
      */
-    default <R extends Node> @Nullable R first(Class<R> rClass) {
+    default <R extends Node> @Nullable R first(Class<? extends R> rClass) {
         return filterIs(rClass).first();
+    }
+
+
+    /**
+     * Returns the first element of this stream for which the mapping function
+     * returns a non-null result. Returns null if there is no such element.
+     * This is a convenience method to use with {@link #asInstanceOf(Class, Class[])},
+     * because using just {@link #map(Function) map} followed by {@link #first()}
+     * will lose the type information and mentioning explicit type arguments
+     * would be needed.
+     *
+     * @param nullableFun Mapper function
+     * @param <R>         Result type
+     *
+     * @return A node, or null
+     *
+     * @see #asInstanceOf(Class, Class[])
+     */
+    default <R extends Node> @Nullable R firstNonNull(Function<? super @NonNull T, ? extends @Nullable R> nullableFun) {
+        return map(nullableFun).first();
     }
 
 
@@ -758,7 +829,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see #last()
      */
-    default <R extends Node> @Nullable R last(Class<R> rClass) {
+    default <R extends Node> @Nullable R last(Class<? extends R> rClass) {
         return filterIs(rClass).last();
     }
 
@@ -864,7 +935,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @return A new node stream
      */
-    static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+    static <T extends Node> NodeStream<T> fromIterable(Iterable<? extends @Nullable T> iterable) {
         return StreamImpl.fromIterable(iterable);
     }
 
@@ -880,8 +951,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see #of(Node)
      */
-    static <T extends Node> NodeStream<T> ofOptional(Optional<T> optNode) {
-        return optNode.map(StreamImpl::singleton).orElseGet(StreamImpl::empty);
+    static <T extends Node> NodeStream<T> ofOptional(Optional<? extends T> optNode) {
+        return optNode.map(StreamImpl::<T>singleton).orElseGet(StreamImpl::empty);
     }
 
 
@@ -956,7 +1027,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A merged node stream
      */
     @SafeVarargs // this method is static because of the generic varargs
-    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<T> upstream,
+    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<? extends T> upstream,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
@@ -975,6 +1046,63 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return upstream.cached().flatMap(aggregate);
     }
 
+
+    /**
+     * Returns a map function, that checks whether the parameter is an
+     * instance of any of the given classes. If so, it returns the parameter,
+     * otherwise it returns null.
+     *
+     * <p>This may be used to filter a node stream to those specific
+     * classes, for example:
+     *
+     * <pre>{@code
+     *     NodeStream<ASTExpression> exprs = someStream.map(asInstanceOf(ASTInfixExpression.class, ASTCastExpression.class));
+     * }</pre>
+     *
+     * Using this in the middle of a call chain might require passing
+     * explicit type arguments:
+     *
+     * <pre>{@code
+     *    ASTAnyTypeDeclaration ts =
+     *       node.ancestors()
+     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *           .first(); // would not compile without the explicit type arguments
+     * }</pre>
+     *
+     * <p>For this use case the {@link #firstNonNull(Function)} method
+     * may be used, which reduces the above to
+     *
+     * <pre>{@code
+     *    ASTAnyTypeDeclaration ts =
+     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
+     * }</pre>
+     *
+     * @param c1   First type to test
+     * @param rest Other types to test
+     * @param <I>  Input type (this method does not care about it)
+     * @param <O>  Output type
+     *
+     * @see #firstNonNull(Function)
+     */
+    @SafeVarargs // this method is static because of the generic varargs
+    @SuppressWarnings("unchecked")
+    static <I, O> Function<@Nullable I, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+        if (rest.length == 0) {
+            return obj -> c1.isInstance(obj) ? (O) obj : null;
+        }
+        return obj -> {
+            if (c1.isInstance(obj)) {
+                return (O) obj;
+            }
+
+            for (Class<? extends O> aClass : rest) {
+                if (aClass.isInstance(obj)) {
+                    return (O) obj;
+                }
+            }
+            return null;
+        };
+    }
 
 
     /**

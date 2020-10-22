@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,33 +9,33 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void Bar() {}
+    void Bar() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void bar_foo() {}
+    void bar_foo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void foo() {}
+    void foo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>#1343 MethodNamingConventions for overriden methods</description>
+        <description>#1343 MethodNamingConventions for overridden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MethodNamingConventions implements SomeInterface {
@@ -44,7 +43,6 @@ public class MethodNamingConventions implements SomeInterface {
 }
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>#25 Method rules should ignore Property Getter/Setter</description>
@@ -55,7 +53,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#26 Constructors should not trigger "Method names should not start with capital letters" issue</description>
         <expected-problems>0</expected-problems>
@@ -65,7 +63,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 1</description>
         <rule-property name="skipTestMethodUnderscores">true</rule-property>
@@ -75,7 +73,7 @@ public class Foo {
     @isTest
     void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -86,7 +84,7 @@ public class Foo {
 public class Foo {
     testmethod void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -98,7 +96,7 @@ public class Foo {
     @isTest
     void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

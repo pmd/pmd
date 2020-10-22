@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
-
 /**
  * This is a generic implementation of the Parser interface.
  *
  * @see Parser
+ *
+ * @deprecated This will become useless in PMD 7. Implement or use {@link Parser} directly
  */
+@Deprecated
 public abstract class AbstractParser implements Parser {
     protected final ParserOptions parserOptions;
 
@@ -23,12 +24,4 @@ public abstract class AbstractParser implements Parser {
         return parserOptions;
     }
 
-    @Override
-    public TokenManager getTokenManager(String fileName, Reader source) {
-        TokenManager tokenManager = createTokenManager(source);
-        tokenManager.setFileName(fileName);
-        return tokenManager;
-    }
-
-    protected abstract TokenManager createTokenManager(Reader source);
 }

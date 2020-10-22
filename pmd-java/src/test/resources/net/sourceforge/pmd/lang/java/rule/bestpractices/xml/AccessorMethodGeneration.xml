@@ -3,24 +3,25 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>inner class accesses private field from outer class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = Foo.this.field; // violation, accesing a private field
-   }
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = Foo.this.field; // violation, accessing a private field
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -29,18 +30,18 @@ public class Foo {
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = field; // violation, accesing a private field
-   }
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = field; // violation, accessing a private field
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -49,18 +50,18 @@ public class Foo {
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
- }
- 
- long method() {
-   return new InnerClass().innerField; // violation, accesing a private field
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+    }
+
+    long method() {
+        return new InnerClass().innerField; // violation, accessing a private field
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -68,22 +69,22 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int publicField;
- protected int protectedField;
- /* package */ int packageField;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = Foo.this.publicField; // this is ok
-     innerField += Foo.this.protectedField; // this is ok
-     innerField += Foo.this.packageField; // this is ok
-   }
- }
+    public int publicField;
+    protected int protectedField;
+    /* package */ int packageField;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = Foo.this.publicField; // this is ok
+            innerField += Foo.this.protectedField; // this is ok
+            innerField += Foo.this.packageField; // this is ok
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -92,17 +93,17 @@ public class Foo {
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     outerSecret(); // violation, accesing a private method
-   }
- }
- 
- private void outerSecret() {
- }
+    public class InnerClass {
+        private void secret() {
+            outerSecret(); // violation, accessing a private method
+        }
+    }
+
+    private void outerSecret() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -111,17 +112,17 @@ public class Foo {
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     Foo.this.outerSecret(); // violation, accesing a private method
-   }
- }
- 
- private void outerSecret() {
- }
+    public class InnerClass {
+        private void secret() {
+            Foo.this.outerSecret(); // violation, accessing a private method
+        }
+    }
+
+    private void outerSecret() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -130,42 +131,43 @@ public class Foo {
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-   }
- }
- 
- private void outerSecret() {
-   new InnerClass().secret(); // violation, accesing a private method
- }
+    public class InnerClass {
+        private void secret() {
+        }
+    }
+
+    private void outerSecret() {
+        new InnerClass().secret(); // violation, accessing a private method
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
         <description>inner class accesses non-private methods of outer class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     outerPublic(); // this is ok
-     outerProtected(); // this is ok
-     outerPackage(); // this is ok
-   }
- }
- 
- public void outerPublic() {
- }
- 
- protected void outerProtected() {
- }
- 
- /* package */ void outerPackage() {
- }
+    public class InnerClass {
+        private void secret() {
+            outerPublic(); // this is ok
+            outerProtected(); // this is ok
+            outerPackage(); // this is ok
+        }
+    }
+
+    public void outerPublic() {
+    }
+
+    protected void outerProtected() {
+    }
+
+    /* package */ void outerPackage() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -191,9 +193,10 @@ public class Foo implements Parcelable {
         }
     };
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
         <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants</description>
         <expected-problems>4</expected-problems>
@@ -201,37 +204,37 @@ public class Foo implements Parcelable {
         <code><![CDATA[
 @SuppressWarnings("unused")
 class Outer {
-  private static final String CONST_STRING = "value";
-  private static final String CALCULATED_STRING = "value" + 0;
-  private static final int LITERAL = 0;
-  private static final int CALCULATED = LITERAL * 2;
-  private static final int CAST = (int) 0L;
-  private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
-  private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
-  private static final int LATE_INIT;
-  private static String STATIC_STRING = "value";
-  static {
-  	LATE_INIT = 0;
-  }
-
-  class Inner {
-    @Override
-    public String toString() {
-      return "" // separate lines so the rule violations show up better
-           + CONST_STRING
-           + CALCULATED_STRING
-           + LITERAL
-           + CALCULATED
-           + CAST
-           + NON_CONSTANT     // valid violation
-           + NON_CONSTANT_STR // valid violation
-           + LATE_INIT        // valid violation
-           + STATIC_STRING    // valid violation
-      ;
+    private static final String CONST_STRING = "value";
+    private static final String CALCULATED_STRING = "value" + 0;
+    private static final int LITERAL = 0;
+    private static final int CALCULATED = LITERAL * 2;
+    private static final int CAST = (int) 0L;
+    private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
+    private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
+    private static final int LATE_INIT;
+    private static String STATIC_STRING = "value";
+    static {
+        LATE_INIT = 0;
     }
-  }
+
+    class Inner {
+        @Override
+        public String toString() {
+        return "" // separate lines so the rule violations show up better
+               + CONST_STRING
+               + CALCULATED_STRING
+               + LITERAL
+               + CALCULATED
+               + CAST
+               + NON_CONSTANT     // valid violation
+               + NON_CONSTANT_STR // valid violation
+               + LATE_INIT        // valid violation
+               + STATIC_STRING    // valid violation
+            ;
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 </test-data>

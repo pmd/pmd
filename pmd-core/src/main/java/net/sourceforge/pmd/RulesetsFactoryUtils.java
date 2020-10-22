@@ -32,14 +32,17 @@ public final class RulesetsFactoryUtils {
      * @throws IllegalArgumentException
      *             if rulesets is empty (means, no rules have been found) or if
      *             a ruleset couldn't be found.
+     * @deprecated Internal API
      */
+    @InternalApi
+    @Deprecated
     public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
         RuleSets ruleSets = null;
         try {
             ruleSets = factory.createRuleSets(rulesets);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
-                String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ')';
+                String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);
             }

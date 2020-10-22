@@ -8,10 +8,8 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
-import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenManager;
 
 /**
  * Adapter for the EcmascriptParser.
@@ -23,11 +21,6 @@ public class Ecmascript3Parser extends AbstractParser {
         super(parserOptions);
         ecmascriptParser = new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser(
                 (EcmascriptParserOptions) parserOptions);
-    }
-
-    @Override
-    public TokenManager createTokenManager(Reader source) {
-        return new Ecmascript5TokenManager(source);
     }
 
     @Override

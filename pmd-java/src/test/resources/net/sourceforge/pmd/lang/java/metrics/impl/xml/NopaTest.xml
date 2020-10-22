@@ -6,25 +6,24 @@
 
     <code-fragment id="full-example"><![CDATA[
 public class Foo {
-  public static int a;
-  public final int b;
-  protected int c;
-  public static int d;
-  public static final int e;
-  int f;
-  int g;
-  public int h;
-  public int i;
-  public int j;
+    public static int a;
+    public final int b;
+    protected int c;
+    public static int d;
+    public static final int e;
+    int f;
+    int g;
+    public int h;
+    public int i;
+    public int j;
 
-  @Inject public int k;
+    @Inject public int k;
 
-  public static void bar() {
+    public static void bar() {
 
-  }
+    }
 }
-     ]]></code-fragment>
-
+    ]]></code-fragment>
 
     <test-code>
         <description>Full example</description>
@@ -42,8 +41,8 @@ public class Foo {
             <message>'Foo' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-        }
+public class Foo {
+}
         ]]></code>
     </test-code>
 
@@ -51,20 +50,19 @@ public class Foo {
         <description>NOPA doesn't support enums, interfaces or annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public interface Foo {
+public interface Foo {
 
-           public final int h;
+    public final int h;
 
-           enum Bar{
-             FOO;
-             public int bel = 0;
-           }
+    enum Bar{
+        FOO;
+        public int bel = 0;
+    }
 
-           @interface Tag {
-              public static final int num = 0;
-           }
-        }
+    @interface Tag {
+        public static final int num = 0;
+    }
+}
         ]]></code>
     </test-code>
-
 </test-data>

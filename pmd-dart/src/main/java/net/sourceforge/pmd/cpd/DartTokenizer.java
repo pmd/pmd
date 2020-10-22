@@ -7,10 +7,10 @@ package net.sourceforge.pmd.cpd;
 import org.antlr.v4.runtime.CharStream;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
-import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
-import net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer;
+import net.sourceforge.pmd.lang.dart.ast.DartLexer;
 
 /**
  * The Dart Tokenizer
@@ -20,7 +20,7 @@ public class DartTokenizer extends AntlrTokenizer {
     @Override
     protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new Dart2Lexer(charStream), sourceCode.getFileName());
+        return new AntlrTokenManager(new DartLexer(charStream), sourceCode.getFileName());
     }
 
     @Override
@@ -53,20 +53,20 @@ public class DartTokenizer extends AntlrTokenizer {
         }
 
         private void skipLibraryAndImport(final AntlrToken currentToken) {
-            final int type = currentToken.getType();
-            if (type == Dart2Lexer.LIBRARY || type == Dart2Lexer.IMPORT) {
+            final int type = currentToken.getKind();
+            if (type == DartLexer.LIBRARY || type == DartLexer.IMPORT) {
                 discardingLibraryAndImport = true;
-            } else if (discardingLibraryAndImport && (type == Dart2Lexer.SEMICOLON || type == Dart2Lexer.NEWLINE)) {
+            } else if (discardingLibraryAndImport && (type == DartLexer.SEMICOLON || type == DartLexer.NEWLINE)) {
                 discardingLibraryAndImport = false;
             }
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == Dart2Lexer.NEWLINE;
+            discardingNL = currentToken.getKind() == DartLexer.NEWLINE;
         }
 
         private void skipSemicolons(final AntlrToken currentToken) {
-            discardingSemicolon = currentToken.getType() == Dart2Lexer.SEMICOLON;
+            discardingSemicolon = currentToken.getKind() == DartLexer.SEMICOLON;
         }
 
         @Override

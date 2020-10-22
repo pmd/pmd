@@ -4,53 +4,45 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-@RunWith(Parameterized.class)
-public class KotlinTokenizerTest extends AbstractTokenizerTest {
+public class KotlinTokenizerTest extends CpdTextComparisonTest {
 
-    private final String filename;
-    private final int nExpectedTokens;
-
-    public KotlinTokenizerTest(String filename, int nExpectedTokens) {
-        this.filename = filename;
-        this.nExpectedTokens = nExpectedTokens;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[] { "comment.kt", 5 },
-                new Object[] { "increment.kt", 185 },
-                new Object[] { "imports.kt", 1 }
-        );
-    }
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new KotlinTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), this.filename));
+    public KotlinTokenizerTest() {
+        super(".kt");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(KotlinTokenizer.class.getResourceAsStream(this.filename));
+    protected String getResourcePrefix() {
+        return "../lang/kotlin/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new KotlinTokenizer();
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = nExpectedTokens;
-        super.tokenizeTest();
+    public void testComments() {
+        doTest("comment");
+    }
+
+    @Test
+    public void testIncrement() {
+        doTest("increment");
+    }
+
+    @Test
+    public void testImportsIgnored() {
+        doTest("imports");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

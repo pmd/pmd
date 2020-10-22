@@ -1,10 +1,19 @@
-<!--
-Please, prefix the PR title with the language it applies to within brackets, such as *[java]* or *[apex]*. If not specific to a language, you can use *[core]*
--->
+## Describe the PR
 
-Before submitting a PR, please check that:
- - [ ] The PR is submitted against `master`. The PMD team will merge back to support branches as needed.
- - [ ] `./mvnw clean verify` passes. This will [build](https://github.com/pmd/pmd/blob/master/BUILDING.md) and test PMD, execute PMD and checkstyle rules. [Check this for more info](https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md#code-style)
+<!-- A clear and concise description of the bug the PR fixes or the feature the PR introduces. -->
 
-**PR Description:**
+## Related issues
+
+<!-- PR relates to issues in the `pmd` repo: -->
+
+- Fixes #
+
+## Ready?
+
+<!-- If you feel like you can help to check off the following tasks, that'd be great. If not, don't worry - we will take care of it. -->
+
+- [ ] Added unit tests for fixed bug/feature
+- [ ] Passing all unit tests
+- [ ] Complete build `./mvnw clean verify` passes (checked automatically by travis)
+- [ ] Added (in-code) documentation (if needed)
 

@@ -6,15 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.apache.commons.io.input.CharSequenceReader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenKinds;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenManager;
-import net.sourceforge.pmd.util.IOUtil;
 
 public class PLSQLTokenizer extends JavaCCTokenizer {
     // This is actually useless, the comments are special tokens, never taken into account by CPD
@@ -51,10 +47,8 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String fileName) {
-        String image = currentToken.getImage();
-
-        JavaccToken plsqlToken = (JavaccToken) currentToken;
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken plsqlToken, String fileName) {
+        String image = plsqlToken.getImage();
 
         if (ignoreIdentifiers && plsqlToken.kind == PLSQLTokenKinds.IDENTIFIER) {
             image = String.valueOf(plsqlToken.kind);
@@ -69,12 +63,12 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
             image = String.valueOf(plsqlToken.kind);
         }
 
-        return new TokenEntry(image, fileName, currentToken.getBeginLine(),
-                currentToken.getBeginColumn(), currentToken.getEndColumn());
+        return new TokenEntry(image, fileName, plsqlToken.getBeginLine(),
+                              plsqlToken.getBeginColumn(), plsqlToken.getEndColumn());
     }
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        return new PLSQLTokenManager(IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer())));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return PLSQLTokenKinds.newTokenManager(sourceCode);
     }
 }

@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class ApexDocRule extends AbstractApexRule {
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
@@ -32,12 +35,11 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
-    public ApexDocRule() {
-        addRuleChainVisit(ASTUserClass.class);
-        addRuleChainVisit(ASTUserInterface.class);
-        addRuleChainVisit(ASTMethod.class);
-        addRuleChainVisit(ASTProperty.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
     }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -126,7 +128,7 @@ public class ApexDocRule extends AbstractApexRule {
 
         // is this a test?
         for (final ASTAnnotation annotation : node.findDescendantsOfType(ASTAnnotation.class)) {
-            if (annotation.getImage().equals("IsTest")) {
+            if ("IsTest".equals(annotation.getImage())) {
                 return false;
             }
         }

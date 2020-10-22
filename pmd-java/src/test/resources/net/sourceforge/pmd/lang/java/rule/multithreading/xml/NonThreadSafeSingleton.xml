@@ -3,138 +3,132 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List buz;
- public static List bar() {
-  if (buz == null) buz = new ArrayList();
-  return buz;
- }
+    private static List buz;
+    public static List bar() {
+        if (buz == null) buz = new ArrayList();
+        return buz;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, method is synchronized
-     ]]></description>
+        <description>OK, method is synchronized</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List buz;
- public static synchronized List bar() {
-  if (buz == null) buz = new ArrayList();
-  return buz;
- }
+    private static List buz;
+    public static synchronized List bar() {
+        if (buz == null) buz = new ArrayList();
+        return buz;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, in synchronized block
-     ]]></description>
+        <description>OK, in synchronized block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List buz;
- public static List bar() {
-  synchronized (baz) {
-   if (buz == null) buz = new ArrayList();
-   return buz;
-  }
- }
+    private static List buz;
+    public static List bar() {
+        synchronized (baz) {
+            if (buz == null) buz = new ArrayList();
+            return buz;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, in returning non-static data
-     ]]></description>
+        <description>OK, in returning non-static data</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static Locale locale;
- public static List bar() {
-  if (locale==null) return Locale.getDefault();
-  return locale;
- }
+    private static Locale locale;
+    public static List bar() {
+        if (locale==null) return Locale.getDefault();
+        return locale;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, two if statements
-     ]]></description>
+        <description>failure case, two if statements</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List buz;
- private static boolean b = false;
- public static List bar(String foo) {
-  if (buz == null) {
-     buz = new ArrayList();
-     if(foo == null){b = true;}
-  }
-  return buz;
- }
+    private static List buz;
+    private static boolean b = false;
+    public static List bar(String foo) {
+        if (buz == null) {
+            buz = new ArrayList();
+            if (foo == null) {
+                b = true;
+            }
+        }
+        return buz;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, compound if statement
-     ]]></description>
+        <description>failure case, compound if statement</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List list;
- public static List bar(String param) {
-     if( list == null || !param.equals("foo")) {
-        list = new ArrayList();
-        param = "x";
-     }
-     return list;
- }
+    private static List list;
+    public static List bar(String param) {
+        if (list == null || !param.equals("foo")) {
+            list = new ArrayList();
+            param = "x";
+        }
+        return list;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case 2
-     ]]></description>
+        <description>failure case 2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static List buz = null;
- private static List bar() {
-  if (buz == null) { 
-     buz = Collections.get(Integer.MAX_SIZE); 
+    private static List buz = null;
+    private static List bar() {
+        if (buz == null) {
+            buz = Collections.get(Integer.MAX_SIZE);
+        }
+        return buz;
+    }
 }
-  return buz;
- }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-From defect 1573591
-     ]]></description>
+        <description>From defect 1573591</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class A {
-public final static String FOO = "0";
-private String bar;
-public void bla() {
-if (this.bar == null) {
-this.bar = FOO;
+    public final static String FOO = "0";
+    private String bar;
+    public void bla() {
+        if (this.bar == null) {
+            this.bar = FOO;
+        }
+    }
 }
-}
-}
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

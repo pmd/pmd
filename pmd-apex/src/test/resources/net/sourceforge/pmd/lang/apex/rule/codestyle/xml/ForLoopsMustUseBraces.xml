@@ -3,100 +3,97 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  for (int i=0; i<42;i++)
-       foo();
- }
+    void foo() {
+        for (int i = 0; i < 42; i++)
+            foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (int i=0; i<42;i++) {
-       foo();
-  }
- }
+    void foo() {
+        for (int i = 0; i < 42; i++) {
+            foo();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-for loop without increment
-     ]]></description>
+        <description>for loop without increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (int i=0; i<42;) 
-       foo();
- }
+    void foo() {
+        for (int i = 0; i < 42;)
+            foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-for loop without condition and increment
-     ]]></description>
+        <description>for loop without condition and increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (int i=0;;) 
-       foo();
- }
+    void foo() {
+        for (int i = 0; ;)
+            foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-for loop without initializer, condition and increment
-     ]]></description>
+        <description>for loop without initializer, condition and increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (;;) 
-       foo();
- }
+    void foo() {
+        for (;;)
+            foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>for-each, not ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (Account a : accounts) 
-       foo();
- }
+    void foo() {
+        for (Account a : accounts)
+            foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>for-each, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  for (Account a : accounts) {
-       foo();
-  }
- }
+    void foo() {
+        for (Account a : accounts) {
+            foo();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

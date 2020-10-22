@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -25,26 +25,25 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    @Deprecated
-    private static final BooleanProperty CHECK_NATIVE_METHODS_DESCRIPTOR = new BooleanProperty("checkNativeMethods",
-                                                                                               "deprecated! Check native methods", true, 1.0f);
-
-
     private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
     private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
     private final PropertyDescriptor<Pattern> nativeRegex = defaultProp("native").build();
     private final PropertyDescriptor<Pattern> junit3Regex = defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
     private final PropertyDescriptor<Pattern> junit4Regex = defaultProp("JUnit 4 test").build();
+    private final PropertyDescriptor<Pattern> junit5Regex = defaultProp("JUnit 5 test").build();
 
 
     public MethodNamingConventionsRule() {
-        definePropertyDescriptor(CHECK_NATIVE_METHODS_DESCRIPTOR);
-
         definePropertyDescriptor(instanceRegex);
         definePropertyDescriptor(staticRegex);
         definePropertyDescriptor(nativeRegex);
         definePropertyDescriptor(junit3Regex);
         definePropertyDescriptor(junit4Regex);
+        definePropertyDescriptor(junit5Regex);
+    }
+
+    private boolean isJunit5Test(ASTMethodDeclaration node) {
+        return node.isAnnotationPresent("org.junit.jupiter.api.Test");
     }
 
     private boolean isJunit4Test(ASTMethodDeclaration node) {
@@ -58,33 +57,29 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         }
 
         // Considers anonymous classes, TODO with #905 this will be easier
-        Node parent = node.getFirstParentOfAnyType(ASTEnumConstant.class, ASTAllocationExpression.class, ASTAnyTypeDeclaration.class);
+        JavaNode parent = node.ancestors().firstNonNull(asInstanceOf(ASTEnumConstant.class, ASTAllocationExpression.class, ASTAnyTypeDeclaration.class));
 
         if (!(parent instanceof ASTClassOrInterfaceDeclaration) || ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             return false;
         }
 
-        ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) parent).getSuperClassTypeNode();
-
-        return superClass != null && TypeHelper.isA(superClass, "junit.framework.TestCase");
+        return TypeTestUtil.isA("junit.framework.TestCase", (ASTClassOrInterfaceDeclaration) parent);
     }
 
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if (node.isAnnotationPresent("java.lang.Override")) {
+        if (node.isAnnotationPresent(Override.class)) {
             return super.visit(node, data);
         }
 
         if (node.isNative()) {
-            if (getProperty(CHECK_NATIVE_METHODS_DESCRIPTOR)) {
-                checkMatches(node, nativeRegex, data);
-            } else {
-                return super.visit(node, data);
-            }
+            checkMatches(node, nativeRegex, data);
         } else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
+        } else if (isJunit5Test(node)) {
+            checkMatches(node, junit5Regex, data);
         } else if (isJunit4Test(node)) {
             checkMatches(node, junit4Regex, data);
         } else if (isJunit3Test(node)) {

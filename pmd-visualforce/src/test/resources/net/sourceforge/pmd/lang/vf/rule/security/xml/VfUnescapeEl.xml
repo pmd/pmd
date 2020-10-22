@@ -3,691 +3,551 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description><![CDATA[
-apex:iframe with src pointing to VFEL
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>apex:iframe with src pointing to VFEL</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <apex:page>
-<apex:iframe src="{!iframeSource}" />
+    <apex:iframe src="{!iframeSource}" />
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-html iframe with src pointing to VFEL
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>html iframe with src pointing to VFEL</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <apex:page>
-<iframe src="{!iframeSource}" />
+    <iframe src="{!iframeSource}" />
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-html link with src pointing to VFEL
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>html link with src pointing to VFEL</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<a src="{!iframeSource}">Link me</a>
+    <a src="{!iframeSource}">Link me</a>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-Safe escaped value in repeat
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe escaped value in repeat</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputPanel>
-		<input type="radio"
-			   onclick="invokeDoSelectFormat('{!editFormat.recordType.Id}');">
-		</input>
-	</apex:outputPanel>
+    <apex:outputPanel>
+        <input type="radio"
+               onclick="invokeDoSelectFormat('{!editFormat.recordType.Id}');">
+        </input>
+    </apex:outputPanel>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description><![CDATA[
-Safe escaped value in repeat
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe escaped value in repeat</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-  <apex:repeat value="{!emailTemplates}" var="template">
-  	emailTemplates.push({
-  		id: '{!template.id}',
-  		name: "{!JSENCODE(HTMLENCODE(template.name))}"
-  	});
-  </apex:repeat>
+    <apex:repeat value="{!emailTemplates}" var="template">
+        emailTemplates.push({
+            id: '{!template.id}',
+            name: "{!JSENCODE(HTMLENCODE(template.name))}"
+        });
+    </apex:repeat>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-
-	<test-code>
-		<description><![CDATA[
-Safe case id in script
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe case id in script</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-	window.parent.opener.location.href = '/apex/FSINT_BRAZIL_CaseViewPage?Id={!case.Id}&isdtp=vw';
-	</script>
+    <script>
+        window.parent.opener.location.href = '/apex/FSINT_BRAZIL_CaseViewPage?Id={!case.Id}&isdtp=vw';
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description><![CDATA[
-Safely escaped case in script context
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safely escaped case in script context</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-	window.parent.opener.location.href = '{!JSINHTMLENCODE(case)}';
-	</script>
+    <script>
+        window.parent.opener.location.href = '{!JSINHTMLENCODE(case)}';
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-
-	<test-code>
-		<description><![CDATA[
-Id in the EL means no XSS
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Id in the EL means no XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-<a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-		User Id is safe
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		$Lightning.createComponent("c:RE_TasksListComp",{"loginUserId":"{!$User.Id}"});
-	</script>
+    <a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-No XSS in safe script commands quoted context
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>User Id is safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-	window.location.href = '{!URLFOR($Action.zqu__Quote__c.Submit, QuoteId, [retURL=QuoteId])}';
-	</script>
+    <script>
+        $Lightning.createComponent("c:RE_TasksListComp",{"loginUserId":"{!$User.Id}"});
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-	<test-code>
-		<description><![CDATA[
-Unquoted EL in script tag is an XSS 
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No XSS in safe script commands quoted context</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-		var x = {!hereComesXSS};
-	</script>
+    <script>
+        window.location.href = '{!URLFOR($Action.zqu__Quote__c.Submit, QuoteId, [retURL=QuoteId])}';
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-Quoted EL in script tag is an XSS 
-     ]]></description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Unquoted EL in script tag is an XSS</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-		var x = '{!hereComesXSS}';
-		var y = 'aha{!hereComesXSS}';
-	</script>
+    <script>
+        var x = {!hereComesXSS};
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-	<test-code>
-		<description><![CDATA[
-Quoted and escaped EL in script tag is an XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Quoted EL in script tag is an XSS</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-		var x = '{!JSENCODE(containedXSSvector)}';		
-		var y = 'text{!JSENCODE(containedXSSvector)}';		
-	</script>
+    <script>
+        var x = '{!hereComesXSS}';
+        var y = 'aha{!hereComesXSS}';
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-Quoted and escaped EL in script tag is an XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Quoted and escaped EL in script tag is an XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<script>
-		var x = "{!JSENCODE(hereComesXSS)}";
-	</script>
+    <script>
+        var x = '{!JSENCODE(containedXSSvector)}';
+        var y = 'text{!JSENCODE(containedXSSvector)}';
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-Has multiple resources but starts with a safe one
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-	<apex:page>
-		<link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/{!anotherRes}" id="ext-all-css"/>
-	</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Starts with Resource
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Quoted and escaped EL in script tag is an XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-<link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/resources/css/ext-all.css" id="ext-all-css"/>
+    <script>
+        var x = "{!JSENCODE(hereComesXSS)}";
+    </script>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-EL in JS on-event handler - stored XSS 
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Has multiple resources but starts with a safe one</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-<div onclick="{!XSSHere(bah)}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL in JS on-event handler - stored XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<div onclick="{!JSENCODE(NoXSSHere)}" />
-<div onclick="{!JSINHTMLENCODE(NoXSSHere)}" />
-<div onclick="{!JSENCODE(NoXSSHere)}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL in img JS src handler - no XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<img src="{!XSSHere}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL in JS src handler - stored XSS 
-     ]]></description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<iframe src="{!XSSHere}" />
-<a href="{!XSSHere}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[ EL in JS src handler containing '/' literal - no stored XSS ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-<apex:page> 
-	<iframe src="{!'/foo' + XSSHere}" /> 
-</apex:page> 
-		]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL in JS src handler prepended by starting with '/' literal - no stored XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<iframe src="/{!XSSHere}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL in JS src handler - stored XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<iframe src="{!URLENCODE(XSSHere)}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-
-	<test-code>
-		<description><![CDATA[
-EL in JS src handler - stored XSS 
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<iframe src="{!XSSHere}" />
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Default escaped EL - no XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-{!NoXSSHere(bah)}
- </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-EL that is properly escaped should be no XSS 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<apex:outputText value=' XSS is not {! here }' />
+    <link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/{!anotherRes}" id="ext-all-css"/>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via EL identifier and no escaping
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Starts with Resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value='XSS might be {! here }' escape="false" />
+    <link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/resources/css/ext-all.css" id="ext-all-css"/>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via EL literal and no escaping
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>EL in JS on-event handler - stored XSS</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value='XSS might be {! 'here' }' escape="false" />
+    <div onclick="{!XSSHere(bah)}" />
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via EL boolean and no escaping
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>EL in JS on-event handler - stored XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value='XSS might be {! false }' escape="false" />
+    <div onclick="{!JSENCODE(NoXSSHere)}" />
+    <div onclick="{!JSINHTMLENCODE(NoXSSHere)}" />
+    <div onclick="{!JSENCODE(NoXSSHere)}" />
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via EL via param binding
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>EL in img JS src handler - no XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value='{0}' escape="false">
-		<apex:param value='{! here }' />
+    <img src="{!XSSHere}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL in JS src handler - stored XSS</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <iframe src="{!XSSHere}" />
+    <a href="{!XSSHere}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL in JS src handler containing '/' literal - no stored XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <iframe src="{!'/foo' + XSSHere}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL in JS src handler prepended by starting with '/' literal - no stored XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <iframe src="/{!XSSHere}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL in JS src handler - stored XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <iframe src="{!URLENCODE(XSSHere)}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL in JS src handler - stored XSS</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <iframe src="{!XSSHere}" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default escaped EL - no XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    {!NoXSSHere(bah)}
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL that is properly escaped should be no XSS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value=' XSS is not {! here }' />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XSS via EL identifier and no escaping</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value='XSS might be {! here }' escape="false" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XSS via EL literal and no escaping</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value='XSS might be {! 'here' }' escape="false" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XSS via EL boolean and no escaping</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value='XSS might be {! false }' escape="false" />
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XSS via EL via param binding</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value='{0}' escape="false">
+        <apex:param value='{! here }' />
     </apex:outputText>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description><![CDATA[
-Escaped EL via param binding
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Escaped EL via param binding</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value='{0}' escape="false">
-		<apex:param value='{! HTMLENCODE(here) }' />
+    <apex:outputText value='{0}' escape="false">
+        <apex:param value='{! HTMLENCODE(here) }' />
     </apex:outputText>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-No XSS via EL via param binding
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>No XSS via EL via param binding</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
-	<apex:outputText value="{0}" escape="false">
-		<apex:param value="something" />
+    <apex:outputText value="{0}" escape="false">
+        <apex:param value="something" />
     </apex:outputText>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via item value
-     ]]></description>
-		<expected-problems>3</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>XSS via item value</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
 <apex:page>
     <apex:form>
         <apex:selectList value="{!string}" size="1">
             <apex:selectOption itemValue='{!XSS}' itemLabel="Red" itemEscaped="false"/>
             <apex:selectOption itemValue={!XSS} itemLabel="Blue" itemEscaped="false"/>
-            <apex:selectOption itemValue="{!XSS}" itemLabel="Green" itemEscaped="false"/>            
-        </apex:selectList> 
+            <apex:selectOption itemValue="{!XSS}" itemLabel="Green" itemEscaped="false"/>
+        </apex:selectList>
     </apex:form>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description><![CDATA[
-XSS via item value
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>XSS via item value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page>
     <apex:form>
         <apex:selectList value="{!string}" size="1">
             <apex:selectOption itemValue='{!HTMLENCODE(XSS)}' itemLabel="Red" itemEscaped="false"/>
-        </apex:selectList> 
+        </apex:selectList>
     </apex:form>
 </apex:page>
-    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-No XSS with escaped EL 
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<apex:outputText value=" {!HTMLENCODE(myTextField) }" escape="false"/>
-</apex:page>    
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Quotes following quotes
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		sforce.console.setTabTitle('TabName' + ': {!JSENCODE(tabName)}');  
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Escaped followed by safe
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		  Comps.method('{!JSENCODE($CurrentPage.parameters.someParamName)}', '{!$User.Id}');
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Safe unquoted followed by safe quoted
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		  Comps.tasks({!JSENCODE(case.Id)}, '{!JSENCODE($User.Id)}', caseSubject)
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-NOT method evaluates to safe boolean
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		if({!NOT(yes)}) { maskFormEls(); }
-		if({!NOT foo(yes)}) { maskFormEls(); }
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-JSON.parse method evaluates quoted EL to safe JSON
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		var x = JSON.parse('{!yes}');
-		jQuery.parseJSON('{!yes}');
-		$.parseJSON('{!yes}');
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-JSON.parse method evaluates non quoted EL to unsafe XSS
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		var x = JSON.parse({!yes});
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-JSON.parse method evaluates escaped EL to safe JSON
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-	<script>
-		var x = JSON.parse({!JSENCODE(yes)});
-	</script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-$RemoteAction safe call
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-  <script>
-        var caseId = '{!$RemoteAction.getCaseId}';
-  </script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-NOW() is a safe call
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-  <script>
-        var caseId = '{!NOW()}';
-  </script>
-</apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-URLENCODE is ignored as valid escape method #1100
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<a onclick="openTab('/apex/Download?redirectUrl={!URLENCODE(downloadURL)}', 'test');">
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-    <test-code>
-        <description><![CDATA[
-a onclick snippet should be escaped #1100
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-<a onclick="openTab('/apex/Download?redirectUrl={!downloadURL}', 'test');">
-]]></code>
-        <source-type>vf</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-ensure all encoding methods are considered valid #1100
-     ]]></description>
+        <description>No XSS with escaped EL</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <apex:outputText value=" {!HTMLENCODE(myTextField) }" escape="false"/>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Quotes following quotes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        sforce.console.setTabTitle('TabName' + ': {!JSENCODE(tabName)}');
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Escaped followed by safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+          Comps.method('{!JSENCODE($CurrentPage.parameters.someParamName)}', '{!$User.Id}');
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe unquoted followed by safe quoted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+          Comps.tasks({!JSENCODE(case.Id)}, '{!JSENCODE($User.Id)}', caseSubject)
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOT method evaluates to safe boolean</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        if({!NOT(yes)}) { maskFormEls(); }
+        if({!NOT foo(yes)}) { maskFormEls(); }
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JSON.parse method evaluates quoted EL to safe JSON</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        var x = JSON.parse('{!yes}');
+        jQuery.parseJSON('{!yes}');
+        $.parseJSON('{!yes}');
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JSON.parse method evaluates non quoted EL to unsafe XSS</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        var x = JSON.parse({!yes});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JSON.parse method evaluates escaped EL to safe JSON</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        var x = JSON.parse({!JSENCODE(yes)});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>$RemoteAction safe call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        var caseId = '{!$RemoteAction.getCaseId}';
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOW() is a safe call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        var caseId = '{!NOW()}';
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>URLENCODE is ignored as valid escape method #1100</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<a onclick="openTab('/apex/Download?redirectUrl={!URLENCODE(downloadURL)}', 'test');">
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>a onclick snippet should be escaped #1100</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<a onclick="openTab('/apex/Download?redirectUrl={!downloadURL}', 'test');">
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ensure all encoding methods are considered valid #1100</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 <a onclick="openTab('/apex/Download?redirectUrl={!URLENCODE(downloadURL)}', 'test');">
 <a onclick="openTab({!JSENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
 <a onclick="openTab({!JSINHTMLENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
 <a onclick="openTab({!HTMLENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
-]]></code>
-        <source-type>vf</source-type>
+        ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Support new message channel feature #2620</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<script type="text/javascript">
+    // Binding message channel to variable accessible to static resource.
+    window.util = {
+        messageChannel: '{!$MessageChannel.Record_Selected__c}'
+    };
+</script>
+        ]]></code>
+    </test-code>
 </test-data>

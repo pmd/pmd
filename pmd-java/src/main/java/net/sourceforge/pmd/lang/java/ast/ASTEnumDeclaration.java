@@ -4,38 +4,42 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.Node;
 
-public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
+/**
+ * Represents an enum declaration. This is a {@linkplain Node#isFindBoundary() find boundary}
+ * for tree traversal methods.
+ *
+ * <p>An enum declaration is implicitly final <i>unless it contains at
+ * least one enum constant that has a class body</i>. A nested enum type
+ * is implicitly static.
+ *
+ * <pre class="grammar">
+ *
+ * EnumDeclaration ::= {@link ASTModifierList ModifierList}
+ *                     "enum"
+ *                     &lt;IDENTIFIER&gt;
+ *                     {@linkplain ASTImplementsList ImplementsList}?
+ *                     {@link ASTEnumBody EnumBody}
+ *
+ * </pre>
+ */
+public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
-    @InternalApi
-    @Deprecated
-    public ASTEnumDeclaration(int id) {
+    ASTEnumDeclaration(int id) {
         super(id);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ENUM;
-    }
-
-
-    @Override
-    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return children(ASTEnumBody.class).children(ASTAnyTypeBodyDeclaration.class);
+    public ASTEnumBody getBody() {
+        return (ASTEnumBody) getLastChild();
     }
 }

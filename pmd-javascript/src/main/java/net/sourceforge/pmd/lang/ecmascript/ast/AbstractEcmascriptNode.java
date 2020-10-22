@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,17 +6,31 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-public abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
+    private String image;
 
-    public AbstractEcmascriptNode(T node) {
-        super(node.getType());
+    AbstractEcmascriptNode(T node) {
         this.node = node;
+    }
+
+    @Override
+    protected void addChild(AbstractEcmascriptNode<?> child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public String getImage() {
+        return image;
+    }
+
+    protected void setImage(String image) {
+        this.image = image;
     }
 
     /* package private */
@@ -34,30 +48,19 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
         }
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
-        for (Node child : children) {
-            // we know that the children here
-            // are all EcmascriptNodes
-            @SuppressWarnings("unchecked")
-            EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) child;
-            ecmascriptNode.jjtAccept(visitor, data);
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof EcmascriptVisitor) {
+            return acceptJsVisitor((EcmascriptVisitor<? super P, ? extends R>) visitor, data);
         }
-        return data;
+        return visitor.cannotVisit(this, data);
     }
 
+    protected abstract <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data);
+
     @Override
+    @Deprecated
     public T getNode() {
         return node;
     }
@@ -72,11 +75,13 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
         return node.hasSideEffects();
     }
 
-
-
-
     @Override
     public String getXPathNodeName() {
         return node.shortName();
+    }
+
+    protected void setTrailingCommaExists(boolean b) {
+        // empty. Only needed for ASTArrayLiteral and ASTObjectLiteral
+        // This method is protected to not clutter the public API via a interface
     }
 }

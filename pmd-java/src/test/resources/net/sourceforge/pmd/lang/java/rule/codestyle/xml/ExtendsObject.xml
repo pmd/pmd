@@ -3,34 +3,31 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Object {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-extends nothing
-     ]]></description>
+        <description>extends nothing</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-extends not Object
-     ]]></description>
+        <description>extends not Object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

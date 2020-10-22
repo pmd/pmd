@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collections;
-import java.util.List;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -20,7 +19,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 
 public class SourceCodeProcessor {
 
@@ -79,9 +77,6 @@ public class SourceCodeProcessor {
      */
     public void processSourceCode(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
         determineLanguage(ctx);
-
-        // make sure custom XPath functions are initialized
-        Initializer.initialize();
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
@@ -163,8 +158,7 @@ public class SourceCodeProcessor {
 
         dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
-        List<Node> acus = Collections.singletonList(rootNode);
-        ruleSets.apply(acus, ctx, languageVersion.getLanguage());
+        ruleSets.apply(Collections.singletonList(rootNode), ctx);
     }
 
 

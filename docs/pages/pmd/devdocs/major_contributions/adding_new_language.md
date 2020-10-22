@@ -23,7 +23,7 @@ folder: pmd/devdocs
 *   The name of the AST class should be “AST” + “whatever is the name of the node in JJT file”.
     *   For example, if JJT contains a node called “IfStatement”, there should be a class called “ASTIfStatement”
 *   Each AST class should have two constructors: one that takes an int id; and one that takes an instance of the parser, and an int id
-*   It’s a good idea to create a parent AST class for all AST classes of the language. This simplies rule creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
+*   It’s a good idea to create a parent AST class for all AST classes of the language. This simplifies rule creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
 *   Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.
 
 ## 4.  Compile your parser (if using JJT)
@@ -43,7 +43,7 @@ folder: pmd/devdocs
 
 ## 7.  Create a rule violation factory
 *   Extend `AbstractRuleViolationFactory` *(see VmRuleViolationFactory for example)*
-*   The purpose of this class is to createa rule violation instance specific to your language
+*   The purpose of this class is to create a rule violation instance specific to your language
 
 ## 8.  Create a version handler
 *   Extend `AbstractLanguageVersionHandler` *(see VmHandler for example)*
@@ -69,15 +69,62 @@ folder: pmd/devdocs
 *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
 *   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`. Add your fully qualified class name as a single line into it.
 
-## 12. Create an abstract rule class for the language
+## 12. Add AST regression tests
+
+For languages, that use an external library for parsing, the AST can easily change when upgrading the library.
+Also for languages, where we have the grammar under our control, it useful to have such tests.
+
+The tests parse one or more source files and generate a textual representation of the AST. This text is compared
+against a previously recorded version. If there are differences, the test fails.
+
+This helps to detect anything in the AST structure, that changed, maybe unexpectedly.
+
+*   Create a test class in the package `net.sourceforge.pmd.lang.$lang.ast` with the name `$langTreeDumpTest`.
+*   This test class must extend `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`. Note: This class
+    is written in kotlin and is available in the module "lang-test".
+*   Add a default constructor, that calls the super constructor like so:
+    
+    ```java
+        public $langTreeDumpTest() {
+            super(NodePrintersKt.getSimpleNodePrinter(), ".$extension");
+        }
+    ```
+    
+    Replace "$lang" and "$extension" accordingly.
+*   Implement the method `getParser()`. It must return a
+    subclass of `net.sourceforge.pmd.lang.ast.test.BaseParsingHelper`. See 
+    `net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper` for a example.
+    With this parser helper you can also specify, where the test files are searched, by using
+    the method `withResourceContext(Class<?>, String)`.
+*   Add one or more test methods. Each test method parses one file and compares the result. The base
+    class has a helper method `doTest(String)` that does all the work. This method just needs to be called:
+    
+    ```java
+        @Test
+        public void myFirstAstTest() {
+            doTest("filename-without-extension");
+        }
+    ```
+*   On the first test run the test fails. A text file (with the extension `.txt`) is created, that records the
+    current AST. On the next run, the text file is used as comparison and the test should pass. Don't forget
+    to commit the generated text file.
+
+A complete example can be seen in the JavaScript module: `net.sourceforge.pmd.lang.ecmascript.ast.JsTreeDumpTest`.
+The test resources are in the subpackage "testdata": `pmd-javascript/src/test/resources/net/sourceforge/pmd/lang/ecmascript/ast/testdata/`.
+
+The Scala module also has a test, written in Kotlin instead of Java:
+`net.sourceforge.pmd.lang.scala.ast.ScalaParserTests`.
+
+
+## 13. Create an abstract rule class for the language
 *   Extend `AbstractRule` and implement the parser visitor interface for your language *(see AbstractVmRule for example)*
 *   All other rules for your language should extend this class. The purpose of this class is to implement visit methods for all AST types to simply delegate to default behavior. This is useful because most rules care only about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default behavior for nodes you don’t care about.
 
-## 13. Create rules
-*   Rules are created by extending the abstract rule class created in step 12 *(see `EmptyForeachStmtRule` for example)*
+## 14. Create rules
+*   Rules are created by extending the abstract rule class created in step 13 *(see `EmptyForeachStmtRule` for example)*
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you may have different AST nodes.
 
-## 14. Test the rules
+## 15. Test the rules
 *   See BasicRulesTest for example
 *   You have to create a rule set for your language *(see vm/basic.xml for example)*
 *   For each rule in this set you want to test, call `addRule` method in setUp of the unit test

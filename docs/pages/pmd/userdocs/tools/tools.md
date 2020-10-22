@@ -243,11 +243,11 @@ Here's how to set it up as an "External Tool":
     *   Name: PMD
     *   Description: PMD, good for what ails you.
     *   Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.
-    *   Program: $JDKPath$\bin\java.exe
+    *   Program: `c:\pmd\bin\pmd.bat`
     *   For the next parameter you'll need to plug in the location of your PMD installation
         and the rulesets you want to use
     *   Parameters:
-        `-cp %CLASSPATH%;c:\pmd\lib\pmd-{{pmd.site.version}}.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$`
+        `-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$`
 
 That's pretty much it. Now you can right click on a source directory and select PMD,
 it'll run recursively on the source files, and the results should

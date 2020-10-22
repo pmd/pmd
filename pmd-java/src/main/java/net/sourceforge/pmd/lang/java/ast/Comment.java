@@ -13,23 +13,24 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
-public abstract class Comment extends AbstractNode {
+public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
+
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
-    // or the start of line within a multine comment (*). It removes the end of the comment (*/) if existing.
+    // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
     private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
 
     // Same as "\\R" - but \\R is only available with java8+
     static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
     protected Comment(JavaccToken t) {
-        super(-1);
+        super(0);
 
         setImage(t.getImage());
-        jjtSetFirstToken(t);
-        jjtSetLastToken(t);
+        setFirstToken(t);
+        setLastToken(t);
     }
 
     @Override
@@ -57,7 +58,6 @@ public abstract class Comment extends AbstractNode {
      * of the comment as well as the start marker ({@code //}, {@code /*} or {@code /**}
      * and the end markers (<code>&#x2a;/</code>).
      *
-     * @param comment the raw comment
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {

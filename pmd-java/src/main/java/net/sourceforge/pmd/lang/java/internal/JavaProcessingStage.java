@@ -15,10 +15,9 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 
 
 /**
@@ -31,12 +30,14 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStage> {
 
     /**
-     * Qualified name resolution.
+     * This acts as a merged stage, non-optional. Ideally this would be encapsulated
+     * in the {@link JavaParser}, like the {@link LanguageLevelChecker}.
      */
-    QNAME_RESOLUTION("Qualified name resolution") {
+    JAVA_PROCESSING("Java processing") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new QualifiedNameResolver().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
+            JavaAstProcessor.create(configuration.getTypeResolutionClassLoader(), configuration.getLanguageVersion(), JavaAstProcessor.defaultLogger(), JavaAstProcessor.defaultTypeInfLogger())
+                            .process((ASTCompilationUnit) rootNode);
         }
     },
 
@@ -46,27 +47,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     SYMBOL_RESOLUTION("Symbol table") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
+            // kept for compatibility with existing tests
             new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
-        }
-    },
-
-    /**
-     * Type resolution, depends on QName resolution.
-     */
-    TYPE_RESOLUTION("Type resolution", QNAME_RESOLUTION) {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
-        }
-    },
-
-    /**
-     * Data flow analysis.
-     */
-    DFA("Data flow analysis") {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
         }
     };
 
@@ -94,6 +76,4 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     public final Language getLanguage() {
         return LanguageRegistry.findLanguageByTerseName("java");
     }
-
-
 }

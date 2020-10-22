@@ -2,7 +2,7 @@
 name: Question
 about: Feel free to ask any question about PMD and its usage
 title: ''
-labels: question
+labels: 'a:question'
 assignees: ''
 
 ---

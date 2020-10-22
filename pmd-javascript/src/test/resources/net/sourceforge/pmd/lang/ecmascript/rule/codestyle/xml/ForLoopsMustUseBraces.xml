@@ -3,83 +3,69 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Ok
-     ]]></description>
+        <description>Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 for (var i=0; i<42; i++) {
-   foo();
+    foo();
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, for in
-     ]]></description>
+        <description>Ok, for in</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 for (var i in obj) {
-   foo();
+    foo();
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad
-     ]]></description>
+        <description>Bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 for (var i=0; i<42; i++)
-   foo();
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+    foo();
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, no increment
-     ]]></description>
+        <description>Bad, no increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-for (var i=0; i<42;) 
-   foo();
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+for (var i=0; i<42;)
+    foo();
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, no condition/increment
-     ]]></description>
+        <description>Bad, no condition/increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-for (var i=0;;) 
-   foo();
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+for (var i=0;;)
+    foo();
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, no initializer/condition/increment
-     ]]></description>
+        <description>Bad, no initializer/condition/increment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-for (;;) 
-   foo();
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+for (;;)
+    foo();
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, for in
-     ]]></description>
+        <description>Bad, for in</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 for (var i in obj)
-   foo();
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+    foo();
+        ]]></code>
     </test-code>
 </test-data>

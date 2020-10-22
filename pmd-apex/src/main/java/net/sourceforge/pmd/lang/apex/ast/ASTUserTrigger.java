@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,20 +10,21 @@ import java.util.stream.Collectors;
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
-public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
+public final class ASTUserTrigger extends AbstractApexNode<UserTrigger> {
 
-    public ASTUserTrigger(UserTrigger userTrigger) {
+    ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
-        return node.getDefiningType().getApexName();
+        return getDefiningType();
     }
 
     public ASTModifierNode getModifiers() {

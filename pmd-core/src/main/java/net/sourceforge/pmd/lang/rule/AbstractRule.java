@@ -5,7 +5,12 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -14,6 +19,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -38,7 +44,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private List<String> examples = new ArrayList<>();
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
-    private List<String> ruleChainVisits = new ArrayList<>();
+    private Set<String> ruleChainVisits = new LinkedHashSet<>();
+    private Set<Class<? extends Node>> classRuleChainVisits = new LinkedHashSet<>();
+    private RuleTargetSelector myStrategy;
 
     public AbstractRule() {
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
@@ -70,15 +78,12 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.priority = priority;
         otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
-        otherRule.ruleChainVisits = copyRuleChainVisits();
+        otherRule.ruleChainVisits = new LinkedHashSet<>(ruleChainVisits);
+        otherRule.classRuleChainVisits = new LinkedHashSet<>(classRuleChainVisits);
     }
 
     private List<String> copyExamples() {
         return new ArrayList<>(examples);
-    }
-
-    private List<String> copyRuleChainVisits() {
-        return new ArrayList<>(ruleChainVisits);
     }
 
     @Override
@@ -88,7 +93,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setLanguage(Language language) {
-        if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
+        if (this.language != null && !this.language.equals(language)) {
             throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
                     + " is immutable and cannot be changed.");
         }
@@ -102,6 +107,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+        if (minimumLanguageVersion != null && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
@@ -112,6 +120,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+        if (maximumLanguageVersion != null && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
@@ -223,40 +234,47 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * @see Rule#setPriority(RulePriority)
      */
     @Override
+    @Deprecated
     public ParserOptions getParserOptions() {
         return new ParserOptions();
     }
 
-    @Override
-    public boolean isRuleChain() {
-        return !getRuleChainVisits().isEmpty();
-    }
 
-    @Override
-    public List<String> getRuleChainVisits() {
-        return ruleChainVisits;
-    }
-
-    @Override
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        // FIXME : These assume the implementation of getXPathNodeName() for all nodes…
-        final String simpleName = nodeClass.getSimpleName();
-
-        if (simpleName.startsWith("AST")) { // JavaCC node
-            // Classes under the Comment hierarchy and stuff need to be refactored in the Java AST
-            addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
-        } else if (nodeClass.getSimpleName().endsWith("Context")) { // Antlr node
-            addRuleChainVisit(nodeClass.getSimpleName().substring(0, simpleName.length() - "Context".length()));
-        } else {
-            throw new IllegalArgumentException("Node class does not start with 'AST' prefix nor ends with 'Context' suffix: " + nodeClass);
+    private Set<Class<? extends Node>> getClassRuleChainVisits() {
+        if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
+            return Collections.singleton(RootNode.class);
         }
+        return classRuleChainVisits;
+    }
+
+
+    /**
+     * @deprecated Override {@link #buildTargetSelector()}, this is
+     *     provided for legacy compatibility
+     */
+    @Deprecated
+    protected void addRuleChainVisit(Class<? extends Node> nodeClass) {
+        classRuleChainVisits.add(nodeClass);
     }
 
     @Override
-    public void addRuleChainVisit(String astNodeName) {
-        if (!ruleChainVisits.contains(astNodeName)) {
-            ruleChainVisits.add(astNodeName);
+    public final RuleTargetSelector getTargetSelector() {
+        if (myStrategy == null) {
+            myStrategy = buildTargetSelector();
         }
+        return myStrategy;
+    }
+
+    /**
+     * Create the targeting strategy for this rule. Please override
+     * this instead of using {@link #addRuleChainVisit(Class)}.
+     * Use the factory methods of {@link RuleTargetSelector}.
+     */
+    @NonNull
+    protected RuleTargetSelector buildTargetSelector() {
+        Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
+        return crvs.isEmpty() ? RuleTargetSelector.forRootOnly()
+                              : RuleTargetSelector.forTypes(crvs);
     }
 
     @Override
@@ -276,7 +294,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolation(Object data, Node node) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), null);
+                this, node, this.getMessage(), new Object[0]);
     }
 
     /**
@@ -306,7 +324,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolationWithMessage(Object data, Node node, String message) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, null);
+                this, node, message, new Object[0]);
     }
 
     /**
@@ -316,7 +334,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, beginLine, endLine, null);
+                this, node, message, beginLine, endLine, new Object[0]);
     }
 
     /**

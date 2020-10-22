@@ -3,22 +3,20 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-short
-     ]]></description>
+        <description>short</description>
         <rule-property name="minimum">9</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-long
-     ]]></description>
+        <description>long</description>
         <rule-property name="minimum">9</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -26,6 +24,33 @@ public class Foo {
     public void foo(int p01, int p02, int p03, int p04, int p05, int p06, int p07, int p08, int p09, int p10 ) { }
     public void bar(int p01, int p02, int p03, int p04, int p05 ) { }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#2461 private constructor should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo(int a, int b, int c, String abc, long d, double p,
+     String[] arr, int data, long in, float fl, String res) { } // 11 params
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>anonymous class in private constructor false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Foo() {
+        Object obj = new Object() {
+            public void doWork(int a, int b, int c, String abc, long d, double p,
+                String[] arr, int data, long in, float fl, String res) {} // 11 params
+        };
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

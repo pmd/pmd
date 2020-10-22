@@ -8,17 +8,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.
@@ -239,12 +233,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void unclosedTagsWithELWithin() {
         List<ASTElExpression> scripts = jsp.getNodes(ASTElExpression.class, TEST_TAGS_WITH_EL_WITHIN);
         assertEquals("Two EL expressions expected!", 2, scripts.size());
-        List<ASTElExpression> exprs = sortByImage(scripts);
-        Iterator<ASTElExpression> iterator = exprs.iterator();
-        ASTElExpression script = iterator.next();
-        assertEquals("Correct content expected!", "expr1", script.getImage());
-        script = iterator.next();
-        assertEquals("Correct content expected!", "expr2", script.getImage());
+        assertEquals("Correct content expected!", "expr1", scripts.get(0).getImage());
+        assertEquals("Correct content expected!", "expr2", scripts.get(1).getImage());
     }
 
     /**
@@ -260,20 +250,16 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
         assertEquals("Image of el should be \"expr\"", "expr", els.iterator().next().getImage());
 
         List<ASTUnparsedText> unparsedtexts = jsp.getNodes(ASTUnparsedText.class, TEST_TAGS_WITH_MIXED_EXPRESSIONS);
-        List<ASTUnparsedText> sortedUnparsedTxts = sortByImage(unparsedtexts);
-        assertEquals("Two unparsed texts expected!", 2, sortedUnparsedTxts.size());
-        Iterator<ASTUnparsedText> iterator = sortedUnparsedTxts.iterator();
-        assertEquals("Image of text should be \"\\${expr}\"", " \\${expr} ", iterator.next().getImage());
-        assertEquals("Image of text should be \" aaa \"", " aaa ", iterator.next().getImage());
+        assertEquals("Two unparsed texts expected!", 2, unparsedtexts.size());
+        assertEquals("Image of text should be \" aaa \"", " aaa ", unparsedtexts.get(0).getImage());
+        assertEquals("Image of text should be \"\\${expr}\"", " \\${expr} ", unparsedtexts.get(1).getImage());
 
         // ASTText should contain the text between two tags.
         List<ASTText> texts = jsp.getNodes(ASTText.class, TEST_TAGS_WITH_MIXED_EXPRESSIONS);
-        List<ASTText> sortedTxts = sortByImage(texts);
-        assertEquals("Two regular texts expected!", 2, sortedTxts.size());
-        Iterator<ASTText> iterator2 = sortedTxts.iterator();
-        assertEquals("Image of text should be \"\\${expr}\"", " \\${expr} ", iterator2.next().getImage());
+        assertEquals("Two regular texts expected!", 2, texts.size());
+        assertEquals("Image of text should be \"\\${expr}\"", " \\${expr} ", texts.get(1).getImage());
         assertEquals("Image of text should be all text between two nodes" + " \"  aaa ${expr}#{expr} \"",
-                " aaa ${expr}#{expr}", iterator2.next().getImage());
+                " aaa ${expr}#{expr}", texts.get(0).getImage());
     }
 
     /**
@@ -544,34 +530,39 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void unclosedTagAndNoQuotesForAttribute() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_NO_QUOTE_ATTR);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("2 tags expected", 2, elements.size());
-        assertEquals("First element should be sorted tag:if", "tag:if", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be tag:someTag", "tag:someTag", sortedElmnts.get(1).getName());
+        ASTElement ifTag = elements.get(1);
+        ASTElement someTag = elements.get(0);
 
-        assertTrue(sortedElmnts.get(0).isEmpty());
-        assertTrue(sortedElmnts.get(0).isUnclosed());
-        assertFalse(sortedElmnts.get(1).isEmpty());
-        assertFalse(sortedElmnts.get(1).isUnclosed());
+        assertEquals("tag:if", ifTag.getName());
+        assertEquals("tag:someTag", someTag.getName());
+
+        assertTrue(ifTag.isEmpty());
+        assertTrue(ifTag.isUnclosed());
+        assertFalse(someTag.isEmpty());
+        assertFalse(someTag.isUnclosed());
     }
 
     @Test
     public void unclosedTagMultipleLevels() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_MULTIPLE_LEVELS);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("3 tags expected", 3, elements.size());
-        assertEquals("First element should be sorted tag:someTag", "tag:someTag", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be tag:someTag", "tag:someTag", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be tag:x", "tag:x", sortedElmnts.get(2).getName());
+        ASTElement xtag = elements.get(0);
+        ASTElement outerTag = elements.get(1);
+        ASTElement innerTag = elements.get(2);
 
-        assertFalse(sortedElmnts.get(0).isEmpty());
-        assertFalse(sortedElmnts.get(0).isUnclosed());
+        assertEquals("tag:someTag", innerTag.getName());
+        assertEquals("tag:someTag", outerTag.getName());
+        assertEquals("tag:x", xtag.getName());
 
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertTrue(sortedElmnts.get(1).isUnclosed());
+        assertFalse(innerTag.isEmpty());
+        assertFalse(innerTag.isUnclosed());
 
-        assertFalse(sortedElmnts.get(2).isEmpty());
-        assertFalse(sortedElmnts.get(2).isUnclosed());
+        assertTrue(outerTag.isEmpty());
+        assertTrue(outerTag.isUnclosed());
+
+        assertFalse(xtag.isEmpty());
+        assertFalse(xtag.isUnclosed());
     }
 
     /**
@@ -580,28 +571,32 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void nestedEmptyTags() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_MULTIPLE_EMPTY_TAGS);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
-        assertEquals("First element should a1", "a1", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be a2", "a2", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be b", "b", sortedElmnts.get(2).getName());
-        assertEquals("Third element should be html", "html", sortedElmnts.get(3).getName());
+        ASTElement a1Tag = elements.get(1);
+        ASTElement a2Tag = elements.get(2);
+        ASTElement bTag = elements.get(3);
+        ASTElement htmlTag = elements.get(0);
+
+        assertEquals("a1", a1Tag.getName());
+        assertEquals("a2", a2Tag.getName());
+        assertEquals("b", bTag.getName());
+        assertEquals("html", htmlTag.getName());
 
         // a1
-        assertFalse(sortedElmnts.get(0).isEmpty());
-        assertFalse(sortedElmnts.get(0).isUnclosed());
+        assertFalse(a1Tag.isEmpty());
+        assertFalse(a1Tag.isUnclosed());
 
         // a2
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertFalse(sortedElmnts.get(1).isUnclosed());
+        assertTrue(a2Tag.isEmpty());
+        assertFalse(a2Tag.isUnclosed());
 
         // b
-        assertTrue(sortedElmnts.get(2).isEmpty());
-        assertFalse(sortedElmnts.get(2).isUnclosed());
+        assertTrue(bTag.isEmpty());
+        assertFalse(bTag.isUnclosed());
 
         // html
-        assertFalse(sortedElmnts.get(3).isEmpty());
-        assertFalse(sortedElmnts.get(3).isUnclosed());
+        assertFalse(htmlTag.isEmpty());
+        assertFalse(htmlTag.isUnclosed());
 
     }
 
@@ -611,38 +606,45 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void nestedMultipleTags() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_MULTIPLE_NESTED_TAGS);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
+        ASTElement html = elements.get(0);
+        ASTElement a1 = elements.get(1);
+        ASTElement a2 = elements.get(2);
+        ASTElement a3 = elements.get(3);
+        ASTElement b = elements.get(4);
+        ASTElement a4 = elements.get(5);
+
+
         assertEquals("4 tags expected", 6, elements.size());
-        assertEquals("First element should a1", "a1", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be a2", "a2", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be a3", "a3", sortedElmnts.get(2).getName());
-        assertEquals("Forth element should be a4", "a4", sortedElmnts.get(3).getName());
-        assertEquals("Fifth element should be b", "b", sortedElmnts.get(4).getName());
-        assertEquals("Sixth element should be html", "html", sortedElmnts.get(5).getName());
+        assertEquals("a1", a1.getName());
+        assertEquals("a2", a2.getName());
+        assertEquals("a3", a3.getName());
+        assertEquals("a4", a4.getName());
+        assertEquals("b", b.getName());
+        assertEquals("html", html.getName());
 
         // a1 not empty and closed
-        assertFalse(sortedElmnts.get(0).isEmpty());
-        assertFalse(sortedElmnts.get(0).isUnclosed());
+        assertFalse(a1.isEmpty());
+        assertFalse(a1.isUnclosed());
 
         // a2 not empty and closed
-        assertFalse(sortedElmnts.get(1).isEmpty());
-        assertFalse(sortedElmnts.get(1).isUnclosed());
+        assertFalse(a2.isEmpty());
+        assertFalse(a2.isUnclosed());
 
         // a3 empty and not closed
-        assertTrue(sortedElmnts.get(2).isEmpty());
-        assertTrue(sortedElmnts.get(2).isUnclosed());
+        assertTrue(a3.isEmpty());
+        assertTrue(a3.isUnclosed());
 
         // a4 empty but closed
-        assertTrue(sortedElmnts.get(3).isEmpty());
-        assertFalse(sortedElmnts.get(3).isUnclosed());
+        assertTrue(a4.isEmpty());
+        assertFalse(a4.isUnclosed());
 
         // b empty but closed
-        assertTrue(sortedElmnts.get(4).isEmpty());
-        assertFalse(sortedElmnts.get(4).isUnclosed());
+        assertTrue(b.isEmpty());
+        assertFalse(b.isUnclosed());
 
         // html not empty and closed
-        assertFalse(sortedElmnts.get(5).isEmpty());
-        assertFalse(sortedElmnts.get(5).isUnclosed());
+        assertFalse(html.isEmpty());
+        assertFalse(html.isUnclosed());
 
     }
 
@@ -654,28 +656,33 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void unclosedParentTagClosedBeforeChild() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_END_AFTER_PARENT_CLOSE);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
-        assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be b", "b", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be b", "b", sortedElmnts.get(2).getName());
-        assertEquals("Forth element should be x", "x", sortedElmnts.get(3).getName());
+        ASTElement x = elements.get(0);
+        ASTElement a = elements.get(1);
+        ASTElement b = elements.get(2);
+        ASTElement b2 = elements.get(3);
+
+
+        assertEquals("a", a.getName());
+        assertEquals("b", b.getName());
+        assertEquals("b", b2.getName());
+        assertEquals("x", x.getName());
 
         // a
-        assertTrue(sortedElmnts.get(0).isEmpty());
-        assertTrue(sortedElmnts.get(0).isUnclosed());
+        assertTrue(a.isEmpty());
+        assertTrue(a.isUnclosed());
 
         // b
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertTrue(sortedElmnts.get(1).isUnclosed());
+        assertTrue(b.isEmpty());
+        assertTrue(b.isUnclosed());
 
         // b
-        assertTrue(sortedElmnts.get(2).isEmpty());
-        assertTrue(sortedElmnts.get(2).isUnclosed());
+        assertTrue(b2.isEmpty());
+        assertTrue(b2.isUnclosed());
 
         // x
-        assertFalse(sortedElmnts.get(3).isEmpty());
-        assertFalse(sortedElmnts.get(3).isUnclosed());
+        assertFalse(x.isEmpty());
+        assertFalse(x.isUnclosed());
     }
 
     /**
@@ -687,28 +694,32 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void unmatchedTagDoesNotInfluenceStructure() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_UNMATCHED_CLOSING_TAG);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
-        assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be b", "b", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be b", "b", sortedElmnts.get(2).getName());
-        assertEquals("Forth element should be x", "x", sortedElmnts.get(3).getName());
+        ASTElement x = elements.get(0);
+        ASTElement a = elements.get(1);
+        ASTElement b1 = elements.get(2);
+        ASTElement b2 = elements.get(3);
+
+        assertEquals("a", a.getName());
+        assertEquals("b", b1.getName());
+        assertEquals("b", b2.getName());
+        assertEquals("x", x.getName());
 
         // a is not empty and closed
-        assertFalse(sortedElmnts.get(0).isEmpty());
-        assertFalse(sortedElmnts.get(0).isUnclosed());
+        assertFalse(a.isEmpty());
+        assertFalse(a.isUnclosed());
 
         // b empty and unclosed
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertTrue(sortedElmnts.get(1).isUnclosed());
+        assertTrue(b1.isEmpty());
+        assertTrue(b1.isUnclosed());
 
         // b empty and unclosed
-        assertTrue(sortedElmnts.get(2).isEmpty());
-        assertTrue(sortedElmnts.get(2).isUnclosed());
+        assertTrue(b2.isEmpty());
+        assertTrue(b2.isUnclosed());
 
         // x not empty and closed
-        assertFalse(sortedElmnts.get(3).isEmpty());
-        assertFalse(sortedElmnts.get(3).isUnclosed());
+        assertFalse(x.isEmpty());
+        assertFalse(x.isUnclosed());
     }
 
     /**
@@ -720,33 +731,38 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void unclosedStartTagWithUnmatchedCloseOfDifferentTag() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("5 tags expected", 5, elements.size());
-        assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be a", "a", sortedElmnts.get(1).getName());
-        assertEquals("Third element should be b", "b", sortedElmnts.get(2).getName());
-        assertEquals("Forth element should be b", "b", sortedElmnts.get(3).getName());
-        assertEquals("Fifth element should be x", "x", sortedElmnts.get(4).getName());
+        ASTElement a1 = elements.get(0);
+        ASTElement x = elements.get(1);
+        ASTElement a2 = elements.get(2);
+        ASTElement b1 = elements.get(3);
+        ASTElement b2 = elements.get(4);
+
+        assertEquals("a", a1.getName());
+        assertEquals("a", a2.getName());
+        assertEquals("b", b1.getName());
+        assertEquals("b", b2.getName());
+        assertEquals("x", x.getName());
 
         // first a is empty and unclosed
-        assertTrue(sortedElmnts.get(0).isEmpty());
-        assertTrue(sortedElmnts.get(0).isUnclosed());
+        assertTrue(a1.isEmpty());
+        assertTrue(a1.isUnclosed());
 
         // second a not empty and closed
-        assertFalse(sortedElmnts.get(1).isEmpty());
-        assertFalse(sortedElmnts.get(1).isUnclosed());
+        assertFalse(a2.isEmpty());
+        assertFalse(a2.isUnclosed());
 
         // b empty and unclosed
-        assertTrue(sortedElmnts.get(2).isEmpty());
-        assertTrue(sortedElmnts.get(2).isUnclosed());
+        assertTrue(b1.isEmpty());
+        assertTrue(b1.isUnclosed());
 
         // b empty and unclosed
-        assertTrue(sortedElmnts.get(3).isEmpty());
-        assertTrue(sortedElmnts.get(3).isUnclosed());
+        assertTrue(b2.isEmpty());
+        assertTrue(b2.isUnclosed());
 
         // x not empty and closed
-        assertFalse(sortedElmnts.get(4).isEmpty());
-        assertFalse(sortedElmnts.get(4).isUnclosed());
+        assertFalse(x.isEmpty());
+        assertFalse(x.isUnclosed());
     }
 
     /**
@@ -760,77 +776,20 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void unclosedEndOfDoc() {
         List<ASTElement> elements = jsp.getNodes(ASTElement.class, TEST_UNCLOSED_END_OF_DOC);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("2 tags expected", 2, elements.size());
-        assertEquals("First element should be 'tag:x'", "tag:x", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be tag:y", "tag:y", sortedElmnts.get(1).getName());
+        ASTElement x = elements.get(0);
+        ASTElement y = elements.get(1);
+
+        assertEquals("tag:x", x.getName());
+        assertEquals("tag:y", y.getName());
 
         // b
         // assertTrue(sortedElmnts.get(0).isEmpty());
-        assertTrue(sortedElmnts.get(0).isUnclosed());
+        assertTrue(x.isUnclosed());
 
         // b
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertTrue(sortedElmnts.get(1).isUnclosed());
-    }
-
-    /**
-     * will sort the AST element in list in alphabetical order and if tag name
-     * is the same it will sort against o1.getBeginColumn() +""+
-     * o1.getBeginLine(). so first criteria is the name, then the second is the
-     * column +""+line string.
-     *
-     * @param elements
-     * @return
-     */
-    private List<ASTElement> sortNodesByName(Collection<ASTElement> elements) {
-        List<ASTElement> list = new ArrayList<>();
-        list.addAll(elements);
-        Collections.sort(list, new Comparator<ASTElement>() {
-            public int compare(ASTElement o1, ASTElement o2) {
-                if (o1.getName() == null) {
-                    return Integer.MIN_VALUE;
-                }
-                if (o2.getName() == null) {
-                    return Integer.MAX_VALUE;
-                }
-                if (o1.getName().equals(o2.getName())) {
-                    String o1Value = o1.getBeginColumn() + "" + o1.getBeginLine();
-                    String o2Value = o2.getBeginColumn() + "" + o2.getBeginLine();
-                    return o1Value.compareTo(o2Value);
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return list;
-    }
-
-    /**
-     * will sort the AST node by the image name.
-     *
-     * @param elements
-     * @return
-     */
-    private <T extends Node> List<T> sortByImage(Collection<T> elements) {
-        List<T> list = new ArrayList<>();
-        list.addAll(elements);
-        Collections.sort(list, new Comparator<Node>() {
-            public int compare(Node o1, Node o2) {
-                if (o1.getImage() == null) {
-                    return Integer.MIN_VALUE;
-                }
-                if (o2.getImage() == null) {
-                    return Integer.MAX_VALUE;
-                }
-                if (o1.getImage().equals(o2.getImage())) {
-                    String o1Value = o1.getBeginColumn() + "" + o1.getBeginLine();
-                    String o2Value = o2.getBeginColumn() + "" + o2.getBeginLine();
-                    return o1Value.compareTo(o2Value);
-                }
-                return o1.getImage().compareTo(o2.getImage());
-            }
-        });
-        return list;
+        assertTrue(y.isEmpty());
+        assertTrue(y.isUnclosed());
     }
 
     private static final String TEST_SIMPLEST_HTML = "<html/>";
@@ -913,12 +872,12 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_NO_QUOTE_ATTR_WITH_HASH = "<tag:if something=#{something >  <a href=#{url} >foo</a> </tag:if>";
 
-    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if someting=\"x\" > </tag:someTag>";
+    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if something=\"x\" > </tag:someTag>";
 
     /**
      * someTag is closed just once
      */
-    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag someting=\"x\" > </tag:someTag> </tag:x>";
+    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag something=\"x\" > </tag:someTag> </tag:x>";
 
     /**
      * nested empty tags
@@ -949,5 +908,5 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_UNCLOSED_END_OF_DOC = "<tag:x> <tag:y>";
 
-    private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if someting=x > </tag:someTag>";
+    private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if something=x > </tag:someTag>";
 }

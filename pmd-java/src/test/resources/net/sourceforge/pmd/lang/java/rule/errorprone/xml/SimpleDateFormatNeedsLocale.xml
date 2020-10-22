@@ -3,35 +3,32 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok, uses a two arg constructor
-     ]]></description>
+        <description>ok, uses a two arg constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  private SimpleDateFormat sdf = new SimpleDateFormat("pattern", Locale.US);
+    private SimpleDateFormat sdf = new SimpleDateFormat("pattern", Locale.US);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad, using the single-arg constructor
-     ]]></description>
+        <description>bad, using the single-arg constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
-  private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
+    private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-all quiet
-     ]]></description>
+        <description>all quiet</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {}
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

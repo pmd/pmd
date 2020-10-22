@@ -1,0 +1,7 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [int]                                   2         5
+    [i]                                     6         7
+    [=]                                     8         9
+    [0]                                     10        11
+EOF

@@ -5,8 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -34,14 +32,13 @@ public class RuleContext {
     private Report report = new Report();
     private File sourceCodeFile;
     private LanguageVersion languageVersion;
-    private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
 
     /**
      * Default constructor.
      */
     public RuleContext() {
-        attributes = new ConcurrentHashMap<>();
+        // nothing to do
     }
 
     /**
@@ -52,7 +49,6 @@ public class RuleContext {
      *            the context from which the values are shared
      */
     public RuleContext(RuleContext ruleContext) {
-        this.attributes = ruleContext.attributes;
         this.report.addListeners(ruleContext.getReport().getListeners());
     }
 
@@ -144,80 +140,6 @@ public class RuleContext {
      */
     public void setLanguageVersion(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
-    }
-
-    /**
-     * Set an attribute value on the RuleContext, if it does not already exist.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @param value
-     *            The attribute value.
-     * @exception IllegalArgumentException
-     *                if <code>name</code> or <code> value</code> are
-     *                <code>null</code>
-     * @return <code>true</code> if the attribute was set, <code>false</code>
-     *         otherwise.
-     */
-    public boolean setAttribute(String name, Object value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Parameter 'name' cannot be null.");
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("Parameter 'value' cannot be null.");
-        }
-        return this.attributes.putIfAbsent(name, value) == null;
-    }
-
-    /**
-     * Get an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
-     */
-    public Object getAttribute(String name) {
-        return this.attributes.get(name);
-    }
-
-    /**
-     * Remove an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
-     */
-    public Object removeAttribute(String name) {
-        return this.attributes.remove(name);
     }
 
     /**

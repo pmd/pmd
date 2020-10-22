@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -24,7 +25,10 @@ import net.sourceforge.pmd.lang.java.ast.Annotatable;
  * with Lombok annotations.
  *
  * @author Andreas Dangel
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     private boolean lombokImported = false;
@@ -56,8 +60,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName name = node.getFirstChildOfType(ASTName.class);
-        if (!lombokImported && name != null && name.getImage() != null & name.getImage().startsWith(LOMBOK_PACKAGE)) {
+        if (!lombokImported && node.getImage() != null & node.getImage().startsWith(LOMBOK_PACKAGE)) {
             lombokImported = true;
         }
         return super.visit(node, data);
@@ -137,6 +140,6 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
      * @return <code>true</code> if a lombok annotation has been found
      */
     protected boolean hasLombokAnnotation(Annotatable node) {
-        return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
+        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
     }
 }

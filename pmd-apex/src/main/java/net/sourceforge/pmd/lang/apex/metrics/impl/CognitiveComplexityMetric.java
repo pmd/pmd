@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.CognitiveComplexityVisitor;
+import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.CognitiveComplexityVisitor.State;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
@@ -18,7 +19,8 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class CognitiveComplexityMetric extends AbstractApexOperationMetric {
     @Override
     public double computeFor(ASTMethod node, MetricOptions options) {
-        CognitiveComplexityVisitor.State resultingState = (CognitiveComplexityVisitor.State) node.jjtAccept(new CognitiveComplexityVisitor(), new CognitiveComplexityVisitor.State());
-        return resultingState.getComplexity();
+        State state = new State();
+        node.acceptVisitor(CognitiveComplexityVisitor.INSTANCE, state);
+        return state.getComplexity();
     }
 }

@@ -4,89 +4,62 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class ApexTokenizerTest {
+public class ApexTokenizerTest extends CpdTextComparisonTest {
+
+    public ApexTokenizerTest() {
+        super(".cls");
+    }
+
+    @Override
+    protected String getResourcePrefix() {
+        return "../lang/apex/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        ApexTokenizer tokenizer = new ApexTokenizer();
+        tokenizer.setProperties(properties);
+        return tokenizer;
+    }
+
 
     @Test
-    public void testTokenize() throws IOException {
-        Tokens tokens = tokenize(load("Simple.cls"));
-        if (tokens.size() != 28) {
-            printTokens(tokens);
-        }
-        assertEquals(28, tokens.size());
-        assertEquals("someparam", findTokensByLine(8, tokens).get(0).toString());
+    public void testTokenize() {
+        doTest("Simple");
     }
 
     @Test
-    public void testTokenizeCaseSensitive() throws IOException {
-        Tokens tokens = tokenize(load("Simple.cls"), true);
-        if (tokens.size() != 28) {
-            printTokens(tokens);
-        }
-        assertEquals(28, tokens.size());
-        assertEquals("someParam", findTokensByLine(8, tokens).get(0).toString());
+    public void testTokenizeCaseSensitive() {
+        doTest("Simple", "_caseSensitive", caseSensitive());
     }
 
     /**
      * Comments are ignored since using ApexLexer.
      */
     @Test
-    public void testTokenizeWithComments() throws IOException {
-        Tokens tokens = tokenize(load("issue427/SFDCEncoder.cls"));
-        assertEquals(17, tokens.size());
-
-        Tokens tokens2 = tokenize(load("issue427/SFDCEncoderConstants.cls"));
-        assertEquals(17, tokens2.size());
+    public void testTokenizeWithComments() {
+        doTest("comments");
     }
 
-    private List<TokenEntry> findTokensByLine(int line, Tokens tokens) {
-        List<TokenEntry> result = new ArrayList<>();
-        for (TokenEntry entry : tokens.getTokens()) {
-            if (entry.getBeginLine() == line) {
-                result.add(entry);
-            }
-        }
-        if (result.isEmpty()) {
-            fail("Not tokens found at line " + line);
-        }
-        return result;
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 
-    private Tokens tokenize(String code) {
-        return tokenize(code, false);
+    private Properties caseSensitive() {
+        return properties(true);
     }
 
-    private Tokens tokenize(String code, boolean caseSensitive) {
-        ApexTokenizer tokenizer = new ApexTokenizer();
+    private Properties properties(boolean caseSensitive) {
         Properties properties = new Properties();
         properties.setProperty(ApexTokenizer.CASE_SENSITIVE, Boolean.toString(caseSensitive));
-        tokenizer.setProperties(properties);
-        Tokens tokens = new Tokens();
-        tokenizer.tokenize(new SourceCode(new StringCodeLoader(code)), tokens);
-        return tokens;
+        return properties;
     }
 
-    private void printTokens(Tokens tokens) {
-        for (TokenEntry entry : tokens.getTokens()) {
-            System.out.printf("%02d: %s%s", entry.getBeginLine(), entry.toString(), PMD.EOL);
-        }
-    }
-
-    private String load(String name) throws IOException {
-        return IOUtils.toString(ApexTokenizerTest.class.getResourceAsStream(name), StandardCharsets.UTF_8);
-    }
 }

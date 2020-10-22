@@ -19,11 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -108,7 +106,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
         }
     }
 
-    private void checkCommentMeetsRequirement(Object data, AbstractJavaNode node,
+    private void checkCommentMeetsRequirement(Object data, JavaNode node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
         switch (propertyValues.get(descriptor)) {
         case Ignored:
@@ -130,7 +128,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     // Adds a violation
-    private void commentRequiredViolation(Object data, AbstractJavaNode node,
+    private void commentRequiredViolation(Object data, JavaNode node,
                                           PropertyDescriptor<CommentRequirement> descriptor) {
 
 
@@ -168,7 +166,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
-    private void checkMethodOrConstructorComment(AbstractJavaAccessNode decl, Object data) {
+    private void checkMethodOrConstructorComment(AccessNode decl, Object data) {
         if (decl.isPublic()) {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.isProtected()) {
@@ -178,13 +176,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
-        List<ASTMarkerAnnotation> annotations = decl.getParent().findDescendantsOfType(ASTMarkerAnnotation.class);
-        for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
-            if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
-                return true;
-            }
-        }
-        return false;
+        return decl.isAnnotationPresent(Override.class);
     }
 
 
@@ -202,11 +194,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return "serialVersionUID".equals(field.getVariableName())
-               && field.isStatic()
-               && field.isFinal()
-               && field.getType() == long.class;
+        return false; // FIXME, commented out because of incompatibility, needs typeres
+        //        return "serialVersionUID".equals(field.getVariableName())
+        //               && field.isStatic()
+        //               && field.isFinal()
+        //               && field.getType() == long.class;
     }
 
     /**
@@ -219,13 +213,15 @@ public class CommentRequiredRule extends AbstractCommentRule {
      * @return true if the field is a serialPersistentFields variable, otherwise false
      * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return "serialPersistentFields".equals(field.getVariableName())
-                && field.isPrivate()
-                && field.isStatic()
-                && field.isFinal()
-                && field.isArray()
-                && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
+        return false; // FIXME, commented out because of incompatibility, needs typeres
+        //        return "serialPersistentFields".equals(field.getVariableName())
+        //                && field.isPrivate()
+        //                && field.isStatic()
+        //                && field.isFinal()
+        //                && field.isArray()
+        //                && "ObjectStreamField".equals(field.getFirstToken().getImage()); // .getType() returns null
     }
 
     @Override

@@ -60,7 +60,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        for (final ASTClassOrInterfaceType type : node.getSuperInterfacesTypeNodes()) {
+        for (final ASTClassOrInterfaceType type : node.getSuperInterfaceTypeNodes()) {
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
@@ -98,12 +98,12 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     private boolean isJUnitTest(Class<?> clazz) {
-        return clazz.getName().equals("junit.framework.Test");
+        return "junit.framework.Test".equals(clazz.getName());
     }
 
     @Override
     public Object visit(ASTImportDeclaration node, Object o) {
-        if (node.getImportedName().indexOf("junit") != -1) {
+        if (node.getImportedName().contains("junit")) {
             junitImported = true;
         }
         return super.visit(node, o);
@@ -137,8 +137,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
             return true;
         } else {
-            return methodDeclaration.getName().equals("setUp")
-                    || methodDeclaration.getName().equals("tearDown");
+            return "setUp".equals(methodDeclaration.getName())
+                    || "tearDown".equals(methodDeclaration.getName());
         }
     }
 

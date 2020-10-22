@@ -9,22 +9,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
+public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
-    private ClassTypeResolver classTypeResolver;
+    private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
-    @InternalApi
-    @Deprecated
-    public ASTCompilationUnit(int id) {
+    ASTCompilationUnit(int id) {
         super(id);
     }
 
@@ -32,23 +34,15 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return comments;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setComments(List<Comment> comments) {
+    void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
 
     /**
      * @deprecated Use {@code getPackageName().isEmpty()}
@@ -58,40 +52,62 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return getPackageDeclaration() == null;
     }
 
+    @Nullable
     public ASTPackageDeclaration getPackageDeclaration() {
-        if (getNumChildren() > 0) {
-            Node n = getChild(0);
-            return n instanceof ASTPackageDeclaration ? (ASTPackageDeclaration) n : null;
-        }
-        return null;
+        return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
+    }
+
+    @Override
+    public @NonNull ASTCompilationUnit getRoot() {
+        return this;
     }
 
     /**
-     * Returns the package name of this compilation unit. If this is in
-     * the default package, returns the empty string.
+     * Returns the package name of this compilation unit. If there is no
+     * package declaration, then returns the empty string.
      */
     @NonNull
     public String getPackageName() {
-        ASTPackageDeclaration pdecl = getPackageDeclaration();
-        return pdecl == null ? "" : pdecl.getPackageNameImage();
+        ASTPackageDeclaration pack = getPackageDeclaration();
+        return pack == null ? "" : pack.getPackageNameImage();
     }
+
+    /**
+     * Returns the type declarations declared in this compilation unit.
+     * This may be empty if this a package-info.java, or a modular
+     * compilation unit. Note that this only cares for top-level types
+     */
+    public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
+        return children(ASTAnyTypeDeclaration.class);
+    }
+
 
     @InternalApi
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
-        return classTypeResolver;
+        return new ClassTypeResolver();
+    }
+
+    @Override
+    public @NonNull JSymbolTable getSymbolTable() {
+        assert symbolTable != null : "Symbol table wasn't set";
+        return symbolTable;
     }
 
 
     @Override
-    public ASTCompilationUnit getRoot() {
-        return this;
+    public TypeSystem getTypeSystem() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver.getTypeSystem();
     }
 
-    @InternalApi
-    @Deprecated
-    public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
-        this.classTypeResolver = classTypeResolver;
+    void setTypeResolver(LazyTypeResolver typeResolver) {
+        this.lazyTypeResolver = typeResolver;
+    }
+
+    @NonNull LazyTypeResolver getLazyTypeResolver() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver;
     }
 
     @Override

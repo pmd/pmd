@@ -42,6 +42,7 @@ Just for test
         <properties>
             <property name="test2" type="String" description="test 2" value="foo"/>
             <property name="test3" type="String" description="test 3" value="bar"/>
+            <property name="xpath" value="//dummyNode" />
         </properties>
         <example>
             <![CDATA[

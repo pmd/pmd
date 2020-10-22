@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Simple method</description>
         <expected-problems>0</expected-problems>
@@ -10,7 +11,7 @@
 public class Foo {
  public void foo() {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -31,9 +32,9 @@ public class Foo {
     }
     private int instanceVariableB;
 }
-]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Simple Method calls without chaining</description>
         <expected-problems>1</expected-problems>
@@ -230,6 +231,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#999 false negatives</description>
         <expected-problems>1</expected-problems>
@@ -244,6 +246,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1245 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
@@ -257,6 +260,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1427 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
@@ -272,6 +276,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#2010 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
@@ -282,6 +287,78 @@ public class Test {
         final Bar bar = Bar.newBuilder()
             .withFoo("foo")
             .build();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive with 'this' pointer #2174</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+public class Foo {
+    private final int i;
+
+    public Foo(int i) {
+        this.i = i;
+    }
+
+    public void meth() {
+        System.out.println(this.i);     // wrong violation: method chain calls
+        System.out.println(super.i);    // wrong violation: method chain calls
+        System.out.println(i);          // no violation
+    }
+
+    public void method(Foo this) {      // receiver param!!
+        System.out.println(this.i);     // wrong violation: method chain calls
+    }
+
+    public void method(Foo this, String... args) {
+        System.out.println(this.i);     // wrong violation: method chain calls
+        for (String arg: args) {
+            System.out.println(arg);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive when casting to derived class #2189</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+class TaskManager {
+    private final List<ForkJoinTask<Integer>> tasks;
+
+    public void cancelTasks(ForkJoinTask<Integer> cancelTask) {
+        for (ForkJoinTask<Integer> task : tasks) {
+            if (!task.equals(cancelTask)) {
+                task.cancel(true);
+                ((SearchNumberTask) task).writeCancelMessage(); // wrong violation: method chain calls
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] LawOfDemeter: False positive with indexed array access #2181</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Util {
+    public static boolean check(String passwd, String hashed) {
+        try {
+            final String[] parts = hashed.split("\\$");
+
+            if (parts.length != 5 || !parts[1].equals("s0")) {      // wrong violation - method chain calls
+                throw new IllegalArgumentException("Invalid hashed value");
+            }
+        } catch (Exception e) { }
     }
 }
         ]]></code>

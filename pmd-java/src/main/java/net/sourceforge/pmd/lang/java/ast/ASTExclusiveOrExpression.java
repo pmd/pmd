@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a boolean XOR-expression. This has a precedence greater than {@link ASTInclusiveOrExpression},
  * and lower than {@link ASTAndExpression}.
@@ -14,28 +12,24 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * rather, they are expressions with an operator precedence greater or equal to AndExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ExclusiveOrExpression ::=  {@linkplain ASTAndExpression AndExpression} ( "^" {@linkplain ASTAndExpression AndExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTExclusiveOrExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTExclusiveOrExpression extends AbstractJavaExpr implements ASTExpression {
 
-    @InternalApi
-    @Deprecated
-    public ASTExclusiveOrExpression(int id) {
+    ASTExclusiveOrExpression(int id) {
         super(id);
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

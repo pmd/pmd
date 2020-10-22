@@ -3,79 +3,85 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>do while true</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 class Foo {
-  {
-    do {
-    } while (true);
-  }
+    {
+        do {
+        } while (true);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>do while false</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 class Foo {
-  {
-    do {
-    } while (false);
-  }
+    {
+        do {
+        } while (false);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>do while call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  {
-    do {
-    } while (call(true));
-  }
+    {
+        do {
+        } while (call(true));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>while true</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  {
-    while (true) {
+    {
+        while (true) {
+        }
     }
-  }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>while false</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 class Foo {
-  {
-    while (false) {
+    {
+        while (false) {
+        }
     }
-  }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>while call false</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  {
-    while (call(false)) {
+    {
+        while (call(false)) {
+        }
     }
-  }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

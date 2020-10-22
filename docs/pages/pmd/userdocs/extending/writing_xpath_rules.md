@@ -21,23 +21,11 @@ also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_your
 
 ## XPath version
 
-PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
-The version can be specified with the `version` property in the rule definition, like so:
+PMD uses XPath 3.1 for its XPath rules since PMD 7. Before then, the default version was XPath 1.0, with opt-in support for XPath 2.0.
 
-```xml
-<property version="2.0" /> <!-- or "1.0", or "1.0 compatibility" -->
-```
+See [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
-The default has always been version 1.0.
-
-**As of PMD version 6.22.0, XPath versions 1.0 and the 1.0 compatibility mode are
-deprecated**. XPath 2.0 is superior in many ways, for example for its support for
-type checking, sequence values, or quantified expressions. For a detailed
-but approachable review of the features of XPath 2.0 and above, see [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions).
-
-It is recommended that you migrate to 2.0 before 7.0.0, but we expect
-to be able to provide an automatic migration tool when releasing 7.0.0.
-See [the migration guide](#migrating-from-10-to-20) below.
+The property `version` of XPathRule is deprecated and will be removed.
 
 
 ## DOM representation of ASTs
@@ -54,21 +42,7 @@ defined on. Concretely, this means:
 
 ### Value conversion
 
-To represent attributes, we must map Java values to [XPath Data Model (XDM)](https://www.w3.org/TR/xpath-datamodel/) values. The conversion
-depends on the XPath version used.
-
-#### XPath 1.0
-
-On XPath 1.0 we map every Java value to an `xs:string` value by using the `toString`
-of the object. Since XPath 1.0 allows many implicit conversions this works, but it
-causes some incompatibilities with XPath 2.0 (see the section about migration further
- down).
-
-#### XPath 2.0
-
-XPath 2.0 is a strongly typed language, and so we use more precise type annotations.
-In the following table we refer to the type conversion function as `conv`, a
-function from Java types to XDM types.
+To represent attributes, we must map Java values to [XPath Data Model (XDM)](https://www.w3.org/TR/xpath-datamodel/) values. In the following table we refer to the type conversion function as `conv`, a function from Java types to XDM types.
 
 | Java type `T` | XSD type `conv(T)`
 |-----------------|---------------------|
@@ -85,8 +59,12 @@ function from Java types to XDM types.
 
 The same `conv` function is used to translate rule property values to XDM values.
 
+{% include warning.html content="Lists are only supported for rule properties, not attributes." %}
+
 
 ## Migrating from 1.0 to 2.0
+
+<!-- TODO should this still be there in PMD 7? We could just link to an older version of the doc, as this is not so relevant. -->
 
 XPath 1.0 and 2.0 have some incompatibilities. The [XPath 2.0 specification](https://www.w3.org/TR/xpath20/#id-incompat-in-false-mode)
 describes them precisely. Those are however mostly corner cases and XPath

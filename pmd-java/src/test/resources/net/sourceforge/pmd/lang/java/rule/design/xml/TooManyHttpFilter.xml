@@ -3,28 +3,23 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description>
-        	<![CDATA[
-			Here, the user wants to ensure that there is no more than 2 HttpFilters in the all code.
-     		]]>
-     	</description>
-     	<rule-property name="typeMatch">^Filter$</rule-property>
-    	<rule-property name="threshold">2</rule-property>
 
+    <test-code>
+        <description>Here, the user wants to ensure that there is no more than 2 HttpFilters in the all code.</description>
+        <rule-property name="typeMatch">^Filter$</rule-property>
+        <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import javax.servlet.Filter;
 
 public class FooFilter implements Filter {
-	public FooFilter() { }
+    public FooFilter() { }
 
-	// Adding two private filter to emulate the others
-	private class BarFilter implements Filter {}
+    // Adding two private filter to emulate the others
+    private class BarFilter implements Filter {}
 
-	private class OneTooMuchFilter implements Filter {}
-
+    private class OneTooMuchFilter implements Filter {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

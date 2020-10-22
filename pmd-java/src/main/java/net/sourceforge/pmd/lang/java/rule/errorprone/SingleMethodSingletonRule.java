@@ -34,7 +34,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
         int count = 0;
         for (ASTMethodDeclaration method : methods) {
 
-            if (method.getName().equals("getInstance")) {
+            if ("getInstance".equals(method.getName())) {
                 count++;
                 if (count > 1) {
                     addViolation(data, node);

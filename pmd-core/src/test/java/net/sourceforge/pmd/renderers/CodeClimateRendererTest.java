@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class CodeClimateRendererTest extends AbstractRendererTest {
 
@@ -30,10 +31,10 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     public String getExpected() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\n"
+                + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
+                + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
-                + "### [PMD properties](https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html)\\n\\n"
+                + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
@@ -45,15 +46,15 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     public String getExpectedWithProperties() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\n"
+                + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
+                + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
-                + "### [PMD properties](https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html)\\n\\n"
+                + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
-                + "multiString | default1,default2 | multi string property\\n"
                 + "stringProperty | the string value\\nsecond line with 'quotes' | simple string property\\n"
+                + "multiString | default1,default2 | multi string property\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
@@ -67,20 +68,20 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     public String getExpectedMultiple() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\n"
+                + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
+                + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
-                + "### [PMD properties](https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html)\\n\\n"
+                + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL + "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\n"
+                + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
+                + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
-                + "### [PMD properties](https://pmd.github.io/latest/pmd_devdocs_working_with_properties.html)\\n\\n"
+                + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
@@ -94,8 +95,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
-        XPathRule theRule = new XPathRule();
-        theRule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//dummyNode");
+        XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
         theRule.setDescription("desc");

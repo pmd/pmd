@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,11 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
@@ -83,16 +82,16 @@ public class UnusedImportsRule extends AbstractJavaRule {
             for (Pattern p : PATTERNS) {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
-                    String s = m.group(1);
+                    String fullname = m.group(1);
 
-                    if (s != null) { // may be null for "@see #" and "@link #"
-                        imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
+                    if (fullname != null) { // may be null for "@see #" and "@link #"
+                        imports.remove(new ImportWrapper(fullname, fullname));
                     }
 
                     if (m.groupCount() > 1) {
-                        s = m.group(2);
-                        if (s != null) {
-                            String[] params = s.split("\\s*,\\s*");
+                        fullname = m.group(2);
+                        if (fullname != null) {
+                            String[] params = fullname.split("\\s*,\\s*");
                             for (String param : params) {
                                 final int firstDot = param.indexOf('.');
                                 final String expectedImportName;
@@ -101,7 +100,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
                                 } else {
                                     expectedImportName = param.substring(0, firstDot);
                                 }
-                                imports.remove(new ImportWrapper(param, expectedImportName, new DummyJavaNode(-1)));
+                                imports.remove(new ImportWrapper(param, expectedImportName));
                             }
                         }
                     }
@@ -116,42 +115,43 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
+        // This was edited during the grammar updating process, because
+        // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
+        // If tests are failing, refer to the history of this file to get the
+        // previously working version.
         if (node.isImportOnDemand()) {
-            ASTName importedType = (ASTName) node.getChild(0);
-            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
+            imports.add(new ImportWrapper(node.getImportedName(), null, node, node.isStatic()));
         } else {
-            if (!node.isImportOnDemand()) {
-                ASTName importedType = (ASTName) node.getChild(0);
-                String className;
-                if (isQualifiedName(importedType)) {
-                    int lastDot = importedType.getImage().lastIndexOf('.') + 1;
-                    className = importedType.getImage().substring(lastDot);
-                } else {
-                    className = importedType.getImage();
-                }
-                imports.add(new ImportWrapper(importedType.getImage(), className, node));
+            String importedType = node.getImportedName();
+            String className;
+            if (isQualifiedName(importedType)) {
+                int lastDot = importedType.lastIndexOf('.') + 1;
+                className = importedType.substring(lastDot);
+            } else {
+                className = importedType;
             }
+            imports.add(new ImportWrapper(importedType, className, node));
         }
         return data;
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        check(node);
+        check(node, node.getTypeImage());
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTName node, Object data) {
-        check(node);
+        check(node, node.getImage());
         return data;
     }
 
-    protected void check(Node node) {
+    protected void check(Node node, String image) {
         if (imports.isEmpty()) {
             return;
         }
-        ImportWrapper candidate = getImportWrapper(node);
+        ImportWrapper candidate = getImportWrapper(node, image);
 
         // check exact imports
         Iterator<ImportWrapper> it = imports.iterator();
@@ -184,22 +184,22 @@ public class UnusedImportsRule extends AbstractJavaRule {
         }
     }
 
-    protected ImportWrapper getImportWrapper(Node node) {
-        String fullName = node.getImage();
+    protected ImportWrapper getImportWrapper(Node node, String image) {
+        String fullName = image;
 
         String name;
-        if (!isQualifiedName(node)) {
-            name = node.getImage();
+        if (!isQualifiedName(image)) {
+            name = image;
         } else {
             // ASTName could be: MyClass.MyConstant
             // name -> MyClass
             // fullName -> MyClass.MyConstant
-            name = node.getImage().substring(0, node.getImage().indexOf('.'));
+            name = fullName.substring(0, node.getImage().indexOf('.'));
             if (isMethodCall(node)) {
                 // ASTName could be: MyClass.MyConstant.method(a, b)
                 // name -> MyClass
                 // fullName -> MyClass.MyConstant
-                fullName = node.getImage().substring(0, node.getImage().lastIndexOf('.'));
+                fullName = fullName.substring(0, fullName.lastIndexOf('.'));
             }
         }
 

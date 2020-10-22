@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,15 +9,15 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class foo {}
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooBar {}
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -61,6 +60,14 @@ public interface FooInterface { }
 public class Foo {
     public enum FooEnum { }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>top-level enum all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum FooEnum { }
         ]]></code>
     </test-code>
 
@@ -123,6 +130,17 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>top-level enum default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The enum name 'fooEnum' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public enum fooEnum { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>custom test class pattern</description>
         <rule-property name="testClassPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>0</expected-problems>
@@ -158,5 +176,22 @@ public class FOO_CLASS { }
 public interface FOO_INTERFACE { }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>custom enum pattern</description>
+        <rule-property name="enumPattern">E[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EFOO_ENUM { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom enum pattern</description>
+        <rule-property name="enumPattern">E[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum FooEnum { }
+        ]]></code>
+    </test-code>
 </test-data>

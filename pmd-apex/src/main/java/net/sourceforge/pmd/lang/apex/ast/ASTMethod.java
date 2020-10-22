@@ -1,30 +1,35 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
-       SignedNode<ASTMethod>, CanSuppressWarnings {
+public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+                                                                         SignedNode<ASTMethod>, Node {
 
-    public ASTMethod(Method method) {
+    ASTMethod(Method method) {
         super(method);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
         return node.getMethodInfo().getName();
+    }
+
+    public String getCanonicalName() {
+        return node.getMethodInfo().getCanonicalName();
     }
 
     @Override
@@ -58,18 +63,6 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         return ApexOperationSignature.of(this);
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
      * Returns true if this is a synthetic class initializer, inserted
      * by the parser.
@@ -87,6 +80,10 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     public String getReturnType() {
-        return node.getReturnTypeRef().toString();
+        return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
+    }
+
+    public int getArity() {
+        return node.getMethodInfo().getParameterTypes().size();
     }
 }

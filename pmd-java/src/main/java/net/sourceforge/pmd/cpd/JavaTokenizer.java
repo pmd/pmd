@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -14,10 +14,11 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
-import net.sourceforge.pmd.lang.java.ast.JavaTokenManager;
 
 public class JavaTokenizer extends JavaCCTokenizer {
 
@@ -43,26 +44,29 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        final StringBuilder stringBuilder = sourceCode.getCodeBuffer();
-        return new JavaTokenManager(new StringReader(stringBuilder.toString()));
+    protected CharStream makeCharStream(Reader sourceCode) {
+        return CharStreamFactory.javaCharStream(sourceCode, InternalApiBridge::javaTokenDoc);
     }
 
     @Override
-    protected TokenFilter getTokenFilter(TokenManager tokenManager) {
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return JavaTokenKinds.newTokenManager(sourceCode);
+    }
+
+    @Override
+    protected TokenFilter<JavaccToken> getTokenFilter(TokenManager<JavaccToken> tokenManager) {
         return new JavaTokenFilter(tokenManager, ignoreAnnotations);
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String fileName) {
-        String image = currentToken.getImage();
-        JavaccToken javaToken = (JavaccToken) currentToken;
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken, String fileName) {
+        String image = javaToken.getImage();
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
 
         if (ignoreLiterals && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
                 || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
-                || javaToken.kind == JavaTokenKinds.DECIMAL_LITERAL
+                || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
                 || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
             image = String.valueOf(javaToken.kind);
         }
@@ -72,7 +76,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, fileName, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
+        return new TokenEntry(image, fileName, javaToken.getBeginLine(), javaToken.getBeginColumn(), javaToken.getEndColumn());
     }
 
     public void setIgnoreLiterals(boolean ignore) {
@@ -106,14 +110,13 @@ public class JavaTokenizer extends JavaCCTokenizer {
         private boolean discardingAnnotations = false;
         private boolean ignoreAnnotations = false;
 
-        JavaTokenFilter(final TokenManager tokenManager, final boolean ignoreAnnotations) {
+        JavaTokenFilter(final TokenManager<JavaccToken> tokenManager, final boolean ignoreAnnotations) {
             super(tokenManager);
             this.ignoreAnnotations = ignoreAnnotations;
         }
 
         @Override
-        protected void analyzeToken(final GenericToken currentToken) {
-            JavaccToken token = (JavaccToken) currentToken;
+        protected void analyzeToken(final JavaccToken token) {
             detectAnnotations(token);
 
             skipSemicolon(token);

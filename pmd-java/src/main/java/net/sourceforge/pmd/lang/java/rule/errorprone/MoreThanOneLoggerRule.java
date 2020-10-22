@@ -16,8 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
@@ -47,9 +46,9 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
     private Object init(JavaNode node, Object data) {
         stack.push(count);
-        count = NumericConstants.ZERO;
+        count = 0;
 
-        node.childrenAccept(this, data);
+        node.children().forEach(it -> it.acceptVisitor(this, data));
 
         if (count > 1) {
             addViolation(data, node);
@@ -70,13 +69,12 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
             if (reftypeNode instanceof ASTReferenceType) {
                 Node classOrIntType = reftypeNode.getChild(0);
                 if (classOrIntType instanceof ASTClassOrInterfaceType) {
-                    Class<?> clazzType = ((ASTClassOrInterfaceType) classOrIntType).getType();
-                    if (clazzType != null
-                            && (TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, LOG4J_LOGGER_NAME)
-                            || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, LOG4J2_LOGGER_NAME)
-                            || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, JAVA_LOGGER_NAME)
-                                || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, SLF4J_LOGGER_NAME))
-                            || clazzType == null && "Logger".equals(classOrIntType.getImage())) {
+                    ASTClassOrInterfaceType classType = (ASTClassOrInterfaceType) classOrIntType;
+                    if (TypeTestUtil.isA(LOG4J_LOGGER_NAME, classType)
+                        || TypeTestUtil.isA(LOG4J2_LOGGER_NAME, classType)
+                        || TypeTestUtil.isA(JAVA_LOGGER_NAME, classType)
+                        || TypeTestUtil.isA(SLF4J_LOGGER_NAME, classType)
+                        || "Logger".equals(classOrIntType.getImage())) {
                         ++count;
                     }
                 }

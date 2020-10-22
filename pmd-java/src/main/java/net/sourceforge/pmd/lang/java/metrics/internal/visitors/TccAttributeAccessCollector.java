@@ -12,14 +12,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter {
+public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
 
     private final ASTAnyTypeDeclaration exploredClass;
 
@@ -52,18 +52,17 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
      */
     @SuppressWarnings("unchecked")
     public Map<String, Set<String>> start() {
-        return (Map<String, Set<String>>) this.visit(exploredClass, new HashMap<String, Set<String>>());
+        return (Map<String, Set<String>>) this.visitTypeDecl(exploredClass, new HashMap<String, Set<String>>());
     }
 
 
     @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
         if (Objects.equals(node, exploredClass)) {
             methodAttributeAccess = new HashMap<>();
-            super.visit(node, data);
-        } else if (node instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
-            super.visit(node, data);
+            super.visitTypeDecl(node, data);
+        } else if (node.isLocal()) {
+            super.visitTypeDecl(node, data);
         }
         return methodAttributeAccess;
     }
@@ -74,8 +73,8 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
 
         if (!node.isAbstract()) {
             if (node.getFirstParentOfType(ASTAnyTypeDeclaration.class) == exploredClass) {
-                currentMethodName = node.getQualifiedName().getOperation();
-                methodAttributeAccess.put(currentMethodName, new HashSet<String>());
+                currentMethodName = PrettyPrintingUtil.displaySignature(node);
+                methodAttributeAccess.put(currentMethodName, new HashSet<>());
 
                 super.visit(node, data);
                 currentMethodName = null;

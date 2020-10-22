@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple violation
-     ]]></description>
+        <description>simple violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static Lennon;
@@ -15,12 +14,11 @@ import static George;
 import static Paul;
 import static Yoko; // Too much !
 public class Split {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static Lennon;
@@ -28,13 +26,12 @@ import static Ringo;
 import static George;
 import static Paul;
 public class Beatles {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, we allow five now
-     ]]></description>
-     	<rule-property name="maximumStaticImports">5</rule-property>
+        <description>ok, we allow five now</description>
+        <rule-property name="maximumStaticImports">5</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static Lennon;
@@ -43,6 +40,6 @@ import static George;
 import static Paul;
 import static Pete; //Ok
 public class AllTheBeatles {}
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

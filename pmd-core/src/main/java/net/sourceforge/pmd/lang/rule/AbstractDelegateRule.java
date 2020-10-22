@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -91,11 +90,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public String dysfunctionReason() {
         return rule.dysfunctionReason();
-    }
-
-    @Override
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return rule.ignoredProperties();
     }
 
     @Override
@@ -235,23 +229,8 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public boolean isRuleChain() {
-        return rule.isRuleChain();
-    }
-
-    @Override
-    public List<String> getRuleChainVisits() {
-        return rule.getRuleChainVisits();
-    }
-
-    @Override
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        rule.addRuleChainVisit(nodeClass);
-    }
-
-    @Override
-    public void addRuleChainVisit(String astNodeName) {
-        rule.addRuleChainVisit(astNodeName);
+    public RuleTargetSelector getTargetSelector() {
+        return rule.getTargetSelector();
     }
 
     @Override
@@ -260,8 +239,8 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        rule.apply(nodes, ctx);
+    public void apply(Node target, RuleContext ctx) {
+        rule.apply(target, ctx);
     }
 
     @Override

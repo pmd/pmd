@@ -18,11 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
@@ -107,10 +106,9 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private void checkPrefixedTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        ASTResultType resultType = node.getResultType();
         List<String> prefixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
         String[] splitMethodName = StringUtils.splitByCharacterTypeCamelCase(nameOfMethod);
-        if (resultType.isVoid() && splitMethodName.length > 0
+        if (node.isVoid() && splitMethodName.length > 0
                 && prefixes.contains(splitMethodName[0].toLowerCase(Locale.ROOT))) {
             // "To" or any other configured prefix found
             addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
@@ -119,10 +117,9 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private void checkTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        ASTResultType resultType = node.getResultType();
         List<String> infixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
         for (String infix : infixes) {
-            if (resultType.isVoid() && containsWord(nameOfMethod, StringUtils.capitalize(infix))) {
+            if (node.isVoid() && containsWord(nameOfMethod, StringUtils.capitalize(infix))) {
                 // "To" or any other configured infix in the middle somewhere
                 addViolationWithMessage(data, node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
                         new Object[] { nameOfMethod });
@@ -133,16 +130,14 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private void checkGetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        ASTResultType resultType = node.getResultType();
-        if (hasPrefix(nameOfMethod, "get") && resultType.isVoid()) {
+        if (hasPrefix(nameOfMethod, "get") && node.isVoid()) {
             addViolationWithMessage(data, node, "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
                     new Object[] { nameOfMethod });
         }
     }
 
     private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        ASTResultType resultType = node.getResultType();
-        if (hasPrefix(nameOfMethod, "set") && !resultType.isVoid()) {
+        if (hasPrefix(nameOfMethod, "set") && !node.isVoid()) {
             addViolationWithMessage(data, node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
                     new Object[] { nameOfMethod });
         }
@@ -150,14 +145,13 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
 
     private boolean isBooleanType(ASTType node) {
         return "boolean".equalsIgnoreCase(node.getTypeImage())
-                || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean")
-                || TypeHelper.isA(node, "java.util.function.Predicate");
+                || TypeTestUtil.isA("java.util.concurrent.atomic.AtomicBoolean", node)
+                || TypeTestUtil.isA("java.util.function.Predicate", node);
     }
 
     private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        ASTResultType resultType = node.getResultType();
-        ASTType t = node.getResultType().getFirstChildOfType(ASTType.class);
-        if (!resultType.isVoid() && t != null) {
+        ASTType t = node.getResultTypeNode();
+        if (!t.isVoid()) {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
                 if (hasPrefix(nameOfMethod, prefix) && !isBooleanType(t)) {
                     addViolationWithMessage(data, node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
@@ -187,7 +181,7 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        ASTType type = node.getFirstChildOfType(ASTType.class);
+        ASTType type = node.getTypeNode();
         if (type != null && getProperty(CHECK_FIELDS)) {
             List<ASTVariableDeclarator> fields = node.findChildrenOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator field : fields) {
@@ -199,7 +193,7 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        ASTType type = node.getFirstChildOfType(ASTType.class);
+        ASTType type = node.getTypeNode();
         if (type != null && getProperty(CHECK_VARIABLES)) {
             List<ASTVariableDeclarator> variables = node.findChildrenOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator variable : variables) {

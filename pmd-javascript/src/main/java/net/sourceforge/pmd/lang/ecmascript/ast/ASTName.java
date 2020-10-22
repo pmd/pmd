@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,17 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Name;
 
-public class ASTName extends AbstractEcmascriptNode<Name> {
-    public ASTName(Name name) {
+public final class ASTName extends AbstractEcmascriptNode<Name> {
+    ASTName(Name name) {
         super(name);
         super.setImage(name.getIdentifier());
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -7,10 +7,9 @@ package net.sourceforge.pmd.ant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
-import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
@@ -111,17 +110,8 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         }
     };
 
-    // See http://stackoverflow.com/questions/361975/setting-the-default-java-character-encoding and http://stackoverflow.com/a/14987992/1169968
     private static void setDefaultCharset(String charsetName) {
-        try {
-            System.setProperty("file.encoding", charsetName);
-            Field charset = Charset.class.getDeclaredField("defaultCharset");
-            charset.setAccessible(true);
-            charset.set(null, null);
-            Objects.requireNonNull(Charset.defaultCharset());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        System.setProperty("file.encoding", charsetName);
     }
 
     @Rule
@@ -149,14 +139,28 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
+    private static String convert(String report) {
+        // reinterpret output as cp1252 - ant BuildFileRule can only unicode
+        StringBuilder sb = new StringBuilder(report.length());
+        for (int i = 0; i < report.length(); i++) {
+            char c = report.charAt(i);
+            if (c > 0x7f) {
+                sb.append((char) (c & 0xff));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     @Test
-    public void testFormatterEncodingWithXMLConsole() {
+    public void testFormatterEncodingWithXMLConsole() throws UnsupportedEncodingException {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXMLConsole");
-        String report = buildRule.getOutput();
+        String report = convert(buildRule.getOutput());
         assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+        assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
     @Test

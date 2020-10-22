@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,7 +11,7 @@ import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
+public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
 
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
@@ -19,11 +19,8 @@ public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootN
         super(astRoot);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

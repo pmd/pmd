@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -30,7 +29,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> interfaceRegex = defaultProp("interface").build();
     private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
     private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
-    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+(Utils?|Helper)").build();
+    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)").build();
 
 
     public ClassNamingConventionsRule() {
@@ -50,7 +49,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     // This could probably be moved to ClassOrInterfaceDeclaration
     // to share the implementation and be used from XPath
     private boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (node.getTypeKind() != TypeKind.CLASS) {
+        if (node.isInterface() || node.isEnum()) {
             return false;
         }
 
@@ -58,48 +57,43 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
-                || !classNode.getSuperInterfacesTypeNodes().isEmpty()) {
+                || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
             return false;
         }
 
         // A class without declarations shouldn't be reported
         boolean hasAny = false;
 
-        for (ASTAnyTypeBodyDeclaration decl : classNode.getDeclarations()) {
-            switch (decl.getKind()) {
-            case FIELD:
-            case METHOD:
-                hasAny = isNonPrivate(decl) && !isMainMethod(decl);
-                if (!((AccessNode) decl.getDeclarationNode()).isStatic()) {
+        for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
+            if (declNode instanceof ASTFieldDeclaration
+                || declNode instanceof ASTMethodDeclaration) {
+
+                hasAny = isNonPrivate(declNode) && !isMainMethod(declNode);
+                if (!((AccessNode) declNode).isStatic()) {
                     return false;
                 }
-                break;
 
-            case INITIALIZER:
-                if (!((ASTInitializer) decl.getDeclarationNode()).isStatic()) {
+            } else if (declNode instanceof ASTInitializer) {
+                if (!((ASTInitializer) declNode).isStatic()) {
                     return false;
                 }
-                break;
-
-            default:
-                break;
             }
         }
 
         return hasAny;
     }
 
-    private boolean isNonPrivate(ASTAnyTypeBodyDeclaration decl) {
-        return !((AccessNode) decl.getDeclarationNode()).isPrivate();
+    private boolean isNonPrivate(ASTBodyDeclaration decl) {
+        return !((AccessNode) decl).isPrivate();
     }
 
 
-    private boolean isMainMethod(ASTAnyTypeBodyDeclaration bodyDeclaration) {
-        if (DeclarationKind.METHOD != bodyDeclaration.getKind()) {
+    private boolean isMainMethod(ASTBodyDeclaration bodyDeclaration) {
+        if (!(bodyDeclaration instanceof ASTMethodDeclaration)) {
             return false;
         }
 
-        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration.getDeclarationNode();
+        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration;
 
         return decl.isStatic()
                 && "main".equals(decl.getName())

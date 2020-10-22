@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A simple helper class to regroup a bunch of method generally used by rules
  * using regex.
  *
  * @author Romain PELISSE, belaran@gmail.com
- *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public final class RegexHelper {
 
     /**

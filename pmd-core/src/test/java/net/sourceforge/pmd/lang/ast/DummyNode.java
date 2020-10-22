@@ -7,47 +7,58 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DummyNode extends AbstractNode {
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
+    private String image;
 
-    public DummyNode(int id) {
-        this(id, false);
+    public DummyNode(String xpathName) {
+        super();
+        this.findBoundary = false;
+        this.xpathName = xpathName;
     }
 
     public DummyNode() {
-        this(0, false);
+        this(false);
     }
 
-    public DummyNode(int id, boolean findBoundary) {
-        this(id, findBoundary, "dummyNode");
+    public DummyNode(boolean findBoundary) {
+        this(findBoundary, "dummyNode");
     }
 
-    public DummyNode(int id, boolean findBoundary, String xpathName) {
-        super(id);
+    public DummyNode(boolean findBoundary, String xpathName) {
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
     }
 
-    public void setBeginColumn(int i) {
-        beginColumn = i;
+    public void publicSetChildren(DummyNode... children) {
+        assert getNumChildren() == 0;
+        for (int i = children.length - 1; i >= 0; i--) {
+            addChild(children[i], i);
+        }
     }
 
-    public void setBeginLine(int i) {
-        beginLine = i;
-    }
-
+    @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        beginLine = bline;
-        beginColumn = bcol;
-        endLine = eline;
-        endColumn = ecol;
+        super.setCoords(bline, bcol, eline, ecol);
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    @Override
+    public String getImage() {
+        return image;
     }
 
     @Override
     public String toString() {
-        return xpathName;
+        return getImage();
     }
 
     @Override
@@ -60,17 +71,24 @@ public class DummyNode extends AbstractNode {
         return findBoundary;
     }
 
-    @Override
     public Map<String, String> getUserData() {
         return userData;
     }
 
+    @Override
+    public void addChild(DummyNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public DummyNode getChild(int index) {
+        return super.getChild(index);
+    }
 
     public static class DummyNodeTypeB extends DummyNode {
 
-        @Override
-        public String toString() {
-            return getImage();
+        public DummyNodeTypeB() {
+            super("dummyNodeB");
         }
     }
 

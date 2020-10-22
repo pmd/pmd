@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.vf.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Utility class to keep track of unclosed tags. The mechanism is rather simple.
@@ -26,7 +27,7 @@ class OpenTagRegister {
     private List<ASTElement> tagList = new ArrayList<>();
 
     public void openTag(ASTElement elm) {
-        if (elm == null || StringUtil.isEmpty(elm.getName())) {
+        if (elm == null || StringUtils.isBlank(elm.getName())) {
             throw new IllegalStateException("Tried to open a tag with empty name");
         }
 
@@ -40,7 +41,7 @@ class OpenTagRegister {
      *         was ever opened ( or registered )
      */
     public boolean closeTag(String closingTagName) {
-        if (StringUtil.isEmpty(closingTagName)) {
+        if (StringUtils.isBlank(closingTagName)) {
             throw new IllegalStateException("Tried to close a tag with empty name");
         }
 
@@ -50,12 +51,12 @@ class OpenTagRegister {
          * name as element
          */
         boolean matchingTagFound = false;
-        List<ASTElement> processedElmnts = new ArrayList<>();
+        List<ASTElement> processedElements = new ArrayList<>();
         for (int i = lastRegisteredTagIdx; i >= 0; i--) {
             ASTElement parent = tagList.get(i);
             String parentName = parent.getName();
 
-            processedElmnts.add(parent);
+            processedElements.add(parent);
             if (parentName.equals(closingTagName)) {
                 // mark this tag as being closed
                 parent.setUnclosed(false);
@@ -84,7 +85,7 @@ class OpenTagRegister {
          * potentially open <a> parent tag ( but not the one after the <x> )
          */
         if (matchingTagFound) {
-            tagList.removeAll(processedElmnts);
+            tagList.removeAll(processedElements);
         }
 
         return matchingTagFound;

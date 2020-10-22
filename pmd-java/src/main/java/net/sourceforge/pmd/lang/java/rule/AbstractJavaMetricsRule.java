@@ -1,26 +1,28 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 
 
 /**
- * Java Rule with convenient visit methods to e.g. treat contructors and methods the same.
+ * Java Rule with convenient visit methods to e.g. treat constructors and methods the same.
  *
  * @author Clément Fournier
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
     @Override
@@ -42,7 +44,7 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
 
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        return visit((JavaNode) node, data);
+        return visitJavaNode(node, data);
     }
 
 
@@ -57,11 +59,6 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
 
-    @Override
-    public final Object visit(ASTLambdaExpression node, Object data) {
-        return visit((MethodLikeNode) node, data);
-    }
-
 
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((MethodLikeNode) node, data);
@@ -69,7 +66,7 @@ public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
 
     public Object visit(MethodLikeNode node, Object data) {
-        return visit((JavaNode) node, data);
+        return visitJavaNode(node, data);
     }
 
 }

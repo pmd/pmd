@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -19,6 +19,7 @@ public class ASTMethodTest extends ApexParserTestBase {
         Assert.assertSame(ASTUserClass.class, node.getClass());
         List<ASTMethod> methods = node.findChildrenOfType(ASTMethod.class);
         Assert.assertEquals("Foo", methods.get(0).getImage()); // constructor
+        Assert.assertEquals("<init>", methods.get(0).getCanonicalName());
         Assert.assertEquals("bar", methods.get(1).getImage()); // normal method
     }
 }

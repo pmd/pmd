@@ -3,160 +3,149 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, default constructor
-     ]]></description>
+        <description>ok, default constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {} 
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple failure
-     ]]></description>
+        <description>simple failure</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo() {}
- public void bar() {}
+    private Foo() {}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure with multiple constructors
-     ]]></description>
+        <description>failure with multiple constructors</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo(){}
- private Foo(Object o){}
- public void bar() {} 
+    private Foo(){}
+    private Foo(Object o){}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-protected constructor is ok
-     ]]></description>
+        <description>protected constructor is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo(){}
- protected Foo(Object o){}
- public void bar() {} 
+    private Foo(){}
+    protected Foo(Object o){}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, one static method
-     ]]></description>
+        <description>ok, one static method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo(){}
- private Foo(Object o){}
- public static void bar() {} 
+    private Foo(){}
+    private Foo(Object o){}
+    public static void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-nested class
-     ]]></description>
+        <description>nested class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static class Bar {
-  private Bar() {}
- }
+    private static class Bar {
+        private Bar() {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, public static field
-     ]]></description>
+        <description>ok, public static field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static int BUZ = 2;
-  private Foo() {}
+    public static int BUZ = 2;
+    private Foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-not ok, non-public static field
-     ]]></description>
+        <description>not ok, non-public static field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static int BUZ = 2;
-  private Foo() {}
+    private static int BUZ = 2;
+    private Foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, protected static field
-     ]]></description>
+        <description>ok, protected static field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- protected static Foo INSTANCE = new Foo();
-  private Foo() {}
+    protected static Foo INSTANCE = new Foo();
+    private Foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, package private static field
-     ]]></description>
+        <description>ok, package private static field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static Foo INSTANCE = new Foo();
-  private Foo() {}
+    static Foo INSTANCE = new Foo();
+    private Foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, checking for bug 1432595
-     ]]></description>
+        <description>ok, checking for bug 1432595</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Suit {
-   private final String name;
+    private final String name;
         private Suit(String name) {
         this.name = name;
-  }
-  public String toString() {
-      return name;
-  }
-  public static final Suit CLUBS = new Suit("Clubs");
-  public static final Suit DIAMONDS = new Suit("Diamonds");
-  public static final Suit HEARTS = new Suit("Hearts");
-  public static final Suit SPADES = new Suit("Spades");
+    }
+    public String toString() {
+        return name;
+    }
+    public static final Suit CLUBS = new Suit("Clubs");
+    public static final Suit DIAMONDS = new Suit("Diamonds");
+    public static final Suit HEARTS = new Suit("Hearts");
+    public static final Suit SPADES = new Suit("Spades");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1125 Missing Static Method In Non Instantiatable Class / Factory</description>
         <expected-problems>0</expected-problems>
@@ -215,7 +204,7 @@ public final class BacklogElementParameters {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#590 Check Builder pattern alternative</description>
         <expected-problems>0</expected-problems>
@@ -249,7 +238,7 @@ public final class BacklogElementParameters {
     </test-code>
 
     <test-code>
-        <description>#1832 Check constructor injection with @Autowired or @Inject </description>
+        <description>#1832 Check constructor injection with @Autowired or @Inject</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.inject.Inject;
@@ -257,19 +246,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class Foo {
 
- private String arg;
+    private String arg;
 
- @Autowired
- private Foo() {}
+    @Autowired
+    private Foo() {}
 
- @Inject
- private Foo(String arg) {
-    this.arg = arg;
- }
+    @Inject
+    private Foo(String arg) {
+        this.arg = arg;
+    }
 
- public void bar() {}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -281,19 +270,19 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Foo {
 
- private String arg;
+    private String arg;
 
- @PersistenceConstructor
- private Foo() {}
+    @PersistenceConstructor
+    private Foo() {}
 
- @Autowired
- private Foo(String arg) {
-    this.arg = arg;
- }
+    @Autowired
+    private Foo(String arg) {
+        this.arg = arg;
+    }
 
- public void bar() {}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -304,19 +293,19 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Foo {
 
- private String arg;
+    private String arg;
 
- @PersistenceConstructor
- private Foo() {}
+    @PersistenceConstructor
+    private Foo() {}
 
- @PersistenceConstructor
- private Foo(String arg) {
-    this.arg = arg;
- }
+    @PersistenceConstructor
+    private Foo(String arg) {
+        this.arg = arg;
+    }
 
- public void bar() {}
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

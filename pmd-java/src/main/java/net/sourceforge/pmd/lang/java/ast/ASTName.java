@@ -11,9 +11,20 @@ public class ASTName extends AbstractJavaTypeNode {
 
     private NameDeclaration nd;
 
+
+    /**
+     * Constructor for a synthetic node.
+     * @param image Image of the new node
+     */
     @InternalApi
     @Deprecated
-    public ASTName(int id) {
+    public ASTName(String image, AbstractJavaNode parent) {
+        super(JavaParserImplTreeConstants.JJTNAME);
+        setImage(image);
+        setParent(parent);
+    }
+
+    ASTName(int id) {
         super(id);
     }
 
@@ -27,14 +38,9 @@ public class ASTName extends AbstractJavaTypeNode {
         return this.nd;
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

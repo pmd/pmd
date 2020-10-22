@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           since="7.0"
           language="swift"
           message="Creating views using Interface Builder should be avoided."
-          class="net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilderRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
         <description>
             Creating views using Interface Builder should be avoided.
@@ -22,6 +22,15 @@ Rules which enforce generally accepted best practices.
             Consider building views programmatically.
         </description>
         <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //VariableDeclarationHead/Attributes/Attribute[AttributeName/Identifier/T-Identifier[@Text = "IBOutlet"]]
+                    |
+                    //FunctionHead/Attributes/Attribute[AttributeName/Identifier/T-Identifier[@Text = "IBAction"]]
+                </value>
+            </property>
+        </properties>
         <example>
             <![CDATA[
 class ViewController: UIViewController {

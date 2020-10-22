@@ -97,6 +97,19 @@
         <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
                  token="if ((buffer[bufpos] = c = ReadByte()) == '\\')"
                  value="if ((buffer[bufpos] = c = ReadByte()) == '\\' &amp;&amp; doEscape())" />
+        <!-- This is in ExpandBuf, the exception this may throw is OutOfMemoryError, which is stupidly erased by javacc -->
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="throw new Error(t.getMessage())"
+                 value="throw t" />
+        <!-- Set tab size of JavaCC to 1 -->
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="int tabSize = 8;"
+                 value="int tabSize = 1;" />
+
+        <replaceregexp file="${tmp-package.dir}/${cs.prefix}CharStream.java">
+            <regexp pattern='throw new Error\("Invalid escape character at line " \+ line \+\s+" column " \+ column \+ "."\);' />
+            <substitution expression='throw new ${base-ast-package}.TokenMgrError(line, column, null, "Invalid unicode escape", null);' />
+        </replaceregexp>
 
         <move overwrite="true"
               file="${tmp-package.dir}/${cs.prefix}CharStream.java"

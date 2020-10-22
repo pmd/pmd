@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -18,7 +19,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -43,7 +44,7 @@ public class TreeRenderersTest {
 
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
 
-        Assert.assertThat(properties.getPropertyDescriptors(),
+        MatcherAssert.assertThat(properties.getPropertyDescriptors(),
                           Matchers.<PropertyDescriptor<?>>containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
                                                                              TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
                                                                              TreeRenderers.XML_RENDER_PROLOG,
@@ -85,8 +86,8 @@ public class TreeRenderersTest {
 
         MyDummyNode dummy2 = new MyDummyNode();
 
-        dummy.jjtAddChild(dummy1, 0);
-        dummy.jjtAddChild(dummy2, 1);
+        dummy.addChild(dummy1, 0);
+        dummy.addChild(dummy2, 1);
         return dummy;
     }
 

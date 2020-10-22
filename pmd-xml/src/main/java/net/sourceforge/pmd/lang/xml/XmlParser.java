@@ -8,10 +8,9 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  * Adapter for the XmlParser.
@@ -23,12 +22,7 @@ public class XmlParser extends AbstractParser {
     }
 
     @Override
-    public TokenManager createTokenManager(Reader source) {
-        return null;
-    }
-
-    @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
+    public RootXmlNode parse(String fileName, Reader source) throws ParseException {
         return new XmlParserImpl((XmlParserOptions) parserOptions).parse(source);
     }
 

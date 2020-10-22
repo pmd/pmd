@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -15,8 +15,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -122,7 +121,7 @@ import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
 
-public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
+final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -225,8 +224,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType,
-            Class<? extends AbstractApexNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -235,21 +233,21 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<>();
+    private final Stack<AbstractApexNode<?>> nodes = new Stack<>();
 
     // The Apex nodes with children to build.
-    private Stack<AstNode> parents = new Stack<>();
+    private final Stack<AstNode> parents = new Stack<>();
 
-    private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
+    private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private List<ApexDocTokenLocation> apexDocTokenLocations;
-    private Map<Integer, String> suppressMap;
+    private final List<ApexDocTokenLocation> apexDocTokenLocations;
+    private final Map<Integer, String> suppressMap;
 
-    public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
+    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions, SourceCodePositioner positioner) {
         this.sourceCode = sourceCode;
-        sourceCodePositioner = new SourceCodePositioner(sourceCode);
+        sourceCodePositioner = positioner;
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
         apexDocTokenLocations = commentInformation.docTokenLocations;
@@ -275,17 +273,16 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    public <T extends AstNode> ApexNode<T> build(T astNode) {
+    <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
         node.calculateLineNumbers(sourceCodePositioner);
         node.handleSourceCode(sourceCode);
 
         // Append to parent
-        Node parent = nodes.isEmpty() ? null : nodes.peek();
+        AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.getNumChildren());
-            node.jjtSetParent(parent);
+            parent.addChild(node, parent.getNumChildren());
         }
 
         // Build the children...
@@ -305,27 +302,20 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private void addFormalComments() {
         for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
-            ApexNode<?> parent = tokenLocation.nearestNode;
+            AbstractApexNode<?> parent = tokenLocation.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
                 comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
                         tokenLocation.index + tokenLocation.token.getText().length());
 
-                // move existing nodes so that we can insert the comment as the first node
-                for (int i = parent.getNumChildren(); i > 0; i--) {
-                    parent.jjtAddChild(parent.getChild(i - 1), i);
-                }
-
-                parent.jjtAddChild(comment, 0);
-                comment.jjtSetParent(parent);
+                parent.insertChild(comment, 0);
             }
         }
     }
 
     private void buildFormalComment(AstNode node) {
         if (parents.peek() == node) {
-            ApexNode<?> parent = (ApexNode<?>) nodes.peek();
-            assignApexDocTokenToNode(node, parent);
+            assignApexDocTokenToNode(node, nodes.peek());
         }
     }
 
@@ -338,7 +328,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
-    private void assignApexDocTokenToNode(AstNode jorjeNode, ApexNode<?> node) {
+    private void assignApexDocTokenToNode(AstNode jorjeNode, AbstractApexNode<?> node) {
         Location loc = jorjeNode.getLoc();
         if (!Locations.isReal(loc)) {
             // Synthetic nodes such as "<clinit>" don't have a location in the
@@ -412,7 +402,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private static class ApexDocTokenLocation {
         int index;
         Token token;
-        ApexNode<?> nearestNode;
+        AbstractApexNode<?> nearestNode;
         int nearestNodeDistance;
 
         ApexDocTokenLocation(int index, Token token) {

@@ -31,7 +31,6 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
                 </value>
             </property>
             <!-- XPath 2.0 is needed to use a multi-valued property. -->
-            <property name="version" value="2.0"/>
             <property name="validTypes"
                       value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
                       type="List[String]"
@@ -76,9 +75,9 @@ By far the most common problem is the use of &#x24;{project.version} in a BOM or
 //dependencies/dependency
     [contains(version/text/@Image,'{project.version}')]
     [
-        (/project/parent/groupId and groupId/text/@Image != /project/parent/groupId/text/@Image)
+        (/document/project/parent/groupId and groupId/text/@Image != /document/project/parent/groupId/text/@Image)
         or
-        (/project/groupId and groupId/text/@Image != /project/groupId/text/@Image)
+        (/document/project/groupId and groupId/text/@Image != /document/project/groupId/text/@Image)
     ]/version
 ]]>
                 </value>

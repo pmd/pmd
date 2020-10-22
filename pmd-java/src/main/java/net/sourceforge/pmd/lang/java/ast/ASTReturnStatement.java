@@ -4,24 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ASTReturnStatement extends AbstractJavaNode {
+/**
+ * A return statement in a method or constructor body.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * ReturnStatement ::= "return" {@link ASTExpression Expression}? ";"
+ *
+ * </pre>
+ */
+public final class ASTReturnStatement extends AbstractStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTReturnStatement(int id) {
+    ASTReturnStatement(int id) {
         super(id);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    /**
+     * Returns the returned expression, or null if this is a simple return.
+     */
+    @Nullable
+    public ASTExpression getExpr() {
+        return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
 }

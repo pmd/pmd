@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -17,27 +17,18 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  *  - Ideally ParserOptions would be an argument to ::parse
  *  - ::parse would also take some more parameters, eg an error collector
  *  - The reader + filename would be a TextDocument
- *  - Remove TokenManager from here. Only JavaCC implementations support that,
- *    and it's barely used.
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface Parser {
-    /**
-     * Get the ParserOptions used by this Parser.
-     */
-    ParserOptions getParserOptions();
 
     /**
-     * Get a TokenManager for the given source.
+     * Get the ParserOptions used by this Parser.
      *
-     * @param fileName
-     *            The file name being parsed (may be <code>null</code>).
-     * @param source
-     *            Reader that provides the source code to tokenize.
-     * @return A TokenManager for reading token.
+     * @deprecated Parser options should be a parameter to {@link #parse(String, Reader)}
      */
-    TokenManager getTokenManager(String fileName, Reader source);
+    @Deprecated
+    ParserOptions getParserOptions();
 
 
     /**
@@ -52,7 +43,7 @@ public interface Parser {
      *             In case the source code could not be parsed, probably due to
      *             syntactical errors.
      */
-    Node parse(String fileName, Reader source) throws ParseException;
+    RootNode parse(String fileName, Reader source) throws ParseException;
 
 
 }

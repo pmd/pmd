@@ -49,13 +49,13 @@ public class SimpleRenderer implements Renderer, CPDRenderer {
         String source = match.getSourceCodeSlice();
 
         if (trimLeadingWhitespace) {
-            String[] lines = source.split('[' + PMD.EOL + ']');
+            String[] lines = source.split("\n");
             int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
             if (trimDepth > 0) {
                 lines = StringUtil.trimStartOn(lines, trimDepth);
             }
-            for (int i = 0; i < lines.length; i++) {
-                writer.append(lines[i]).append(PMD.EOL);
+            for (String line : lines) {
+                writer.append(line).append(PMD.EOL);
             }
             return;
         }

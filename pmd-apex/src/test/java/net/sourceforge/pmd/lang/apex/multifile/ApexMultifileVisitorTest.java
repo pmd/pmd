@@ -14,7 +14,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 import net.sourceforge.pmd.lang.apex.metrics.ApexSignatureMatcher;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 
@@ -40,14 +40,14 @@ public class ApexMultifileVisitorTest extends ApexParserTestBase {
         final ApexOperationSigMask opMask = new ApexOperationSigMask();
 
         // We could parse qnames from string but probably simpler to do that
-        acu.jjtAccept(new ApexParserVisitorAdapter() {
+        acu.acceptVisitor(new ApexVisitorBase<Void, Void>() {
             @Override
-            public Object visit(ASTMethod node, Object data) {
+            public Void visit(ASTMethod node, Void data1) {
                 if (!node.isSynthetic()) {
                     assertTrue(toplevel.hasMatchingSig(node.getQualifiedName(), opMask));
                 }
 
-                return data;
+                return data1;
             }
         }, null);
     }

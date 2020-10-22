@@ -14,7 +14,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -148,7 +147,7 @@ public abstract class RuleTst {
                 }
 
                 report = processUsingStringReader(test, rule);
-                res = report.size();
+                res = report.getViolations().size();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
@@ -187,15 +186,13 @@ public abstract class RuleTst {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.size() != expectedMessages.size()) {
+        if (report.getViolations().size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             String actual = violation.getDescription();
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
@@ -213,16 +210,14 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.size() != expected.size()) {
+        if (report.getViolations().size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
-                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + " doesn't match number of violations " + report.getViolations().size() + " for test case '"
                     + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             Integer actual = violation.getBeginLine();
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
@@ -236,7 +231,7 @@ public abstract class RuleTst {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.size()
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
@@ -255,20 +250,11 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    }
+
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         Report report = new Report();
-        runTestFromString(test, rule, report);
-        return report;
-    }
-
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
-    }
-
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
@@ -276,6 +262,20 @@ public abstract class RuleTst {
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");
+            } else {
+                // simple class loader, that doesn't delegate to parent.
+                // this allows us in the tests to simulate PMD run without
+                // auxclasspath, not even the classes from the test dependencies
+                // will be found.
+                p.getConfiguration().setClassLoader(new ClassLoader() {
+                    @Override
+                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                        if (name.startsWith("java.") || name.startsWith("javax.")) {
+                            return super.loadClass(name, resolve);
+                        }
+                        throw new ClassNotFoundException(name);
+                    }
+                });
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
@@ -284,13 +284,10 @@ public abstract class RuleTst {
             ctx.setIgnoreExceptions(false);
             RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            return report;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -367,8 +364,8 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 
@@ -520,7 +517,7 @@ public abstract class RuleTst {
     }
 
     private static String parseTextNode(Node exampleNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {

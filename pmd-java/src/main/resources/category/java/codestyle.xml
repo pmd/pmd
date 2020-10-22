@@ -34,6 +34,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidDollarSigns"
+          language="java"
           since="1.5"
           message="Avoid using dollar signs in variable/method/class/interface names"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.AvoidDollarSignsRule"
@@ -65,9 +66,9 @@ Clarify your intent by using private or package access modifiers instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true']
+//ClassOrInterfaceDeclaration[@Final= true()]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected='true']
+/FieldDeclaration[@Protected= true()]
 ]]>
                 </value>
             </property>
@@ -99,9 +100,9 @@ visibility cannot be reduced). Clarify your intent by using private or package a
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+//ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true' and @Name != 'finalize']
+/MethodDeclaration[@Protected=true() and @Name != 'finalize']
  ]]>
                 </value>
             </property>
@@ -170,7 +171,7 @@ prefix for these methods.
 <![CDATA[
 //MethodDeclaration
     [starts-with(@Name, 'get')]
-    [@Arity = 0 or $checkParameterizedMethods = 'true']
+    [@Arity = 0 or $checkParameterizedMethods = true()]
     [
         ResultType/Type/PrimitiveType[@Image = 'boolean']
         and not(../Annotation//Name[@Image = 'Override'])
@@ -204,10 +205,10 @@ another constructor (such as an overloaded constructor) is called, this rule wil
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+//ClassOrInterfaceDeclaration[ExtendsList/*]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
- /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+ /ConstructorDeclaration[ not(.//ExplicitConstructorInvocation) ]
 ]]>
                 </value>
             </property>
@@ -230,6 +231,7 @@ public class Foo extends Bar{
     </rule>
 
     <rule name="ClassNamingConventions"
+          language="java"
           since="1.2"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule"
@@ -263,6 +265,7 @@ public class Éléphant {}
     </rule>
 
     <rule name="CommentDefaultAccessModifier"
+          language="java"
           since="5.4.0"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule"
           message="Missing commented default access modifier"
@@ -302,6 +305,7 @@ public class Foo {
     </rule>
 
     <rule name="ConfusingTernary"
+          language="java"
           since="1.9"
           message="Avoid if (x != y) ..; else ..;"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule"
@@ -349,8 +353,6 @@ boolean bar(int x, int y) {
             <property name="checkCaseStmt" type="Boolean" value="false" description="Require that cases of a switch have braces"/>
 
             <property name="allowEmptyLoop" type="Boolean" value="false" description="Allow loops with an empty statement, e.g. 'while(true);'" />
-
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
                 //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
@@ -397,20 +399,30 @@ while (true) {  // preferred approach
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#defaultpackage">
         <description>
 Use explicit scoping instead of accidental usage of default package private level.
-The rule allows methods and fields annotated with Guava's @VisibleForTesting.
+The rule allows methods and fields annotated with Guava's @VisibleForTesting and JUnit 5's annotations.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
+//ClassOrInterfaceDeclaration[@Interface= false()]
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
-[not(Annotation//Name[ends-with(@Image, 'VisibleForTesting')])]
+[not(Annotation//Name[
+    pmd-java:typeIs('org.junit.jupiter.api.Test')
+    or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+    or pmd-java:typeIs('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+    or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+    or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
+    or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
+    or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
+    or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
+    or ends-with(@Image, 'VisibleForTesting')])]
 [
-FieldDeclaration[@PackagePrivate='true']
-or MethodDeclaration[@PackagePrivate='true']
+FieldDeclaration[@PackagePrivate= true()]
+or MethodDeclaration[@PackagePrivate= true()]
 ]
 ]]>
                 </value>
@@ -419,6 +431,7 @@ or MethodDeclaration[@PackagePrivate='true']
     </rule>
 
     <rule name="DontImportJavaLang"
+          language="java"
           since="0.5"
           message="Avoid importing anything from the package 'java.lang'"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule"
@@ -443,6 +456,7 @@ public class Foo {}
     </rule>
 
     <rule name="DuplicateImports"
+          language="java"
           since="0.5"
           message="Avoid duplicate imports such as ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule"
@@ -475,20 +489,20 @@ usage by developers who should be implementing their own versions in the concret
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Abstract = 'true']
+//ClassOrInterfaceDeclaration[@Abstract = true()]
     /ClassOrInterfaceBody
     /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
+    /MethodDeclaration[@Abstract = false() and @Native = false()]
     [
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = true() )
         or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = true() )
         or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = true() )
         or
         (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
         or
-        ( count (./Block/*) = 0 )
+        ( not (./Block/*) )
     ]
 ]]>
                 </value>
@@ -564,6 +578,7 @@ public class HelloWorldBean {
 
 
     <rule name="FieldNamingConventions"
+          language="java"
           since="6.7.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.FieldNamingConventionsRule"
@@ -634,6 +649,7 @@ public class Foo {
     </rule>
 
     <rule name="FormalParameterNamingConventions"
+          language="java"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.FormalParameterNamingConventionsRule"
@@ -689,7 +705,7 @@ Names for references to generic values should be limited to a single uppercase l
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
   string-length(@Image) > 1
   or
-  string:upper-case(@Image) != @Image
+  upper-case(@Image) != @Image
 ]
 ]]>
                 </value>
@@ -889,6 +905,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
     </rule>
 
     <rule name="LocalVariableCouldBeFinal"
+          language="java"
           since="2.2"
           message="Local variable ''{0}'' could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableCouldBeFinalRule"
@@ -910,6 +927,7 @@ public class Bar {
     </rule>
 
     <rule name="LocalVariableNamingConventions"
+          language="java"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableNamingConventionsRule"
@@ -959,7 +977,7 @@ Fields, formal arguments, or local variable names that are too long can make the
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > $minimum]
+//VariableDeclaratorId[string-length(@Name) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1020,6 +1038,7 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
     </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
+          language="java"
           since="2.2"
           message="Parameter ''{0}'' is not assigned and could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodArgumentCouldBeFinalRule"
@@ -1042,6 +1061,7 @@ public void foo2 (final String param) { // better, do stuff with param never ass
     </rule>
 
     <rule name="MethodNamingConventions"
+          language="java"
           since="1.2"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodNamingConventionsRule"
@@ -1079,7 +1099,6 @@ Detects when a class, interface, enum or annotation does not have a package defi
             <property name="xpath">
                 <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
@@ -1107,7 +1126,6 @@ public class ClassInDefaultPackage {
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
                       description="Length under which literals in base 10 are not required to have underscores"/>
             <property name="xpath">
@@ -1149,6 +1167,7 @@ public class Foo {
     </rule>
 
     <rule name="OnlyOneReturn"
+          language="java"
           since="1.0"
           message="A method should have only one exit point, and that should be the last statement in the method"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.OnlyOneReturnRule"
@@ -1160,7 +1179,7 @@ A method should have only one exit point, and that should be the last statement 
         <example>
 <![CDATA[
 public class OneReturnOnly1 {
-  public void foo(int x) {
+  public String foo(int x) {
     if (x > 0) {
       return "hey";   // first exit
     }
@@ -1378,11 +1397,10 @@ Fields, local variables, or parameter names that are very short are not helpful 
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a variable name."/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < $minimum]
+//VariableDeclaratorId[string-length(@Name) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
  (: Foreach statement :)
@@ -1432,7 +1450,7 @@ which class a static member comes from (Sun 1.5 Language Guide).
             <property name="xpath">
                 <value>
 <![CDATA[
-.[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
+.[count(ImportDeclaration[@Static = true()]) > $maximumStaticImports]
 ]]>
                 </value>
             </property>
@@ -1450,6 +1468,7 @@ import static Yoko; // Too much !
 
 
     <rule name="UnnecessaryAnnotationValueElement"
+          language="java"
           since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
@@ -1492,6 +1511,30 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryCast"
+          language="java"
+          minimumLanguageVersion="1.5"
+          since="6.24.0"
+          message="Avoid unnecessary casts"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryCastRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarycast">
+        <description>
+This rule detects when a cast is unnecessary while accessing collection elements. This rule is mostly useful
+for old java code before generics where introduced with java 1.5.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class UnnecessaryCastSample {
+    public void method() {
+        List<String> stringList = Arrays.asList("a", "b");
+        String element = (String) stringList.get(0); // this cast is unnecessary
+        String element2 = stringList.get(0);
+    }
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="UnnecessaryConstructor"
           language="java"
@@ -1538,6 +1581,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryLocalBeforeReturn"
+          language="java"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
@@ -1597,6 +1641,7 @@ public class Bar {
     </rule>
 
     <rule name="UnnecessaryReturn"
+          language="java"
           since="1.3"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule"
@@ -1629,24 +1674,34 @@ Use the diamond operator to let the type be inferred automatically. With the Dia
 to avoid duplication of the type parameters.
 Instead, the compiler is now able to infer the parameter types for constructor calls,
 which makes the code also more readable.
+
+The diamond operator has been introduced with java 7. However, type inference has been improved further
+with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
+code won't compile with java7. If you use java7, make sure to enable `java7Compatibility` for this rule to avoid
+false positives.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
                     <![CDATA[
-//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
-//PrimaryExpression[not(PrimarySuffix)]
-[not(ancestor::ArgumentList)]
-/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+(
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred=false()]
 |
-//StatementExpression[AssignmentOperator][PrimaryExpression/PrimaryPrefix[not(Expression)]]
-//PrimaryExpression[not(PrimarySuffix)]
-[not(ancestor::ArgumentList)]
-/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+//StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
+)
+/(Expression | Expression[$java7Compatibility = false()]/ConditionalExpression | Expression[$java7Compatibility = false()]/ConditionalExpression/Expression)
+/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
+/PrimaryPrefix
+/AllocationExpression
+    [@AnonymousClass=false()]
+    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not($java7Compatibility = true() and .//TypeArgument[@Wildcard=true()])]]
+    [not(ArrayDimsAndInits)]
 ]]>
                 </value>
             </property>
+            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
         </properties>
         <example>
             <![CDATA[
@@ -1680,10 +1735,10 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
 |
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression)=0 and
-    count(./ConditionalOrExpression)=0]
+    not(./CastExpression) and
+    not(./EqualityExpression/MultiplicativeExpression) and
+    not(./ConditionalExpression) and
+    not(./ConditionalOrExpression)]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
@@ -1696,11 +1751,11 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
     not(./CastExpression) and
     not(./EqualityExpression)]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral= true()])]
   /PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./AdditiveExpression[@Image = '-']) and
+    not(./AdditiveExpression[@Operator = '-']) and
     not(./ShiftExpression) and
     not(./RelationalExpression) and
     not(./InstanceOfExpression) and
@@ -1758,9 +1813,9 @@ public class Foo {
 <![CDATA[
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
+[PrimarySuffix[@Arguments= false() and @ArrayDereference = false()]]
 [not(PrimarySuffix/MemberSelector)]
-[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
+[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass= false()]]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
@@ -1819,7 +1874,6 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
     [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
                 ]]></value>
             </property>
-            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -19,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class StringInstantiationRule extends AbstractJavaRule {
@@ -34,7 +36,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        if (!TypeHelper.isA((ASTClassOrInterfaceType) node.getChild(0), String.class)) {
+        if (!TypeTestUtil.isA(String.class, (ASTClassOrInterfaceType) node.getChild(0))) {
             return data;
         }
 
@@ -48,7 +50,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        if (node.hasDescendantOfAnyType(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)) {
+        if (node.descendants().map(asInstanceOf(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)).nonEmpty()) {
             return data;
         }
 
@@ -60,11 +62,11 @@ public class StringInstantiationRule extends AbstractJavaRule {
         }
 
         NameDeclaration nd = name.getNameDeclaration();
-        if (nd == null) {
+        if (!(nd instanceof TypedNameDeclaration)) {
             return data;
         }
 
-        if (nd instanceof TypedNameDeclaration && TypeHelper.isExactlyAny((TypedNameDeclaration) nd, String.class)) {
+        if (TypeTestUtil.isA(String.class, ((TypedNameDeclaration) nd).getTypeNode())) {
             addViolation(data, node);
         }
         return data;

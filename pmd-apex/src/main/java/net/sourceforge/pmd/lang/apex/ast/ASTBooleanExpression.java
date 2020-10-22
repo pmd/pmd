@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,15 +8,16 @@ import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
 
 
-public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
+public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
-    public ASTBooleanExpression(BooleanExpression booleanExpression) {
+    ASTBooleanExpression(BooleanExpression booleanExpression) {
         super(booleanExpression);
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

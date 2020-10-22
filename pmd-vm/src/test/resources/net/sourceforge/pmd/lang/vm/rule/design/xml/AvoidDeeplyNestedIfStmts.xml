@@ -3,23 +3,23 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Bad example #1</description>
         <rule-property name="problemDepth">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    #if ($otherValue)
-        do stuff
+    #set( $br = "<br />" )
+    #if ($someValue)
+        #if ($otherValue)
+            do stuff
+        #end
     #end
-  #end
 #else
-  #set( $br = "<br>" )
+    #set( $br = "<br>" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -28,20 +28,19 @@
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    #if ($otherValue)
-        do stuff
+    #set( $br = "<br />" )
+    #if ($someValue)
+        #if ($otherValue)
+            do stuff
+        #end
     #end
-  #end
 #elseif ($condition2)
-  #set( $br = "<br>" )
-  #if ($condition3)
-    something
-  #end
+    #set( $br = "<br>" )
+    #if ($condition3)
+        something
+    #end
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -50,15 +49,14 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    do something
-  #end
+    #set( $br = "<br />" )
+    #if ($someValue)
+        do something
+    #end
 #else
-  #set( $br = "<br>" )
+    #set( $br = "<br>" )
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -67,19 +65,18 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #if( $XHTML )
-  #set( $br = "<br />" )
-  #if ($someValue)
-    do something
-  #end
+    #set( $br = "<br />" )
+    #if ($someValue)
+        do something
+    #end
 #elseif ($cond1)
-  #set( $br = "<br>" )
+    #set( $br = "<br>" )
 #end
 #if ($cond2)
     some2
 #elseif ($cond3)
     some3
 #end
-     ]]></code>
-        <source-type>vm</source-type>
+        ]]></code>
     </test-code>
 </test-data>

@@ -55,6 +55,21 @@ entries:
     - title: PMD CLI reference
       url: /pmd_userdocs_cli_reference.html
       output: web, pdf
+    - title: PMD Report formats
+      url: /pmd_userdocs_report_formats.html
+      output: web, pdf
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: CPD reference
+        output: web, pdf
+        subfolderitems:
+        - title: Copy-paste detection
+          url: /pmd_userdocs_cpd.html
+          output: web, pdf
+        - title: CPD Report formats
+          url: /pmd_userdocs_cpd_report_formats.html
+          output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
@@ -88,9 +103,6 @@ entries:
         - title: Testing your rules
           url: /pmd_userdocs_extending_testing.html
           output: web, pdf
-    - title: Copy-paste detection
-      url: /pmd_userdocs_cpd.html
-      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
@@ -421,6 +433,9 @@ entries:
         - title: What does 'PMD' mean?
           url: /pmd_projectdocs_trivia_meaning.html
           output: web, pdf
+    - title: Logo
+      url: /pmd_projectdocs_logo.html
+      output: web, pdf
     - title: FAQ
       url: /pmd_projectdocs_faq.html
       output: web, pdf
@@ -444,5 +459,8 @@ entries:
           output: web, pdf
         - title: Merging pull requests
           url: /pmd_projectdocs_committers_merging_pull_requests.html
+          output: web, pdf
+        - title: Main Landing page
+          url: /pmd_projectdocs_committers_main_landing_page.html
           output: web, pdf
 

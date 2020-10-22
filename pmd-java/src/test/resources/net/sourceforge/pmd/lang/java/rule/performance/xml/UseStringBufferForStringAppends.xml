@@ -3,140 +3,142 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 package xxx;
 public class Foo {
- public void bar() {
-  String x;
-  x = "foo";
-  x += "bar";
- }
+    public void bar() {
+        String x;
+        x = "foo";
+        x += "bar"; // note, this won't be detected anymore due to #1736
+        x += "baz";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concat inside method call
-     ]]></description>
+        <description>concat inside method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean bar(Fiddle x) {
-  return x.startsWith("abc");
- }
+    public boolean bar(Fiddle x) {
+        return x.startsWith("abc");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-startsWith
-     ]]></description>
+        <description>startsWith</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-    foo("abc" + def + "hij");
- }
+    public void bar() {
+        foo("abc" + def + "hij");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-compound append, should only report 1 failure
-     ]]></description>
+        <description>compound append, should only report 1 failure</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  String x;
-  x = "foo";
-  x += "bar" + x;
- }
+    public void bar() {
+        String x;
+        x = "foo";
+        x += "bar" + x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case, constructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  String x;
-  x = "foo";
-  x += "bar";
- }
+    public Foo() {
+        String x;
+        x = "foo";
+        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "baz";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-static failure case
-     ]]></description>
+        <description>static failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- static {
-  String x;
-  x = "foo";
-  x += "bar";
- }
+    static {
+        String x;
+        x = "foo";
+        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "baz";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-reference self
-     ]]></description>
-        <expected-problems>1</expected-problems>
+        <description>reference self inside for loop</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
-public class Foo{
-    private void bar(){
+public class Foo {
+    private void bar() {
         String result = "";
-        for (int i = 0; i < 10; i++){
-        result = result + i;
-        } }
+        for (int i = 0; i < 10; i++) {
+            result = result + i;
+            result += i;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-false positive bug #2002722
-     ]]></description>
+        <description>false positive bug #2002722</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  void bar() {
-    String dtdColumnNames[] = null;
-    String sortedDtdColumns[] = null;
-    final int loop = 0;
-    dtdColumnNames[loop] = dtdColumnNames[loop].trim ( );
-    sortedDtdColumns[loop] = sortedDtdColumns[loop].trim ( );
-  }
+    void bar() {
+        String dtdColumnNames[] = null;
+        String sortedDtdColumns[] = null;
+        final int loop = 0;
+        dtdColumnNames[loop] = dtdColumnNames[loop].trim ( );
+        sortedDtdColumns[loop] = sortedDtdColumns[loop].trim ( );
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-false positive bug #2002722, different bug in comment section
-     ]]></description>
+        <description>false positive bug #2002722, different bug in comment section</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  void bar2() {
-    String foo ="foo";
-    foo = mangleTheInput(foo);
-  }
-  String mangleTheInput(final String s) { return s;}
+    void bar2() {
+        String foo ="foo";
+        foo = mangleTheInput(foo);
+    }
+    String mangleTheInput(final String s) { return s;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used in condition) </description>
         <expected-problems>0</expected-problems>
@@ -149,6 +151,7 @@ public class UseStringBuffer {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used both in condition and options)</description>
         <expected-problems>0</expected-problems>
@@ -167,7 +170,8 @@ public class UseStringBuffer {
 }
         ]]></code>
     </test-code>
-	<test-code>
+
+    <test-code>
         <description>#222 False positive when inverting ternary expression arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -175,6 +179,361 @@ public class Foo {
     public void bar() {
         String country = request.getParameter("country");
         country = (country != null) ? country : "USA";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: concat to String in for/while loop</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,13,20,22,29</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+
+    public void bad1() {
+        String logStatement = "";
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val : values) {
+            logStatement = logStatement + val + ", "; // bad
+        }
+        Iterator iter = values.iterator();
+        while (iter.hasNext()) {
+            logStatement = logStatement + iter.next() + ", "; // bad
+        }
+    }
+    public void bad2() {
+        String log = "";
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val1 : values) {
+            log += val1; // bad
+        }
+        for (String val2 : values) log += val2; // bad
+    }
+
+    public void bad3() {
+        String logStatement = "";
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val : values) {
+            logStatement += val + ", "; // bad
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: add numbers in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+    public void good1() {
+        int log = 0;
+        List<Integer> values = Arrays.asList(new Integer[]{1, 2, 3});
+        for (int val : values) {
+            log = log + val;
+        }
+        Iterator<Integer> iter = values.iterator();
+        while (iter.hasNext()) {
+            log = log + iter.next();
+        }
+    }
+
+    public void good2() {
+        int log = 0;
+        List<Integer> values = Arrays.asList(new Integer[]{1, 2, 3});
+        for (int val : values) {
+            log += val;
+        }
+    }
+
+    public void good3() {
+        double totalParticipationPercentage = 0;
+        for (Object portfolioByCategory : new ArrayList()) {
+            for (Object portfolioInstrumentDetails : new ArrayList()) {
+                totalParticipationPercentage = totalParticipationPercentage
+                        + (double) portfolioInstrumentDetails.hashCode();
+            }
+        }
+    }
+
+    public int good4(String keyName) {
+        int index = 0;
+        HashMap<String, String> columnsTypes = new HashMap<String, String>();
+        for (String variableName : columnsTypes.keySet()) {
+            if (keyName.equals(variableName)) {
+                return index;
+            }
+            index += 1;
+        }
+    }
+
+    public long good5(String keyName) {
+        long index = 0;
+        HashMap<String, String> columnsTypes = new HashMap<String, String>();
+        for (String variableName : columnsTypes.keySet()) {
+            if (keyName.equals(variableName)) {
+                return index;
+            }
+            index += 1;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: concat in append in loops is caught by other rule InefficientStringBuffering</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+    public void bad1() {
+        StringBuilder logStatement = new StringBuilder();
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val : values) {
+            logStatement.append(val + ", "); // bad, but that's InefficientStringBuffering
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: proper append in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+    public void good() {
+        StringBuilder logStatement = new StringBuilder();
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val1 : values) {
+            logStatement.append(val1);
+        }
+        for (String val2 : values) logStatement.append(val2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: various concats in loop</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,11,13,14,15</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+    public String bad() {
+        String description = " " + ";";
+        List<String> persons = new ArrayList<String>();
+        for (final String person : persons) {
+            if (person != null) {
+                description += "0" + ":"; //bad
+            } else {
+                description += ":"; //bad
+            }
+            description += person.toString() + ":"; // bad
+            description += ";"; // bad
+            description += person.toString(); // bad
+        }
+        return description;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: various concats in loop which do not aggregate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+    private static final String ROLE_PREFIX = "role-";
+
+    public void good1() {
+        List<String> functionNames = Arrays.asList(new String[]{"a", "b"});
+        for (final String functionName : functionNames) {
+            if (true) {
+                functionNames.add(ROLE_PREFIX + functionName);
+            }
+        }
+    }
+
+    public static void good2(String propertyFile) {
+        String[] properyFilenames = propertyFile.split(",");
+        for (String propertyFilename : properyFilenames) {
+            if (propertyFilename != null) {
+                try {
+                    //getResourceAsStream(propertyFilename);
+                } catch (Exception e) {
+                    logError("Failed to load propertyFile with name " + propertyFilename + ": ", e);
+                }
+            }
+        }
+    }
+
+    public static void good3() {
+        List<String> linkNames = new ArrayList<String>();
+        Map<String, String> messages = new HashMap<String, String>();
+        for (String linkName : linkNames) {
+            messages.put(linkName + ".url", "url");
+            messages.put(linkName + ".description", "desc");
+        }
+    }
+
+    public static void good4() {
+        List<String> linkNames = new ArrayList<String>();
+        Map<String, String> messages = new HashMap<String, String>();
+        String URL = "", DESCRIPTION = "";
+        for (String linkName : linkNames) {
+            if (!messages.containsKey(linkName + URL)) {
+                messages.put(linkName + URL, "some");
+            }
+            if (!messages.containsKey(linkName + DESCRIPTION)) {
+                messages.put(linkName + DESCRIPTION, "some");
+            }
+        }
+    }
+
+    private static void logError(String text, Exception e) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: concat to String in do-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+
+    public void bad() {
+        String logStatement = "";
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        int i = 0;
+        do {
+            logStatement = logStatement + values.get(i++) + ", "; // bad
+        } while (i < values.length());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: concat to String field in loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+
+    private String logStatement = "";
+
+    public void bad() {
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val : values) {
+            logStatement = logStatement + val + ", "; // bad
+        }
+    }
+
+    public void good() {
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        StringBuilder sb = new StringBuilder(logStatement);
+        for (String val : values) {
+            sb.append(val).append(", ");
+        }
+        logStatement = sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with not accumulating String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private List<String> fileExtensions = new ArrayList();
+    public void good(List<String> fileExtensions) {
+        for (String fileExtension : fileExtensions) {
+                if (fileExtension.charAt(0) != '.') {
+                    fileExtension = "." + fileExtension;
+                }
+                this.fileExtensions.add(fileExtension);
+            }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positives with field assignment and shadowing parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static String staticField1 = "";
+    public String field2 = "";
+    private String aVariable;
+
+    void setStatic(String staticField1) {
+        staticField1 = staticField1; // no violation!!
+        this.staticField1 = staticField1;
+    }
+
+    void setStatic2(String staticField1) {
+        staticField1 += staticField1; // no violation - only problematic within loops
+        this.staticField1 += staticField1;
+    }
+
+    void setField(String field2) {
+        field2 = field2; // no violation
+        this.field2 = field2;
+    }
+
+    void setField2(String field2) {
+        field2 += field2; // no violation
+        this.field2 += field2;
+    }
+
+    public String method2(int val) {
+        switch (val) {
+            case 0:
+                String aVariable = "";
+                if (this.aVariable != null) {
+                    aVariable = this.aVariable;
+                }
+                return aVariable;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseStringBufferForStringAppends: False positive if only one concatenation #1736</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseStringBufferForStringAppendsFP {
+    public void doSomething(String s1) {
+        String s2 = "a";
+        s2 += s1;
     }
 }
         ]]></code>

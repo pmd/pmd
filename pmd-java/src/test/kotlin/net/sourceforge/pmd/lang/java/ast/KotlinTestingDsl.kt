@@ -1,17 +1,30 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
+import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldMatchNode
+import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.WITH_PROCESSING
+import org.apache.commons.io.output.TeeOutputStream
 import java.beans.PropertyDescriptor
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 
 /**
  * Represents the different Java language versions.
@@ -19,13 +32,16 @@ import java.beans.PropertyDescriptor
 enum class JavaVersion : Comparable<JavaVersion> {
     J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
     J12,
-    J13, J13__PREVIEW,
-    J14, J14__PREVIEW;
+    J13,
+    J14, J14__PREVIEW,
+    J15, J15__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
 
-    val parser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion(pmdName)
+    val pmdVersion get() = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(pmdName)
+
+    val parser: JavaParsingHelper = WITH_PROCESSING.withDefaultVersion(pmdName)
 
     operator fun not(): List<JavaVersion> = values().toList() - this
 
@@ -43,17 +59,32 @@ enum class JavaVersion : Comparable<JavaVersion> {
     companion object {
         val Latest = values().last()
         val Earliest = values().first()
+
+        fun since(v: JavaVersion) = v.rangeTo(Latest)
+
+        fun except(v1: JavaVersion, vararg versions: JavaVersion) =
+                values().toList() - v1 - versions
+
+        fun except(versions: List<JavaVersion>) = values().toList() - versions
     }
 }
 
 
 object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) {
 
+    private val ignoredProps = setOf("scope")
+
     override fun takePropertyDescriptorIf(node: Node, prop: PropertyDescriptor): Boolean =
             when {
+                prop.name in ignoredProps                          -> false
                 prop.readMethod?.declaringClass !== node.javaClass -> false
+                // avoid outputting too much, it's bad for readability
+                node is ASTNumericLiteral                          -> when {
+                    node.isIntegral -> prop.name == "valueAsInt"
+                    else            -> prop.name == "valueAsDouble"
+                }
 
-                else -> true
+                else                                               -> true
             }
 
     // dump the 'it::getName' instead of 'it.name' syntax
@@ -84,6 +115,31 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 private val javaImplicitAssertions: Assertions<Node> = {
     DefaultMatchingConfig.implicitAssertions(it)
 
+    if (it is ASTLiteral) {
+        it::isNumericLiteral shouldBe (it is ASTNumericLiteral)
+        it::isCharLiteral shouldBe (it is ASTCharLiteral)
+        it::isStringLiteral shouldBe (it is ASTStringLiteral)
+        it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
+        it::isNullLiteral shouldBe (it is ASTNullLiteral)
+    }
+
+    if (it is ASTExpression) run {
+        it::isParenthesized shouldBe (it.parenthesisDepth > 0)
+    }
+
+    if (it is InternalInterfaces.AtLeastOneChild) {
+        assert(it.numChildren > 0) {
+            "Expected at least one child for $it"
+        }
+    }
+
+    if (it is AccessNode) run {
+        it.modifiers.effectiveModifiers.shouldContainAll(it.modifiers.explicitModifiers)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.PUBLIC, JModifier.PRIVATE, JModifier.PROTECTED)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.FINAL, JModifier.ABSTRACT)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.DEFAULT, JModifier.ABSTRACT)
+    }
+
 }
 
 
@@ -107,7 +163,7 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  *
  * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
  * on the strings, using their type parameter and the info in this test context to parse, find
- * the node, and execute the matcher in a single call. These may be used by [io.kotlintest.should],
+ * the node, and execute the matcher in a single call. These may be used by [io.kotest.matchers.should],
  * e.g.
  *
  *      parserTest("Test ShiftExpression operator") {
@@ -120,7 +176,7 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
- * Technically the utilities provided by this class may be used outside of [io.kotlintest.specs.FunSpec]s,
+ * Technically the utilities provided by this class may be used outside of [io.kotest.specs.FunSpec]s,
  * e.g. in regular JUnit tests, but I think we should strive to uniformize our testing style,
  * especially since KotlinTest defines so many.
  *
@@ -136,6 +192,20 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          val otherImports: MutableList<String> = mutableListOf(),
                          var packageName: String = "",
                          var genClassHeader: String = "class Foo") {
+
+    var parser: JavaParsingHelper = javaVersion.parser.withProcessing(false)
+        private set
+
+    fun enableProcessing(logToConsole: Boolean = false): TestCheckLogger {
+        val logger = TestCheckLogger(logToConsole)
+        parser = parser.withProcessing(true).withLogger(logger)
+        return logger
+    }
+
+    /** Returns a function that can retrieve the log*/
+    fun logTypeInference(verbose: Boolean = false, to: PrintStream = System.err) {
+        parser = parser.withProcessing(true).logTypeInference(verbose, to)
+    }
 
     var fullSource: String? = null
 
@@ -171,63 +241,9 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             "Unsupported class $klass"
         }
 
-        fullSource = javaVersion.parser.readClassSource(klass)
+        fullSource = javaVersion.parser.withResourceContext(javaClass).readClassSource(klass)
     }
 
-    inline fun <reified N : JavaNode> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
-            : Assertions<String> = { nodeParsingCtx.parseAndFind<N>(it, this).shouldMatchNode(ignoreChildren, nodeSpec) }
-
-    /**
-     * Returns a String matcher that parses the node using [parseExpression] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     *
-     */
-    inline fun <reified N : JavaNode> matchExpr(ignoreChildren: Boolean = false,
-                                                     noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(ExpressionParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseStatement] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : JavaNode> matchStmt(ignoreChildren: Boolean = false,
-                                                noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(StatementParsingCtx, ignoreChildren, nodeSpec)
-
-
-    /**
-     * Returns a String matcher that parses the node using [parseType] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : JavaNode> matchType(ignoreChildren: Boolean = false,
-                                               noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(TypeParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseTypeParameters]
-     * then matches it against the [nodeSpec] using [matchNode].
-     */
-    fun matchTypeParameters(ignoreChildren: Boolean = false,
-                            nodeSpec: NodeSpec<ASTTypeParameters>) =
-            makeMatcher(TypeParametersParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(ignoreChildren: Boolean = false,
-                                                                     noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(TopLevelTypeDeclarationParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseDeclaration] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     *
-     * Note that the enclosing type declaration can be customized by changing [genClassHeader].
-     */
-    inline fun <reified N : JavaNode> matchDeclaration(
-            ignoreChildren: Boolean = false,
-            noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
     fun notParseIn(nodeParsingCtx: NodeParsingCtx<*>, expected: (ParseException) -> Unit = {}): Assertions<String> = {
         val e = shouldThrow<ParseException> {
@@ -238,52 +254,23 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseIn(nodeParsingCtx: NodeParsingCtx<*>) = object : Matcher<String> {
 
-        override fun test(value: String): Result {
+        override fun test(value: String): MatcherResult {
             val (pass, e) = try {
                 nodeParsingCtx.parseNode(value, this@ParserTestCtx)
                 Pair(true, null)
             } catch (e: ParseException) {
                 Pair(false, e)
+            } catch (e: TokenMgrError) {
+                Pair(false, e)
             }
 
-            return Result(pass,
+            return MatcherResult(pass,
                     "Expected '$value' to parse in $nodeParsingCtx, got $e",
-                    "Expected '$value' not to parse in $nodeParsingCtx"
+                    "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
             )
 
         }
     }
-
-    /**
-     * Expect a parse exception to be thrown by [block].
-     * The message is asserted to contain [messageContains].
-     */
-    fun expectParseException(messageContains: String, block: () -> Unit) {
-
-        val thrown = shouldThrow<ParseException>(block)
-
-        thrown.message.shouldContain(messageContains)
-
-    }
-
-    inline fun <reified N : ASTExpression> parseExpression(expr: String): N =
-            ExpressionParsingCtx.parseAndFind(expr, this)
-
-    // don't forget the semicolon
-    inline fun <reified N : ASTStatement> parseStatement(stmt: String): N =
-            StatementParsingCtx.parseAndFind(stmt, this)
-
-    inline fun <reified N : ASTType> parseType(type: String): N =
-            TypeParsingCtx.parseAndFind(type, this)
-
-    inline fun parseTypeParameters(typeParams: String): ASTTypeParameters =
-            TypeParametersParsingCtx.parseAndFind(typeParams, this)
-
-    inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N =
-            TopLevelTypeDeclarationParsingCtx.parseAndFind(decl, this)
-
-    inline fun <reified N : Node> parseDeclaration(decl: String): N =
-            EnclosedDeclarationParsingCtx.parseNode(decl, this) as N
 
 }
 

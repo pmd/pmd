@@ -6,47 +6,53 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
- * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ * This defines a compact constructor for a {@link ASTRecordDeclaration RecordDeclaration}
+ * (JDK 14 and JDK 15 preview feature). Compact constructors implicitly declares formal
+ * parameters corresponding to the record component list. These can be
+ * fetched from {@link #getSymbol()}.
+ *
+ * <p>Compact record constructors must be declared "public".
+ *
+ * TODO make implicit formal parameter node and implement ASTMethodOrConstructorDeclaration.
  *
  * <pre class="grammar">
  *
- * RecordConstructorDeclaration ::=  ({@linkplain ASTAnnotation Annotation})*
- *                                   RecordModifiers
+ * RecordConstructorDeclaration ::=  {@link ASTModifierList Modifiers}
  *                                   &lt;IDENTIFIER&gt;
  *                                   {@link ASTBlock Block}
  *
  * </pre>
- *
  */
 @Experimental
-public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNode implements ASTAnyTypeBodyDeclaration {
+public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, AccessNode {
+
     ASTRecordConstructorDeclaration(int id) {
         super(id);
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    public ASTBlock getBody() {
+        return getFirstChildOfType(ASTBlock.class);
     }
 
-    @Override
     public ASTRecordConstructorDeclaration getDeclarationNode() {
         return this;
     }
 
     @Override
-    public DeclarationKind getKind() {
-        return DeclarationKind.RECORD_CONSTRUCTOR;
+    public ASTRecordDeclaration getEnclosingType() {
+        return (ASTRecordDeclaration) super.getEnclosingType();
     }
 
-    public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
+    @Override
+    public JConstructorSymbol getSymbol() {
+        return getEnclosingType().getRecordComponents().getSymbol();
     }
 }

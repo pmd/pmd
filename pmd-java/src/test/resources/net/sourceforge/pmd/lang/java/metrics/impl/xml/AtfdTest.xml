@@ -121,8 +121,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
 }
-
-     ]]></code-fragment>
+    ]]></code-fragment>
 
 
     <test-code>
@@ -148,28 +147,24 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             <message>'Foo#bar()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-          Type a;
-          void bar() {
-            a.b.foo();
-          }
-        }
+public class Foo {
+    Type a;
+    void bar() {
+        a.b.foo();
+    }
+}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Test empty class</description>
-
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-
-
-
-        }
+public class Foo {
+}
         ]]></code>
     </test-code>
 
@@ -177,14 +172,14 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <description>ATFD doesn't support interfaces or annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public interface Foo {
+public interface Foo {
 
-           public final int h;
+    public final int h;
 
-           @interface Tag {
-              public static final int num = 0;
-           }
-        }
+    @interface Tag {
+        public static final int num = 0;
+    }
+}
         ]]></code>
     </test-code>
 

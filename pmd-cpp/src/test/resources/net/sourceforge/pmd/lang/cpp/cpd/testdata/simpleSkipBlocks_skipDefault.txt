@@ -1,0 +1,26 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [int]                                   1         4
+    [main]                                  5         9
+    [(]                                     9         10
+    [)]                                     10        11
+    [{]                                     12        13
+L2
+    [}]                                     1         2
+L5
+    [int]                                   1         4
+    [foobar]                                5         11
+    [(]                                     11        12
+    [)]                                     12        13
+    [{]                                     14        15
+L6
+    [}]                                     1         2
+L27
+    [int]                                   1         4
+    [otherMethod]                           5         16
+    [(]                                     16        17
+    [)]                                     17        18
+    [{]                                     19        20
+L28
+    [}]                                     1         2
+EOF

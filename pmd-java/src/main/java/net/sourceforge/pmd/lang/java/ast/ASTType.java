@@ -4,72 +4,76 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
 
 /**
  * Represents a type reference.
  *
- * <pre>
+ * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>
+ * and <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType">UnannType</a>
+ * at the same time. In some contexts this can also be an {@linkplain ASTIntersectionType intersection type},
+ * though the JLS has no production for that.
  *
- * Type ::= {@linkplain ASTReferenceType ReferenceType} | {@linkplain ASTPrimitiveType PrimitiveType}
+ * <pre class="grammar">
+ *
+ * Type ::= {@link ASTReferenceType ReferenceType}
+ *        | {@link ASTPrimitiveType PrimitiveType}
  *
  * </pre>
  *
- * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
-public class ASTType extends AbstractJavaTypeNode {
+public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
-    @InternalApi
+    // these are noAttribute so they don't end up in the tree dump tests
+
+    /**
+     * For now this returns the name of the type with all the segments,
+     * without annotations, array dimensions, or type parameters. Experimental
+     * because we need to specify it, eg it would be more useful to have
+     * a method return a qualified name with help of the symbol table.
+     *
+     * @deprecated This is not meaningful. Use {@link #getText()}, or {@link TypePrettyPrint}
+     */
     @Deprecated
-    public ASTType(int id) {
-        super(id);
-    }
+    String getTypeImage();
 
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    public String getTypeImage() {
-        ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (refType != null) {
-            return refType.getImage();
-        }
-        return getFirstDescendantOfType(ASTPrimitiveType.class).getImage();
-    }
-
-
+    /**
+     * Returns the number of array dimensions of this type.
+     * This is 0 unless this node {@linkplain #isArrayType()}.
+     */
     @Deprecated
-    public int getArrayDepth() {
-        if (getNumChildren() != 0
-            && (getChild(0) instanceof ASTReferenceType || getChild(0) instanceof ASTPrimitiveType)) {
-            return ((Dimensionable) getChild(0)).getArrayDepth();
-        }
-        return 0; // this is not an array
+    default int getArrayDepth() {
+        return 0;
     }
 
 
     /**
-     * @deprecated Use {@link #isArrayType()}
+     * Returns true if this is the "void" pseudo-type, ie an {@link ASTVoidType}.
      */
+    @NoAttribute
+    default boolean isVoid() {
+        return this instanceof ASTVoidType;
+    }
+
+    // TODO remove that, there's enough on JTypeMirror
+
     @Deprecated
-    public boolean isArray() {
-        return isArrayType();
+    default boolean isPrimitiveType() {
+        return this instanceof ASTPrimitiveType;
+    }
+
+    @Deprecated
+    default boolean isArrayType() {
+        return this instanceof ASTArrayType;
     }
 
 
-    /**
-     * Returns true if this type is an array type.
-     */
-    public boolean isArrayType() {
-        return getArrayDepth() > 0;
+    @Deprecated
+    default boolean isClassOrInterfaceType() {
+        return this instanceof ASTClassOrInterfaceType;
     }
+
+
 }

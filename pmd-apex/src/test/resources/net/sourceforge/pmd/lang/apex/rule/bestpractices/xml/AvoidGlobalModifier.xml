@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,8 +11,8 @@
 global class Foo {
 
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Global interface</description>
@@ -22,32 +21,38 @@ global class Foo {
 global interface Foo {
 
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Global method</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 global class Foo {
-	global Integer bar() {
-	
-	}
+    global Integer bar() {
+       // Note, the rule reports the whole class, since that's enough:
+       // if a member is global, that class has to be global as well to be valid apex.
+       // See also https://github.com/pmd/pmd/issues/2298
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Global inner interface</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 global class Foo {
-	global interface Bar {
-
-	}
+    global interface Bar {
+       // Note, the rule reports the whole class, since that's enough:
+       // if a member is global, that class has to be global as well to be valid apex.
+       // See also https://github.com/pmd/pmd/issues/2298
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>#1348 [apex] AvoidGlobalModifierRule gives warning even when its a REST webservice - false positive</description>

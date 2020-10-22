@@ -3,140 +3,131 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case, return statement
-     ]]></description>
+        <description>failure case, return statement</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar() {
-      return (0);
-   }
+    public int bar() {
+        return (0);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, assignment
-     ]]></description>
+        <description>failure case, assignment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar(int x) {
-      int y = (x + 5);
-      return y;
-   }
+    public int bar(int x) {
+        int y = (x + 5);
+        return y;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, condition 1
-     ]]></description>
+        <description>failure case, condition 1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar(int x) {
-      if ((x % 2 == 0)) {
-         return x;
-      }
-      return 0;
-   }
+    public int bar(int x) {
+        if ((x % 2 == 0)) {
+            return x;
+        }
+        return 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, condition 2
-     ]]></description>
+        <description>failure case, condition 2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar(int x) {
-      if ((x % 2) == 0) {
-         return x;
-      }
-      return 0;
-   }
+    public int bar(int x) {
+        if ((x % 2) == 0) {
+            return x;
+        }
+        return 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-useful parentheses, arithmetic
-     ]]></description>
+        <description>useful parentheses, arithmetic</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar(int x) {
-      return (x + 2) * 5;
-   }
+    public int bar(int x) {
+        return (x + 2) * 5;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-useful parentheses, logic
-     ]]></description>
+        <description>useful parentheses, logic</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public int bar(int x) {
-   // actually, the inner parentheses wouldn't be necessary,
-   // as the "||" operator has the lowest priority, followed by "=="
-   // and by "%" with the highest priority here...
-   // But for readability, it is better to have the parentheses as in
-   // this example.
-      if ((x % 2 == 0) || (x % 2 == 1)) {
-         return x;
-      } else {
-         // it's the same with this extra parentheses
-         return (x %2 == 0) ? x : -x;
-      }
-      return -x;
-   }
+    public int bar(int x) {
+        // actually, the inner parentheses wouldn't be necessary,
+        // as the "||" operator has the lowest priority, followed by "=="
+        // and by "%" with the highest priority here...
+        // But for readability, it is better to have the parentheses as in
+        // this example.
+        if ((x % 2 == 0) || (x % 2 == 1)) {
+            return x;
+        } else {
+            // it's the same with this extra parentheses
+            return (x %2 == 0) ? x : -x;
+        }
+        return -x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-typecast, ok
-     ]]></description>
+        <description>typecast, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
    public String bar(Object o) {
-	    return ((Exception) o).getMessage();
+        return ((Exception) o).getMessage();
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-typecast with extra, bad
-     ]]></description>
+        <description>typecast with extra, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public String bar(Object o) {
-	    return (((Exception) o)).getMessage();
-   }
+    public String bar(Object o) {
+        return (((Exception) o)).getMessage();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-false negatives
-     ]]></description>
+        <description>false negatives</description>
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
-   private boolean isSimpleReturn(Node node) {
-      return
-         ( node instanceof ASTReturnStatement ) // rule triggeres here
-         &&
-         ( node.getNumChildren() == 0 );     // and here
+    private boolean isSimpleReturn(Node node) {
+        return
+            ( node instanceof ASTReturnStatement ) // rule triggeres here
+            &&
+            ( node.getNumChildren() == 0 );     // and here
     }
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
@@ -149,15 +140,13 @@ public class Foo {
           // and here for the following parentheses once
           (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
           node.getBeginColumn()) - 1;
-        }
-
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Parentheses around binary expressions are really necessary
-     ]]></description>
+        <description>Parentheses around binary expressions are really necessary</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -165,12 +154,11 @@ public class Foo {
         return (modifiers & mask) == mask;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3526992, false +. In this case the parentheses must stay.
-        ]]></description>
+        <description>3526992, false +. In this case the parentheses must stay.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -183,6 +171,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1012 False positive: Useless parentheses.</description>
         <expected-problems>0</expected-problems>
@@ -199,6 +188,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1111 False positive: Useless parentheses</description>
         <expected-problems>0</expected-problems>
@@ -208,6 +198,7 @@ return (absolute ? amount.abs() : amount).toString();
 } }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1102 False positive: shift operator parenthesis</description>
         <expected-problems>0</expected-problems>
@@ -219,6 +210,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1243 Useless Parentheses False Positive</description>
         <expected-problems>0</expected-problems>
@@ -230,6 +222,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1282 False Positive with implicit String.valuesOf() (Java)</description>
         <expected-problems>0</expected-problems>
@@ -246,6 +239,7 @@ public class NewClass {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1366 UselessParentheses false positive on multiple equality operators</description>
         <expected-problems>0</expected-problems>
@@ -264,37 +258,37 @@ public class Useless {
         <expected-linenumbers>3,4,5,6,7,8,9,10,11,12,13,14</expected-linenumbers>
         <code><![CDATA[
 class ExampleClass {
-  void exampleExpressions() {
-    eUseless = (a++) + b;
-    eUseless = (a--) + b;
-    eUseless = (++a) + b;
-    eUseless = (--a) + b;
-    eUseless = (+a) + b;
-    eUseless = (-a) + b;
-    eUseless = (~a) + b;
-    eUseless = (!a) + b;
-    eUseless = (a * b) + c;
-    eUseless = (a / b) + c;
-    eUseless = (a % b) + c;
-    eUseless = (a + b) + c;
-    eGood = (a - b) + c;
-    eGood = (a << b) + c;
-    eGood = (a >> b) + c;
-    eGood = (a >>> b) + c;
-    eGood = (a < b) + c;
-    eGood = (a > b) + c;
-    eGood = (a <= b) + c;
-    eGood = (a >= b) + c;
-    eGood = (a instanceof b) + c;
-    eGood = (a == b) + c;
-    eGood = (a != b) + c;
-    eGood = (a & b) + c;
-    eGood = (a ^ b) + c;
-    eGood = (a | b) + c;
-    eGood = (a && b) + c;
-    eGood = (a || b) + c;
-    eGood = (a ? b : c) + d;
-  }
+    void exampleExpressions() {
+        eUseless = (a++) + b;
+        eUseless = (a--) + b;
+        eUseless = (++a) + b;
+        eUseless = (--a) + b;
+        eUseless = (+a) + b;
+        eUseless = (-a) + b;
+        eUseless = (~a) + b;
+        eUseless = (!a) + b;
+        eUseless = (a * b) + c;
+        eUseless = (a / b) + c;
+        eUseless = (a % b) + c;
+        eUseless = (a + b) + c;
+        eGood = (a - b) + c;
+        eGood = (a << b) + c;
+        eGood = (a >> b) + c;
+        eGood = (a >>> b) + c;
+        eGood = (a < b) + c;
+        eGood = (a > b) + c;
+        eGood = (a <= b) + c;
+        eGood = (a >= b) + c;
+        eGood = (a instanceof b) + c;
+        eGood = (a == b) + c;
+        eGood = (a != b) + c;
+        eGood = (a & b) + c;
+        eGood = (a ^ b) + c;
+        eGood = (a | b) + c;
+        eGood = (a && b) + c;
+        eGood = (a || b) + c;
+        eGood = (a ? b : c) + d;
+    }
 }
         ]]></code>
     </test-code>
@@ -378,12 +372,12 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-          public class Foo {
-            private String getData(final String header) {
-              String result = ("[" + header + ":" + Utils.decode(header) + "]");
-              return result;
-            }
-          }
+public class Foo {
+    private String getData(final String header) {
+        String result = ("[" + header + ":" + Utils.decode(header) + "]");
+        return result;
+    }
+}
          ]]></code>
     </test-code>
 
@@ -391,12 +385,12 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression modified</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-          public class Foo {
-            private String getData(final String header) {
-              String result = ("[" + header + ":" + Utils.decode(header) + "]").foo();
-              return result;
-            }
-          }
+public class Foo {
+    private String getData(final String header) {
+        String result = ("[" + header + ":" + Utils.decode(header) + "]").foo();
+        return result;
+    }
+}
          ]]></code>
     </test-code>
 
@@ -404,11 +398,11 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: Parentheses around cast</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          public void bar(Object o) {
-            return ((String) "doo");
-          }
-        }
+public class Foo {
+    public void bar(Object o) {
+        return ((String) "doo");
+    }
+}
         ]]></code>
     </test-code>
 
@@ -416,11 +410,11 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: Parentheses around call chain</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          public void bar(Object o) {
-             return (a.bar()).foo();
-          }
-        }
+public class Foo {
+    public void bar(Object o) {
+        return (a.bar()).foo();
+    }
+}
         ]]></code>
     </test-code>
 
@@ -428,11 +422,11 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: Unreported call chain</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          public void bar(Object o) {
-             return a.bar().foo();
-          }
-        }
+public class Foo {
+    public void bar(Object o) {
+        return a.bar().foo();
+    }
+}
         ]]></code>
     </test-code>
 
@@ -440,11 +434,11 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: bad, returning variable in parens</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          int bar(int y) {
-            return (y);
-          }
-        }
+public class Foo {
+    int bar(int y) {
+        return (y);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -452,11 +446,11 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: Failure case, returning literal</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          int bar() {
-            String a = ((String) "foo");
-          }
-        }
+public class Foo {
+    int bar() {
+        String a = ((String) "foo");
+    }
+}
         ]]></code>
     </test-code>
 

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
@@ -16,7 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
  */
 public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTMethodOrConstructorDeclaration> {
     public ExcessiveMethodLengthRule() {
-        super(ASTMethodOrConstructorDeclaration.class, ASTMethodDeclaration.class, ASTConstructorDeclaration.class);
+        super(ASTMethodOrConstructorDeclaration.class);
     }
 
     @Override

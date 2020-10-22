@@ -64,7 +64,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     private void addScope(Scope newScope, PLSQLNode node) {
         newScope.setParent(scopes.peek());
         scopes.push(newScope);
-        node.setScope(newScope);
+        InternalApiBridge.setScope(node, newScope);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
         // When we do full symbol resolution, we'll need to add a truly
         // top-level GlobalScope.
         Scope scope;
-        // %TODO generate a SchemaScope, based on inferred or explcitly
+        // %TODO generate a SchemaScope, based on inferred or explicitly
         // specified SchemaName
         ASTObjectDeclaration n = null; // node.getPackageDeclaration();
         if (n != null) {
@@ -133,7 +133,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
             scope = new SourceFileScope();
         }
         scopes.push(scope);
-        node.setScope(scope);
+        InternalApiBridge.setScope(node, scope);
     }
 
     @Override
@@ -364,7 +364,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     // }
 
     private void cont(PLSQLNode node) {
-        super.visit(node, null);
+        super.visitPlsqlNode(node, null);
         scopes.pop();
     }
 }

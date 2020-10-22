@@ -31,7 +31,6 @@ import org.w3c.dom.Text;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -169,7 +168,6 @@ public class RuleSetWriter {
                     return null;
                 }
             } else {
-                Language language = ruleReference.getOverriddenLanguage();
                 LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
                 LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
                 Boolean deprecated = ruleReference.isOverriddenDeprecated();
@@ -185,18 +183,18 @@ public class RuleSetWriter {
                         .getOverriddenPropertiesByPropertyDescriptor();
                 List<String> examples = ruleReference.getOverriddenExamples();
 
-                return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated,
+                return createSingleRuleElement(null, minimumLanguageVersion, maximumLanguageVersion, deprecated,
                         name, null, ref, message, externalInfoUrl, null, description, priority,
                         propertyDescriptors, propertiesByPropertyDescriptor, examples);
             }
         } else {
-            return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
-                    rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
-                    rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(),
-                    rule.getDescription(),
-                    rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
-                    rule.getExamples());
+            return createSingleRuleElement(rule.getLanguage(),
+                                           rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
+                                           rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
+                                           rule.getRuleClass(),
+                                           rule.getDescription(),
+                                           rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
+                                           rule.getExamples());
         }
     }
 
@@ -212,7 +210,8 @@ public class RuleSetWriter {
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();
-        if (language != null) {
+        // language is now a required attribute, unless this is a rule reference
+        if (clazz != null) {
             ruleElement.setAttribute("language", language.getTerseName());
         }
         if (minimumLanguageVersion != null) {

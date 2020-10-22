@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
@@ -36,7 +36,7 @@ public class ClassScope extends AbstractScope {
     private String className;
 
     public ClassScope(String className) {
-        this.className = AbstractPLSQLNode.getCanonicalImage(className);
+        this.className = PLSQLNode.getCanonicalImage(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 
@@ -171,7 +171,7 @@ public class ClassScope extends AbstractScope {
 
         if (null == occurrence.getImage()) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("occurrence==" + occurrence.toString() + "with Argumanet Count == "
+                LOGGER.finest("occurrence==" + occurrence.toString() + "with Argument Count == "
                         + occurrence.getArgumentCount() + " for className=" + className);
             }
         }
@@ -189,25 +189,25 @@ public class ClassScope extends AbstractScope {
 
     @Override
     public String toString() {
-        String res = "ClassScope (" + className + "): ";
+        StringBuilder res = new StringBuilder("ClassScope (").append(className).append("): ");
         Map<ClassNameDeclaration, List<NameOccurrence>> classNames = getClassDeclarations();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = getVariableDeclarations();
         if (!classNames.isEmpty()) {
-            res += "(" + classNames.keySet() + ")";
+            res.append('(').append(classNames.keySet()).append(')');
         }
         if (!methodNames.isEmpty()) {
             for (MethodNameDeclaration mnd : methodNames.keySet()) {
-                res += mnd.toString();
+                res.append(mnd.toString());
                 int usages = methodNames.get(mnd).size();
-                res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";
-                res += ",";
+                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
+                res.append(',');
             }
         }
         if (!variableNames.isEmpty()) {
-            res += "(" + variableNames.keySet() + ")";
+            res.append('(').append(variableNames.keySet()).append(')');
         }
-        return res;
+        return res.toString();
     }
 
     private String clipClassName(String s) {

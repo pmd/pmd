@@ -1,0 +1,36 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [export]                                1         7
+    [default]                               8         15
+    [class]                                 16        21
+    [DrawLocation]                          22        34
+    [extends]                               35        42
+    [joint]                                 43        48
+    [.]                                     48        49
+    [shapes]                                49        55
+    [.]                                     55        56
+    [basic]                                 56        61
+    [.]                                     61        62
+    [Generic]                               62        69
+    [{]                                     70        71
+L2
+    [constructor]                           5         16
+    [(]                                     16        17
+    [location]                              17        25
+    [:]                                     25        26
+    [ILocation]                             27        36
+    [)]                                     36        37
+    [{]                                     38        39
+L3
+    [this]                                  9         13
+    [.]                                     13        14
+    [markup]                                14        20
+    [=]                                     21        22
+    [`<g>\n        <path class="locatio[    23        12
+L11
+    [;]                                     12        13
+L12
+    [}]                                     5         6
+L14
+    [}]                                     1         2
+EOF

@@ -4,46 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements JavaNode {
 
-public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
-
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(int id) {
+    ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
     }
 
     @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < getNumChildren(); i++) {
-            if (getChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) getChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean isFindBoundary() {
-        // TODO remove from java-grammar
-        return isAnonymousInnerClass();
-    }
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 

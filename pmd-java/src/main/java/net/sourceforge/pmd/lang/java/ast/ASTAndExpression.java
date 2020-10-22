@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a non-shortcut boolean AND-expression.
  * This has a precedence greater than {@link ASTExclusiveOrExpression},
@@ -15,28 +13,24 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * rather, they are expressions with an operator precedence greater or equal to EqualityExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&" {@linkplain ASTEqualityExpression EqualityExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTAndExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTAndExpression extends AbstractJavaExpr implements ASTExpression {
 
-    @InternalApi
-    @Deprecated
-    public ASTAndExpression(int id) {
+    ASTAndExpression(int id) {
         super(id);
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

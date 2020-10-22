@@ -1,0 +1,1 @@
+error("This is a double-quoted string");

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
+@Ignore
 public class ScopeAndDeclarationFinderTest extends BaseNonParserTest {
 
     /**

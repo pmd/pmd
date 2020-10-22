@@ -3,6 +3,7 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>violation: reassigned 'for' loop variable</description>
         <expected-problems>1</expected-problems>
@@ -19,7 +20,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -35,7 +36,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -58,7 +59,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -74,8 +75,7 @@ public class Foo {
         }
     }
 }
-
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -97,7 +97,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -112,7 +112,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -127,7 +127,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -142,7 +142,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -157,7 +157,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -173,7 +173,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -190,7 +190,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -206,7 +206,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -225,7 +225,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -241,7 +241,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -257,7 +257,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -275,7 +275,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -294,7 +294,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -312,7 +312,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -331,7 +331,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -347,7 +347,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -364,7 +364,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -380,7 +380,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -397,7 +397,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -413,7 +413,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -430,7 +430,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -447,7 +447,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -464,7 +464,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -481,7 +481,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -499,7 +499,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -517,7 +517,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -533,7 +533,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -550,7 +550,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -574,7 +574,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -603,7 +603,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -621,7 +621,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -640,7 +640,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -657,7 +657,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -677,7 +677,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -696,6 +696,6 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

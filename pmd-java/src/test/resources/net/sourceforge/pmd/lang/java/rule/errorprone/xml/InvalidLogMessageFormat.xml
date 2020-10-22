@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>missing argument</description>
         <expected-problems>1</expected-problems>
@@ -12,15 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Foo {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
 
-	public void call() {
-		final String oneArg = "one argument";
-		LOGGER.error("forget the arg {} and {}", oneArg);
-	}
+    public void call() {
+        final String oneArg = "one argument";
+        LOGGER.error("forget the arg {} and {}", oneArg);
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>too many arguments</description>
         <expected-problems>1</expected-problems>
@@ -30,15 +32,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Foo {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
-	private final String MESSAGE = "too many args {}";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private final String MESSAGE = "too many args {}";
 
-	public void call() {
-		LOGGER.error(MESSAGE, "arg1", "arg2");
-	}
+    public void call() {
+        LOGGER.error(MESSAGE, "arg1", "arg2");
+    }
 }
-         ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Logger without problems</description>
         <expected-problems>0</expected-problems>
@@ -47,28 +50,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Foo {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
 
-	public void call() {
-		final String message = "expected {} argument";
-		LOGGER.error(message, 1);
-	}
+    public void call() {
+        final String message = "expected {} argument";
+        LOGGER.error(message, 1);
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
-         <description>ignore the exception param</description>
+        <description>ignore the exception param</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Foo {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
 
-	public void call() {
-		LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
-	}
+    public void call() {
+        LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
+    }
 }
         ]]></code>
     </test-code>
@@ -221,14 +225,14 @@ public class Foo
         <description>#721 NPE in PMD 5.8.1 InvalidSlf4jMessageFormat</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.slf4j.Logger;
-        
-            public class LoggerHelper {
-                public LoggerHelper(String loggerName) {
-                    Logger logger = LoggerFactory.getLogger(loggerName);
-                    logger.info(message);
-                }
-            }
+import org.slf4j.Logger;
+
+public class LoggerHelper {
+    public LoggerHelper(String loggerName) {
+        Logger logger = LoggerFactory.getLogger(loggerName);
+        logger.info(message);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -266,14 +270,14 @@ public final class Main {
         <description>NPE in static block (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.slf4j.Logger;
+import org.slf4j.Logger;
 
-            public class LoggerHelper {
-                static {
-                    Logger logger = LoggerFactory.getLogger(loggerName);
-                    logger.info(message);
-                }
-            }
+public class LoggerHelper {
+    static {
+        Logger logger = LoggerFactory.getLogger(loggerName);
+        logger.info(message);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -282,16 +286,16 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
-            import org.slf4j.Logger;
+import org.slf4j.Logger;
 
-            public class LoggerHelper {
-                static {
-                    final String pattern = "log: {}";
+public class LoggerHelper {
+    static {
+        final String pattern = "log: {}";
 
-                    Logger logger = LoggerFactory.getLogger(loggerName);
-                    logger.info(pattern, 1, 2);
-                }
-            }
+        Logger logger = LoggerFactory.getLogger(loggerName);
+        logger.info(pattern, 1, 2);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -299,13 +303,13 @@ public final class Main {
         <description>NPE in lambda call (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.slf4j.Logger;
+import org.slf4j.Logger;
 
-            public class LoggerHelper {
-                final Logger logger = LoggerFactory.getLogger(loggerName);
+public class LoggerHelper {
+    final Logger logger = LoggerFactory.getLogger(loggerName);
 
-                final List<String> list = someMethod(message -> logger.info(message));
-            }
+    final List<String> list = someMethod(message -> logger.info(message));
+}
         ]]></code>
     </test-code>
 
@@ -314,17 +318,17 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
-            import org.slf4j.Logger;
+import org.slf4j.Logger;
 
-            public class LoggerHelper {
-                final Logger logger = LoggerFactory.getLogger(loggerName);
+public class LoggerHelper {
+    final Logger logger = LoggerFactory.getLogger(loggerName);
 
-                final List<String> list = someMethod(message -> {
-                    final String pattern = "log: {}";
+    final List<String> list = someMethod(message -> {
+        final String pattern = "log: {}";
 
-                    logger.info(pattern, 1, 2);
-                });
-            }
+        logger.info(pattern, 1, 2);
+    });
+}
         ]]></code>
     </test-code>
 
@@ -332,22 +336,22 @@ public final class Main {
         <description>NPE in enums (see #1549)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.slf4j.Logger;
-            import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-            public enum LoggerHelper {
-                INSTANCE;
+public enum LoggerHelper {
+    INSTANCE;
 
-                private final Logger log = LoggerFactory.getLogger(LoggerHelper.class);
+    private final Logger log = LoggerFactory.getLogger(LoggerHelper.class);
 
-                public void sendMessage(String message) {
-                    log.info(message);
-                }
+    public void sendMessage(String message) {
+        log.info(message);
+    }
 
-                public static void main(String[] args) {
-                    LoggerHelper.INSTANCE.sendMessage("A message");
-                }
-            }
+    public static void main(String[] args) {
+        LoggerHelper.INSTANCE.sendMessage("A message");
+    }
+}
         ]]></code>
     </test-code>
 
@@ -356,20 +360,20 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
-            import org.slf4j.Logger;
-            import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-            public enum LoggerHelper {
-                INSTANCE;
+public enum LoggerHelper {
+    INSTANCE;
 
-                private static final String pattern = "log: {}";
+    private static final String pattern = "log: {}";
 
-                public static void main(String[] args) {
-                    final Logger logger = LoggerFactory.getLogger(LoggerHelper.class);
+    public static void main(String[] args) {
+        final Logger logger = LoggerFactory.getLogger(LoggerHelper.class);
 
-                    logger.info(pattern, 1, 2);
-                }
-            }
+        logger.info(pattern, 1, 2);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -382,12 +386,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Foo {
-	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+    private static final Logger LOGGER = LogManager.getLogger(Foo.class);
 
-	public void call() {
-		final String oneArg = "one argument";
-		LOGGER.error("forget the arg {} and {}", oneArg);
-	}
+    public void call() {
+        final String oneArg = "one argument";
+        LOGGER.error("forget the arg {} and {}", oneArg);
+    }
 }
         ]]></code>
     </test-code>
@@ -401,12 +405,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Foo {
-	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
-	private final String MESSAGE = "too many args {}";
+    private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+    private final String MESSAGE = "too many args {}";
 
-	public void call() {
-		LOGGER.error(MESSAGE, "arg1", "arg2");
-	}
+    public void call() {
+        LOGGER.error(MESSAGE, "arg1", "arg2");
+    }
 }
          ]]></code>
     </test-code>
@@ -419,12 +423,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Foo {
-	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+    private static final Logger LOGGER = LogManager.getLogger(Foo.class);
 
-	public void call() {
-		final String message = "expected {} argument";
-		LOGGER.error(message, 1);
-	}
+    public void call() {
+        final String message = "expected {} argument";
+        LOGGER.error(message, 1);
+    }
 }
         ]]></code>
     </test-code>
@@ -437,11 +441,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Foo {
-	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+    private static final Logger LOGGER = LogManager.getLogger(Foo.class);
 
-	public void call() {
-		LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
-	}
+    public void call() {
+        LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
+    }
 }
         ]]></code>
     </test-code>
@@ -594,14 +598,14 @@ public class Foo
         <description>NPE in PMD 5.8.1 Log4j2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
-        
-            public class LoggerHelper {
-                public LoggerHelper(String loggerName) {
-                    Logger logger = LogManager.getLogger(loggerName);
-                    logger.info(message);
-                }
-            }
+import org.apache.logging.log4j.Logger;
+
+public class LoggerHelper {
+    public LoggerHelper(String loggerName) {
+        Logger logger = LogManager.getLogger(loggerName);
+        logger.info(message);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -639,14 +643,14 @@ public final class Main {
         <description>log4j2: NPE in static block (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
-            public class LoggerHelper {
-                static {
-                    Logger logger = LogManager.getLogger(loggerName);
-                    logger.info(message);
-                }
-            }
+public class LoggerHelper {
+    static {
+        Logger logger = LogManager.getLogger(loggerName);
+        logger.info(message);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -655,16 +659,16 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
-            public class LoggerHelper {
-                static {
-                    final String pattern = "log: {}";
+public class LoggerHelper {
+    static {
+        final String pattern = "log: {}";
 
-                    Logger logger = LogManager.getLogger(loggerName);
-                    logger.info(pattern, 1, 2);
-                }
-            }
+        Logger logger = LogManager.getLogger(loggerName);
+        logger.info(pattern, 1, 2);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -672,13 +676,13 @@ public final class Main {
         <description>log4j2: NPE in lambda call (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
-            public class LoggerHelper {
-                final Logger logger = LogManager.getLogger(loggerName);
+public class LoggerHelper {
+    final Logger logger = LogManager.getLogger(loggerName);
 
-                final List<String> list = someMethod(message -> logger.info(message));
-            }
+    final List<String> list = someMethod(message -> logger.info(message));
+}
         ]]></code>
     </test-code>
 
@@ -687,17 +691,17 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
-            public class LoggerHelper {
-                final Logger logger = LogManager.getLogger(loggerName);
+public class LoggerHelper {
+    final Logger logger = LogManager.getLogger(loggerName);
 
-                final List<String> list = someMethod(message -> {
-                    final String pattern = "log: {}";
+    final List<String> list = someMethod(message -> {
+        final String pattern = "log: {}";
 
-                    logger.info(pattern, 1, 2);
-                });
-            }
+        logger.info(pattern, 1, 2);
+    });
+}
         ]]></code>
     </test-code>
 
@@ -705,22 +709,22 @@ public final class Main {
         <description>log4j2: NPE in enums (see #1549)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
-            import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-            public enum LoggerHelper {
-                INSTANCE;
+public enum LoggerHelper {
+    INSTANCE;
 
-                private final Logger log = LogManager.getLogger(LoggerHelper.class);
+    private final Logger log = LogManager.getLogger(LoggerHelper.class);
 
-                public void sendMessage(String message) {
-                    log.info(message);
-                }
+    public void sendMessage(String message) {
+        log.info(message);
+    }
 
-                public static void main(String[] args) {
-                    LoggerHelper.INSTANCE.sendMessage("A message");
-                }
-            }
+    public static void main(String[] args) {
+        LoggerHelper.INSTANCE.sendMessage("A message");
+    }
+}
         ]]></code>
     </test-code>
 
@@ -729,20 +733,20 @@ public final class Main {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
-            import org.apache.logging.log4j.Logger;
-            import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-            public enum LoggerHelper {
-                INSTANCE;
+public enum LoggerHelper {
+    INSTANCE;
 
-                private static final String pattern = "log: {}";
+    private static final String pattern = "log: {}";
 
-                public static void main(String[] args) {
-                    final Logger logger = LogManager.getLogger(LoggerHelper.class);
+    public static void main(String[] args) {
+        final Logger logger = LogManager.getLogger(LoggerHelper.class);
 
-                    logger.info(pattern, 1, 2);
-                }
-            }
+        logger.info(pattern, 1, 2);
+    }
+}
         ]]></code>
     </test-code>
 
@@ -860,6 +864,25 @@ class InvalidLogMessageFormatTest {
 
     private static void foo(Consumer<String> consumer) {
         consumer.accept("bar");
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#2431 IndexOutOfBoundsException when only logging exception message</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+    public void bar() {
+        try {
+            new File("/text.txt");
+        } catch (Exception e) {
+            LOG.warn(e.getMessage());
+        }
     }
 }
         ]]></code>

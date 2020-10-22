@@ -3,222 +3,204 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-reassigned parameter, bad
-     ]]></description>
+        <description>reassigned parameter, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(int bar) {
-  bar = 2;
- }
+    void foo(int bar) {
+        bar = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-one parameter, not reassigned, good
-     ]]></description>
+        <description>one parameter, not reassigned, good</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(int bar) {}
+    void foo(int bar) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-instance variable and parameter have same name
-     ]]></description>
+        <description>instance variable and parameter have same name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int bar;
- void foo(float bar) {
-  bar = 2.2;
- }
+    private int bar;
+    void foo(float bar) {
+        bar = 2.2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-qualified instance variable same name as parameter
-     ]]></description>
+        <description>qualified instance variable same name as parameter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int bar;
- void foo(float bar) {
-  this.bar = 2;
- }
+    private int bar;
+    void foo(float bar) {
+        this.bar = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-qualified name same as parameter
-     ]]></description>
+        <description>qualified name same as parameter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Faz {
- private class Foo {
-  public String bar;
- }
- void foo(String bar) {
-  Foo f = new Foo();
-  f.bar = bar;
- }
+    private class Foo {
+        public String bar;
+    }
+    void foo(String bar) {
+        Foo f = new Foo();
+        f.bar = bar;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to parameter public field
-     ]]></description>
+        <description>assignment to parameter public field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(Bar bar) {
-  bar.buz = 2;
- }
+    void foo(Bar bar) {
+        bar.buz = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to array parameter slot
-     ]]></description>
+        <description>assignment to array parameter slot</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(Bar[] bar) {
-  bar[0] = 2;
- }
+    void foo(Bar[] bar) {
+        bar[0] = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-throws a stacktrace
-     ]]></description>
+        <description>throws a stacktrace</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(int x) {
-   try {
-     x = 2;
-   } catch (Throwable t) {
-   }
- }
+    void foo(int x) {
+        try {
+            x = 2;
+        } catch (Throwable t) {
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-postfix increment in array dereference is bad
-     ]]></description>
+        <description>postfix increment in array dereference is bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(int x) {
-  y[x++] = 2;
- }
+    void foo(int x) {
+        y[x++] = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to array slot
-     ]]></description>
+        <description>assignment to array slot</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo(int x[]) {
-  x[2] = 2;
- }
+    void foo(int x[]) {
+        x[2] = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to array
-     ]]></description>
+        <description>assignment to array</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- int y[];
- void foo(int x[]) {
-  x = y;
- }
+    int y[];
+    void foo(int x[]) {
+        x = y;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-The rule should also detect parameter reassignment in constructors (at least to help young programmers still learning java basic)
-     ]]></description>
+        <description>The rule should also detect parameter reassignment in constructors (at least to help young programmers still learning java basic)</description>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public Foo(int arg, String arg2, Object arg3) {
-		arg = arg + 3;
-		arg += arg + "some other string";
-		arg3 = arg3.clone();
-	}
+    public Foo(int arg, String arg2, Object arg3) {
+        arg = arg + 3;
+        arg += arg + "some other string";
+        arg3 = arg3.clone();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-    	<description>
-    		<![CDATA[
-The rule should take into account uses of field names, inherited or not, matching the method parameter name.
-    		]]>
-    	</description>
-    	<expected-problems>0</expected-problems>
-    	<code>
-    		<![CDATA[
+        <description>The rule should take into account uses of field names, inherited or not, matching the method parameter name.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class RealClass extends AbstractClass {
-	public void setString(String string) {
-		super.string = string; //violation
-		this.string = string; // or violation
-	}
+    public void setString(String string) {
+        super.string = string; //violation
+        this.string = string; // or violation
+    }
 }
-    		]]>
-    	</code>
+        ]]></code>
     </test-code>
+
     <test-code>
-    	<description>parameter name starting with "this" or "super" should still be flagged</description>
-    	<expected-problems>2</expected-problems>
-    	<code>
-    		<![CDATA[
+        <description>parameter name starting with "this" or "super" should still be flagged</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 public class RealClass {
-	public void setString(int thisParam, int superParam) {
-		thisParam = 1;
-		superParam = 2;
-	}
+    public void setString(int thisParam, int superParam) {
+        thisParam = 1;
+        superParam = 2;
+    }
 }
-    		]]>
-    	</code>
+        ]]></code>
     </test-code>
+
     <test-code>
-    	<description>local variables should not be flagged</description>
-    	<expected-problems>0</expected-problems>
-    	<code>
-    		<![CDATA[
+        <description>local variables should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class RealClass {
-	public void setString(int thisParam, int superParam) {
-		int foo;
-		foo = 2;
-	}
-	public RealClass(int thisParam, int superParam) {
-		int foo;
-		foo = 2;
-	}
+    public void setString(int thisParam, int superParam) {
+        int foo;
+        foo = 2;
+    }
+    public RealClass(int thisParam, int superParam) {
+        int foo;
+        foo = 2;
+    }
 }
-    		]]>
-    	</code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>2410201, False+ AvoidReassigningParameters</description>
         <expected-problems>0</expected-problems>
@@ -240,6 +222,7 @@ public class PmdBug {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1330 AvoidReassigningParameters does not work with varargs</description>
         <expected-problems>0</expected-problems>

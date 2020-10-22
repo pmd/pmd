@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-
     <test-code>
         <description>Method Prefix is</description>
         <expected-problems>1</expected-problems>
@@ -508,7 +507,7 @@ public class AtomicBooleanFP {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1334 [java] LinguisticNaming should support AtomicBooleans false negative</description>
         <expected-problems>18</expected-problems>
@@ -552,8 +551,9 @@ public class AtomicBooleanFN {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description>#1543 [java] LinguisticNaming should ignore overriden methods</description>
+        <description>#1543 [java] LinguisticNaming should ignore overridden methods</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
@@ -576,6 +576,7 @@ public class Bar extends Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1362 Predicate fields are treated like booleans</description>
         <expected-problems>0</expected-problems>
@@ -587,6 +588,7 @@ public class ClassWithPredicates {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1362 Predicate variables are treated like booleans</description>
         <expected-problems>0</expected-problems>
@@ -600,6 +602,7 @@ public class SomeClass {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1362 Methods returning Predicate are treated like booleans</description>
         <expected-problems>0</expected-problems>
@@ -613,5 +616,4 @@ public class SomeClass {
 }
         ]]></code>
     </test-code>
-
 </test-data>

@@ -5,12 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(UnnecessaryFullyQualifiedNameRule.class.getName());
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private String currentPackage;
@@ -297,18 +299,22 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     }
 
     private boolean isReferencingInnerNonStaticClass(final String name, final ASTImportDeclaration firstMatch) {
-        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && firstMatch.getType() != null) {
+        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() /* && firstMatch.getType() != null */) {
             String[] nameParts = name.split("\\.");
             String[] importParts = firstMatch.getImportedName().split("\\.");
 
             if (nameParts.length == 2 && importParts[importParts.length - 1].equals(nameParts[0])) {
-                Class<?>[] declaredClasses = firstMatch.getType().getDeclaredClasses();
-                for (Class<?> innerClass : declaredClasses) {
-                    if (nameParts[1].equals(innerClass.getSimpleName()) && (innerClass.getModifiers() & Modifier.STATIC) != Modifier.STATIC) {
-                        // the referenced inner class is not static, therefore the static import on demand doesn't match
-                        return true;
-                    }
-                }
+                // Class<?>[] declaredClasses =
+                // firstMatch.getType().getDeclaredClasses();
+                // for (Class<?> innerClass : declaredClasses) {
+                // if (nameParts[1].equals(innerClass.getSimpleName()) &&
+                // (innerClass.getModifiers() & Modifier.STATIC) !=
+                // Modifier.STATIC) {
+                // // the referenced inner class is not static, therefore the
+                // static import on demand doesn't match
+                // return true;
+                // }
+                // }
             }
         }
         return false;
@@ -334,11 +340,25 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                     if (importDeclaration.isImportOnDemand()) {
                         // We need type resolution to make sure there is a
                         // conflicting method
-                        if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
+
+                        // TODO we need a symbol table
+
+                        // This was edited during the grammar updating process, because
+                        // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
+                        // If tests are failing, refer to the history of this file to get the
+                        // previously working version.
+
+                        Class<?> importedType = importDeclaration.getRoot().getClassTypeResolver().loadClassOrNull(importDeclaration.getImportedName());
+                        if (importedType != null) {
+                            try {
+                                for (final Method m : importedType.getMethods()) {
+                                    if (m.getName().equals(methodCalled)) {
+                                        return true;
+                                    }
                                 }
+                            } catch (LinkageError e) {
+                                // This is an incomplete classpath, report the missing class
+                                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                             }
                         }
                     } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {

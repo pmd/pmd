@@ -28,8 +28,10 @@ import java.util.regex.Pattern;
 public class RuleTagChecker {
     private static final Logger LOG = Logger.getLogger(DeadLinksChecker.class.getName());
 
-    private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s*rule\\s+\"(.*?)\"\\s*");
-    private static final Pattern RULE_REFERENCE = Pattern.compile("(\\w+)\\/(\\w+)\\/(\\w+)");
+    private static final String QUOTE = "\"";
+    private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s*rule\\s+(\"?[^\"%\\}\\s]+\"?)\\s*");
+    private static final Pattern RULE_REFERENCE = Pattern.compile("\"?(\\w+)\\/(\\w+)\\/(\\w+)\"?");
+    private static final Pattern RULE_SIMPLE_REFERENCE = Pattern.compile("\"?(\\w+)\"?");
 
     private final Path pagesDirectory;
     private final List<String> issues = new ArrayList<>();
@@ -72,6 +74,9 @@ public class RuleTagChecker {
                 int pos = ruleTagMatcher.end();
                 if (line.charAt(pos) != '%' || line.charAt(pos + 1) != '}') {
                     addIssue(file, lineNo, "Rule tag for " + ruleReference + " is not closed properly");
+                } else if (ruleReference.startsWith(QUOTE) && !ruleReference.endsWith(QUOTE)
+                        || !ruleReference.startsWith(QUOTE) && ruleReference.endsWith(QUOTE)) {
+                    addIssue(file, lineNo, "Rule tag for " + ruleReference + " has a missing quote");
                 } else if (!ruleReferenceTargetExists(ruleReference)) {
                     addIssue(file, lineNo, "Rule " + ruleReference + " is not found");
                 }
@@ -81,6 +86,7 @@ public class RuleTagChecker {
 
     private boolean ruleReferenceTargetExists(String ruleReference) {
         Matcher ruleRefMatcher = RULE_REFERENCE.matcher(ruleReference);
+        Matcher simpleRefMatcher = RULE_SIMPLE_REFERENCE.matcher(ruleReference);
         if (ruleRefMatcher.matches()) {
             String language = ruleRefMatcher.group(1);
             String category = ruleRefMatcher.group(2);
@@ -89,6 +95,9 @@ public class RuleTagChecker {
             Path ruleDocPage = pagesDirectory.resolve("pmd/rules/" + language + "/" + category.toLowerCase(Locale.ROOT) + ".md");
             Set<String> rules = getRules(ruleDocPage);
             return rules.contains(rule);
+        } else if (simpleRefMatcher.matches()) {
+            // can't check - would need to know the current language + category
+            return true;
         }
         return false;
     }

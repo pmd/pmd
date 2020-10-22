@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.objectweb.asm.ClassReader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
 /*
@@ -36,10 +37,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
  */
 @InternalApi
 @Deprecated
-public final class PMDASMClassLoader extends ClassLoader {
+public final class PMDASMClassLoader extends ClassLoader implements NullableClassLoader {
 
     private static PMDASMClassLoader cachedPMDASMClassLoader;
     private static ClassLoader cachedClassLoader;
+    private static final Object CACHE_LOCK = new Object();
 
     /**
      * Caches the names of the classes that we can't load or that don't exist.
@@ -59,13 +61,19 @@ public final class PMDASMClassLoader extends ClassLoader {
      * allows to reuse the same PMDASMClassLoader across all the compilation
      * units.
      */
-    public static synchronized PMDASMClassLoader getInstance(ClassLoader parent) {
-        if (parent.equals(cachedClassLoader)) {
+    public static PMDASMClassLoader getInstance(ClassLoader parent) {
+        if (parent instanceof PMDASMClassLoader) {
+            return (PMDASMClassLoader) parent;
+        }
+        synchronized (CACHE_LOCK) {
+            if (parent.equals(cachedClassLoader)) {
+                return cachedPMDASMClassLoader;
+            }
+            cachedClassLoader = parent;
+            cachedPMDASMClassLoader = new PMDASMClassLoader(parent);
+
             return cachedPMDASMClassLoader;
         }
-        cachedClassLoader = parent;
-        cachedPMDASMClassLoader = new PMDASMClassLoader(parent);
-        return cachedPMDASMClassLoader;
     }
 
     @Override
@@ -81,6 +89,7 @@ public final class PMDASMClassLoader extends ClassLoader {
      * Not throwing CNFEs to represent failure makes a huge performance
      * difference. Typeres as a whole is 2x faster.
      */
+    @Override
     public Class<?> loadClassOrNull(String name) {
         if (dontBother.containsKey(name)) {
             return null;
@@ -108,6 +117,10 @@ public final class PMDASMClassLoader extends ClassLoader {
         return !dontBother.containsKey(name);
     }
 
+
+    /**
+     * FIXME what does this do?
+     */
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
         if (dontBother.containsKey(name)) {
             throw new ClassNotFoundException(name);

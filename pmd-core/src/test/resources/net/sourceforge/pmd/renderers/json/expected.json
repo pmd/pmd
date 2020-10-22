@@ -1,0 +1,25 @@
+{
+  "formatVersion": 0,
+  "pmdVersion": "unknown",
+  "timestamp": "--replaced--",
+  "files": [
+    {
+      "filename": "notAvailable.ext",
+      "violations": [
+        {
+          "beginline": 1,
+          "begincolumn": 1,
+          "endline": 1,
+          "endcolumn": 1,
+          "description": "blah",
+          "rule": "Foo",
+          "ruleset": "RuleSet",
+          "priority": 5
+        }
+      ]
+    }
+  ],
+  "suppressedViolations": [],
+  "processingErrors": [],
+  "configurationErrors": []
+}

@@ -3,177 +3,165 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-private String, no accessor
-     ]]></description>
+        <description>private String, no accessor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String foo;
- private String bar = foo;
+    private String foo;
+    private String bar = foo;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private static String
-     ]]></description>
+        <description>private static String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static String foo;
- private String bar = Foo.foo;
+    private static String foo;
+    private String bar = Foo.foo;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private transient String
-     ]]></description>
+        <description>private transient String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private transient String foo;
- private String bar = Foo.foo;
+    private transient String foo;
+    private String bar = Foo.foo;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-getter, no setter
-     ]]></description>
+        <description>getter, no setter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String foo;
- private String bar = Foo.foo;
- public String getFoo() {return foo;}
+    private String foo;
+    private String bar = Foo.foo;
+    public String getFoo() {return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-setter, no getter
-     ]]></description>
+        <description>setter, no getter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String foo;
- private String bar = Foo.foo;
- public void setFoo(Foo foo) {this.foo = foo;}
+    private String foo;
+    private String bar = Foo.foo;
+    public void setFoo(Foo foo) {this.foo = foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-both accessors, yay!
-     ]]></description>
+        <description>both accessors, yay!</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String foo;
- private String bar = Foo.foo;
- public void setFoo(Foo foo) {this.foo = foo;}
- public String getFoo() {return foo;}
+    private String foo;
+    private String bar = Foo.foo;
+    public void setFoo(Foo foo) {this.foo = foo;}
+    public String getFoo() {return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-setFoo and isFoo is OK for booleans
-     ]]></description>
+        <description>setFoo and isFoo is OK for booleans</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean foo;
- public void setFoo(boolean foo) {this.foo = foo;}
- public boolean isFoo() {return foo;}
+    private boolean foo;
+    public void setFoo(boolean foo) {this.foo = foo;}
+    public boolean isFoo() {return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-setFoo and isFoo is not OK for Strings
-     ]]></description>
+        <description>setFoo and isFoo is not OK for Strings</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String foo;
- public void setFoo(String foo) {this.foo = foo;}
- public String isFoo() {return foo;}
+    private String foo;
+    public void setFoo(String foo) {this.foo = foo;}
+    public String isFoo() {return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <code-fragment id="prefix"><![CDATA[
 public class Foo {
- private String m_foo;
- public void setFoo(String foo) {m_foo = foo;}
- public String getFoo() {return m_foo;}
+    private String m_foo;
+    public void setFoo(String foo) {m_foo = foo;}
+    public String getFoo() {return m_foo;}
 }
-     ]]></code-fragment>
+    ]]></code-fragment>
+
     <test-code>
-        <description><![CDATA[
-prefix is off by default
-     ]]></description>
+        <description>prefix is off by default</description>
         <expected-problems>1</expected-problems>
         <code-ref id="prefix"/>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-valid prefix
-     ]]></description>
+        <description>valid prefix</description>
         <rule-property name="prefix">m_</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="prefix"/>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-invalid prefix
-     ]]></description>
+        <description>invalid prefix</description>
         <rule-property name="prefix">xxxxxx</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="prefix"/>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface
-     ]]></description>
+        <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public String foo;
- public String bar = foo;
+    public String foo;
+    public String bar = foo;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-@SuppressWarnings("serial")
-     ]]></description>
+        <description>@SuppressWarnings("serial")</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @SuppressWarnings("serial")
 public class Foo {
- private String foo;
- private String bar = Foo.foo;
- public void setFoo(Foo foo) {this.foo = foo;}
+    private String foo;
+    private String bar = Foo.foo;
+    public void setFoo(Foo foo) {this.foo = foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ClassCastException on generic method
-     ]]></description>
+        <description>ClassCastException on generic method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class List<A> implements Iterable<A> {
-  public static <A> F<List<A>, Boolean> isEmpty() {
-    return null;
-  }
+    public static <A> F<List<A>, Boolean> isEmpty() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#881 private final without setter is flagged</description>
         <expected-problems>0</expected-problems>
@@ -188,6 +176,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 1</description>
         <expected-problems>0</expected-problems>
@@ -204,6 +193,7 @@ public class Buzz {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 2</description>
         <expected-problems>0</expected-problems>
@@ -214,6 +204,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
         <expected-problems>0</expected-problems>
@@ -225,6 +216,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 4</description>
         <expected-problems>0</expected-problems>
@@ -236,6 +228,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 5</description>
         <expected-problems>0</expected-problems>
@@ -246,6 +239,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 6</description>
         <expected-problems>0</expected-problems>
@@ -256,6 +250,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
         <expected-problems>0</expected-problems>
@@ -266,6 +261,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
         <expected-problems>1</expected-problems>

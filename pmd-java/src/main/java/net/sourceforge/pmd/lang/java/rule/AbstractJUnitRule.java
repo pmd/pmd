@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,27 +6,31 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
+/**
+ * @deprecated Internal API
+ */
+@Deprecated
+@InternalApi
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     protected static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
     protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
 
-    private boolean isJUnit3Class;
-    private boolean isJUnit4Class;
-    private boolean isJUnit5Class;
+    protected boolean isJUnit3Class;
+    protected boolean isJUnit4Class;
+    protected boolean isJUnit5Class;
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -91,26 +95,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
-        if (cid == null) {
-            return false;
-        }
-
-        if (node.getType() != null && TypeHelper.isA(node, JUNIT3_CLASS_NAME)) {
-            return true;
-        } else if (node.getType() == null) {
-            ASTExtendsList extendsList = cid.getFirstChildOfType(ASTExtendsList.class);
-            if (extendsList == null) {
-                return false;
-            }
-            if (((ASTClassOrInterfaceType) extendsList.getChild(0)).getImage().endsWith("TestCase")) {
-                return true;
-            }
-            String className = cid.getImage();
-            return className.endsWith("Test");
-        } else if (hasImports(node, JUNIT3_CLASS_NAME)) {
-            return cid.getImage().endsWith("Test");
-        }
-        return false;
+        return TypeTestUtil.isA(JUNIT3_CLASS_NAME, cid);
     }
 
     private boolean isJUnit4Class(ASTCompilationUnit node) {
@@ -131,7 +116,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
                 if (name != null && (name.hasImageEqualTo("Test") || name.hasImageEqualTo(annotationTypeClassName))) {
                     return true;
                 }
-            } else if (TypeHelper.isA(annotationType, annotationTypeClassName)) {
+            } else if (TypeTestUtil.isA(annotationTypeClassName, annotationType)) {
                 return true;
             }
         }

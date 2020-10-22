@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -34,7 +36,6 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.rules.RuleFactory;
@@ -59,6 +60,8 @@ public class RuleSetFactory {
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
+
+    private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
     /**
      * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
@@ -180,12 +183,12 @@ public class RuleSetFactory {
      *             if unable to find a resource.
      */
     public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
-        RuleSets ruleSets = new RuleSets();
+        List<RuleSet> ruleSets = new ArrayList<>();
         for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
             RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
-            ruleSets.addRuleSet(ruleSet);
+            ruleSets.add(ruleSet);
         }
-        return ruleSets;
+        return new RuleSets(ruleSets);
     }
 
     /**
@@ -305,7 +308,7 @@ public class RuleSetFactory {
     public RuleSet createSingleRuleRuleSet(final Rule rule) { // TODO make static?
         final long checksum;
         if (rule instanceof XPathRule) {
-            checksum = rule.getProperty(XPathRule.XPATH_DESCRIPTOR).hashCode();
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
         } else {
             // TODO : Is this good enough? all properties' values + rule name
             checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
@@ -338,10 +341,16 @@ public class RuleSetFactory {
     private Rule createRule(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         if (ruleSetReferenceId.isAllRules()) {
-            throw new IllegalArgumentException(
-                    "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
+            throw new IllegalArgumentException("Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
-        RuleSet ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
+        RuleSet ruleSet;
+        // java8: computeIfAbsent
+        if (parsedRulesets.containsKey(ruleSetReferenceId)) {
+            ruleSet = parsedRulesets.get(ruleSetReferenceId);
+        } else {
+            ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
+            parsedRulesets.put(ruleSetReferenceId, ruleSet);
+        }
         return ruleSet.getRuleByName(ruleSetReferenceId.getRuleName());
     }
 
@@ -581,7 +590,7 @@ public class RuleSetFactory {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.warning(
                     "Unable to exclude rules " + excludedRulesCheck + " from ruleset reference " + ref
-                    + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
+                    + "; perhaps the rule name is misspelled or the rule doesn't exist anymore?");
             }
         }
 
@@ -610,11 +619,17 @@ public class RuleSetFactory {
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
+            && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
         Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
+
+        if (warnDeprecated && StringUtils.isBlank(ruleElement.getAttribute("language"))) {
+            LOG.warning("Rule " + ruleSetReferenceId.getRuleSetFileName() + "/" + rule.getName() + " does not mention attribute"
+                            + " language='" + rule.getLanguage().getTerseName() + "',"
+                            + " please mention it explicitly to be compatible with PMD 7");
+        }
 
         ruleSetBuilder.addRule(rule);
     }
@@ -668,7 +683,7 @@ public class RuleSetFactory {
 
         if (referencedRule == null) {
             throw new IllegalArgumentException("Unable to find referenced rule " + otherRuleSetReferenceId.getRuleName()
-                    + "; perhaps the rule name is mispelled?");
+                    + "; perhaps the rule name is misspelled?");
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
@@ -680,13 +695,6 @@ public class RuleSetFactory {
                             + otherRuleSetReferenceId
                             + ". PMD " + PMDVersion.getNextMajorRelease()
                             + " will remove support for this deprecated Rule name usage.");
-                }
-            } else if (referencedRule instanceof MockRule) {
-                if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
-                            + " as it has been removed from PMD and no longer functions."
-                            + " PMD " + PMDVersion.getNextMajorRelease()
-                            + " will remove support for this Rule.");
                 }
             } else {
                 if (LOG.isLoggable(Level.WARNING)) {

@@ -8,7 +8,6 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -33,16 +32,6 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
     public ParserOptions getParserOptions() {
         return parserOptions;
     }
-
-    @Override
-    public TokenManager getTokenManager(String fileName, Reader source) {
-        TokenManager tokenManager = createTokenManager(source);
-        tokenManager.setFileName(fileName);
-        return tokenManager;
-    }
-
-    protected abstract TokenManager createTokenManager(Reader source);
-
 
     protected abstract JavaccTokenDocument newDocument(String fullText);
 

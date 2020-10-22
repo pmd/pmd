@@ -24,15 +24,14 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * <li>It's a bit lighter. Token instances are one of the most numerous
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
- *
- * <p>TODO replace duplicates over PMD.
  */
-public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
+public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken> {
 
     /**
      * Kind for EOF tokens.
      */
     public static final int EOF = 0;
+
     /**
      * Kind for implicit tokens. Negative because JavaCC only picks
      * positive numbers for token kinds.
@@ -121,6 +120,10 @@ public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
         return document;
     }
 
+    @Override
+    public boolean isEof() {
+        return kind == EOF;
+    }
 
     @Override
     public JavaccToken getNext() {
@@ -276,6 +279,5 @@ public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
                                offset,
                                document);
     }
-
 }
 

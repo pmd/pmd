@@ -43,12 +43,12 @@ public final class PMDCommandLineInterface {
             jcommander.parse(args);
             if (arguments.isHelp()) {
                 jcommander.usage();
-                System.out.println(buildUsageText(jcommander));
+                System.out.println(buildUsageText());
                 setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (ParameterException e) {
             jcommander.usage();
-            System.out.println(buildUsageText(jcommander));
+            System.out.println(buildUsageText());
             System.err.println(e.getMessage());
             setStatusCodeOrExit(ERROR_STATUS);
         }
@@ -56,19 +56,6 @@ public final class PMDCommandLineInterface {
     }
 
     public static String buildUsageText() {
-        return buildUsageText(null);
-    }
-
-    public static String buildUsageText(JCommander jcommander) {
-        StringBuilder usage = new StringBuilder();
-
-        String allCommandsDescription = null;
-        if (jcommander != null && jcommander.getCommands() != null) {
-            for (String command : jcommander.getCommands().keySet()) {
-                allCommandsDescription += jcommander.getCommandDescription(command) + PMD.EOL;
-            }
-        }
-
         // TODO: Externalize that to a file available within the classpath ? -
         // with a poor's man templating ?
         String fullText = PMD.EOL + "Mandatory arguments:" + PMD.EOL + "1) A java source code filename or directory"
@@ -79,16 +66,15 @@ public final class PMDCommandLineInterface {
 
         fullText += supportedVersions() + PMD.EOL;
 
-        if (allCommandsDescription != null) {
-            fullText += "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL
-                    + allCommandsDescription + PMD.EOL;
-        }
-
         fullText += "Available report formats and their configuration properties are:" + PMD.EOL + getReports()
                 + PMD.EOL + getExamples() + PMD.EOL + PMD.EOL + PMD.EOL;
 
-        fullText += usage.toString();
         return fullText;
+    }
+
+    @Deprecated
+    public static String buildUsageText(JCommander jcommander) {
+        return buildUsageText();
     }
 
     private static String getExamples() {
@@ -145,7 +131,7 @@ public final class PMDCommandLineInterface {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
-                buf.append(" Deprecated alias for '" + renderer.getName()).append(PMD.EOL);
+                buf.append(" Deprecated alias for '").append(renderer.getName()).append(PMD.EOL);
                 continue;
             }
             buf.append(renderer.getDescription()).append(PMD.EOL);

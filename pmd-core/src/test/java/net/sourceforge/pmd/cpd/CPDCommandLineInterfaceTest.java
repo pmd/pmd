@@ -22,6 +22,6 @@ public class CPDCommandLineInterfaceTest {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--files",
             "src/test/resources/net/sourceforge/pmd/cpd/files/", "--format", "xml", });
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog().trim());
     }
 }

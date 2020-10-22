@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.docs;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -12,6 +14,7 @@ public final class EscapeUtils {
     private static final String BACKTICK = "`";
     private static final String URL_START = "<http";
     private static final String QUOTE_START = ">";
+    private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s+rule\\s+&quot;([^&]+)&quot;\\s*\\%}");
 
     private EscapeUtils() {
         // This is a utility class
@@ -83,9 +86,22 @@ public final class EscapeUtils {
             }
             if (needsEscape && !line.startsWith("    ")) {
                 line = escapeSingleLine(line);
+                line = preserveRuleTagQuotes(line);
             }
             lines.set(i, line);
         }
         return lines;
+    }
+
+    /**
+     * If quotes are used for rule tags, e.g. {@code {% rule "OtherRule" %}}, these
+     * quotes might have been escaped for html, but it's actually markdown/jekyll/liquid
+     * and not html. This undoes the escaping.
+     * @param text the already escaped text that might contain rule tags
+     * @return text with the fixed rule tags
+     */
+    public static String preserveRuleTagQuotes(String text) {
+        Matcher m = RULE_TAG.matcher(text);
+        return m.replaceAll("{% rule \"$1\" %}");
     }
 }

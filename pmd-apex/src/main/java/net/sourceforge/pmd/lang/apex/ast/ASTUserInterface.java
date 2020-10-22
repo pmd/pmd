@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,29 +6,27 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
-public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
-       CanSuppressWarnings {
+public final class ASTUserInterface extends AbstractApexNode<UserInterface> implements ASTUserClassOrInterface<UserInterface> {
 
     private ApexQualifiedName qname;
 
-    public ASTUserInterface(UserInterface userInterface) {
+    ASTUserInterface(UserInterface userInterface) {
         super(userInterface);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 
@@ -53,17 +51,6 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
         return qname;
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);

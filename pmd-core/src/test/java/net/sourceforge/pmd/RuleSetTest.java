@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,21 +24,25 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class RuleSetTest {
+
+    private final Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
 
     @Test(expected = NullPointerException.class)
     public void testRuleSetRequiresName() {
@@ -166,7 +172,7 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testApply0Rules() throws Exception {
+    public void testApply0Rules() {
         RuleSet ruleset = createRuleSetBuilder("ruleset").build();
         verifyRuleSet(ruleset, 0, new HashSet<RuleViolation>());
     }
@@ -238,25 +244,23 @@ public class RuleSetTest {
 
         Rule rule = new MockRule();
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertFalse("Different languages should not apply",
                 RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertTrue("Same language with no min/max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
-        rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5"));
+        rule.setMinimumLanguageVersion(dummyLang.getVersion("1.5"));
         assertTrue("Same language with valid min only should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
-        rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.6"));
+        rule.setMaximumLanguageVersion(dummyLang.getVersion("1.6"));
         assertTrue("Same language with valid min and max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.4")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7")));
+                RuleSet.applies(rule, dummyLang.getVersion("1.7")));
     }
 
     @Test
@@ -401,9 +405,6 @@ public class RuleSetTest {
 
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
-        assertTrue("RuleChain rule", rule.isRuleChain());
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -412,18 +413,16 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
         RuleContext ctx = new RuleContext();
         Report r = new Report();
         ctx.setReport(r);
         ctx.setSourceCodeFile(file);
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 2, r.size());
+        ctx.setLanguageVersion(dummyLang.getDefaultVersion());
+        ruleSets.apply(makeCompilationUnits(), ctx);
+        assertEquals("Violations", 2, r.getViolations().size());
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
@@ -431,22 +430,18 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         r = new Report();
         ctx.setReport(r);
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 1, r.size());
+        ruleSets.apply(makeCompilationUnits(), ctx);
+        assertEquals("Violations", 1, r.getViolations().size());
     }
 
     @Test
     public void copyConstructorDeepCopies() {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -464,21 +459,16 @@ public class RuleSetTest {
         RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();
         context.setReport(new Report());
-        ruleset.apply(makeCompilationUnits(), context);
+        new RuleSets(ruleset).apply(makeCompilationUnits(), context);
 
-        assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
+        assertEquals("Invalid number of Violations Reported", size, context.getReport().getViolations().size());
 
-        Iterator<RuleViolation> violations = context.getReport().iterator();
-        while (violations.hasNext()) {
-            RuleViolation violation = violations.next();
-
+        for (RuleViolation violation : context.getReport().getViolations()) {
             reportedValues.add(violation);
             assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
         }
 
-        Iterator<RuleViolation> expected = values.iterator();
-        while (expected.hasNext()) {
-            RuleViolation violation = expected.next();
+        for (RuleViolation violation : values) {
             assertTrue("Expected Violation not Returned: " + violation, reportedValues.contains(violation));
         }
     }
@@ -497,20 +487,20 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
                 .addRule(new MockRule() {
                     @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                    public void apply(Node nodes, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
                 })
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        assertTrue("Report should have processing errors", !errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
@@ -521,14 +511,14 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
                 .addRule(new MockRule() {
                     @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+                    public void apply(Node target, RuleContext ctx) {
                         throw new RuntimeException("Test exception while applying rule");
                     }
                 })
                 .build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored"));
         context.setIgnoreExceptions(false);
         ruleset.apply(makeCompilationUnits(), context);
@@ -538,71 +528,94 @@ public class RuleSetTest {
     public void ruleExceptionShouldNotStopProcessingFile() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
+        context.setSourceCodeFile(new File(RuleSetTest.class.getName(), "ruleExceptionShouldBeReported.java"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        ProcessingError processingError = errors.get(0);
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
+        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
+        assertEquals("Wrong filename in processing error",
+                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
+                FilenameUtils.normalize(processingError.getFile(), true));
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
     }
 
     @Test
     public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            public void apply(Node target, RuleContext ctx) {
                 throw new RuntimeException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
         RuleContext context = new RuleContext();
         context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        context.setLanguageVersion(dummyLang.getDefaultVersion());
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         RuleSets rulesets = new RuleSets(ruleset);
-        rulesets.apply(makeCompilationUnits(), context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rulesets.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+    }
+
+
+    class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
+
+        MockRule() {
+            super();
+            setLanguage(dummyLang);
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
+            super(name, description, message, ruleSetName, priority);
+            setLanguage(dummyLang);
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName) {
+            super(name, description, message, ruleSetName);
+            setLanguage(dummyLang);
+        }
+
     }
 
 }

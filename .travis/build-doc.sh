@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 source .travis/logger.sh
 source .travis/common-functions.sh
 source .travis/github-releases-api.sh
 source .travis/sourceforge-api.sh
+source .travis/pmd-code-api.sh
 
 function main() {
-    VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+    VERSION=$(get_pom_version)
     log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
 
     #
@@ -15,7 +16,7 @@ function main() {
     # The docs should appear under "docs/pages/rules/..." for each language
     # With this profile, also the checks are executed (e.g. DeadLinksChecker).
     #
-    ./mvnw clean verify -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -P generate-rule-docs
+    ./mvnw clean verify -Dmaven.test.skip=true -P generate-rule-docs
 
     if ! travis_isPush; then
         log_info "Not publishing site, since this is not a push!"
@@ -31,8 +32,16 @@ function main() {
     # Deploy to sourceforge files
     sourceforge_uploadFile "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
 
+    # Deploy doc to https://docs.pmd-code.org/pmd-doc-${VERSION}/
+    pmd_code_uploadDocumentation "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
+    # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${VERSION}/
+    pmd_code_uploadJavadoc "${VERSION}" "$(pwd)"
+
+
     if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
         # only for snapshot builds from branch master
+
+        pmd_code_createSymlink "${VERSION}" "snapshot"
 
         # update github pages https://pmd.github.io/pmd/
         publish_to_github_pages
@@ -43,6 +52,14 @@ function main() {
 
     if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
         log_info "This is a release documentation build for pmd ${VERSION}"
+
+        # documentation is already uploaded to https://docs.pmd-code.org/pmd-doc-${VERSION}
+        pmd_code_createSymlink "${VERSION}" "latest"
+        # remove old doc and point to the new version
+        pmd_code_removeDocumentation "${VERSION}-SNAPSHOT"
+        pmd_code_createSymlink "${VERSION}" "${VERSION}-SNAPSHOT"
+        # remove old javadoc
+        pmd_code_removeJavadoc "${VERSION}-SNAPSHOT"
 
         # Deploy to github releases
         gh_releases_getLatestDraftRelease
@@ -71,6 +88,7 @@ function generate_jekyll_doc() {
 
     echo -e "\n\n"
     log_info "Building documentation using jekyll..."
+    bundle config set --local path vendor/bundle
     bundle install
     bundle exec jekyll build
 

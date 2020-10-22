@@ -11,4 +11,5 @@ package net.sourceforge.pmd.lang;
  */
 public abstract class AbstractLanguageVersionHandler implements LanguageVersionHandler {
 
+
 }

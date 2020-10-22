@@ -7,68 +7,62 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 
 /**
  * Grouping of Rules per Language in a RuleSet.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class RuleSets {
-    /**
-     * Map of RuleLanguage on RuleSet.
-     */
-    private List<RuleSet> ruleSets = new ArrayList<>();
 
-    /**
-     * RuleChain for efficient AST visitation.
-     */
-    private RuleChain ruleChain = new RuleChain();
+    private final List<RuleSet> ruleSets;
 
-    /**
-     * Public constructor.
-     */
-    public RuleSets() {
-        // default constructor
-    }
+    private RuleApplicator ruleApplicator;
 
     /**
      * Copy constructor. Deep copies RuleSets.
+     *
      * @param ruleSets The RuleSets to copy.
      */
     public RuleSets(final RuleSets ruleSets) {
+        List<RuleSet> rsets = new ArrayList<>();
         for (final RuleSet rs : ruleSets.ruleSets) {
-            addRuleSet(new RuleSet(rs));
+            rsets.add(new RuleSet(rs));
         }
+        this.ruleSets = Collections.unmodifiableList(rsets);
+    }
+
+    public RuleSets(Collection<RuleSet> ruleSets) {
+        this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
     }
 
     /**
      * Public constructor. Add the given rule set.
      *
-     * @param ruleSet
-     *            the RuleSet
+     * @param ruleSet the RuleSet
      */
     public RuleSets(RuleSet ruleSet) {
-        addRuleSet(ruleSet);
+        this.ruleSets = Collections.singletonList(ruleSet);
     }
 
-    /**
-     * Add a ruleset for a language. Only one ruleset can be added for a
-     * specific language. If ruleSet.getLanguage() is null, it is assumed to be
-     * a RuleSet of java rules.
-     *
-     * @param ruleSet
-     *            the RuleSet
-     */
-    public void addRuleSet(RuleSet ruleSet) {
-        ruleSets.add(ruleSet);
-        ruleChain.add(ruleSet);
+    private RuleApplicator prepareApplicator() {
+        return RuleApplicator.build(ruleSets.stream().flatMap(it -> it.getRules().stream())::iterator);
     }
 
     /**
@@ -133,14 +127,22 @@ public class RuleSets {
      *            depends on the source language
      * @param ctx
      *            the RuleContext
-     * @param language
-     *            the Language of the source
      */
-    public void apply(List<Node> acuList, RuleContext ctx, Language language) {
-        ruleChain.apply(acuList, ctx, language);
+    public void apply(List<? extends Node> acuList, RuleContext ctx) {
+        if (ruleApplicator == null) {
+            // initialize here instead of ctor, because some rules properties
+            // are set after creating the ruleset, and jaxen xpath queries
+            // initialize their XPath expressions when calling getRuleChainVisits()... fixme
+            this.ruleApplicator = prepareApplicator();
+        }
+
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
+            ruleApplicator.index(acuList);
+        }
+
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(ctx.getSourceCodeFile())) {
-                ruleSet.apply(acuList, ctx);
+                ruleApplicator.apply(ruleSet.getRules(), ctx);
             }
         }
     }

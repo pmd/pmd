@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.pathsOf;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.followPath;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.nodeB;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.pathsOf;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
@@ -23,8 +25,10 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 
 
 /**
@@ -35,24 +39,26 @@ public class NodeStreamTest {
 
     private final DummyNode tree1 = tree(
         () ->
-            node(// ""
-                  node(// 0
-                        node(), // 00
-                        node(// 01
-                                node(), // 010
-                                node(), // 011
-                                node(), // 012
-                                node()  // 013
-                        )
-                  ),
-                  node() // 1
+            root(// ""
+                 nodeB(// 0
+                       node(), // 00
+                       nodeB(// 01
+                             node(), // 010
+                             node(// 011
+                                     node() // 0110
+                             ),
+                             node(), // 012
+                             node()  // 013
+                       )
+                 ),
+                 node() // 1
             )
     );
 
 
     private final DummyNode tree2 = tree(
         () ->
-            node(
+            root(
                 node(),
                 node(),
                 node(
@@ -103,8 +109,8 @@ public class NodeStreamTest {
 
     @Test
     public void testDescendantStream() {
-        assertThat(pathsOf(tree1.descendants()), contains("0", "00", "01", "010", "011", "012", "013", "1"));
-        assertThat(pathsOf(tree1.asStream().descendants()), contains("0", "00", "01", "010", "011", "012", "013", "1"));
+        assertThat(pathsOf(tree1.descendants()), contains("0", "00", "01", "010", "011", "0110", "012", "013", "1"));
+        assertThat(pathsOf(tree1.asStream().descendants()), contains("0", "00", "01", "010", "011", "0110", "012", "013", "1"));
     }
 
     @Test
@@ -115,9 +121,10 @@ public class NodeStreamTest {
 
 
     @Test
-    public void testTreeStream() {
-        assertThat(pathsOf(tree1.descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "012", "013", "1"));
-        assertThat(pathsOf(NodeStream.of(tree1).descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "012", "013", "1"));
+    public void testDescendantOrSelfStream() {
+        assertThat(pathsOf(tree1.descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "0110", "012", "013", "1"));
+        assertThat(pathsOf(NodeStream.of(tree1).descendantsOrSelf()), contains("", "0", "00", "01", "010", "011", "0110", "012", "013", "1"));
+        assertThat(pathsOf(followPath(tree1, "0110").descendantsOrSelf()), contains("0110")); // with a leaf node
     }
 
     @Test
@@ -132,6 +139,26 @@ public class NodeStreamTest {
         assertEquals("0", node.getNthParent(2).getImage());
         assertEquals("", node.getNthParent(3).getImage());
         assertNull(node.getNthParent(4));
+    }
+
+    @Test
+    public void testAncestorsFiltered() {
+        // 0110
+        Node node = tree1.children().children().children().children().first();
+        assertEquals("0110", node.getImage());
+        assertThat(pathsOf(node.ancestors(DummyNodeTypeB.class)), contains("01", "0"));
+        assertThat(pathsOf(node.ancestorsOrSelf().filterIs(DummyNodeTypeB.class)), contains("01", "0"));
+
+    }
+
+    @Test
+    public void testAncestorsFilteredDrop() {
+        // 0110
+        Node node = tree1.children().children().children().children().first();
+        assertEquals("0110", node.getImage());
+        assertThat(pathsOf(node.ancestors(DummyNodeTypeB.class).drop(1)), contains("0"));
+        assertThat(pathsOf(node.ancestorsOrSelf().filterIs(DummyNodeTypeB.class).drop(1)), contains("0"));
+
     }
 
 
@@ -185,26 +212,27 @@ public class NodeStreamTest {
 
     @Test
     public void testGet() {
-        // ("0", "00", "01", "010", "011", "012", "013", "1")
-        NodeStream<Node> stream = tree1.descendants();
+        // ("0", "00", "01", "010", "011", "0110", "012", "013", "1")
+        DescendantNodeStream<DummyNode> stream = tree1.descendants();
 
         assertEquals("0", stream.get(0).getImage());
         assertEquals("00", stream.get(1).getImage());
         assertEquals("010", stream.get(3).getImage());
         assertEquals("011", stream.get(4).getImage());
-        assertNull(stream.get(8));
+        assertEquals("0110", stream.get(5).getImage());
+        assertNull(stream.get(9));
     }
 
     @Test
     public void testNodeStreamsCanBeIteratedSeveralTimes() {
-        NodeStream<Node> stream = tree1.descendants();
+        DescendantNodeStream<DummyNode> stream = tree1.descendants();
 
-        assertThat(stream.count(), equalTo(8));
-        assertThat(stream.count(), equalTo(8));
+        assertThat(stream.count(), equalTo(9));
+        assertThat(stream.count(), equalTo(9));
 
-        assertThat(pathsOf(stream), contains("0", "00", "01", "010", "011", "012", "013", "1"));
+        assertThat(pathsOf(stream), contains("0", "00", "01", "010", "011", "0110", "012", "013", "1"));
         assertThat(pathsOf(stream.filter(n -> n.getNumChildren() == 0)),
-                   contains("00", "010", "011", "012", "013", "1"));
+                   contains("00", "010", "0110", "012", "013", "1"));
     }
 
 
@@ -238,11 +266,11 @@ public class NodeStreamTest {
 
         assertThat(stream.count(), equalTo(2));
 
-        assertThat(numEvals.getValue(), equalTo(8)); // evaluated *once* every element of the upper stream
+        assertThat(numEvals.getValue(), equalTo(9)); // evaluated *once* every element of the upper stream
 
         assertThat(stream.count(), equalTo(2));
 
-        assertThat(numEvals.getValue(), equalTo(8)); // not reevaluated
+        assertThat(numEvals.getValue(), equalTo(9)); // not reevaluated
     }
 
 
@@ -252,7 +280,7 @@ public class NodeStreamTest {
         MutableInt upstreamEvals = new MutableInt();
         MutableInt downstreamEvals = new MutableInt();
 
-        NodeStream<Node> stream =
+        NodeStream<DummyNode> stream =
             tree1.descendants()
                  .filter(n -> n.getImage().matches("0.*"))
                  .take(4)
@@ -299,7 +327,7 @@ public class NodeStreamTest {
 
         MutableInt tree1Evals = new MutableInt();
 
-        NodeStream<Node> unionStream = tree1.descendantsOrSelf().peek(n -> tree1Evals.increment());
+        NodeStream<DummyNode> unionStream = tree1.descendantsOrSelf().peek(n -> tree1Evals.increment());
 
         int i = 0;
 

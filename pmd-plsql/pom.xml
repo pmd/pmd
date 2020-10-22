@@ -8,6 +8,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -41,6 +42,7 @@
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="PLSQL" />
+                                    <property name="lang-name-camelcase" value="Plsql" />
                                     <property name="lang-terse-name" value="plsql" />
                                 </ant>
                             </target>
@@ -81,10 +83,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
@@ -92,19 +90,10 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

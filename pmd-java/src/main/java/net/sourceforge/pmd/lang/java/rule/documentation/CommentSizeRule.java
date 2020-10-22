@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +38,8 @@ public class CommentSizeRule extends AbstractCommentRule {
 
     private static final String CR = "\n";
 
+    static final Set<String> IGNORED_LINES = setOf("//", "/*", "/**", "*", "*/");
+
     public CommentSizeRule() {
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
@@ -47,7 +51,7 @@ public class CommentSizeRule extends AbstractCommentRule {
             return false;
         }
 
-        return !StringUtil.isAnyOf(line.trim(), "//", "/*", "/**", "*", "*/");
+        return !IGNORED_LINES.contains(line.trim());
     }
 
     private boolean hasTooManyLines(Comment comment) {
@@ -82,7 +86,7 @@ public class CommentSizeRule extends AbstractCommentRule {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 
-        List<Integer> indicies = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
         String[] lines = comment.getImage().split(CR);
 
         int offset = comment.getBeginLine();
@@ -90,11 +94,11 @@ public class CommentSizeRule extends AbstractCommentRule {
         for (int i = 0; i < lines.length; i++) {
             String cleaned = withoutCommentMarkup(lines[i]);
             if (cleaned.length() > maxLength) {
-                indicies.add(i + offset);
+                indices.add(i + offset);
             }
         }
 
-        return indicies;
+        return indices;
     }
 
     @Override

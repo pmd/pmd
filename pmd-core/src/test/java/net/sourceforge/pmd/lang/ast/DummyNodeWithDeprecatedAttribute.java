@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * @author Clément Fournier
@@ -14,7 +14,7 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
 
     public DummyNodeWithDeprecatedAttribute(int id) {
-        super(id);
+        super();
     }
 
     // this is the deprecated attribute
@@ -25,7 +25,7 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
     // this is a attribute that is deprecated for xpath, because it will be removed.
     // it should still be available via Java.
-    @DeprecatedAttribute
+    @DeprecatedAttribute(replaceWith = "@Image")
     public String getName() {
         return "foo";
     }

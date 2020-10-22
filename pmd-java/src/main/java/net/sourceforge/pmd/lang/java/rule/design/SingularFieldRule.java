@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -59,9 +61,9 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>();
-        defaultValues.addAll(super.defaultSuppressionAnnotations());
+        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
         defaultValues.add("lombok.experimental.Delegate");
+        defaultValues.add("lombok.EqualsAndHashCode");
         return defaultValues;
     }
 
@@ -71,107 +73,118 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
         boolean checkInnerClasses = getProperty(CHECK_INNER_CLASSES);
         boolean disallowNotAssignment = getProperty(DISALLOW_NOT_ASSIGNMENT);
 
-        if (node.isPrivate() && !node.isStatic() && !hasClassLombokAnnotation() && !hasIgnoredAnnotation(node)) {
-            for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
-                ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.getChild(0);
-                List<NameOccurrence> usages = declaration.getUsages();
-                Node decl = null;
-                boolean violation = true;
-                for (int ix = 0; ix < usages.size(); ix++) {
-                    NameOccurrence no = usages.get(ix);
-                    Node location = no.getLocation();
+        if (!node.isPrivate() || node.isStatic()) {
+            return data;
+        }
 
-                    ASTPrimaryExpression primaryExpressionParent = location
-                            .getFirstParentOfType(ASTPrimaryExpression.class);
-                    if (ix == 0 && !disallowNotAssignment) {
-                        if (primaryExpressionParent.getFirstParentOfType(ASTIfStatement.class) != null) {
-                            // the first usage is in an if, so it may be skipped
-                            // on
-                            // later calls to the method. So this might be legit
-                            // code
-                            // that simply stores an object for later use.
-                            violation = false;
-                            break; // Optimization
-                        }
+        if (hasClassLombokAnnotation() || hasIgnoredAnnotation(node)) {
+            return data;
+        }
 
-                        // Is the first usage in an assignment?
-                        Node potentialStatement = primaryExpressionParent.getParent();
-                        // Check that the assignment is not to a field inside
-                        // the field object
-                        boolean assignmentToField = no.getImage().equals(location.getImage());
-                        if (!assignmentToField || !isInAssignment(potentialStatement)) {
-                            violation = false;
-                            break; // Optimization
-                        } else {
-                            if (usages.size() > ix + 1) {
-                                Node secondUsageLocation = usages.get(ix + 1).getLocation();
+        // lombok.EqualsAndHashCode is a class-level annotation
+        if (hasIgnoredAnnotation((Annotatable) node.getFirstParentOfType(ASTAnyTypeDeclaration.class))) {
+            return data;
+        }
 
-                                List<ASTStatementExpression> parentStatements = secondUsageLocation
-                                        .getParentsOfType(ASTStatementExpression.class);
-                                for (ASTStatementExpression statementExpression : parentStatements) {
-                                    if (statementExpression != null && statementExpression.equals(potentialStatement)) {
-                                        // The second usage is in the assignment
-                                        // of the first usage, which is allowed
-                                        violation = false;
-                                        break; // Optimization
-                                    }
+        for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
+            ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.getChild(0);
+            List<NameOccurrence> usages = declaration.getUsages();
+            Node decl = null;
+            boolean violation = true;
+            for (int ix = 0; ix < usages.size(); ix++) {
+                NameOccurrence no = usages.get(ix);
+                Node location = no.getLocation();
+
+                ASTPrimaryExpression primaryExpressionParent = location
+                        .getFirstParentOfType(ASTPrimaryExpression.class);
+                if (ix == 0 && !disallowNotAssignment) {
+                    if (primaryExpressionParent.getFirstParentOfType(ASTIfStatement.class) != null) {
+                        // the first usage is in an if, so it may be skipped
+                        // on
+                        // later calls to the method. So this might be legit
+                        // code
+                        // that simply stores an object for later use.
+                        violation = false;
+                        break; // Optimization
+                    }
+
+                    // Is the first usage in an assignment?
+                    Node potentialStatement = primaryExpressionParent.getParent();
+                    // Check that the assignment is not to a field inside
+                    // the field object
+                    boolean assignmentToField = no.getImage().equals(location.getImage());
+                    if (!assignmentToField || !isInAssignment(potentialStatement)) {
+                        violation = false;
+                        break; // Optimization
+                    } else {
+                        if (usages.size() > ix + 1) {
+                            Node secondUsageLocation = usages.get(ix + 1).getLocation();
+
+                            List<ASTStatementExpression> parentStatements = secondUsageLocation
+                                    .getParentsOfType(ASTStatementExpression.class);
+                            for (ASTStatementExpression statementExpression : parentStatements) {
+                                if (statementExpression != null && statementExpression.equals(potentialStatement)) {
+                                    // The second usage is in the assignment
+                                    // of the first usage, which is allowed
+                                    violation = false;
+                                    break; // Optimization
                                 }
-
                             }
+
                         }
                     }
+                }
 
-                    if (!checkInnerClasses) {
-                        // Skip inner classes because the field can be used in
-                        // the outer class and checking this is too difficult
-                        ASTClassOrInterfaceDeclaration clazz = location
-                                .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-                        if (clazz != null && clazz.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) != null) {
-                            violation = false;
-                            break; // Optimization
-                        }
-                    }
-
-                    if (primaryExpressionParent.getParent() instanceof ASTSynchronizedStatement) {
-                        // This usage is directly in an expression of a
-                        // synchronized block
+                if (!checkInnerClasses) {
+                    // Skip inner classes because the field can be used in
+                    // the outer class and checking this is too difficult
+                    ASTClassOrInterfaceDeclaration clazz = location
+                            .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                    if (clazz != null && clazz.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) != null) {
                         violation = false;
                         break; // Optimization
                     }
+                }
 
-                    if (location.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        // This usage is inside a lambda expression
-                        violation = false;
-                        break; // Optimization
-                    }
+                if (primaryExpressionParent.getParent() instanceof ASTSynchronizedStatement) {
+                    // This usage is directly in an expression of a
+                    // synchronized block
+                    violation = false;
+                    break; // Optimization
+                }
 
-                    Node method = location.getFirstParentOfType(ASTMethodDeclaration.class);
+                if (location.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                    // This usage is inside a lambda expression
+                    violation = false;
+                    break; // Optimization
+                }
+
+                Node method = location.getFirstParentOfType(ASTMethodDeclaration.class);
+                if (method == null) {
+                    method = location.getFirstParentOfType(ASTConstructorDeclaration.class);
                     if (method == null) {
-                        method = location.getFirstParentOfType(ASTConstructorDeclaration.class);
+                        method = location.getFirstParentOfType(ASTInitializer.class);
                         if (method == null) {
-                            method = location.getFirstParentOfType(ASTInitializer.class);
-                            if (method == null) {
-                                continue;
-                            }
+                            continue;
                         }
                     }
-
-                    if (decl == null) {
-                        decl = method;
-                        continue;
-                    } else if (decl != method
-                            // handle inner classes
-                            && decl.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == method
-                                    .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)) {
-                        violation = false;
-                        break; // Optimization
-                    }
-
                 }
 
-                if (violation && !usages.isEmpty()) {
-                    addViolation(data, node, new Object[] { declaration.getImage() });
+                if (decl == null) {
+                    decl = method;
+                    continue;
+                } else if (decl != method
+                        // handle inner classes
+                        && decl.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == method
+                                .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)) {
+                    violation = false;
+                    break; // Optimization
                 }
+
+            }
+
+            if (violation && !usages.isEmpty()) {
+                addViolation(data, node, new Object[] { declaration.getImage() });
             }
         }
         return data;

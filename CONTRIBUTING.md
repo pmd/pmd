@@ -2,8 +2,12 @@
 
 First off, thanks for taking the time to contribute!
 
+Please note that this project is released with a Contributor Code of Conduct.
+By participating in this project you agree to abide by its terms.
 
-| NB: the rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer). Please refer to the specific [contributor documentation](https://github.com/pmd/pmd-designer#contributing) if your issue, feature request or PR touches the designer.  |
+You can find the code of conduct in the file [code_of_conduct.md](code_of_conduct.md).
+
+| NB: the rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer). Please refer to the specific [contributor documentation](https://github.com/pmd/pmd-designer/blob/master/CONTRIBUTING.md) if your issue, feature request or PR touches the designer.  |
 | --- |
 
 ## Pull requests

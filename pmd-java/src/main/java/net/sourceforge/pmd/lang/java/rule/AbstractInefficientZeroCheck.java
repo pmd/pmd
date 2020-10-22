@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -24,7 +25,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * another definable pattern
  *
  * @author acaplan
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
     private static Map<String, String> inverse = new HashMap<>();

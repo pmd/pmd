@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -933,7 +934,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             // only evaluate if we have an eval package for this class
             MethodHolder h = new MethodHolder(node);
-            if (!node.isAbstract() && !node.isPrivate() && !node.isStatic() && !node.isFinal()) {
+            if (!node.getModifiers().hasAny(JModifier.ABSTRACT, JModifier.PRIVATE, JModifier.STATIC, JModifier.FINAL)) {
                 // Skip abstract methods, have a separate rule for that
                 h.setDangerous(); // this method is overridable
                 h.setCalledMethod(node.getName());
@@ -1032,7 +1033,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 } else if (type.getChild(0) instanceof ASTReferenceType) {
                     parameterTypes.add("ref");
                 } else {
-                    parameterTypes.add("<unkown>");
+                    parameterTypes.add("<unknown>");
                 }
             }
         }

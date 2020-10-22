@@ -8,7 +8,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 
 /**
  * A type test pattern (JDK 14 preview feature). This can be found on
- * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
+ * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
+ * in a {@link ASTPatternExpression PatternExpression}.
  *
  * <pre class="grammar">
  *
@@ -24,15 +25,9 @@ public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPat
         super(id);
     }
 
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 
     /**

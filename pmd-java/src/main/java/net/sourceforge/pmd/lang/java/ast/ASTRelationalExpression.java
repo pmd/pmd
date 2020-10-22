@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a comparison on two numeric values. This has a precedence greater than {@link ASTEqualityExpression},
  * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTInstanceOfExpression}.
@@ -14,28 +12,25 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * rather, they are expressions with an operator precedence greater or equal to ShiftExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
- * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "<" | ">" | "<=" | ">=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
+ * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTRelationalExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTRelationalExpression extends AbstractJavaExpr implements ASTExpression {
 
-    @InternalApi
-    @Deprecated
-    public ASTRelationalExpression(int id) {
+    ASTRelationalExpression(int id) {
         super(id);
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
+
 }

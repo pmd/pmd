@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -177,6 +177,12 @@ public class DeadLinksChecker {
                         } else {
                             linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
                         }
+
+                        // maybe a local file
+                        if (!linkOk) {
+                            Path localResource = docsDirectory.resolve(linkTarget);
+                            linkOk = Files.exists(localResource);
+                        }
                     }
 
                     if (!linkOk) {
@@ -291,7 +297,7 @@ public class DeadLinksChecker {
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
-            return IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             throw new RuntimeException("error reading " + mdFile, ex);
         }

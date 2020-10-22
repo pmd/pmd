@@ -32,8 +32,9 @@ private class ATest {
     private void fetchData() {
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Test methods should have @isTest annotation.</description>
         <expected-problems>0</expected-problems>
@@ -57,8 +58,9 @@ private class ATest {
     private void fetchData() {
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Avoid false positive in non test class methods.</description>
         <expected-problems>0</expected-problems>
@@ -68,6 +70,6 @@ private class A {
         System.assertEquals(1,1);
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 </test-data>

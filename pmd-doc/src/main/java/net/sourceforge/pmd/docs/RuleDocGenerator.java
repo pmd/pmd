@@ -75,6 +75,12 @@ public class RuleDocGenerator {
     private final Path root;
     private final FileWriter writer;
 
+    /** Caches rule class name to java source file mapping. */
+    private final Map<String, String> allRules = new HashMap<>();
+    /** Caches ruleset to ruleset xml file mapping. */
+    private final Map<String, String> allRulesets = new HashMap<>();
+
+
     public RuleDocGenerator(FileWriter writer, Path root) {
         this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
         this.root = Objects.requireNonNull(root, "Root directory must be provided");
@@ -91,6 +97,7 @@ public class RuleDocGenerator {
         try {
             sortedRulesets = sortRulesets(registeredRulesets);
             sortedAdditionalRulesets = sortRulesets(resolveAdditionalRulesets(additionalRulesets));
+            determineRuleClassSourceFiles(sortedRulesets);
             generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
             generateRuleSetIndex(sortedRulesets);
 
@@ -299,15 +306,16 @@ public class RuleDocGenerator {
      * @return
      */
     private static String getShortRuleDescription(Rule rule) {
-        return StringEscapeUtils.escapeHtml4(
+        String htmlEscaped = StringEscapeUtils.escapeHtml4(
             StringUtils.abbreviate(
                 StringUtils.stripToEmpty(
                     rule.getDescription()
-                        .replaceAll("\n|\r", "")
+                        .replaceAll("\n+|\r+", " ")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
                         .replaceAll("\\*", "")),
                 100));
+        return EscapeUtils.preserveRuleTagQuotes(htmlEscaped);
     }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
@@ -315,7 +323,7 @@ public class RuleDocGenerator {
         description = StringEscapeUtils.escapeHtml4(description);
         description = description.replaceAll("\\n|\\r", " ");
         description = StringUtils.stripToEmpty(description);
-        return description;
+        return EscapeUtils.preserveRuleTagQuotes(description);
     }
 
     private static List<String> toLines(String s) {
@@ -344,7 +352,7 @@ public class RuleDocGenerator {
                 String permalink = RULESET_INDEX_PERMALINK_PATTERN
                         .replace("${language.tersename}", languageTersename)
                         .replace("${ruleset.name}", rulesetFilename);
-                String ruleSetSourceFilepath = "../" + getRuleSetSourceFilepath(ruleset);
+                String ruleSetSourceFilepath = "../" + allRulesets.get(ruleset.getFileName());
 
                 List<String> lines = new LinkedList<>();
                 lines.add("---");
@@ -405,15 +413,16 @@ public class RuleDocGenerator {
                     lines.addAll(EscapeUtils.escapeLines(toLines(stripIndentation(rule.getDescription()))));
                     lines.add("");
 
-                    if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+                    XPathRule xpathRule = asXPathRule(rule);
+                    if (xpathRule != null) {
                         lines.add("**This rule is defined by the following XPath expression:**");
                         lines.add("``` xpath");
-                        lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
+                        lines.addAll(toLines(StringUtils.stripToEmpty(xpathRule.getXPathExpression())));
                         lines.add("```");
                     } else {
                         lines.add("**This rule is defined by the following Java class:** "
                                 + "[" + rule.getRuleClass() + "]("
-                                + GITHUB_SOURCE_LINK + getRuleClassSourceFilepath(rule.getRuleClass())
+                                + GITHUB_SOURCE_LINK + allRules.get(rule.getRuleClass())
                                 + ")");
                     }
                     lines.add("");
@@ -500,6 +509,15 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private XPathRule asXPathRule(Rule rule) {
+        if (rule instanceof XPathRule) {
+            return (XPathRule) rule;
+        } else if (rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+            return (XPathRule) ((RuleReference) rule).getRule();
+        }
+        return null;
     }
 
     private static boolean isDeprecated(PropertyDescriptor<?> propertyDescriptor) {
@@ -596,63 +614,74 @@ public class RuleDocGenerator {
     }
 
     /**
-     * Searches for the source file of the given ruleset. This provides the information
-     * for the "editme" link.
+     * Walks through the root directory once to get all rule source file path names and ruleset names.
+     * This provides the information for the "editme" links.
      *
-     * @param ruleset the ruleset to search for.
-     * @return
-     * @throws IOException
+     * @param sortedRulesets all the rulesets and rules
      */
-    private String getRuleSetSourceFilepath(RuleSet ruleset) throws IOException {
-        final String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()));
-        final List<Path> foundPathResult = new LinkedList<>();
-
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                String path = file.toString();
-                if (path.contains("src") && path.endsWith(rulesetFilename)) {
-                    foundPathResult.add(file);
-                    return FileVisitResult.TERMINATE;
+    private void determineRuleClassSourceFiles(Map<Language, List<RuleSet>> sortedRulesets) {
+        // first collect all the classes, we need to resolve and the rulesets
+        // this also provides a default fallback path, which is used in unit tests.
+        // if the actual file is found during walkFileTree, then the default fallback path
+        // is replaced by a correct path.
+        for (List<RuleSet> rulesets : sortedRulesets.values()) {
+            for (RuleSet ruleset : rulesets) {
+                // Note: the path is normalized to unix path separators, so that the editme link
+                // uses forward slashes
+                String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()), true);
+                allRulesets.put(ruleset.getFileName(), rulesetFilename);
+                for (Rule rule : ruleset.getRules()) {
+                    String ruleClass = rule.getRuleClass();
+                    String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
+                            + ".java";
+                    // Note: the path is normalized to unix path separators, so that the editme link
+                    // uses forward slashes
+                    allRules.put(ruleClass, FilenameUtils.normalize(relativeSourceFilename, true));
                 }
-                return super.visitFile(file, attrs);
             }
-        });
-
-        if (!foundPathResult.isEmpty()) {
-            Path foundPath = foundPathResult.get(0);
-            foundPath = root.relativize(foundPath);
-            // Note: the path is normalized to unix path separators, so that the editme link
-            // uses forward slashes
-            return FilenameUtils.normalize(foundPath.toString(), true);
         }
 
-        return StringUtils.chomp(ruleset.getFileName());
-    }
+        // then go and search the actual files
+        try {
+            Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    String path = file.toString();
 
-    private String getRuleClassSourceFilepath(String ruleClass) throws IOException {
-        final String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
-                + ".java";
-        final List<Path> foundPathResult = new LinkedList<>();
+                    if (path.contains("src")) {
+                        String foundRuleClass = null;
+                        for (Map.Entry<String, String> entry : allRules.entrySet()) {
+                            if (path.endsWith(entry.getValue())) {
+                                foundRuleClass = entry.getKey();
+                                break;
+                            }
+                        }
+                        if (foundRuleClass != null) {
+                            Path foundPath = root.relativize(file);
+                            // Note: the path is normalized to unix path separators, so that the editme link
+                            // uses forward slashes
+                            allRules.put(foundRuleClass, FilenameUtils.normalize(foundPath.toString(), true));
+                        }
 
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                String path = file.toString();
-                if (path.contains("src") && path.endsWith(relativeSourceFilename)) {
-                    foundPathResult.add(file);
-                    return FileVisitResult.TERMINATE;
+                        String foundRuleset = null;
+                        for (Map.Entry<String, String> entry : allRulesets.entrySet()) {
+                            if (path.endsWith(entry.getValue())) {
+                                foundRuleset = entry.getKey();
+                                break;
+                            }
+                        }
+                        if (foundRuleset != null) {
+                            Path foundPath = root.relativize(file);
+                            // Note: the path is normalized to unix path separators, so that the editme link
+                            // uses forward slashes
+                            allRulesets.put(foundRuleset, FilenameUtils.normalize(foundPath.toString(), true));
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-                return super.visitFile(file, attrs);
-            }
-        });
-
-        if (!foundPathResult.isEmpty()) {
-            Path foundPath = foundPathResult.get(0);
-            foundPath = root.relativize(foundPath);
-            return FilenameUtils.normalize(foundPath.toString(), true);
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        return FilenameUtils.normalize(relativeSourceFilename, true);
     }
 }

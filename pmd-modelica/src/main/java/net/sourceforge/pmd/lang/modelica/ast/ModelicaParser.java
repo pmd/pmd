@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import java.io.Reader;
-
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -18,11 +15,6 @@ public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
 
     public ModelicaParser(final ParserOptions parserOptions) {
         super(parserOptions);
-    }
-
-    @Override
-    protected TokenManager createTokenManager(Reader source) {
-        return new ModelicaTokenManager(source);
     }
 
     @Override

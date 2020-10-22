@@ -1,0 +1,21 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L8
+    [public]                                1         7
+    [with]                                  8         12
+    [sharing]                               13        20
+    [class]                                 21        26
+    [sfdcencoderconstants]                  27        47
+    [{]                                     48        49
+L12
+    [public]                                2         8
+    [string]                                9         15
+    [someparam]                             16        25
+    [{]                                     26        27
+    [get]                                   28        31
+    [;]                                     31        32
+    [set]                                   33        36
+    [;]                                     36        37
+    [}]                                     38        39
+L13
+    [}]                                     1         2
+EOF

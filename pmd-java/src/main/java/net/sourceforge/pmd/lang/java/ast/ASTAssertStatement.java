@@ -4,46 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an {@code assert} statement.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AssertStatement ::= "assert" {@linkplain ASTExpression Expression} ( ":" {@linkplain ASTExpression Expression} )? ";"
  *
  * </pre>
  */
-public class ASTAssertStatement extends AbstractJavaNode {
+public final class ASTAssertStatement extends AbstractStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTAssertStatement(int id) {
+    ASTAssertStatement(int id) {
         super(id);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the expression tested by this assert statement.
-     *
-     * @deprecated Use {@link #getCondition()}
-     */
-    @Deprecated
-    public ASTExpression getGuardExpressionNode() {
-        return getCondition();
-    }
 
     /**
      * Returns the expression tested by this assert statement.

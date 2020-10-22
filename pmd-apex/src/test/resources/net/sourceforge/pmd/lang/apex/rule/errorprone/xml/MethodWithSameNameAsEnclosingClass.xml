@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,29 +9,28 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	Integer Foo(double x) {}
+    Integer Foo(double x) {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public Foo() {}
+    public Foo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>doesn't crash on interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
-	void voo();
+    void voo();
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
 </test-data>

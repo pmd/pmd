@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.internal;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
@@ -139,12 +141,13 @@ public class StageDependencyTest {
 
 
     private static RuleSets withRules(Rule r, Rule... rs) {
-        RuleSets ruleSets = new RuleSets(new RuleSetFactory().createSingleRuleRuleSet(r));
+        List<RuleSet> rsets = new ArrayList<>();
+        rsets.add(new RuleSetFactory().createSingleRuleRuleSet(r));
         for (Rule rule : rs) {
-            ruleSets.addRuleSet(new RuleSetFactory().createSingleRuleRuleSet(rule));
+            rsets.add(new RuleSetFactory().createSingleRuleRuleSet(rule));
         }
 
-        return ruleSets;
+        return new RuleSets(rsets);
     }
 
     private static class PredicateTestRule extends AbstractRule {
@@ -166,7 +169,7 @@ public class StageDependencyTest {
         }
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
 
         }
 

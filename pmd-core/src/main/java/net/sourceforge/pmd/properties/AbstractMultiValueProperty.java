@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -75,7 +73,7 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    /* This is the one overriden in PropertyDescriptor */
+    /* This is the one overridden in PropertyDescriptor */
     @Override
     public String propertyErrorFor(Rule rule) {
         List<V> realValues = rule.getProperty(this);
@@ -179,14 +177,7 @@ import net.sourceforge.pmd.Rule;
             return Collections.emptyList();
         }
 
-        String[] strValues = valueString.split(Pattern.quote("" + multiValueDelimiter()));
-
-        List<V> values = new ArrayList<>(strValues.length);
-        for (String strValue : strValues) {
-            values.add(createFrom(strValue));
-        }
-
-        return values;
+        return ValueParserConstants.parseListWithEscapes(valueString, multiValueDelimiter(), this::createFrom);
     }
 
 

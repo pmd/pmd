@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.PMD;
+
 /**
  * Represents a set of configuration options for a {@link Parser}. For each
  * unique combination of ParserOptions a Parser will be used to create an AST.
@@ -11,14 +17,15 @@ package net.sourceforge.pmd.lang;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
-    protected String suppressMarker;
-    protected String multiFileAnalysisDirectory;
+    private String suppressMarker = PMD.SUPPRESS_MARKER;
+    private String multiFileAnalysisDirectory;
 
     public String getSuppressMarker() {
         return suppressMarker;
     }
 
-    public void setSuppressMarker(String suppressMarker) {
+    public final void setSuppressMarker(@NonNull String suppressMarker) {
+        Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
     }
 
@@ -26,7 +33,7 @@ public class ParserOptions {
         return multiFileAnalysisDirectory;
     }
 
-    public void setMultiFileAnalysisDirectory(String multiFileAnalysisDirectory) {
+    public final void setMultiFileAnalysisDirectory(String multiFileAnalysisDirectory) {
         this.multiFileAnalysisDirectory = multiFileAnalysisDirectory;
     }
 
@@ -39,11 +46,12 @@ public class ParserOptions {
             return false;
         }
         final ParserOptions that = (ParserOptions) obj;
-        return this.suppressMarker.equals(that.suppressMarker);
+        return this.getSuppressMarker().equals(that.getSuppressMarker()) 
+            && this.getMultiFileAnalysisDirectory().equals(this.getMultiFileAnalysisDirectory());
     }
 
     @Override
     public int hashCode() {
-        return suppressMarker != null ? suppressMarker.hashCode() : 0;
+        return Objects.hash(getSuppressMarker(), getMultiFileAnalysisDirectory());
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,8 +11,8 @@
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Looping through map, best practice</description>
@@ -25,7 +24,7 @@ trigger AccountTrigger on Account (before insert, before update) {
         System.debug(a);
    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -37,8 +36,6 @@ class NotATrigger {
         Account[] accounts = opportunity.Accounts[0];
    }
 }
-
-		]]></code>
+        ]]></code>
     </test-code>
-
 </test-data>

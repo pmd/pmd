@@ -4,58 +4,72 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+
 
 /**
  * Represents a primitive type.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
+ * PrimitiveType ::= {@link ASTAnnotation Annotation}* ("boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double")
  *
  * </pre>
  */
-public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensionable {
+public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
-    private int arrayDepth;
+    private PrimitiveTypeKind kind;
 
-    @InternalApi
+    /**
+     * @deprecated Made public for one shady usage in {@link ClassScope}
+     */
     @Deprecated
-    public ASTPrimitiveType(int id) {
+    @InternalApi
+    public ASTPrimitiveType(PrimitiveTypeKind type) {
+        super(JavaParserImplTreeConstants.JJTPRIMITIVETYPE);
+        setKind(type);
+    }
+
+
+    ASTPrimitiveType(int id) {
         super(id);
     }
 
-    public boolean isBoolean() {
-        return "boolean".equals(getImage());
+    void setKind(PrimitiveTypeKind kind) {
+        assert this.kind == null : "Cannot set kind multiple times";
+        this.kind = kind;
+    }
+
+    public PrimitiveTypeKind getKind() {
+        assert kind != null : "Primitive kind not set for " + this;
+        return kind;
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public String getTypeImage() {
+        return getKind().getSimpleName();
+    }
+
+
+    @Override
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    public @NonNull JPrimitiveType getTypeMirror() {
+        return (JPrimitiveType) super.getTypeMirror();
     }
-
-
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
-    }
-
 }

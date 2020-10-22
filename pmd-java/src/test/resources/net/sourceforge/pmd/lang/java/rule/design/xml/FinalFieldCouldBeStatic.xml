@@ -1,74 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public final int BAR = 42;
+    public final int BAR = 42;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-already static, OK
-     ]]></description>
+        <description>already static, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static final int BAR = 42;
+    public static final int BAR = 42;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-non-final, OK
-     ]]></description>
+        <description>non-final, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int BAR = 42;
+    public int BAR = 42;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-non-primitive failure case - only works for String
-     ]]></description>
+        <description>non-primitive failure case - only works for String</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public final String BAR = "42";
+    public final String BAR = "42";
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final field that's a thread, OK
-     ]]></description>
+        <description>final field that's a thread, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public final Thread BAR = new Thread();
+    public final Thread BAR = new Thread();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't flag interfaces
-     ]]></description>
+        <description>don't flag interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public final int BAR = 42;
+    public final int BAR = 42;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>bug #1002 False +: FinalFieldCouldBeStatic on inner class</description>
         <expected-problems>0</expected-problems>
@@ -96,12 +91,64 @@ interface Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#275 - False positive in @interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public @interface MetricType {
     int CHECKBOX = 0, COUNTER = 1, SPINNER = 2, NOTE = 3, STOPWATCH = 4, HEADER = 5;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - False positive with lombok @Builder.Default fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import not.lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should trigger multiple times for fields declared on one line</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+public class ExampleClass {
+
+    private final String one = "one", two = "two";
 }
         ]]></code>
     </test-code>

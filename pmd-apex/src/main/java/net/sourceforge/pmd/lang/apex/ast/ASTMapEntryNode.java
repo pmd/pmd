@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.MapEntryNode;
 
-public class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
+public final class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
 
-    public ASTMapEntryNode(MapEntryNode mapEntryNode) {
+    ASTMapEntryNode(MapEntryNode mapEntryNode) {
         super(mapEntryNode);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

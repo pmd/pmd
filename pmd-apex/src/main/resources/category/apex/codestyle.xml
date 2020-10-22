@@ -10,6 +10,7 @@ Rules which enforce a specific coding style.
     </description>
 
     <rule name="ClassNamingConventions"
+          language="apex"
           since="5.5.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.ClassNamingConventionsRule"
@@ -36,7 +37,7 @@ public class fooClass { } // This will be reported unless you change the regex
           language="apex"
           since="5.6.0"
           message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
         <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting
@@ -48,9 +49,9 @@ from the rest.
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 |
-//IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 ]]>
                 </value>
             </property>
@@ -73,7 +74,7 @@ else
           language="apex"
           since="5.6.0"
           message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
         <description>
 Avoid using if statements without using braces to surround the code block. If the code
@@ -85,7 +86,7 @@ controlled from the rest.
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false']
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -102,7 +103,32 @@ if (foo) {  // preferred approach
         </example>
     </rule>
 
+    <rule name="FieldDeclarationsShouldBeAtStart"
+          language="apex"
+          since="6.23.0"
+          message="Field declaration for ''{0}'' should be before method declarations in its class"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
+        <description>
+            Field declarations should appear before method declarations within a class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    public Integer someField; // good
+
+    public void someMethod() {
+    }
+
+    public Integer anotherField; // bad
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="FieldNamingConventions"
+          language="apex"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldNamingConventionsRule"
@@ -130,7 +156,7 @@ public class Foo {
           language="apex"
           since="5.6.0"
           message="Avoid using 'for' statements without curly braces"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#forloopsmustusebraces">
         <description>
 Avoid using 'for' statements without using surrounding braces. If the code formatting or
@@ -142,9 +168,9 @@ from the rest.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForLoopStatement/BlockStatement[@CurlyBrace='false']
+//ForLoopStatement/BlockStatement[@CurlyBrace= false()]
 |
-//ForEachStatement/BlockStatement[@CurlyBrace='false']
+//ForEachStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -162,6 +188,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
     </rule>
 
     <rule name="FormalParameterNamingConventions"
+          language="apex"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.FormalParameterNamingConventionsRule"
@@ -187,6 +214,7 @@ public class Foo {
     </rule>
 
     <rule name="LocalVariableNamingConventions"
+          language="apex"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.LocalVariableNamingConventionsRule"
@@ -214,6 +242,7 @@ public class Foo {
     </rule>
 
     <rule name="MethodNamingConventions"
+          language="apex"
           since="5.5.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.MethodNamingConventionsRule"
@@ -238,9 +267,10 @@ public class Foo {
     </rule>
 
     <rule name="OneDeclarationPerLine"
+          language="apex"
           since="6.7.0"
           message="Use one statement for each line, it enhances code readability."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperline">
         <description>
 Apex allows the use of several variables declaration of the same type on one line. However, it
@@ -261,7 +291,6 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 ]]>
                 </value>
             </property>
-            <property name="version" value="2.0"/>
             <property name="strictMode" type="Boolean" value="false"
                       description="If true, mark combined declaration even if the declarations are on separate lines."/>
         </properties>
@@ -279,6 +308,7 @@ Integer b;
     </rule>
 
     <rule name="PropertyNamingConventions"
+          language="apex"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.PropertyNamingConventionsRule"
@@ -303,12 +333,11 @@ public class Foo {
         </example>
     </rule>
 
-
     <rule name="WhileLoopsMustUseBraces"
           language="apex"
           since="5.6.0"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#whileloopsmustusebraces">
         <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code
@@ -320,7 +349,7 @@ controlled from the rest.
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileLoopStatement/BlockStatement[@CurlyBrace='false']
+//WhileLoopStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -336,5 +365,4 @@ while (true) {  // preferred approach
 ]]>
         </example>
     </rule>
-
 </ruleset>

@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -28,30 +26,23 @@ import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule {
 
-    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForeachReassignOption> map = new HashMap<>();
-        map.put("deny", ForeachReassignOption.DENY);
-        map.put("firstOnly", ForeachReassignOption.FIRST_ONLY);
-        map.put("allow", ForeachReassignOption.ALLOW);
-        FOREACH_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
+        associateBy(asList(ForeachReassignOption.values()), ForeachReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
             = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
@@ -59,15 +50,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             .desc("how/if foreach control variables may be reassigned")
             .build();
 
-    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForReassignOption> map = new HashMap<>();
-        map.put("deny", ForReassignOption.DENY);
-        map.put("skip", ForReassignOption.SKIP);
-        map.put("allow", ForReassignOption.ALLOW);
-        FOR_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES =
+        associateBy(asList(ForReassignOption.values()), ForReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
             = enumProperty("forReassign", FOR_REASSIGN_VALUES)
@@ -140,27 +124,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
      */
     private void checkIncrementAndDecrement(Object data, Set<String> loopVariables, ASTStatement loopBody, IgnoreFlags... ignoreFlags) {
 
-        // foo ++ and foo --
-        for (ASTPostfixExpression expression : loopBody.findDescendantsOfType(ASTPostfixExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // ++ foo
-        for (ASTPreIncrementExpression expression : loopBody.findDescendantsOfType(ASTPreIncrementExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // -- foo
-        for (ASTPreDecrementExpression expression : loopBody.findDescendantsOfType(ASTPreDecrementExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
+        for (ASTUnaryExpression expression : loopBody.findDescendantsOfType(ASTUnaryExpression.class)) {
+            if (expression.getOperator().isPure() || ignoreNode(expression, loopBody, ignoreFlags)) {
                 continue;
             }
 
@@ -205,7 +170,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         if (ignoreFlags.length == 0) {
             return false;
         }
-        final List<IgnoreFlags> ignoreFlagsList = Arrays.asList(ignoreFlags);
+        final List<IgnoreFlags> ignoreFlagsList = asList(ignoreFlags);
 
         // ignore the first statement
         final boolean ignoredFirstStatement = ignoreFlagsList.contains(IgnoreFlags.IGNORE_FIRST) && isFirstStatementInBlock(node, loopBody);
@@ -309,7 +274,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
     /**
      * Add a violation, if the node image is one of the loop variables.
      */
-    private void checkVariable(Object data, Set<String> loopVariables, AbstractNode node) {
+    private void checkVariable(Object data, Set<String> loopVariables, JavaNode node) {
         if (node != null && loopVariables.contains(node.getImage())) {
             addViolation(data, node, node.getImage());
         }
@@ -338,14 +303,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForeachReassignOption> entry : FOREACH_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
+            return getDisplayName();
+        }
 
-            // fallback
-            return super.toString();
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 
@@ -372,14 +334,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForReassignOption> entry : FOR_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
+            return getDisplayName();
+        }
 
-            // fallback
-            return super.toString();
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 

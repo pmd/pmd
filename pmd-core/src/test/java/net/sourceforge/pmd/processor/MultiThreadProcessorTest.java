@@ -7,6 +7,7 @@ package net.sourceforge.pmd.processor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -63,7 +64,7 @@ public class MultiThreadProcessorTest {
         processor.processFiles(ruleSetFactory, files, ctx, Collections.<Renderer>singletonList(renderer));
         renderer.end();
 
-        final Iterator<ConfigurationError> configErrors = renderer.getReport().configErrors();
+        final Iterator<ConfigurationError> configErrors = renderer.getReport().getConfigurationErrors().iterator();
         final ConfigurationError error = configErrors.next();
 
         Assert.assertEquals("Dysfunctional rule message not present",
@@ -97,7 +98,7 @@ public class MultiThreadProcessorTest {
 
         @Override
         public InputStream getInputStream() throws IOException {
-            return new ByteArrayInputStream(data.getBytes("UTF-8"));
+            return new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         }
 
         @Override
@@ -112,7 +113,7 @@ public class MultiThreadProcessorTest {
         // between the threads
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
             if (ctx.getSourceCodeFilename().contains("violation")) {
@@ -124,7 +125,7 @@ public class MultiThreadProcessorTest {
 
             letTheOtherThreadRun(100);
             if (hasViolation) {
-                addViolation(ctx, nodes.get(0));
+                addViolation(ctx, target);
             }
         }
 
@@ -143,7 +144,7 @@ public class MultiThreadProcessorTest {
         public static final String DYSFUNCTIONAL_RULE_REASON = "dysfunctional rule is dysfunctional";
 
         @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        public void apply(Node target, RuleContext ctx) {
             // noop
         }
 

@@ -4,28 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.PRIVATE;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.PUBLIC;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -40,19 +42,18 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         addRuleChainVisit(ASTMethodDeclaration.class);
         addRuleChainVisit(ASTResource.class);
         addRuleChainVisit(ASTFieldDeclaration.class);
-        addRuleChainVisit(ASTAnnotationMethodDeclaration.class);
         addRuleChainVisit(ASTConstructorDeclaration.class);
     }
 
 
     private void reportUnnecessaryModifiers(Object data, Node node,
-                                            Modifier unnecessaryModifier, String explanation) {
+                                            JModifier unnecessaryModifier, String explanation) {
         reportUnnecessaryModifiers(data, node, EnumSet.of(unnecessaryModifier), explanation);
     }
 
 
     private void reportUnnecessaryModifiers(Object data, Node node,
-                                            Set<Modifier> unnecessaryModifiers, String explanation) {
+                                            Set<JModifier> unnecessaryModifiers, String explanation) {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
@@ -76,7 +77,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVariableName();
         } else if (node instanceof ASTResource) {
-            return ((ASTResource) node).getVariableDeclaratorId().getImage();
+            return ((ASTResource) node).getStableName();
         } else {
             return node.getImage();
         }
@@ -87,7 +88,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private String getPrintableNodeKind(Node node) {
         if (node instanceof ASTAnyTypeDeclaration) {
             return PrettyPrintingUtil.kindName((ASTAnyTypeDeclaration) node);
-        } else if (node instanceof ASTMethodDeclaration || node instanceof ASTAnnotationMethodDeclaration) {
+        } else if (node instanceof ASTMethodDeclaration) {
             return "method";
         } else if (node instanceof ASTConstructorDeclaration) {
             return "constructor";
@@ -100,7 +101,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
-    private String formatUnnecessaryModifiers(Set<Modifier> set) {
+    private String formatUnnecessaryModifiers(Set<JModifier> set) {
         // prints in the standard modifier order (sorted by enum constant ordinal),
         // regardless of the actual order in which we checked
         return (set.size() > 1 ? "s" : "") + " '" + StringUtils.join(set, " ") + "'";
@@ -110,13 +111,13 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
 
-        if (node.isPublic()) {
-            checkDeclarationInInterfaceType(data, node, EnumSet.of(Modifier.PUBLIC));
+        if (node.hasExplicitModifiers(PUBLIC)) {
+            checkDeclarationInInterfaceType(data, node, EnumSet.of(PUBLIC));
         }
 
-        if (node.isStatic()) {
+        if (node.hasExplicitModifiers(STATIC)) {
             // a static enum
-            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "nested enums are implicitly static");
+            reportUnnecessaryModifiers(data, node, STATIC, "nested enums are implicitly static");
         }
 
         return data;
@@ -127,7 +128,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         if (node.isAbstract()) {
             // may have several violations, with different explanations
-            reportUnnecessaryModifiers(data, node, Modifier.ABSTRACT, "annotations types are implicitly abstract");
+            reportUnnecessaryModifiers(data, node, ABSTRACT, "annotations types are implicitly abstract");
 
         }
 
@@ -137,45 +138,54 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         }
 
         // a public annotation within an interface or annotation
-        if (node.isPublic() && node.enclosingTypeIsA(TypeKind.INTERFACE, TypeKind.ANNOTATION)) {
-            reportUnnecessaryModifiers(data, node, Modifier.PUBLIC, "members of " + getPrintableNodeKind(node.getEnclosingTypeDeclaration()) + " types are implicitly public");
+        if (node.hasExplicitModifiers(PUBLIC) && isParentInterfaceType(node.getEnclosingType())) {
+            reportUnnecessaryModifiers(data, node, PUBLIC,
+                                       "members of " + getPrintableNodeKind(node.getEnclosingType())
+                                           + " types are implicitly public");
         }
 
-        if (node.isStatic()) {
+        if (node.hasExplicitModifiers(STATIC)) {
             // a static annotation
-            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "nested annotation types are implicitly static");
+            reportUnnecessaryModifiers(data, node, STATIC, "nested annotation types are implicitly static");
         }
 
         return data;
+    }
+
+    // also considers annotations, as should ASTAnyTypeDeclaration do
+    private boolean isParentInterfaceType(@Nullable ASTAnyTypeDeclaration enclosing) {
+        return enclosing != null && enclosing.isInterface();
     }
 
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
-        if (node.isInterface() && node.isAbstract()) {
+        if (node.isInterface() && node.hasExplicitModifiers(ABSTRACT)) {
             // an abstract interface
-            reportUnnecessaryModifiers(data, node, Modifier.ABSTRACT, "interface types are implicitly abstract");
+            reportUnnecessaryModifiers(data, node, ABSTRACT, "interface types are implicitly abstract");
         }
 
         if (!node.isNested()) {
             return data;
         }
 
-        boolean isParentInterfaceOrAnnotation = node.enclosingTypeIsA(TypeKind.INTERFACE, TypeKind.ANNOTATION);
+        boolean isParentInterfaceOrAnnotation = isParentInterfaceType(node.getEnclosingType());
 
         // a public class or interface within an interface or annotation
-        if (node.isPublic() && isParentInterfaceOrAnnotation) {
-            reportUnnecessaryModifiers(data, node, Modifier.PUBLIC, "members of " + getPrintableNodeKind(node.getEnclosingTypeDeclaration()) + " types are implicitly public");
+        if (node.hasExplicitModifiers(PUBLIC) && isParentInterfaceOrAnnotation) {
+            reportUnnecessaryModifiers(data, node, PUBLIC,
+                                       "members of " + getPrintableNodeKind(node.getEnclosingType())
+                                           + " types are implicitly public");
         }
 
-        if (node.isStatic()) {
+        if (node.hasExplicitModifiers(STATIC)) {
             if (node.isInterface()) {
                 // a static interface
-                reportUnnecessaryModifiers(data, node, Modifier.STATIC, "member interfaces are implicitly static");
+                reportUnnecessaryModifiers(data, node, STATIC, "member interfaces are implicitly static");
             } else if (isParentInterfaceOrAnnotation) {
                 // a type nested within an interface
-                reportUnnecessaryModifiers(data, node, Modifier.STATIC, "types nested within an interface type are implicitly static");
+                reportUnnecessaryModifiers(data, node, STATIC, "types nested within an interface type are implicitly static");
             }
         }
 
@@ -184,29 +194,30 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTMethodDeclaration node, Object data) {
-        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
+        Set<JModifier> unnecessary = EnumSet.noneOf(JModifier.class);
 
-        if (node.isSyntacticallyPublic()) {
-            unnecessary.add(Modifier.PUBLIC);
+        if (node.hasExplicitModifiers(PUBLIC)) {
+            unnecessary.add(PUBLIC);
         }
-        if (node.isSyntacticallyAbstract()) {
-            unnecessary.add(Modifier.ABSTRACT);
+        if (node.hasExplicitModifiers(ABSTRACT)) {
+            unnecessary.add(ABSTRACT);
         }
 
         checkDeclarationInInterfaceType(data, node, unnecessary);
 
-        if (node.isFinal()) {
+        if (node.hasExplicitModifiers(FINAL)) {
             // If the method is annotated by @SafeVarargs then it's ok
             if (!isSafeVarargs(node)) {
-                if (node.isPrivate()) {
-                    reportUnnecessaryModifiers(data, node, Modifier.FINAL, "private methods cannot be overridden");
+                if (node.hasModifiers(PRIVATE)) {
+                    reportUnnecessaryModifiers(data, node, FINAL, "private methods cannot be overridden");
                 } else {
-                    final Node n = node.getNthParent(3);
+                    final ASTAnyTypeDeclaration n = node.getEnclosingType();
                     // A final method of an anonymous class / enum constant. Neither can be extended / overridden
-                    if (n instanceof ASTAllocationExpression || n instanceof ASTEnumConstant) {
-                        reportUnnecessaryModifiers(data, node, Modifier.FINAL, "an anonymous class cannot be extended");
-                    } else if (n instanceof ASTClassOrInterfaceDeclaration && ((AccessNode) n).isFinal()) {
-                        reportUnnecessaryModifiers(data, node, Modifier.FINAL, "the method is already in a final class");
+                    if (n.isAnonymous()) {
+                        reportUnnecessaryModifiers(data, node, FINAL, "an anonymous class cannot be extended");
+                    } else if (n.isFinal()) {
+                        // notice: enum types are implicitly final if no enum constant declares a body
+                        reportUnnecessaryModifiers(data, node, FINAL, "the method is already in a final class");
                     }
                 }
             }
@@ -217,8 +228,8 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTResource node, final Object data) {
-        if (node.isFinal()) {
-            reportUnnecessaryModifiers(data, node, Modifier.FINAL, "resource specifications are implicitly final");
+        if (!node.isConciseResource() && node.asLocalVariableDeclaration().hasExplicitModifiers(FINAL)) {
+            reportUnnecessaryModifiers(data, node, FINAL, "resource specifications are implicitly final");
         }
 
         return data;
@@ -226,39 +237,26 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
-        if (node.isSyntacticallyPublic()) {
-            unnecessary.add(Modifier.PUBLIC);
+        Set<JModifier> unnecessary = EnumSet.noneOf(JModifier.class);
+        if (node.hasExplicitModifiers(PUBLIC)) {
+            unnecessary.add(PUBLIC);
         }
-        if (node.isSyntacticallyStatic()) {
-            unnecessary.add(Modifier.STATIC);
+        if (node.hasExplicitModifiers(STATIC)) {
+            unnecessary.add(STATIC);
         }
-        if (node.isSyntacticallyFinal()) {
-            unnecessary.add(Modifier.FINAL);
+        if (node.hasExplicitModifiers(FINAL)) {
+            unnecessary.add(FINAL);
         }
 
-        checkDeclarationInInterfaceType(data, node, unnecessary);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
-        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
-        if (node.isPublic()) {
-            unnecessary.add(Modifier.PUBLIC);
-        }
-        if (node.isAbstract()) {
-            unnecessary.add(Modifier.ABSTRACT);
-        }
         checkDeclarationInInterfaceType(data, node, unnecessary);
         return data;
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        if (node.getNthParent(2) instanceof ASTEnumBody) {
-            if (node.isPrivate()) {
-                reportUnnecessaryModifiers(data, node, Modifier.PRIVATE, "enum constructors are implicitly private");
+        if (node.getEnclosingType().isEnum()) {
+            if (node.hasExplicitModifiers(PRIVATE)) {
+                reportUnnecessaryModifiers(data, node, PRIVATE, "enum constructors are implicitly private");
             }
         }
         return data;
@@ -270,26 +268,16 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
 
-    private void checkDeclarationInInterfaceType(Object data, Node fieldOrMethod, Set<Modifier> unnecessary) {
+    private void checkDeclarationInInterfaceType(Object data, JavaNode fieldOrMethod, Set<JModifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
-        Node parent = fieldOrMethod.getParent().getParent().getParent();
-        if (parent instanceof ASTAnnotationTypeDeclaration
-                || parent instanceof ASTClassOrInterfaceDeclaration
-                && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            reportUnnecessaryModifiers(data, fieldOrMethod, unnecessary, "the " + getPrintableNodeKind(fieldOrMethod) + " is declared in an " + getPrintableNodeKind(parent) + " type");
+        ASTAnyTypeDeclaration parent = fieldOrMethod.getEnclosingType();
+        if (parent.isInterface()) {
+            reportUnnecessaryModifiers(data, fieldOrMethod, unnecessary,
+                                       "the " + getPrintableNodeKind(fieldOrMethod) + " is declared in an "
+                                           + getPrintableNodeKind(parent) + " type");
         }
     }
 
-
-    private enum Modifier {
-        PUBLIC, PRIVATE, PROTECTED, STATIC, FINAL, ABSTRACT;
-
-
-        @Override
-        public String toString() {
-            return name().toLowerCase(Locale.ROOT);
-        }
-    }
 
 }

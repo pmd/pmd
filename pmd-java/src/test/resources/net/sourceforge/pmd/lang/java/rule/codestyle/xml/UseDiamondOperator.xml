@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Use Diamond</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,8</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,9,10</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +16,19 @@ public class Foo {
     public void foo() {
        List<String> strings = new ArrayList<String>();
        List<String> strings2 = new ArrayList<>();
+       List<List<String>> strings3 = new ArrayList<>();
+       List<List<String>> strings4 = new ArrayList<List<List<String>>>();
        this.field = new ArrayList<String>();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>False positive cases: anonymous classes, methods calls</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private WeakReference<Class<?>> typeReference;
     public void foo() {
         Collections.sort(files, new Comparator<DataSource>() {
             @Override
@@ -49,8 +52,6 @@ public class Foo {
             }
         };
         Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
-        Class<?> type = null;
-        typeReference = new WeakReference<Class<?>>(type);
         ((ListNode<E>) rev).reverseCache = new SoftReference<ImmutableList<E>>(this);
     }
     public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
@@ -59,7 +60,8 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-     <test-code>
+
+    <test-code>
         <description>#1624[java] UseDiamondOperator doesn't work with var</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
@@ -72,9 +74,10 @@ public class Buzz {
         f = new ArrayList<String>(); // flagged by rule
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-     <test-code>
+
+    <test-code>
         <description>Multiple initializations in a single declaration</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
@@ -88,6 +91,143 @@ public class Buzz {
             baz = new ArrayList<>(); // ok
     }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1723 FP with var inside lambda (declaration)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    {
+        Runnable someAction = () -> {
+            var foo = new ArrayList<String>(5); // ok
+            System.err.println(foo);
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1723 FP with var inside lambda (assignment)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    {
+        Runnable someAction;
+        someAction = () -> {
+            var foo = new ArrayList<String>(5); // ok
+            System.err.println(foo);
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with array creation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    {
+        Class<?> c = new Class<?>[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- These tests depend on the Java version used -->
+    <!-- For now we keep the old behaviour of Java 7 and ignoring type
+     arguments which have wildcards involved, ie we have
+     false negatives for Java8+. We can improve that with better type resolution
+     in PMD 7. -->
+
+    <test-code>
+        <description>(J7) Version sensitive tests - avoid possible false positives on Java7</description>
+        <rule-property name="java7Compatibility">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.ref.WeakReference;
+
+public class Foo {
+    private WeakReference<Class<?>> typeReference;
+    public void foo() {
+        // this should be positive in Java 8, negative in Java 7
+        // in java 7: no violation, in java 8 violation
+        typeReference = new WeakReference<Class<?>>(String.class);
+        // this is because in java 7, new WeakReference<>(String.class) types as WeakReference<Class<String>>
+        // which is incompatible with WeakReference<Class<?>>, whereas Java 8's type inference is better.
+
+        // the following is the same:
+        // in java 7: no violation, in java 8 violation
+        Class<?> type = null;
+        typeReference = new WeakReference<Class<?>>(type);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>(J8) Version sensitive tests - known false negatives on Java8+</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,8</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.ref.WeakReference;
+
+public class Foo {
+    private WeakReference<Class<?>> typeReference;
+    public void foo() {
+        typeReference = new WeakReference<Class<?>>(String.class); // pos
+        Class<?> type = null;
+        typeReference = new WeakReference<Class<?>>(type); // pos
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative for nested type parameters (#2545)</description>
+        <rule-property name="java7Compatibility">true</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,8,17</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.lang.ref.WeakReference;
+
+public class UseDiamondOperatorFalseNegative {
+    List<Map<String,Object>> l = new ArrayList<Map<String,Object>>(); // FN
+    WeakReference<Class<String>> typeReference = new WeakReference<Class<String>>(String.class); // FN
+    WeakReference<Class<?>> typeReference2 = new WeakReference<Class<?>>(String.class); // FP
+
+    public void test() {
+        final List<String> l2;
+        l2 = true ? new ArrayList<String>() : new ArrayList<String>(); // FN twice for java8+, but for java7, this is ok!
+    }
+
+    static {
+        l = new ArrayList<Map<String,Object>>(); // FN
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>(J8+) False negative for Java8+ and ternary operator (#2545)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class UseDiamondOperatorFalseNegative {
+    public void test() {
+        final List<String> l2;
+        l2 = true ? new ArrayList<String>() : new ArrayList<String>(); // FN twice for java8+, but for java7, this is ok!
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

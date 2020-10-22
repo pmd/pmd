@@ -63,7 +63,9 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
-        configuration.setSuppressMarker(task.getSuppressMarker());
+        if (task.getSuppressMarker() != null) {
+            configuration.setSuppressMarker(task.getSuppressMarker());
+        }
         configuration.setMultiFileAnalysisDirectory(task.getMultiFileAnalysisDirectory());
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
@@ -171,7 +173,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void renderFileReport(Report r) {
-                    int size = r.size();
+                    int size = r.getViolations().size();
                     if (size > 0) {
                         reportSize.addAndGet(size);
                     }
@@ -294,8 +296,7 @@ public class PMDTaskImpl {
     private void logRulesUsed(RuleSets rules) {
         project.log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
 
-        RuleSet[] ruleSets = rules.getAllRuleSets();
-        for (RuleSet ruleSet : ruleSets) {
+        for (RuleSet ruleSet : rules.getAllRuleSets()) {
             for (Rule rule : ruleSet.getRules()) {
                 project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }

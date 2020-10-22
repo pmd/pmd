@@ -22,6 +22,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 public class XPathJspRuleTest extends RuleTst {
@@ -32,7 +33,7 @@ public class XPathJspRuleTest extends RuleTst {
      */
     @Test
     public void testExpressionMatching() throws PMDException {
-        Rule rule = new XPathRule(XPATH_EXPRESSION);
+        Rule rule = new XPathRule(XPathVersion.XPATH_3_1, XPATH_EXPRESSION);
         rule.setMessage("Test");
         rule.setLanguage(LanguageRegistry.getLanguage(JspLanguageModule.NAME));
         RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
@@ -47,9 +48,9 @@ public class XPathJspRuleTest extends RuleTst {
 
         p.getSourceCodeProcessor().processSourceCode(new StringReader(MATCH), new RuleSets(rules), ctx);
 
-        assertEquals("One violation expected!", 1, report.size());
+        assertEquals("One violation expected!", 1, report.getViolations().size());
 
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(1, rv.getBeginLine());
     }
 

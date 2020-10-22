@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
 
@@ -35,16 +34,6 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new SymbolFacade().initializeWith((ASTInput) rootNode);
-        }
-    },
-
-    /**
-     * Data flow analysis.
-     */
-    DFA("Data flow analysis") {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new DataFlowFacade().initializeWith(new PLSQLDataFlowHandler(), (ASTInput) rootNode);
         }
     };
 

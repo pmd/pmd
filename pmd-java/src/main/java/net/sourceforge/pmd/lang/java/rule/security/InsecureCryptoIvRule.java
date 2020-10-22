@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Finds hardcoded static Initialization Vectors vectors used with cryptographic
@@ -42,8 +42,7 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        ASTClassOrInterfaceType declClassName = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        if (declClassName != null && TypeHelper.isA(declClassName, javax.crypto.spec.IvParameterSpec.class)) {
+        if (TypeTestUtil.isA(javax.crypto.spec.IvParameterSpec.class, node.getFirstChildOfType(ASTClassOrInterfaceType.class))) {
             Node firstArgument = null;
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);

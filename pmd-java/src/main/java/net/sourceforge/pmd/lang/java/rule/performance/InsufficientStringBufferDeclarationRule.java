@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -56,7 +55,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.getNameDeclaration() == null
-                || !TypeHelper.isExactlyAny(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
+                || !ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(node)) {
             return data;
         }
         Node rootNode = node;
@@ -73,10 +72,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         for (NameOccurrence no : usage) {
             JavaNameOccurrence jno = (JavaNameOccurrence) no;
             Node n = jno.getLocation();
-            if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+            if (!InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
 
                 if (!jno.isOnLeftHandSide()
-                        && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
+                        && !InefficientStringBufferingRule.isInStringBufferOperationChain(n, "setLength")) {
                     continue;
                 }
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
@@ -210,7 +209,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                                 // any number, regardless of the base will be converted to base 10
                                 // e.g. 0xdeadbeef -> will be converted to a
                                 // base 10 integer string: 3735928559
-                                anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
+                                // anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                             }
                         } else {
                             anticipatedLength += str.length();
@@ -276,7 +275,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // don't add the constructor's length
                 iConstructorLength = 14 + str.length();
             } else if (literal.isIntLiteral()) {
-                iConstructorLength = literal.getValueAsInt();
+                // iConstructorLength = literal.getValueAsInt();
             }
         } else {
             iConstructorLength = -1;

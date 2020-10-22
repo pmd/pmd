@@ -4,19 +4,22 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Iterator;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
- *
- * TODO make generic
  */
-public interface GenericToken {
+public interface GenericToken<T extends GenericToken<T>> {
 
     /**
      * Obtain the next generic token according to the input stream which generated the instance of this token.
      *
      * @return the next generic token if it exists; null if it does not exist
      */
-    GenericToken getNext();
+    T getNext();
 
     /**
      * Obtain a comment-type token which, according to the input stream which generated the instance of this token,
@@ -24,12 +27,19 @@ public interface GenericToken {
      *
      * @return the comment-type token if it exists; null if it does not exist
      */
-    GenericToken getPreviousComment();
+    T getPreviousComment();
 
     /**
      * Returns the token's text.
      */
     String getImage();
+
+
+    /**
+     * Returns true if this token is an end-of-file token. This is the
+     * last token of token sequences that have been fully lexed.
+     */
+    boolean isEof();
 
 
     // TODO these default implementations are here for compatibility because
@@ -87,6 +97,29 @@ public interface GenericToken {
      */
     default boolean isImplicit() {
         return false;
+    }
+
+
+
+    /**
+     * Returns an iterator that enumerates all (non-special) tokens
+     * between the two tokens (bounds included).
+     *
+     * @param from First token to yield (inclusive)
+     * @param to   Last token to yield (inclusive)
+     *
+     * @return An iterator
+     *
+     * @throws IllegalArgumentException If the first token does not come before the other token
+     */
+    static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
+        if (from.getStartInDocument() > to.getStartInDocument()) {
+            throw new IllegalArgumentException(
+                from + " (at " + from.getStartInDocument()
+                    + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
+            );
+        }
+        return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
 
 }

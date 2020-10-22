@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Code sample</description>
         <expected-problems>1</expected-problems>
@@ -32,7 +33,7 @@ public class TryWithResources {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -115,7 +116,7 @@ public class TryWithResources {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -149,7 +150,7 @@ public class TryWithResources {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -189,6 +190,7 @@ public class TryWithResources {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Custom close methods with multiple arguments</description>
         <rule-property name="closeMethods">myClose2,myClose</rule-property>
@@ -211,6 +213,6 @@ public class TryWithResources {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

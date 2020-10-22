@@ -76,27 +76,27 @@
     </issueManagement>
 
     <properties>
+        <project.build.outputTimestamp>2020-09-26T08:25:16Z</project.build.outputTimestamp>
+
         <java.version>8</java.version>
-        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
-        <maven.compiler.source>1.${java.version}</maven.compiler.source>
-        <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
         <maven.compiler.test.source>1.8</maven.compiler.test.source>
         <maven.compiler.test.target>1.8</maven.compiler.test.target>
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.3.0</kotlin.version>
-        <dokka.version>0.10.0</dokka.version>
+        <kotlin.version>1.3.72</kotlin.version>
+        <kotest.version>4.1.2</kotest.version>
+        <dokka.version>0.10.1</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>2.22.1</surefire.version>
+        <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>8.30</checkstyle.version>
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
-        <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
+        <ant.version>1.10.8</ant.version>
+        <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.8</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,15 +105,27 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>6</pmd.build-tools.version>
+        <pmd.build-tools.version>8</pmd.build-tools.version>
 
-        <pmd-designer.version>6.21.0</pmd-designer.version>
+        <pmd-designer.version>6.27.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
+
+        <antlr4.outputDirectory>${project.build.directory}/generated-sources/antlr4</antlr4.outputDirectory>
+        <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
     </properties>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -122,6 +134,8 @@
                     <version>${antlr.version}</version>
                     <configuration>
                         <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                        <visitor>true</visitor>
+                        <listener>true</listener>
                     </configuration>
                     <executions>
                         <execution>
@@ -142,17 +156,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <releaseProfiles>pmd-release,sign</releaseProfiles>
                         <pushChanges>true</pushChanges>
@@ -194,7 +208,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <release>${java.version}</release>
                     </configuration>
@@ -242,7 +256,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -252,7 +266,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.2.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -261,7 +275,24 @@
                     <configuration>
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
+                        <systemPropertyVariables>
+                            <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
+                        </systemPropertyVariables>
                     </configuration>
+                    <dependencies>
+                        <!-- Junit5 Platform Engine for Junit 3 & 4 -->
+                        <dependency>
+                            <groupId>org.junit.vintage</groupId>
+                            <artifactId>junit-vintage-engine</artifactId>
+                            <version>5.6.2</version>
+                        </dependency>
+                        <!-- Junit5 Platform Engine for Kotlin Tests -->
+                        <dependency>
+                            <groupId>io.kotest</groupId>
+                            <artifactId>kotest-runner-junit5-jvm</artifactId>
+                            <version>${kotest.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -269,9 +300,14 @@
                     <version>3.0.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -280,18 +316,23 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
-                        <additionalJOptions>
-                            <additionalJOption>-html5</additionalJOption>
-                        </additionalJOptions>
-                        <additionalDependencies>
-                            <!-- TODO: this is only needed to make javadoc happy -->
-                            <additionalDependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant</artifactId>
-                                <version>${ant.version}</version>
-                            </additionalDependency>
-                        </additionalDependencies>
+                        <excludePackageNames>*.internal</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
+                        <offlineLinks>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <url>../../pmd-lang-test/${project.version}</url>
+                            </offlineLink>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <url>../../pmd-test/${project.version}</url>
+                            </offlineLink>
+                            <!-- core needs to be last, because the package "net.sourceforge.pmd.lang" is both in pmd-core and pmd-test -->
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <url>../../pmd-core/${project.version}</url>
+                            </offlineLink>
+                        </offlineLinks>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -324,15 +365,21 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <sourceDirectories>
+                            <!-- this sets only src/main/java and ignores e.g. target/generated-sources/javacc -->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                        <resourceIncludes>**/*.properties,**/*.less,**/*.kt</resourceIncludes>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.0.0-M2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.19.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -368,12 +415,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.22.0</version>
+                            <version>6.28.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.22.0</version>
+                            <version>6.28.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -442,7 +489,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[10,)</version>
+                                    <version>[11,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -593,6 +640,12 @@
                 <version>${antlr.version}</version>
             </dependency>
             <dependency>
+                <!-- old antlr version used by apex-jorje -->
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr-runtime</artifactId>
+                <version>3.5.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
@@ -603,33 +656,19 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency>
-                <groupId>jaxen</groupId>
-                <artifactId>jaxen</artifactId>
-                <version>1.1.6</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>xercesImpl</artifactId>
-                        <groupId>xerces</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>xalan</artifactId>
-                        <groupId>xalan</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>icu4j</artifactId>
-                        <groupId>com.ibm.icu</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>1.72</version>
+                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>7.3.1</version>
+                <version>9.0-beta</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pcollections</groupId>
+                <artifactId>pcollections</artifactId>
+                <version>3.1.3</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -637,15 +676,14 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.sourceforge.saxon</groupId>
-                <artifactId>saxon</artifactId>
-                <version>9.1.0.8</version>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>2.5.2</version>
             </dependency>
             <dependency>
-                <groupId>net.sourceforge.saxon</groupId>
-                <artifactId>saxon</artifactId>
-                <version>9.1.0.8</version>
-                <classifier>dom</classifier>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <version>10.1</version>
             </dependency>
             <dependency>
                 <groupId>org.mozilla</groupId>
@@ -656,6 +694,7 @@
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
+                <scope>provided</scope> <!-- only needed for generating the parser via ant -->
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -663,14 +702,14 @@
                 <version>2.6</version>
             </dependency>
             <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.3</version> <!-- 1.3 is still compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -678,30 +717,9 @@
                 <version>1.7.25</version>
             </dependency>
             <dependency>
-                <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock</artifactId>
-                <version>1.57</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-lang</artifactId>
-                        <groupId>commons-lang</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>2.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-rules</artifactId>
-                <version>1.19.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.11.0</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -720,16 +738,44 @@
             </dependency>
 
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <groupId>com.github.oowekyala.treeutils</groupId>
+                <artifactId>tree-matchers</artifactId>
+                <version>2.1.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
+                <groupId>com.github.oowekyala.treeutils</groupId>
+                <artifactId>tree-printers</artifactId>
+                <version>2.1.0</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <!-- using 29.0-android flavor instead of 29.0-jre, so that we are compatible with java7 -->
+                <version>29.0-android</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>pl.pragmatists</groupId>
@@ -738,37 +784,30 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Junit 5 Engine -->
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>5.5.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.5.0</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>2.28.2</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-commons</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-launcher</artifactId>
-                <version>1.5.0</version>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>1.57</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-lang</artifactId>
+                        <groupId>commons-lang</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
-            <!-- Junit 3 & 4 engine -->
             <dependency>
-                <groupId>org.junit.vintage</groupId>
-                <artifactId>junit-vintage-engine</artifactId>
-                <version>5.5.0</version>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.19.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -779,32 +818,53 @@
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-test-junit</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-runner-junit5-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-runner-console-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-core-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-property-jvm</artifactId>
+                <version>${kotest.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
-                <groupId>io.kotlintest</groupId>
-                <artifactId>kotlintest-runner-junit5</artifactId>
-                <version>3.1.8</version>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>13.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -1024,7 +1084,10 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
-        <module>pmd-scala</module>
+        <module>pmd-scala</module> <!-- deprecated -->
+        <module>pmd-scala-modules/pmd-scala-common</module>
+        <module>pmd-scala-modules/pmd-scala_2.13</module>
+        <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>

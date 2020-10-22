@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -347,7 +347,7 @@ public class RuleSetFactoryTest {
                     "WARNING: Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
         assertEquals(1,
                 StringUtils.countMatches(logging.getLog(),
-                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is mispelled or the rule doesn't exist anymore?"));
+                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is misspelled or the rule doesn't exist anymore?"));
     }
 
     /**
@@ -563,7 +563,7 @@ public class RuleSetFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIncorrectExternalRef() throws IllegalArgumentException, RuleSetNotFoundException {
-        loadFirstRule(REF_MISPELLED_XREF);
+        loadFirstRule(REF_MISSPELLED_XREF);
     }
 
     @Test
@@ -598,6 +598,23 @@ public class RuleSetFactoryTest {
         ex.expect(IllegalArgumentException.class);
         ex.expectMessage(Matchers.containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
         loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIncorrectMinimumLanugageVersionWithLanguageSetInJava() throws RuleSetNotFoundException {
+        loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                          + "<ruleset name=\"TODO\">\n"
+                          + "    <description>TODO</description>\n"
+                          + "\n"
+                          + "    <rule name=\"TODO\"\n"
+                          + "          message=\"TODO\"\n"
+                          + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
+                          + "          minimumLanguageVersion=\"12\">\n"
+                          + "        <description>TODO</description>\n"
+                          + "        <priority>2</priority>\n"
+                          + "    </rule>\n"
+                          + "\n"
+                          + "</ruleset>");
     }
 
     @Test
@@ -884,170 +901,299 @@ public class RuleSetFactoryTest {
     public void testMissingRuleSetDescriptionIsWarning() throws Exception {
         RuleSetReferenceId ref = createRuleSetReferenceId(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
-                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                        + "  </ruleset>\n");
+                    + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                    + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                    + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                    + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                    + "  </ruleset>\n");
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         ruleSetFactory.createRuleSet(ref);
         assertTrue(logging.getLog().contains("RuleSet description is missing."));
     }
 
-    private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + " <rule "
-            + PMD.EOL + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"> "
-            + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
+    private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + " <rule \n"
+        + "\n"
+        + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"> \n"
+        + "\n"
+        + " </rule>\n"
+        + "</ruleset>";
 
-    private static final String REF_MISPELLED_XREF = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-            + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-            + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/FooMockRule1\"> " + PMD.EOL + " </rule>" + PMD.EOL
-            + "</ruleset>";
+    private static final String REF_MISSPELLED_XREF = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "\n"
+        + " <description>testdesc</description>\n"
+        + " <rule \n"
+        + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/FooMockRule1\"> \n"
+        + " </rule>\n"
+        + "</ruleset>";
 
-    private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
-            + " <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"/> "
-            + PMD.EOL + "</ruleset>";
+    private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + " <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"/> \n"
+        + "\n"
+        + "</ruleset>";
 
-    private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-            + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" " + PMD.EOL + "  name=\"TestNameOverride\" "
-            + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
-            + "  <description>Test description override</description>" + PMD.EOL
-            + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
-            + "  <properties>" + PMD.EOL
-            + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>" + PMD.EOL
-            + "   <property name=\"test3\" type=\"String\" description=\"test3\"><value>override3</value></property>"
-            // + PMD.EOL + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" // Nonsense
-            + PMD.EOL + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
+    private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + " <rule \n"
+        + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" \n"
+        + "  name=\"TestNameOverride\" \n"
+        + "\n"
+        + "  message=\"Test message override\"> \n"
+        + "  <description>Test description override</description>\n"
+        + "  <example>Test example override</example>\n"
+        + "  <priority>3</priority>\n"
+        + "  <properties>\n"
+        + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>\n"
+        + "   <property name=\"test3\" type=\"String\" description=\"test3\"><value>override3</value></property>\n"
+        + "\n"
+        + "  </properties>\n"
+        + " </rule>\n"
+        + "</ruleset>";
 
-    private static final String REF_OVERRIDE_NONEXISTENT = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-                                                           + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-                                                           + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" " + PMD.EOL + "  name=\"TestNameOverride\" "
-                                                           + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
-                                                           + "  <description>Test description override</description>" + PMD.EOL
-                                                           + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
-                                                           + "  <properties>" + PMD.EOL
-                                                           + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL // inexistent property
-                                                           + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
+    private static final String REF_OVERRIDE_NONEXISTENT = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "\n"
+        + " <description>testdesc</description>\n"
+        + " <rule \n"
+        + "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule4\" \n"
+        + "  name=\"TestNameOverride\" \n"
+        + "\n"
+        + "  message=\"Test message override\"> \n"
+        + "  <description>Test description override</description>\n"
+        + "  <example>Test example override</example>\n"
+        + "  <priority>3</priority>\n"
+        + "  <properties>\n"
+        + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>\n"
+        + "  </properties>\n"
+        + " </rule>\n"
+        + "</ruleset>";
 
-    private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
-            + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "</rule>"
-            + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"/> " + PMD.EOL + "</ruleset>";
+    private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + "<rule \n"
+        + "\n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "</rule>\n"
+        + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"/> \n"
+        + "</ruleset>";
 
-    private static final String REF_INTERNAL_TO_INTERNAL_CHAIN = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
-            + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "</rule>"
-            + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"><priority>2</priority></rule> " + PMD.EOL
-            + " <rule ref=\"MockRuleNameRef\" name=\"MockRuleNameRefRef\"><priority>1</priority></rule> " + PMD.EOL
-            + "</ruleset>";
+    private static final String REF_INTERNAL_TO_INTERNAL_CHAIN = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + "<rule \n"
+        + "\n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "</rule>\n"
+        + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"><priority>2</priority></rule> \n"
+        + " <rule ref=\"MockRuleNameRef\" name=\"MockRuleNameRefRef\"><priority>1</priority></rule> \n"
+        + "</ruleset>";
 
-    private static final String REF_INTERNAL_TO_EXTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
-            + PMD.EOL + "name=\"ExternalRefRuleName\" " + PMD.EOL
-            + "ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\"/>" + PMD.EOL
-            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> " + PMD.EOL + "</ruleset>";
+    private static final String REF_INTERNAL_TO_EXTERNAL = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + "<rule \n"
+        + "\n"
+        + "name=\"ExternalRefRuleName\" \n"
+        + "ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\"/>\n"
+        + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> \n"
+        + "</ruleset>";
 
-    private static final String REF_INTERNAL_TO_EXTERNAL_CHAIN = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
-            + PMD.EOL + "name=\"ExternalRefRuleName\" " + PMD.EOL
-            + "ref=\"net/sourceforge/pmd/TestRuleset2.xml/TestRule\"/>" + PMD.EOL
-            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> "
-            + PMD.EOL
-            + " <rule ref=\"ExternalRefRuleNameRef\" name=\"ExternalRefRuleNameRefRef\"><priority>1</priority></rule> "
-            + PMD.EOL + "</ruleset>";
+    private static final String REF_INTERNAL_TO_EXTERNAL_CHAIN = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + " <description>testdesc</description>\n"
+        + "<rule \n"
+        + "\n"
+        + "name=\"ExternalRefRuleName\" \n"
+        + "ref=\"net/sourceforge/pmd/TestRuleset2.xml/TestRule\"/>\n"
+        + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> \n"
+        + "\n"
+        + " <rule ref=\"ExternalRefRuleNameRef\" name=\"ExternalRefRuleNameRefRef\"><priority>1</priority></rule> \n"
+        + "\n"
+        + "</ruleset>";
 
-    private static final String EMPTY_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-            + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "</ruleset>";
+    private static final String EMPTY_RULESET = "<?xml version=\"1.0\"?>\n<ruleset name=\"test\">\n<description>testdesc</description>\n</ruleset>";
 
-    private static final String SINGLE_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
+    private static final String SINGLE_RULE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "<priority>3</priority>\n"
+        + "</rule></ruleset>";
 
-    private static final String MULTIPLE_RULES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-            + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName1\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + PMD.EOL + "</rule>" + PMD.EOL + "<rule name=\"MockRuleName2\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + PMD.EOL + "</rule></ruleset>";
+    private static final String MULTIPLE_RULES = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "\n"
+        + "<description>testdesc</description>\n"
+        + "<rule name=\"MockRuleName1\" \n"
+        + "language=\"dummy\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "\n"
+        + "</rule>\n"
+        + "<rule name=\"MockRuleName2\" \n"
+        + "language=\"dummy\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "\n"
+        + "</rule></ruleset>";
 
-    private static final String PROPERTIES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + PMD.EOL + "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
-            + "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\" />" + PMD.EOL
-            + "<property name=\"fooChar\" description=\"test\" type=\"Character\" value=\"B\" />" + PMD.EOL
-            + "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"3\" />"
-            + PMD.EOL
-            + "<property name=\"fooFloat\" description=\"test\" type=\"Float\" min=\"1.0\" max=\"1.0\" value=\"1.0\"  />"
-            + PMD.EOL
-            + "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" value=\"3.0\"  />"
-            + PMD.EOL + "<property name=\"fooString\" description=\"test\" type=\"String\" value=\"bar\" />" + PMD.EOL
-            + "</properties>" + PMD.EOL + "</rule></ruleset>";
+    private static final String PROPERTIES = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule name=\"MockRuleName\" \n"
+        + "language=\"dummy\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "\n"
+        + "<description>testdesc2</description>\n"
+        + "<properties>\n"
+        + "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\" />\n"
+        + "<property name=\"fooChar\" description=\"test\" type=\"Character\" value=\"B\" />\n"
+        + "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"3\" />\n"
+        + "\n"
+        + "<property name=\"fooFloat\" description=\"test\" type=\"Float\" min=\"1.0\" max=\"1.0\" value=\"1.0\"  />\n"
+        + "\n"
+        + "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" value=\"3.0\"  />\n"
+        + "\n"
+        + "<property name=\"fooString\" description=\"test\" type=\"String\" value=\"bar\" />\n"
+        + "</properties>\n"
+        + "</rule></ruleset>";
 
-    private static final String XPATH = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + "<priority>3</priority>" + PMD.EOL + PMD.EOL + "<description>testdesc2</description>" + PMD.EOL
-            + "<properties>" + PMD.EOL + "<property name=\"xpath\" description=\"test\" type=\"String\">" + PMD.EOL
-            + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL
-            + "</properties>" + PMD.EOL + "</rule></ruleset>";
+    private static final String XPATH = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule name=\"MockRuleName\" \n"
+        + "language=\"dummy\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "<priority>3</priority>\n"
+        + "\n"
+        + "<description>testdesc2</description>\n"
+        + "<properties>\n"
+        + "<property name=\"xpath\" description=\"test\" type=\"String\">\n"
+        + "<value>\n"
+        + "<![CDATA[ //Block ]]>\n"
+        + "</value>\n"
+        + "</property>\n"
+        + "</properties>\n"
+        + "</rule></ruleset>";
 
-    private static final String PRIORITY = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
-            + "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
+    private static final String PRIORITY = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "<priority>3</priority>\n"
+        + "</rule></ruleset>";
 
-    private static final String LANGUAGE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" language=\"dummy\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String LANGUAGE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" "
+        + "language=\"dummy\">\n"
+        + "</rule></ruleset>";
 
-    private static final String INCORRECT_LANGUAGE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-            + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" "
-            + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"bogus\">" + PMD.EOL
-            + "</rule></ruleset>";
+    private static final String INCORRECT_LANGUAGE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "\n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+        + " language=\"bogus\">\n"
+        + "</rule></ruleset>";
 
-    private static final String MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"dummy\"" + PMD.EOL
-            + " minimumLanguageVersion=\"1.4\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+        + " language=\"dummy\"\n"
+        + " minimumLanguageVersion=\"1.4\">\n"
+        + "</rule></ruleset>";
 
-    private static final String INCORRECT_MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"dummy\"" + PMD.EOL
-            + " minimumLanguageVersion=\"bogus\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String INCORRECT_MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+        + " language=\"dummy\"\n"
+        + " minimumLanguageVersion=\"bogus\">\n"
+        + "</rule></ruleset>";
 
-    private static final String MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"dummy\"" + PMD.EOL
-            + " maximumLanguageVersion=\"1.7\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+        + " language=\"dummy\"\n"
+        + " maximumLanguageVersion=\"1.7\">\n"
+        + "</rule></ruleset>";
 
-    private static final String INCORRECT_MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"dummy\"" + PMD.EOL
-            + " maximumLanguageVersion=\"bogus\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String INCORRECT_MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+        + " language=\"dummy\"\n"
+        + " maximumLanguageVersion=\"bogus\">\n"
+        + "</rule></ruleset>";
 
-    private static final String INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" " + PMD.EOL + "language=\"dummy\"" + PMD.EOL
-            + " minimumLanguageVersion=\"1.7\"" + PMD.EOL + "maximumLanguageVersion=\"1.4\">" + PMD.EOL
-            + "</rule></ruleset>";
+    private static final String INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" \n"
+        + "language=\"dummy\"\n"
+        + " minimumLanguageVersion=\"1.7\"\n"
+        + "maximumLanguageVersion=\"1.4\">\n"
+        + "</rule></ruleset>";
 
-    private static final String DIRECT_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-            + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" "
-            + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String DIRECT_DEPRECATED_RULE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">\n"
+        + "</rule></ruleset>";
 
     // Note: Update this RuleSet name to a different RuleSet with deprecated
     // Rules when the Rules are finally removed.
@@ -1057,25 +1203,46 @@ public class RuleSetFactoryTest {
     // listed here is finally removed.
     private static final String DEPRECATED_RULE_NAME = "MockRule3";
 
-    private static final String REFERENCE_TO_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME + "\">" + PMD.EOL
-            + "</rule></ruleset>";
+    private static final String REFERENCE_TO_DEPRECATED_RULE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME + "\" />\n"
+        + "</ruleset>";
 
-    private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
-            + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\">" + PMD.EOL + "</rule></ruleset>";
+    private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule " + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\" />\n"
+        + "</ruleset>";
 
-    private static final String INCLUDE_EXCLUDE_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
-            + "<include-pattern>include1</include-pattern>" + PMD.EOL + "<include-pattern>include2</include-pattern>"
-            + PMD.EOL + "<exclude-pattern>exclude1</exclude-pattern>" + PMD.EOL
-            + "<exclude-pattern>exclude2</exclude-pattern>" + PMD.EOL + "<exclude-pattern>exclude3</exclude-pattern>"
-            + PMD.EOL + "</ruleset>";
+    private static final String DFA = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "language=\"dummy\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "dfa=\"true\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"><priority>3</priority>\n"
+        + "</rule></ruleset>";
 
-    private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" + PMD.EOL
-            + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
-            + "<rule ref=\"net/sourceforge/pmd/external-reference-ruleset.xml/MockRule\"/>" + PMD.EOL + "</ruleset>";
+    private static final String INCLUDE_EXCLUDE_RULESET = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<include-pattern>include1</include-pattern>\n"
+        + "<include-pattern>include2</include-pattern>\n"
+        + "\n"
+        + "<exclude-pattern>exclude1</exclude-pattern>\n"
+        + "<exclude-pattern>exclude2</exclude-pattern>\n"
+        + "<exclude-pattern>exclude3</exclude-pattern>\n"
+        + "\n"
+        + "</ruleset>";
+
+    private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule ref=\"net/sourceforge/pmd/external-reference-ruleset.xml/MockRule\"/>\n"
+        + "</ruleset>";
 
     private Rule loadFirstRule(String ruleSetXml) throws RuleSetNotFoundException {
         RuleSet rs = loadRuleSet(ruleSetXml);
@@ -1096,11 +1263,7 @@ public class RuleSetFactoryTest {
         return new RuleSetReferenceId(null) {
             @Override
             public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
+                return new ByteArrayInputStream(ruleSetXml.getBytes(StandardCharsets.UTF_8));
             }
         };
     }

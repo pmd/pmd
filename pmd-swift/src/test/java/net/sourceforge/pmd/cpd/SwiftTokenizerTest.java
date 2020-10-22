@@ -4,34 +4,56 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class SwiftTokenizerTest extends AbstractTokenizerTest {
+public class SwiftTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "BTree.swift";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new SwiftTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public SwiftTokenizerTest() {
+        super(".swift");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/swift/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new SwiftTokenizer();
+    }
+
+
+    @Test
+    public void testSwift42() {
+        doTest("Swift4.2");
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 4239;
-        super.tokenizeTest();
+    public void testSwift50() {
+        doTest("Swift5.0");
+    }
+
+    @Test
+    public void testSwift51() {
+        doTest("Swift5.1");
+    }
+
+    @Test
+    public void testSwift52() {
+        doTest("Swift5.2");
+    }
+
+    @Test
+    public void testStackoverflowOnLongLiteral() {
+        doTest("Issue628");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

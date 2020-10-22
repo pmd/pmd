@@ -4,22 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -45,41 +52,75 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
      */
     @Override
     public boolean isTargetMethod(JavaNameOccurrence occ) {
-        if (occ.getNameForWhichThisIsAQualifier() != null) {
-            if (occ.getLocation().getImage().endsWith(".size")) {
-                return true;
-            }
-        }
-        return false;
+        return occ.getNameForWhichThisIsAQualifier() != null
+                && occ.getLocation().getImage().endsWith(".size");
     }
 
     @Override
     public Map<String, List<String>> getComparisonTargets() {
+        List<String> zeroAndOne = asList("0", "1");
+        List<String> zero = singletonList("0");
         Map<String, List<String>> rules = new HashMap<>();
-        rules.put("<", Arrays.asList("0", "1"));
-        rules.put(">", Arrays.asList("0"));
-        rules.put("==", Arrays.asList("0"));
-        rules.put("!=", Arrays.asList("0"));
-        rules.put(">=", Arrays.asList("0", "1"));
-        rules.put("<=", Arrays.asList("0"));
+        rules.put("<", zeroAndOne);
+        rules.put(">", zero);
+        rules.put("==", zero);
+        rules.put("!=", zero);
+        rules.put(">=", zeroAndOne);
+        rules.put("<=", zero);
         return rules;
     }
 
     @Override
     public Object visit(ASTPrimarySuffix node, Object data) {
-        if (node.getImage() != null && node.getImage().endsWith("size")) {
-
-            ASTClassOrInterfaceType type = getTypeOfPrimaryPrefix(node);
-            if (type == null) {
-                type = getTypeOfMethodCall(node);
-            }
-
-            if (type != null && CollectionUtil.isCollectionType(type.getType(), true)) {
-                Node expr = node.getParent().getParent();
-                checkNodeAndReport(data, node, expr);
-            }
+        if (isSizeMethodCall(node) && isCalledOnCollection(node)) {
+            Node expr = node.getParent().getParent();
+            checkNodeAndReport(data, node, expr);
         }
         return data;
+    }
+
+    private boolean isSizeMethodCall(ASTPrimarySuffix primarySuffix) {
+        String calledMethodName = primarySuffix.getImage();
+        return calledMethodName != null && calledMethodName.endsWith("size");
+    }
+
+    private boolean isCalledOnCollection(ASTPrimarySuffix primarySuffix) {
+        ASTClassOrInterfaceType calledOnType = getTypeOfVariable(primarySuffix);
+        if (calledOnType == null) {
+            calledOnType = getTypeOfMethodCall(primarySuffix);
+        }
+        return TypeTestUtil.isA(Collection.class, calledOnType);
+    }
+
+    private ASTClassOrInterfaceType getTypeOfVariable(ASTPrimarySuffix primarySuffix) {
+        ASTPrimaryExpression primaryExpression = primarySuffix.getFirstParentOfType(ASTPrimaryExpression.class);
+        ASTPrimaryPrefix varPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        if (prefixWithNoModifiers(varPrefix)) {
+            return varPrefix.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        }
+        String varName = getVariableNameBySuffix(primaryExpression);
+        return varName != null ? getTypeOfVariableByName(varName, primaryExpression) : null;
+    }
+
+    private boolean prefixWithNoModifiers(ASTPrimaryPrefix primaryPrefix) {
+        return !primaryPrefix.usesSuperModifier() && !primaryPrefix.usesThisModifier();
+    }
+
+    private String getVariableNameBySuffix(ASTPrimaryExpression primaryExpression) {
+        ASTPrimarySuffix varSuffix = primaryExpression
+                .getFirstChildOfType(ASTPrimarySuffix.class);
+        return varSuffix.getImage();
+    }
+
+    private ASTClassOrInterfaceType getTypeOfVariableByName(String varName, ASTPrimaryExpression expr) {
+        ASTClassOrInterfaceBody classBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        List<ASTVariableDeclarator> varDeclarators = classBody.findDescendantsOfType(ASTVariableDeclarator.class);
+        for (ASTVariableDeclarator varDeclarator : varDeclarators) {
+            if (varDeclarator.getName().equals(varName)) {
+                return varDeclarator.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            }
+        }
+        return null;
     }
 
     private ASTClassOrInterfaceType getTypeOfMethodCall(ASTPrimarySuffix node) {
@@ -99,10 +140,5 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
             }
         }
         return type;
-    }
-
-    private ASTClassOrInterfaceType getTypeOfPrimaryPrefix(ASTPrimarySuffix node) {
-        return node.getParent().getFirstChildOfType(ASTPrimaryPrefix.class)
-                .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
     }
 }

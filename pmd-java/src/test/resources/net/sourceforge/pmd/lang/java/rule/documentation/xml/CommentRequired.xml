@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <code-fragment id="with-all-comments"><![CDATA[
 /**
  * Class level comment.
  */
 public class Foo {
-  /** the bar counter. */
-  public int bar;
-  /** the test enum. */
-  public enum Enum {}
-  /**
-   * This is the comment for the constructor
-   */
-  public Foo() {}
-  /**
-   * This is the comment for the first method
-   */
-  public void doNothing() {}
-  /**
-   * This is the comment for the second method
-   */
-  public void doSomething() {}
+    /** the bar counter. */
+    public int bar;
+    /** the test enum. */
+    public enum Enum {}
+    /**
+    * This is the comment for the constructor
+    */
+    public Foo() {}
+    /**
+    * This is the comment for the first method
+    */
+    public void doNothing() {}
+    /**
+    * This is the comment for the second method
+    */
+    public void doSomething() {}
 }
     ]]></code-fragment>
+
     <code-fragment id="without-any-comments"><![CDATA[
 public class Foo {
-  public int bar;
-  public enum Enum {}
-  public Foo() {}
-  public void doNothing() {}
-  public void doSomething() {}
+    public int bar;
+    public enum Enum {}
+    public Foo() {}
+    public void doNothing() {}
+    public void doSomething() {}
 }
     ]]></code-fragment>
 
@@ -83,7 +85,7 @@ public class Test {
          * comment here
          */
     }
-    
+
     public void method2() {
     }
 }
@@ -133,6 +135,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>comment required on serialVersionUID of wrong type</description>
         <expected-problems>1</expected-problems>
@@ -144,6 +147,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>serialVersionUID comment required</description>
         <rule-property name="serialVersionUIDCommentRequired">Required</rule-property>
@@ -169,6 +173,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong type</description>
         <expected-problems>1</expected-problems>
@@ -182,6 +187,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong visibility</description>
         <expected-problems>1</expected-problems>
@@ -195,6 +201,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1684 comment required on serialPersistentFields not static</description>
         <expected-problems>1</expected-problems>
@@ -208,6 +215,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1684 comment required on serialPersistentFields not final</description>
         <expected-problems>1</expected-problems>
@@ -221,6 +229,7 @@ public class CommentRequired implements Serializable {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1684 serialPersistentFields comment required</description>
         <rule-property name="serialPersistentFieldsCommentRequired">Required</rule-property>
@@ -247,13 +256,10 @@ package de.konsens.biene.ka.client;
  */
 public class PmdMissingHeaderCommentTest {
 
-
     /**
      * Kommentar zu methode1()
      */
     public void methode1() {
-
-
 
         /**
         * Kommentar zu Local
@@ -266,13 +272,9 @@ public class PmdMissingHeaderCommentTest {
             void methode1() {
 
             }
-
-
         }
 
-
         Local local = new Local();
-
         local.methode1();
 
         /**
@@ -284,13 +286,11 @@ public class PmdMissingHeaderCommentTest {
              * Kommentar zu methode1()
              */
             void methode1() {
-
             }
         }
 
         Local2 local2 = new Local2();
         local2.methode1();
-
     }
 }
         ]]></code>
@@ -307,7 +307,7 @@ public class CommentRequired {
     @Override
     public void noComment() {
         Object o = new Object() {
-           
+
             @Override
             public String toString() {
                 return "Inner Class";
@@ -330,7 +330,7 @@ public class CommentRequired {
     @Override
     public void noComment() {
         Object o = new Object() {
-           
+
             @Override
             public String toString() {
                 return "Inner Class";
@@ -352,11 +352,11 @@ public class CommentRequired {
 public class CommentRequired {
     /**
      * Comment provided
-     */  
+     */
     @Override
     public void noComment() {
         Object o = new Object() {
-           
+
             /**
              * @inheritDoc
              */
@@ -381,11 +381,11 @@ public class CommentRequired {
 public class CommentRequired {
     /**
      * Comment provided
-     */  
+     */
     @Override
     public void noComment() {
         Object o = new Object() {
-           
+
             /**
              * @inheritDoc
              */
@@ -408,29 +408,27 @@ public class CommentRequired {
  * Comment required test class.
  */
 public class CommentRequired {
-    
+
     private int foo;
-    
+
     public int getFoo() {
         Object o = new Object() {
-           
+
             String foox;
-            
+
             public String getFoox() {
                 return foox;
             }
         };
         return foo;
-    }    
-    
+    }
+
     public void setFoo(int x) {
         foo = x;
     }
-    
 }
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>Test accessors are reported when required</description>
@@ -442,29 +440,27 @@ public class CommentRequired {
  * Comment required test class.
  */
 public class CommentRequired {
-    
+
     private int foo;
-    
+
     public int getFoo() {
         Object o = new Object() {
-           
+
             String foox;
-            
+
             public String getFoox() {
                 return foox;
             }
         };
         return foo;
-    }    
-    
+    }
+
     public void setFoo(int x) {
         foo = x;
     }
-    
 }
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>Test accessors are reported when unwanted</description>
@@ -476,15 +472,15 @@ public class CommentRequired {
  * Comment required test class.
  */
 public class CommentRequired {
-    
+
     private int foo;
-    
+
     /**
      * @return foo
      */
     public int getFoo() {
         Object o = new Object() {
-           
+
             String foox;
             /**
              * @return foox
@@ -494,13 +490,11 @@ public class CommentRequired {
             }
         };
         return foo;
-    }    
-    
-   
+    }
+
     public void setFoo(int x) {
         foo = x;
     }
-    
 }
         ]]></code>
     </test-code>

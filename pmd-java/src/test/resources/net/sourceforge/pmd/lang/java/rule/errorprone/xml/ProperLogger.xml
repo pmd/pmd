@@ -3,32 +3,29 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Ok
-        ]]></description>
+        <description>Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Wrong class name
-        ]]></description>
+        <description>Wrong class name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Bar.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, special case
-        ]]></description>
+        <description>Ok, special case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -37,24 +34,22 @@ public class Foo {
         this.log = log;
     }
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
-	<test-code>
-        <description><![CDATA[
-Enum wrong class name
-        ]]></description>
+
+    <test-code>
+        <description>Enum wrong class name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public enum Foo {
     TEST;
     private static final Log LOG = LogFactory.getLog(Bar.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug 1626232, a separate variable initialization should not confuse the rule
-        ]]></description>
+        <description>bug 1626232, a separate variable initialization should not confuse the rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -64,32 +59,31 @@ public class Foo {
         this.log = log;
     }
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
-	<test-code>
-        <description><![CDATA[
-Enums shoud be accepted for declaration
-        ]]></description>
+
+    <test-code>
+        <description>Enums shoud be accepted for declaration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum Foo {
     TEST;
     private static final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug 1626232, extra loggers with different names are not allowed by default (use NOPMD if you want them)
-        ]]></description>
+        <description>bug 1626232, extra loggers with different names are not allowed by default (use NOPMD if you want them)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);
     private static final Log LOG2 = LogFactory.getLog(Foo.class + ".foo");
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Custom logger-class with invalid logger variable name</description>
         <rule-property name="loggerClass">MyLog</rule-property>
@@ -98,8 +92,9 @@ public class Foo {
 public class Foo {
     private static final MyLog INVALID_LOG_NAME = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Public logger</description>
         <expected-problems>1</expected-problems>
@@ -107,8 +102,9 @@ public class Foo {
 public class Foo {
     public static final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>package-private logger</description>
         <expected-problems>1</expected-problems>
@@ -116,8 +112,9 @@ public class Foo {
 public class Foo {
     static final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>package-private logger non static</description>
         <expected-problems>1</expected-problems>
@@ -125,8 +122,9 @@ public class Foo {
 public class Foo {
     final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>package-private logger non static and non final</description>
         <expected-problems>1</expected-problems>
@@ -134,8 +132,9 @@ public class Foo {
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Public logger when static final required</description>
         <expected-problems>1</expected-problems>
@@ -143,8 +142,9 @@ public class Foo {
 public class Foo {
     public static final Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Logger initialized as String constant from class name (java.util.logging)</description>
         <expected-problems>0</expected-problems>
@@ -154,8 +154,9 @@ import java.util.logging.Logger;
 public class Foo {
     private static final Logger LOG = Logger.getLogger(Foo.class.getName());
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>non-private Logger initialized as String constant from class name</description>
         <rule-property name="loggerClass">java.util.logging.Logger</rule-property>
@@ -166,8 +167,9 @@ import java.util.logging.Logger;
 public class Foo {
     Logger LOG = Logger.getLogger(Foo.class.getName());
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Package-protected logger when static final is not required</description>
         <expected-problems>1</expected-problems>
@@ -175,8 +177,9 @@ public class Foo {
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Package-protected logger when static final is required</description>
         <expected-problems>1</expected-problems>
@@ -184,8 +187,9 @@ public class Foo {
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Check type resolution of logger</description>
         <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
@@ -197,8 +201,9 @@ import org.slf4j.LoggerFactory;
 public class Foo {
     private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Check type resolution of logger with invalid logger specified</description>
         <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
@@ -210,8 +215,9 @@ import org.slf4j.LoggerFactory;
 public class Foo {
     private static final Logger LOG = LoggerFactory.getLogger(Bar.class);
 }
- ]]>    </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>similar to special case but with creating a new logger instead of passing in</description>
         <expected-problems>1</expected-problems>
@@ -224,6 +230,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>similar to special case but with creating a new logger instead of passing in</description>
         <expected-problems>1</expected-problems>
@@ -232,6 +239,23 @@ public class Foo {
     private final Log log;
     public Foo() {
         this.log = new Log(Foo.class);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative with apache commons logging</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class ProperLoggerSample {
+    private final Log log;
+
+    public PropperLoggerSample() {
+        log = LogFactory.getLog(ProperLoggerSample.class);
     }
 }
         ]]></code>
