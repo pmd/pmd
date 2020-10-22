@@ -1,0 +1,13 @@
+<apex:page standardController="Account">
+    <!-- Safe -->
+    <apex:outputText value="{!Account.CreatedDate}" escape="false"/>
+    <apex:outputText value="{!Account.Checkbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.DateTime__c}" escape="false"/>
+    <!-- Unsafe -->
+    <apex:outputText value="{!Account.Name}" escape="false"/>
+    <apex:outputText value="{!Account.Text__c}" escape="false"/>
+    <td><apex:outputText value="{!Account.TextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.LongTextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.Picklist__c}" escape="false"/>
+    <apex:outputText value="{!Account.UnknownField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
+</apex:page>

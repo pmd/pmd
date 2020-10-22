@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.vf.ExpressionType;
 import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
@@ -25,13 +26,12 @@ import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
-import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
  * @author sergey.gorbaty February 2017
  *
  */
-public class VfUnescapeElRule extends AbstractVfRule {
+public class VfUnescapeElRule extends AbstractVfTypedElExpressionRule {
     private static final String A_CONST = "a";
     private static final String APEXIFRAME_CONST = "apex:iframe";
     private static final String IFRAME_CONST = "iframe";
@@ -53,7 +53,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
         checkIfCorrectlyEscaped(node, data);
-
         return super.visit(node, data);
     }
 
@@ -412,6 +411,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
             final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
 
             for (final ASTIdentifier id : ids) {
+                ExpressionType expressionType = getExpressionType(id);
+                if (expressionType != null && !expressionType.requiresEscaping) {
+                    return false;
+                }
+
                 boolean isEscaped = false;
 
                 for (Escaping e : escapes) {

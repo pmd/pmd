@@ -1,0 +1,14 @@
+<apex:page standardController="Account">
+    <!-- Safe -->
+    <apex:outputText value="{!Account.CreatedDate}" escape="false"/>
+    <apex:outputText value="{!Account.MDCheckbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.MDDateTime__c}" escape="false"/>
+    <!-- Extra Line to make the lines different than the SFDX file -->
+    <!-- Unsafe -->
+    <apex:outputText value="{!Account.Name}" escape="false"/>
+    <apex:outputText value="{!Account.MDText__c}" escape="false"/>
+    <apex:outputText value="{!Account.MDTextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.MDLongTextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.MDPicklist__c}" escape="false"/>
+    <apex:outputText value="{!Account.UnknownField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
+</apex:page>

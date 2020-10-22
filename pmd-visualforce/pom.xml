@@ -78,6 +78,12 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
