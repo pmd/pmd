@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Represents a rule where the {@link net.sourceforge.pmd.lang.vf.ast.ASTIdentifier} nodes are enhanced with the
  * node's {@link ExpressionType}. This is achieved by processing metadata files referenced by the Visualforce page.
  */
-class AbstractVfTypedElExpressionRule extends AbstractVfRule {
+abstract class AbstractVfTypedElExpressionRule extends AbstractVfRule {
     /**
      * Directory that contains Apex classes that may be referenced from a Visualforce page.
      */
