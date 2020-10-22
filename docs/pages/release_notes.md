@@ -44,6 +44,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2813](https://github.com/pmd/pmd/pull/2813): \[core] Use JUnit's TemporaryFolder rule - [Stefan Birkner](https://github.com/stefanbirkner)
 *   [#2829](https://github.com/pmd/pmd/pull/2829): \[doc] Small correction in pmd\_report\_formats.md - [Gustavo Krieger](https://github.com/gustavopcassol)
 *   [#2834](https://github.com/pmd/pmd/pull/2834): \[vf] Allow attributes with dot in Visualforce - [rmohan20](https://github.com/rmohan20)
+*   [#2842](https://github.com/pmd/pmd/pull/2842): \[core] Bump antlr4 from 4.7 to 4.7.2 - [Adrien Lecharpentier](https://github.com/alecharp)
 
 {% endtocmaker %}
 
