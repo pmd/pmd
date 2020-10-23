@@ -64,6 +64,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2834](https://github.com/pmd/pmd/pull/2834): \[vf] Allow attributes with dot in Visualforce - [rmohan20](https://github.com/rmohan20)
 *   [#2842](https://github.com/pmd/pmd/pull/2842): \[core] Bump antlr4 from 4.7 to 4.7.2 - [Adrien Lecharpentier](https://github.com/alecharp)
 *   [#2865](https://github.com/pmd/pmd/pull/2865): \[java] (doc) Update ExcessiveImports example code for clarity - [Gustavo Krieger](https://github.com/gustavopcassol)
+*   [#2866](https://github.com/pmd/pmd/pull/2866): \[java] (doc) Fix example for CouplingBetweenObjects - [Gustavo Krieger](https://github.com/gustavopcassol)
 
 {% endtocmaker %}
 
