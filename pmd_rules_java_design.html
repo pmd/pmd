@@ -1800,11 +1800,11 @@ A number higher than the specified threshold can indicate a high degree of coupl
     <span class="kd">private</span> <span class="nc">Bar</span> <span class="n">var2</span><span class="o">;</span>
 
     <span class="c1">//followed by many imports of unique objects</span>
-    <span class="kt">void</span> <span class="nc">ObjectC</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">ObjectC</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
         <span class="nc">Bardo</span> <span class="n">var55</span><span class="o">;</span>
         <span class="nc">ObjectA</span> <span class="n">var44</span><span class="o">;</span>
         <span class="nc">ObjectZ</span> <span class="n">var93</span><span class="o">;</span>
-        <span class="k">return</span> <span class="n">something</span><span class="o">;</span>
+        <span class="k">return</span> <span class="nf">something</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2130,7 +2130,7 @@ user-specified threshold.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">blah.blah.Baz</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">blah.blah.Bif</span><span class="o">;</span>
-<span class="c1">// 18 others from the same package elided</span>
+<span class="c1">// 28 others from the same package elided</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{}</span>
 <span class="o">}</span>
@@ -3969,7 +3969,7 @@ remember to add a private constructor to prevent instantiation.
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 22, 2020 <br />
+ Site last generated: Oct 23, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
