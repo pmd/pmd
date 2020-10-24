@@ -1411,6 +1411,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="updated-apex-support">Updated Apex Support</h4>
+
+<ul>
+  <li>The Apex language support has been bumped to version 50 (Winter ‘21). All new language features are now properly
+parsed and processed. Especially the <a href="https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex_SafeNavigationOperator.htm">Safe Navigation Operator</a> is now supported.
+See also <a href="https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex.htm">Salesforce Winter ‘21 Release Notes</a></li>
+</ul>
+
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
@@ -1442,6 +1450,11 @@ with PMD 7.0.0.</li>
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2839">#2839</a>: [apex] Apex classes with safe navigation operator from Winter 21 (50.0) are skipped</li>
+    </ul>
+  </li>
   <li>apex-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1713">#1713</a>: [apex] Mark Database DML statements in For Loop</li>
@@ -1504,7 +1517,7 @@ with PMD 7.0.0.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 23, 2020 <br />
+ Site last generated: Oct 24, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
