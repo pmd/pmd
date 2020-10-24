@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 import com.nawforce.common.api.FileIssueOptions;
 import com.nawforce.common.api.Org;
 import com.nawforce.common.api.ServerOps;
@@ -23,7 +25,7 @@ import com.nawforce.common.diagnostics.Issue;
  *
  * @author Kevin Jones
  */
-@SuppressWarnings("PMD")
+@Experimental
 public final class ApexMultifileAnalysis {
     private static final Logger LOG = Logger.getLogger(ApexMultifileAnalysis.class.getName());
 
