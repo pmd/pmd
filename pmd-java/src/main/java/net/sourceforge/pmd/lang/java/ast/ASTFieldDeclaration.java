@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
@@ -37,6 +40,11 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
         super(id);
     }
 
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        // report on the identifier and not the annotations
+        return getVarIds().firstOrThrow().getFirstToken();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
