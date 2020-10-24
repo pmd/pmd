@@ -58,8 +58,6 @@ This is a {{ site.pmd.release_type }} release.
 *   vf (Salesforce VisualForce)
     *   [#2765](https://github.com/pmd/pmd/issues/2765): \[vf] Attributes with dot cause a VfParseException
 
-### API Changes
-
 ### External Contributions
 
 *   [#2803](https://github.com/pmd/pmd/pull/2803): \[java] Improve DoNotCallSystemExit (Fixes #2157) - [Vitaly Polonetsky](https://github.com/mvitaly)
@@ -73,6 +71,11 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2842](https://github.com/pmd/pmd/pull/2842): \[core] Bump antlr4 from 4.7 to 4.7.2 - [Adrien Lecharpentier](https://github.com/alecharp)
 *   [#2865](https://github.com/pmd/pmd/pull/2865): \[java] (doc) Update ExcessiveImports example code for clarity - [Gustavo Krieger](https://github.com/gustavopcassol)
 *   [#2866](https://github.com/pmd/pmd/pull/2866): \[java] (doc) Fix example for CouplingBetweenObjects - [Gustavo Krieger](https://github.com/gustavopcassol)
+
+### Stats
+* 50 commits
+* 23 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
 
