@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -44,6 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -65,6 +67,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class CloseResourceRule extends AbstractJavaRule {
 
     private static final String WRAPPING_TRY_WITH_RES_VAR_MESSAGE = "it is recommended to wrap resource in try-with-resource declaration directly";
+    private static final String REASSIGN_BEFORE_CLOSED_MESSAGE = "'' is reassigned, but the original instance is not closed";
     private static final String CLOSE_IN_FINALLY_BLOCK_MESSAGE = "'' is not closed within a finally block, thus might not be closed at all in case of exceptions";
 
     private static final PropertyDescriptor<List<String>> CLOSE_TARGETS_DESCRIPTOR =
@@ -164,6 +167,12 @@ public class CloseResourceRule extends AbstractJavaRule {
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getVarId().getName());
                 addCloseResourceViolation(resVar.getVarId(), resVarType, data);
+            } else {
+                ASTStatementExpression reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
+                if (reassigningStatement != null) {
+                    reportedVarNames.add(resVar.getVarId().getName());
+                    addViolationWithMessage(data, reassigningStatement, reassignBeforeClosedMessageForVar(resVar.getName()));
+                }
             }
         }
     }
@@ -659,5 +668,78 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private String closeInFinallyBlockMessageForVar(String var) {
         return "''" + var + CLOSE_IN_FINALLY_BLOCK_MESSAGE;
+    }
+
+    private String reassignBeforeClosedMessageForVar(String var) {
+        return "''" + var + REASSIGN_BEFORE_CLOSED_MESSAGE;
+    }
+
+    private ASTStatementExpression getFirstReassigningStatementBeforeBeingClosed(ASTVariableDeclarator variable, ASTMethodOrConstructorDeclaration methodOrConstructor) {
+        List<ASTStatementExpression> statements = methodOrConstructor.findDescendantsOfType(ASTStatementExpression.class);
+        boolean variableClosed = false;
+        boolean isInitialized = !hasNullInitializer(variable);
+        ASTExpression initializingExpression = initializerExpressionOf(variable);
+        for (ASTStatementExpression statement : statements) {
+            if (isClosingVariableStatement(statement, variable)) {
+                variableClosed = true;
+            }
+
+            if (isAssignmentForVariable(statement, variable)) {
+                if (isInitialized && !variableClosed) {
+                    if (initializingExpression != null && !inSameIfBlock(statement, initializingExpression)) {
+                        return statement;
+                    }
+                }
+
+                if (variableClosed) {
+                    variableClosed = false;
+                } 
+                if (!isInitialized) {
+                    isInitialized = true;
+                    initializingExpression = statement.getFirstDescendantOfType(ASTExpression.class);
+                }                
+            }
+        }
+        return null;
+    }
+
+    private boolean inSameIfBlock(ASTStatementExpression statement1, ASTExpression statement2) {
+        List<ASTIfStatement> parents1 = statement1.getParentsOfType(ASTIfStatement.class);
+        List<ASTIfStatement> parents2 = statement2.getParentsOfType(ASTIfStatement.class);
+        parents1.retainAll(parents2);
+        return !parents1.isEmpty();
+    }
+
+    private boolean isClosingVariableStatement(ASTStatementExpression statement, ASTVariableDeclarator variable) {
+        List<ASTPrimaryExpression> expressions = statement.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression expression : expressions) {
+            if (isMethodCallClosingResourceVariable(expression, variable.getName())) {
+                return true;
+            }
+        }
+        List<ASTName> names = statement.findDescendantsOfType(ASTName.class);
+        for (ASTName name : names) {
+            if (isCloseCallOnVariable(name, variable.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAssignmentForVariable(ASTStatementExpression statement, ASTVariableDeclarator variable) {
+        if (statement == null || variable == null) {
+            return false;
+        }
+        ASTName name = statement.getFirstDescendantOfType(ASTName.class);
+        if (name == null) {
+            return false;
+        }
+        NameDeclaration statementVariable = name.getNameDeclaration();
+        if (statementVariable == null) {
+            return false;
+        }
+
+        return statement.hasDescendantOfType(ASTAssignmentOperator.class)
+                && statementVariable.equals(variable.getVarId().getNameDeclaration());
     }
 }
