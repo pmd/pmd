@@ -55,7 +55,7 @@ public interface RuleViolationFactory {
         Objects.requireNonNull(node);
         Objects.requireNonNull(message);
         Objects.requireNonNull(args);
-        RuleViolation rv = formatViolation(rule, node, ruleContext.getSourceCodeFilename(), message, args);
+        RuleViolation rv = formatViolation(rule, node, String.valueOf(ruleContext.getSourceCodeFile()), message, args);
         ((ParametricRuleViolation<?>) rv).setLines(beginLine, endLine);
         SuppressedViolation suppressed = suppressOrNull(node, rv);
         if (suppressed != null) {

@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 @InternalApi
 public final class Helper {
     public static final String ANY_METHOD = "*";
+    private static final String DATABASE_CLASS_NAME = "Database";
 
     private Helper() {
         throw new AssertionError("Can't instantiate helper classes");
@@ -165,10 +166,10 @@ public final class Helper {
 
     public static boolean isSystemLevelClass(ASTUserClass node) {
         List<String> interfaces = node.getInterfaceNames();
-        return interfaces.stream().anyMatch(Helper::isWhitelisted);
+        return interfaces.stream().anyMatch(Helper::isAllowed);
     }
 
-    private static boolean isWhitelisted(String identifier) {
+    private static boolean isAllowed(String identifier) {
         switch (identifier.toLowerCase(Locale.ROOT)) {
         case "queueable":
         case "database.batchable":
@@ -186,4 +187,10 @@ public final class Helper {
         return sb.toString();
     }
 
+    /**
+     * @return true if {@code node} is an invocation of a {@code Database} method.
+     */
+    public static boolean isAnyDatabaseMethodCall(ASTMethodCallExpression node) {
+        return isMethodName(node, DATABASE_CLASS_NAME, ANY_METHOD);
+    }
 }
