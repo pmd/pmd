@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.29.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
     
     
     
@@ -1403,103 +1403,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="--2020---6290-snapshot">??-?????-2020 - 6.29.0-SNAPSHOT</h2>
+  <h2 id="-november-2020---6300-snapshot">??-November-2020 - 6.30.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.29.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.30.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="updated-apex-support">Updated Apex Support</h4>
-
-<ul>
-  <li>The Apex language support has been bumped to version 50 (Winter ‘21). All new language features are now properly
-parsed and processed. Especially the <a href="https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex_SafeNavigationOperator.htm">Safe Navigation Operator</a> is now supported.
-See also <a href="https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex.htm">Salesforce Winter ‘21 Release Notes</a></li>
-</ul>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a> (<code class="language-plaintext highlighter-rouge">apex-performance</code>)
-finds operations in loops that may hit governor limits such as DML operations, SOQL
-queries and more. The rule replaces the three rules “AvoidDmlStatementsInLoops”, “AvoidSoqlInLoops”,
-and “AvoidSoslInLoops”.</li>
-</ul>
-
-<h4 id="renamed-rules">Renamed Rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#donotcallsystemexit"><code class="language-plaintext highlighter-rouge">DoNotCallSystemExit</code></a> has been renamed to
-<a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a>, since it checks for all the following calls:
-<code class="language-plaintext highlighter-rouge">System.exit(int)</code>, <code class="language-plaintext highlighter-rouge">Runtime.exit(int)</code>, <code class="language-plaintext highlighter-rouge">Runtime.halt(int)</code>. All these calls terminate
-the Java VM, which is bad, if the VM runs an application server which many independent applications.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-
-<ul>
-  <li>The Apex rules <a href="pmd_rules_apex_performance.html#avoiddmlstatementsinloops"><code class="language-plaintext highlighter-rouge">AvoidDmlStatementsInLoops</code></a>,
-<a href="pmd_rules_apex_performance.html#avoidsoqlinloops"><code class="language-plaintext highlighter-rouge">AvoidSoqlInLoops</code></a> and <a href="pmd_rules_apex_performance.html#avoidsoslinloops"><code class="language-plaintext highlighter-rouge">AvoidSoslInLoops</code></a>
-(<code class="language-plaintext highlighter-rouge">apex-performance</code>) are deprecated in favour of the new rule
-<a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>. The deprecated rules will be removed
-with PMD 7.0.0.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2839">#2839</a>: [apex] Apex classes with safe navigation operator from Winter 21 (50.0) are skipped</li>
-    </ul>
-  </li>
-  <li>apex-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1713">#1713</a>: [apex] Mark Database DML statements in For Loop</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/2831">#2831</a>: [core] Fix XMLRenderer newlines when running under IBM Java</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2157">#2157</a>: [java] Improve DoNotCallSystemExit: permit call in main(), flag System.halt</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2764">#2764</a>: [java] CloseResourceRule does not recognize multiple assignment done to resource</li>
-    </ul>
-  </li>
-  <li>miscellaneous
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2823">#2823</a>: [doc] Renamed/Moved rules are missing in documentation</li>
-    </ul>
-  </li>
-  <li>vf (Salesforce VisualForce)
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2765">#2765</a>: [vf] Attributes with dot cause a VfParseException</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/2803">#2803</a>: [java] Improve DoNotCallSystemExit (Fixes #2157) - <a href="https://github.com/mvitaly">Vitaly Polonetsky</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2809">#2809</a>: [java] Move test config from file to test class - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2810">#2810</a>: [core] Move method “renderTempFile” to XMLRendererTest - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2811">#2811</a>: [java] CloseResource - Fix #2764: False-negative when re-assigning variable - <a href="https://github.com/andipabst">Andi Pabst</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2813">#2813</a>: [core] Use JUnit’s TemporaryFolder rule - <a href="https://github.com/stefanbirkner">Stefan Birkner</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2816">#2816</a>: [apex] Detect ‘Database’ method invocations inside loops - <a href="https://github.com/jbartolotta-sfdc">Jeff Bartolotta</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2829">#2829</a>: [doc] Small correction in pmd_report_formats.md - <a href="https://github.com/gustavopcassol">Gustavo Krieger</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2834">#2834</a>: [vf] Allow attributes with dot in Visualforce - <a href="https://github.com/rmohan20">rmohan20</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2842">#2842</a>: [core] Bump antlr4 from 4.7 to 4.7.2 - <a href="https://github.com/alecharp">Adrien Lecharpentier</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2865">#2865</a>: [java] (doc) Update ExcessiveImports example code for clarity - <a href="https://github.com/gustavopcassol">Gustavo Krieger</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2866">#2866</a>: [java] (doc) Fix example for CouplingBetweenObjects - <a href="https://github.com/gustavopcassol">Gustavo Krieger</a></li>
-</ul>
 
 
 
