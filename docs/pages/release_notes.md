@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 50 (Winter '21). All new language features are now properly
+    parsed and processed. Especially the [Safe Navigation Operator](https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex_SafeNavigationOperator.htm) is now supported.
+    See also [Salesforce Winter '21 Release Notes](https://releasenotes.docs.salesforce.com/en-us/winter21/release-notes/rn_apex.htm)
+
 #### New Rules
 
 *   The new Apex rule {% rule "apex/performance/OperationWithLimitsInLoop" %} (`apex-performance`)
@@ -38,6 +44,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   apex
+    *   [#2839](https://github.com/pmd/pmd/issues/2839): \[apex] Apex classes with safe navigation operator from Winter 21 (50.0) are skipped
 *   apex-performance
     *   [#1713](https://github.com/pmd/pmd/issues/1713): \[apex] Mark Database DML statements in For Loop
 *   core

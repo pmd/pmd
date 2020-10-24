@@ -255,6 +255,11 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
     }
 
     @Override
+    public Object visit(ASTInvalidDependentCompilation node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
     public Object visit(ASTJavaMethodCallExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
