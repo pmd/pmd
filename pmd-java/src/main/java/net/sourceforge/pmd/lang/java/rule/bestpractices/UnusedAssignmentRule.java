@@ -180,7 +180,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             unused.removeAll(result.usedAssignments);
 
             for (AssignmentEntry entry : unused) {
-                if (isIgnorablePrefixIncrement(entry.rhs)) {
+                if (entry.isUnaryReassign() && isIgnorablePrefixIncrement(entry.rhs)) {
                     continue;
                 }
 
@@ -1401,12 +1401,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 return false;
             }
             AssignmentEntry that = (AssignmentEntry) o;
-            return Objects.equals(rhs, that.rhs);
+            return Objects.equals(var, that.var)
+                && Objects.equals(rhs, that.rhs);
         }
 
         @Override
         public int hashCode() {
-            return rhs.hashCode();
+            return 31 * var.hashCode() + rhs.hashCode();
         }
     }
 }

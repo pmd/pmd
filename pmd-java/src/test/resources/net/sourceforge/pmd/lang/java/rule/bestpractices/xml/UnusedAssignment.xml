@@ -3250,8 +3250,9 @@ public class UnusedAssignmentNative {
     </test-code>
 
     <test-code>
-        <description>Local var in nested block</description>
+        <description>Assignment to an ignorable prefix increment</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'd' is never used (overwritten on line 6)</message>
             <message>The value assigned to variable 'd' is never used</message>
