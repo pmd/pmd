@@ -3270,4 +3270,44 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Static field reassignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field reassignment with ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 9)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+
+                Test() {
+                    System.out.println(b); // does not count as usage
+                }
+
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

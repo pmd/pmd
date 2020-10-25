@@ -309,7 +309,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
-        static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null);
+        static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null, false);
 
         // The class scope for the "this" reference, used to find fields
         // of this class
@@ -317,9 +317,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // so in methods we don't care about fields
         // If not null, fields are effectively treated as locals
         private final JClassSymbol enclosingClassScope;
+        private final boolean inStaticInit;
 
-        private ReachingDefsVisitor(JClassSymbol scope) {
+        private ReachingDefsVisitor(JClassSymbol scope, boolean inStaticInit) {
             this.enclosingClassScope = scope;
+            this.inStaticInit = inStaticInit;
         }
 
         /**
@@ -327,7 +329,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
          * because we're in a ctor or initializer.
          */
         private boolean trackThisInstance() {
-            return enclosingClassScope != null;
+            return enclosingClassScope != null && !inStaticInit;
+        }
+
+        private boolean trackStaticFields() {
+            return enclosingClassScope != null && inStaticInit;
         }
 
         // following deals with control flow structures
@@ -820,7 +826,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
                 if (lhsVar != null
                     && (lhsVar instanceof JLocalVariableSymbol
-                    || isThisFieldAccess(lhs) && trackThisInstance())) {
+                    || trackThisInstance() && isThisFieldAccess(lhs)
+                    || trackStaticFields() && isStaticFieldOfThisClass(lhsVar))) {
 
                     if (node.getOperator().isCompound()) {
                         // compound assignment, to use BEFORE assigning
@@ -833,6 +840,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
             result = acceptOpt(lhs, result);
             return result;
+        }
+
+        private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
+            return var instanceof JFieldSymbol
+                && ((JFieldSymbol) var).isStatic()
+                // must be non-null
+                && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
         }
 
         /**
@@ -963,7 +977,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                                 SpanInfo beforeLocal,
                                                 JClassSymbol classSymbol) {
 
-            ReachingDefsVisitor visitor = new ReachingDefsVisitor(classSymbol);
+            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(classSymbol, false);
+            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(classSymbol, true);
 
             // All field initializers + instance initializers
             SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
@@ -986,22 +1001,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
 
                 if (isStatic) {
-                    staticInit = visitor.acceptOpt(declaration, staticInit);
+                    staticInit = staticVisitor.acceptOpt(declaration, staticInit);
                 } else {
-                    ctorHeader = visitor.acceptOpt(declaration, ctorHeader);
+                    ctorHeader = instanceVisitor.acceptOpt(declaration, ctorHeader);
                 }
             }
 
 
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTConstructorDeclaration ctor : ctors) {
-                SpanInfo state = visitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
+                SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
             }
 
-            // assignments that reach the end of any constructor must
-            // be considered used
-            useAllSelfFields(staticInit, ctorEndState, visitor.enclosingClassScope);
+            // assignments that reach the end of any constructor must be considered used
+            useAllSelfFields(staticInit, ctorEndState, classSymbol);
         }
 
         static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym) {
