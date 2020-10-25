@@ -3249,4 +3249,24 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Local var in nested block</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'd' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'd' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static {
+                    int b = 0;
+                    int d = 0;
+                    {
+                        d = ++b;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
