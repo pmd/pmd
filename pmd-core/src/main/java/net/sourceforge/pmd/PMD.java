@@ -193,7 +193,10 @@ public class PMD {
      *
      * @return The configuration.
      * @see PMDConfiguration
+     *
+     * @deprecated Don't create a PMD instance just to create a {@link PMDConfiguration}
      */
+    @Deprecated
     public PMDConfiguration getConfiguration() {
         return configuration;
     }
@@ -324,6 +327,10 @@ public class PMD {
     @Deprecated
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
                                     final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+        // Note that this duplicates the other routine, because the old behavior was
+        // that we parsed rulesets (a second time) inside the processor execution.
+        // To not mess up error handling, we keep this behavior.
+
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
         // Make sure the cache is listening for analysis results

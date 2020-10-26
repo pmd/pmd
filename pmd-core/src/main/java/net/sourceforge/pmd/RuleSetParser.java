@@ -11,7 +11,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Configurable ruleset parser. Note that this replaces the API of {@link RulesetsFactoryUtils}
- * and {@link RuleSetFactory}.
+ * and {@link RuleSetFactory}. This can be configured using a fluent
+ * API, see eg {@link #warnDeprecated(boolean)}. To create a list of
+ * rulesets, use {@link #parseFromResourceReference(String)}.
  */
 public final class RuleSetParser {
 
@@ -48,6 +50,7 @@ public final class RuleSetParser {
      * Filter loaded rules to only those that match or are above
      * the given priority. The default is {@link RulePriority#LOW},
      * ie, no filtering occurs.
+     * @return This instance, modified
      */
     public RuleSetParser filterAbovePriority(RulePriority minimumPriority) {
         this.minimumPriority = minimumPriority;
@@ -57,6 +60,7 @@ public final class RuleSetParser {
     /**
      * Log a warning when referencing a deprecated rule.
      * This is enabled by default.
+     * @return This instance, modified
      */
     public RuleSetParser warnDeprecated(boolean warn) {
         this.warnDeprecated = warn;
@@ -68,6 +72,7 @@ public final class RuleSetParser {
      * been moved or renamed. This is enabled by default, if disabled,
      * unresolved references will not be translated and will produce an
      * error.
+     * @return This instance, modified
      */
     public RuleSetParser enableCompatibility(boolean enable) {
         this.enableCompatibility = enable;
@@ -78,12 +83,18 @@ public final class RuleSetParser {
      * Follow deprecated rule references. By default this is off,
      * and those references will be ignored (with a warning depending
      * on {@link #enableCompatibility(boolean)}).
+     *
+     * @return This instance, modified
      */
     public RuleSetParser includeDeprecatedRuleReferences(boolean enable) {
         this.includeDeprecatedRuleReferences = enable;
         return this;
     }
 
+    /**
+     * Create a new rule set factory, if you have to (that class is deprecated).
+     * That factory will use the configuration that was set using the setters of this.
+     */
     public RuleSetFactory createFactory() {
         return new RuleSetFactory(this);
     }

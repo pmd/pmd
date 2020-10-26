@@ -23,7 +23,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
 
 /**
- * @deprecated Internal API. Use {@link PMD#main(String[])}.
+ * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
  */
 @Deprecated
 @InternalApi

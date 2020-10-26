@@ -20,7 +20,7 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
- * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#run(String[])}.
+ * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
  */
 @Deprecated
 @InternalApi
