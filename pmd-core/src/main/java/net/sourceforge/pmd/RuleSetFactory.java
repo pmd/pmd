@@ -115,7 +115,7 @@ public class RuleSetFactory {
      *            Whether deprecation warnings are to be produced by this
      *            factory
      *
-     * @deprecated Use {@link #toConfig()} to rebuild a factory from a configuration
+     * @deprecated Use {@link #toParser()} to rebuild a factory from a configuration
      */
     @Deprecated
     public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
@@ -566,7 +566,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = toConfig().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).createFactory();
+        RuleSetFactory ruleSetFactory = toParser().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
@@ -681,7 +681,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = toConfig().warnDeprecated(false).createFactory();
+        RuleSetFactory ruleSetFactory = toParser().warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -843,11 +843,16 @@ public class RuleSetFactory {
     }
 
 
-    public RuleSetParser toConfig() {
+    /**
+     * Create a new {@link RuleSetParser} with the same config as this
+     * factory. This is a transitional API.
+     */
+    public RuleSetParser toParser() {
         return new RuleSetParser().loadResourcesWith(resourceLoader)
                                   .filterAbovePriority(minimumPriority)
                                   .warnDeprecated(warnDeprecated)
-                                  .enableCompatibility(compatibilityFilter != null);
+                                  .enableCompatibility(compatibilityFilter != null)
+                                  .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences);
     }
 
 

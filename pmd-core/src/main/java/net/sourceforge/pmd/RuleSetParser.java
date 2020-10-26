@@ -95,7 +95,8 @@ public final class RuleSetParser {
      * Create a new rule set factory, if you have to (that class is deprecated).
      * That factory will use the configuration that was set using the setters of this.
      */
-    public RuleSetFactory createFactory() {
+    @Deprecated
+    public RuleSetFactory toFactory() {
         return new RuleSetFactory(this);
     }
 

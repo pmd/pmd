@@ -222,7 +222,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RuleSetParser.fromPmdConfig(configuration).createFactory();
+        final RuleSetFactory ruleSetFactory = RuleSetParser.fromPmdConfig(configuration).toFactory();
         final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
@@ -336,7 +336,7 @@ public class PMD {
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactory = ruleSetFactory.toConfig().warnDeprecated(false).createFactory();
+        final RuleSetFactory silentFactory = ruleSetFactory.toParser().warnDeprecated(false).toFactory();
         newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }

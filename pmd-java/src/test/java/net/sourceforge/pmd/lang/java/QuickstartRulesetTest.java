@@ -49,7 +49,7 @@ public class QuickstartRulesetTest {
             }
         });
 
-        RuleSetFactory ruleSetFactory = new RuleSetParser().enableCompatibility(false).createFactory();
+        RuleSetFactory ruleSetFactory = new RuleSetParser().enableCompatibility(false).toFactory();
         RuleSet quickstart = ruleSetFactory.createRuleSet("rulesets/java/quickstart.xml");
         Assert.assertFalse(quickstart.getRules().isEmpty());
     }

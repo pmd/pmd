@@ -22,7 +22,7 @@ public class DefaultRulesetTest {
     @Rule
     public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
-    private RuleSetFactory factory = new RuleSetParser().enableCompatibility(false).createFactory();
+    private RuleSetFactory factory = new RuleSetParser().enableCompatibility(false).toFactory();
 
     @Test
     public void loadDefaultRuleset() throws Exception {
