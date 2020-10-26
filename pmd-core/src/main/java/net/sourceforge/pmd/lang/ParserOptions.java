@@ -50,6 +50,6 @@ public class ParserOptions {
 
     @Override
     public int hashCode() {
-        return getSuppressMarker() != null ? getSuppressMarker().hashCode() : 0;
+        return getSuppressMarker().hashCode();
     }
 }

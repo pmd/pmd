@@ -247,6 +247,30 @@ public class RuleSetFactoryTest {
     }
 
     /**
+     * This is an example of a category (built-in) ruleset, which contains a rule, that has been renamed.
+     * This means: a rule definition for "NewName" and a rule reference "OldName", that is deprecated
+     * and exists for backwards compatibility.
+     *
+     * <p>When loading this ruleset at a whole for generating the documentation, we should still
+     * include the deprecated rule reference, so that we can create a nice documentation.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRuleSetWithDeprecatedRenamedRuleForDoc() throws Exception {
+        RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.LOW, false, false, true);
+        RuleSet rs = rsf.createRuleSet(createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
+                + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
+                + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
+                + "</ruleset>"));
+        assertEquals(2, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("NewName"));
+        assertNotNull(rs.getRuleByName("OldName"));
+    }
+
+    /**
      * This is an example of a custom user ruleset, that references a rule, that has been renamed.
      * The user should get a deprecation warning.
      *

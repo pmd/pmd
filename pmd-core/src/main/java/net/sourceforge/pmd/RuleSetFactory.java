@@ -44,9 +44,10 @@ import net.sourceforge.pmd.util.ResourceLoader;
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
  * content. By default Rules will be loaded using the {@link RulePriority#LOW} priority,
- * with Rule deprecation warnings off.
- * By default, the ruleset compatibility filter is active, too.
- * See {@link RuleSetFactoryCompatibility}.
+ * with Rule deprecation warnings off;
+ * the ruleset compatibility filter is active, too (see {@link RuleSetFactoryCompatibility});
+ * if the ruleset contains rule references (e.g. for renamed or moved rules), these
+ * are ignored by default.
  */
 public class RuleSetFactory {
 
@@ -60,6 +61,7 @@ public class RuleSetFactory {
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
+    private final boolean includeDeprecatedRuleReferences;
 
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
@@ -88,9 +90,15 @@ public class RuleSetFactory {
     @Deprecated // to be hidden with PMD 7.0.0.
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
                           final boolean warnDeprecated, final boolean enableCompatibility) {
+        this(resourceLoader, minimumPriority, warnDeprecated, enableCompatibility, false);
+    }
+
+    RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
+            final boolean warnDeprecated, final boolean enableCompatibility, boolean includeDeprecatedRuleReferences) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
+        this.includeDeprecatedRuleReferences = includeDeprecatedRuleReferences;
 
         if (enableCompatibility) {
             this.compatibilityFilter = new RuleSetFactoryCompatibility();
@@ -132,27 +140,25 @@ public class RuleSetFactory {
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties = null;
-        try {
-            List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
-            for (Language language : LanguageRegistry.getLanguages()) {
-                Properties props = new Properties();
-                rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
-                try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
-                    props.load(inputStream);
-                    String rulesetFilenames = props.getProperty("rulesets.filenames");
-                    if (rulesetFilenames != null) {
-                        ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
-                    }
-                } catch (RuleSetNotFoundException e) {
-                    LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
+        List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
+        for (Language language : LanguageRegistry.getLanguages()) {
+            Properties props = new Properties();
+            rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
+            try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
+                props.load(inputStream);
+                String rulesetFilenames = props.getProperty("rulesets.filenames");
+                if (rulesetFilenames != null) {
+                    ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
                 }
+            } catch (RuleSetNotFoundException e) {
+                LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
+            } catch (IOException ioe) {
+                throw new RuntimeException("Couldn't find " + rulesetsProperties
+                        + "; please ensure that the directory is on the classpath. The current classpath is: "
+                        + System.getProperty("java.class.path"));
             }
-            return createRuleSets(ruleSetReferenceIds).iterator();
-        } catch (IOException ioe) {
-            throw new RuntimeException("Couldn't find " + rulesetsProperties
-                    + "; please ensure that the directory is on the classpath. The current classpath is: "
-                    + System.getProperty("java.class.path"));
         }
+        return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
     }
 
     /**
@@ -224,7 +230,7 @@ public class RuleSetFactory {
      *             if unable to find a resource.
      */
     public RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
-        return createRuleSet(ruleSetReferenceId, false);
+        return createRuleSet(ruleSetReferenceId, includeDeprecatedRuleReferences);
     }
 
     private RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)

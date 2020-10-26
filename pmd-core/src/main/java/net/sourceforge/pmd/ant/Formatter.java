@@ -186,8 +186,7 @@ public class Formatter {
         boolean isOnError = true;
         try {
             output = Files.newOutputStream(file.toPath());
-            writer = new OutputStreamWriter(output, charset);
-            writer = new BufferedWriter(writer);
+            writer = new BufferedWriter(new OutputStreamWriter(output, charset));
             isOnError = false;
         } finally {
             if (isOnError) {
