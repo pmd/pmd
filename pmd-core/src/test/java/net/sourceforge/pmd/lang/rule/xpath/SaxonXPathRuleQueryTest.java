@@ -65,6 +65,24 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
+    public void testRootExpressionIsADocumentNode() {
+        DummyNode dummy = new DummyNode(); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+    }
+
+    @Test
+    public void testRootExpressionWithName() {
+        DummyNode dummy = new DummyNode(0, false, "DummyNodeA"); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node(element(DummyNodeA))]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+
+        assertQuery(0, "(/)[self::document-node(element(DummyNodeX))]", dummy);
+    }
+
+    @Test
     public void ruleChainVisits() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = false()] | //dummyNode");
         List<String> ruleChainVisits = query.getRuleChainVisits();

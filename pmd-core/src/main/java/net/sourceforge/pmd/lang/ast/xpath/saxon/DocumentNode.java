@@ -95,6 +95,8 @@ public class DocumentNode extends BaseNodeInfo implements DocumentInfo, AstNodeO
             return new Navigator.DescendantEnumeration(this, true, true);
         case Axis.CHILD:
             return SingleNodeIterator.makeIterator(rootNode);
+        case Axis.SELF:
+            return SingleNodeIterator.makeIterator(this);
         default:
             return super.iterateAxis(axisNumber);
         }
