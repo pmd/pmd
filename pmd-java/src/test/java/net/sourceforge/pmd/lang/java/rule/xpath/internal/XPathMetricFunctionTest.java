@@ -21,7 +21,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -54,7 +53,7 @@ public class XPathMetricFunctionTest {
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File("n/a"));
         ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet rules = RuleSet.forSingleRule(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         return report.getViolations().iterator();
     }

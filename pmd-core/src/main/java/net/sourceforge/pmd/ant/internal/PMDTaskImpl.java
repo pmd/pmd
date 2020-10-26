@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -25,13 +26,11 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetParser;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -42,7 +41,6 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -106,18 +104,20 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        final ResourceLoader rl = setupResourceLoader();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+        RuleSetParser rulesetParser = RuleSetParser.fromPmdConfig(configuration)
+                                                   .loadResourcesWith(setupResourceLoader());
+
+        List<RuleSet> ruleSets;
 
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSets = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSets)) {
+            String ruleSetString = configuration.getRuleSets();
+            if (StringUtils.isNotBlank(ruleSetString)) {
                 // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSets));
+                configuration.setRuleSets(project.replaceProperties(ruleSetString));
             }
-            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-            logRulesUsed(rules);
+            ruleSets = rulesetParser.parseFromResourceReference(configuration.getRuleSets());
+            logRulesUsed(new RuleSets(ruleSets));
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
         }
@@ -137,7 +137,7 @@ public class PMDTaskImpl {
 
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
-        RuleContext ctx = new RuleContext();
+        Report report = new Report();
         Report errorReport = new Report();
         final AtomicInteger reportSize = new AtomicInteger();
         final String separator = System.getProperty("file.separator");
@@ -196,9 +196,15 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                PMD.processFiles(configuration, ruleSets, files, report, renderers);
+            } catch (ContextedRuntimeException e) {
+                if (e.getFirstContextValue("filename") instanceof String) {
+                    handleError((String) e.getFirstContextValue("filename"), errorReport, e);
+                } else {
+                    handleError("(unknown file)", errorReport, e);
+                }
             } catch (RuntimeException pmde) {
-                handleError(ctx, errorReport, pmde);
+                handleError("(unknown file)", errorReport, pmde);
             }
         }
 
@@ -219,7 +225,7 @@ public class PMDTaskImpl {
         }
     }
 
-    private ResourceLoader setupResourceLoader() {
+    private ClassLoader setupResourceLoader() {
         if (classpath == null) {
             classpath = new Path(project);
         }
@@ -236,11 +242,11 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
-                project, classpath, parentFirst));
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
-    private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
+    private void handleError(String filename, Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
         project.log(pmde.toString(), Project.MSG_VERBOSE);
@@ -263,7 +269,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde, String.valueOf(ctx.getSourceCodeFile())));
+        errorReport.addError(new Report.ProcessingError(pmde, filename));
     }
 
     private void setupClassLoader() {
