@@ -52,7 +52,7 @@ public final class RulesetsFactoryUtils {
             LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
             throw new IllegalArgumentException(rsnfe);
         }
-        return new RuleSets(ruleSets);
+        return ruleSets;
     }
 
     /**
