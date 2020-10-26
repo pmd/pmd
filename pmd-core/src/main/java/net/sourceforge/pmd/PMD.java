@@ -23,6 +23,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -121,7 +122,10 @@ public class PMD {
      * @throws PMDException
      *             if the URI couldn't be parsed
      * @see DBURI
+     *
+     * @deprecated Will be hidden as part of the parsing of {@link PMD#getApplicableFiles(PMDConfiguration, Set)}
      */
+    @Deprecated
     public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
         List<DataSource> dataSources = new ArrayList<>();
 
@@ -167,7 +171,11 @@ public class PMD {
      * @param configuration
      *            the given configuration
      * @return the pre-configured parser
+     *
+     * @deprecated This is internal
      */
+    @Deprecated
+    @InternalApi
     public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
 
         // TODO Handle Rules having different parser options.
@@ -488,7 +496,7 @@ public class PMD {
     }
 
     /**
-     * Entry to invoke PMD as command line tool
+     * Entry to invoke PMD as command line tool. Note that this will invoke {@link System#exit(int)}.
      *
      * @param args
      *            command line arguments
@@ -498,7 +506,8 @@ public class PMD {
     }
 
     /**
-     * Parses the command line arguments and executes PMD.
+     * Parses the command line arguments and executes PMD. Returns the
+     * exit code without exiting the VM.
      *
      * @param args
      *            command line arguments
