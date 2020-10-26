@@ -79,7 +79,7 @@ public abstract class AbstractPMDProcessor {
      * @return the rules within a rulesets
      */
     protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
-        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
+        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory.toParser());
 
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {

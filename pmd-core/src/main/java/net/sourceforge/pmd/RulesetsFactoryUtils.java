@@ -9,9 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -42,11 +39,11 @@ public final class RulesetsFactoryUtils {
     @InternalApi
     @Deprecated
     public static RuleSets getRuleSets(String rulesets, RuleSetParser factory) {
-        List<RuleSet> ruleSets = null;
+        List<RuleSet> ruleSets;
         try {
-            ruleSets = factory.parseFromResourceReference(rulesets);
+            ruleSets = factory.parseFromResources(rulesets.split(","));
             printRuleNamesInDebug(ruleSets);
-            if (ruleSets.ruleCount() == 0) {
+            if (ruleSets.stream().mapToInt(r -> r.getRules().size()).sum() == 0) {
                 String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);

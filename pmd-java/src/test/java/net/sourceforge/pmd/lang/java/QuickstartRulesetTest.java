@@ -49,7 +49,7 @@ public class QuickstartRulesetTest {
             }
         });
 
-        RuleSet quickstart = new RuleSetParser().enableCompatibility(false).createRuleSet("rulesets/java/quickstart.xml");
+        RuleSet quickstart = new RuleSetParser().enableCompatibility(false).parseFromResource("rulesets/java/quickstart.xml");
         Assert.assertFalse(quickstart.getRules().isEmpty());
     }
 }

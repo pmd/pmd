@@ -115,7 +115,7 @@ public class PMDTaskImpl {
             configuration.setRuleSets(project.replaceProperties(ruleSetString));
         }
 
-        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), rulesetParser.toFactory());
+        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), rulesetParser);
         List<RuleSet> rulesetList = Arrays.asList(ruleSets.getAllRuleSets());
         logRulesUsed(ruleSets);
 

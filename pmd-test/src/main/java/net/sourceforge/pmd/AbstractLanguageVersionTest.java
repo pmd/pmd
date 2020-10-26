@@ -169,7 +169,7 @@ public class AbstractLanguageVersionTest {
             try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
                 assertNotNull(stream);
             }
-            RuleSet ruleset = new RuleSetParser().createRuleSet(r);
+            RuleSet ruleset = new RuleSetParser().parseFromResource(r);
             assertNotNull(ruleset);
         }
     }
