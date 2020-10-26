@@ -175,7 +175,6 @@ public final class Benchmarker {
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {
                 System.out.println("Starting " + rule.getName());

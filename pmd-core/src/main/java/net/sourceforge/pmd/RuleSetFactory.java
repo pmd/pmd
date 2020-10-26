@@ -163,9 +163,10 @@ public class RuleSetFactory {
             } catch (RuleSetNotFoundException e) {
                 LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
             } catch (IOException ioe) {
-            throw new RuntimeException("Couldn't find " + rulesetsProperties
-                    + "; please ensure that the directory is on the classpath. The current classpath is: "
-                    + System.getProperty("java.class.path"));}
+                throw new RuntimeException("Couldn't find " + rulesetsProperties
+                        + "; please ensure that the directory is on the classpath. The current classpath is: "
+                        + System.getProperty("java.class.path"));
+            }
         }
         return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
     }

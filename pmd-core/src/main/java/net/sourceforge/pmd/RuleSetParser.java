@@ -24,13 +24,6 @@ public final class RuleSetParser {
     boolean includeDeprecatedRuleReferences = false;
 
     /**
-     * Create a new config with the default values.
-     */
-    public RuleSetParser() {
-
-    }
-
-    /**
      * Specify that the given classloader should be used to resolve
      * paths to external ruleset references. The default uses PMD's
      * own classpath.
