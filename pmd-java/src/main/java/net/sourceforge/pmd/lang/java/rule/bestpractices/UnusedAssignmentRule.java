@@ -23,8 +23,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -814,32 +814,57 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         @Override
-        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
-            SpanInfo result = data;
-            ASTAssignableExpr lhs = node.getLeftOperand();
-            ASTExpression rhs = node.getRightOperand();
+        public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
+            data = acceptOpt(node.getOperand(), data);
 
-            // visit the rhs as it is evaluated before
-            result = acceptOpt(rhs, result);
+            if (node.getOperator().isPure()) {
+                return data;
+            } else {
+                return processAssignment(node.getOperand(), node, true, data);
+            }
+        }
+
+        @Override
+        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
+            // visit operands in order
+            data = acceptOpt(node.getRightOperand(), data);
+            data = acceptOpt(node.getLeftOperand(), data);
+
+            return processAssignment(node.getLeftOperand(),
+                                     node.getRightOperand(),
+                                     node.getOperator().isCompound(),
+                                     data);
+
+        }
+
+        private SpanInfo processAssignment(ASTExpression lhs, // LHS or unary operand
+                                           ASTExpression rhs,  // RHS or unary
+                                           boolean useBeforeAssigning,
+                                           SpanInfo result) {
 
             if (lhs instanceof ASTNamedReferenceExpr) {
                 JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
                 if (lhsVar != null
                     && (lhsVar instanceof JLocalVariableSymbol
-                    || trackThisInstance() && isThisFieldAccess(lhs)
-                    || trackStaticFields() && isStaticFieldOfThisClass(lhsVar))) {
+                    || isRelevantField(lhs))) {
 
-                    if (node.getOperator().isCompound()) {
+                    if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
                         result.use(lhsVar);
                     }
 
                     result.assign(lhsVar, rhs);
-                    return result;
                 }
             }
-            result = acceptOpt(lhs, result);
             return result;
+        }
+
+        private boolean isRelevantField(ASTExpression lhs) {
+            if (!(lhs instanceof ASTNamedReferenceExpr)) {
+                return false;
+            }
+            return trackThisInstance() && isThisFieldAccess(lhs)
+                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym());
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
@@ -885,16 +910,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return false;
         }
 
-        @Override
-        public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
-            data = node.getOperand().acceptVisitor(this, data);
-            JVariableSymbol sym = getVarIfUnaryAssignment(node);
-            if (sym != null) {
-                data.assign(sym, node);
-            }
-            return data;
-        }
-
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
             ASTExpression operand = node.getOperand();
             if (!node.getOperator().isPure() && operand instanceof ASTNamedReferenceExpr) {
@@ -907,7 +922,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public SpanInfo visit(ASTVariableAccess node, SpanInfo data) {
-            data.use(node.getReferencedSym());
+            if (node.getAccessType() == AccessType.READ) {
+                data.use(node.getReferencedSym());
+            }
             return data;
         }
 
@@ -915,7 +932,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public SpanInfo visit(ASTFieldAccess node, SpanInfo data) {
             data = node.getQualifier().acceptVisitor(this, data);
 
-            if (trackThisInstance() && node.getQualifier() instanceof ASTThisExpression) {
+            if (isRelevantField(node) && node.getAccessType() == AccessType.READ) {
                 data.use(node.getReferencedSym());
             }
             return data;

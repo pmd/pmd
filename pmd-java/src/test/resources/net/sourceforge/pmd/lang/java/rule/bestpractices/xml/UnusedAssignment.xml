@@ -3311,21 +3311,6 @@ public class UnusedAssignmentNative {
     </test-code>
 
     <test-code>
-        <description>This field in method</description>
-        <!-- TODO can't reproduce https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A31 -->
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            class Test {
-                int field = 0;
-                void m() {
-                    this.field = 2;
-                    this.field = 4;
-                }
-            }
-            ]]></code>
-    </test-code>
-
-    <test-code>
         <description>Branches in switch</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -3352,6 +3337,25 @@ public class UnusedAssignmentNative {
                         }
                     }
                     return "";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This field in method</description>
+        <!-- https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A33 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                private final List<CallableProcessingInterceptor> interceptors;
+                private int preProcessIndex = -1;
+
+                public void applyPreProcess(NativeWebRequest request, Callable<?> task) throws Exception {
+                    for (CallableProcessingInterceptor interceptor : this.interceptors) {
+                        interceptor.preProcess(request, task);
+                        this.preProcessIndex++;
+                    }
                 }
             }
             ]]></code>
