@@ -23,8 +23,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -81,6 +81,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -179,7 +180,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             unused.removeAll(result.usedAssignments);
 
             for (AssignmentEntry entry : unused) {
-                if (isIgnorablePrefixIncrement(entry.rhs)) {
+                if (entry.isUnaryReassign() && isIgnorablePrefixIncrement(entry.rhs)) {
                     continue;
                 }
 
@@ -308,7 +309,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
-        static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null);
+        static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null, false);
 
         // The class scope for the "this" reference, used to find fields
         // of this class
@@ -316,11 +317,24 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // so in methods we don't care about fields
         // If not null, fields are effectively treated as locals
         private final JClassSymbol enclosingClassScope;
+        private final boolean inStaticInit;
 
-        private ReachingDefsVisitor(JClassSymbol scope) {
+        private ReachingDefsVisitor(JClassSymbol scope, boolean inStaticInit) {
             this.enclosingClassScope = scope;
+            this.inStaticInit = inStaticInit;
         }
 
+        /**
+         * If true, we're also tracking fields of the {@code this} instance,
+         * because we're in a ctor or initializer.
+         */
+        private boolean trackThisInstance() {
+            return enclosingClassScope != null && !inStaticInit;
+        }
+
+        private boolean trackStaticFields() {
+            return enclosingClassScope != null && inStaticInit;
+        }
 
         // following deals with control flow structures
 
@@ -384,7 +398,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     current = global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
                     // statement in a regular fallthrough switch block
-                    current = acceptOpt(child, current);
+                    current = acceptOpt(child, before.fork().absorb(current));
                 }
             }
 
@@ -800,38 +814,100 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         @Override
-        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
-            SpanInfo result = data;
-            ASTAssignableExpr lhs = node.getLeftOperand();
-            ASTExpression rhs = node.getRightOperand();
+        public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
+            data = acceptOpt(node.getOperand(), data);
 
-            // visit the rhs as it is evaluated before
-            result = acceptOpt(rhs, result);
+            if (node.getOperator().isPure()) {
+                return data;
+            } else {
+                return processAssignment(node.getOperand(), node, true, data);
+            }
+        }
+
+        @Override
+        public SpanInfo visit(ASTAssignmentExpression node, SpanInfo data) {
+            // visit operands in order
+            data = acceptOpt(node.getRightOperand(), data);
+            data = acceptOpt(node.getLeftOperand(), data);
+
+            return processAssignment(node.getLeftOperand(),
+                                     node.getRightOperand(),
+                                     node.getOperator().isCompound(),
+                                     data);
+
+        }
+
+        private SpanInfo processAssignment(ASTExpression lhs, // LHS or unary operand
+                                           ASTExpression rhs,  // RHS or unary
+                                           boolean useBeforeAssigning,
+                                           SpanInfo result) {
 
             if (lhs instanceof ASTNamedReferenceExpr) {
                 JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
-                if (lhsVar != null) {
-                    if (node.getOperator().isCompound()) {
+                if (lhsVar != null
+                    && (lhsVar instanceof JLocalVariableSymbol
+                    || isRelevantField(lhs))) {
+
+                    if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
                         result.use(lhsVar);
                     }
 
                     result.assign(lhsVar, rhs);
-                    return result;
                 }
             }
-            result = acceptOpt(lhs, result);
             return result;
         }
 
-        @Override
-        public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
-            data = node.getOperand().acceptVisitor(this, data);
-            JVariableSymbol sym = getVarIfUnaryAssignment(node);
-            if (sym != null) {
-                data.assign(sym, node);
+        private boolean isRelevantField(ASTExpression lhs) {
+            if (!(lhs instanceof ASTNamedReferenceExpr)) {
+                return false;
             }
-            return data;
+            return trackThisInstance() && isThisFieldAccess(lhs)
+                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym());
+        }
+
+        private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
+            return var instanceof JFieldSymbol
+                && ((JFieldSymbol) var).isStatic()
+                // must be non-null
+                && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
+        }
+
+        /**
+         * Whether the expression is an access to a field of this instance,
+         * not inherited, qualified or not ({@code this.field} or just {@code field}).
+         */
+        private static boolean isThisFieldAccess(ASTExpression e) {
+            if (!(e instanceof ASTNamedReferenceExpr)) {
+                return false;
+            }
+            JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
+            if (sym instanceof JFieldSymbol) {
+                return !((JFieldSymbol) sym).isStatic()
+                    // not inherited
+                    && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
+                    // correct syntactic form
+                    && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
+            }
+            return false;
+        }
+
+        /**
+         * Whether the expression is a {@code this.field}, with no outer
+         * instance qualifier ({@code Outer.this.field}). The field symbol
+         * is not checked to resolve to a field declared in this class (it
+         * may be inherited)
+         */
+        private static boolean isSyntacticThisFieldAccess(ASTExpression e) {
+            if (e instanceof ASTFieldAccess) {
+                ASTExpression qualifier = ((ASTFieldAccess) e).getQualifier();
+                if (qualifier instanceof ASTThisExpression) {
+                    // unqualified this
+                    return ((ASTThisExpression) qualifier).getQualifier() == null;
+                }
+            }
+            return false;
         }
 
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
@@ -846,7 +922,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public SpanInfo visit(ASTVariableAccess node, SpanInfo data) {
-            data.use(node.getReferencedSym());
+            if (node.getAccessType() == AccessType.READ) {
+                data.use(node.getReferencedSym());
+            }
             return data;
         }
 
@@ -854,7 +932,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         public SpanInfo visit(ASTFieldAccess node, SpanInfo data) {
             data = node.getQualifier().acceptVisitor(this, data);
 
-            if (enclosingClassScope != null && node.getQualifier() instanceof ASTThisExpression) {
+            if (isRelevantField(node) && node.getAccessType() == AccessType.READ) {
                 data.use(node.getReferencedSym());
             }
             return data;
@@ -862,7 +940,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
-            if (enclosingClassScope != null) {
+            if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
                 data.recordThisLeak(true, enclosingClassScope);
             }
             return data;
@@ -916,7 +994,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                                                 SpanInfo beforeLocal,
                                                 JClassSymbol classSymbol) {
 
-            ReachingDefsVisitor visitor = new ReachingDefsVisitor(classSymbol);
+            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(classSymbol, false);
+            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(classSymbol, true);
 
             // All field initializers + instance initializers
             SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
@@ -939,22 +1018,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
 
                 if (isStatic) {
-                    staticInit = visitor.acceptOpt(declaration, staticInit);
+                    staticInit = staticVisitor.acceptOpt(declaration, staticInit);
                 } else {
-                    ctorHeader = visitor.acceptOpt(declaration, ctorHeader);
+                    ctorHeader = instanceVisitor.acceptOpt(declaration, ctorHeader);
                 }
             }
 
 
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTConstructorDeclaration ctor : ctors) {
-                SpanInfo state = visitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
+                SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
             }
 
-            // assignments that reach the end of any constructor must
-            // be considered used
-            useAllSelfFields(staticInit, ctorEndState, visitor.enclosingClassScope);
+            // assignments that reach the end of any constructor must be considered used
+            useAllSelfFields(staticInit, ctorEndState, classSymbol);
         }
 
         static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym) {
@@ -1354,12 +1432,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 return false;
             }
             AssignmentEntry that = (AssignmentEntry) o;
-            return Objects.equals(rhs, that.rhs);
+            return Objects.equals(var, that.var)
+                && Objects.equals(rhs, that.rhs);
         }
 
         @Override
         public int hashCode() {
-            return rhs.hashCode();
+            return 31 * var.hashCode() + rhs.hashCode();
         }
     }
 }
