@@ -27,4 +27,4 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with mvnw
         run: |
-          ./mvnw clean install
+          ./mvnw -V clean install
