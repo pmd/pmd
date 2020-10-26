@@ -398,7 +398,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     current = global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
                     // statement in a regular fallthrough switch block
-                    current = acceptOpt(child, current);
+                    current = acceptOpt(child, before.fork().absorb(current));
                 }
             }
 
