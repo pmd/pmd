@@ -32,6 +32,7 @@ function install_jdk() {
 }
 
 if travis_isLinux; then
+    change_ruby_version
     gem install bundler
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
