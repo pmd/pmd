@@ -9,11 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+/**
+ * @deprecated Use a {@link RuleSetParser} instead
+ */
+@Deprecated
 public final class RulesetsFactoryUtils {
 
     private static final Logger LOG = Logger.getLogger(RulesetsFactoryUtils.class.getName());
@@ -37,10 +38,10 @@ public final class RulesetsFactoryUtils {
      */
     @InternalApi
     @Deprecated
-    public static List<RuleSet> getRuleSets(String rulesets, RuleSetFactory factory) {
+    public static List<RuleSet> getRuleSets(String rulesets, RuleSetParser factory) {
         List<RuleSet> ruleSets;
         try {
-            ruleSets = factory.createRuleSets(rulesets);
+            ruleSets = factory.parseFromResources(rulesets.split(","));
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.stream().mapToInt(RuleSet::size).sum() == 0) {
                 String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
@@ -51,33 +52,11 @@ public final class RulesetsFactoryUtils {
             LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
             throw new IllegalArgumentException(rsnfe);
         }
-        return ruleSets;
+        return new RuleSets(ruleSets);
     }
 
     /**
-     * See {@link #getRuleSets(String, RuleSetFactory)}. In addition, the
-     * loading of the rules is benchmarked.
-     *
-     * @param rulesets
-     *            the string with the rulesets to load
-     * @param factory
-     *            the ruleset factory
-     * @return the rulesets
-     * @throws IllegalArgumentException
-     *             if rulesets is empty (means, no rules have been found) or if
-     *             a ruleset couldn't be found.
-     * @deprecated Is internal API
-     */
-    @InternalApi
-    @Deprecated
-    public static List<RuleSet> getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            return getRuleSets(rulesets, factory);
-        }
-    }
-
-    /**
-     * @deprecated Use {@link #createFactory(PMDConfiguration)} or {@link #createFactory(PMDConfiguration, ClassLoader)}
+     * @deprecated Use a {@link RuleSetParser}
      */
     @InternalApi
     @Deprecated
@@ -97,7 +76,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
+     *
+     * @deprecated Use {@link RuleSetParser#fromPmdConfig(PMDConfiguration)}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
         return createFactory(configuration, RulesetsFactoryUtils.class.getClassLoader());
     }
@@ -108,7 +90,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see #createFactory(PMDConfiguration, ClassLoader)
+     * @see RuleSetParser
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -125,7 +107,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetParser}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
         return createFactory(classLoader,
                              configuration.getMinimumPriority(),
@@ -146,7 +131,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetParser}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
                                                RulePriority minimumPriority,
                                                boolean warnDeprecated,
@@ -167,11 +155,13 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetParser}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility) {
-
         return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
@@ -191,14 +181,16 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     * @deprecated Use a {@link RuleSetParser}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility,
                                                boolean includeDeprecatedRuleReferences) {
 
         return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility,
-                includeDeprecatedRuleReferences);
+                                  includeDeprecatedRuleReferences);
     }
 
     /**
@@ -209,8 +201,8 @@ public final class RulesetsFactoryUtils {
     private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
         if (LOG.isLoggable(Level.FINER)) {
             for (RuleSet rset : rulesets) {
-                for (Rule rule : rset.getRules()) {
-                    LOG.finer("Loaded rule " + rule.getName());
+                for (Rule r : rset.getRules()) {
+                    LOG.finer("Loaded rule " + r.getName());
                 }
             }
         }

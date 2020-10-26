@@ -14,6 +14,8 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -42,7 +45,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -83,7 +85,10 @@ public final class PMD {
      *
      * @throws IOException if the URI couldn't be parsed
      * @see DBURI
+     *
+     * @deprecated Will be hidden as part of the parsing of {@link PMD#getApplicableFiles(PMDConfiguration, Set)}
      */
+    @Deprecated
     public static List<DataSource> getURIDataSources(String uriString) throws IOException {
         List<DataSource> dataSources = new ArrayList<>();
 
@@ -188,6 +193,7 @@ public final class PMD {
      * @throws Exception If an exception occurs while closing the data sources
      *                   Todo wrap that into a known exception type
      */
+    @Deprecated
     public static void processFiles(PMDConfiguration configuration,
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
@@ -379,7 +385,7 @@ public final class PMD {
     }
 
     /**
-     * Entry to invoke PMD as command line tool
+     * Entry to invoke PMD as command line tool. Note that this will invoke {@link System#exit(int)}.
      *
      * @param args
      *            command line arguments
@@ -389,7 +395,8 @@ public final class PMD {
     }
 
     /**
-     * Parses the command line arguments and executes PMD.
+     * Parses the command line arguments and executes PMD. Returns the
+     * exit code without exiting the VM.
      *
      * @param args
      *            command line arguments

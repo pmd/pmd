@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -78,7 +79,11 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * </tr>
  * </tbody>
  * </table>
+ *
+ * @deprecated This is part of the internals of the {@link RuleSetParser}.
  */
+@Deprecated
+@InternalApi
 public class RuleSetReferenceId {
     private final boolean external;
     private final String ruleSetFileName;
