@@ -16,8 +16,8 @@ import org.junit.contrib.java.lang.system.SystemErrRule;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetParser;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetParser;
 
 public class QuickstartRulesetTest {
 
