@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,10 +41,10 @@ public final class RulesetsFactoryUtils {
      */
     @InternalApi
     @Deprecated
-    public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
-        RuleSets ruleSets = null;
+    public static RuleSets getRuleSets(String rulesets, RuleSetParser factory) {
+        List<RuleSet> ruleSets = null;
         try {
-            ruleSets = factory.createRuleSets(rulesets);
+            ruleSets = factory.parseFromResourceReference(rulesets);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
                 String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
@@ -54,29 +55,7 @@ public final class RulesetsFactoryUtils {
             LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
             throw new IllegalArgumentException(rsnfe);
         }
-        return ruleSets;
-    }
-
-    /**
-     * See {@link #getRuleSets(String, RuleSetFactory)}. In addition, the
-     * loading of the rules is benchmarked.
-     *
-     * @param rulesets
-     *            the string with the rulesets to load
-     * @param factory
-     *            the ruleset factory
-     * @return the rulesets
-     * @throws IllegalArgumentException
-     *             if rulesets is empty (means, no rules have been found) or if
-     *             a ruleset couldn't be found.
-     * @deprecated Is internal API
-     */
-    @InternalApi
-    @Deprecated
-    public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            return getRuleSets(rulesets, factory);
-        }
+        return new RuleSets(ruleSets);
     }
 
     /**
@@ -222,10 +201,12 @@ public final class RulesetsFactoryUtils {
      *
      * @param rulesets the RuleSets to print
      */
-    private static void printRuleNamesInDebug(RuleSets rulesets) {
+    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
         if (LOG.isLoggable(Level.FINER)) {
-            for (Rule r : rulesets.getAllRules()) {
-                LOG.finer("Loaded rule " + r.getName());
+            for (RuleSet rset : rulesets) {
+                for (Rule r : rset.getRules()) {
+                    LOG.finer("Loaded rule " + r.getName());
+                }
             }
         }
     }

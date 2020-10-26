@@ -124,6 +124,12 @@ public final class RuleSetParser {
         return new RuleSetFactory(this).createRuleSet(ruleSetReferenceId);
     }
 
+    RuleSet createRuleSet(String ruleSetReferenceId) throws RuleSetNotFoundException {
+        List<RuleSetReferenceId> parsed = RuleSetReferenceId.parse(ruleSetReferenceId);
+        assert parsed.size() == 1 : "Not a single reference: " + ruleSetReferenceId;
+        return createRuleSet(parsed.get(0));
+    }
+
 
     /**
      * Configure a new ruleset factory builder according to the parameters

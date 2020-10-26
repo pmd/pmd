@@ -290,8 +290,7 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        return rsf.createRuleSet(ruleSetFileName);
+        return new RuleSetParser().createRuleSet(ruleSetFileName);
     }
 
     private boolean validateAgainstSchema(String fileName)
@@ -389,8 +388,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml2: " + xml2);
 
         // Read RuleSet from XML, first time
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleSet2 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml2));
+        RuleSet ruleSet2 = new RuleSetParser().createRuleSet(createRuleSetReferenceId(xml2));
 
         // Do write/read a 2nd time, just to be sure
 
@@ -403,7 +401,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml3: " + xml3);
 
         // Read RuleSet from XML, second time
-        RuleSet ruleSet3 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml3));
+        RuleSet ruleSet3 = new RuleSetParser().createRuleSet(createRuleSetReferenceId(xml3));
 
         // The 2 written XMLs should all be valid w.r.t Schema/DTD
         assertTrue("1st roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")",

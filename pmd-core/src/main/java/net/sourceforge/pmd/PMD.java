@@ -220,10 +220,13 @@ public class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory =
-            RuleSetParser.fromPmdConfig(configuration).toFactory();
+        final RuleSetParser ruleSetFactory = RuleSetParser.fromPmdConfig(configuration);
+        RuleSets result;
+        try (TimedOperation to1 = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            result = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory);
+        }
         final RuleSets ruleSets =
-            RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+            result;
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
@@ -300,42 +303,6 @@ public class PMD {
         context.setSourceCodeFile(sourceCodeFile);
         context.setReport(new Report());
         return context;
-    }
-
-    /**
-     * Run PMD on a list of files using multiple threads - if more than one is
-     * available
-     *
-     * @param configuration
-     *            Configuration
-     * @param ruleSetFactory
-     *            RuleSetFactory
-     * @param files
-     *            List of {@link DataSource}s
-     * @param ctx
-     *            RuleContext
-     * @param renderers
-     *            List of {@link Renderer}s
-     *
-     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, Report, List)}
-     * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
-     * which won't be fixed
-     */
-    @Deprecated
-    public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-                                    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
-        // Note that this duplicates the other routine, because the old behavior was
-        // that we parsed rulesets (a second time) inside the processor execution.
-        // To not mess up error handling, we keep this behavior.
-
-        encourageToUseIncrementalAnalysis(configuration);
-        sortFiles(configuration, files);
-        // Make sure the cache is listening for analysis results
-        ctx.getReport().addListener(configuration.getAnalysisCache());
-
-        final RuleSetFactory silentFactory = ruleSetFactory.toParser().warnDeprecated(false).toFactory();
-        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
-        configuration.getAnalysisCache().persist();
     }
 
     /**
