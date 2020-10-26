@@ -90,7 +90,10 @@ public class PMD {
     /**
      * Create a PMD instance using a default Configuration. Changes to the
      * configuration may be required.
+     *
+     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
      */
+    @Deprecated
     public PMD() {
         this(new PMDConfiguration());
     }
@@ -98,9 +101,11 @@ public class PMD {
     /**
      * Create a PMD instance using the specified Configuration.
      *
-     * @param configuration
-     *            The runtime Configuration of PMD to use.
+     * @param configuration The runtime Configuration of PMD to use.
+     *
+     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
      */
+    @Deprecated
     public PMD(PMDConfiguration configuration) {
         this.configuration = configuration;
         this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
@@ -189,7 +194,9 @@ public class PMD {
      * Gets the source code processor.
      *
      * @return SourceCodeProcessor
+     * @deprecated Source code processor is internal
      */
+    @Deprecated
     public SourceCodeProcessor getSourceCodeProcessor() {
         return rulesetsFileProcessor;
     }
@@ -275,7 +282,10 @@ public class PMD {
      * @param sourceCodeFile
      *            the source code file
      * @return the rule context
+     *
+     * @deprecated Not useful
      */
+    @Deprecated
     public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
 
         RuleContext context = new RuleContext();
@@ -319,13 +329,13 @@ public class PMD {
     /**
      * Run PMD using the given configuration. This replaces the other overload.
      *
-     * @param configuration Configuration for the run. Note that the files, and rulesets, are ignored, as they are
-     *                      supplied as parameter
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
      * @param rulesets      Parsed rulesets
      * @param files         Files to process
      * @param report        Report in which violations are accumulated
      * @param renderers     Renderers that render the report
-     *
      *
      * @throws RuntimeException If processing fails
      */
