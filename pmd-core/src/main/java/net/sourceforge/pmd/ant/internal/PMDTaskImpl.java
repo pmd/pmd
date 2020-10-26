@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,9 +29,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetParser;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -107,20 +108,16 @@ public class PMDTaskImpl {
         RuleSetParser rulesetParser = RuleSetParser.fromPmdConfig(configuration)
                                                    .loadResourcesWith(setupResourceLoader());
 
-        List<RuleSet> ruleSets;
-
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSetString = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSetString)) {
-                // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSetString));
-            }
-            ruleSets = rulesetParser.parseFromResourceReference(configuration.getRuleSets());
-            logRulesUsed(new RuleSets(ruleSets));
-        } catch (RuleSetNotFoundException e) {
-            throw new BuildException(e.getMessage(), e);
+        // This is just used to validate and display rules. Each thread will create its own ruleset
+        String ruleSetString = configuration.getRuleSets();
+        if (StringUtils.isNotBlank(ruleSetString)) {
+            // Substitute env variables/properties
+            configuration.setRuleSets(project.replaceProperties(ruleSetString));
         }
+
+        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), rulesetParser.toFactory());
+        List<RuleSet> rulesetList = Arrays.asList(ruleSets.getAllRuleSets());
+        logRulesUsed(ruleSets);
 
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
@@ -196,7 +193,7 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, ruleSets, files, report, renderers);
+                PMD.processFiles(configuration, rulesetList, files, report, renderers);
             } catch (ContextedRuntimeException e) {
                 if (e.getFirstContextValue("filename") instanceof String) {
                     handleError((String) e.getFirstContextValue("filename"), errorReport, e);
@@ -288,6 +285,10 @@ public class PMDTaskImpl {
         final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(antLogHandler.getAntLogLevel(), antLogHandler);
         try {
             doTask();
+        } catch (BuildException e) {
+            throw e;
+        } catch (Exception other) {
+            throw new BuildException(other);
         } finally {
             logManager.close();
             // only close the classloader, if it is ours. Otherwise we end up with class not found

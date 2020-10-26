@@ -183,7 +183,8 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      *
-     * @deprecated Use {@link RuleSetParser#parseFromResourceReference(String)}
+     * @deprecated Use {@link RuleSetParser#parseFromResource(String)},
+     * but note that that method does not split on commas
      */
     @Deprecated
     public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
@@ -225,7 +226,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      *
-     * @deprecated Use {@link RuleSetParser#parseFromResourceReference(String)} and discard the rest of the list.
+     * @deprecated Use {@link RuleSetParser#parseFromResource(String)} and discard the rest of the list.
      */
     @Deprecated
     public RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {

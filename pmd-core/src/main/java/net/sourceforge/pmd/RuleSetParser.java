@@ -5,6 +5,8 @@
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -13,7 +15,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * Configurable ruleset parser. Note that this replaces the API of {@link RulesetsFactoryUtils}
  * and {@link RuleSetFactory}. This can be configured using a fluent
  * API, see eg {@link #warnDeprecated(boolean)}. To create a list of
- * rulesets, use {@link #parseFromResourceReference(String)}.
+ * rulesets, use {@link #parseFromResource(String)}.
  */
 public final class RuleSetParser {
 
@@ -95,32 +97,50 @@ public final class RuleSetParser {
 
 
     /**
-     * Create a RuleSets from a comma separated list of RuleSet reference IDs.
-     * This is a convenience method which calls
-     * {@link RuleSetReferenceId#parse(String)}, and then calls
-     * {@link #createRuleSets(List)}. The currently configured ResourceLoader is
-     * used.
+     * Parses and returns a ruleset from its location. The location may
+     * be a file system path, or a resource path (see {@link #loadResourcesWith(ClassLoader)}).
      *
-     * @param rulesetResourcePaths A comma separated list of RuleSet reference IDs.
+     * <p>This replaces {@link RuleSetFactory#createRuleSet(String)},
+     * but does not split commas.
      *
-     * @return The new RuleSets.
+     * @param rulesetPath A reference to a single ruleset
+     *
+     * @throws RuleSetNotFoundException If the path does not correspond to a resource
      */
-    public List<RuleSet> parseFromResourceReference(String rulesetResourcePaths) throws RuleSetNotFoundException {
-        return createRuleSets(RuleSetReferenceId.parse(rulesetResourcePaths));
+    public RuleSet parseFromResource(String rulesetPath) throws RuleSetNotFoundException {
+        return parseFromResource(new RuleSetReferenceId(rulesetPath));
     }
 
-    private List<RuleSet> createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
-        List<RuleSet> ruleSets = new ArrayList<>();
-        for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
-            RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
-            ruleSets.add(ruleSet);
+    /**
+     * Parses several resources into a list of rulesets.
+     *
+     * @param paths Paths
+     *
+     * @throws RuleSetNotFoundException If any resource throws
+     * @throws NullPointerException     If the parameter, or any component is null
+     */
+    public List<RuleSet> parseFromResources(Collection<String> paths) throws RuleSetNotFoundException {
+        List<RuleSet> ruleSets = new ArrayList<>(paths.size());
+        for (String path : paths) {
+            ruleSets.add(parseFromResource(path));
         }
         return ruleSets;
     }
 
+    /**
+     * Parses several resources into a list of rulesets.
+     *
+     * @param paths Paths
+     *
+     * @throws RuleSetNotFoundException If any resource throws
+     * @throws NullPointerException     If the parameter, or any component is null
+     */
+    public List<RuleSet> parseFromResources(String... paths) throws RuleSetNotFoundException {
+        return parseFromResources(Arrays.asList(paths));
+    }
 
     // package private
-    RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
+    RuleSet parseFromResource(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
         return new RuleSetFactory(this).createRuleSet(ruleSetReferenceId);
     }
 
