@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -25,7 +26,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -104,15 +104,17 @@ public class PMDTaskImpl {
         RuleSetParser rulesetParser = RuleSetParser.fromPmdConfig(configuration)
                                                    .loadResourcesWith(setupResourceLoader());
 
+        List<RuleSet> ruleSets;
+
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSets = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSets)) {
+            String ruleSetString = configuration.getRuleSets();
+            if (StringUtils.isNotBlank(ruleSetString)) {
                 // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSets));
+                configuration.setRuleSets(project.replaceProperties(ruleSetString));
             }
-            List<RuleSet> rules = rulesetParser.parseFromResourceReference(configuration.getRuleSets());
-            logRulesUsed(new RuleSets(rules));
+            ruleSets = rulesetParser.parseFromResourceReference(configuration.getRuleSets());
+            logRulesUsed(new RuleSets(ruleSets));
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
         }
@@ -132,7 +134,7 @@ public class PMDTaskImpl {
 
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
-        RuleContext ctx = new RuleContext();
+        Report report = new Report();
         Report errorReport = new Report();
         final AtomicInteger reportSize = new AtomicInteger();
         final String separator = System.getProperty("file.separator");
@@ -191,9 +193,15 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, rulesetParser.createFactory(), files, ctx, renderers);
+                PMD.processFiles(configuration, ruleSets, files, report, renderers);
+            } catch (ContextedRuntimeException e) {
+                if (e.getFirstContextValue("filename") instanceof String) {
+                    handleError((String) e.getFirstContextValue("filename"), errorReport, e);
+                } else {
+                    handleError("(unknown file)", errorReport, e);
+                }
             } catch (RuntimeException pmde) {
-                handleError(ctx, errorReport, pmde);
+                handleError("(unknown file)", errorReport, pmde);
             }
         }
 
@@ -235,7 +243,7 @@ public class PMDTaskImpl {
                                   project, classpath, parentFirst);
     }
 
-    private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
+    private void handleError(String filename, Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
         project.log(pmde.toString(), Project.MSG_VERBOSE);
@@ -258,7 +266,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde, String.valueOf(ctx.getSourceCodeFile())));
+        errorReport.addError(new Report.ProcessingError(pmde, filename));
     }
 
     private void setupClassLoader() {

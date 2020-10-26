@@ -11,6 +11,8 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -220,9 +222,9 @@ public class PMD {
                 renderer.start();
             }
 
-            RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
-            ctx.getReport().addListener(new ThreadSafeReportListener() {
+            Report report = new Report();
+            report.addListener(new ThreadSafeReportListener() {
                 @Override
                 public void ruleViolationAdded(RuleViolation ruleViolation) {
                     violations.getAndIncrement();
@@ -235,7 +237,7 @@ public class PMD {
             });
 
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, report, renderers);
             }
 
             try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
@@ -296,9 +298,14 @@ public class PMD {
      *            RuleContext
      * @param renderers
      *            List of {@link Renderer}s
+     *
+     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, Report, List)}
+     * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
+     * which won't be fixed
      */
+    @Deprecated
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-            final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+                                    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
         // Make sure the cache is listening for analysis results
@@ -306,6 +313,36 @@ public class PMD {
 
         final RuleSetFactory silentFactory = ruleSetFactory.toConfig().warnDeprecated(false).createFactory();
         newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
+        configuration.getAnalysisCache().persist();
+    }
+
+    /**
+     * Run PMD using the given configuration. This replaces the other overload.
+     *
+     * @param configuration Configuration for the run. Note that the files, and rulesets, are ignored, as they are
+     *                      supplied as parameter
+     * @param rulesets      Parsed rulesets
+     * @param files         Files to process
+     * @param report        Report in which violations are accumulated
+     * @param renderers     Renderers that render the report
+     *
+     *
+     * @throws RuntimeException If processing fails
+     */
+    public static void processFiles(final PMDConfiguration configuration,
+                                    final List<RuleSet> rulesets,
+                                    final Collection<? extends DataSource> files,
+                                    final Report report,
+                                    final List<Renderer> renderers) {
+        encourageToUseIncrementalAnalysis(configuration);
+        report.addListener(configuration.getAnalysisCache());
+
+        List<DataSource> sortedFiles = new ArrayList<>(files);
+        sortFiles(configuration, sortedFiles);
+
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
+        newFileProcessor(configuration).processFiles(new RuleSets(rulesets), sortedFiles, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }
 

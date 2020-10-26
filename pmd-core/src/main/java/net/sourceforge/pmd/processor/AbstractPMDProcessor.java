@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -30,7 +32,10 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractPMDProcessor {
 
     private static final Logger LOG = Logger.getLogger(AbstractPMDProcessor.class.getName());
@@ -108,10 +113,26 @@ public abstract class AbstractPMDProcessor {
     @SuppressWarnings("PMD.CloseResource")
     // the data sources must only be closed after the threads are finished
     // this is done manually without a try-with-resources
+    @Deprecated
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
-            List<Renderer> renderers) {
+                             List<Renderer> renderers) {
         try {
             final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+            processFiles(rs, files, ctx, renderers);
+        } finally {
+            // in case we analyzed files within Zip Files/Jars, we need to close them after
+            // the analysis is finished
+            for (DataSource dataSource : files) {
+                IOUtils.closeQuietly(dataSource);
+            }
+        }
+    }
+
+    @SuppressWarnings("PMD.CloseResource")
+    // the data sources must only be closed after the threads are finished
+    // this is done manually without a try-with-resources
+    public void processFiles(RuleSets rs, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
+        try {
             configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
             final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
@@ -127,6 +148,8 @@ public abstract class AbstractPMDProcessor {
 
             // then add analysis results per file
             collectReports(renderers);
+        } catch (RuntimeException e) {
+            throw new ContextedRuntimeException(e).addContextValue("filename", String.valueOf(ctx.getSourceCodeFile()));
         } finally {
             // in case we analyzed files within Zip Files/Jars, we need to close them after
             // the analysis is finished
