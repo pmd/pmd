@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
@@ -21,6 +24,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sf.saxon.expr.Expression;
 
 public class SaxonXPathRuleQueryTest {
+
+    @Rule
+    public final ExpectedException expected = ExpectedException.none();
 
     @Test
     public void testListAttribute() {
@@ -35,6 +41,18 @@ public class SaxonXPathRuleQueryTest {
         assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
         assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
         assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
+    }
+
+    @Test
+    public void testInvalidReturn() {
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+
+
+        expected.expect(RuntimeException.class);
+        expected.expectMessage(CoreMatchers.containsString("XPath rule expression returned a non-node"));
+        expected.expectMessage(CoreMatchers.containsString("Int64Value"));
+
+        createQuery("1+2").evaluate(dummy, new RuleContext());
     }
 
     @Test

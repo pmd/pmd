@@ -120,25 +120,21 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             assert rootElementNode != null : "Cannot find " + node;
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(rootElementNode);
 
-            final List<ElementNode> nodes = new LinkedList<>();
+            final List<Node> results = new LinkedList<>();
             List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
                 while (current != null) {
-                    nodes.add((ElementNode) current);
+                    if (current instanceof ElementNode) {
+                        results.add((Node) ((ElementNode) current).getUnderlyingNode());
+                    } else {
+                        throw new RuntimeException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
+                    }
                     current = iterator.next();
                 }
             }
 
-            /*
-             Map List of Saxon Nodes -> List of AST Nodes, which were detected to match the XPath expression
-             (i.e. violation found)
-              */
-            final List<Node> results = new ArrayList<>(nodes.size());
-            for (final ElementNode elementNode : nodes) {
-                results.add((Node) elementNode.getUnderlyingNode());
-            }
             Collections.sort(results, RuleChainAnalyzer.documentOrderComparator());
             return results;
         } catch (final XPathException e) {
