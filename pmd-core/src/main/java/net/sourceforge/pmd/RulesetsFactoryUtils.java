@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -77,7 +76,7 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use a {@link RuleSetFactoryConfig}
+     * @deprecated Use a {@link RuleSetParserConfig}
      */
     @InternalApi
     @Deprecated
@@ -98,7 +97,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
      *
-     * @deprecated Use {@link RuleSetFactoryConfig#fromPmdConfig(PMDConfiguration)}
+     * @deprecated Use {@link RuleSetParserConfig#fromPmdConfig(PMDConfiguration)}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
@@ -111,7 +110,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see RuleSetFactoryConfig
+     * @see RuleSetParserConfig
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -129,7 +128,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetFactoryConfig}
+     * @deprecated Use a {@link RuleSetParserConfig}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
@@ -153,7 +152,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetFactoryConfig}
+     * @deprecated Use a {@link RuleSetParserConfig}
      */
     @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
@@ -177,7 +176,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetFactoryConfig}
+     * @deprecated Use a {@link RuleSetParserConfig}
      */
     @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,

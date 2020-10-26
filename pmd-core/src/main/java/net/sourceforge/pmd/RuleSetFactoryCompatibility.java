@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -28,7 +27,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
  *
- * @deprecated Use {@link RuleSetFactoryConfig#enableCompatibility(boolean)} to enable this feature.
+ * @deprecated Use {@link RuleSetParserConfig#enableCompatibility(boolean)} to enable this feature.
  *  This implementation is internal API.
  */
 @InternalApi

@@ -21,7 +21,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -203,7 +202,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RuleSetFactoryConfig.fromPmdConfig(configuration).createFactory();
+        final RuleSetFactory ruleSetFactory = RuleSetParserConfig.fromPmdConfig(configuration).createFactory();
         final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;

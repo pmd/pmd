@@ -29,7 +29,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetFactory.RuleSetFactoryConfig;
+import net.sourceforge.pmd.RuleSetParserConfig;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.ant.Formatter;
@@ -102,9 +102,9 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = RuleSetFactoryConfig.fromPmdConfig(configuration)
-                                                            .loadResourcesWith(setupResourceLoader())
-                                                            .createFactory();
+        RuleSetFactory ruleSetFactory = RuleSetParserConfig.fromPmdConfig(configuration)
+                                                           .loadResourcesWith(setupResourceLoader())
+                                                           .createFactory();
 
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
