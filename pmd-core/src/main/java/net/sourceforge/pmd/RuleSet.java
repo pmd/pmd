@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
 
@@ -98,6 +99,29 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
         includePatterns = rs.includePatterns;
         filter = rs.filter; // filters are immutable, can be shared
+    }
+
+    /**
+     * Creates a new RuleSet containing a single rule.
+     *
+     * @param rule The rule being created
+     *
+     * @return The newly created RuleSet
+     */
+    public static RuleSet forSingleRule(final Rule rule) {
+        final long checksum;
+        if (rule instanceof XPathRule) {
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
+        } else {
+            // TODO : Is this good enough? all properties' values + rule name
+            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
+        }
+
+        final RuleSetBuilder builder = new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
+        builder.addRule(rule);
+        return builder.build();
     }
 
     /* package */ static class RuleSetBuilder {

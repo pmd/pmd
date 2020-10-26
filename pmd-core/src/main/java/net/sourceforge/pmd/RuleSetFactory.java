@@ -309,29 +309,6 @@ public class RuleSetFactory {
     }
 
     /**
-     * Creates a new RuleSet containing a single rule.
-     *
-     * @param rule
-     *            The rule being created
-     * @return The newly created RuleSet
-     */
-    public RuleSet createSingleRuleRuleSet(final Rule rule) { // TODO make static?
-        final long checksum;
-        if (rule instanceof XPathRule) {
-            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
-        } else {
-            // TODO : Is this good enough? all properties' values + rule name
-            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
-        }
-
-        final RuleSetBuilder builder = new RuleSetBuilder(checksum)
-                .withName(rule.getName())
-                .withDescription("RuleSet for " + rule.getName());
-        builder.addRule(rule);
-        return builder.build();
-    }
-
-    /**
      * Create a Rule from a RuleSet created from a file name resource. The
      * currently configured ResourceLoader is used.
      * <p>

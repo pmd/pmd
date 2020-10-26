@@ -181,7 +181,7 @@ public final class Benchmarker {
                 System.out.println("Starting " + rule.getName());
             }
 
-            final RuleSet working = factory.createSingleRuleRuleSet(rule);
+            final RuleSet working = RuleSet.forSingleRule(rule);
             RuleSets ruleSets = new RuleSets(working);
 
             PMDConfiguration config = new PMDConfiguration();
