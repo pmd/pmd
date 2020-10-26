@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -53,6 +54,14 @@ public class SaxonXPathRuleQueryTest {
         expected.expectMessage(CoreMatchers.containsString("Int64Value"));
 
         createQuery("1+2").evaluate(dummy, new RuleContext());
+    }
+
+    @Test
+    public void testRootExpression() {
+        DummyNode dummy = new DummyNode(); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "/", dummy);
+        Assert.assertEquals(dummy, result.get(0));
     }
 
     @Test
@@ -193,10 +202,11 @@ public class SaxonXPathRuleQueryTest {
         assertExpression("((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq692331943 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq2127036371 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
-    private static void assertQuery(int resultSize, String xpath, Node node) {
+    private static List<Node> assertQuery(int resultSize, String xpath, Node node) {
         SaxonXPathRuleQuery query = createQuery(xpath);
         List<Node> result = query.evaluate(node, new RuleContext());
         Assert.assertEquals(resultSize, result.size());
+        return result;
     }
 
     private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {

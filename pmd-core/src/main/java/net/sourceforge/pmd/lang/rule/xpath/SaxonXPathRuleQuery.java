@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeOwner;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
@@ -126,8 +127,8 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
                 while (current != null) {
-                    if (current instanceof ElementNode) {
-                        results.add((Node) ((ElementNode) current).getUnderlyingNode());
+                    if (current instanceof AstNodeOwner) {
+                        results.add(((AstNodeOwner) current).getUnderlyingNode());
                     } else {
                         throw new RuntimeException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
                     }

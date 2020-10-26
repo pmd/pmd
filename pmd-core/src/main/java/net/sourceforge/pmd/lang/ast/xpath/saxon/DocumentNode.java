@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeOwner;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
@@ -27,7 +28,7 @@ import net.sf.saxon.type.Type;
  */
 @Deprecated
 @InternalApi
-public class DocumentNode extends BaseNodeInfo implements DocumentInfo {
+public class DocumentNode extends BaseNodeInfo implements DocumentInfo, AstNodeOwner {
 
     /**
      * The root ElementNode of the DocumentNode.
@@ -97,6 +98,13 @@ public class DocumentNode extends BaseNodeInfo implements DocumentInfo {
         default:
             return super.iterateAxis(axisNumber);
         }
+    }
+
+    @Override
+    public Node getUnderlyingNode() {
+        // this is a concession to the model, so that the expression "/"
+        // may be interpreted as the root node
+        return rootNode.getUnderlyingNode();
     }
 
     public DeprecatedAttrLogger getAttrCtx() {
