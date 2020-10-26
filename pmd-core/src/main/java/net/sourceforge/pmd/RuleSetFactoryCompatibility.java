@@ -27,7 +27,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
  *
- * @deprecated Use {@link RuleSetParserConfig#enableCompatibility(boolean)} to enable this feature.
+ * @deprecated Use {@link RuleSetParser#enableCompatibility(boolean)} to enable this feature.
  *  This implementation is internal API.
  */
 @InternalApi

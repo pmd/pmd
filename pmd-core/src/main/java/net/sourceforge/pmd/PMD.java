@@ -202,7 +202,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RuleSetParserConfig.fromPmdConfig(configuration).createFactory();
+        final RuleSetFactory ruleSetFactory = RuleSetParser.fromPmdConfig(configuration).createFactory();
         final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;

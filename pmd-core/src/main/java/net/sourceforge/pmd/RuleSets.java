@@ -56,11 +56,19 @@ public class RuleSets {
     /**
      * Public constructor. Add the given rule set.
      *
-     * @param ruleSet
-     *            the RuleSet
+     * @param ruleSet the RuleSet
      */
     public RuleSets(RuleSet ruleSet) {
         addRuleSet(ruleSet);
+    }
+
+    /**
+     * Aggregate the given rulesets.
+     */
+    public RuleSets(List<RuleSet> ruleSet) {
+        for (RuleSet set : ruleSet) {
+            addRuleSet(set);
+        }
     }
 
     /**
@@ -68,9 +76,11 @@ public class RuleSets {
      * specific language. If ruleSet.getLanguage() is null, it is assumed to be
      * a RuleSet of java rules.
      *
-     * @param ruleSet
-     *            the RuleSet
+     * @param ruleSet the RuleSet
+     *
+     * @deprecated Use {@link #RuleSets(List)} and don't mutate RuleSets after creation
      */
+    @Deprecated
     public void addRuleSet(RuleSet ruleSet) {
         ruleSets.add(ruleSet);
         ruleChain.add(ruleSet);

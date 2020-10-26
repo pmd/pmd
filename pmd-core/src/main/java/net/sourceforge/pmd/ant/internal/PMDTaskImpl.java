@@ -28,9 +28,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetParserConfig;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetParser;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
@@ -102,9 +101,8 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = RuleSetParserConfig.fromPmdConfig(configuration)
-                                                           .loadResourcesWith(setupResourceLoader())
-                                                           .createFactory();
+        RuleSetParser rulesetParser = RuleSetParser.fromPmdConfig(configuration)
+                                                   .loadResourcesWith(setupResourceLoader());
 
         try {
             // This is just used to validate and display rules. Each thread will create its own ruleset
@@ -113,8 +111,8 @@ public class PMDTaskImpl {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
-            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-            logRulesUsed(rules);
+            List<RuleSet> rules = rulesetParser.parseFromResourceReference(configuration.getRuleSets());
+            logRulesUsed(new RuleSets(rules));
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
         }
@@ -193,7 +191,7 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                PMD.processFiles(configuration, rulesetParser.createFactory(), files, ctx, renderers);
             } catch (RuntimeException pmde) {
                 handleError(ctx, errorReport, pmde);
             }

@@ -13,6 +13,10 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+/**
+ * @deprecated Use a {@link RuleSetParser} instead
+ */
+@Deprecated
 public final class RulesetsFactoryUtils {
 
     private static final Logger LOG = Logger.getLogger(RulesetsFactoryUtils.class.getName());
@@ -76,7 +80,7 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use a {@link RuleSetParserConfig}
+     * @deprecated Use a {@link RuleSetParser}
      */
     @InternalApi
     @Deprecated
@@ -97,7 +101,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
      *
-     * @deprecated Use {@link RuleSetParserConfig#fromPmdConfig(PMDConfiguration)}
+     * @deprecated Use {@link RuleSetParser#fromPmdConfig(PMDConfiguration)}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
@@ -110,7 +114,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see RuleSetParserConfig
+     * @see RuleSetParser
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -128,7 +132,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParserConfig}
+     * @deprecated Use a {@link RuleSetParser}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
@@ -152,7 +156,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParserConfig}
+     * @deprecated Use a {@link RuleSetParser}
      */
     @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
@@ -176,7 +180,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParserConfig}
+     * @deprecated Use a {@link RuleSetParser}
      */
     @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
@@ -201,14 +205,16 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     * @deprecated Use a {@link RuleSetParser}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility,
                                                boolean includeDeprecatedRuleReferences) {
 
         return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility,
-                includeDeprecatedRuleReferences);
+                                  includeDeprecatedRuleReferences);
     }
 
     /**
