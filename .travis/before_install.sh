@@ -13,6 +13,24 @@ bash .travis/configure-maven.sh
 bash .travis/install-openjdk.sh $OPENJDK_VERSION
 
 
+function install_jdk() {
+    LOCAL_DIR=$1
+    TARGET_DIR=$2
+    DOWNLOAD_URL=$3
+    ARCHIVE=$(basename $DOWNLOAD_URL)
+
+    mkdir -p ${LOCAL_DIR}
+    mkdir -p ${TARGET_DIR}
+    if [ ! -e ${LOCAL_DIR}/${ARCHIVE} ]; then
+        log_info "Downloading from ${DOWNLOAD_URL} to ${LOCAL_DIR}"
+        wget --directory-prefix ${LOCAL_DIR} --timestamping --continue ${DOWNLOAD_URL}
+    else
+        log_info "Skipped download, file ${LOCAL_DIR}/${ARCHIVE} already exists"
+    fi
+    log_info "Extracting to ${TARGET_DIR}"
+    tar --extract --file ${LOCAL_DIR}/${ARCHIVE} -C ${TARGET_DIR} --strip-components=1
+}
+
 if travis_isLinux; then
     gem install bundler
     bundle config set --local path vendor/bundle
@@ -20,23 +38,13 @@ if travis_isLinux; then
     bundle install
 
     # install jdk7 for integration test
-    LOCAL_DIR=${HOME}/.cache/jdk7
-    TARGET_DIR=${HOME}/oraclejdk7
-    JDK7_ARCHIVE=jdk-7u80-linux-x64.tar.gz
-    DOWNLOAD_URL=https://pmd-code.org/oraclejdk/${JDK7_ARCHIVE}
-    mkdir -p ${LOCAL_DIR}
-    mkdir -p ${TARGET_DIR}
-    if [ ! -e ${LOCAL_DIR}/${JDK7_ARCHIVE} ]; then
-        log_info "Downloading from ${DOWNLOAD_URL} to ${LOCAL_DIR}"
-        wget --directory-prefix ${LOCAL_DIR} --timestamping --continue ${DOWNLOAD_URL}
-    else
-        log_info "Skipped download, file ${LOCAL_DIR}/${JDK7_ARCHIVE} already exists"
-    fi
-    log_info "Extracting to ${TARGET_DIR}"
-    tar --extract --file ${LOCAL_DIR}/${JDK7_ARCHIVE} -C ${TARGET_DIR} --strip-components=1
-    log_info "OracleJDK7 can be used via -Djava7.home=${TARGET_DIR}"
+    install_jdk "${HOME}/.cache/jdk7" "${HOME}/oraclejdk7" "https://pmd-code.org/oraclejdk/jdk-7u80-linux-x64.tar.gz"
+    log_info "OracleJDK7 can be used via -Djava7.home=${HOME}/oraclejdk7"
 
+    # install openjdk8 for pmd-regression-tests
+    install_jdk "${HOME}/.cache/openjdk" "${HOME}/openjdk8" "https://pmd-code.org/openjdk/latest/jdk-8-linux64.tar.gz"
+    log_info "OpenJDK8 can be used from ${HOME}/openjdk8"
 else
-    log_info "Not setting up ruby for ${TRAVIS_OS_NAME}."
+    log_info "Not setting up ruby and additional jvms for ${TRAVIS_OS_NAME}."
     exit 0
 fi

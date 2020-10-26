@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/adangel/pmd-regression-tester.git
+  revision: b30efaea1c77bd0f914309562538b9eed4fa47f4
+  branch: auxclasspath
+  specs:
+    pmdtester (1.1.0.pre.SNAPSHOT)
+      differ (~> 0.1)
+      nokogiri (~> 1.8)
+      rufus-scheduler (~> 3.5)
+      slop (~> 4.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -31,9 +42,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.3.1)
       faraday (~> 0.8)
-    fugit (1.3.8)
+    fugit (1.4.0)
       et-orbi (~> 1.1, >= 1.1.8)
-      raabro (~> 1.3)
+      raabro (~> 1.4)
     git (1.7.0)
       rchardet (~> 1.8)
     kramdown (1.17.0)
@@ -44,19 +55,14 @@ GEM
     no_proxy_fix (0.1.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    octokit (4.18.0)
+    octokit (4.19.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     open4 (1.3.4)
-    pmdtester (1.0.1)
-      differ (~> 0.1)
-      nokogiri (~> 1.8)
-      rufus-scheduler (~> 3.5)
-      slop (~> 4.6)
-    public_suffix (4.0.5)
-    raabro (1.3.1)
+    public_suffix (4.0.6)
+    raabro (1.4.0)
     rchardet (1.8.0)
-    rouge (3.22.0)
+    rouge (3.24.0)
     rufus-scheduler (3.6.0)
       fugit (~> 1.1, >= 1.1.6)
     safe_yaml (1.0.5)
@@ -76,7 +82,7 @@ PLATFORMS
 DEPENDENCIES
   danger (~> 5.6, >= 5.6)
   liquid (>= 4.0.0)
-  pmdtester (~> 1.0)
+  pmdtester!
   rouge (>= 1.7, < 4)
   safe_yaml (>= 1.0)
 
