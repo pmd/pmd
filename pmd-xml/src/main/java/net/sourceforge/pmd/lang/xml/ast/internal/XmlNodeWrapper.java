@@ -131,8 +131,10 @@ class XmlNodeWrapper implements XmlNode {
         if (node.getAttributes() == null) {
             return emptyIterator();
         } else {
-            return IteratorUtil.map(asList(node.getAttributes()).iterator(),
-                                    n -> new Attribute(this, n.getNodeName(), n.getNodeValue()));
+            return IteratorUtil.map(
+                asList(node.getAttributes()).iterator(),
+                n -> new Attribute(this, n.getNodeName(), n.getNodeValue())
+            );
         }
     }
 
