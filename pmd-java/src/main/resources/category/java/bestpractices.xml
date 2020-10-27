@@ -406,7 +406,7 @@ better placed in classes or enums. See Effective Java, item 19.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface= true()][$ignoreIfHasMethods= false() or not(.//MethodDeclaration)]//FieldDeclaration
+//ClassOrInterfaceDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
  ]]>
                 </value>
             </property>
