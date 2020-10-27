@@ -209,7 +209,7 @@ that one covers both.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
+//ConstructorCall/ClassOrInterfaceType[
        pmd-java:typeIs('java.io.FileInputStream')
     or pmd-java:typeIs('java.io.FileOutputStream')
     or pmd-java:typeIs('java.io.FileReader')

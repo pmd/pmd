@@ -285,11 +285,11 @@
 
     <!-- performance.xml -->
 
-    <!-- <rule ref="category/java/performance.xml/AddEmptyString"/> -->
+    <rule ref="category/java/performance.xml/AddEmptyString"/>
     <!-- <rule ref="category/java/performance.xml/AppendCharacterWithChar"/> -->
     <!-- <rule ref="category/java/performance.xml/AvoidArrayLoops"/> -->
     <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation"/> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidFileStream"/> -->
+    <rule ref="category/java/performance.xml/AvoidFileStream"/>
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/> -->
     <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
     <!-- <rule ref="category/java/performance.xml/BigIntegerInstantiation"/> -->
