@@ -138,7 +138,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//FieldDeclaration[pmd-java:typeIs('java.security.MessageDigest')]
+//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.security.MessageDigest')]
 ]]>
                 </value>
             </property>

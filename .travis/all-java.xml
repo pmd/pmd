@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<ruleset name="All Java Rules" 
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+<ruleset name="All Java Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Every java rule in PMD which is used for the regression tests with pmdtester</description>
 
 
@@ -13,7 +13,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/> -->
+    <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
     <!-- <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables"/> -->
