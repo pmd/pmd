@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Public utilities to test the type of nodes.
@@ -106,8 +107,10 @@ public final class TypeTestUtil {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
         if (node == null) {
             return false;
-        } else if (isExactlyA(canonicalName, node)) {
-            return true;
+        }
+        OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, node);
+        if (exactMatch != OptionalBool.NO) {
+            return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
         }
 
         JTypeMirror thisType = node.getTypeMirror();
@@ -125,11 +128,17 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         UnresolvedClassStore unresolvedStore = InternalApiBridge.getProcessor(node).getUnresolvedStore();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
-        if (otherType == null) {
+        if (otherType == null
+            || otherType.isClassOrInterface() && ((JClassType) otherType).getSymbol().isAnonymousClass()) {
             return false; // we know isExactlyA(canonicalName, node); returned false
         }
 
         return thisType.isSubtypeOf(otherType);
+    }
+
+    private static boolean isAnonymous(JTypeMirror type) {
+        JTypeDeclSymbol symbol = type.getSymbol();
+        return symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isAnonymousClass();
     }
 
     private static boolean isAnnotationSuperType(String clazzName) {
@@ -210,23 +219,29 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
+        return isExactlyAOrAnon(canonicalName, node) == OptionalBool.YES;
+    }
+
+    private static OptionalBool isExactlyAOrAnon(@NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", canonicalName);
         if (node == null) {
-            return false;
+            return OptionalBool.NO;
         }
 
         JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
         if (sym == null || sym instanceof JTypeParameterSymbol) {
-            return false;
+            return OptionalBool.NO;
         }
 
         canonicalName = StringUtils.deleteWhitespace(canonicalName);
 
         JClassSymbol klass = (JClassSymbol) sym;
         String canonical = klass.getCanonicalName();
-        return canonical != null && canonical.equals(canonicalName);
+        if (canonical == null) {
+            return OptionalBool.UNKNOWN; // anonymous
+        }
+        return OptionalBool.definitely(canonical.equals(canonicalName));
     }
-
 
 
     private static boolean hasNoSubtypes(Class<?> clazz) {
