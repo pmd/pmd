@@ -24,7 +24,7 @@ It is much better to use one of the type-specific toString() methods instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
+//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()]
 ]]>
                 </value>
             </property>
