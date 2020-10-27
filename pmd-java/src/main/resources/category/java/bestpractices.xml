@@ -184,10 +184,10 @@ Avoid printStackTrace(); use a logger call instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-   ( PrimaryPrefix[Name[contains(@Image,'printStackTrace')]]
-   | PrimarySuffix[@Image='printStackTrace']
-   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@Size=0]]
+//MethodCall[
+    @MethodName = 'printStackTrace'
+    and ArgumentList[@Size = 0]
+    and child::*[1][pmd-java:typeIs('java.lang.Throwable')]
 ]
 ]]>
                 </value>
