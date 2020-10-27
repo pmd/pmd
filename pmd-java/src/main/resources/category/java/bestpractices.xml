@@ -494,7 +494,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/*/Initializer[@Static=false()]
+//ConstructorCall/AnonymousClassDeclaration/ClassOrInterfaceBody[count(*)=1]/Initializer[@Static=false()]
 ]]>
                 </value>
             </property>
