@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.vf.ExpressionType;
+import net.sourceforge.pmd.lang.vf.IdentifierType;
 import net.sourceforge.pmd.lang.vf.VfExpressionTypeVisitor;
 import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Represents a rule where the {@link net.sourceforge.pmd.lang.vf.ast.ASTIdentifier} nodes are enhanced with the
- * node's {@link ExpressionType}. This is achieved by processing metadata files referenced by the Visualforce page.
+ * node's {@link IdentifierType}. This is achieved by processing metadata files referenced by the Visualforce page.
  */
 abstract class AbstractVfTypedElExpressionRule extends AbstractVfRule {
     /**
@@ -44,20 +44,20 @@ abstract class AbstractVfTypedElExpressionRule extends AbstractVfRule {
                     .delim(',')
                     .build();
 
-    private Map<ASTIdentifier, ExpressionType> expressionTypes;
+    private Map<ASTIdentifier, IdentifierType> identifierTypes;
 
     AbstractVfTypedElExpressionRule() {
         definePropertyDescriptor(APEX_DIRECTORIES_DESCRIPTOR);
         definePropertyDescriptor(OBJECTS_DIRECTORIES_DESCRIPTOR);
     }
 
-    public ExpressionType getExpressionType(ASTIdentifier node) {
-        return expressionTypes.get(node);
+    public IdentifierType getIdentifierType(ASTIdentifier node) {
+        return identifierTypes.get(node);
     }
 
     @Override
     public void start(RuleContext ctx) {
-        this.expressionTypes = Collections.synchronizedMap(new IdentityHashMap<ASTIdentifier, ExpressionType>());
+        this.identifierTypes = Collections.synchronizedMap(new IdentityHashMap<ASTIdentifier, IdentifierType>());
         super.start(ctx);
     }
 
@@ -80,7 +80,7 @@ abstract class AbstractVfTypedElExpressionRule extends AbstractVfRule {
                         apexDirectories,
                         objectsDirectories);
                 visitor.visit(node, data);
-                this.expressionTypes.putAll(visitor.getExpressionTypes());
+                this.identifierTypes.putAll(visitor.getIdentifierTypes());
             }
         }
 

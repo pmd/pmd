@@ -37,7 +37,7 @@ final class ApexClassPropertyTypesVisitor extends ApexParserVisitorAdapter {
     private static final String RETURN_TYPE_VOID = "void";
 
     /**
-     * Pairs of (variableName, expressionType)
+     * Pairs of (variableName, identifierType)
      */
     private final List<Pair<String, BasicType>> variables;
 

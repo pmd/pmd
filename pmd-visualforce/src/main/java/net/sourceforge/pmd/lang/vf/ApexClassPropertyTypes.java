@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -27,7 +28,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.semantic.symbol.type.BasicType;
-import com.google.common.collect.Sets;
 
 /**
  * Responsible for storing a mapping of Apex Class properties that can be referenced from Visualforce to the type of the
@@ -37,20 +37,20 @@ class ApexClassPropertyTypes {
     private static final Logger LOGGER = Logger.getLogger(ApexClassPropertyTypes.class.getName());
     private static final String APEX_CLASS_FILE_SUFFIX = ".cls";
 
-    private final ConcurrentHashMap<String, ExpressionType> variableNameToVariableType;
+    private final ConcurrentHashMap<String, IdentifierType> variableNameToVariableType;
     private final Set<String> variableNameProcessed;
 
     ApexClassPropertyTypes() {
         this.variableNameToVariableType = new ConcurrentHashMap<>();
-        this.variableNameProcessed = Sets.newConcurrentHashSet();
+        this.variableNameProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
     }
 
     /**
      * Looks in {@code apexDirectories} for an Apex property identified by {@code expression}.
      *
-     * @return the ExpressionType for the property represented by {@code expression} or null if not found.
+     * @return the IdentifierType for the property represented by {@code expression} or null if not found.
      */
-    public ExpressionType getVariableType(String expression, String vfFileName, List<String> apexDirectories) {
+    public IdentifierType getVariableType(String expression, String vfFileName, List<String> apexDirectories) {
         String lowerExpression = expression.toLowerCase(Locale.ROOT);
         if (variableNameToVariableType.containsKey(lowerExpression)) {
             // The expression has been previously retrieved
@@ -103,20 +103,20 @@ class ApexClassPropertyTypes {
     }
 
     private void setVariableType(String name, BasicType basicType) {
-        ExpressionType expressionType = ExpressionType.fromBasicType(basicType);
-        ExpressionType previousType = variableNameToVariableType.put(name.toLowerCase(Locale.ROOT), expressionType);
-        if (previousType != null && !previousType.equals(expressionType)) {
+        IdentifierType identifierType = IdentifierType.fromBasicType(basicType);
+        IdentifierType previousType = variableNameToVariableType.put(name.toLowerCase(Locale.ROOT), identifierType);
+        if (previousType != null && !previousType.equals(identifierType)) {
             // It is possible to have a property and method with different types that appear the same to this code. An
             // example is an Apex class with a property "public String Foo {get; set;}" and a method of
             // "Integer getFoo() { return 1; }". In this case set the value as Unknown because we can't be sure which it
             // is. This code could be more complex in an attempt to determine if all the types are safe from escaping,
             // but we will allow a false positive in order to let the user know that the code could be refactored to be
             // more clear.
-            variableNameToVariableType.put(name.toLowerCase(Locale.ROOT), ExpressionType.Unknown);
+            variableNameToVariableType.put(name.toLowerCase(Locale.ROOT), IdentifierType.Unknown);
             LOGGER.warning("Conflicting types for "
                     + name
                     + ". CurrentType="
-                    + expressionType
+                    + identifierType
                     + ", PreviousType="
                     + previousType);
         }

@@ -36,7 +36,7 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private ObjectFieldTypes objectFieldTypes;
     private final String fileName;
     private String standardControllerName;
-    private final IdentityHashMap<ASTIdentifier, ExpressionType> expressionTypes;
+    private final IdentityHashMap<ASTIdentifier, IdentifierType> identifierTypes;
 
     /**
      * List of all Apex Class names that the VF page might refer to. These values come from either the
@@ -53,11 +53,11 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
         this.apexClassPropertyTypes = new ApexClassPropertyTypes();
         this.objectFieldTypes = new ObjectFieldTypes();
         this.apexClassNames = new ArrayList<>();
-        this.expressionTypes = new IdentityHashMap<>();
+        this.identifierTypes = new IdentityHashMap<>();
     }
 
-    public IdentityHashMap<ASTIdentifier, ExpressionType> getExpressionTypes() {
-        return this.expressionTypes;
+    public IdentityHashMap<ASTIdentifier, IdentifierType> getIdentifierTypes() {
+        return this.identifierTypes;
     }
 
     /**
@@ -98,7 +98,7 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     public Object visit(ASTElExpression node, Object data) {
         for (Map.Entry<ASTIdentifier, String> entry : getExpressionIdentifierNames(node).entrySet()) {
             String name = entry.getValue();
-            ExpressionType type = null;
+            IdentifierType type = null;
             String[] parts = name.split("\\.");
 
             // Apex extensions take precedence over Standard controllers.
@@ -139,7 +139,7 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             }
 
             if (type != null) {
-                expressionTypes.put(entry.getKey(), type);
+                identifierTypes.put(entry.getKey(), type);
             } else {
                 LOGGER.fine("Unable to determine type for: " + name);
             }

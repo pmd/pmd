@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.vf;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,9 +27,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
  */
@@ -40,21 +38,23 @@ class ObjectFieldTypes {
     private static final String MDAPI_OBJECT_FILE_SUFFIX = ".object";
     private static final String SFDX_FIELD_FILE_SUFFIX = ".field-meta.xml";
 
-    private static final ImmutableMap<String, ExpressionType> STANDARD_FIELD_TYPES =
-            ImmutableMap.<String, ExpressionType>builder()
-                    .put("createdbyid", ExpressionType.Lookup)
-                    .put("createddate", ExpressionType.DateTime)
-                    .put("id", ExpressionType.Lookup)
-                    .put("isdeleted", ExpressionType.Checkbox)
-                    .put("lastmodifiedbyid", ExpressionType.Lookup)
-                    .put("lastmodifieddate", ExpressionType.DateTime)
-                    .put("systemmodstamp", ExpressionType.DateTime)
-                    .build();
+    private static final Map<String, IdentifierType> STANDARD_FIELD_TYPES;
+
+    static {
+        STANDARD_FIELD_TYPES = new ConcurrentHashMap<>();
+        STANDARD_FIELD_TYPES.put("createdbyid", IdentifierType.Lookup);
+        STANDARD_FIELD_TYPES.put("createddate", IdentifierType.DateTime);
+        STANDARD_FIELD_TYPES.put("id", IdentifierType.Lookup);
+        STANDARD_FIELD_TYPES.put("isdeleted", IdentifierType.Checkbox);
+        STANDARD_FIELD_TYPES.put("lastmodifiedbyid", IdentifierType.Lookup);
+        STANDARD_FIELD_TYPES.put("lastmodifieddate", IdentifierType.DateTime);
+        STANDARD_FIELD_TYPES.put("systemmodstamp", IdentifierType.DateTime);
+    }
 
     /**
      * Cache of lowercase variable names to the variable type declared in the field's metadata file.
      */
-    private final ConcurrentHashMap<String, ExpressionType> variableNameToVariableType;
+    private final ConcurrentHashMap<String, IdentifierType> variableNameToVariableType;
 
     /**
      * Keep track of which variables were already processed. Avoid processing if a page repeatedly asks for an entry
@@ -78,8 +78,8 @@ class ObjectFieldTypes {
 
     ObjectFieldTypes() {
         this.variableNameToVariableType = new ConcurrentHashMap<>();
-        this.variableNameProcessed = Sets.newConcurrentHashSet();
-        this.objectFileProcessed = Sets.newConcurrentHashSet();
+        this.variableNameProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
+        this.objectFileProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
 
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -112,9 +112,9 @@ class ObjectFieldTypes {
     /**
      * Looks in {@code objectsDirectories} for a custom field identified by {@code expression}.
      *
-     * @return the ExpressionType for the field represented by {@code expression} or null the custom field isn't found.
+     * @return the IdentifierType for the field represented by {@code expression} or null the custom field isn't found.
      */
-    public ExpressionType getVariableType(String expression, String vfFileName, List<String> objectsDirectories) {
+    public IdentifierType getVariableType(String expression, String vfFileName, List<String> objectsDirectories) {
         String lowerExpression = expression.toLowerCase(Locale.ROOT);
 
         if (variableNameToVariableType.containsKey(lowerExpression)) {
@@ -201,10 +201,10 @@ class ObjectFieldTypes {
             Node fullNameNode = (Node) sfdxCustomFieldFullNameExpression.evaluate(document, XPathConstants.NODE);
             Node typeNode = (Node) sfdxCustomFieldTypeExpression.evaluate(document, XPathConstants.NODE);
             String type = typeNode.getNodeValue();
-            ExpressionType expressionType = ExpressionType.fromString(type);
+            IdentifierType identifierType = IdentifierType.fromString(type);
 
             String key = customObjectName + "." + fullNameNode.getNodeValue();
-            setVariableType(key, expressionType);
+            setVariableType(key, identifierType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -234,9 +234,9 @@ class ObjectFieldTypes {
                             throw new RuntimeException("type evaluate failed for object=" + customObjectName + ", field=" + name + " " + fieldsNode.getTextContent());
                         }
                         String type = typeNode.getNodeValue();
-                        ExpressionType expressionType = ExpressionType.fromString(type);
+                        IdentifierType identifierType = IdentifierType.fromString(type);
                         String key = customObjectName + "." + fullNameNode.getNodeValue();
-                        setVariableType(key, expressionType);
+                        setVariableType(key, identifierType);
                     }
                 }
             } catch (Exception e) {
@@ -251,7 +251,7 @@ class ObjectFieldTypes {
      * visualforce page.
      */
     private void addStandardFields(String customObjectName) {
-        for (Map.Entry<String, ExpressionType> entry : STANDARD_FIELD_TYPES.entrySet()) {
+        for (Map.Entry<String, IdentifierType> entry : STANDARD_FIELD_TYPES.entrySet()) {
             setVariableType(customObjectName + "." + entry.getKey(), entry.getValue());
         }
     }
@@ -263,15 +263,15 @@ class ObjectFieldTypes {
         return str != null && str.toLowerCase(Locale.ROOT).endsWith(suffix.toLowerCase(Locale.ROOT));
     }
 
-    private void setVariableType(String name, ExpressionType expressionType) {
+    private void setVariableType(String name, IdentifierType identifierType) {
         name = name.toLowerCase(Locale.ROOT);
-        ExpressionType previousType = variableNameToVariableType.put(name, expressionType);
-        if (previousType != null && !previousType.equals(expressionType)) {
+        IdentifierType previousType = variableNameToVariableType.put(name, identifierType);
+        if (previousType != null && !previousType.equals(identifierType)) {
             // It should not be possible ot have conflicting types for CustomFields
             throw new RuntimeException("Conflicting types for "
                     + name
                     + ". CurrentType="
-                    + expressionType
+                    + identifierType
                     + ", PreviousType="
                     + previousType);
         }

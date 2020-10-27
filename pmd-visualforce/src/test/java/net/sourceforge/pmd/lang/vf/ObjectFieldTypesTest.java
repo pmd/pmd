@@ -79,17 +79,17 @@ public class ObjectFieldTypesTest {
     private void validateSfdxAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
         String vfFileName = vfPagePath.toString();
 
-        assertEquals(ExpressionType.Checkbox,
+        assertEquals(IdentifierType.Checkbox,
                 objectFieldTypes.getVariableType("Account.Checkbox__c", vfFileName, paths));
-        assertEquals(ExpressionType.DateTime,
+        assertEquals(IdentifierType.DateTime,
                 objectFieldTypes.getVariableType("Account.DateTime__c", vfFileName, paths));
-        assertEquals(ExpressionType.LongTextArea,
+        assertEquals(IdentifierType.LongTextArea,
                 objectFieldTypes.getVariableType("Account.LongTextArea__c", vfFileName, paths));
-        assertEquals(ExpressionType.Picklist,
+        assertEquals(IdentifierType.Picklist,
                 objectFieldTypes.getVariableType("Account.Picklist__c", vfFileName, paths));
-        assertEquals(ExpressionType.Text,
+        assertEquals(IdentifierType.Text,
                 objectFieldTypes.getVariableType("Account.Text__c", vfFileName, paths));
-        assertEquals(ExpressionType.TextArea,
+        assertEquals(IdentifierType.TextArea,
                 objectFieldTypes.getVariableType("Account.TextArea__c", vfFileName, paths));
         assertNull(objectFieldTypes.getVariableType("Account.DoesNotExist__c", vfFileName, paths));
     }
@@ -100,17 +100,17 @@ public class ObjectFieldTypesTest {
     private void validateMDAPIAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
         String vfFileName = vfPagePath.toString();
 
-        assertEquals(ExpressionType.Checkbox,
+        assertEquals(IdentifierType.Checkbox,
                 objectFieldTypes.getVariableType("Account.MDCheckbox__c", vfFileName, paths));
-        assertEquals(ExpressionType.DateTime,
+        assertEquals(IdentifierType.DateTime,
                 objectFieldTypes.getVariableType("Account.MDDateTime__c", vfFileName, paths));
-        assertEquals(ExpressionType.LongTextArea,
+        assertEquals(IdentifierType.LongTextArea,
                 objectFieldTypes.getVariableType("Account.MDLongTextArea__c", vfFileName, paths));
-        assertEquals(ExpressionType.Picklist,
+        assertEquals(IdentifierType.Picklist,
                 objectFieldTypes.getVariableType("Account.MDPicklist__c", vfFileName, paths));
-        assertEquals(ExpressionType.Text,
+        assertEquals(IdentifierType.Text,
                 objectFieldTypes.getVariableType("Account.MDText__c", vfFileName, paths));
-        assertEquals(ExpressionType.TextArea,
+        assertEquals(IdentifierType.TextArea,
                 objectFieldTypes.getVariableType("Account.MDTextArea__c", vfFileName, paths));
         assertNull(objectFieldTypes.getVariableType("Account.DoesNotExist__c", vfFileName, paths));
     }

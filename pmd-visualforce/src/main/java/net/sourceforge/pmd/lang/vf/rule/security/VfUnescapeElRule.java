@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.ExpressionType;
+import net.sourceforge.pmd.lang.vf.IdentifierType;
 import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
@@ -411,8 +411,8 @@ public class VfUnescapeElRule extends AbstractVfTypedElExpressionRule {
             final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
 
             for (final ASTIdentifier id : ids) {
-                ExpressionType expressionType = getExpressionType(id);
-                if (expressionType != null && !expressionType.requiresEscaping) {
+                IdentifierType identifierType = getIdentifierType(id);
+                if (identifierType != null && !identifierType.requiresEscaping) {
                     return false;
                 }
 

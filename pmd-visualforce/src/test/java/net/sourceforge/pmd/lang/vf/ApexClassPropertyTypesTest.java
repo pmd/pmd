@@ -25,28 +25,28 @@ public class ApexClassPropertyTypesTest {
         // must have the correct case since it is used to lookup the file. The Apex class name is guaranteed to be correct
         // in the Visualforce page, but the property names are not
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
-        assertEquals(ExpressionType.Lookup,
+        assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.accOuntIdProp", vfFileName,
                         VFTestContstants.RELATIVE_APEX_DIRECTORIES));
-        assertEquals(ExpressionType.Lookup,
+        assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.AcCountId", vfFileName,
                         VFTestContstants.RELATIVE_APEX_DIRECTORIES));
-        assertEquals(ExpressionType.Text,
+        assertEquals(IdentifierType.Text,
                 apexClassPropertyTypes.getVariableType("ApexController.AcCountname", vfFileName,
                         VFTestContstants.RELATIVE_APEX_DIRECTORIES));
 
         // InnerController
         assertEquals("The class should be parsed to Unknown. It's not a valid expression on its own.",
-                ExpressionType.Unknown,
+                IdentifierType.Unknown,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController", vfFileName,
                         VFTestContstants.RELATIVE_APEX_DIRECTORIES));
-        assertEquals(ExpressionType.Lookup,
+        assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountIdProp",
                         vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
-        assertEquals(ExpressionType.Lookup,
+        assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountid",
                         vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
-        assertEquals(ExpressionType.Text,
+        assertEquals(IdentifierType.Text,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountnAme",
                         vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
 
@@ -61,7 +61,7 @@ public class ApexClassPropertyTypesTest {
     /**
      * It is possible to have a property and method with different types that resolve to the same Visualforce
      * expression. An example is an Apex class with a property "public String Foo {get; set;}" and a method of
-     * "Integer getFoo() { return 1; }". These properties should map to {@link ExpressionType#Unknown}.
+     * "Integer getFoo() { return 1; }". These properties should map to {@link IdentifierType#Unknown}.
      */
     @Test
     public void testConflictingPropertyTypesMapsToUnknown() {
@@ -69,7 +69,7 @@ public class ApexClassPropertyTypesTest {
                 .toAbsolutePath();
         String vfFileName = vfPagePath.toString();
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
-        assertEquals(ExpressionType.Unknown,
+        assertEquals(IdentifierType.Unknown,
                 apexClassPropertyTypes.getVariableType("ApexWithConflictingPropertyTypes.ConflictingProp",
                         vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
     }
