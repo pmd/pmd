@@ -1613,7 +1613,7 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//BlockStatement/Statement/Block[not(*)]</value>
+                <value>//Block/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1650,13 +1650,10 @@ and should be removed.
 <![CDATA[
 //EmptyStatement
  [not(
-       ../../../ForStatement
-       or ../../../WhileStatement
-       or ../../../BlockStatement/ClassOrInterfaceDeclaration
-       or ../../../../../../ForStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
-       or ../../../../../../WhileStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)
+          ../self::WhileStatement
+       or ../self::ForStatement
+       or preceding-sibling::*[1]/self::LocalClassStatement
+  )
  ]
 ]]>
                 </value>
@@ -1714,7 +1711,7 @@ Empty synchronized blocks serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//SynchronizedStatement/Block[1][not(*)]</value>
+                <value>//SynchronizedStatement/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1744,7 +1741,7 @@ Avoid empty try blocks - what's the point?
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
+//TryStatement[not(ResourceList)]/Block[not(*)]
 ]]>
                 </value>
             </property>
@@ -1779,7 +1776,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement/Statement[Block[not(*)] or EmptyStatement]
+//WhileStatement[Block[not(*)] or EmptyStatement]
 ]]>
                 </value>
             </property>
