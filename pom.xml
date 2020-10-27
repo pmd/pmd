@@ -19,7 +19,7 @@
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
-        <url>https://travis-ci.org/pmd/pmd</url>
+        <url>https://travis-ci.com/pmd/pmd</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
