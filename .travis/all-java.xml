@@ -100,8 +100,8 @@
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn"/> -->
     <rule ref="category/java/codestyle.xml/PackageCase"/>
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention"/> -->
+    <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/>
+    <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention"/>
     <rule ref="category/java/codestyle.xml/ShortClassName"/>
     <rule ref="category/java/codestyle.xml/ShortMethodName"/>
     <rule ref="category/java/codestyle.xml/ShortVariable"/>

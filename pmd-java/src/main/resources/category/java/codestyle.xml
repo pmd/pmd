@@ -1242,17 +1242,8 @@ Remote Interface of a Session EJB should not have a suffix.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
-    )
-    and
-    (
-        ends-with(@SimpleName,'Session')
-        or
-        ends-with(@SimpleName,'EJB')
-        or
-        ends-with(@SimpleName,'Bean')
-    )
+    pmd-java:typeIs('javax.ejb.EJBObject')
+    and matches(@SimpleName, '.*(Session|EJB|Bean)$')
 ]
 ]]>
                 </value>
@@ -1288,14 +1279,8 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Home')
-    )
+    pmd-java:typeIs('javax.ejb.EJBHome')
+    and not(ends-with(@SimpleName, 'Home'))
 ]
 ]]>
                 </value>
