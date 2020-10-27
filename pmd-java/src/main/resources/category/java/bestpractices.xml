@@ -451,9 +451,7 @@ By convention, the default label should be the last label in a switch statement.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement
- [not(SwitchLabel[position() = last()][@Default= true()])]
- [SwitchLabel[@Default= true()]]
+//SwitchLabel[@Default = true() and not(.. is ../../*[last()])]
 ]]>
                 </value>
             </property>
