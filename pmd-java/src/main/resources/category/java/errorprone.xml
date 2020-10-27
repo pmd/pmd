@@ -1452,13 +1452,13 @@ or reported.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement
- [not(Block/BlockStatement)]
- [$allowCommentedBlocks != true() or Block/@containsComment = false()]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
- ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]]
+//CatchClause[
+  Block[
+      count(*) = 0
+      and ($allowCommentedBlocks = false() or Block/@containsComment = false())
+  ]
+  and CatchParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]
+]
 ]]>
                 </value>
             </property>
