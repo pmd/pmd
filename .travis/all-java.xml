@@ -18,7 +18,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidStringBufferField"/> -->
+    <rule ref="category/java/bestpractices.xml/AvoidStringBufferField"/>
     <!-- <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/CheckResultSet"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/> -->

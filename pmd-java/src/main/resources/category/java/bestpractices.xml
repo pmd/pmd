@@ -327,7 +327,7 @@ if held within objects with long lifetimes.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.lang.StringBuffer') or pmd-java:typeIs('java.lang.StringBuilder')]
 ]]>
                 </value>
             </property>
