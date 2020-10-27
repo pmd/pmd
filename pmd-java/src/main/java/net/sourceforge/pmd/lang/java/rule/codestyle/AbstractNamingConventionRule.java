@@ -49,9 +49,7 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     abstract String kindDisplayName(T node, PropertyDescriptor<Pattern> descriptor);
 
     /** Extracts the name that should be pattern matched. */
-    String nameExtractor(T node) {
-        return node.getImage();
-    }
+    abstract String nameExtractor(T node);
 
 
     void checkMatches(T node, PropertyDescriptor<Pattern> regex, Object data) {

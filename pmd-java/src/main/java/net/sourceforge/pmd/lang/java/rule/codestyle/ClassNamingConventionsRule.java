@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -14,8 +16,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -39,12 +46,15 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(enumerationRegex);
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
-
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
-        addRuleChainVisit(ASTEnumDeclaration.class);
-        addRuleChainVisit(ASTAnnotationTypeDeclaration.class);
     }
 
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTClassOrInterfaceDeclaration.class,
+                                           ASTEnumDeclaration.class,
+                                           ASTAnnotationTypeDeclaration.class,
+                                           ASTRecordDeclaration.class);
+    }
 
     // This could probably be moved to ClassOrInterfaceDeclaration
     // to share the implementation and be used from XPath
@@ -69,7 +79,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
                 || declNode instanceof ASTMethodDeclaration) {
 
                 hasAny = isNonPrivate(declNode) && !isMainMethod(declNode);
-                if (!((AccessNode) declNode).isStatic()) {
+                if (!((AccessNode) declNode).hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
 
@@ -84,9 +94,8 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     private boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return !((AccessNode) decl).isPrivate();
+        return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
     }
-
 
     private boolean isMainMethod(ASTBodyDeclaration bodyDeclaration) {
         if (!(bodyDeclaration instanceof ASTMethodDeclaration)) {
@@ -95,11 +104,12 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration;
 
-        return decl.isStatic()
+
+        return decl.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
                 && "main".equals(decl.getName())
-                && decl.getResultType().isVoid()
-                && decl.getFormalParameters().size() == 1
-                && String[].class.equals(decl.getFormalParameters().iterator().next().getType());
+                && decl.isVoid()
+                && decl.getArity() == 1
+                && TypeTestUtil.isExactlyA(String[].class, decl.getFormalParameters().get(0));
     }
 
 
@@ -137,6 +147,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     @Override
     String defaultConvention() {
         return PASCAL_CASE;
+    }
+
+    @Override
+    String nameExtractor(ASTAnyTypeDeclaration node) {
+        return node.getSimpleName();
     }
 
 

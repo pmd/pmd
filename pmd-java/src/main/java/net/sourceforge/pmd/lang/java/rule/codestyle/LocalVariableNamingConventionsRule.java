@@ -56,6 +56,12 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
 
     @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
+    }
+
+
+    @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
         if (node.isExceptionBlockParameter()) {
             return "exception block parameter";
