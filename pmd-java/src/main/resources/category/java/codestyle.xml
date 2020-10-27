@@ -1439,12 +1439,22 @@ import static Yoko; // Too much !
           language="java"
           since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">
         <description>
             Avoid the use of value in annotations when it's the only element.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//Annotation/AnnotationMemberList[count(*) = 1 and MemberValuePair[@Shorthand = false() and @Name = 'value']]
+]]>
+                </value>
+            </property>
+            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
+        </properties>
         <example>
             <![CDATA[
 @TestClassAnnotation(value = "TEST")
