@@ -1521,7 +1521,7 @@ Empty finally blocks serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FinallyStatement[not(Block/BlockStatement)]
+//FinallyClause[Block[not(*)]]
 ]]>
                 </value>
             </property>
