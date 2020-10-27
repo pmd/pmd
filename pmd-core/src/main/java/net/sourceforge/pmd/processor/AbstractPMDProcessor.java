@@ -80,13 +80,15 @@ public abstract class AbstractPMDProcessor {
      */
     protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
         final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
+        reportBrokenRules(report, rs);
+        return rs;
+    }
 
+    public static void reportBrokenRules(Report report, RuleSets rs) {
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {
             report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
         }
-
-        return rs;
     }
 
     /**
@@ -96,7 +98,7 @@ public abstract class AbstractPMDProcessor {
      * @param ruleSets RuleSets to prune of broken rules.
      * @return Set<Rule>
      */
-    private Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
+    private static Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
         final Set<Rule> brokenRules = new HashSet<>();
         ruleSets.removeDysfunctionalRules(brokenRules);
 
@@ -131,16 +133,17 @@ public abstract class AbstractPMDProcessor {
     @SuppressWarnings("PMD.CloseResource")
     // the data sources must only be closed after the threads are finished
     // this is done manually without a try-with-resources
-    public void processFiles(RuleSets rs, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
+    public void processFiles(RuleSets rulesets, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
         try {
-            configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+            reportBrokenRules(ctx.getReport(), rulesets);
+            configuration.getAnalysisCache().checkValidity(rulesets, configuration.getClassLoader());
             final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
             for (final DataSource dataSource : files) {
                 // this is the real, canonical and absolute filename (not shortened)
                 String realFileName = dataSource.getNiceFileName(false, null);
 
-                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
+                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rulesets, processor));
             }
 
             // render base report first - general errors
