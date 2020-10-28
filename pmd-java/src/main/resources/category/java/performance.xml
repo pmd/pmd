@@ -282,15 +282,12 @@ adverse impacts on performance.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/PrimitiveType[@Kind = 'short']
-|
-//MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
-    /PrimitiveType[@Kind = 'short']
-|
-//MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
-    /FormalParameters/FormalParameter/PrimitiveType[@Kind = 'short']
-|
-//LocalVariableDeclaration/PrimitiveType[@Kind = 'short']
+//PrimitiveType[@Kind = 'short'][
+       parent::FieldDeclaration
+    or parent::LocalVariableDeclaration
+    or parent::FormalParameter and ../../self::MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
+    or parent::MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
+]
 ]]>
                 </value>
             </property>
