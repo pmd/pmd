@@ -84,3 +84,40 @@ langs:
         examples:
           - code: '//MethodDeclaration[pmd-java:hasAnnotation("java.lang.Override")]'
             outcome: "Matches all method declarations that are annotated with @Override"
+
+      - name: modifiers
+        returnType: "xs:string*"
+        shortDescription: "Produce the effective modifiers of a node"
+        description: >-
+          Returns a sequence of the effective modifiers of a node as strings.
+          This is documented on {% jdoc jast::ASTModifierList#getEffectiveModifiers() %}.
+
+        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        parameters:
+        examples:
+          - code: '//MethodDeclaration[pmd-java:modifiers() = "native"]'
+            outcome: "Matches native method declarations"
+          - code: '//MethodDeclaration[pmd-java:modifiers() = ("native", "static")]'
+            outcome: >-
+              Matches method declarations that have a 'native' OR a 'static' modifier.
+              This may be counter-intuitive.
+          - code: '//MethodDeclaration[pmd-java:modifiers() = "public"]'
+            outcome: >-
+              Matches method declarations that have a 'public' modifier, explicit or implicit.
+              For example, this would match methods in interfaces, which implicitly have the
+              modifier. Use the `explicitModifiers` function if you don't want the implicit part.
+              Also note that `@Visibility = 'public'` is a better use of the API, in this particular
+              instance.
+
+      - name: explicitModifiers
+        returnType: "xs:string*"
+        shortDescription: "Produce the explicit modifiers of a node"
+        description: >-
+          Returns a sequence of the explicit modifiers of a node as strings.
+          This is documented on {% jdoc jast::ASTModifierList#getExplicitModifiers() %}.
+
+        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        parameters:
+        examples:
+          - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'
+            outcome: "Matches method declarations that have an explicit 'public' modifier."
