@@ -1569,6 +1569,16 @@ worked —that’s not the case in 2.0 mode.
       <li><code>@ArgumentCount &gt; <b style="color:red">'</b>1<b style="color:red">'</b></code> → <code class="language-plaintext highlighter-rouge">@ArgumentCount &gt; 1</code></li>
     </ul>
   </li>
+  <li>In XPath 1.0, the expression <code class="language-plaintext highlighter-rouge">/Foo</code> matches the <em>children</em> of the root named <code class="language-plaintext highlighter-rouge">Foo</code>.
+In XPath 2.0, that expression matches the root, if it is named <code class="language-plaintext highlighter-rouge">Foo</code>. Consider the following tree:
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Foo</span>
+<span class="err">└─</span> <span class="nc">Foo</span>
+<span class="err">└─</span> <span class="nc">Foo</span>
+</code></pre></div>    </div>
+    <p>Then <code class="language-plaintext highlighter-rouge">/Foo</code> will match the root in XPath 2, and the other nodes (but not the root) in XPath 1.
+See eg <a href="https://github.com/pmd/pmd/issues/1919#issuecomment-512865434">an issue caused by this</a> in Apex,
+with nested classes.</p>
+  </li>
 </ul>
 
 <h2 id="rule-properties">Rule properties</h2>
