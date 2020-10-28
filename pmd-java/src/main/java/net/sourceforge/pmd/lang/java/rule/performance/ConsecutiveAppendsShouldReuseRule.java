@@ -4,138 +4,113 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import java.util.List;
-import java.util.Map;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTBlockStatement node, Object data) {
-        String variable = getVariableAppended(node);
-        if (variable != null) {
-            ASTBlockStatement nextSibling = getNextBlockStatementSibling(node);
-            if (nextSibling != null) {
-                String nextVariable = getVariableAppended(nextSibling);
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTExpressionStatement.class, ASTLocalVariableDeclaration.class);
+    }
+
+    @Override
+    public Object visit(ASTExpressionStatement node, Object data) {
+        Node nextSibling = node.asStream().followingSiblings().first();
+        if (nextSibling instanceof ASTExpressionStatement) {
+            @Nullable JVariableSymbol variable = getVariableAppended(node);
+            if (variable != null) {
+                @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
                 if (nextVariable != null && nextVariable.equals(variable)) {
                     addViolation(data, node);
                 }
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
-    private ASTBlockStatement getNextBlockStatementSibling(Node node) {
-        Node parent = node.getParent();
-        int childIndex = -1;
-        for (int i = 0; i < parent.getNumChildren(); i++) {
-            if (parent.getChild(i) == node) {
-                childIndex = i;
-                break;
+    @Override
+    public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        Node nextSibling = node.asStream().followingSiblings().first();
+        if (nextSibling instanceof ASTExpressionStatement) {
+            @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
+            if (nextVariable != null) {
+                ASTVariableDeclaratorId varDecl = nextVariable.tryGetNode();
+                if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
+                    && isStringBuilderAppend(varDecl.getInitializer())) {
+                    addViolation(data, node);
+                }
             }
         }
-        if (childIndex + 1 < parent.getNumChildren()) {
-            Node nextSibling = parent.getChild(childIndex + 1);
-            if (nextSibling instanceof ASTBlockStatement) {
-                return (ASTBlockStatement) nextSibling;
-            }
+        return data;
+    }
+
+
+    private @Nullable JVariableSymbol getVariableAppended(ASTExpressionStatement node) {
+        ASTExpression expr = node.getExpr();
+        if (expr instanceof ASTMethodCall) {
+            return getAsVarAccess(getAppendChainQualifier(expr));
+        } else if (expr instanceof ASTAssignmentExpression) {
+            ASTExpression rhs = ((ASTAssignmentExpression) expr).getRightOperand();
+            return getAppendChainQualifier(rhs) != null ? getAssignmentLhsAsVar(expr) : null;
         }
         return null;
     }
 
-    private String getVariableAppended(ASTBlockStatement node) {
-        if (isFirstChild(node, ASTStatement.class)) {
-            ASTStatement statement = (ASTStatement) node.getChild(0);
-            if (isFirstChild(statement, ASTStatementExpression.class)) {
-                ASTStatementExpression stmtExp = (ASTStatementExpression) statement.getChild(0);
-                if (stmtExp.getNumChildren() == 1) {
-                    ASTPrimaryPrefix primaryPrefix = stmtExp.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                    if (primaryPrefix != null) {
-                        ASTName name = primaryPrefix.getFirstChildOfType(ASTName.class);
-                        if (name != null) {
-                            String image = name.getImage();
-                            if (image.endsWith(".append")) {
-                                String variable = image.substring(0, image.indexOf('.'));
-                                if (isAStringBuilderBuffer(primaryPrefix, variable)) {
-                                    return variable;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    final ASTExpression exp = stmtExp.getFirstDescendantOfType(ASTExpression.class);
-                    if (isFirstChild(exp, ASTPrimaryExpression.class)) {
-                        final ASTPrimarySuffix primarySuffix = ((ASTPrimaryExpression) exp.getChild(0))
-                                .getFirstDescendantOfType(ASTPrimarySuffix.class);
-                        if (primarySuffix != null) {
-                            final String name = primarySuffix.getImage();
-                            if ("append".equals(name)) {
-                                final ASTPrimaryExpression pExp = stmtExp
-                                        .getFirstDescendantOfType(ASTPrimaryExpression.class);
-                                if (pExp != null) {
-                                    final ASTName astName = stmtExp.getFirstDescendantOfType(ASTName.class);
-                                    if (astName != null) {
-                                        final String variable = astName.getImage();
-                                        if (isAStringBuilderBuffer(primarySuffix, variable)) {
-                                            return variable;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else if (isFirstChild(node, ASTLocalVariableDeclaration.class)) {
-            ASTLocalVariableDeclaration lvd = (ASTLocalVariableDeclaration) node.getChild(0);
-
-            ASTVariableDeclaratorId vdId = lvd.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-            ASTExpression exp = lvd.getFirstDescendantOfType(ASTExpression.class);
-
-            if (exp != null) {
-                ASTPrimarySuffix primarySuffix = exp.getFirstDescendantOfType(ASTPrimarySuffix.class);
-                if (primarySuffix != null) {
-                    final String name = primarySuffix.getImage();
-                    if ("append".equals(name)) {
-                        String variable = vdId.getImage();
-                        if (isAStringBuilderBuffer(primarySuffix, variable)) {
-                            return variable;
-                        }
-                    }
-                }
-            }
+    private @Nullable ASTExpression getAppendChainQualifier(final ASTExpression base) {
+        ASTExpression expr = base;
+        while (expr instanceof ASTMethodCall && isStringBuilderAppend(expr)) {
+            expr = ((ASTMethodCall) expr).getQualifier();
         }
+        return base == expr ? null : expr;
+    }
 
+    private @Nullable JVariableSymbol getAssignmentLhsAsVar(@Nullable ASTExpression expr) {
+        if (expr instanceof ASTAssignmentExpression) {
+            return getAsVarAccess(((ASTAssignmentExpression) expr).getLeftOperand());
+        }
         return null;
     }
 
-    private boolean isAStringBuilderBuffer(JavaNode node, String name) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        for (VariableNameDeclaration decl : declarations.keySet()) {
-            if (decl.getName().equals(name) && ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(decl.getDeclaratorId())) {
-                return true;
-            }
+    private @Nullable JVariableSymbol getAsVarAccess(@Nullable ASTExpression expr) {
+        if (expr instanceof ASTNamedReferenceExpr) {
+            return ((ASTNamedReferenceExpr) expr).getReferencedSym();
+        }
+        return null;
+    }
+
+    private boolean isStringBuilderAppend(@Nullable ASTExpression e) {
+        if (e instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) e;
+            return call.getMethodName().equals("append")
+                && isStringBuilderAppend(call.getOverloadSelectionInfo());
         }
         return false;
     }
 
-    private boolean isFirstChild(Node node, Class<?> clazz) {
-        return node.getNumChildren() == 1 && clazz.isAssignableFrom(node.getChild(0).getClass());
+    private boolean isStringBuilderAppend(OverloadSelectionResult result) {
+        if (result.isFailed()) {
+            return false;
+        }
+
+        JExecutableSymbol symbol = result.getMethodType().getSymbol();
+        return TypeTestUtil.isExactlyA(StringBuffer.class, symbol.getEnclosingClass())
+            || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
     }
+
 }
