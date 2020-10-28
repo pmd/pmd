@@ -16,8 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-- pmd-core
-   - [#1939](https://github.com/pmd/pmd/issues/1939) \[core] XPath expressions return handling
+*   pmd-core
+    * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
 
 
 ### API Changes
@@ -25,4 +25,3 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 {% endtocmaker %}
-
