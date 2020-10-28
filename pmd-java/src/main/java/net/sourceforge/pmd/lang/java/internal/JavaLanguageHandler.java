@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetModifiersFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.MetricFunction;
+import net.sourceforge.pmd.lang.java.rule.xpath.internal.NodeIsFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
@@ -36,7 +37,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
             BaseContextNodeTestFun.TYPE_IS_EXACTLY,
             BaseContextNodeTestFun.TYPE_IS,
             BaseContextNodeTestFun.HAS_ANNOTATION,
-            BaseContextNodeTestFun.NODE_IS,
+            NodeIsFunction.INSTANCE,
             GetModifiersFun.GET_EFFECTIVE,
             GetModifiersFun.GET_EXPLICIT,
             MetricFunction.INSTANCE,

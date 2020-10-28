@@ -26,9 +26,9 @@ langs:
             description: "Simple name of a class or interface in package {% jdoc_package :jast %}, without the 'AST' prefix"
         examples:
           - code: '//*[pmd-java:nodeIs("Expression")]'
-            outcome: "Matches all nodes that implement ASTExpression"
+            outcome: "Matches all nodes that implement {% jdoc jast::ASTExpression %}"
           - code: '//*[pmd-java:nodeIs("AnyTypeDeclaration")]'
-            outcome: "Matches all nodes that implement ASTAnyTypeDeclaration"
+            outcome: "Matches all nodes that implement {% jdoc jast::ASTAnyTypeDeclaration %}"
           - code: '//*[pmd-java:nodeIs("Foo")]'
             outcome: "Runtime error, there's no class ASTFoo in the package"
 
