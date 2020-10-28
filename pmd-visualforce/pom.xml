@@ -11,6 +11,10 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
     <build>
         <resources>
             <resource>
