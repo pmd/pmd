@@ -136,11 +136,6 @@ public final class TypeTestUtil {
         return thisType.isSubtypeOf(otherType);
     }
 
-    private static boolean isAnonymous(JTypeMirror type) {
-        JTypeDeclSymbol symbol = type.getSymbol();
-        return symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isAnonymousClass();
-    }
-
     private static boolean isAnnotationSuperType(String clazzName) {
         // then, the supertype may only be Object, j.l.Annotation
         // this is used e.g. by the typeIs function in XPath

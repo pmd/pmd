@@ -29,7 +29,7 @@ import net.sf.saxon.value.StringValue;
  *
  * <p>Returns true if the type of the node matches, false otherwise.
  */
-public class GetModifiersFun extends BaseJavaXPathFunction {
+public final class GetModifiersFun extends BaseJavaXPathFunction {
 
     private static final SequenceType[] ARGTYPES = {};
     private final boolean explicit;
