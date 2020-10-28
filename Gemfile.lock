@@ -1,7 +1,6 @@
 GIT
-  remote: https://github.com/adangel/pmd-regression-tester.git
-  revision: b30efaea1c77bd0f914309562538b9eed4fa47f4
-  branch: auxclasspath
+  remote: https://github.com/pmd/pmd-regression-tester.git
+  revision: 6875868e8be772807498ab46411e44d163633d64
   specs:
     pmdtester (1.1.0.pre.SNAPSHOT)
       differ (~> 0.1)
