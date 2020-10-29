@@ -45,10 +45,12 @@ public class Foo {
     <test-code>
         <description>valueOf as first/last expression in concatenation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static String bar25(int n) {
-        return String.valueOf(n) + n + String.valueOf(n); // no - yes
+        return String.valueOf(n) + n
+                + String.valueOf(n); // no - yes
     }
 }
         ]]></code>
@@ -61,6 +63,34 @@ public class Foo {
 public class Foo {
     public static String bar17(int n) {
         return n + String.valueOf(n) + "n"; // no
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double valueOf call, only second is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static String bar17(int n) {
+        return String.valueOf(n)
+                + String.valueOf(n);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>valueOf a string (both are reported)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static String bar17(String n) {
+        return String.valueOf(n)
+                + String.valueOf(n);
     }
 }
         ]]></code>
