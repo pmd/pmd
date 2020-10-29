@@ -47,10 +47,12 @@ Avoid using dollar signs in variable/method/class/interface names.
             <property name="xpath">
                 <value>
 <![CDATA[
-    (//ClassOrInterfaceDeclaration | //EnumDeclaration | //AnnotationTypeDeclaration | //RecordDeclaration)
-     [contains(@SimpleName, '$')]
-    | //VariableDeclaratorId[contains(@Name, '$')]
-    | //MethodDeclaration[contains(@Name, '$')]
+      //ClassOrInterfaceDeclaration[contains(@SimpleName, '$')]
+    | //EnumDeclaration            [contains(@SimpleName, '$')]
+    | //AnnotationTypeDeclaration  [contains(@SimpleName, '$')]
+    | //RecordDeclaration          [contains(@SimpleName, '$')]
+    | //VariableDeclaratorId       [contains(@Name, '$')]
+    | //MethodDeclaration          [contains(@Name, '$')]
 
 ]]>
                 </value>
