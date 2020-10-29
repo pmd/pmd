@@ -363,9 +363,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]
 ]]>
                 </value>
             </property>
@@ -539,9 +537,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-  [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]
 ]]>
                 </value>
             </property>
@@ -571,9 +567,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]
 ]]>
                 </value>
             </property>
@@ -735,9 +729,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]
 ]]>
                 </value>
             </property>
