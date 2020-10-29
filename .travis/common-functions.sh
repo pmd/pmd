@@ -57,3 +57,8 @@ function travis_isWindows() {
 function get_pom_version() {
     echo $(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 }
+
+function change_ruby_version() {
+    source "$HOME/.rvm/scripts/rvm"
+    rvm use ruby-2.7
+}
