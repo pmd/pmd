@@ -1,6 +1,7 @@
 #
 # The functions here require the following scripts:
 # .travis/logger.sh
+# .travis/common-functions.sh
 #
 # The functions here require the following environment variables:
 # PMD_SF_USER
@@ -12,6 +13,7 @@
 # In that case, just a error logging is provided.
 #
 function regression-tester_uploadBaseline() {
+    change_ruby_version
     log_debug "$FUNCNAME branch=${TRAVIS_BRANCH}"
     local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
 
@@ -49,6 +51,7 @@ function regression-tester_uploadBaseline() {
 # In that case, just a error logging is provided.
 #
 function regression-tester_executeDanger() {
+    change_ruby_version
     log_debug "$FUNCNAME"
 
     local errexitstate="$(shopt -po errexit)"

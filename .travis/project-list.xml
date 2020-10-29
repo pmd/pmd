@@ -1,23 +1,108 @@
 <?xml version="1.0"?>
 
 <projectlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="projectlist_1_0_0.xsd">
+xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
   <description>Standard Projects</description>
 
   <project>
     <name>checkstyle</name>
     <type>git</type>
-<!--     <connection>https://github.com/checkstyle/checkstyle</connection> -->
-    <connection>https://github.com/pmd/checkstyle</connection>
-    <tag>checkstyle-8.10-pmd-regression</tag>
+    <connection>https://github.com/checkstyle/checkstyle</connection>
+    <tag>checkstyle-8.10</tag>
+
+    <exclude-pattern>.*/target/test-classes/com/puppycrawl/tools/checkstyle/.*</exclude-pattern>
+    <exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/api/detailast/InputDetailASTJustToMakeStackoverflowError.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideBadAnnotation.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideBadOverrideFromObject.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideGoodOverride.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideGoodOverrideFromObject.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideGoodOverrideFromOther.java</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources/com/puppycrawl/tools/checkstyle/checks/annotation/missingoverride/InputMissingOverrideNotOverride.java</exclude-pattern>
+
+    <build-command><![CDATA[#!/usr/bin/env bash
+if test -e classpath.txt; then
+  exit
+fi
+
+mvn test-compile
+mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt
+]]></build-command>
+    <auxclasspath-command>echo -n "$(pwd)/target/classes:$(pwd)/target/test-classes:"; cat classpath.txt</auxclasspath-command>
   </project>
 
   <project>
     <name>spring-framework</name>
     <type>git</type>
-<!--     <connection>https://github.com/spring-projects/spring-framework</connection> -->
-    <connection>https://github.com/pmd/spring-framework</connection>
-    <tag>v5.0.6.RELEASE-pmd-regression</tag>
+    <connection>https://github.com/spring-projects/spring-framework</connection>
+    <tag>v5.0.6.RELEASE</tag>
+
+    <exclude-pattern>.*spring-beans/src/main/java/org/springframework/beans/factory/config/YamlProcessor.java</exclude-pattern>
+    <exclude-pattern>.*spring-beans/src/main/java/org/springframework/beans/factory/config/YamlPropertiesFactoryBean.java</exclude-pattern>
+    <exclude-pattern>.*spring-context/src/test/java/org/springframework/aop/framework/CglibProxyTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-context/src/test/java/org/springframework/aop/framework/ClassWithComplexConstructor.java</exclude-pattern>
+    <exclude-pattern>.*spring-core/src/test/java/org/springframework/util/ClassUtilsTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-core/src/test/java/org/springframework/util/CollectionUtilsTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-core/src/test/java/org/springframework/util/CompositeIteratorTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-core/src/test/java/org/springframework/util/ConcurrentReferenceHashMapTests.java</exclude-pattern>
+
+    <exclude-pattern>.*spring-beans/src/test/java/org/springframework/beans/factory/xml/ProfileXmlBeanDefinitionTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/main/java/org/springframework/web/client/AsyncRestTemplate.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/RequestEntityTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/codec/multipart/MultipartHttpMessageWriterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/FormHttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/ResourceRegionHttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/json/GsonHttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/json/JsonbHttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/json/MappingJackson2HttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/http/converter/xml/Jaxb2CollectionHttpMessageConverterTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/web/client/HttpMessageConverterExtractorTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/web/client/RestTemplateIntegrationTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-web/src/test/java/org/springframework/web/client/RestTemplateTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/client/DefaultClientRequestBuilderTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/client/support/ClientResponseWrapperTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/server/DefaultEntityResponseBuilderTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/server/DefaultServerRequestTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/server/DispatcherHandlerIntegrationTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/server/PublisherHandlerFunctionIntegrationTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/function/server/support/ServerRequestWrapperTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webflux/src/test/java/org/springframework/web/reactive/result/method/annotation/RequestMappingMessageConversionIntegrationTests.java</exclude-pattern>
+    <exclude-pattern>.*spring-webmvc/src/main/java/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor.java</exclude-pattern>
+    <exclude-pattern>.*spring-webmvc/src/test/java/org/springframework/web/servlet/ComplexWebApplicationContext.java</exclude-pattern>
+
+    <build-command><![CDATA[#!/usr/bin/env bash
+if test -e classpath.txt; then
+  exit
+fi
+
+# Note: openjdk8 will be installed by "before_install.sh"
+JAVA_HOME=${HOME}/openjdk8
+PATH=$JAVA_HOME/bin:$PATH
+
+./gradlew build -x javadoc -x dokka -x asciidoctor -x test -x testNG -x api -x distZip
+cat >> build.gradle <<EOF
+task createSquishClasspath {
+  doLast {
+    def dependencies = new HashSet()
+    dependencies.addAll(subprojects.configurations.compile.resolvedConfiguration.resolvedArtifacts.file.flatten())
+    dependencies.addAll(subprojects.configurations.optional.resolvedConfiguration.resolvedArtifacts.file.flatten())
+    dependencies.addAll(subprojects.configurations.testCompile.resolvedConfiguration.resolvedArtifacts.file.flatten())
+    dependencies.addAll(subprojects.configurations.testRuntime.resolvedConfiguration.resolvedArtifacts.file.flatten())
+
+    def paths = new ArrayList()
+    paths.addAll(subprojects.jar.outputs.files.asPath)
+    paths.addAll(subprojects.sourceSets.test.output.resourcesDir)
+    paths.addAll(subprojects.sourceSets.test.output.classesDirs.files.flatten())
+    paths.addAll(dependencies)
+    println paths.join(File.pathSeparator)
+  }
+}
+EOF
+
+./gradlew createSquishClasspath -q > classpath.txt
+]]></build-command>
+    <auxclasspath-command>cat classpath.txt</auxclasspath-command>
   </project>
 
   <!---<project>
