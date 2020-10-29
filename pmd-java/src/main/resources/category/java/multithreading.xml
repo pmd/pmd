@@ -121,7 +121,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//FieldDeclaration[@Volatile = true()]</value>
+                <value>//FieldDeclaration[pmd-java:modifiers() = "volatile"]</value>
             </property>
         </properties>
         <example>
