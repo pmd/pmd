@@ -9,6 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
     void foo () {
         foo.notify();
     }
@@ -21,6 +22,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
+
     void foo () {
         foo.notify();
         foo.notify();

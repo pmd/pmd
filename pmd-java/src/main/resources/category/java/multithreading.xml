@@ -373,15 +373,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = 0]]
-[
-    PrimaryPrefix[
-        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
-        or ../PrimarySuffix/@Image='notify'
-        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-    ]
-]
+//MethodCall[@MethodName="notify" and ArgumentList[count(*) = 0]]
 ]]>
                 </value>
             </property>
