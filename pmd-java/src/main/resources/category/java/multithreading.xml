@@ -23,7 +23,7 @@ gets it.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized = true()]</value>
+                <value>//MethodDeclaration[pmd-java:modifiers() = "synchronized"]</value>
             </property>
         </properties>
         <example>
