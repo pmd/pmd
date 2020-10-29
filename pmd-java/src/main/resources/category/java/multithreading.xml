@@ -338,8 +338,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
-/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIs('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
 ]]>
                 </value>
             </property>
