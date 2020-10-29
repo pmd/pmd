@@ -87,8 +87,8 @@ it contains methods that are not thread-safe.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]|
-//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+  //ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]
+| //MethodCall[@MethodName = 'getThreadGroup']
 ]]>
                 </value>
             </property>
