@@ -34,13 +34,6 @@ jobs:
       dist: bionic
       env: BUILD=coveralls
       if: "type = push && repo = pmd/pmd && fork = false"
-    - name: "macosx - mvn verify"
-      os: osx
-      env: BUILD=deploy
-    - name: "windows - mvn verify"
-      os: windows
-      env: BUILD=deploy
-      language: shell
     - stage: publish
       name: "Release Build - Publish"
       os: linux
