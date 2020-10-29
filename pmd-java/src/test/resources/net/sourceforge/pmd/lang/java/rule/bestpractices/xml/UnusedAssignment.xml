@@ -3293,16 +3293,14 @@ public class UnusedAssignmentNative {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
-            <message>The field initializer for 'b' is never used (overwritten on line 9)</message>
+            <message>The field initializer for 'b' is never used (overwritten on line 7)</message>
         </expected-messages>
         <code><![CDATA[
             class Test {
                 static int b = 0;
-
                 Test() {
                     System.out.println(b); // does not count as usage
                 }
-
                 static {
                     b = 2;
                 }

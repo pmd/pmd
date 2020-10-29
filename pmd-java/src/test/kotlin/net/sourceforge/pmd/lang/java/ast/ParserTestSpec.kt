@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.core.config.Project
-import io.kotest.core.spec.style.DslDrivenSpec
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 import io.kotest.matchers.Matcher
+import io.kotest.matchers.should as kotlintestShould
 import io.kotest.runner.junit.platform.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -24,7 +25,8 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.types.JTypeMirror
 import net.sourceforge.pmd.lang.java.types.TypeDslMixin
 import net.sourceforge.pmd.lang.java.types.TypeDslOf
-import io.kotest.matchers.should as kotlintestShould
+import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
@@ -42,11 +44,15 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
     override fun lifecycle(): Lifecycle = Lifecycle.from(this)
     override fun defaultConfig(): TestCaseConfig = actualDefaultConfig()
+    override fun defaultTestCaseConfig(): TestCaseConfig? = defaultTestConfig
     override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
+
+    private fun actualDefaultConfig() =
+            defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
     fun test(name: String, disabled: Boolean = false, test: suspend TestContext.() -> Unit) =
             registration().addTest(
-                    name = TestName(name),
+                    name = createTestName(name),
                     xdisabled = disabled,
                     test = test,
                     config = actualDefaultConfig()
@@ -72,7 +78,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                         disabled: Boolean = false,
                         spec: suspend GroupTestCtx.() -> Unit) =
             registration().addContainerTest(
-                    name = TestName(name),
+                    name = createTestName(name),
                     test = { GroupTestCtx(this).spec() },
                     xdisabled = disabled
             )
@@ -128,7 +134,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             assertions: suspend ParserTestCtx.() -> Unit) {
 
         context.registerTestCase(
-                name = TestName(name),
+                name = createTestName(name),
                 test = { ParserTestCtx(javaVersion).apply { setup() }.assertions() },
                 config = actualDefaultConfig(),
                 type = TestType.Test
@@ -153,7 +159,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             javaVersions.forEach { javaVersion ->
 
                 context.registerTestCase(
-                        name = TestName("Java ${javaVersion.pmdName}"),
+                        name = createTestName("Java ${javaVersion.pmdName}"),
                         test = { VersionedTestCtx(this, javaVersion).apply { setup() }.spec() },
                         config = actualDefaultConfig(),
                         type = TestType.Container
