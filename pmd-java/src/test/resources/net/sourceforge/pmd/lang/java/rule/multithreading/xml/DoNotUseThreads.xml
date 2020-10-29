@@ -65,7 +65,7 @@ public class ExecutorServiceUsage {
 
     <test-code>
         <description>Using Executors directly is not allowed</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 
