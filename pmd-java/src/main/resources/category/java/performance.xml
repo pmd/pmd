@@ -789,9 +789,7 @@ if-then statement to increase code readability.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement[
-    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
+//SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
 ]]>
                 </value>
             </property>

@@ -308,7 +308,7 @@
     <rule ref="category/java/performance.xml/SimplifyStartsWith"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
     <rule ref="category/java/performance.xml/StringToString"/>
-    <!-- <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/> -->
+    <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
     <!-- <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation"/> -->
     <!-- <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/> -->
     <!-- <rule ref="category/java/performance.xml/UseArraysAsList"/> -->
