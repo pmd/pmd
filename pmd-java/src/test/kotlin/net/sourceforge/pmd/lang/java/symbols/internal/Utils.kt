@@ -8,6 +8,7 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.property.*
+import io.kotest.property.arbitrary.filter
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
@@ -43,6 +44,13 @@ suspend fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
 }
 
 /** Generator of test instances. */
+@Deprecated("can be removed once https://github.com/kotest/kotest/issues/1815 is released")
+fun <A> Arb<A>.filter_fixed(predicate: (A) -> Boolean) = object : Arb<A>() {
+    override fun edgecases(): List<A> = this@filter_fixed.edgecases().filter(predicate)
+    override fun values(rs: RandomSource): Sequence<Sample<A>> = this@filter_fixed.values(rs).filter { predicate(it.value) }
+    override fun sample(rs: RandomSource): Sample<A> = this@filter_fixed.samples(rs).filter { predicate(it.value) }.first()
+}
+
 object TestClassesGen : Arb<Class<*>>() {
     override fun edgecases(): List<Class<*>> =
             listOf(java.lang.Object::class.java,
