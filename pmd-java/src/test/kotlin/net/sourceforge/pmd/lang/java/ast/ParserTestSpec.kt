@@ -15,7 +15,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.should as kotlintestShould
-import io.kotest.runner.junit.platform.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.Assertions
@@ -25,7 +24,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.types.JTypeMirror
 import net.sourceforge.pmd.lang.java.types.TypeDslMixin
 import net.sourceforge.pmd.lang.java.types.TypeDslOf
-import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 
 /**
@@ -148,10 +146,6 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
     protected open fun ParserTestCtx.setup() {
 
     }
-
-    private fun actualDefaultConfig() =
-            defaultTestConfig ?: defaultTestCaseConfig()
-            ?: Project.testCaseConfig()
 
     inner class GroupTestCtx(private val context: TestContext) {
 
