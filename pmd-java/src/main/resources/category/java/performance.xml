@@ -285,7 +285,7 @@ adverse impacts on performance.
 //PrimitiveType[@Kind = 'short'][
        parent::FieldDeclaration
     or parent::LocalVariableDeclaration
-    or parent::FormalParameter and ../../self::MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
+    or parent::FormalParameter and ../../../self::MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
     or parent::MethodDeclaration[not(pmd-java:hasAnnotation('java.lang.Override'))]
 ]
 ]]>
