@@ -683,16 +683,8 @@ ensure that the string is not empty by making an additional check first.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name
-  [ends-with(@Image, '.startsWith')] or PrimarySuffix[@Image='startsWith']]
- [PrimarySuffix/Arguments/ArgumentList
-  /Expression/PrimaryExpression/PrimaryPrefix
-  /Literal
-   [string-length(@Image)=3]
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
- ]
+//MethodCall[@MethodName = 'startsWith' and *[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.String')]]
+ [ArgumentList[count(*)=1][StringLiteral[@length = 1]]]
 ]]>
                 </value>
             </property>

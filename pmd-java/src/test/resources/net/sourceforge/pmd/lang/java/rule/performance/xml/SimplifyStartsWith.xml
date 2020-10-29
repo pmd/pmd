@@ -40,7 +40,6 @@ public class Foo {
         ]]></code>
     </test-code>
 
-<!--
     <test-code>
         <description>Document Jaxen exception parsing Unicode chars in startsWith</description>
         <expected-problems>0</expected-problems>
@@ -52,7 +51,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
--->
 
     <test-code>
         <description>#1392 SimplifyStartsWith false-negative</description>
@@ -66,6 +64,11 @@ public class SimplifyStartsWith {
                 || nextSibling.getType() == JavadocTokenTypes.EOF
                 || nextSibling.getText().startsWith(" ");
     }
+
+    static class DetailNode {
+        String getText() { return ""; }
+    }
+
 }
         ]]></code>
     </test-code>

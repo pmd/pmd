@@ -305,7 +305,7 @@
     <!-- <rule ref="category/java/performance.xml/OptimizableToArrayCall"/> -->
     <rule ref="category/java/performance.xml/RedundantFieldInitializer"/>
     <rule ref="category/java/performance.xml/ShortInstantiation"/>
-    <!-- <rule ref="category/java/performance.xml/SimplifyStartsWith"/> -->
+    <rule ref="category/java/performance.xml/SimplifyStartsWith"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
     <rule ref="category/java/performance.xml/StringToString"/>
     <!-- <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/> -->
