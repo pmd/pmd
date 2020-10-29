@@ -351,6 +351,11 @@ $delim
                     it::getBase shouldBe 10 // by convention
                 }
             }
+            "0.5" should parseAs {
+                number(DOUBLE) {
+                    it::getBase shouldBe 10
+                }
+            }
         }
     }
 

@@ -42,6 +42,15 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return isTextBlock;
     }
 
+    /** True if the constant value is empty. Does not necessarily compute the constant value. */
+    public boolean isEmpty() {
+        if (isTextBlock) {
+            return getConstValue().isEmpty(); // could be a bunch of ignorable indents?
+        } else {
+            return getImage().length() == 2; // ""
+        }
+    }
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

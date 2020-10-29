@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
 
     private VariableNameDeclaration nameDeclaration;
 

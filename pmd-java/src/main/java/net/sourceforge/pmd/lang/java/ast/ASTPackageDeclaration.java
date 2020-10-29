@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+
 /**
  * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
  * Since 7.0, there is no {@linkplain ASTName Name} node anymore. Use
@@ -33,9 +36,23 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
      * Returns the name of the package.
      *
      * @since 4.2
+     * @deprecated Use {@link #getName()}
      */
+    @Deprecated
+    @DeprecatedUntil700
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getPackageNameImage() {
         return super.getImage();
+    }
+
+
+    /**
+     * Returns the name of the package.
+     *
+     * @since 7.0.0
+     */
+    public String getName() {
+        return getPackageNameImage();
     }
 
     @Override
