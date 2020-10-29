@@ -191,6 +191,19 @@ public final class TypeTestUtil {
         return symClass.getBinaryName().equals(klass.getName());
     }
 
+    /**
+     * Returns true if the signature is that of a method declared in the
+     * given class.
+     *
+     * @param klass Class
+     * @param sig   Method signature to test
+     *
+     * @throws NullPointerException If any argument is null
+     */
+    public static boolean isDeclaredInClass(@NonNull Class<?> klass, @NonNull JMethodSig sig) {
+        return isExactlyA(klass, sig.getDeclaringType().getSymbol());
+    }
+
 
     /**
      * Checks whether the static type of the node is exactly the type

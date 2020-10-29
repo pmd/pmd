@@ -52,7 +52,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             ASTMethodCall call = (ASTMethodCall) expr;
             if (call.getArguments().size() == 1
                 && call.getMethodName().equals("valueOf")
-                && TypeTestUtil.isExactlyA(String.class, call.getMethodType().getDeclaringType().getSymbol())) {
+                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
                 return call.getArguments().get(0);
             }
         }
