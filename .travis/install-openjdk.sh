@@ -2,36 +2,38 @@
 set -e
 
 #
-# AdoptOpenJDK Builds from:
-# https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/tag/jdk-11.0.4%2B11
+# Downloads AdoptOpenJDK Builds from
+# https://pmd-code.org/openjdk/latest/jdk-11-linux64.tar.gz
+# https://pmd-code.org/openjdk/latest/jdk-11-windows64.zip
+# https://pmd-code.org/openjdk/latest/jdk-11-mac64.tar.gz
+#
+# The Build are originally from:
+# https://github.com/AdoptOpenJDK/openjdk11-binaries/releases
 #
 
 source .travis/logger.sh
 source .travis/common-functions.sh
 
-# VERSION_TAG e.g. "11.0.4+11" or "13+33"
-VERSION_TAG=$1
-OPENJDK_MAJOR=${VERSION_TAG/.*/}
-OPENJDK_MAJOR=${OPENJDK_MAJOR/+*/}
-#BASE_URL=https://github.com/AdoptOpenJDK/openjdk${OPENJDK_MAJOR}-binaries/releases/download
-BASE_URL=https://pmd-code.org/openjdk
+# OPENJDK_VERSION e.g. "11"
+OPENJDK_VERSION=$1
+BASE_URL=https://pmd-code.org/openjdk/latest/jdk-${OPENJDK_VERSION}-
 
-log_info "Installing OpenJDK${OPENJDK_MAJOR}U ${VERSION_TAG} for ${TRAVIS_OS_NAME}"
+log_info "Installing OpenJDK${OPENJDK_VERSION} for ${TRAVIS_OS_NAME}"
 
 if travis_isOSX; then
-    DOWNLOAD_URL=${BASE_URL}/jdk-${VERSION_TAG/+/%2B}/OpenJDK${OPENJDK_MAJOR}U-jdk_x64_mac_hotspot_${VERSION_TAG/+/_}.tar.gz
+    DOWNLOAD_URL=${BASE_URL}mac64.tar.gz
     COMPONENTS_TO_STRIP=3 # e.g. jdk-11.0.3+7/Contents/Home/bin/java
 elif travis_isWindows; then
-    DOWNLOAD_URL=${BASE_URL}/jdk-${VERSION_TAG/+/%2B}/OpenJDK${OPENJDK_MAJOR}U-jdk_x64_windows_hotspot_${VERSION_TAG/+/_}.zip
+    DOWNLOAD_URL=${BASE_URL}windows64.zip
 else
-    DOWNLOAD_URL=${BASE_URL}/jdk-${VERSION_TAG/+/%2B}/OpenJDK${OPENJDK_MAJOR}U-jdk_x64_linux_hotspot_${VERSION_TAG/+/_}.tar.gz
+    DOWNLOAD_URL=${BASE_URL}linux64.tar.gz
     COMPONENTS_TO_STRIP=1 # e.g. openjdk-11.0.3+7/bin/java
 fi
 
 OPENJDK_ARCHIVE=$(basename $DOWNLOAD_URL)
 
 LOCAL_DIR=${HOME}/.cache/openjdk
-TARGET_DIR=${HOME}/openjdk${OPENJDK_MAJOR}
+TARGET_DIR=${HOME}/openjdk${OPENJDK_VERSION}
 
 mkdir -p ${LOCAL_DIR}
 mkdir -p ${TARGET_DIR}

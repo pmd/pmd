@@ -121,17 +121,15 @@ public class SaxonXPathRuleQuery {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
                 while (current != null) {
-                    if (current instanceof AstElementNode) {
-                        results.add(((AstElementNode) current).getUnderlyingNode());
+                    if (current instanceof AstNodeOwner) {
+                        results.add(((AstNodeOwner) current).getUnderlyingNode());
+                    } else {
+                        throw new RuntimeException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
                     }
                     current = iterator.next();
                 }
             }
 
-            /*
-             Map List of Saxon Nodes -> List of AST Nodes, which were detected to match the XPath expression
-             (i.e. violation found)
-              */
             final List<Node> sortedRes = new ArrayList<>(results);
             sortedRes.sort(RuleChainAnalyzer.documentOrderComparator());
             return sortedRes;

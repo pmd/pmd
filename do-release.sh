@@ -163,7 +163,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 
 
 echo
-echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
+echo "Tag has been pushed.... now check travis build: <https://travis-ci.com/pmd/pmd>"
 echo
 echo
 echo "Press enter to continue..."
