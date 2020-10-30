@@ -74,7 +74,7 @@
     <rule ref="category/java/codestyle.xml/CallSuperInConstructor"/>
     <rule ref="category/java/codestyle.xml/ClassNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ConfusingTernary"/> -->
+    <rule ref="category/java/codestyle.xml/ConfusingTernary"/>
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
     <rule ref="category/java/codestyle.xml/DefaultPackage"/>
     <rule ref="category/java/codestyle.xml/DontImportJavaLang"/>
