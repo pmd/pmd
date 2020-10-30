@@ -4,55 +4,43 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.List;
-import java.util.Map;
-
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class AvoidReassigningParametersRule extends AbstractJavaRule {
+public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        this.lookForViolation(params, data);
-        return super.visit(node, data);
+    public AvoidReassigningParametersRule() {
+        super(ASTMethodDeclaration.class, ASTConstructorDeclaration.class);
     }
 
-    private void lookForViolation(Map<VariableNameDeclaration, List<NameOccurrence>> params, Object data) {
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : params.entrySet()) {
-            VariableNameDeclaration decl = entry.getKey();
-            List<NameOccurrence> usages = entry.getValue();
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        lookForViolations(node, data);
+        return data;
+    }
 
-            // Only look for formal parameters
-            if (!decl.getDeclaratorId().isFormalParameter()) {
-                continue;
-            }
 
-            for (NameOccurrence occ : usages) {
-                JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
-                if ((jocc.isOnLeftHandSide() || jocc.isSelfAssignment())
-                        && jocc.getNameForWhichThisIsAQualifier() == null && !jocc.useThisOrSuper() && !decl.isVarargs()
-                        && (!decl.isArray()
-                                || jocc.getLocation().getParent().getParent().getNumChildren() == 1)) {
-                    // not an array or no primary suffix to access the array
-                    // values
-                    addViolation(data, decl.getNode(), decl.getImage());
+    @Override
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        lookForViolations(node, data);
+        return data;
+    }
+
+    private void lookForViolations(ASTMethodOrConstructorDeclaration node, Object data) {
+        for (ASTFormalParameter formal : node.getFormalParameters()) {
+            ASTVariableDeclaratorId varId = formal.getVarId();
+            for (ASTNamedReferenceExpr usage : varId.getUsages()) {
+                if (usage.getAccessType() == AccessType.WRITE) {
+                    addViolation(data, usage, varId.getName());
                 }
             }
         }
     }
 
-    @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        this.lookForViolation(params, data);
-        return super.visit(node, data);
-    }
 }
