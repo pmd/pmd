@@ -10,7 +10,10 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class VFTestContstants {
+public final class VFTestContstants {
+    private VFTestContstants() {
+    }
+
     private static final Path ROOT_PATH = Paths.get("src", "test", "resources", "net", "sourceforge",
             "pmd", "lang", "vf").toAbsolutePath();
 
