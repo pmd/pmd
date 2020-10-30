@@ -12,17 +12,25 @@ import java.io.ObjectStreamField;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
@@ -106,6 +114,53 @@ public final class JavaRuleUtil {
             // foo(x++)
             || expr.getParent() instanceof ASTUnaryExpression
             && expr.getParent().getParent() instanceof ASTArgumentList;
+    }
+
+    /**
+     * True if the variable is incremented or decremented via a compound
+     * assignment operator, or a unary increment/decrement expression.
+     */
+    public static boolean isVarAccessReadAndWrite(ASTNamedReferenceExpr expr) {
+        return expr.getAccessType() == AccessType.WRITE
+            && (!(expr.getParent() instanceof ASTAssignmentExpression)
+            || ((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound());
+    }
+
+    /**
+     * True if the variable is incremented or decremented via a compound
+     * assignment operator, or a unary increment/decrement expression.
+     */
+    public static boolean isInIfCondition(ASTExpression expr) {
+        ASTExpression toplevel = getTopLevelExpr(expr);
+        return toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement;
+    }
+
+    public static @Nullable ASTIfStatement getIfStmtIfExprInCondition(ASTExpression expr) {
+        ASTExpression toplevel = getTopLevelExpr(expr);
+        if (toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement) {
+            return (ASTIfStatement) toplevel.getParent();
+        }
+        return null;
+    }
+
+    /**
+     * Will cut through argument lists, except those of enum constants & explicit invocation nodes.
+     */
+    private static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
+        return (ASTExpression) expr.ancestorsOrSelf()
+                                   .takeWhile(it -> it instanceof ASTExpression
+                                       || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression)
+                                   .last();
+    }
+
+    public static NodeStream<ASTVariableDeclaratorId> getLoopVariables(ASTForStatement loop) {
+        @Nullable ASTStatement init = loop.getInit();
+
+        if (init instanceof ASTLocalVariableDeclaration) {
+            return ((ASTLocalVariableDeclaration) init).getVarIds();
+        }
+
+        return NodeStream.empty();
     }
 
     // TODO at least UnusedPrivateMethod has some serialization-related logic.

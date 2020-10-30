@@ -19,4 +19,11 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public interface ASTLoopStatement extends ASTStatement {
+
+
+    /** Returns the statement that represents the body of this loop. */
+    default ASTStatement getBody() {
+        return (ASTStatement) getLastChild();
+    }
+
 }

@@ -58,9 +58,5 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
         return update == null ? null : update.getExprList();
     }
 
-    /** Returns the statement that represents the body of this loop. */
-    public ASTStatement getBody() {
-        return (ASTStatement) getChild(getNumChildren() - 1);
-    }
 
 }

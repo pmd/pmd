@@ -29,14 +29,6 @@ public final class ASTWhileStatement extends AbstractStatement implements ASTLoo
     }
 
 
-    /**
-     * Returns the statement that will be run while the guard
-     * evaluates to true.
-     */
-    public ASTStatement getBody() {
-        return (ASTStatement) getChild(1);
-    }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
