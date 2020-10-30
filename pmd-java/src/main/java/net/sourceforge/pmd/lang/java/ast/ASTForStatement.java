@@ -29,13 +29,7 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
     }
 
 
-    /**
-     * Returns the node that represents the condition of this loop.
-     * This may be any expression of type boolean.
-     *
-     * <p>If there is no specified guard, then returns null.
-     */
-    @Nullable
+    @Override
     public ASTExpression getCondition() {
         return getFirstChildOfType(ASTExpression.class);
     }

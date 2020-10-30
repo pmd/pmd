@@ -9,19 +9,29 @@ import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
 import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -89,84 +99,131 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             return data;
         }
         ASTForUpdate update = loopStmt.getFirstChildOfType(ASTForUpdate.class);
-        ASTStatement body = loopStmt.getBody();
-        for (ASTVariableDeclaratorId loopVar : JavaRuleUtil.getLoopVariables(loopStmt)) {
-            for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
-                if (usage.getAccessType() == AccessType.WRITE) {
-                    if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
-                        continue;
+        NodeStream<ASTVariableDeclaratorId> loopVars = JavaRuleUtil.getLoopVariables(loopStmt);
+        if (behavior == ForReassignOption.DENY) {
+            for (ASTVariableDeclaratorId loopVar : loopVars) {
+                for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
+                    if (usage.getAccessType() == AccessType.WRITE) {
+                        if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
+                            continue;
+                        }
+                        addViolation(data, usage, loopVar.getName());
                     }
-
-                    if (behavior == ForReassignOption.SKIP
-                        && JavaRuleUtil.isVarAccessReadAndWrite(usage)
-                        && isConditionallyGuarded(usage, loopStmt)) {
-                        continue;
-                    }
-                    addViolation(data, usage, loopVar.getName());
-
                 }
-
             }
+        } else {
+            Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableDeclaratorId::getName, Collectors.toSet()));
+            Set<String> labels = JavaRuleUtil.getStatementLabels(loopStmt);
+            new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
         }
         return null;
     }
 
-    private static boolean isConditionallyGuarded(JavaNode node, ASTLoopStatement enclosingLoop) {
-        JavaNode parent = node.getParent();
+    class ControlFlowCtx {
 
-        if (parent == enclosingLoop) {
+        private final boolean guarded;
+        private boolean mayExit;
+        private final Set<String> loopVarNames;
+        private final RuleContext ruleCtx;
+
+        private final Set<String> outerLoopNames;
+        private final boolean breakHidden;
+        private final boolean continueHidden;
+
+        ControlFlowCtx(boolean guarded, Set<String> loopVarNames, RuleContext ctx, Set<String> outerLoopNames, boolean breakHidden, boolean continueHidden) {
+            this.guarded = guarded;
+            this.loopVarNames = loopVarNames;
+            this.ruleCtx = ctx;
+            this.outerLoopNames = outerLoopNames;
+            this.breakHidden = breakHidden;
+            this.continueHidden = continueHidden;
+        }
+
+        ControlFlowCtx guarded() {
+            return withGuard(true);
+        }
+
+        ControlFlowCtx withGuard(boolean isGuarded) {
+            return new ControlFlowCtx(isGuarded, loopVarNames, ruleCtx, outerLoopNames, breakHidden, continueHidden);
+        }
+
+        ControlFlowCtx copy(boolean isGuarded, boolean breakHidden, boolean continueHidden) {
+            return new ControlFlowCtx(isGuarded, loopVarNames, ruleCtx, outerLoopNames, breakHidden, continueHidden);
+        }
+
+        // return true if may exit the outer loop abruptly via continue/break
+        private boolean roamStatementsForExit(NodeStream<? extends JavaNode> stmts) {
+            for (JavaNode stmt : stmts) {
+                if (stmt instanceof ASTThrowStatement
+                    || stmt instanceof ASTReturnStatement) {
+                    return true;
+                } else if (stmt instanceof ASTBreakStatement) {
+                    String label = ((ASTBreakStatement) stmt).getLabel();
+                    return label != null && outerLoopNames.contains(label) || !breakHidden;
+                } else if (stmt instanceof ASTContinueStatement) {
+                    String label = ((ASTContinueStatement) stmt).getLabel();
+                    return label != null && outerLoopNames.contains(label) || !continueHidden;
+                }
+
+                // note that we mean to use |= and not shortcut evaluation
+
+                if (stmt instanceof ASTLoopStatement) {
+
+                    ASTStatement body = ((ASTLoopStatement) stmt).getBody();
+                    for (JavaNode child : stmt.children()) {
+                        if (child != body) {
+                            checkVorViolations(child);
+                        }
+                    }
+
+                    mayExit |= copy(true, true, true).roamStatementsForExit(body);
+
+                } else if (stmt instanceof ASTSwitchStatement) {
+
+                    checkVorViolations(((ASTSwitchStatement) stmt).getTestedExpression());
+
+                    mayExit |= copy(true, true, false).roamStatementsForExit(stmt.children().drop(1));
+
+                } else if (stmt instanceof ASTIfStatement) {
+
+                    checkVorViolations(((ASTIfStatement) stmt).getCondition());
+                    mayExit |= guarded().roamStatementsForExit(((ASTIfStatement) stmt).getThenBranch());
+                    mayExit |= withGuard(this.guarded).roamStatementsForExit(((ASTIfStatement) stmt).getElseBranch());
+
+                } else if (stmt instanceof ASTExpression) {
+
+                    checkVorViolations(stmt);
+
+                } else if (!(stmt instanceof ASTLocalClassStatement)) {
+                    mayExit |= roamStatementsForExit(stmt.children());
+                }
+            }
             return false;
         }
 
-        if (parent instanceof ASTLoopStatement) {
-            return node == ((ASTLoopStatement) parent).getBody() || isConditionallyGuarded(parent, enclosingLoop);
-        }
-
-        if (parent instanceof ASTSwitchStatement) {
-            return node.getIndexInParent() != 0 || isConditionallyGuarded(parent, enclosingLoop);
-        }
-
-        if (parent instanceof ASTIfStatement) {
-            return node.getIndexInParent() != 0 || isConditionallyGuarded(parent, enclosingLoop);
-
-//            if (node.getIndexInParent() == 0) {// condition
-//                return isConditionallyGuarded(parent, enclosingLoop);
-//            }
-//            while (parent.getParent() instanceof ASTIfStatement) {
-//                parent = parent.getParent();
-//            }
-//            return isConditionallyGuarded(parent, enclosingLoop);
-        }
-
-        return isConditionallyGuarded(parent, enclosingLoop);
-    }
-
-    private static boolean isConditionallyGuarded(ASTLoopStatement loop, ASTExpression expr) {
-        ASTIfStatement enclosingIf = JavaRuleUtil.getIfStmtIfExprInCondition(expr);
-        JavaNode previous = expr;
-        for (JavaNode parent : expr.ancestors()) {
-            if (parent == loop) {
-                break;
-            }
-            if (parent instanceof ASTIfStatement) {
-                if (previous instanceof ASTIfStatement && previous.getIndexInParent() == 1
-                    || !(previous instanceof ASTExpression)) {
-                    return true;
-                }
-            } else if (parent instanceof ASTSwitchStatement) {
-                if (previous != parent.getFirstChild()) {
-                    return true;
-                }
-            } else if (parent instanceof ASTLoopStatement) {
-                // we didn't come from the condition expr
-                if (previous == ((ASTLoopStatement) parent).getBody()) {
-                    return true;
-                }
+        private boolean roamStatementsForExit(JavaNode node) {
+            if (node == null) {
+                return false;
             }
 
-            previous = parent;
+            NodeStream<? extends JavaNode> unwrappedBlock =
+                node instanceof ASTBlock
+                ? ((ASTBlock) node).toStream()
+                : NodeStream.of(node);
+
+            return roamStatementsForExit(unwrappedBlock);
         }
-        return false;
+
+        private void checkVorViolations(JavaNode node) {
+            if (node == null) {
+                return;
+            }
+            node.descendants(ASTNamedReferenceExpr.class)
+                .filter(it -> loopVarNames.contains(it.getName()))
+                .filter(it -> (guarded || mayExit) ? JavaRuleUtil.isVarAccessStrictlyWrite(it)
+                                                   : JavaRuleUtil.isVarAccessReadAndWrite(it))
+                .forEach(it -> addViolation(ruleCtx, it, it.getName()));
+        }
     }
 
     private enum ForeachReassignOption {

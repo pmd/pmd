@@ -9,7 +9,10 @@ import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKi
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -26,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -124,6 +128,29 @@ public final class JavaRuleUtil {
         return expr.getAccessType() == AccessType.WRITE
             && (!(expr.getParent() instanceof ASTAssignmentExpression)
             || ((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound());
+    }
+
+    /**
+     * True if the variable access is a non-compound assignment.
+     */
+    public static boolean isVarAccessStrictlyWrite(ASTNamedReferenceExpr expr) {
+        return expr.getParent() instanceof ASTAssignmentExpression
+            && expr.getIndexInParent() == 0
+            && !((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound();
+    }
+
+    /**
+     * Returns the set of labels on this statement.
+     */
+    public static Set<String> getStatementLabels(ASTStatement node) {
+        if (!(node.getParent() instanceof ASTLabeledStatement)) {
+            return Collections.emptySet();
+        }
+
+        return node.ancestors().takeWhile(it -> it instanceof ASTLabeledStatement)
+                   .toStream()
+                   .map(it -> ((ASTLabeledStatement) it).getLabel())
+                   .collect(Collectors.toSet());
     }
 
     /**
