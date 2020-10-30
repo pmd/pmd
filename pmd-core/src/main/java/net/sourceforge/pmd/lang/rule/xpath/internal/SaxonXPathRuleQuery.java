@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
-import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.Configuration;
@@ -168,14 +167,7 @@ public class SaxonXPathRuleQuery {
      */
     private AstTreeInfo getDocumentNodeForRootNode(final Node node) {
         final RootNode root = node.getRoot();
-
-        DataMap<DataKey<?, ?>> userMap = root.getUserMap();
-        AstTreeInfo docNode = userMap.get(SAXON_TREE_CACHE_KEY);
-        if (docNode == null) {
-            docNode = new AstTreeInfo(root, configuration);
-            userMap.set(SAXON_TREE_CACHE_KEY, docNode);
-        }
-        return docNode;
+        return root.getUserMap().computeIfAbsent(SAXON_TREE_CACHE_KEY, () -> new AstTreeInfo(root, configuration));
     }
 
 
