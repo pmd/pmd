@@ -60,7 +60,7 @@ public class RuleApplicator {
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(node, ctx);
                     rcto.close(1);
-                } catch (RuntimeException e) {
+                } catch (RuntimeException | StackOverflowError | AssertionError e) {
                     if (ctx.isIgnoreExceptions()) {
                         ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
 
