@@ -37,7 +37,7 @@ public class PMDException extends Exception {
      * @param reason
      *            the root cause
      */
-    public PMDException(String message, Exception reason) {
+    public PMDException(String message, Throwable reason) {
         super(message, reason);
     }
 
