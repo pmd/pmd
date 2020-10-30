@@ -90,6 +90,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * Returns an unmodifiable list of the usages of this variable that
      * are made in this file. Note that for a record component, this returns
      * usages both for the formal parameter symbol and its field counterpart.
+     *
+     * <p>Note that a variable initializer is not part of the usages
+     * (though this should be evident from the return type).
      */
     public List<ASTNamedReferenceExpr> getUsages() {
         return usages;
@@ -100,6 +103,11 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
             usages = new ArrayList<>(4); //make modifiable
         }
         usages.add(usage);
+    }
+
+    @Override
+    public Visibility getVisibility() {
+        return getModifierOwnerParent().getVisibility();
     }
 
     /**

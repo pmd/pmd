@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -34,13 +32,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
-public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule {
+public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
     private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
         associateBy(asList(ForeachReassignOption.values()), ForeachReassignOption::getDisplayName);
@@ -61,13 +58,9 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         .build();
 
     public AvoidReassigningLoopVariablesRule() {
+        super(ASTForStatement.class, ASTForeachStatement.class);
         definePropertyDescriptor(FOREACH_REASSIGN);
         definePropertyDescriptor(FOR_REASSIGN);
-    }
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTForStatement.class, ASTForeachStatement.class);
     }
 
     @Override

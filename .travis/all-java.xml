@@ -90,11 +90,11 @@
     <!-- <rule ref="category/java/codestyle.xml/LinguisticNaming"/> -->
     <!-- <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention"/> -->
     <!-- <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal"/> -->
+    <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal"/>
     <!-- <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/> -->
     <!-- <rule ref="category/java/codestyle.xml/LongVariable"/> -->
     <!-- <rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal"/> -->
+    <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal"/>
     <!-- <rule ref="category/java/codestyle.xml/MethodNamingConventions"/> -->
     <!-- <rule ref="category/java/codestyle.xml/NoPackage"/> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn"/> -->
