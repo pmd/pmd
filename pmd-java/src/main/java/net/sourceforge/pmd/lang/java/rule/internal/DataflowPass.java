@@ -121,7 +121,7 @@ public final class DataflowPass {
 
         public ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
-            this.isNotFullyKnown = reaching.remove(null);
+            this.isNotFullyKnown = reaching.removeIf(AssignmentEntry::isUnbound);
         }
 
         /**
@@ -129,6 +129,13 @@ public final class DataflowPass {
          */
         public Set<AssignmentEntry> getReaching() {
             return Collections.unmodifiableSet(reaching);
+        }
+
+        /**
+         * Returns true if there are some unknown assignments in this set.
+         */
+        public boolean isNotFullyKnown() {
+            return isNotFullyKnown;
         }
     }
 
@@ -164,23 +171,24 @@ public final class DataflowPass {
         // so in methods we don't care about fields
         // If not null, fields are effectively treated as locals
         private final JClassSymbol enclosingClassScope;
-        private final boolean inStaticInit;
+        private final boolean inStaticCtx;
 
-        private ReachingDefsVisitor(JClassSymbol scope, boolean inStaticInit) {
+        private ReachingDefsVisitor(JClassSymbol scope, boolean inStaticCtx) {
             this.enclosingClassScope = scope;
-            this.inStaticInit = inStaticInit;
+            this.inStaticCtx = inStaticCtx;
         }
 
         /**
          * If true, we're also tracking fields of the {@code this} instance,
-         * because we're in a ctor or initializer.
+         * because we're in a ctor or initializer, or instance method.
          */
         private boolean trackThisInstance() {
-            return enclosingClassScope != null && !inStaticInit;
+            return !inStaticCtx;
         }
 
         private boolean trackStaticFields() {
-            return enclosingClassScope != null && inStaticInit;
+            // only tracked in initializers
+            return enclosingClassScope != null && inStaticCtx;
         }
 
         // following deals with control flow structures
@@ -828,7 +836,11 @@ public final class DataflowPass {
                 if (decl instanceof ASTMethodDeclaration) {
                     ASTMethodDeclaration method = (ASTMethodDeclaration) decl;
                     if (method.getBody() != null) {
-                        ONLY_LOCALS.acceptOpt(decl, data.forkCapturingNonLocal());
+                        SpanInfo span = data.forkCapturingNonLocal();
+                        if (!method.isStatic()) {
+                            span.declareSpecialFieldValues(node.getSymbol());
+                        }
+                        ONLY_LOCALS.acceptOpt(decl, span);
                     }
                 } else if (decl instanceof ASTAnyTypeDeclaration) {
                     visitTypeDecl((ASTAnyTypeDeclaration) decl, data.forkEmptyNonLocal());
@@ -1004,22 +1016,18 @@ public final class DataflowPass {
             assign(id.getSymbol(), id);
         }
 
-        /**
-         * Assign the var to some node. The RHS node is interpreted by {@link AssignmentEntry} if non-null.
-         * But if null, then the variable is assigned to some out of scope value,
-         * eg after a {@code this} leak, where we don't know what happened.
-         */
-        void assign(JVariableSymbol var, @Nullable JavaNode rhs) {
-            assign(var, rhs, false);
+        void assign(JVariableSymbol var, JavaNode rhs) {
+            assign(var, rhs, false, false);
         }
 
-        void assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope) {
+        @Nullable AssignmentEntry assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope, boolean isFieldBeforeMethod) {
             ASTVariableDeclaratorId node = var.tryGetNode();
             if (node == null) {
-                return; // we don't care about non-local declarations
+                return null; // we don't care about non-local declarations
             }
-            AssignmentEntry entry = outOfScope ? new UnboundAssignment(var, node, rhs)
-                                               : new AssignmentEntry(var, node, rhs);
+            AssignmentEntry entry = outOfScope || isFieldBeforeMethod
+                                    ? new UnboundAssignment(var, node, rhs, isFieldBeforeMethod)
+                                    : new AssignmentEntry(var, node, rhs);
             VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
             if (previous != null) {
                 // those assignments were overwritten ("killed")
@@ -1035,6 +1043,26 @@ public final class DataflowPass {
                 }
             }
             global.allAssignments.add(entry);
+            return entry;
+        }
+
+        Set<AssignmentEntry> declareSpecialFieldValues(JClassSymbol sym) {
+            List<JFieldSymbol> declaredFields = sym.getDeclaredFields();
+            Set<AssignmentEntry> specials = new HashSet<>(declaredFields.size());
+            for (JFieldSymbol field : declaredFields) {
+                ASTVariableDeclaratorId id = field.tryGetNode();
+                if (id == null || field.isFinal() || field.isStatic()) {
+                    // useless to track final fields
+                    // static fields are out of scope of this impl for now
+                    continue;
+                }
+
+                AssignmentEntry entry = assign(field, id, true, true);
+                if (entry != null) {
+                    specials.add(entry);
+                }
+            }
+            return specials;
         }
 
 
@@ -1043,7 +1071,7 @@ public final class DataflowPass {
                 return;
             }
             use(var, null);
-            assign(var, escapingNode, true);
+            assign(var, escapingNode, true, false);
         }
 
         void use(@Nullable JVariableSymbol var, ASTNamedReferenceExpr reachingDefSink) {
@@ -1333,8 +1361,15 @@ public final class DataflowPass {
 
     static class UnboundAssignment extends AssignmentEntry {
 
-        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs) {
+        /**
+         * If true, then this is the unknown value of a field
+         * before an instance method call.
+         */
+        private final boolean isFieldStartValue;
+
+        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs, boolean isFieldStartValue) {
             super(var, node, rhs);
+            this.isFieldStartValue = isFieldStartValue;
         }
 
         @Override
