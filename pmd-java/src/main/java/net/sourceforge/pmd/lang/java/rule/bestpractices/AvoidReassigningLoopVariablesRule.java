@@ -139,19 +139,30 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             this.continueHidden = continueHidden;
         }
 
-        ControlFlowCtx guarded() {
-            return withGuard(true);
-        }
-
         ControlFlowCtx withGuard(boolean isGuarded) {
-            return new ControlFlowCtx(isGuarded, loopVarNames, ruleCtx, outerLoopNames, breakHidden, continueHidden);
+            return copy(isGuarded, breakHidden, continueHidden);
         }
 
         ControlFlowCtx copy(boolean isGuarded, boolean breakHidden, boolean continueHidden) {
             return new ControlFlowCtx(isGuarded, loopVarNames, ruleCtx, outerLoopNames, breakHidden, continueHidden);
         }
 
-        // return true if may exit the outer loop abruptly via continue/break
+
+        private boolean roamStatementsForExit(JavaNode node) {
+            if (node == null) {
+                return false;
+            }
+
+            NodeStream<? extends JavaNode> unwrappedBlock =
+                node instanceof ASTBlock
+                ? ((ASTBlock) node).toStream()
+                : NodeStream.of(node);
+
+            return roamStatementsForExit(unwrappedBlock);
+        }
+
+        // return true if any statement may exit the outer loop abruptly
+        // This way increments of variables are allowed if they are guarded by a conditional
         private boolean roamStatementsForExit(NodeStream<? extends JavaNode> stmts) {
             for (JavaNode stmt : stmts) {
                 if (stmt instanceof ASTThrowStatement
@@ -187,31 +198,18 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 } else if (stmt instanceof ASTIfStatement) {
 
                     checkVorViolations(((ASTIfStatement) stmt).getCondition());
-                    mayExit |= guarded().roamStatementsForExit(((ASTIfStatement) stmt).getThenBranch());
+                    mayExit |= withGuard(true).roamStatementsForExit(((ASTIfStatement) stmt).getThenBranch());
                     mayExit |= withGuard(this.guarded).roamStatementsForExit(((ASTIfStatement) stmt).getElseBranch());
 
-                } else if (stmt instanceof ASTExpression) {
-
+                }
+                // these two catch-all clauses implement other statements & eg switch branches
+                else if (stmt instanceof ASTExpression) {
                     checkVorViolations(stmt);
-
                 } else if (!(stmt instanceof ASTLocalClassStatement)) {
                     mayExit |= roamStatementsForExit(stmt.children());
                 }
             }
-            return false;
-        }
-
-        private boolean roamStatementsForExit(JavaNode node) {
-            if (node == null) {
-                return false;
-            }
-
-            NodeStream<? extends JavaNode> unwrappedBlock =
-                node instanceof ASTBlock
-                ? ((ASTBlock) node).toStream()
-                : NodeStream.of(node);
-
-            return roamStatementsForExit(unwrappedBlock);
+            return mayExit;
         }
 
         private void checkVorViolations(JavaNode node) {
