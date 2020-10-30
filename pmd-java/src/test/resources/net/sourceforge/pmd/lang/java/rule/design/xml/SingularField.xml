@@ -186,8 +186,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Reuse variable name as params in method calls</description>
-        <expected-problems>1</expected-problems>
+        <description>Ok, field has no read access</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private Integer x = new Integer(1);
@@ -240,11 +240,11 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>failure, static</description>
-        <expected-problems>1</expected-problems>
+        <description>ok, static is ignored</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private int x;
+    private static int x;
     static {
         x = 5;
     }
@@ -253,8 +253,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>failure, second method re-uses class level name</description>
-        <expected-problems>1</expected-problems>
+        <description>Ok, field has no read access (shadowing)</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private int x;
@@ -409,14 +409,37 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Ok, setting values</description>
+        <description>Ok, the field is unused</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private Person p = new Person();
+
+    //ctor
     public Foo(String name) {
         p.name = name;
     }
+
+    public void foo(String name) {
+        p.name = name;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation, in ctor it's used only once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Person p = new Person();
+
+    //ctor
+    public Foo(String name) {
+        p.name = name;
+    }
+
 }
         ]]></code>
     </test-code>
@@ -580,6 +603,11 @@ public class Outer {
 
     public Outer(String outerField) {
         this.outerField = outerField;
+    }
+
+    void useField() {
+        outerField = "";
+        System.out.println(outerField);
     }
 }
         ]]></code>

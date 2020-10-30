@@ -110,13 +110,14 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId) {
-        List<ASTNamedReferenceExpr> usages = varId.getUsages();
-        if (usages.isEmpty()) {
+        if (JavaRuleUtil.isNeverUsed(varId)) {
             return false;// don't report unused field
         }
 
+        //Check usages for validity & group them by scope
+        //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
-        for (ASTNamedReferenceExpr usage : usages) {
+        for (ASTNamedReferenceExpr usage : varId.getUsages()) {
             if (usage.getEnclosingType() != fieldOwner
                 || !JavaRuleUtil.isThisFieldAccess(usage)) {
                 return false; // give up

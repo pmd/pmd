@@ -44,12 +44,8 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
                 return null;
             }
 
-            for (ASTFieldDeclaration field : type.getDeclarations()
-                                                 .filterIs(ASTFieldDeclaration.class)) {
-                if (field.getVisibility() == Visibility.V_PRIVATE
-                    && !JavaRuleUtil.isSerialPersistentFields(field)
-                    && !JavaRuleUtil.isSerialVersionUID(field)
-                    && !hasIgnoredAnnotation(field)) {
+            for (ASTFieldDeclaration field : type.getDeclarations().filterIs(ASTFieldDeclaration.class)) {
+                if (!isIgnored(field)) {
                     for (ASTVariableDeclaratorId varId : field.getVarIds()) {
                         if (JavaRuleUtil.isNeverUsed(varId)) {
                             addViolation(data, varId, varId.getName());
@@ -59,6 +55,13 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             }
         }
         return null;
+    }
+
+    private boolean isIgnored(ASTFieldDeclaration field) {
+        return field.getVisibility() != Visibility.V_PRIVATE
+            || JavaRuleUtil.isSerialPersistentFields(field)
+            || JavaRuleUtil.isSerialVersionUID(field)
+            || hasIgnoredAnnotation(field);
     }
 
     private boolean hasIgnoredAnnotation(Annotatable node) {
