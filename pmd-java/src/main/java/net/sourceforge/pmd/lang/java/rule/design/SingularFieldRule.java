@@ -5,14 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -25,12 +24,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -44,9 +44,9 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since Created on April 17, 2005, 9:49 PM
  */
-public class SingularFieldRule extends AbstractLombokAwareRule {
+public class SingularFieldRule extends AbstractJavaRulechainRule {
 
-    // note: these properties are ignored now.
+    // todo: these 2 properties are ignored now, deprecate until 7 maybe?
 
     /**
      * Restore old behavior by setting both properties to true, which will
@@ -63,23 +63,19 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
             .desc("Disallow violations where the first usage is not an assignment")
             .build();
 
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOT_PROPERTY =
+        JavaPropertyUtil.ignoredAnnotationsProperty(
+            CollectionUtil.union(JavaRuleUtil.LOMBOK_ANNOTATIONS,
+                                 setOf("lombok.experimental.Delegate",
+                                       "lombok.EqualsAndHashCode"))
+        );
+
 
     public SingularFieldRule() {
+        super(ASTCompilationUnit.class, ASTFieldDeclaration.class);
         definePropertyDescriptor(CHECK_INNER_CLASSES);
         definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
-    }
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTCompilationUnit.class, ASTFieldDeclaration.class);
-    }
-
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        defaultValues.add("lombok.experimental.Delegate");
-        defaultValues.add("lombok.EqualsAndHashCode");
-        return defaultValues;
+        definePropertyDescriptor(IGNORED_ANNOT_PROPERTY);
     }
 
     @Override
@@ -93,8 +89,8 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
         ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
         if (node.getVisibility() != Visibility.V_PRIVATE
             || node.hasModifiers(JModifier.STATIC)
-            || hasIgnoredAnnotation(enclosingType)
-            || hasIgnoredAnnotation(node)) {
+            || JavaRuleUtil.hasAnyAnnotation(enclosingType, getProperty(IGNORED_ANNOT_PROPERTY))
+            || JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_ANNOT_PROPERTY))) {
             return data;
         }
 

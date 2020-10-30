@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
+import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +55,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -65,6 +68,17 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaRuleUtil {
+
+    public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
+        "lombok.Data",
+        "lombok.Getter",
+        "lombok.Setter",
+        "lombok.Value",
+        "lombok.RequiredArgsConstructor",
+        "lombok.AllArgsConstructor",
+        "lombok.NoArgsConstructor",
+        "lombok.Builder"
+    );
 
     private JavaRuleUtil() {
         // utility class
@@ -495,4 +509,9 @@ public final class JavaRuleUtil {
         }
         return false;
     }
+
+    public static boolean hasAnyAnnotation(Annotatable node, Collection<String> qualifiedNames) {
+        return qualifiedNames.stream().anyMatch(node::isAnnotationPresent);
+    }
+
 }

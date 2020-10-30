@@ -4,42 +4,43 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.CollectionUtil;
 
-public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
+public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTAnyTypeDeclaration.class);
-    }
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTATIONS =
+        JavaPropertyUtil.ignoredAnnotationsProperty(
+            CollectionUtil.union(JavaRuleUtil.LOMBOK_ANNOTATIONS,
+                                 setOf("java.lang.Deprecated",
+                                       "javafx.fxml.FXML",
+                                       "lombok.experimental.Delegate",
+                                       "lombok.EqualsAndHashCode"))
+        );
 
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        defaultValues.add("java.lang.Deprecated");
-        defaultValues.add("javafx.fxml.FXML");
-        defaultValues.add("lombok.experimental.Delegate");
-        defaultValues.add("lombok.EqualsAndHashCode");
-        return defaultValues;
+    public UnusedPrivateFieldRule() {
+        super(ASTAnyTypeDeclaration.class);
+        definePropertyDescriptor(IGNORED_ANNOTATIONS);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
         if (node instanceof ASTAnyTypeDeclaration) {
             ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) node;
-            if (hasIgnoredAnnotation(type) || hasLombokAnnotation(type)) {
+            if (hasIgnoredAnnotation(type)) {
                 return null;
             }
 
@@ -58,5 +59,9 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             }
         }
         return null;
+    }
+
+    private boolean hasIgnoredAnnotation(Annotatable node) {
+        return JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_ANNOTATIONS));
     }
 }
