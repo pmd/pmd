@@ -47,7 +47,7 @@ final class AnnotationSuppressionUtil {
 
     private static final Set<String> UNUSED_RULES
         = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
-                "UnusedFormalParameter", "UnusedAssignment"));
+                "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
     private static final Set<String> SERIAL_RULES =
         new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID"));
 
