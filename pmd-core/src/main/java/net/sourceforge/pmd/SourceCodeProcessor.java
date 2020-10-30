@@ -105,7 +105,7 @@ public class SourceCodeProcessor {
         } catch (ParseException pe) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
             throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
-        } catch (Exception e) {
+        } catch (Exception | StackOverflowError | AssertionError e) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
             throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
         } finally {
