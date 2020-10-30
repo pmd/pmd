@@ -1806,19 +1806,7 @@ Tests for null should not use the equals() method. The '==' operator should be u
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-  [
-    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-    or
-
-    PrimarySuffix[ends-with(@Image, 'equals')]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-  ]
+//MethodCall[@MethodName = "equals" and ArgumentList[count(*) = 1 and NullLiteral]]
 ]]>
                 </value>
             </property>
