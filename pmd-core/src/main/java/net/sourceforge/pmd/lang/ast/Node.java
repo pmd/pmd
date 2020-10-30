@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;

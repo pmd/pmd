@@ -40,16 +40,6 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
         return token.getReportLocation();
     }
 
-    @Override
-    public String getImage() {
-        return token.getImage();
-    }
-
-    @Override
-    public final CharSequence getText() {
-        return super.getText();
-    }
-
     /**
      * @deprecated Use {@link #getText()}
      */
@@ -85,7 +75,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
-        String[] lines = NEWLINES_PATTERN.split(getImage());
+        String[] lines = NEWLINES_PATTERN.split(getText());
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {

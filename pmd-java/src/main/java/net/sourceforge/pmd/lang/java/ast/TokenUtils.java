@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -22,28 +21,20 @@ final class TokenUtils {
 
     // mind: getBeginLine and getEndLine on JavaccToken are now very slow.
 
-    /**
-     * Assumes no two tokens overlap, and that the two tokens are from
-     * the same document.
-     */
-    private static final Comparator<GenericToken> TOKEN_POS_COMPARATOR
-        = Comparator.comparingInt(GenericToken::getStartInDocument);
-
     private TokenUtils() {
 
     }
 
     public static int compare(GenericToken t1, GenericToken t2) {
-        return TOKEN_POS_COMPARATOR.compare(t1, t2);
+        return t1.getRegion().compareTo(t2.getRegion());
     }
 
     public static boolean isBefore(GenericToken t1, GenericToken t2) {
-        return t1.getStartInDocument() < t2.getStartInDocument();
+        return t1.getRegion().compareTo(t2.getRegion()) < 0;
     }
 
     public static boolean isAfter(GenericToken t1, GenericToken t2) {
-        return t1.getStartInDocument() > t2.getStartInDocument();
-
+        return t1.getRegion().compareTo(t2.getRegion()) > 0;
     }
 
 

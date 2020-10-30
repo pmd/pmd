@@ -50,7 +50,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
     @Deprecated
     @DeprecatedUntil700
     public String getAnnotationName() {
-        return (String) getTypeNode().getText();
+        return getTypeNode().getText().toString();
     }
 
     /**

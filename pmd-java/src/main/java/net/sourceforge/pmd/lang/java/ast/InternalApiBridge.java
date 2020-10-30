@@ -97,10 +97,6 @@ public final class InternalApiBridge {
         return methodDeclaration;
     }
 
-    public static JavaccTokenDocument javaTokenDoc(String fullText) {
-        return new JavaTokenDocument(fullText);
-    }
-
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);

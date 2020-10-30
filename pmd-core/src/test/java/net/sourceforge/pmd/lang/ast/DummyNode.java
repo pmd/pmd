@@ -71,7 +71,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
 
     @Override
     public @NonNull TextDocument getTextDocument() {
-        return TextDocument.readOnlyString("dummy text", filename, languageVersion);
+        return TextDocument.readOnlyString("dummy text", fileName, getRoot().getLanguageVersion());
     }
 
 
