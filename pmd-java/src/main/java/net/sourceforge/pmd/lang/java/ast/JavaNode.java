@@ -52,13 +52,6 @@ public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
     }
 
 
-
-    /**
-     * FIXME figure that out
-     */
-    Comment comment();
-
-
     @Override
     @NonNull ASTCompilationUnit getRoot();
 

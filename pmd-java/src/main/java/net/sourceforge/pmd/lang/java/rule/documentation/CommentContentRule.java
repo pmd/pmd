@@ -20,6 +20,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -30,7 +31,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * @author Brian Remedios
  */
-public class CommentContentRule extends AbstractCommentRule {
+public class CommentContentRule extends AbstractJavaRule {
 
     private boolean caseSensitive;
     private List<String> originalBadWords;
@@ -88,7 +89,7 @@ public class CommentContentRule extends AbstractCommentRule {
             return Collections.emptyList();
         }
 
-        String commentText = filteredCommentIn(comment);
+        String commentText = comment.getFilteredComment();
         if (StringUtils.isBlank(commentText)) {
             return Collections.emptyList();
         }

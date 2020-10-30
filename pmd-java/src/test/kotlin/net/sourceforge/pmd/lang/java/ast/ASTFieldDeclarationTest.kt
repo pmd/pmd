@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
@@ -57,6 +58,7 @@ class ASTFieldDeclarationTest : ParserTestSpec({
 
             "@A int x[] = { 2 };" should parseAs {
                 fieldDecl {
+                    it.preferredReportLocation!!.image shouldBe "x" // the ident
 
                     it::getModifiers shouldBe modifiers {
                         it::getExplicitModifiers shouldBe emptySet()

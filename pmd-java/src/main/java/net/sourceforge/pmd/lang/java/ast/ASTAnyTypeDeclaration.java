@@ -37,7 +37,8 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,
-            FinalizableNode {
+            FinalizableNode,
+            JavadocCommentOwner {
 
     @Override
     @NonNull
