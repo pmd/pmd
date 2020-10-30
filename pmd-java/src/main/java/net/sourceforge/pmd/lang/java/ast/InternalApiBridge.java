@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -125,40 +124,15 @@ public final class InternalApiBridge {
     }
 
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants()
+        root.descendants(ASTNamedReferenceExpr.class)
             .crossFindBoundaries()
             .forEach(node -> {
-                if (node instanceof ASTNamedReferenceExpr) {
-                    // variable/field usages
-                    ASTNamedReferenceExpr ref = (ASTNamedReferenceExpr) node;
-                    JVariableSymbol sym = ref.getReferencedSym();
-                    if (sym != null) {
-                        ASTVariableDeclaratorId reffed = sym.tryGetNode();
-                        if (reffed != null) { // declared in this file
-                            reffed.addUsage(ref);
-                        }
+                JVariableSymbol sym = node.getReferencedSym();
+                if (sym != null) {
+                    ASTVariableDeclaratorId reffed = sym.tryGetNode();
+                    if (reffed != null) { // declared in this file
+                        reffed.addUsage(node);
                     }
-                } else if (node instanceof ASTMethodCall) {
-                    // method usages
-                    OverloadSelectionResult overload = ((ASTMethodCall) node).getOverloadSelectionInfo();
-                    if (!overload.isFailed()) {
-                        JExecutableSymbol symbol = overload.getMethodType().getSymbol();
-                        JavaNode reffed = symbol.tryGetNode();
-                        if (reffed instanceof ASTMethodDeclaration) {
-                            ((ASTMethodDeclaration) reffed).addUsage((ASTMethodCall) node);
-                        }
-                    }
-                } else if (node instanceof ASTMethodReference) {
-                    // method usages
-                    OverloadSelectionResult overload = ((ASTMethodCall) node).getOverloadSelectionInfo();
-                    if (!overload.isFailed()) {
-                        JExecutableSymbol symbol = overload.getMethodType().getSymbol();
-                        JavaNode reffed = symbol.tryGetNode();
-                        if (reffed instanceof ASTMethodDeclaration) {
-                            ((ASTMethodDeclaration) reffed).addUsage((ASTMethodCall) node);
-                        }
-                    }
-
                 }
             });
     }

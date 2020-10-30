@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -44,8 +40,6 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  */
 public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration<JMethodSymbol> {
 
-    private List<MethodUsage> usages = Collections.emptyList();
-
     ASTMethodDeclaration(int id) {
         super(id);
     }
@@ -56,20 +50,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return visitor.visit(this, data);
     }
 
-    /**
-     * Returns the usages of the method made in this file. Because of this,
-     * this list will be incomplete if the method is not effectively private.
-     */
-    public List<MethodUsage> getUsages() {
-        return usages;
-    }
-
-    void addUsage(MethodUsage u) {
-        if (usages.isEmpty()) {
-            usages = new ArrayList<>(2);
-        }
-        usages.add(u);
-    }
 
     /**
      * Returns true if this method is overridden.

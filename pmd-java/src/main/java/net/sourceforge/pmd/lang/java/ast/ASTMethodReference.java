@@ -22,11 +22,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * </pre>
  */
-public final class ASTMethodReference extends AbstractJavaExpr
-    implements ASTPrimaryExpression,
-               QualifiableExpression,
-               LeftRecursiveNode,
-               MethodUsage {
+public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, QualifiableExpression, LeftRecursiveNode {
 
     private JMethodSig functionalMethod;
     private JMethodSig compileTimeDecl;
