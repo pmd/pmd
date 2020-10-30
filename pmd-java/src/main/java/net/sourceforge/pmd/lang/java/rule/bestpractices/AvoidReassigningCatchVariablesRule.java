@@ -4,48 +4,31 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
 
-    public AvoidReassigningCatchVariablesRule() {
-        addRuleChainVisit(ASTCatchClause.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTCatchParameter.class);
     }
 
     @Override
-    public Object visit(ASTCatchClause catchStatement, Object data) {
-        ASTVariableDeclaratorId caughtExceptionId = catchStatement.getParameter().getVarId();
-        String caughtExceptionVar = caughtExceptionId.getName();
-        for (NameOccurrence usage : caughtExceptionId.oldGetUsages()) {
-            JavaNode operation = getOperationOfUsage(usage);
-            if (isAssignment(operation)) {
-                String assignedVar = getAssignedVariableName(operation);
-                if (caughtExceptionVar.equals(assignedVar)) {
-                    addViolation(data, operation, caughtExceptionVar);
-                }
+    public Object visit(ASTCatchParameter catchParam, Object data) {
+        ASTVariableDeclaratorId caughtExceptionId = catchParam.getVarId();
+        for (ASTNamedReferenceExpr usage : caughtExceptionId.getUsages()) {
+            if (usage.getAccessType() == AccessType.WRITE) {
+                addViolation(data, usage, caughtExceptionId.getName());
             }
+
         }
         return data;
-    }
-
-    private JavaNode getOperationOfUsage(NameOccurrence usage) {
-        return usage.getLocation()
-                .getFirstParentOfType(ASTPrimaryExpression.class)
-                .getParent();
-    }
-
-    private boolean isAssignment(JavaNode operation) {
-        return operation.hasDescendantOfType(ASTAssignmentOperator.class);
-    }
-
-    private String getAssignedVariableName(JavaNode operation) {
-        return operation.getFirstDescendantOfType(ASTName.class).getImage();
     }
 }

@@ -61,17 +61,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return isAnnotationPresent(Override.class);
     }
 
-    /**
-     * Returns true if this method is overridden.
-     * TODO for now, this just checks for an @Override annotation,
-     *   but this should definitely do what MissingOverride does.
-     *   This could be useful in UnusedPrivateMethod (to check not only private methods),
-     *   and also UselessOverridingMethod, and overall many many rules.
-     */
-    public boolean isOverridden() {
-        return isAnnotationPresent(Override.class);
-    }
-
     @Override
     protected @Nullable JavaccToken getPreferredReportLocation() {
         return TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
