@@ -364,16 +364,6 @@ public interface Node extends Reportable {
 
 
     /**
-     * @deprecated This is simply a placeholder until we have TextDocuments
-     */
-    @Deprecated
-    @NoAttribute
-    default String getSourceCodeFile() {
-        return getTextDocument().getDisplayName();
-    }
-
-
-    /**
      * Gets the name of the node that is used to match it with XPath queries.
      *
      * @return The XPath node name

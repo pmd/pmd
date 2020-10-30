@@ -7,9 +7,12 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
@@ -65,10 +68,12 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         return this;
     }
 
+
     @Override
-    public String getSourceCodeFile() {
-        return fileName == null ? "no-file" : fileName;
+    public @NonNull TextDocument getTextDocument() {
+        return TextDocument.readOnlyString("dummy text", filename, languageVersion);
     }
+
 
     @Override
     public String getImage() {

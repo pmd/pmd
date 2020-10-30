@@ -25,9 +25,6 @@ import net.sourceforge.pmd.util.StringUtil;
 @SuppressWarnings("PMD")
 public class TypeResTestRule extends AbstractJavaRule {
 
-    public static final ThreadLocal<String> FILENAME =
-        ThreadLocal.withInitial(() -> "/*unknown*/");
-
     private static class State {
 
         public int fileId = 0;
@@ -69,7 +66,6 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        FILENAME.set(node.getSourceCodeFile());
         for (JavaNode descendant : node.descendants().crossFindBoundaries()) {
             visitJavaNode(descendant, data);
         }
@@ -113,7 +109,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @NonNull
     public String position(JavaNode node) {
-        return "In: " + node.getSourceCodeFile() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+        return "In: " + node.getTextDocument().getDisplayName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
     }
 
     @Override

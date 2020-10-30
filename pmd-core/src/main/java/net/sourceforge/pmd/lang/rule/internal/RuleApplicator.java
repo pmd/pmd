@@ -63,7 +63,7 @@ public class RuleApplicator {
                     } catch (RuntimeException | StackOverflowError | AssertionError e) {
                         // The listener handles logging if needed,
                         // it may also rethrow the error.
-                        listener.onError(new ProcessingError(e, node.getSourceCodeFile()));
+                        listener.onError(new ProcessingError(e, node.getTextDocument().getDisplayName()));
                     }
                 }
             } finally {

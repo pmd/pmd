@@ -31,7 +31,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.TextFile;
 
 public class Formatter {
 
@@ -230,16 +230,15 @@ public class Formatter {
         return null;
     }
 
-    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
+    public GlobalAnalysisListener newListener(Project project) throws IOException {
         start(project.getBaseDir().toString());
         Renderer renderer = getRenderer();
-        renderer.setUseShortNames(inputPaths);
 
         return new GlobalAnalysisListener() {
             final GlobalAnalysisListener listener = renderer.newListener();
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 return listener.startFileAnalysis(file);
             }
 

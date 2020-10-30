@@ -143,7 +143,7 @@ public class PMDTaskImpl {
         }
         configuration.setInputPaths(fullInputPath.toString());
 
-        try (GlobalAnalysisListener listener = getListener(reportSizeListener, reportShortNamesPaths)) {
+        try (GlobalAnalysisListener listener = getListener(reportSizeListener)) {
             PMD.processTextFiles(configuration, rules, files, listener);
         } catch (Exception e) {
             throw new BuildException("Exception while closing data sources", e);
@@ -162,14 +162,14 @@ public class PMDTaskImpl {
         }
     }
 
-    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
+    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
             renderers.add(makeLogListener());
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                renderers.add(formatter.newListener(project, reportShortNamesPaths));
+                renderers.add(formatter.newListener(project));
             }
         } catch (IOException e) {
             // close those opened so far
