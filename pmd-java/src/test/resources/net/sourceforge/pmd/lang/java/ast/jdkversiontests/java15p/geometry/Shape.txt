@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = "com.example.geometry"]
    +- PackageDeclaration[@Name = "com.example.geometry"]
    |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
-   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.example.geometry.Shape", @CanonicalName = "com.example.geometry.Shape", @Enum = "false", @Final = "false", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "com.example.geometry", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @SimpleName = "Shape", @TopLevel = "true", @Visibility = "public"]
+   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.example.geometry.Shape", @CanonicalName = "com.example.geometry.Shape", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "com.example.geometry", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @SimpleName = "Shape", @TopLevel = "true", @Visibility = "public"]
       +- ModifierList[@EffectiveModifiers = "{public, sealed}", @ExplicitModifiers = "{public, sealed}"]
       +- PermitsList[@Size = "3"]
       |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "Circle"]
