@@ -2252,30 +2252,13 @@ public class Foo {
           language="java"
           since="3.0"
           message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingBreakInSwitchRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingbreakinswitch">
         <description>
 Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//SwitchStatement
-[(count(.//BreakStatement)
- + count(BlockStatement//Statement/ReturnStatement)
- + count(BlockStatement//Statement/ContinueStatement)
- + count(BlockStatement//Statement/ThrowStatement)
- + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
- + count(SwitchLabel[ following-sibling::node()[1][self::SwitchLabel] ])
- + count(SwitchLabel[count(following-sibling::node()) = 0])
-  < count (SwitchLabel))]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public void bar(int status) {

@@ -57,8 +57,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -82,6 +84,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * A reaching definition analysis. This may be used to check whether
@@ -92,6 +95,7 @@ public final class DataflowPass {
     private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.global");
     private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
     private static final SimpleDataKey<AssignmentEntry> VAR_DEFINITION = DataMap.simpleDataKey("java.dataflow.field.def");
+    private static final SimpleDataKey<OptionalBool> SWITCH_BRANCH_FALLS_THROUGH = DataMap.simpleDataKey("java.dataflow.switch.fallthrough");
 
     public static DataflowResult getDataflowResult(ASTCompilationUnit acu) {
         return acu.getUserMap().computeIfAbsent(DATAFLOW_RESULT_K, () -> process(acu));
@@ -116,6 +120,13 @@ public final class DataflowPass {
             return null;
         }
         return varId.getUserMap().get(VAR_DEFINITION);
+    }
+
+    public static @NonNull OptionalBool switchBranchFallsThrough(ASTSwitchBranch b) {
+        if (b instanceof ASTSwitchFallthroughBranch) {
+            return Objects.requireNonNull(b.getUserMap().get(SWITCH_BRANCH_FALLS_THROUGH));
+        }
+        return OptionalBool.NO;
     }
 
     private static DataflowResult process(ASTCompilationUnit node) {
@@ -269,31 +280,29 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTSwitchStatement node, SpanInfo data) {
-            return processSwitch(node, data, node.getTestedExpression());
+            return processSwitch(node, data);
         }
 
         @Override
         public SpanInfo visit(ASTSwitchExpression node, SpanInfo data) {
-            return processSwitch(node, data, node.getChild(0));
+            return processSwitch(node, data);
         }
 
-        private SpanInfo processSwitch(JavaNode switchLike, SpanInfo data, JavaNode testedExpr) {
+        private SpanInfo processSwitch(ASTSwitchLike switchLike, SpanInfo data) {
             GlobalAlgoState global = data.global;
-            SpanInfo before = acceptOpt(testedExpr, data);
+            SpanInfo before = acceptOpt(switchLike.getTestedExpression(), data);
 
             global.breakTargets.push(before.fork());
 
             SpanInfo current = before;
-            for (int i = 1; i < switchLike.getNumChildren(); i++) {
-                JavaNode child = switchLike.getChild(i);
-                if (child instanceof ASTSwitchLabel) {
-                    current = before.fork().absorb(current);
-                } else if (child instanceof ASTSwitchArrowBranch) {
-                    current = acceptOpt(child.getChild(1), before.fork());
+            for (ASTSwitchBranch branch : switchLike.getBranches()) {
+                if (branch instanceof ASTSwitchArrowBranch) {
+                    current = acceptOpt(((ASTSwitchArrowBranch) branch).getRightHandSide(), before.fork());
                     current = global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
-                    // statement in a regular fallthrough switch block
-                    current = acceptOpt(child, before.fork().absorb(current));
+                    // fallthrough branch
+                    current = acceptOpt(branch, before.fork().absorb(current));
+                    branch.getUserMap().set(SWITCH_BRANCH_FALLS_THROUGH, current.hasCompletedAbruptly.complement());
                 }
             }
 
@@ -997,6 +1006,7 @@ public final class DataflowPass {
         final GlobalAlgoState global;
 
         final Map<JVariableSymbol, VarLocalInfo> symtable;
+        private OptionalBool hasCompletedAbruptly = OptionalBool.NO;
 
         private SpanInfo(GlobalAlgoState global) {
             this(null, global, new HashMap<>());
@@ -1147,6 +1157,7 @@ public final class DataflowPass {
         /** Abrupt completion for return, continue, break. */
         SpanInfo abruptCompletion(SpanInfo target) {
             // if target == null then this will unwind all the parents
+            hasCompletedAbruptly = OptionalBool.YES;
             SpanInfo parent = this;
             while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
@@ -1178,6 +1189,9 @@ public final class DataflowPass {
             // In 7.0, with the precise type/overload resolution, we
             // can target the specific catch block that would catch the
             // exception.
+            if (!byMethodCall) {
+                hasCompletedAbruptly = OptionalBool.YES;
+            }
 
             SpanInfo parent = this;
             while (parent != null) {
@@ -1220,8 +1234,17 @@ public final class DataflowPass {
             }
 
             CollectionUtil.mergeMaps(this.symtable, other.symtable, VarLocalInfo::merge);
+            this.hasCompletedAbruptly = mergeCertitude(this.hasCompletedAbruptly, other.hasCompletedAbruptly);
             return this;
         }
+
+        private OptionalBool mergeCertitude(OptionalBool first, OptionalBool other) {
+            if (first.isKnown() && other.isKnown()) {
+                return first == other ? first : OptionalBool.UNKNOWN;
+            }
+            return OptionalBool.UNKNOWN;
+        }
+
 
         @Override
         public String toString() {
