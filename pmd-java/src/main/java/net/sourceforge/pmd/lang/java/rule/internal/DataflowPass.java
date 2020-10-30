@@ -74,6 +74,7 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
@@ -91,6 +92,10 @@ public final class DataflowPass {
 
     public static DataflowResult getDataflowResult(ASTCompilationUnit acu) {
         return acu.getUserMap().computeIfAbsent(DATAFLOW_RESULT_K, () -> process(acu));
+    }
+
+    public static void ensureProcessed(ASTCompilationUnit acu) {
+        getDataflowResult(acu);
     }
 
     public static @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
@@ -118,10 +123,13 @@ public final class DataflowPass {
 
         private final Set<AssignmentEntry> reaching;
         private final boolean isNotFullyKnown;
+        private final boolean containsInitialFieldValue;
 
         public ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
-            this.isNotFullyKnown = reaching.removeIf(AssignmentEntry::isUnbound);
+            this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isSpecialFieldAssignment);
+            // not || as we want the side effect
+            this.isNotFullyKnown = containsInitialFieldValue | reaching.removeIf(AssignmentEntry::isUnbound);
         }
 
         /**
@@ -132,10 +140,19 @@ public final class DataflowPass {
         }
 
         /**
-         * Returns true if there are some unknown assignments in this set.
+         * Returns true if there were some {@linkplain AssignmentEntry#isUnbound() unbound}
+         * assignments in this set. They are not part of {@link #getReaching()}.
          */
         public boolean isNotFullyKnown() {
             return isNotFullyKnown;
+        }
+
+        /**
+         * Contains a {@link AssignmentEntry#isSpecialFieldAssignment()}.
+         * They are not part of {@link #getReaching()}.
+         */
+        public boolean containsInitialFieldValue() {
+            return containsInitialFieldValue;
         }
     }
 
@@ -718,7 +735,7 @@ public final class DataflowPass {
             if (!(lhs instanceof ASTNamedReferenceExpr)) {
                 return false;
             }
-            return trackThisInstance() && isThisFieldAccess(lhs)
+            return trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
                 || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym());
         }
 
@@ -727,42 +744,6 @@ public final class DataflowPass {
                 && ((JFieldSymbol) var).isStatic()
                 // must be non-null
                 && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
-        }
-
-        /**
-         * Whether the expression is an access to a field of this instance,
-         * not inherited, qualified or not ({@code this.field} or just {@code field}).
-         */
-        private static boolean isThisFieldAccess(ASTExpression e) {
-            if (!(e instanceof ASTNamedReferenceExpr)) {
-                return false;
-            }
-            JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
-            if (sym instanceof JFieldSymbol) {
-                return !((JFieldSymbol) sym).isStatic()
-                    // not inherited
-                    && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
-                    // correct syntactic form
-                    && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
-            }
-            return false;
-        }
-
-        /**
-         * Whether the expression is a {@code this.field}, with no outer
-         * instance qualifier ({@code Outer.this.field}). The field symbol
-         * is not checked to resolve to a field declared in this class (it
-         * may be inherited)
-         */
-        private static boolean isSyntacticThisFieldAccess(ASTExpression e) {
-            if (e instanceof ASTFieldAccess) {
-                ASTExpression qualifier = ((ASTFieldAccess) e).getQualifier();
-                if (qualifier instanceof ASTThisExpression) {
-                    // unqualified this
-                    return ((ASTThisExpression) qualifier).getQualifier() == null;
-                }
-            }
-            return false;
         }
 
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
@@ -1051,7 +1032,7 @@ public final class DataflowPass {
             Set<AssignmentEntry> specials = new HashSet<>(declaredFields.size());
             for (JFieldSymbol field : declaredFields) {
                 ASTVariableDeclaratorId id = field.tryGetNode();
-                if (id == null || field.isFinal() || field.isStatic()) {
+                if (id == null || !SingularFieldRule.mayBeSingular(id)) {
                     // useless to track final fields
                     // static fields are out of scope of this impl for now
                     continue;
@@ -1335,6 +1316,15 @@ public final class DataflowPass {
             return false;
         }
 
+        /**
+         * If true, then this "assignment" is the placeholder value given
+         * to an instance field before a method starts. This is a subset of
+         * {@link #isUnbound()}.
+         */
+        public boolean isSpecialFieldAssignment() {
+            return false;
+        }
+
         @Override
         public String toString() {
             return var.getSimpleName() + " := " + rhs;
@@ -1375,6 +1365,11 @@ public final class DataflowPass {
         @Override
         public boolean isUnbound() {
             return true;
+        }
+
+        @Override
+        public boolean isSpecialFieldAssignment() {
+            return isFieldStartValue;
         }
     }
 }

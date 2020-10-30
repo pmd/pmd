@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -46,7 +47,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
@@ -56,6 +59,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -452,5 +457,42 @@ public final class JavaRuleUtil {
     public static @Nullable ASTExpression unaryOperand(ASTExpression e) {
         return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
                                                : null;
+    }
+
+
+    /**
+     * Whether the expression is an access to a field of this instance,
+     * not inherited, qualified or not ({@code this.field} or just {@code field}).
+     */
+    public static boolean isThisFieldAccess(ASTExpression e) {
+        if (!(e instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
+        if (sym instanceof JFieldSymbol) {
+            return !((JFieldSymbol) sym).isStatic()
+                // not inherited
+                && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
+                // correct syntactic form
+                && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
+        }
+        return false;
+    }
+
+    /**
+     * Whether the expression is a {@code this.field}, with no outer
+     * instance qualifier ({@code Outer.this.field}). The field symbol
+     * is not checked to resolve to a field declared in this class (it
+     * may be inherited)
+     */
+    public static boolean isSyntacticThisFieldAccess(ASTExpression e) {
+        if (e instanceof ASTFieldAccess) {
+            ASTExpression qualifier = ((ASTFieldAccess) e).getQualifier();
+            if (qualifier instanceof ASTThisExpression) {
+                // unqualified this
+                return ((ASTThisExpression) qualifier).getQualifier() == null;
+            }
+        }
+        return false;
     }
 }

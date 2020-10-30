@@ -128,8 +128,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>initialized in constructor</description>
-        <expected-problems>0</expected-problems>
+        <description>initialized in constructor, but the field is useless</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private int x;
@@ -309,7 +309,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private final Object sync = new Object();
-    private final Object noSync;
+    private Object noSync;
 
     public void foo() {
         synchronized (sync) {
@@ -360,9 +360,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Not ok, since inner classes are checked</description>
-        <rule-property name="checkInnerClasses">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <description>Ok, field is used by outer class</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private class Bar {
@@ -382,15 +381,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Not ok, violation with first usage = non-assignment</description>
-        <rule-property name="disallowNotAssignment">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <description>Ok, violation with first usage != non-assignment</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private int x;
     int bar(int y) {
-        x.snafu();
-        x = y + 5;
+        if (x > y) x = y + 5;
         return x;
     }
 }
@@ -616,7 +613,7 @@ public final class Test {
     private final Runnable play2 = new Runnable() {
         @Override
         public void run() {
-            this.timer2.start();
+            timer2.start();
         }
     };
 }
