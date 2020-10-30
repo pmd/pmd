@@ -20,6 +20,7 @@ public class Bar {
         <description>TEST1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void x() {
         Vector v = new Vector();
@@ -32,6 +33,7 @@ public class Bar {
         <description>TEST2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     Vector v = new Vector();
     void x() {}
@@ -43,6 +45,7 @@ public class Bar {
         <description>TEST3</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     List v = new Vector();
     void x() {}
