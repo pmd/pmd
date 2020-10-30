@@ -83,12 +83,14 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
- *
+ * A reaching definition analysis. This may be used to check whether
+ * eg a value escapes, or is overwritten on all code paths.
  */
 public final class DataflowPass {
 
-    private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.result");
+    private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.global");
     private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
+    private static final SimpleDataKey<AssignmentEntry> VAR_DEFINITION = DataMap.simpleDataKey("java.dataflow.field.def");
 
     public static DataflowResult getDataflowResult(ASTCompilationUnit acu) {
         return acu.getUserMap().computeIfAbsent(DATAFLOW_RESULT_K, () -> process(acu));
@@ -102,6 +104,19 @@ public final class DataflowPass {
         return expr.getUserMap().get(REACHING_DEFS);
     }
 
+    /**
+     * If the var id is that of a field, returns the assignment entry that
+     * corresponds to its definition (either blank or its initializer). From
+     * there, using the kill record, we can draw the graph of all assignments.
+     * Returns null if not a field, or the compilation unit has not been processed.
+     */
+    public static @Nullable AssignmentEntry getFieldDefinition(ASTVariableDeclaratorId varId) {
+        if (!varId.isField()) {
+            return null;
+        }
+        return varId.getUserMap().get(VAR_DEFINITION);
+    }
+
     private static DataflowResult process(ASTCompilationUnit node) {
         DataflowResult dataflowResult = new DataflowResult();
         for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
@@ -111,6 +126,7 @@ public final class DataflowPass {
                 Set<AssignmentEntry> unused = subResult.allAssignments;
                 unused.removeAll(subResult.usedAssignments);
                 unused.removeIf(AssignmentEntry::isUnbound);
+                unused.removeIf(AssignmentEntry::isFieldDefaultValue);
                 dataflowResult.unusedAssignments.addAll(unused);
             }
             dataflowResult.killRecord.putAll(subResult.killRecord);
@@ -127,7 +143,7 @@ public final class DataflowPass {
 
         public ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
-            this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isSpecialFieldAssignment);
+            this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isFieldAssignmentAtStartOfMethod);
             // not || as we want the side effect
             this.isNotFullyKnown = containsInitialFieldValue | reaching.removeIf(AssignmentEntry::isUnbound);
         }
@@ -148,7 +164,7 @@ public final class DataflowPass {
         }
 
         /**
-         * Contains a {@link AssignmentEntry#isSpecialFieldAssignment()}.
+         * Contains a {@link AssignmentEntry#isFieldAssignmentAtStartOfMethod()}.
          * They are not part of {@link #getReaching()}.
          */
         public boolean containsInitialFieldValue() {
@@ -1013,9 +1029,7 @@ public final class DataflowPass {
             if (previous != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry killed : previous.reachingDefs) {
-                    if (killed.rhs instanceof ASTVariableDeclaratorId
-                        && killed.rhs.getParent() instanceof ASTVariableDeclarator
-                        && killed.rhs != rhs) {
+                    if (killed.isBlankLocal()) {
                         continue;
                     }
 
@@ -1266,6 +1280,12 @@ public final class DataflowPass {
             this.var = var;
             this.node = node;
             this.rhs = rhs;
+            // This may be overwritten repeatedly in loops, we probably don't care,
+            // as normally they're created equal
+            // Also for now we don't support getting a field.
+            if (isInitializer() || isBlankDeclaration()) {
+                node.getUserMap().set(VAR_DEFINITION, this);
+            }
         }
 
         public boolean isInitializer() {
@@ -1275,6 +1295,17 @@ public final class DataflowPass {
 
         public boolean isBlankDeclaration() {
             return rhs instanceof ASTVariableDeclaratorId;
+        }
+
+        public boolean isFieldDefaultValue() {
+            return isBlankDeclaration() && isField();
+        }
+
+        /**
+         * A blank local that has no value (ie not a catch param or formal).
+         */
+        public boolean isBlankLocal() {
+            return isBlankDeclaration() && node.isLocalVariable();
         }
 
         public boolean isUnaryReassign() {
@@ -1321,7 +1352,16 @@ public final class DataflowPass {
          * to an instance field before a method starts. This is a subset of
          * {@link #isUnbound()}.
          */
-        public boolean isSpecialFieldAssignment() {
+        public boolean isFieldAssignmentAtStartOfMethod() {
+            return false;
+        }
+
+        /**
+         * If true, then this "assignment" is the placeholder value given
+         * to a non-final instance field after a ctor ends. This is a subset of
+         * {@link #isUnbound()}.
+         */
+        public boolean isFieldAssignmentAtEndOfCtor() {
             return false;
         }
 
@@ -1368,8 +1408,13 @@ public final class DataflowPass {
         }
 
         @Override
-        public boolean isSpecialFieldAssignment() {
+        public boolean isFieldAssignmentAtStartOfMethod() {
             return isFieldStartValue;
+        }
+
+        @Override
+        public boolean isFieldAssignmentAtEndOfCtor() {
+            return rhs instanceof ASTAnyTypeDeclaration;
         }
     }
 }

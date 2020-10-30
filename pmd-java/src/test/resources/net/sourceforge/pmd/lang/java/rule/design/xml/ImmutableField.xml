@@ -195,7 +195,9 @@ public class Foo {
 
     public Foo() {
         try {
+            mayThrow();
             x = 2;
+            mayThrow();
         } catch (Exception e) {
         }
     }
@@ -308,7 +310,7 @@ public class MyClass {
 
     <test-code>
         <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class MyClass {
     private int positive;
@@ -386,6 +388,7 @@ public class Foo {
         <description>#1448 [java] ImmutableField: Private field in inner class gives false positive with lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.function.BinaryOperator;
 public class CombinersTest {
 
     private static final BinaryOperator<Purse> ADDITION = (p1, p2) -> {
@@ -517,12 +520,30 @@ public class Stack {
     }
 
     private class Node {
+        final Node next;
+        final int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+            n++;  // inner class updates instance variable in outer class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-private field of private class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Stack {
+
+    private class Node {
         Node next;
         int x;
         private Node(Node next, int x) {
             this.next = next;
             this.x = x;
-            n++;  // inner class updates instance variable in outer class
         }
     }
 }
@@ -549,6 +570,23 @@ public class TestFinal {
       e = e.add(BigInteger.ONE);
   }
 }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Blank field should not be considered final, it's most probably not used that way.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+private static class QualifiedByAnnotationTestBean {
+
+    @Autowired @Qualifier("special")
+    private Person larry;
+
+    public Person getLarry() {
+        return larry;
+    }
+}
+
         ]]></code>
     </test-code>
 </test-data>

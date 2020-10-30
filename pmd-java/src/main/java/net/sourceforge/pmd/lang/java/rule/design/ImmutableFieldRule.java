@@ -4,148 +4,92 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Olander
  */
 public class ImmutableFieldRule extends AbstractLombokAwareRule {
 
-    private enum FieldImmutabilityType {
-        /** Variable is changed in methods and/or in lambdas */
-        MUTABLE,
-        /** Variable is not changed outside the constructor. */
-        IMMUTABLE,
-        /** Variable is only written during declaration, if at all. */
-        CHECKDECL
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTFieldDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Object result = super.visit(node, data);
+    public Object visit(ASTFieldDeclaration field, Object data) {
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-            VariableNameDeclaration field = entry.getKey();
-            AccessNode accessNodeParent = field.getAccessNodeParent();
-            if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
-                    || accessNodeParent.isVolatile()
-                    || hasLombokAnnotation(node)
-                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
-                continue;
-            }
+        ASTAnyTypeDeclaration enclosingType = field.getEnclosingType();
+        if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
+            && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
+            && !hasLombokAnnotation(field)
+            && !hasLombokAnnotation(enclosingType)
+            && !hasIgnoredAnnotation(field)) {
 
-            FieldImmutabilityType type = initializedInConstructor(field, entry.getValue(), new HashSet<>(constructors));
-            if (type == FieldImmutabilityType.MUTABLE) {
-                continue;
-            }
-            if (type == FieldImmutabilityType.IMMUTABLE || type == FieldImmutabilityType.CHECKDECL && initializedWhenDeclared(field)) {
-                addViolation(data, field.getNode(), field.getImage());
-            }
-        }
-        return result;
-    }
+            DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 
-    private boolean initializedWhenDeclared(VariableNameDeclaration field) {
-        return field.getAccessNodeParent().hasDescendantOfType(ASTVariableInitializer.class);
-    }
+            outer:
+            for (ASTVariableDeclaratorId varId : field.getVarIds()) {
 
-    private FieldImmutabilityType initializedInConstructor(VariableNameDeclaration field, List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
-        FieldImmutabilityType result = FieldImmutabilityType.MUTABLE;
-        int methodInitCount = 0;
-        int lambdaUsage = 0;
-        Set<ASTConstructorDeclaration> consSet = new HashSet<>(); // set of constructors accessing the field
-        for (NameOccurrence occ : usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
-            if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
-                JavaNode node = jocc.getLocation();
-                ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
-                if (constructor != null && isSameClass(field, constructor)) {
-                    if (inLoopOrTry(node)) {
-                        methodInitCount++;
-                        continue;
+                boolean hasWrite = false;
+                for (ASTNamedReferenceExpr usage : varId.getUsages()) {
+                    if (usage.getAccessType() == AccessType.WRITE) {
+                        hasWrite = true;
+
+                        JavaNode enclosing = usage.ancestors().map(NodeStream.asInstanceOf(ASTLambdaExpression.class, ASTAnyTypeDeclaration.class, ASTConstructorDeclaration.class)).first();
+                        if (!(enclosing instanceof ASTConstructorDeclaration)
+                            || enclosing.getEnclosingType() != enclosingType) {
+                            continue outer; // written-to outside ctor
+                        }
                     }
-                    // Check for assigns in if-statements, which can depend on
-                    // constructor
-                    // args or other runtime knowledge and can be a valid reason
-                    // to instantiate
-                    // in one constructor only
-                    if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
-                        methodInitCount++;
-                    }
-                    if (inAnonymousInnerClass(node)) {
-                        methodInitCount++;
-                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        lambdaUsage++;
-                    } else {
-                        consSet.add(constructor);
-                    }
-                } else {
-                    if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
-                        methodInitCount++;
-                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        lambdaUsage++;
+                }
+
+                // we now know that the field is maybe not written to,
+                // or maybe just inside constructors.
+
+                boolean isBlank = varId.getInitializer() == null;
+
+                if (!hasWrite && !isBlank) {
+                    //todo this case may also handle static fields.
+                    addViolation(data, varId, varId.getName());
+                } else if (hasWrite) {
+                    AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
+                    // ie, the default value does not reach the end of the ctor
+                    if (defaultValueIsOverwrittenOnAllPaths(dataflow, fieldDef)
+                        && noAssignmentIsOverwritten(dataflow, fieldDef)) {
+                        addViolation(data, varId, varId.getName());
                     }
                 }
             }
+
         }
-        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && consSet.isEmpty()) {
-            result = FieldImmutabilityType.CHECKDECL;
-        } else {
-            allConstructors.removeAll(consSet);
-            if (allConstructors.isEmpty() && methodInitCount == 0 && lambdaUsage == 0) {
-                result = FieldImmutabilityType.IMMUTABLE;
-            }
-        }
-        return result;
+        return data;
     }
 
-    /**
-     * Checks whether the given constructor belongs to the class, in which the field is declared.
-     * This might not be the case for inner classes, which accesses the fields of the outer class.
-     */
-    private boolean isSameClass(VariableNameDeclaration field, ASTConstructorDeclaration constructor) {
-        return constructor.getFirstParentOfType(ASTClassOrInterfaceBody.class) == field.getNode().getFirstParentOfType(ASTClassOrInterfaceBody.class);
+    private boolean defaultValueIsOverwrittenOnAllPaths(DataflowResult dataflow, AssignmentEntry fieldDef) {
+        return CollectionUtil.none(dataflow.getKillers(fieldDef), AssignmentEntry::isFieldAssignmentAtEndOfCtor);
     }
 
-    private boolean inLoopOrTry(Node node) {
-        return node.getFirstParentOfType(ASTTryStatement.class) != null
-                || node.getFirstParentOfType(ASTForStatement.class) != null
-                || node.getFirstParentOfType(ASTWhileStatement.class) != null
-                || node.getFirstParentOfType(ASTDoStatement.class) != null;
-    }
-
-    private boolean inAnonymousInnerClass(JavaNode node) {
-        return node.getEnclosingType().isAnonymous();
-    }
-
-    private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
-        return node.getFirstChildOfType(ASTClassOrInterfaceBody.class)
-                .findDescendantsOfType(ASTConstructorDeclaration.class);
+    private boolean noAssignmentIsOverwritten(DataflowResult dataflow, AssignmentEntry fieldDef) {
+        return CollectionUtil.none(dataflow.getKillers(fieldDef),
+                                   killer -> CollectionUtil.any(dataflow.getKillers(killer), it -> !it.isFieldAssignmentAtEndOfCtor()));
     }
 }
