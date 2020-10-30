@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.testframework.RuleTst;
+import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 
 /**
  * <p>Sharing settings are not inherited by inner classes. Sharing settings need to be declared on the class that
@@ -32,7 +28,7 @@ import net.sourceforge.pmd.testframework.RuleTst;
  * should trigger a violation.</p>
  */
 @RunWith(Parameterized.class)
-public class ApexSharingViolationsNestedClassTest extends RuleTst {
+public class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
     /**
      * Type of operation that may require a sharing declaration.
      */
@@ -85,19 +81,13 @@ public class ApexSharingViolationsNestedClassTest extends RuleTst {
     @Test
     public void testSharingPermutation() {
         String apexClass = generateClass(outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation);
-        Report rpt = new Report();
-        runTestFromString(apexClass, new ApexSharingViolationsRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        ApexSharingViolationsRule rule = new ApexSharingViolationsRule();
+        rule.setMessage("gotcha!");
+        Report rpt = apex.executeRule(rule, apexClass);
         List<RuleViolation> violations = rpt.getViolations();
         assertEquals("Unexpected Violation Size\n" + apexClass, expectedViolations, violations.size());
         List<Integer> lineNumbers = violations.stream().map(v -> v.getBeginLine()).collect(Collectors.toList());
         assertEquals("Unexpected Line Numbers\n" + apexClass, expectedLineNumbers, lineNumbers);
-    }
-
-    @Override
-    protected List<Rule> getRules() {
-        Rule rule = findRule("category/apex/security.xml", "ApexSharingViolations");
-        return Collections.singletonList(rule);
     }
 
     /**

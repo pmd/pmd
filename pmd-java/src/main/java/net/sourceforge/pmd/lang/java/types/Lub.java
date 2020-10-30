@@ -382,19 +382,6 @@ final class Lub {
                 "Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
         }
 
-        if (ck instanceof JArrayType && !bounds.isEmpty()) {
-            // If we get here, then the intersection looks like `A[] & B1 & .. & Bn`,
-            // where some Bi is not a subtype of A[], else it would have
-            // been pruned by mostSpecific above. Note that this means some `Bi`
-            // is not in { Serializable, Cloneable, Object }. Since arrays
-            // cannot be extended, such a bound produces an uninhabited type.
-            return ts.NULL_TYPE;
-        } else if (containsDuplicateParameterizations(bounds)) {
-            // assuming no two elements of the collection are subtypes of one
-            // another, an intersection `G<A> & G<B>` cannot have any instances.
-            return ts.NULL_TYPE;
-        }
-
         if (ck == null) {
             if (bounds.size() == 1) {
                 return bounds.get(0);
@@ -406,19 +393,6 @@ final class Lub {
         }
 
         return new JIntersectionType(ts, ck, bounds);
-    }
-
-    private static boolean containsDuplicateParameterizations(List<JTypeMirror> bounds) {
-        for (int i = 0; i < bounds.size(); i++) {
-            JTypeMirror bi = bounds.get(i);
-            for (int j = i + 1; j < bounds.size(); j++) {
-                JTypeMirror bj = bounds.get(j);
-                if (bi.getErasure().equals(bj.getErasure())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static @NonNull List<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {

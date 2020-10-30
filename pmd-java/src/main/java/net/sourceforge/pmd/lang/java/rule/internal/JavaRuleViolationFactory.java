@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -49,14 +48,8 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     }
 
     @Override
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-        return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message);
-    }
-
-    @Override
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-            int beginLine, int endLine) {
-        return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message, beginLine, endLine);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
+        return new JavaRuleViolation(rule, (JavaNode) location, filename, formattedMessage);
     }
 
 }

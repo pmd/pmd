@@ -7,8 +7,11 @@ package net.sourceforge.pmd.lang.ast.test
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
+import net.sourceforge.pmd.Report
+import net.sourceforge.pmd.RuleViolation
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
+import kotlin.test.assertEquals
 
 /**
  * Extension to add the name of a property to error messages.
@@ -75,3 +78,16 @@ operator fun <T> List<T>.component8() = get(7)
 operator fun <T> List<T>.component9() = get(8)
 operator fun <T> List<T>.component10() = get(9)
 operator fun <T> List<T>.component11() = get(10)
+
+
+/** Assert number of violations. */
+fun assertSize(report: Report, size: Int): List<RuleViolation> {
+    assertEquals(size, report.violations.size, message = "Wrong number of violations!")
+    return report.violations
+}
+
+/** Assert number of suppressed violations. */
+fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation> {
+    assertEquals(size, report.suppressedViolations.size, message = "Wrong number of suppressed violations!")
+    return report.suppressedViolations
+}
