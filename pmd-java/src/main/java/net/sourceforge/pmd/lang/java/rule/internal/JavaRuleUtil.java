@@ -4,11 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public final class JavaRuleUtil {
 
@@ -65,5 +75,66 @@ public final class JavaRuleUtil {
             return ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
+    }
+
+    /**
+     * Returns true if the node is a {@link ASTMethodDeclaration} that
+     * is a main method.
+     */
+    public static boolean isMainMethod(JavaNode node) {
+        if (node instanceof ASTMethodDeclaration) {
+            ASTMethodDeclaration decl = (ASTMethodDeclaration) node;
+
+
+            return decl.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
+                && "main".equals(decl.getName())
+                && decl.isVoid()
+                && decl.getArity() == 1
+                && TypeTestUtil.isExactlyA(String[].class, decl.getFormalParameters().get(0));
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the node is a utility class, according to this
+     * custom definition.
+     */
+    public static boolean isUtilityClass(ASTAnyTypeDeclaration node) {
+        if (node.isInterface() || node.isEnum()) {
+            return false;
+        }
+
+        ASTClassOrInterfaceDeclaration classNode = (ASTClassOrInterfaceDeclaration) node;
+
+        // A class with a superclass or interfaces should not be considered
+        if (classNode.getSuperClassTypeNode() != null
+            || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
+            return false;
+        }
+
+        // A class without declarations shouldn't be reported
+        boolean hasAny = false;
+
+        for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
+            if (declNode instanceof ASTFieldDeclaration
+                || declNode instanceof ASTMethodDeclaration) {
+
+                hasAny = isNonPrivate(declNode) && !isMainMethod(declNode);
+                if (!((AccessNode) declNode).hasModifiers(JModifier.STATIC)) {
+                    return false;
+                }
+
+            } else if (declNode instanceof ASTInitializer) {
+                if (!((ASTInitializer) declNode).isStatic()) {
+                    return false;
+                }
+            }
+        }
+
+        return hasAny;
+    }
+
+    private static boolean isNonPrivate(ASTBodyDeclaration decl) {
+        return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
     }
 }
