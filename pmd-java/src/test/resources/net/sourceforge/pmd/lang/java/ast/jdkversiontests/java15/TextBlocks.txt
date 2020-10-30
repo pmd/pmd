@@ -34,7 +34,7 @@
                               <p>Hello, world</p>    
                           </body> 
                       </html>   
-                      """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                      """", @Length = "66", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -54,7 +54,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                        SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
                        WHERE `CITY` = 'INDIANAPOLIS'
                        ORDER BY `EMP_ID`, `LAST_NAME`;
-                       """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                       """", @Length = "110", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -72,7 +72,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                |        |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "ScriptEngineManager"]
                |        |  +- ArgumentList[@Size = "0"]
                |        +- ArgumentList[@Size = "1"]
-               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "js", @Empty = "false", @Image = ""js"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "js", @Empty = "false", @Image = ""js"", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "Object"]
@@ -92,7 +92,7 @@ hello();
                                  }
                                  
                                  hello();
-                                 """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                                 """", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -109,7 +109,7 @@ hello();
                               <p>Hello, world</p>
                           </body>
                       </html>
-                      """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                      """", @Length = "71", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -123,7 +123,7 @@ hello();
                |  +- VariableDeclarator[@Initializer = "true", @Name = "season"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "season", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "package"]
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter", @Empty = "false", @Image = """"
-                winter"""", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                winter"""", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -132,7 +132,7 @@ hello();
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter
 ", @Empty = "false", @Image = """"
                         winter
-                        """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                        """", @Length = "7", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -141,7 +141,7 @@ hello();
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Hi, "Bob"
 ", @Empty = "false", @Image = """"
             Hi, "Bob"
-            """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+            """", @Length = "10", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -152,14 +152,14 @@ hello();
 ", @Empty = "false", @Image = """"
             Hi,
              "Bob"
-            """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+            """", @Length = "11", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "empty"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "empty", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "package"]
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "", @Empty = "true", @Image = """"
-                       """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                       """", @Length = "0", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -168,7 +168,7 @@ hello();
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = ""
 ", @Empty = "false", @Image = """"
                        "
-                       """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                       """", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -177,13 +177,13 @@ hello();
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
 ", @Empty = "false", @Image = """"
                            \
-                           """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                           """", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "normalStringLiteral"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "normalStringLiteral", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "package"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "test", @Empty = "false", @Image = ""test"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "test", @Empty = "false", @Image = ""test"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -196,7 +196,7 @@ hello();
             String text = """
                 A text block inside a text block
             """;
-            """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+            """", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -206,7 +206,7 @@ hello();
                       Lorem ipsum dolor sit amet, consectetur adipiscing 
                       elit, sed do eiusmod tempor incididunt ut labore 
                       et dolore magna aliqua.
-                      """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                      """", @Length = "123", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -226,7 +226,7 @@ blue
                         red  s
                         greens
                         blue s
-                        """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                        """", @Length = "21", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -244,7 +244,7 @@ test
 ", @Empty = "false", @Image = """"
 
 test
-"""", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+"""", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -256,8 +256,8 @@ test
                |           +- ArgumentList[@Size = "2"]
                |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
 ", @Empty = "false", @Image = ""
-"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
-               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
@@ -266,7 +266,7 @@ test
                |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "	est
 ", @Empty = "false", @Image = """"
                 \test
-                """", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+                """", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                   +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                      +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -278,5 +278,5 @@ test
                            +- ArgumentList[@Size = "2"]
                               +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
 ", @Empty = "false", @Image = ""
-"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
-                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]

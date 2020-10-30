@@ -33,7 +33,7 @@
                   |  |     |  +- TypeExpression[@CompileTimeConstant = "false", @ParenthesisDepth = "0", @Parenthesized = "false"]
                   |  |     |     +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "System"]
                   |  |     +- ArgumentList[@Size = "1"]
-                  |  |        +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "1", @Empty = "false", @Image = ""1"", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+                  |  |        +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "1", @Empty = "false", @Image = ""1"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                   |  +- BreakStatement[@Label = null]
                   +- SwitchFallthroughBranch[@Default = "true"]
                      +- SwitchLabel[@Default = "true"]

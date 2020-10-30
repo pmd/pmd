@@ -51,6 +51,11 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         }
     }
 
+    /** Length of the constant value in characters. */
+    public int length() {
+        return getConstValue().length();
+    }
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
