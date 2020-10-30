@@ -923,8 +923,6 @@ ASTCompilationUnit CompilationUnit() :
   // a module (most common case)
   [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyDeclaration() )* ]
   ( TypeDeclaration() ( EmptyDeclaration() )* )*
-  ( < "\u001a" > )?
-  ( < "~[]" > )? // what's this for? Do you mean ( < ~[] > )*, i.e. "any character"?
   <EOF>
   {
      jjtThis.setComments(token_source.comments);

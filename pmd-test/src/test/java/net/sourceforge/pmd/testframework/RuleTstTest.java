@@ -12,13 +12,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -27,6 +25,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 public class RuleTstTest {
@@ -44,7 +43,7 @@ public class RuleTstTest {
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
-        Report report = ruleTester.runTestFromString("the code", rule, dummyLanguage, false);
+        ruleTester.runTestFromString("the code", rule, dummyLanguage, false);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
@@ -66,9 +65,9 @@ public class RuleTstTest {
 
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(int beginLine, String message) {
-                DummyNode node = new DummyNode();
+                DummyNode node = new DummyRootNode();
                 node.setCoords(beginLine, 1, beginLine + 1, 2);
-                return new ParametricRuleViolation<Node>(rule, "someFile", node, message);
+                return new ParametricRuleViolation<Node>(rule, node, message);
             }
 
             @Override
@@ -85,12 +84,6 @@ public class RuleTstTest {
         testDescriptor.setReinitializeRule(false);
         testDescriptor.setExpectedLineNumbers(Arrays.asList(5, 15));
 
-        try {
-            ruleTester.runTest(testDescriptor);
-            // there should be no assertion failures
-            // expected line numbers and actual line numbers match
-        } catch (AssertionError assertionError) {
-            Assert.fail(assertionError.toString());
-        }
+        ruleTester.runTest(testDescriptor);
     }
 }

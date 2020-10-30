@@ -7,15 +7,19 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+    private String fileName = "sample.dummy";
 
     private FileLocation location;
 
@@ -58,6 +62,18 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     public void setImage(String image) {
         this.image = image;
     }
+
+    public DummyNode withFileName(String fname) {
+        this.fileName = fname;
+        return this;
+    }
+
+
+    @Override
+    public @NonNull TextDocument getTextDocument() {
+        return TextDocument.readOnlyString("dummy text", fileName, getRoot().getLanguageVersion());
+    }
+
 
     @Override
     public String getImage() {

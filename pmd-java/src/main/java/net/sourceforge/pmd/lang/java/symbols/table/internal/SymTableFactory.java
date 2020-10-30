@@ -22,6 +22,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -99,14 +100,14 @@ final class SymTableFactory {
         InternalApiBridge.disambigWithCtx(nodes, context);
     }
 
-    SemanticChecksLogger getLogger() {
+    SemanticErrorReporter getLogger() {
         return processor.getLogger();
     }
 
     JClassSymbol loadClassReportFailure(JavaNode location, String fqcn) {
         JClassSymbol loaded = loadClassOrFail(fqcn);
         if (loaded == null) {
-            getLogger().warning(location, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, fqcn);
+            getLogger().warning(location, JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL, fqcn);
         }
 
         return loaded;
@@ -116,12 +117,6 @@ final class SymTableFactory {
     @Nullable
     JClassSymbol loadClassOrFail(String fqcn) {
         return processor.getSymResolver().resolveClassFromCanonicalName(fqcn);
-    }
-
-    JClassSymbol findSymbolCannotFail(String name) {
-        JClassSymbol found = processor.getSymResolver().resolveClassFromCanonicalName(name);
-        return found == null ? processor.makeUnresolvedReference(name, 0)
-                             : found;
     }
 
     // </editor-fold>
@@ -287,7 +282,7 @@ final class SymTableFactory {
 
             } else {
                 // Single-Type-Import Declaration
-                JClassSymbol type = findSymbolCannotFail(name);
+                JClassSymbol type = processor.findSymbolCannotFail(name);
                 importedTypes.append(type.getTypeSystem().typeOf(type, false));
             }
         }

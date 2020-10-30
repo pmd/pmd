@@ -96,7 +96,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         theRule.setDescription("desc");
         theRule.setName("Foo");
 
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, getSourceCodeFilename(), node, "blah"));
+        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
 
         // Output should be the exact same as for non xpath rules

@@ -16,8 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
@@ -38,6 +41,9 @@ import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.SequenceType;
 
 public class SaxonXPathRuleQueryTest {
+
+    @Rule
+    public final ExpectedException expected = ExpectedException.none();
 
     //    Unsupported: https://github.com/pmd/pmd/issues/2451
     //    @Test
@@ -93,6 +99,45 @@ public class SaxonXPathRuleQueryTest {
 
 
         assertQuery(1, "//dummyRootNode[@Enum = $prop]", dummy, prop);
+    }
+
+    @Test
+    public void testInvalidReturn() {
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum();
+
+
+        expected.expect(RuntimeException.class);
+        expected.expectMessage(CoreMatchers.containsString("XPath rule expression returned a non-node"));
+        expected.expectMessage(CoreMatchers.containsString("Int64Value"));
+
+        createQuery("1+2").evaluate(dummy);
+    }
+
+    @Test
+    public void testRootExpression() {
+        DummyRoot dummy = new DummyRoot();
+
+        List<Node> result = assertQuery(1, "/", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+    }
+
+    @Test
+    public void testRootExpressionIsADocumentNode() {
+        DummyRoot dummy = new DummyRoot();
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+    }
+
+    @Test
+    public void testRootExpressionWithName() {
+        DummyRoot dummy = new DummyRoot();
+        String xpathName = dummy.getXPathNodeName();
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node(element(" + xpathName + "))]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+
+        assertQuery(0, "(/)[self::document-node(element(DummyNodeX))]", dummy);
     }
 
     @Test
@@ -288,10 +333,11 @@ public class SaxonXPathRuleQueryTest {
                    .replaceAll("\\$zz:zz-?\\d+", "\\$zz:zz000");
     }
 
-    private static void assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
+    private static List<Node> assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
         SaxonXPathRuleQuery query = createQuery(xpath, descriptors);
         List<Node> result = query.evaluate(node);
         assertEquals("Wrong number of matched nodes", resultSize, result.size());
+        return result;
     }
 
     private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?>... descriptors) {

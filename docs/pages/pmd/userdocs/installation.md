@@ -71,13 +71,17 @@ Additionally, the following options, are specified most of the time even though 
 
 
 <div class="text-left">
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#linux" aria-controls="linux / unix" role="tab" data-toggle="tab">Linux / Unix</a></li>
-    <li role="presentation"><a href="#windows" aria-controls="windows" role="tab" data-toggle="tab">Windows</a></li>
+  <ul class="nav nav-tabs" role="tablist" id="pmd-sample-usage-tabs">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab" data-toggle="tab" href="#linux" role="tab" aria-controls="linux" aria-selected="true">Linux / Unix</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab" data-toggle="tab" href="#windows" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
   </ul>
  
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="linux">
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux" role="tabpanel" aria-labelledby="linux-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
 <span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
   
@@ -87,7 +91,7 @@ Additionally, the following options, are specified most of the time even though 
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks</code></pre></figure>
     </div>
-    <div role="tabpanel" class="tab-pane" id="windows">
+    <div class="tab-pane fade" id="windows" role="tabpanel" aria-labelledby="windows-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
 <span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
       
@@ -124,13 +128,17 @@ There are two required parameters:
 
 
 <div class="text-left">
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#cpd-linux" aria-controls="linux / unix" role="tab" data-toggle="tab">Linux / Unix</a></li>
-    <li role="presentation"><a href="#cpd-windows" aria-controls="windows" role="tab" data-toggle="tab">Windows</a></li>
+  <ul class="nav nav-tabs" role="tablist" id="cpd-sample-usage-tabs">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="cpd-linux-tab" data-toggle="tab" href="#cpd-linux" role="tab" aria-controls="cpd-linux" aria-selected="true">Linux / Unix</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="cpd-windows-tab" data-toggle="tab" href="#cpd-windows" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
   </ul>
 
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="cpd-linux">
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="cpd-linux" role="tabpanel" aria-labelledby="cpd-linux-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
 <span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --files /home/me/src
 
@@ -146,7 +154,7 @@ There are two required parameters:
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());</code></pre></figure>
     </div>
-    <div role="tabpanel" class="tab-pane" id="cpd-windows">
+    <div class="tab-pane fade" id="cpd-windows" role="tabpanel" aria-labelledby="cpd-windows-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
 <span class="gp">C:\...\bin > </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --files c:\temp\src
 

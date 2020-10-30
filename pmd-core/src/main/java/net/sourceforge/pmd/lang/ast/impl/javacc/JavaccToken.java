@@ -45,7 +45,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      */
     public final int kind;
 
-    protected final JavaccTokenDocument document;
+    private final JavaccTokenDocument document;
     private final CharSequence image;
     private final int startOffset;
     private final int endOffset;
@@ -76,19 +76,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
 
 
     /**
-     * @deprecated This is used by a few deprecated tests about comments,
-     *     will be removed when they're updated.
-     */
-    @Deprecated
-    public JavaccToken(String image) {
-        this.kind = IMPLICIT_TOKEN;
-        this.image = image;
-        this.startOffset = 0;
-        this.endOffset = 0;
-        this.document = null;
-    }
-
-    /**
      * Builds a new token of the specified kind.
      *
      * @param kind           Kind of token
@@ -115,7 +102,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     /**
      * Returns the document owning this token.
      */
-    public JavaccTokenDocument getDocument() {
+    public final JavaccTokenDocument getDocument() {
         return document;
     }
 

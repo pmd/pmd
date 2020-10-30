@@ -18,7 +18,8 @@ public class FormalComment extends Comment {
 
     public FormalComment(JavaccToken t) {
         super(t);
-        findJavadocs(t);
+        assert t.kind == JavaTokenKinds.FORMAL_COMMENT;
+        findJavadocs();
     }
 
     @Override
@@ -26,7 +27,7 @@ public class FormalComment extends Comment {
         return "FormalComment";
     }
 
-    private void findJavadocs(JavaccToken t) {
+    private void findJavadocs() {
         List<JavadocElement> kids = new ArrayList<>();
 
         Matcher javadocTagMatcher = JAVADOC_TAG.matcher(getFilteredComment());

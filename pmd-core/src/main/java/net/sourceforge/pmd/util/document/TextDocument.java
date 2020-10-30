@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.apache.commons.io.input.CharSequenceReader;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;

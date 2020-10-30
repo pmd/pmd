@@ -70,6 +70,14 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         return getTextDocument().toLocation(getTextRegion());
     }
 
+    @Override
+    public final int compareLocation(Node other) {
+        if (other instanceof JjtreeNode<?>) {
+            return getTextRegion().compareTo(((JjtreeNode<?>) other).getTextRegion());
+        }
+        return super.compareLocation(other);
+    }
+
     /**
      * This method is called after the node has been made the current node. It
      * indicates that child nodes can now be added to it.
@@ -90,13 +98,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         super.addChild(child, index);
     }
 
-    @Override
-    public int compareLocation(Node node) {
-        if (node instanceof JjtreeNode) {
-            return getTextRegion().compareTo(((JjtreeNode<?>) node).getTextRegion());
-        }
-        return JjtreeNode.super.compareLocation(node);
-    }
 
     @Override
     protected void insertChild(B child, int index) {

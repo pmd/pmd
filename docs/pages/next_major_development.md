@@ -18,6 +18,8 @@ the logo in anywhere without offense.
 
 The current tasks are listed here: [Integrate new PMD logo #1931](https://github.com/pmd/pmd/issues/1931)
 
+The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
@@ -243,6 +245,34 @@ the breaking API changes will be performed in 7.0.0.
 {% include warning.html content="This list is not exhaustive. The ultimate reference is whether
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
+
+#### 6.29.0
+
+No changes.
+
+#### 6.28.0
+
+##### Deprecated API
+
+###### For removal
+
+* {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
+* {% jdoc !!core::cpd.AbstractTokenizer %}. Use {% jdoc !!core::cpd.AnyTokenizer %} instead.
+* {% jdoc !!fortran::cpd.FortranTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!fortran::cpd.FortranLanguage#getTokenizer() %} anyway.
+* {% jdoc !!perl::cpd.PerlTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!perl::cpd.PerlLanguage#getTokenizer() %} anyway.
+* {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
+* {% jdoc !!core::lang.rule.RuleReference#getOverriddenLanguage() %} and
+  {% jdoc !!core::lang.rule.RuleReference#setLanguage(net.sourceforge.pmd.lang.Language) %}
+* Antlr4 generated lexers:
+    * {% jdoc !!cs::lang.cs.antlr4.CSharpLexer %} will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * {% jdoc !!dart::lang.dart.antlr4.Dart2Lexer %} will be renamed to `DartLexer` and moved to package 
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!go::lang.go.antlr4.GolangLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!kotlin::lang.kotlin.antlr4.Kotlin %} will be renamed to `KotlinLexer` and moved to package 
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * {% jdoc !!lua::lang.lua.antlr4.LuaLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
 
 #### 6.27.0
 

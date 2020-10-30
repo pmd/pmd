@@ -7,15 +7,14 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
-import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
+import net.sourceforge.pmd.lang.java.symbols.*
+import net.sourceforge.pmd.lang.java.types.Substitution
 import java.lang.reflect.Modifier
 
 /**
@@ -52,9 +51,11 @@ class AstSymbolTests : ParserTestSpec({
                     public class InnerC {}
                 }
             }
+
+            @interface Annot { }
         """)
 
-        val (fooClass, innerItf, innerEnum, innerClass) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+        val (fooClass, innerItf, innerEnum, innerClass, annot) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
 
         val (barM, ohioM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
 
@@ -65,6 +66,7 @@ class AstSymbolTests : ParserTestSpec({
             innerItf::getModifiers shouldBe (Modifier.PRIVATE or Modifier.ABSTRACT or Modifier.STATIC)
             innerClass::getModifiers shouldBe (Modifier.PUBLIC)
             innerEnum::getModifiers shouldBe (Modifier.FINAL or Modifier.STATIC)
+            annot::getModifiers shouldBe Modifier.ABSTRACT
         }
 
         doTest("should reflect their simple names properly") {
@@ -72,6 +74,7 @@ class AstSymbolTests : ParserTestSpec({
             innerItf::getSimpleName shouldBe "Inner"
             innerEnum::getSimpleName shouldBe "EE"
             innerClass::getSimpleName shouldBe "InnerC"
+            annot::getSimpleName shouldBe "Annot"
         }
 
         doTest("should reflect their canonical names properly") {
@@ -79,10 +82,12 @@ class AstSymbolTests : ParserTestSpec({
             innerItf::getCanonicalName shouldBe "com.foo.Foo.Inner"
             innerEnum::getCanonicalName shouldBe "com.foo.Foo.EE"
             innerClass::getCanonicalName shouldBe "com.foo.Foo.EE.InnerC"
+            annot::getCanonicalName shouldBe "com.foo.Annot"
         }
 
         doTest("should reflect their methods") {
             fooClass.declaredMethods shouldBe listOf(barM, ohioM)
+            annot.declaredMethods shouldBe emptyList()
         }
 
         doTest("should fetch their methods properly") {
@@ -93,6 +98,7 @@ class AstSymbolTests : ParserTestSpec({
             with(acu.typeSystem) {
                 fooClass::getSuperclass shouldBe getClassSymbol(java.util.ArrayList::class.java)
                 innerItf::getSuperclass shouldBe OBJECT.symbol
+                annot::getSuperclass shouldBe OBJECT.symbol
                 innerClass::getSuperclass shouldBe OBJECT.symbol
                 innerEnum::getSuperclass shouldBe getClassSymbol(java.lang.Enum::class.java)
             }
@@ -103,6 +109,7 @@ class AstSymbolTests : ParserTestSpec({
             innerEnum.declaredClasses shouldBe listOf(innerClass)
             innerItf.declaredClasses shouldBe emptyList()
             innerClass.declaredClasses shouldBe emptyList()
+            annot.declaredClasses shouldBe emptyList()
         }
 
         doTest("should reflect their declaring type") {
@@ -110,6 +117,7 @@ class AstSymbolTests : ParserTestSpec({
             innerEnum::getEnclosingClass shouldBe fooClass
             innerItf::getEnclosingClass shouldBe fooClass
             innerClass::getEnclosingClass shouldBe innerEnum
+            annot::getEnclosingClass shouldBe null
         }
 
         doTest("(enums) should reflect enum constants as fields") {
@@ -127,6 +135,12 @@ class AstSymbolTests : ParserTestSpec({
                 it::isEnumConstant shouldBe true
                 it::getModifiers shouldBe (Modifier.PUBLIC or Modifier.STATIC or Modifier.FINAL)
             }
+        }
+
+        doTest("(annotations) should have j.l.Annotation as super interface") {
+            val annotSym = annot.typeSystem.getClassSymbol(java.lang.annotation.Annotation::class.java)!!
+            annot.superInterfaces shouldBe listOf(annotSym)
+            annot.getSuperInterfaceTypes(Substitution.EMPTY) shouldBe listOf(annot.typeSystem.declaration(annotSym))
         }
     }
 
@@ -379,6 +393,14 @@ class AstSymbolTests : ParserTestSpec({
         }
 
         doTest("should reflect their simple names properly") {
+            pointRecord::getSimpleName shouldBe "Point"
+            point2Record::getSimpleName shouldBe "Point2"
+        }
+
+        doTest("should reflect their superclass properly") {
+            pointRecord.superclass.shouldBeA<JClassSymbol> {
+                it::getCanonicalName shouldBe "java.lang.Record" // even if unresolved bc of host jdk
+            }
             pointRecord::getSimpleName shouldBe "Point"
             point2Record::getSimpleName shouldBe "Point2"
         }

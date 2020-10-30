@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -21,7 +22,10 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
+ * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
  */
+@Deprecated
+@InternalApi
 public final class PMDCommandLineInterface {
 
     public static final String PROG_NAME = "pmd";

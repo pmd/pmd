@@ -19,8 +19,6 @@ import net.sourceforge.pmd.util.document.TextDocument;
  * be stateless (which makes them trivially threadsafe).
  *
  * TODO
- *  - Ideally ParserOptions would be an argument to ::parse
- *  - ::parse would also take some more parameters, eg an error collector
  *  - The reader + filename would be a TextDocument
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be

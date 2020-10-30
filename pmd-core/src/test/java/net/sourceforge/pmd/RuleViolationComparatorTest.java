@@ -70,8 +70,8 @@ public class RuleViolationComparatorTest {
 
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
             int beginColumn, int endLine, int endColumn) {
-        DummyNode simpleNode = new DummyNode();
+        DummyNode simpleNode = new DummyNode().withFileName(fileName);
         simpleNode.setCoords(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation<Node>(rule, fileName, simpleNode, description);
+        return new ParametricRuleViolation<Node>(rule, simpleNode, description);
     }
 }

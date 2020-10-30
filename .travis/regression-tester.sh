@@ -1,6 +1,7 @@
 #
 # The functions here require the following scripts:
 # .travis/logger.sh
+# .travis/common-functions.sh
 #
 # The functions here require the following environment variables:
 # PMD_SF_USER
@@ -12,6 +13,7 @@
 # In that case, just a error logging is provided.
 #
 function regression-tester_uploadBaseline() {
+    change_ruby_version
     log_debug "$FUNCNAME branch=${TRAVIS_BRANCH}"
     local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
 
@@ -31,7 +33,7 @@ function regression-tester_uploadBaseline() {
         log_info "Generating and uploading baseline for pmdtester..."
         cd ..
         bundle config --local gemfile pmd/Gemfile
-        pmd/.travis/travis_wait "bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f"
+        pmd/.travis/travis_wait "bundle exec pmdtester --mode single --local-git-repo ./pmd --patch-branch ${TRAVIS_BRANCH} --patch-config ./pmd/.travis/all-java.xml --list-of-project ./pmd/.travis/project-list.xml --html-flag"
         cd target/reports
         BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
         zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
@@ -49,6 +51,7 @@ function regression-tester_uploadBaseline() {
 # In that case, just a error logging is provided.
 #
 function regression-tester_executeDanger() {
+    change_ruby_version
     log_debug "$FUNCNAME"
 
     local errexitstate="$(shopt -po errexit)"

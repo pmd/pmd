@@ -95,6 +95,14 @@ public final class FileLocation {
         return "line " + getBeginLine() + ", column " + getBeginColumn();
     }
 
+
+    /**
+     * Formats the start position as e.g. {@code "/path/to/file:1:2"}.
+     */
+    public String startPosToStringWithFile() {
+        return getFileName() + ":" + getBeginLine() + ":" + getBeginColumn();
+    }
+
     /**
      * Creates a new location from the given parameters.
      *

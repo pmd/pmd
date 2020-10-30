@@ -252,18 +252,10 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) {
-        return runTestFromString(test, rule);
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     */
-    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
-        return runTestFromString(code, rule, languageVersion, true);
-    }
-
-    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion,
-                                    boolean isUseAuxClasspath) {
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         try {
             PMDConfiguration config = new PMDConfiguration();
             config.setIgnoreIncrementalAnalysis(true);
@@ -307,10 +299,6 @@ public abstract class RuleTst {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Report runTestFromString(TestDescriptor test, Rule rule) {
-        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -387,8 +375,8 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 

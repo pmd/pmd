@@ -160,8 +160,6 @@ public class AbstractLanguageVersionTest {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-
         if (rulesetFilenames.trim().isEmpty()) {
             return;
         }
@@ -171,7 +169,7 @@ public class AbstractLanguageVersionTest {
             try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
                 assertNotNull(stream);
             }
-            RuleSet ruleset = factory.createRuleSet(r);
+            RuleSet ruleset = new RuleSetParser().parseFromResource(r);
             assertNotNull(ruleset);
         }
     }

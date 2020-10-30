@@ -15,9 +15,10 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
@@ -32,44 +33,19 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public class YAHTMLRendererTest extends AbstractRendererTest {
 
-    private String outputDir;
+    private File outputDir;
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws IOException {
-        outputDir = getTemporaryDirectory("pmdtest").getAbsolutePath();
-    }
-
-    @After
-    public void cleanUp() {
-        deleteDirectory(new File(outputDir));
-    }
-
-    private File getTemporaryDirectory(String prefix) throws IOException {
-        // TODO: move to util class?
-        File dir = File.createTempFile(prefix, "");
-        dir.delete();
-        dir.mkdir();
-        return dir;
-    }
-
-    private void deleteDirectory(File dir) {
-        // TODO: move to util class?
-        File[] a = dir.listFiles();
-        if (a != null) {
-            for (File f : a) {
-                if (f.isDirectory()) {
-                    deleteDirectory(f);
-                } else {
-                    f.delete();
-                }
-            }
-        }
-        dir.delete();
+        outputDir = folder.newFolder("pmdtest");
     }
 
     private RuleViolation newRuleViolation(int endColumn, final String packageNameArg, final String classNameArg) {
         DummyNode node = createNode(endColumn);
-        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, "blah") {
+        return new ParametricRuleViolation<Node>(new FooRule(), node, "blah") {
             {
                 packageName = packageNameArg;
                 className = classNameArg;
@@ -91,7 +67,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
         String actual = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpected()), filter(actual));
 
-        String[] htmlFiles = new File(outputDir).list();
+        String[] htmlFiles = outputDir.list();
         assertEquals(3, htmlFiles.length);
         Arrays.sort(htmlFiles);
         assertEquals("YAHTMLSampleClass1.html", htmlFiles[0]);
@@ -117,7 +93,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     @Override
     public Renderer getRenderer() {
         Renderer result = new YAHTMLRenderer();
-        result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir);
+        result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir.getAbsolutePath());
         return result;
     }
 

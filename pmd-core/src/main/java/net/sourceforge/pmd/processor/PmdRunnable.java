@@ -72,7 +72,7 @@ abstract class PmdRunnable implements Runnable {
                     } else {
                         try {
                             processSource(listener, textDocument, ruleSets);
-                        } catch (Exception e) {
+                        } catch (Exception | StackOverflowError | AssertionError e) {
                             analysisCache.analysisFailed(textDocument);
 
                             // The listener handles logging if needed,

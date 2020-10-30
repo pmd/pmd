@@ -18,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -287,9 +286,7 @@ public interface TypeInferenceLogger {
         }
 
         private String fileLocation(ExprMirror mirror) {
-            JavaNode node = mirror.getLocation();
-            return TypeResTestRule.FILENAME.get() + ":" + node.getBeginLine() + " :" + node.getBeginColumn() + ".."
-                + node.getEndLine() + ":" + node.getEndColumn();
+            return mirror.getLocation().getReportLocation().startPosToStringWithFile();
         }
 
         protected @NonNull String ppMethod(JMethodSig sig) {

@@ -295,7 +295,7 @@ class SubtypingTest : FunSpec({
             test("Captured subtyping wild vs wild") {
 
                 checkAll(ts.subtypesArb(unchecked = false)) { (t, s) ->
-                    println("$t <: $s")
+                    // println("$t <: $s")
 
                     capture(t_List[`?` extends t]) shouldSubtypeNoCapture t_List[`?` extends s]
                 }

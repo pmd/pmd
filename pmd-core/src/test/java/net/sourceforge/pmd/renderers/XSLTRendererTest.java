@@ -21,9 +21,9 @@ public class XSLTRendererTest {
     public void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
         Report report = new Report();
-        DummyNode node = new DummyNode();
+        DummyNode node = new DummyNode().withFileName("file");
         node.setCoords(1, 1, 1, 2);
-        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), "file", node, "violation message");
+        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), node, "violation message");
         report.addRuleViolation(rv);
         String result = ReportTest.render(renderer, report);
         Assert.assertTrue(result.contains("violation message"));
