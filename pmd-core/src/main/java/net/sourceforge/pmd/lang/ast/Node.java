@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +51,12 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  */
 public interface Node {
 
+    Comparator<Node> COORDS_COMPARATOR =
+        Comparator.comparingInt(Node::getBeginLine)
+                  .thenComparingInt(Node::getBeginColumn)
+                  .thenComparingInt(Node::getEndLine)
+                  .thenComparingInt(Node::getEndColumn);
+
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
      * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
@@ -69,6 +76,20 @@ public interface Node {
         return Objects.equals(getImage(), image);
     }
 
+    /**
+     * Compare the coordinates of this node with the other one as if
+     * with {@link #COORDS_COMPARATOR}. The result is useless
+     * if both nodes are not from the same tree.
+     *
+     * @param other Other node
+     *
+     * @return A positive integer if this node comes AFTER the other,
+     *     0 if they have the same position, a negative integer if this
+     *     node comes BEFORE the other
+     */
+    default int compareLocation(Node other) {
+        return COORDS_COMPARATOR.compare(this, other);
+    }
 
     int getBeginLine();
 

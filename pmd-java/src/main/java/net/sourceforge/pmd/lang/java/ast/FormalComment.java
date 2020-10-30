@@ -18,7 +18,7 @@ public class FormalComment extends Comment {
 
     public FormalComment(JavaccToken t) {
         super(t);
-
+        assert t.kind == JavaTokenKinds.FORMAL_COMMENT;
         findJavadocs();
     }
 

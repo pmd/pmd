@@ -76,7 +76,7 @@ abstract class PmdRunnable implements Runnable {
                 } else {
                     try {
                         processSource(listener, langVersion, ruleSets);
-                    } catch (Exception e) {
+                    } catch (Exception | StackOverflowError | AssertionError e) {
                         configuration.getAnalysisCache().analysisFailed(file);
 
                         // The listener handles logging if needed,

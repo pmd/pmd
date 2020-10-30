@@ -40,6 +40,9 @@ public final class TypeTestUtil {
      * isA(null, _) = NullPointerException
      * }</pre>
      *
+     * <p>If either type is unresolved, the types are tested for equality,
+     * thus giving more useful results than {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
+     *
      * @param clazz a class (non-null)
      * @param node  the type node to check
      *
@@ -51,8 +54,6 @@ public final class TypeTestUtil {
         AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
-        } else if (node.getType() == clazz) {
-            return true;
         }
 
         return hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
@@ -67,6 +68,13 @@ public final class TypeTestUtil {
         }
 
         JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
+
+        if (otherType == null || TypeOps.isUnresolved(type)) {
+            // We'll return true if the types have equal symbols (same binary name),
+            // but we ignore subtyping.
+            return isExactlyA(clazz, type.getSymbol());
+        }
+
         return type.isSubtypeOf(otherType);
     }
 
@@ -108,6 +116,7 @@ public final class TypeTestUtil {
 
         if (thisClass != null && thisClass.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
+            // do not test for equality, we already checked isExactlyA, which has its fallback
             return false;
         }
 

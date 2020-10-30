@@ -21,6 +21,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   pmd-core
+    * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
+
+
 ### API Changes
 
 #### Deprecated API
@@ -43,4 +47,3 @@ Many APIs around PMD's entry point ({% jdoc core::PMD %}) have been deprecated, 
 ### External Contributions
 
 {% endtocmaker %}
-

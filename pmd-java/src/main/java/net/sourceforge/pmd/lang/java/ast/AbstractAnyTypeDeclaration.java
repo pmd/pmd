@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -22,6 +23,12 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
 
     AbstractAnyTypeDeclaration(int i) {
         super(i);
+    }
+
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return isAnonymous() ? null
+                             : getModifiers().getLastToken().getNext();
     }
 
     /**

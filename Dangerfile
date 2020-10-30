@@ -7,6 +7,7 @@ require 'fileutils'
 
 def get_args(base_branch)
   ['--local-git-repo', './pmd',
+   '--list-of-project', './pmd/.travis/project-list.xml',
    '--base-branch', base_branch,
    '--patch-branch', 'HEAD',
    '--patch-config', './pmd/.travis/all-java.xml',

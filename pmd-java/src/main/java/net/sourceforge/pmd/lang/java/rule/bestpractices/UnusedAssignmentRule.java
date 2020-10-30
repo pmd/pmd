@@ -1084,13 +1084,15 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     // Information about a variable in a code span.
     static class VarLocalInfo {
 
-        Set<AssignmentEntry> reachingDefs;
+        // this is not modified so can be shared between different SpanInfos.
+        final Set<AssignmentEntry> reachingDefs;
 
         VarLocalInfo(Set<AssignmentEntry> reachingDefs) {
             this.reachingDefs = reachingDefs;
         }
 
-        VarLocalInfo absorb(VarLocalInfo other) {
+        // and produce an independent instance
+        VarLocalInfo merge(VarLocalInfo other) {
             if (other == this) {
                 return this;
             }
@@ -1105,9 +1107,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return "VarLocalInfo{reachingDefs=" + reachingDefs + '}';
         }
 
-        public VarLocalInfo copy() {
-            return new VarLocalInfo(this.reachingDefs);
-        }
     }
 
     /**
@@ -1242,11 +1241,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private Map<JVariableSymbol, VarLocalInfo> copyTable() {
-            HashMap<JVariableSymbol, VarLocalInfo> copy = new HashMap<>(this.symtable.size());
-            for (JVariableSymbol var : this.symtable.keySet()) {
-                copy.put(var, this.symtable.get(var).copy());
-            }
-            return copy;
+            return new HashMap<>(this.symtable);
         }
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<JVariableSymbol, VarLocalInfo> reaching) {
@@ -1328,22 +1323,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 return this;
             }
 
-            // we don't have to double the capacity since they're normally of the same size
-            // (vars are deleted when exiting a block)
-            Set<JVariableSymbol> keysUnion = new HashSet<>(this.symtable.keySet());
-            keysUnion.addAll(other.symtable.keySet());
-
-            for (JVariableSymbol var : keysUnion) {
-                VarLocalInfo thisInfo = this.symtable.get(var);
-                VarLocalInfo otherInfo = other.symtable.get(var);
-                if (thisInfo == otherInfo) { // NOPMD CompareObjectsWithEqual this is what we want
-                    continue;
-                }
-                if (otherInfo != null && thisInfo != null) {
-                    this.symtable.put(var, thisInfo.absorb(otherInfo));
-                } else if (otherInfo != null) {
-                    this.symtable.put(var, otherInfo.copy());
-                }
+            for (JVariableSymbol var : other.symtable.keySet()) {
+                VarLocalInfo otherInfo = other.symtable.get(var); // non-null
+                this.symtable.merge(var, otherInfo, VarLocalInfo::merge);
             }
             return this;
         }

@@ -10,16 +10,14 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.arbitrary.arb
-import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.pair
+import io.kotest.property.arbitrary.*
 import io.kotest.property.exhaustive.exhaustive
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.internal.TestClassesGen
+import javax.lang.model.type.TypeMirror
 import kotlin.streams.toList
 
 
@@ -28,8 +26,8 @@ val TypeSystem.refTypeGen: Arb<JTypeMirror> get() = RefTypeGenArb(this)
 val TypeSystem.allTypesGen: Arb<JTypeMirror>
     get() {
         val refs = refTypeGen
-        return arb(edgecases = refs.edgecases() + primitiveGen.values) { rs ->
-            refTypeGen.values(rs).map { it.value }
+        return arbitrary(edgecases = refs.edgecases() + primitiveGen.values) { rs ->
+            refTypeGen.sample(rs).value
         }
     }
 
@@ -47,7 +45,7 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
                     ts.SERIALIZABLE,
                     ts.CLONEABLE)
 
-    override fun values(rs: RandomSource): Sequence<Sample<JTypeMirror>> {
+    private fun generateTypes(rs : RandomSource) : List<JTypeMirror> {
         with(TypeDslOf(ts).gen) {
             val pool: List<JTypeMirror> = listOf(
                     `t_List{String}`,
@@ -68,7 +66,7 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
                 it.superTypeSet.toList() + it + it.erasure + it.toArray()
             }
 
-            val testClasses: List<JTypeMirror> = TestClassesGen.map { ts.typeOf(ts.getClassSymbol(it)!!, true) }.values(rs).map { it.value }.toList()
+            val testClasses: List<JTypeMirror> = TestClassesGen.getClassesInPackage().map { ts.typeOf(ts.getClassSymbol(it), true) }
             val fullPool = pool.plus(testClasses).shuffled(rs.random)
             val withParameterized = fullPool.flatMap {
                 if (it is JClassType && it.isRaw) {
@@ -77,8 +75,16 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
                 }
                 listOf(it)
             }
-            return withParameterized.shuffled(rs.random).asSequence().map { Sample(it) }
+            return withParameterized
         }
+    }
+
+    var cachedTypes : List<JTypeMirror>? = null
+    override fun sample(rs: RandomSource): Sample<JTypeMirror> {
+        if (cachedTypes == null) {
+            cachedTypes = generateTypes(rs)
+        }
+        return Sample(cachedTypes!!.random(rs.random))
     }
 }
 

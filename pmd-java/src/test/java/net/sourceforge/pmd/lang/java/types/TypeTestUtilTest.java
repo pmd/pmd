@@ -45,6 +45,23 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertTrue(TypeTestUtil.isA(Serializable.class, klass));
     }
 
+    @Test
+    public void testIsAFallbackWithUnresolvedClassReference() { // != declaration
+
+        ASTAnnotation annot =
+            java.parse("import a.b.Test;"
+                           + "class FooBar { @Test void bar() {} }")
+                .getFirstDescendantOfType(ASTAnnotation.class);
+
+        Assert.assertTrue(TypeTestUtil.isA("a.b.Test", annot));
+        Assert.assertTrue(TypeOps.isUnresolved(annot.getTypeMirror()));
+
+        Assert.assertFalse(TypeTestUtil.isA(org.junit.Test.class, annot));
+        Assert.assertFalse(TypeTestUtil.isA("org.junit.Test", annot));
+        Assert.assertFalse(TypeTestUtil.isA(Override.class, annot));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.Override", annot));
+    }
+
 
     @Test
     public void testIsAFallbackEnum() {
