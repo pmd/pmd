@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * This rule finds code which inefficiently determines empty strings.
@@ -41,41 +44,60 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  *
  * @author acaplan
  */
-public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroCheck {
+public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
+
+    public InefficientEmptyStringCheckRule() {
+        super(ASTMethodCall.class);
+    }
 
     @Override
-    public boolean isTargetMethod(JavaNameOccurrence occ) {
-        if (occ.getNameForWhichThisIsAQualifier() != null
-                && occ.getNameForWhichThisIsAQualifier().getImage().contains("trim")) {
-            Node pExpression = occ.getLocation().getParent().getParent();
-            if (pExpression.getNumChildren() > 2 && "length".equals(pExpression.getChild(2).getImage())) {
-                return true;
-            }
+    public Object visit(ASTMethodCall call, Object data) {
+        if (isTrimCall(call.getQualifier())
+            && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
+            addViolation(data, call);
+        }
+        return null;
+    }
+
+    private static boolean isLengthZeroCheck(ASTMethodCall call) {
+        return call.getMethodName().equals("length")
+            && call.getArguments().size() == 0
+            && isZeroCheck(call.getParent(), 1 - call.getIndexInParent());
+    }
+
+    private static boolean isZeroCheck(JavaNode e, int checkLiteralAtIdx) {
+        if (e instanceof ASTInfixExpression) {
+            return ((ASTInfixExpression) e).getOperator().isEquality()
+                && isIntLit(e.getChild(checkLiteralAtIdx), 0);
         }
         return false;
     }
 
-    @Override
-    public boolean appliesToClassName(String name) {
-        return "String".equals(name);
+    private static boolean isIntLit(JavaNode e, int value) {
+        if (e instanceof ASTNumericLiteral) {
+            return ((ASTNumericLiteral) e).getValueAsInt() == value;
+        }
+        return false;
     }
 
-    @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-
-        if (node.getNumChildren() > 3) {
-            // Check last suffix
-            if (!"isEmpty".equals(node.getChild(node.getNumChildren() - 2).getImage())) {
-                return data;
-            }
-
-            Node prevCall = node.getChild(node.getNumChildren() - 4);
-            String target = prevCall.getNumChildren() > 0 ? prevCall.getChild(0).getImage() : prevCall.getImage();
-            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))) {
-                addViolation(data, node);
-            }
+    private static boolean isTrimCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return call.getMethodName().equals("trim")
+                && call.getArguments().size() == 0
+                && TypeTestUtil.isA(String.class, call.getQualifier());
         }
-        return data;
+        return false;
+    }
+
+
+    private static boolean isIsEmptyCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return call.getMethodName().equals("isEmpty")
+                && call.getArguments().size() == 0;
+        }
+        return false;
     }
 
 }
