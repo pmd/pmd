@@ -53,7 +53,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/UnusedImports"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
-    <!-- <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/> -->
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue"/> -->

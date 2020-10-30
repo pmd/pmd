@@ -1086,7 +1086,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
-    static <I, O> Function<@Nullable I, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+    static <O> Function<@Nullable Object, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
         if (rest.length == 0) {
             return obj -> c1.isInstance(obj) ? (O) obj : null;
         }

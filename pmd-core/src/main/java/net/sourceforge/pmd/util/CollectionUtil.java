@@ -459,16 +459,18 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toMutableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(
-            ArrayList::new,
-            ArrayList::add,
-            (left, right) -> {
-                left.addAll(right);
-                return left;
-            },
-            a -> a,
-            Characteristics.IDENTITY_FINISH
-        );
+        return Collectors.toCollection(ArrayList::new);
+    }
+
+    /**
+     * A collector that returns a mutable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toMutableSet() {
+        return Collectors.toCollection(HashSet::new);
     }
 
     /**

@@ -7,120 +7,100 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.MethodUsage;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
  * deleted.
  */
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
+
     private static final Set<String> SERIALIZATION_METHODS = new HashSet<>(Arrays.asList(
-            "readObject", "writeObject", "readResolve", "writeReplace"));
+        "readObject", "writeObject", "readResolve", "writeReplace"));
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.singletonList("java.lang.Deprecated");
     }
 
-    /**
-     * Visit each method declaration.
-     *
-     * @param node
-     *            the method declaration
-     * @param data
-     *            data - rule context
-     * @return data
-     */
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
+    public Object visit(ASTCompilationUnit file, Object param) {
+        // We do just two traversals:
+        // - one to find the "interesting methods", ie those that may be violations
+        // - another to find the possible usages. We only try to resolve
+        //   method calls/method refs that may refer to a method in the
+        //   first set, ie, not every call in the file.
 
-        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
-                .getMethodDeclarations();
-        for (MethodNameDeclaration mnd : findUnique(methods)) {
-            List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().getParent())) {
-                continue;
-            }
-            if (occs.isEmpty()) {
-                addViolation(data, mnd.getNode(), mnd.getImage() + mnd.getParameterDisplaySignature());
-            } else {
-                if (isMethodNotCalledFromOtherMethods(mnd, occs)) {
-                    addViolation(data, mnd.getNode(), mnd.getImage() + mnd.getParameterDisplaySignature());
+        Map<String, Set<ASTMethodDeclaration>> consideredNames =
+            file.descendants(ASTMethodDeclaration.class)
+                .crossFindBoundaries()
+                // get methods whose usages are all in this file
+                // TODO we could use getEffectiveVisibility here, but we need to consider overrides then.
+                .filter(it -> it.getVisibility() == Visibility.V_PRIVATE)
+                .filter(it -> !hasIgnoredAnnotation(it) && !hasExcludedName(it) && !it.isAnnotationPresent(Override.class))
+                .toStream()
+                .collect(Collectors.groupingBy(ASTMethodDeclaration::getName, HashMap::new, CollectionUtil.toMutableSet()));
+
+
+        file.descendants()
+            .crossFindBoundaries()
+            .map(NodeStream.<MethodUsage>asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
+            .forEach(ref -> {
+                String methodName = ref.getMethodName();
+                // the considered names might be mutated during the traversal
+                if (!consideredNames.containsKey(methodName)) {
+                    return;
+                }
+                JExecutableSymbol sym;
+                if (ref instanceof ASTMethodCall) {
+                    sym = ((ASTMethodCall) ref).getMethodType().getSymbol();
+                } else if (ref instanceof ASTMethodReference) {
+                    sym = ((ASTMethodReference) ref).getReferencedMethod().getSymbol();
+                } else {
+                    return;
                 }
 
+                JavaNode reffed = sym.tryGetNode();
+                if (reffed instanceof ASTMethodDeclaration
+                    && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
+                    // remove from set, but only if it is called outside of itself
+                    Set<ASTMethodDeclaration> remainingUnused = consideredNames.get(methodName);
+                    if (remainingUnused != null
+                        && remainingUnused.remove(reffed) // note: side-effect
+                        && remainingUnused.isEmpty()) {
+                        consideredNames.remove(methodName); // clear this name
+                    }
+                }
+            });
+
+        // those that remain are unused
+        consideredNames.forEach((name, unused) -> {
+            for (ASTMethodDeclaration m : unused) {
+                addViolation(param, m, PrettyPrintingUtil.displaySignature(m));
             }
-        }
-        return data;
+        });
+
+        return null;
     }
 
-    private Set<MethodNameDeclaration> findUnique(Map<MethodNameDeclaration, List<NameOccurrence>> methods) {
-        // some rather hideous hackery here
-        // to work around the fact that PMD does not yet do full type analysis
-        // when it does, delete this
-        Set<MethodNameDeclaration> unique = new HashSet<>();
-        Set<String> sigs = new HashSet<>();
-        for (MethodNameDeclaration mnd : methods.keySet()) {
-            String sig = mnd.getImage() + mnd.getParameterCount() + mnd.isVarargs();
-            if (!sigs.contains(sig)) {
-                unique.add(mnd);
-            }
-            sigs.add(sig);
-        }
-        return unique;
-    }
-
-    /**
-     * Checks, whether the given method {@code mnd} is called from other methods or constructors.
-     *
-     * @param mnd the private method, that is checked
-     * @param occs the usages of the private method
-     * @return <code>true</code> if the method is not used (except maybe from itself), <code>false</code>
-     *         if the method is called by other methods.
-     */
-    private boolean isMethodNotCalledFromOtherMethods(MethodNameDeclaration mnd, List<NameOccurrence> occs) {
-        int callsFromOutsideMethod = 0;
-        for (NameOccurrence occ : occs) {
-            Node occNode = occ.getLocation();
-            ASTConstructorDeclaration enclosingConstructor = occNode
-                    .getFirstParentOfType(ASTConstructorDeclaration.class);
-            if (enclosingConstructor != null) {
-                callsFromOutsideMethod++;
-                break; // Do we miss unused private constructors here?
-            }
-            ASTInitializer enclosingInitializer = occNode.getFirstParentOfType(ASTInitializer.class);
-            if (enclosingInitializer != null) {
-                callsFromOutsideMethod++;
-                break;
-            }
-
-            ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
-            if (enclosingMethod == null || !mnd.getNode().getParent().equals(enclosingMethod)) {
-                callsFromOutsideMethod++;
-                break;
-            }
-        }
-        return callsFromOutsideMethod == 0;
-    }
-
-    private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
-        ASTMethodDeclaration node = mnd.getDeclarator();
-        return node.isPrivate() && !SERIALIZATION_METHODS.contains(node.getName());
+    private boolean hasExcludedName(ASTMethodDeclaration node) {
+        return SERIALIZATION_METHODS.contains(node.getName());
     }
 }

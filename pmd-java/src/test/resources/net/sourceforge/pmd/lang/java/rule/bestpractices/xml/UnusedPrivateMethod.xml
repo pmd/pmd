@@ -227,13 +227,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>two private methods, both used, same name, same arg count, diff types</description>
-        <expected-problems>0</expected-problems>
+        <description>two private methods, only one used, same name, same arg count, diff types</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused private methods such as 'foo(List)'.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void baz() {
         foo(getBuz());
     }
+    String getBuz() {return "";}
     private void foo(String y) {}
     private void foo(List y) {}
 }
@@ -1475,6 +1480,8 @@ public class UnusedPrivateMethod {
         <description>#1403 False positive UnusedPrivateMethod with JAVA8</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.function.Function;
+
 public class Something {
     @Test public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
         final Map<String, Purse> actual
