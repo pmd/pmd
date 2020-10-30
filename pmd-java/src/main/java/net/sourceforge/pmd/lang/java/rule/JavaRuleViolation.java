@@ -13,6 +13,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -40,16 +42,23 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 @Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
-    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String filename, String message) {
-        super(rule, filename, node, message);
+    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String message) {
+        super(rule, node, message);
 
         ASTCompilationUnit root = node.getRoot();
 
         packageName = root.getPackageName();
-
         className = getClassName(node);
         methodName = getMethodName(node);
         variableName = getVariableNameIfExists(node);
+
+        JavaccToken preferredLoc = InternalApiBridge.getReportLocation(node);
+        if (preferredLoc != null) {
+            beginLine = preferredLoc.getBeginLine();
+            beginColumn = preferredLoc.getBeginColumn();
+            endLine = preferredLoc.getEndLine();
+            endColumn = preferredLoc.getEndColumn();
+        }
     }
 
 

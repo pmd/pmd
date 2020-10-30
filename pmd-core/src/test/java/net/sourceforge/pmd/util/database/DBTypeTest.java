@@ -14,7 +14,9 @@ import java.util.ResourceBundle;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
@@ -27,6 +29,9 @@ public class DBTypeTest {
     private Properties testProperties;
     private Properties includeProperties;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
     public void setUp() throws Exception {
         testProperties = new Properties();
@@ -38,7 +43,7 @@ public class DBTypeTest {
         includeProperties.putAll(testProperties);
         includeProperties.put("prop3", "include3");
 
-        absoluteFile = File.createTempFile("dbtypetest", ".properties");
+        absoluteFile = folder.newFile();
         try (FileOutputStream fileOutputStream = new FileOutputStream(absoluteFile);
              PrintStream printStream = new PrintStream(fileOutputStream)) {
             for (Entry<?, ?> entry : testProperties.entrySet()) {
@@ -50,7 +55,6 @@ public class DBTypeTest {
     @After
     public void tearDown() throws Exception {
         testProperties = null;
-        absoluteFile.delete();
     }
 
     /**

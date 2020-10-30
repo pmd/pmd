@@ -19,60 +19,31 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### CPD's AnyTokenizer has been improved
-
-The AnyTokenizer is used for languages, that don't have an own lexer/grammar based tokenizer.
-AnyTokenizer now handles string literals and end-of-line comments. Fortran, Perl and Ruby have
-been updated to use AnyTokenizer instead of their old custom tokenizer based on AbstractTokenizer.
-See [#2758](https://github.com/pmd/pmd/pull/2758) for details.
-
-AbstractTokenizer and the custom tokenizers of Fortran, Perl and Ruby are deprecated now.
-
 ### Fixed Issues
 
-* cpd
-    * [#2758](https://github.com/pmd/pmd/pull/2758): \[cpd] Improve AnyTokenizer
-    * [#2760](https://github.com/pmd/pmd/issues/2760): \[cpd] AnyTokenizer doesn't count columns correctly
-
-* pmd-java
-    * [#2708](https://github.com/pmd/pmd/issues/2708): \[java] False positive FinalFieldCouldBeStatic when using lombok Builder.Default
-    * [#2738](https://github.com/pmd/pmd/issues/2738): \[java] Custom rule with @ExhaustiveEnumSwitch throws NPE
-    * [#2756](https://github.com/pmd/pmd/issues/2756): \[java] TypeTestUtil fails with NPE for anonymous class
-    * [#2759](https://github.com/pmd/pmd/issues/2759): \[java] False positive in UnusedAssignment
-    * [#2767](https://github.com/pmd/pmd/issues/2767): \[java] IndexOutOfBoundsException when parsing an initializer BlockStatement
-    * [#2783](https://github.com/pmd/pmd/issues/2783): \[java] Error while parsing with lambda of custom interface
+*   pmd-core
+    * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
 
 
 ### API Changes
 
 #### Deprecated API
 
-##### For removal
+##### Around RuleSet parsing
 
-* {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
-* {% jdoc !!core::cpd.AbstractTokenizer %}. Use {% jdoc !!core::cpd.AnyTokenizer %} instead.
-* {% jdoc !!fortran::cpd.FortranTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!fortran::cpd.FortranLanguage#getTokenizer() %} anyway.
-* {% jdoc !!perl::cpd.PerlTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!perl::cpd.PerlLanguage#getTokenizer() %} anyway.
-* {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
-* {% jdoc !!core::lang.rule.RuleReference#getOverriddenLanguage() %} and
-  {% jdoc !!core::lang.rule.RuleReference#setLanguage(net.sourceforge.pmd.lang.Language) %}
-* Antlr4 generated lexers:
-    * {% jdoc !!cs::lang.cs.antlr4.CSharpLexer %} will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
-    * {% jdoc !!dart::lang.dart.antlr4.Dart2Lexer %} will be renamed to `DartLexer` and moved to package 
-      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
-    * {% jdoc !!go::lang.go.antlr4.GolangLexer %} will be moved to package
-      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
-    * {% jdoc !!kotlin::lang.kotlin.antlr4.Kotlin %} will be renamed to `KotlinLexer` and moved to package 
-      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
-    * {% jdoc !!lua::lang.lua.antlr4.LuaLexer %} will be moved to package
-      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
+* {% jdoc core::RuleSetFactory %} and {% jdoc core::RuleSetFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetParser %}. This is easier to configure, and more maintainable than the multiple overloads of `RuleSetFactoryUtils`.
+* Some static creation methods have been added to {% jdoc core::RuleSet %} for simple cases, eg {% jdoc core::RuleSet#forSingleRule(core::Rule) %}. These replace some counterparts in {% jdoc core::RuleSetFactory %}
+* Since {% jdoc core::RuleSets %} is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
+* {% jdoc core::RuleSetReferenceId %}, {% jdoc core::RuleSetReference %}, {% jdoc core::RuleSetFactoryCompatibility %} are deprecated. They are most likely not relevant outside of the implementation of pmd-core.
+
+##### Around the `PMD` class
+
+Many APIs around PMD's entry point ({% jdoc core::PMD %}) have been deprecated, including:
+* The contents of the packages {% jdoc_package core::cli %}, {% jdoc_package core::processor %}
+* {% jdoc core::SourceCodeProcessor %}
+* The constructors of {% jdoc core::PMD %} (the class will be made a utility class)
 
 
 ### External Contributions
 
-* [#2735](https://github.com/pmd/pmd/pull/2735): \[ci] Add github actions for a fast view of pr succeed/not - [XenoAmess](https://github.com/XenoAmess)
-* [#2747](https://github.com/pmd/pmd/pull/2747): \[java] Don't trigger FinalFieldCouldBeStatic when field is annotated with lombok @Builder.Default - [Ollie Abbey](https://github.com/ollieabbey)
-* [#2773](https://github.com/pmd/pmd/pull/2773): \[java] issue-2738: Adding null check to avoid npe when switch case is default - [Nimit Patel](https://github.com/nimit-patel)
-
 {% endtocmaker %}
-

@@ -6,7 +6,7 @@ author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <adangel
 
 This page describes the current status of the release process.
 
-Since versions 5.4.5 / 5.5.4 there is an automated release process using [travis-ci](https://travis-ci.org)
+Since versions 5.4.5 / 5.5.4 there is an automated release process using [travis-ci](https://travis-ci.com)
 in place. However, there are still a few steps, that need manual examination.
 
 Note: You can find a small shell script in the root of the repo: `do-release.sh`. This script guides you

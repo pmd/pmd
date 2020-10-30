@@ -19,7 +19,7 @@
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
-        <url>https://travis-ci.org/pmd/pmd</url>
+        <url>https://travis-ci.com/pmd/pmd</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-08-31T16:30:18Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-10-24T08:17:24Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -85,9 +85,9 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.3.72</kotlin.version>
-        <kotest.version>4.1.2</kotest.version>
-        <dokka.version>0.10.1</dokka.version>
+        <kotlin.version>1.4.10</kotlin.version>
+        <kotest.version>4.3.0</kotest.version>
+        <dokka.version>1.4.10.2</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
@@ -95,9 +95,9 @@
         <checkstyle.version>8.30</checkstyle.version>
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
-        <ant.version>1.10.1</ant.version>
+        <ant.version>1.10.8</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
-        <antlr.version>4.7</antlr.version>
+        <antlr.version>4.7.2</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -284,7 +284,7 @@
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.6.2</version>
+                            <version>5.7.0</version>
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
@@ -415,12 +415,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.27.0</version>
+                            <version>6.29.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.27.0</version>
+                            <version>6.29.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -768,7 +768,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13</version>
+                <version>4.13.1</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -27,26 +28,19 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     protected String methodName = "";
     protected String variableName = "";
 
-    // FUTURE Fix to understand when a violation _must_ have a Node, and when it
-    // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
-    // RuleViolationFactory to support identifying without a Node, and update
-    // Rule base classes too.
-    // TODO we never need a node. We just have to have a Reportable instance
-    public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
-        rule = theRule;
-        description = message;
-        this.filename = filename == null ? "" : filename;
+    public ParametricRuleViolation(Rule theRule, T node, String message) {
+        this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
+        this.description = AssertionUtil.requireParamNotNull("message", message);
+        this.filename = node.getTextDocument().getDisplayName();
 
-        if (node != null) {
-            beginLine = node.getBeginLine();
-            beginColumn = node.getBeginColumn();
-            endLine = node.getEndLine();
-            endColumn = node.getEndColumn();
-        }
-
+        beginLine = node.getBeginLine();
+        beginColumn = node.getBeginColumn();
+        endLine = node.getEndLine();
+        endColumn = node.getEndColumn();
     }
 
     protected String expandVariables(String message) {
+        // TODO move that to RuleContext with the rest of the formatting logic
 
         if (!message.contains("${")) {
             return message;
@@ -138,6 +132,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
+        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
         beginLine = theBeginLine;
         endLine = theEndLine;
     }

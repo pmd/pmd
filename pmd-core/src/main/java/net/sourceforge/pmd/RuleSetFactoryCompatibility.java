@@ -18,13 +18,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
  * which references rules, that have either been removed from PMD already or
  * renamed or moved to another ruleset.
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
+ *
+ * @deprecated Use {@link RuleSetParser#enableCompatibility(boolean)} to enable this feature.
+ *  This implementation is internal API.
  */
+@InternalApi
+@Deprecated
 public class RuleSetFactoryCompatibility {
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 

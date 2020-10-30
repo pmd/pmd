@@ -5,12 +5,9 @@
 package net.sourceforge.pmd.ant.internal;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
@@ -23,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -36,9 +32,9 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -54,7 +50,6 @@ public class PMDTaskImpl {
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
-    private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
@@ -65,7 +60,6 @@ public class PMDTaskImpl {
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
-        this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();
         if (this.maxRuleViolations > 0) {
@@ -126,56 +120,37 @@ public class PMDTaskImpl {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
-        // Start the Formatters
-        for (Formatter formatter : formatters) {
-            project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-            formatter.start(project.getBaseDir().toString());
-        }
 
-        // log("Setting Language Version " + languageVersion.getShortName(),
-        // Project.MSG_VERBOSE);
+        @SuppressWarnings("PMD.CloseResource")
+        ViolationCounterListener reportSizeListener = new ViolationCounterListener();
 
-        // TODO Do we really need all this in a loop over each FileSet? Seems
-        // like a lot of redundancy
-        Report errorReport = new Report();
-        final AtomicInteger reportSize = new AtomicInteger();
-
+        final List<TextFile> files = new ArrayList<>();
+        final List<String> reportShortNamesPaths = new ArrayList<>();
+        StringJoiner fullInputPath = new StringJoiner(",");
         for (FileSet fs : filesets) {
-            List<TextFile> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             java.nio.file.Path baseDir = ds.getBasedir().toPath();
-            configuration.setInputPaths(baseDir.toString());
             for (String srcFile : ds.getIncludedFiles()) {
                 java.nio.file.Path file = baseDir.resolve(srcFile);
                 files.add(FileUtil.createNioTextFile(configuration, file, null));
             }
 
-            Renderer logRenderer = makeRenderer(reportSize);
-            List<GlobalAnalysisListener> renderers;
-            try {
-                renderers = new ArrayList<>(formatters.size() + 1);
-                renderers.add(logRenderer.newListener());
-                for (Formatter formatter : formatters) {
-                    renderers.add(formatter.getRenderer().newListener());
-                }
-            } catch (IOException e) {
-                handleError(errorReport, e);
-                return;
-            }
-
-            try {
-                PMD.processTextFiles(configuration, rules, files, GlobalAnalysisListener.tee(renderers));
-            } catch (Exception pmde) {
-                handleError(errorReport, pmde);
+            final String commonInputPath = ds.getBasedir().getPath();
+            fullInputPath.add(commonInputPath);
+            if (configuration.isReportShortNames()) {
+                reportShortNamesPaths.add(commonInputPath);
             }
         }
+        configuration.setInputPaths(fullInputPath.toString());
 
-        int problemCount = reportSize.get();
+        try (GlobalAnalysisListener listener = getListener(reportSizeListener, reportShortNamesPaths)) {
+            PMD.processTextFiles(configuration, rules, files, listener);
+        } catch (Exception e) {
+            throw new BuildException("Exception while closing data sources", e);
+        }
+
+        int problemCount = reportSizeListener.getResult();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
-
-        for (Formatter formatter : formatters) {
-            formatter.end(errorReport);
-        }
 
         if (failuresPropertyName != null && problemCount > 0) {
             project.setProperty(failuresPropertyName, String.valueOf(problemCount));
@@ -187,36 +162,40 @@ public class PMDTaskImpl {
         }
     }
 
-    @NonNull
-    private AbstractRenderer makeRenderer(AtomicInteger reportSize) {
-        return new AbstractRenderer("log", "Logging renderer") {
+    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
+        List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
+        try {
+            renderers.add(makeLogListener());
+            renderers.add(reportSizeListener);
+            for (Formatter formatter : formatters) {
+                project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+                renderers.add(formatter.newListener(project, reportShortNamesPaths));
+            }
+        } catch (IOException e) {
+            // close those opened so far
+            Exception e2 = IOUtil.closeAll(renderers);
+            if (e2 != null) {
+                e.addSuppressed(e2);
+            }
+            throw new BuildException("Exception while initializing renderers", e);
+        }
+
+        return GlobalAnalysisListener.tee(renderers);
+    }
+
+    private GlobalAnalysisListener makeLogListener() {
+        return new GlobalAnalysisListener() {
+
             @Override
-            public void start() {
-                // Nothing to do
+            public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
+                project.log("Processing file " + dataSource.getPathId(), Project.MSG_VERBOSE);
+                return FileAnalysisListener.noop();
             }
 
             @Override
-            public void startFileAnalysis(TextFile dataSource) {
-                project.log("Processing file " + dataSource.getDisplayName(), Project.MSG_VERBOSE);
+            public void close() {
+                // nothing to do
             }
-
-            @Override
-            public void renderFileReport(Report r) {
-                int size = r.getViolations().size();
-                if (size > 0) {
-                    reportSize.addAndGet(size);
-                }
-            }
-
-            @Override
-            public void end() {
-                // Nothing to do
-            }
-
-            @Override
-            public String defaultFileExtension() {
-                return null;
-            } // not relevant
         };
     }
 
@@ -239,32 +218,6 @@ public class PMDTaskImpl {
         final boolean parentFirst = true;
         return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
                 project, classpath, parentFirst));
-    }
-
-    private void handleError(Report errorReport, Throwable pmde) {
-
-        pmde.printStackTrace();
-        project.log(pmde.toString(), Project.MSG_VERBOSE);
-
-        Throwable cause = pmde.getCause();
-
-        if (cause != null) {
-            try (StringWriter strWriter = new StringWriter();
-                 PrintWriter printWriter = new PrintWriter(strWriter)) {
-                cause.printStackTrace(printWriter);
-                project.log(strWriter.toString(), Project.MSG_VERBOSE);
-            } catch (IOException e) {
-                project.log("Error while closing stream", e, Project.MSG_ERR);
-            }
-            if (StringUtils.isNotBlank(cause.getMessage())) {
-                project.log(cause.getMessage(), Project.MSG_VERBOSE);
-            }
-        }
-
-        if (failOnError) {
-            throw new BuildException(pmde);
-        }
-        errorReport.addError(new Report.ProcessingError(pmde, "(unknown file)"));
     }
 
     private void setupClassLoader() {

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -39,6 +42,9 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.database.DBMSMetadata;
+import net.sourceforge.pmd.util.database.DBURI;
+import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextFile;
@@ -76,7 +82,7 @@ public final class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
+        final RuleSetParser ruleSetFactory = RuleSetParser.fromPmdConfig(configuration);
         final List<RuleSet> ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
@@ -138,6 +144,7 @@ public final class PMD {
      * @throws Exception If an exception occurs while closing the data sources
      *                   Todo wrap that into a known exception type
      */
+    @Deprecated
     public static void processFiles(PMDConfiguration configuration,
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
@@ -268,7 +275,7 @@ public final class PMD {
     }
 
     /**
-     * Entry to invoke PMD as command line tool
+     * Entry to invoke PMD as command line tool. Note that this will invoke {@link System#exit(int)}.
      *
      * @param args
      *            command line arguments
@@ -278,7 +285,8 @@ public final class PMD {
     }
 
     /**
-     * Parses the command line arguments and executes PMD.
+     * Parses the command line arguments and executes PMD. Returns the
+     * exit code without exiting the VM.
      *
      * @param args
      *            command line arguments

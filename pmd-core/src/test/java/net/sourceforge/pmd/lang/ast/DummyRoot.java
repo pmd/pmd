@@ -19,7 +19,6 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
 
     private final Map<Integer, String> suppressMap;
     private LanguageVersion languageVersion;
-    private String filename = "sample.dummy";
 
     public DummyRoot(Map<Integer, String> suppressMap, LanguageVersion languageVersion) {
         super();
@@ -41,13 +40,18 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
     }
 
 
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
     public DummyRoot withLanguage(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
         return this;
     }
 
     public DummyRoot withFileName(String filename) {
-        this.filename = filename;
+        super.withFileName(filename);
         return this;
     }
 

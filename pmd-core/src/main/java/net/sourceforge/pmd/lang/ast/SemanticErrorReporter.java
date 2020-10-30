@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Reports errors that occur after parsing. This may be used to implement
@@ -12,7 +14,6 @@ import java.text.MessageFormat;
  */
 public interface SemanticErrorReporter {
     // TODO use resource bundle keys instead of string messages.
-    // TODO do a real implementation, not just a noop
 
 
     /**
@@ -23,7 +24,7 @@ public interface SemanticErrorReporter {
      * @param message    Message (rendered using a {@link MessageFormat})
      * @param formatArgs Format arguments
      */
-    void warn(Node location, String message, Object... formatArgs);
+    void warning(Node location, String message, Object... formatArgs);
 
 
     /**
@@ -48,7 +49,7 @@ public interface SemanticErrorReporter {
             private boolean hasError = false;
 
             @Override
-            public void warn(Node location, String message, Object... formatArgs) {
+            public void warning(Node location, String message, Object... formatArgs) {
                 // noop
             }
 
@@ -65,5 +66,42 @@ public interface SemanticErrorReporter {
         };
     }
 
+
+    static SemanticErrorReporter reportToLogger(Logger logger) {
+        return new SemanticErrorReporter() {
+            private boolean hasError = false;
+
+            private String locPrefix(Node loc) {
+                return "[" + loc.getBeginLine() + "," + loc.getBeginColumn() + "] ";
+            }
+
+            private String makeMessage(Node location, String message, Object[] args) {
+                return locPrefix(location) + MessageFormat.format(message, args);
+            }
+
+            private String logMessage(Level level, Node location, String message, Object[] args) {
+                String fullMessage = makeMessage(location, message, args);
+                logger.log(level, fullMessage);
+                return fullMessage;
+            }
+
+            @Override
+            public void warning(Node location, String message, Object... args) {
+                logMessage(Level.WARNING, location, message, args);
+            }
+
+            @Override
+            public SemanticException error(Node location, String message, Object... args) {
+                hasError = true;
+                String fullMessage = logMessage(Level.SEVERE, location, message, args);
+                return new SemanticException(fullMessage);
+            }
+
+            @Override
+            public boolean hasError() {
+                return hasError;
+            }
+        };
+    }
 
 }

@@ -33,12 +33,12 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     private Set<ViolationSuppressor> allSuppressors;
 
     @Override
-    public RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage) {
-        return new ParametricRuleViolation<>(rule, filename, location, formattedMessage);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+        return new ParametricRuleViolation<>(rule, location, formattedMessage);
     }
 
     @Override
-    public final SuppressedViolation suppressOrNull(Node location, RuleViolation violation) {
+    public SuppressedViolation suppressOrNull(Node location, RuleViolation violation) {
         for (ViolationSuppressor suppressor : getAllSuppressors()) {
             SuppressedViolation suppressed = suppressor.suppressOrNull(violation, location);
             if (suppressed != null) {

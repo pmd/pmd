@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -100,32 +99,6 @@ public class XPathRuleTest extends RuleTst {
         assertEquals(3, rv.getBeginLine());
     }
 
-
-    /**
-     * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
-     * in some cases in xpath 2.0
-     *
-     * @throws Exception
-     *             any error
-     */
-    @Test
-    @Ignore("Primary suffix has been removed")
-    public void testImageOfPrimarySuffix() throws Exception {
-        final String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
-            + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
-            + "    }\n" + "}";
-        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SUFFIX);
-
-        String xpath = "//PrimarySuffix[@Image='list']";
-
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                                     XPathVersion.DEFAULT,
-                                                                     new HashMap<>(),
-                                                                     XPathHandler.noFunctionDefinitions(),
-                                                                     DeprecatedAttrLogger.noop());
-        List<Node> nodes = xpathRuleQuery.evaluate(cu);
-        assertEquals(1, nodes.size());
-    }
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/

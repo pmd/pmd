@@ -674,7 +674,8 @@ public final class TypeSystem {
      *
      * <p>If after these transformations, only a single component remains,
      * then that is the returned type. Otherwise a {@link JIntersectionType}
-     * is created.
+     * is created. Note that the intersection may be unsatisfiable (eg {@code A[] & Runnable}),
+     * but we don't attempt to minimize this to {@link #NULL_TYPE}.
      *
      * <p>See also JLS§4.9 (Intersection types).
      *

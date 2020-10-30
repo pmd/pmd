@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
@@ -21,6 +22,15 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
 
     AbstractJavaNode(int id) {
         super(id);
+    }
+
+    /**
+     * Temporary hack so that classes and methods are reported on their
+     * identifier token and not the first annotation. Changes about text
+     * documents make that more general, in a future PR.
+     */
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return null;
     }
 
 

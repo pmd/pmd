@@ -15,6 +15,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -48,8 +50,14 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     }
 
     @Override
-    public RuleViolation createViolation(Rule rule, @NonNull Node location, String filename, String formattedMessage) {
-        return new JavaRuleViolation(rule, (JavaNode) location, filename, formattedMessage);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+        JavaNode javaNode = (JavaNode) location;
+        JavaRuleViolation violation = new JavaRuleViolation(rule, javaNode, formattedMessage);
+        JavaccToken preferredLoc = InternalApiBridge.getReportLocation(javaNode);
+        if (preferredLoc != null) {
+            violation.setLines(preferredLoc.getBeginLine(), preferredLoc.getEndLine());
+        }
+        return violation;
     }
 
 }

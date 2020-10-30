@@ -71,9 +71,9 @@ public class AbstractRuleTest {
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyNode s = new DummyNode();
+        DummyNode s = new DummyNode().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, "filename", s, r.getMessage());
+        RuleViolation rv = new ParametricRuleViolation<>(r, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -84,9 +84,9 @@ public class AbstractRuleTest {
     @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyNode s = new DummyNode();
+        DummyNode s = new DummyNode().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, "filename", s, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation<>(r, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -117,7 +117,7 @@ public class AbstractRuleTest {
         Map<Integer, String> m = Collections.singletonMap(5, "");
         DummyRoot n = new DummyRoot(m);
         n.setCoords(5, 1, 6, 1);
-        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "file", "specificdescription");
+        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "specificdescription");
         SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
         assertNotNull(suppressed);

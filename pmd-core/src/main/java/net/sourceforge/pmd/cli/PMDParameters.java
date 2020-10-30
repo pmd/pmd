@@ -11,8 +11,10 @@ import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -23,6 +25,11 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
 
+/**
+ * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
+ */
+@Deprecated
+@InternalApi
 public class PMDParameters {
 
     @Parameter(names = { "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.",

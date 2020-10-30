@@ -25,6 +25,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
@@ -78,21 +79,21 @@ public class RuleSetTest {
     @Test
     public void testGetRuleByName() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
     @Test
     public void testGetRuleByName2() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
     }
 
     @Test
     public void testRuleList() {
         MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet ruleset = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleset = RuleSet.forSingleRule(rule);
 
         assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
 
@@ -506,13 +507,17 @@ public class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertFalse("Report should have processing errors", errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        ProcessingError processingError = errors.get(0);
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
+        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
+        assertEquals("Wrong filename in processing error",
+                "samplefile.dummy",
+                FilenameUtils.normalize(processingError.getFile(), true));
 
         assertEquals("There should be a violation", 1, report.getViolations().size());
     }

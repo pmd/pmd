@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.checkAll
@@ -24,7 +25,11 @@ class TypeOpsTest : FunSpec({
             // for any permutation of input, the output should be the same
             suspend fun checkMostSpecific(input: List<JTypeMirror>, output: List<JTypeMirror>) {
 
-                checkAll(Arb.shuffle(input)) { ts ->
+                fun <A> shuffleOld(list: List<A>) = arbitrary {
+                    list.shuffled(it.random)
+                }
+
+                checkAll(shuffleOld(input)) { ts ->
                     TypeOps.mostSpecific(ts).shouldContainExactlyInAnyOrder(output)
                 }
             }

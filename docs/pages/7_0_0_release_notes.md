@@ -69,6 +69,10 @@ The following previously deprecated rules have been finally removed:
 
 ### Fixed Issues
 
+* java-bestpractices
+    * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
+    * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
+
 ### API Changes
 
 * [#1648](https://github.com/pmd/pmd/pull/1702): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)

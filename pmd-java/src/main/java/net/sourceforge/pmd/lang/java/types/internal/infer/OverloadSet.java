@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalentFast;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
@@ -107,7 +107,7 @@ public abstract class OverloadSet<T> {
 
         @Override
         protected OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2) {
-            return areOverrideEquivalentFast(m1, m2)
+            return areOverrideEquivalent(m1, m2)
                    ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)
                    : OptionalBool.UNKNOWN;
         }

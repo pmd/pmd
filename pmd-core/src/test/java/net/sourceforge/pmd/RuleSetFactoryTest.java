@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,8 +45,7 @@ public class RuleSetFactoryTest {
         RuleSet rs = loadRuleSet(EMPTY_RULESET);
         assertNull("RuleSet file name not expected", rs.getFileName());
 
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        rs = rsf.createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+        rs = new RuleSetParser().parseFromResource("net/sourceforge/pmd/TestRuleset1.xml");
         assertEquals("wrong RuleSet file name", rs.getFileName(), "net/sourceforge/pmd/TestRuleset1.xml");
     }
 
@@ -59,8 +57,7 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testRefs() throws Exception {
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        RuleSet rs = rsf.createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+        RuleSet rs = new RuleSetParser().parseFromResource("net/sourceforge/pmd/TestRuleset1.xml");
         assertNotNull(rs.getRuleByName("TestRuleRef"));
     }
 
@@ -70,8 +67,7 @@ public class RuleSetFactoryTest {
         assertNotNull("Test ruleset not found - can't continue with test!", in);
         in.close();
 
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        RuleSets rs = new RuleSets(rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml"));
+        RuleSets rs = new RuleSets(new RuleSetParser().parseFromResource("net/sourceforge/pmd/rulesets/reference-ruleset.xml"));
         // added by referencing a complete ruleset (TestRuleset1.xml)
         assertNotNull(rs.getRuleByName("MockRule1"));
         assertNotNull(rs.getRuleByName("MockRule2"));
@@ -116,9 +112,9 @@ public class RuleSetFactoryTest {
         assertEquals(2, ruleset4Rule2.getPriority().getPriority());
     }
 
-    private int countRule(RuleSets rs, String ruleName) {
+    private int countRule(RuleSet rs, String ruleName) {
         int count = 0;
-        for (Rule r : rs.getAllRules()) {
+        for (Rule r : rs.getRules()) {
             if (ruleName.equals(r.getName())) {
                 count++;
             }
@@ -187,8 +183,8 @@ public class RuleSetFactoryTest {
                                    + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
                                    + " value=\"com.aptsssss|com.abc\" \ntype=\"List[String]\" "
                                    + "description=\"valid packages\"/>\n         </properties></rule></ruleset>");
-        PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
-        List<String> values = r.getProperty(prop);
+        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
+        Object values = r.getProperty(prop);
         assertEquals(Arrays.asList("com.aptsssss", "com.abc"), values);
     }
 
@@ -203,8 +199,8 @@ public class RuleSetFactoryTest {
                                    + " value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" delimiter=\",\" "
                                    + "description=\"valid packages\"/>\n"
                                    + "         </properties></rule>" + "</ruleset>");
-        PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
-        List<String> values = r.getProperty(prop);
+        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
+        Object values = r.getProperty(prop);
         assertEquals(Arrays.asList("com.aptsssss", "com.abc"), values);
     }
 
@@ -247,10 +243,33 @@ public class RuleSetFactoryTest {
     }
 
     /**
-     * This is an example of a custom user ruleset, that references a rule, that has been renamed.
-     * The user should get a deprecation warning.
+     * This is an example of a category (built-in) ruleset, which contains a rule, that has been renamed.
+     * This means: a rule definition for "NewName" and a rule reference "OldName", that is deprecated
+     * and exists for backwards compatibility.
+     *
+     * <p>When loading this ruleset at a whole for generating the documentation, we should still
+     * include the deprecated rule reference, so that we can create a nice documentation.
      *
      * @throws Exception
+     */
+    @Test
+    public void testRuleSetWithDeprecatedRenamedRuleForDoc() throws Exception {
+        RuleSetParser parser = new RuleSetParser().warnDeprecated(false).includeDeprecatedRuleReferences(true);
+        RuleSet rs = parser.parseFromResource(createRuleSetReferenceId(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
+                + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
+                + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
+                + "</ruleset>"));
+        assertEquals(2, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("NewName"));
+        assertNotNull(rs.getRuleByName("OldName"));
+    }
+
+    /**
+     * This is an example of a custom user ruleset, that references a rule, that has been renamed.
+     * The user should get a deprecation warning.
      */
     @Test
     public void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
@@ -471,49 +490,50 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testReferencePriority() throws RuleSetNotFoundException {
-        ResourceLoader rl = new ResourceLoader();
-        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
+        RuleSetParser parser = new RuleSetParser().warnDeprecated(false).enableCompatibility(true);
+        RuleSet ruleSet;
 
-        RuleSet ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
-        assertEquals("Number of Rules", 3, ruleSet.getRules().size());
-        assertNotNull(ruleSet.getRuleByName("MockRuleName"));
-        assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
-        assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+        {
+            final RuleSetReferenceId refInternalInternal = createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN);
 
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
-        ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
-        assertEquals("Number of Rules", 2, ruleSet.getRules().size());
-        assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
-        assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+            ruleSet = parser.filterAbovePriority(RulePriority.LOW).parseFromResource(refInternalInternal);
+            assertEquals("Number of Rules", 3, ruleSet.getRules().size());
+            assertNotNull(ruleSet.getRuleByName("MockRuleName"));
+            assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
+            assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
-        ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
-        assertEquals("Number of Rules", 1, ruleSet.getRules().size());
-        assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+            ruleSet = parser.filterAbovePriority(RulePriority.MEDIUM_HIGH).parseFromResource(refInternalInternal);
+            assertEquals("Number of Rules", 2, ruleSet.getRules().size());
+            assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
+            assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.LOW, false, true);
-        ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+            ruleSet = parser.filterAbovePriority(RulePriority.HIGH).parseFromResource(refInternalInternal);
+            assertEquals("Number of Rules", 1, ruleSet.getRules().size());
+            assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+        }
+
+        final RuleSetReferenceId refInternalToExternal = createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN);
+
+        ruleSet = parser.filterAbovePriority(RulePriority.LOW).parseFromResource(refInternalToExternal);
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
-        ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+        ruleSet = parser.filterAbovePriority(RulePriority.MEDIUM_HIGH).parseFromResource(refInternalToExternal);
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = new RuleSetFactory(rl, RulePriority.HIGH, false, true);
-        ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+        ruleSet = parser.filterAbovePriority(RulePriority.HIGH).parseFromResource(refInternalToExternal);
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
     }
 
     @Test
     public void testOverridePriorityLoadWithMinimum() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.MEDIUM_LOW, true, true);
-        RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        RuleSetParser parser = new RuleSetParser().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(true).enableCompatibility(true);
+        RuleSet ruleset = parser.parseFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
 
@@ -524,8 +544,8 @@ public class RuleSetFactoryTest {
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
 
         // now, load with default minimum priority
-        rsf = RulesetsFactoryUtils.defaultFactory();
-        ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        parser = new RuleSetParser();
+        ruleset = parser.parseFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         assertEquals("Number of Rules", 2, ruleset.getRules().size());
         Rule dummyBasicMockRule = ruleset.getRuleByName("DummyBasicMockRule");
         assertEquals("Wrong Priority", RulePriority.LOW, dummyBasicMockRule.getPriority());
@@ -533,14 +553,14 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExcludeWithMinimumPriority() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.HIGH, true, true);
-        RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        RuleSetParser parser = new RuleSetParser().filterAbovePriority(RulePriority.HIGH);
+        RuleSet ruleset = parser.parseFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // no rules should be loaded
         assertEquals("Number of Rules", 0, ruleset.getRules().size());
 
         // now, load with default minimum priority
-        rsf = RulesetsFactoryUtils.defaultFactory();
-        ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        parser.filterAbovePriority(RulePriority.LOW);
+        ruleset = parser.parseFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // only one rule, we have excluded one...
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
         // rule is excluded
@@ -568,11 +588,10 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testSetPriority() throws RuleSetNotFoundException {
-        ResourceLoader rl = new ResourceLoader();
-        RuleSetFactory rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_HIGH, false, true);
-        assertEquals(0, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
-        rsf = new RuleSetFactory(rl, RulePriority.MEDIUM_LOW, false, true);
-        assertEquals(1, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
+        RuleSetParser rsf = new RuleSetParser().filterAbovePriority(RulePriority.MEDIUM_HIGH);
+        assertEquals(0, rsf.parseFromResource(createRuleSetReferenceId(SINGLE_RULE)).size());
+        rsf.filterAbovePriority(RulePriority.MEDIUM_LOW);
+        assertEquals(1, rsf.parseFromResource(createRuleSetReferenceId(SINGLE_RULE)).size());
     }
 
     @Test
@@ -750,7 +769,7 @@ public class RuleSetFactoryTest {
                 + "    <description>Ruleset which references a empty ruleset</description>\n" + "\n"
                 + "    <rule ref=\"rulesets/dummy/empty-ruleset.xml\" />\n"
                 + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, true);
+        RuleSetFactory ruleSetFactory = new RuleSetParser().loadResourcesWith(new ResourceLoader()).filterAbovePriority(RulePriority.LOW).warnDeprecated(true).enableCompatibility(true).toFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         assertEquals(0, ruleset.getRules().size());
 
@@ -772,8 +791,7 @@ public class RuleSetFactoryTest {
                 + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
                 + "  <description>Custom ruleset for tests</description>\n"
                 + "  <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml/ThisRuleDoesNotExist\"/>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        ruleSetFactory.createRuleSet(ref);
+        new RuleSetParser().parseFromResource(ref);
     }
 
     /**
@@ -792,8 +810,7 @@ public class RuleSetFactoryTest {
                 + "   <description>PMD Plugin preferences rule set</description>\n" + "\n"
                 + "<rule name=\"OverriddenDummyBasicMockRule\"\n"
                 + "    ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\">\n" + "</rule>\n" + "\n" + "</ruleset>");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet rs = ruleSetFactory.createRuleSet(ref);
+        RuleSet rs = new RuleSetParser().parseFromResource(ref);
 
         Rule r = rs.getRules().toArray(new Rule[1])[0];
         assertEquals("OverriddenDummyBasicMockRule", r.getName());
@@ -819,8 +836,7 @@ public class RuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml\">\n"
                         + "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + "  </rule>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
+        RuleSet ruleset = new RuleSetParser().parseFromResource(ref);
         assertEquals(4, ruleset.getRules().size());
     }
 
@@ -849,8 +865,7 @@ public class RuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"rulesets/dummy/basic.xml\">\n" + "    <exclude name=\"DummyBasicMockRule\"/>\n"
                         + "  </rule>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleset = ruleSetFactory.createRuleSet(ref1);
+        RuleSet ruleset = new RuleSetParser().parseFromResource(ref1);
         assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
 
         RuleSetReferenceId ref2 = createRuleSetReferenceId(
@@ -861,8 +876,7 @@ public class RuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"rulesets/dummy/basic.xml\">\n" + "    <exclude name=\"DummyBasicMockRule\"/>\n"
                         + "  </rule>\n" + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory2 = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleset2 = ruleSetFactory2.createRuleSet(ref2);
+        RuleSet ruleset2 = new RuleSetParser().parseFromResource(ref2);
         assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
 
         RuleSetReferenceId ref3 = createRuleSetReferenceId(
@@ -873,8 +887,7 @@ public class RuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n" + "  <rule ref=\"rulesets/dummy/basic.xml\">\n"
                         + "    <exclude name=\"DummyBasicMockRule\"/>\n" + "  </rule>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory3 = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleset3 = ruleSetFactory3.createRuleSet(ref3);
+        RuleSet ruleset3 = new RuleSetParser().parseFromResource(ref3);
         assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
     }
 
@@ -891,8 +904,7 @@ public class RuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
                         + "  </ruleset>\n");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        ruleSetFactory.createRuleSet(ref);
+        new RuleSetParser().parseFromResource(ref);
 
         assertTrue(logging.getLog().contains("RuleSet name is missing."));
     }
@@ -906,8 +918,7 @@ public class RuleSetFactoryTest {
                     + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
                     + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
                     + "  </ruleset>\n");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        ruleSetFactory.createRuleSet(ref);
+        new RuleSetParser().parseFromResource(ref);
         assertTrue(logging.getLog().contains("RuleSet description is missing."));
     }
 
@@ -1255,7 +1266,7 @@ public class RuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.LOW, true, false);
+        RuleSetFactory rsf = new RuleSetParser().warnDeprecated(true).enableCompatibility(false).toFactory();
         return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
     }
 
