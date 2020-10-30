@@ -153,8 +153,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>a compound assignment operator doth a usage make</description>
-        <expected-problems>0</expected-problems>
+        <description>a compound assignment operator does not a usage make</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
