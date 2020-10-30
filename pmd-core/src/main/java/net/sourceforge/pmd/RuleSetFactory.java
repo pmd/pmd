@@ -167,7 +167,7 @@ public class RuleSetFactory {
                         + System.getProperty("java.class.path"));
             }
         }
-        return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
+        return createRuleSets(ruleSetReferenceIds).iterator();
     }
 
     /**

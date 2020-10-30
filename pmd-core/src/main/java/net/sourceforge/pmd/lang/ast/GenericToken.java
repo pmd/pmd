@@ -102,8 +102,8 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      *
      * @throws NullPointerException If the parameter s null
      */
-    static Iterable<JavaccToken> previousSpecials(JavaccToken from) {
-        return () -> IteratorUtil.generate(from.getPreviousComment(), JavaccToken::getPreviousComment);
+    static <T extends GenericToken<T>> Iterable<T> previousSpecials(T from) {
+        return () -> IteratorUtil.generate(from.getPreviousComment(), GenericToken::getPreviousComment);
     }
 
 }
