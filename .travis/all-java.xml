@@ -65,7 +65,7 @@
 
     <!-- codestyle.xml -->
 
-    <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor"/> -->
+    <rule ref="category/java/codestyle.xml/AtLeastOneConstructor"/>
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
     <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
     <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
