@@ -589,4 +589,39 @@ private static class QualifiedByAnnotationTestBean {
 
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Multiple ctors writing a subset of fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            class GroovyBeanDefinitionWrapper extends GroovyObjectSupport {
+
+                private String beanName;
+                private Class<?> clazz;
+                private Collection<?> constructorArgs;
+                private AbstractBeanDefinition definition;
+
+
+                public GroovyBeanDefinitionWrapper(String beanName) {
+                    this.beanName = beanName;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz, Collection<?> constructorArgs) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                    this.constructorArgs = constructorArgs;
+                }
+
+                public Collection<?> getConstructorArgs() {return constructorArgs;}
+                public String getBeanName() {return beanName;}
+                public AbstractBeanDefinition getDefinition() {return definition;}
+                public Class<?> getClazz() {return clazz;}
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -68,7 +70,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 boolean isBlank = varId.getInitializer() == null;
 
                 if (!hasWrite && !isBlank) {
-                    //todo this case may also handle static fields.
+                    //todo this case may also handle static fields easily.
                     addViolation(data, varId, varId.getName());
                 } else if (hasWrite) {
                     AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
@@ -85,7 +87,8 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     }
 
     private boolean defaultValueIsOverwrittenOnAllPaths(DataflowResult dataflow, AssignmentEntry fieldDef) {
-        return CollectionUtil.none(dataflow.getKillers(fieldDef), AssignmentEntry::isFieldAssignmentAtEndOfCtor);
+        Set<AssignmentEntry> killers = dataflow.getKillers(fieldDef);
+        return CollectionUtil.none(killers, AssignmentEntry::isFieldAssignmentAtEndOfCtor);
     }
 
     private boolean noAssignmentIsOverwritten(DataflowResult dataflow, AssignmentEntry fieldDef) {

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -568,6 +570,17 @@ public final class CollectionUtil {
             return set.iterator().next();
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Merge the second map into the first. If some keys are in common,
+     * merge them using the merge function, like {@link Map#merge(Object, Object, BiFunction)}.
+     */
+    public static <K, V> void mergeMaps(Map<K, V> result, Map<K, V> other, BinaryOperator<V> mergeFun) {
+        for (K var : other.keySet()) {
+            V otherInfo = other.get(var); // non-null
+            result.merge(var, otherInfo, mergeFun);
         }
     }
 }

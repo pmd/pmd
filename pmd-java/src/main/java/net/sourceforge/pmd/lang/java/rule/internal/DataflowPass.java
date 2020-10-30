@@ -79,6 +79,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -129,7 +130,13 @@ public final class DataflowPass {
                 unused.removeIf(AssignmentEntry::isFieldDefaultValue);
                 dataflowResult.unusedAssignments.addAll(unused);
             }
-            dataflowResult.killRecord.putAll(subResult.killRecord);
+
+            CollectionUtil.mergeMaps(
+                dataflowResult.killRecord, subResult.killRecord,
+                (s1, s2) -> {
+                    s1.addAll(s2);
+                    return s1;
+                });
         }
 
         return dataflowResult;
@@ -880,7 +887,6 @@ public final class DataflowPass {
                 }
             }
 
-
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTConstructorDeclaration ctor : ctors) {
                 SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
@@ -1017,10 +1023,10 @@ public final class DataflowPass {
             assign(var, rhs, false, false);
         }
 
-        @Nullable AssignmentEntry assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope, boolean isFieldBeforeMethod) {
+        void assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope, boolean isFieldBeforeMethod) {
             ASTVariableDeclaratorId node = var.tryGetNode();
             if (node == null) {
-                return null; // we don't care about non-local declarations
+                return; // we don't care about non-local declarations
             }
             AssignmentEntry entry = outOfScope || isFieldBeforeMethod
                                     ? new UnboundAssignment(var, node, rhs, isFieldBeforeMethod)
@@ -1038,12 +1044,10 @@ public final class DataflowPass {
                 }
             }
             global.allAssignments.add(entry);
-            return entry;
         }
 
-        Set<AssignmentEntry> declareSpecialFieldValues(JClassSymbol sym) {
+        void declareSpecialFieldValues(JClassSymbol sym) {
             List<JFieldSymbol> declaredFields = sym.getDeclaredFields();
-            Set<AssignmentEntry> specials = new HashSet<>(declaredFields.size());
             for (JFieldSymbol field : declaredFields) {
                 ASTVariableDeclaratorId id = field.tryGetNode();
                 if (id == null || !SingularFieldRule.mayBeSingular(id)) {
@@ -1052,12 +1056,8 @@ public final class DataflowPass {
                     continue;
                 }
 
-                AssignmentEntry entry = assign(field, id, true, true);
-                if (entry != null) {
-                    specials.add(entry);
-                }
+                assign(field, id, true, true);
             }
-            return specials;
         }
 
 
@@ -1219,10 +1219,7 @@ public final class DataflowPass {
                 return this;
             }
 
-            for (JVariableSymbol var : other.symtable.keySet()) {
-                VarLocalInfo otherInfo = other.symtable.get(var); // non-null
-                this.symtable.merge(var, otherInfo, VarLocalInfo::merge);
-            }
+            CollectionUtil.mergeMaps(this.symtable, other.symtable, VarLocalInfo::merge);
             return this;
         }
 
@@ -1283,7 +1280,7 @@ public final class DataflowPass {
             // This may be overwritten repeatedly in loops, we probably don't care,
             // as normally they're created equal
             // Also for now we don't support getting a field.
-            if (isInitializer() || isBlankDeclaration()) {
+            if ((isInitializer() || isBlankDeclaration()) && !isUnbound()) {
                 node.getUserMap().set(VAR_DEFINITION, this);
             }
         }
