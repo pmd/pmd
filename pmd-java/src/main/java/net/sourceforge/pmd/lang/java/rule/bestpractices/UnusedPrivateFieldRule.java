@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
@@ -45,9 +46,11 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             for (ASTFieldDeclaration field : type.getDeclarations()
                                                  .filterIs(ASTFieldDeclaration.class)) {
                 if (field.getVisibility() == Visibility.V_PRIVATE
+                    && !JavaRuleUtil.isSerialPersistentFields(field)
+                    && !JavaRuleUtil.isSerialVersionUID(field)
                     && !hasIgnoredAnnotation(field)) {
                     for (ASTVariableDeclaratorId varId : field.getVarIds()) {
-                        if (!isOK(varId) && UnusedLocalVariableRule.isNeverUsed(varId)) {
+                        if (JavaRuleUtil.isNeverUsed(varId)) {
                             addViolation(data, varId, varId.getName());
                         }
                     }
@@ -55,12 +58,5 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             }
         }
         return null;
-    }
-
-
-    private boolean isOK(ASTVariableDeclaratorId node) {
-        return "serialVersionUID".equals(node.getName())
-            || "serialPersistentFields".equals(node.getName())
-            || "IDENT".equals(node.getName());
     }
 }
