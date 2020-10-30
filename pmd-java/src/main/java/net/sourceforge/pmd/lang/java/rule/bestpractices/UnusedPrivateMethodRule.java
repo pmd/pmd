@@ -32,8 +32,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
-    private static final Set<String> SERIALIZATION_METHODS = new HashSet<>(Arrays.asList(
-        "readObject", "writeObject", "readResolve", "writeReplace"));
+    private static final Set<String> SERIALIZATION_METHODS =
+        new HashSet<>(Arrays.asList("readObject", "writeObject", "readResolve", "writeReplace"));
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
