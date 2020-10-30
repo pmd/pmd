@@ -87,9 +87,14 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 public final class DataflowPass {
 
     private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.result");
+    private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
 
     public static DataflowResult getDataflowResult(ASTCompilationUnit acu) {
         return acu.getUserMap().computeIfAbsent(DATAFLOW_RESULT_K, () -> process(acu));
+    }
+
+    public static @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
+        return expr.getUserMap().get(REACHING_DEFS);
     }
 
     private static DataflowResult process(ASTCompilationUnit node) {
@@ -100,12 +105,31 @@ public final class DataflowPass {
             if (subResult.usedAssignments.size() < subResult.allAssignments.size()) {
                 Set<AssignmentEntry> unused = subResult.allAssignments;
                 unused.removeAll(subResult.usedAssignments);
+                unused.removeIf(AssignmentEntry::isUnbound);
                 dataflowResult.unusedAssignments.addAll(unused);
             }
             dataflowResult.killRecord.putAll(subResult.killRecord);
         }
 
         return dataflowResult;
+    }
+
+    public static final class ReachingDefinitionSet {
+
+        private final Set<AssignmentEntry> reaching;
+        private final boolean isNotFullyKnown;
+
+        public ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
+            this.reaching = reaching;
+            this.isNotFullyKnown = reaching.remove(null);
+        }
+
+        /**
+         * Returns the set of assignments that may reach the place.
+         */
+        public Set<AssignmentEntry> getReaching() {
+            return Collections.unmodifiableSet(reaching);
+        }
     }
 
     public static final class DataflowResult {
@@ -673,7 +697,7 @@ public final class DataflowPass {
 
                     if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
-                        result.use(lhsVar);
+                        result.use(lhsVar, (ASTNamedReferenceExpr) lhs);
                     }
 
                     result.assign(lhsVar, rhs);
@@ -746,7 +770,7 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTVariableAccess node, SpanInfo data) {
             if (node.getAccessType() == AccessType.READ) {
-                data.use(node.getReferencedSym());
+                data.use(node.getReferencedSym(), node);
             }
             return data;
         }
@@ -756,7 +780,7 @@ public final class DataflowPass {
             data = node.getQualifier().acceptVisitor(this, data);
 
             if (isRelevantField(node) && node.getAccessType() == AccessType.READ) {
-                data.use(node.getReferencedSym());
+                data.use(node.getReferencedSym(), node);
             }
             return data;
         }
@@ -764,7 +788,7 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
             if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
-                data.recordThisLeak(true, enclosingClassScope);
+                data.recordThisLeak(true, enclosingClassScope, node);
             }
             return data;
         }
@@ -855,17 +879,17 @@ public final class DataflowPass {
             }
 
             // assignments that reach the end of any constructor must be considered used
-            useAllSelfFields(staticInit, ctorEndState, classSymbol);
+            useAllSelfFields(staticInit, ctorEndState, classSymbol, classSymbol.tryGetNode());
         }
 
-        static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym) {
+        static void useAllSelfFields(@Nullable SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 if (field.isStatic()) {
                     if (staticState != null) {
-                        staticState.use(field);
+                        staticState.assignOutOfScope(field, escapingNode);
                     }
                 } else {
-                    instanceState.use(field);
+                    instanceState.assignOutOfScope(field, escapingNode);
                 }
             }
         }
@@ -980,12 +1004,22 @@ public final class DataflowPass {
             assign(id.getSymbol(), id);
         }
 
-        void assign(JVariableSymbol var, JavaNode rhs) {
+        /**
+         * Assign the var to some node. The RHS node is interpreted by {@link AssignmentEntry} if non-null.
+         * But if null, then the variable is assigned to some out of scope value,
+         * eg after a {@code this} leak, where we don't know what happened.
+         */
+        void assign(JVariableSymbol var, @Nullable JavaNode rhs) {
+            assign(var, rhs, false);
+        }
+
+        void assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope) {
             ASTVariableDeclaratorId node = var.tryGetNode();
             if (node == null) {
                 return; // we don't care about non-local declarations
             }
-            AssignmentEntry entry = new AssignmentEntry(var, node, rhs);
+            AssignmentEntry entry = outOfScope ? new UnboundAssignment(var, node, rhs)
+                                               : new AssignmentEntry(var, node, rhs);
             VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
             if (previous != null) {
                 // those assignments were overwritten ("killed")
@@ -1003,11 +1037,27 @@ public final class DataflowPass {
             global.allAssignments.add(entry);
         }
 
-        void use(@Nullable JVariableSymbol var) {
+
+        void assignOutOfScope(@Nullable JVariableSymbol var, JavaNode escapingNode) {
+            if (var == null) {
+                return;
+            }
+            use(var, null);
+            assign(var, escapingNode, true);
+        }
+
+        void use(@Nullable JVariableSymbol var, ASTNamedReferenceExpr reachingDefSink) {
+            if (var == null) {
+                return;
+            }
             VarLocalInfo info = symtable.get(var);
             // may be null for implicit assignments, like method parameter
             if (info != null) {
                 global.usedAssignments.addAll(info.reachingDefs);
+                if (reachingDefSink != null) {
+                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new HashSet<>(info.reachingDefs));
+                    reachingDefSink.getUserMap().set(REACHING_DEFS, reaching);
+                }
             }
         }
 
@@ -1035,10 +1085,10 @@ public final class DataflowPass {
          * of `this`. So the analysis may show some false positives, which
          * hopefully should be rare enough.
          */
-        public void recordThisLeak(boolean thisIsLeaking, JClassSymbol enclosingClassSym) {
+        public void recordThisLeak(boolean thisIsLeaking, JClassSymbol enclosingClassSym, JavaNode escapingNode) {
             if (thisIsLeaking && enclosingClassSym != null) {
                 // all reaching defs to fields until now may be observed
-                ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassSym);
+                ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassSym, escapingNode);
             }
         }
 
@@ -1194,7 +1244,7 @@ public final class DataflowPass {
         }
     }
 
-    public static final class AssignmentEntry implements Comparable<AssignmentEntry> {
+    public static class AssignmentEntry implements Comparable<AssignmentEntry> {
 
         final JVariableSymbol var;
         final ASTVariableDeclaratorId node;
@@ -1248,6 +1298,15 @@ public final class DataflowPass {
             return rhs;
         }
 
+        /**
+         * If true, then this "assignment" is not real. We conservatively
+         * assume that the variable may have been set to another value by
+         * a call to some external code.
+         */
+        public boolean isUnbound() {
+            return false;
+        }
+
         @Override
         public String toString() {
             return var.getSimpleName() + " := " + rhs;
@@ -1269,6 +1328,18 @@ public final class DataflowPass {
         @Override
         public int hashCode() {
             return 31 * var.hashCode() + rhs.hashCode();
+        }
+    }
+
+    static class UnboundAssignment extends AssignmentEntry {
+
+        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs) {
+            super(var, node, rhs);
+        }
+
+        @Override
+        public boolean isUnbound() {
+            return true;
         }
     }
 }
