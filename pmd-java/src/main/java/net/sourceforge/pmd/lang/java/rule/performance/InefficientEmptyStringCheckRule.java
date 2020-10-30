@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -62,22 +60,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     private static boolean isLengthZeroCheck(ASTMethodCall call) {
         return call.getMethodName().equals("length")
             && call.getArguments().size() == 0
-            && isZeroCheck(call.getParent(), 1 - call.getIndexInParent());
-    }
-
-    private static boolean isZeroCheck(JavaNode e, int checkLiteralAtIdx) {
-        if (e instanceof ASTInfixExpression) {
-            return ((ASTInfixExpression) e).getOperator().isEquality()
-                && isIntLit(e.getChild(checkLiteralAtIdx), 0);
-        }
-        return false;
-    }
-
-    private static boolean isIntLit(JavaNode e, int value) {
-        if (e instanceof ASTNumericLiteral) {
-            return ((ASTNumericLiteral) e).getValueAsInt() == value;
-        }
-        return false;
+            && JavaRuleUtil.isZeroChecked(call);
     }
 
     private static boolean isTrimCall(ASTExpression expr) {
