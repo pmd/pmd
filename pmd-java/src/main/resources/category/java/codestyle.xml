@@ -145,7 +145,8 @@ and increases the maintenance burden.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//Name[starts-with(@Image,'System.loadLibrary')]</value>
+                <value>//MethodCall[TypeExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.System')]
+                                    and @MethodName = 'loadLibrary']</value>
             </property>
         </properties>
         <example>
