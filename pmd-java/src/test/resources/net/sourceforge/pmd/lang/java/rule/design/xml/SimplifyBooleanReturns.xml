@@ -97,4 +97,17 @@ public class SimplifyBooleanReturns {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Check for negated expr</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj))
+            return obj != null;
+        return obj == null;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

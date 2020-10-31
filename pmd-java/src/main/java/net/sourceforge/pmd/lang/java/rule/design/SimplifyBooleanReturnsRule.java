@@ -4,258 +4,168 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.Iterator;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
-public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
+public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
+
+    public SimplifyBooleanReturnsRule() {
+        super(ASTReturnStatement.class);
+    }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        // only boolean methods should be inspected
-        if (node.getResultType().getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
-            return super.visit(node, data);
+    public Object visit(ASTReturnStatement node, Object data) {
+        ASTExpression expr = node.getExpr();
+        if (expr == null
+            || !expr.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)
+            || !isThenBranchOfSomeIf(node)) {
+            return null;
         }
-        // skip method
-        return data;
+        return visit(node.ancestors(ASTIfStatement.class).firstOrThrow(), data);
+    }
+
+    // Only explore the then branch. If we explore the else, then we'll report twice.
+    // In the case if .. else, both branches need to be symmetric anyway.
+    private boolean isThenBranchOfSomeIf(ASTReturnStatement node) {
+        if (node.getParent() instanceof ASTIfStatement) {
+            return node.getIndexInParent() == 1;
+        }
+        if (node.getParent() instanceof ASTBlock
+            && ((ASTBlock) node.getParent()).size() == 1
+            && node.getParent().getParent() instanceof ASTIfStatement) {
+            return node.getParent().getIndexInParent() == 1;
+        }
+        return false;
+    }
+
+    private @Nullable ASTReturnStatement asReturnStatement(ASTStatement node) {
+        if (node instanceof ASTReturnStatement) {
+            return (ASTReturnStatement) node;
+        } else if (node instanceof ASTBlock && ((ASTBlock) node).size() == 1) {
+            return asReturnStatement(((ASTBlock) node).get(0));
+        }
+        return null;
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // that's the case: if..then..return; return;
-        if (!node.hasElse() && isIfJustReturnsBoolean(node) && isJustReturnsBooleanAfter(node)) {
-            addViolation(data, node);
-            return super.visit(node, data);
-        }
-
-        // only deal with if..then..else stmts
-        if (node.getNumChildren() != 3) {
-            return super.visit(node, data);
-        }
-
-        // don't bother if either the if or the else block is empty
-        if (node.getChild(1).getNumChildren() == 0 || node.getChild(2).getNumChildren() == 0) {
-            return super.visit(node, data);
-        }
-
-        Node returnStatement1 = node.getChild(1).getChild(0);
-        Node returnStatement2 = node.getChild(2).getChild(0);
-
-        if (returnStatement1 instanceof ASTReturnStatement && returnStatement2 instanceof ASTReturnStatement) {
-            Node expression1 = returnStatement1.getChild(0).getChild(0);
-            Node expression2 = returnStatement2.getChild(0).getChild(0);
-            if (terminatesInBooleanLiteral(returnStatement1) && terminatesInBooleanLiteral(returnStatement2)) {
+        if (!node.hasElse()) {
+            if (isFollowedByReturn(node)) {
                 addViolation(data, node);
-            } else if (expression1 instanceof ASTUnaryExpressionNotPlusMinus
-                    ^ expression2 instanceof ASTUnaryExpressionNotPlusMinus) {
+            }
+            return data;
+        }
+
+        ASTReturnStatement returnStatement1 = asReturnStatement(node.getElseBranch());
+        ASTReturnStatement returnStatement2 = asReturnStatement(node.getThenBranch());
+
+        if (returnStatement1 != null && returnStatement2 != null) {
+            ASTExpression e1 = returnStatement1.getExpr();
+            ASTExpression e2 = returnStatement2.getExpr();
+
+            if (isBooleanLiteral(e1) && isBooleanLiteral(e2)) {
+                addViolation(data, node);
+            } else if (isBooleanNegation(e1) ^ isBooleanNegation(e2)) {
                 // We get the nodes under the '!' operator
                 // If they are the same => error
-                if (isNodesEqualWithUnaryExpression(expression1, expression2)) {
-                    // second case:
-                    // If
-                    // Expr
-                    // Statement
-                    // ReturnStatement
-                    // UnaryExpressionNotPlusMinus '!'
-                    // Expression E
-                    // Statement
-                    // ReturnStatement
-                    // Expression E
-                    // i.e.,
-                    // if (foo)
-                    // return !a;
-                    // else
-                    // return a;
+                if (areComplements(e1, e2)) {
+                    // if (foo) return !a;
+                    // else return a;
                     addViolation(data, node);
-                }
-            }
-        } else if (hasOneBlockStmt(node.getChild(1)) && hasOneBlockStmt(node.getChild(2))) {
-            // We have blocks so we must go down three levels (BlockStatement,
-            // Statement, ReturnStatement)
-            returnStatement1 = returnStatement1.getChild(0).getChild(0).getChild(0);
-            returnStatement2 = returnStatement2.getChild(0).getChild(0).getChild(0);
-
-            // if we have 2 return;
-            if (isSimpleReturn(returnStatement1) && isSimpleReturn(returnStatement2)) {
-                // third case
-                // If
-                // Expr
-                // Statement
-                // Block
-                // BlockStatement
-                // Statement
-                // ReturnStatement
-                // Statement
-                // Block
-                // BlockStatement
-                // Statement
-                // ReturnStatement
-                // i.e.,
-                // if (foo) {
-                // return true;
-                // } else {
-                // return false;
-                // }
-                addViolation(data, node);
-            } else {
-                Node expression1 = getDescendant(returnStatement1, 4);
-                Node expression2 = getDescendant(returnStatement2, 4);
-                if (terminatesInBooleanLiteral(node.getChild(1).getChild(0))
-                        && terminatesInBooleanLiteral(node.getChild(2).getChild(0))) {
-                    addViolation(data, node);
-                } else if (expression1 instanceof ASTUnaryExpressionNotPlusMinus
-                        ^ expression2 instanceof ASTUnaryExpressionNotPlusMinus) {
-                    // We get the nodes under the '!' operator
-                    // If they are the same => error
-                    if (isNodesEqualWithUnaryExpression(expression1, expression2)) {
-                        // forth case
-                        // If
-                        // Expr
-                        // Statement
-                        // Block
-                        // BlockStatement
-                        // Statement
-                        // ReturnStatement
-                        // UnaryExpressionNotPlusMinus '!'
-                        // Expression E
-                        // Statement
-                        // Block
-                        // BlockStatement
-                        // Statement
-                        // ReturnStatement
-                        // Expression E
-                        // i.e.,
-                        // if (foo) {
-                        // return !a;
-                        // } else {
-                        // return a;
-                        // }
-                        addViolation(data, node);
-                    }
                 }
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     /**
      * Checks, whether there is a statement after the given if statement, and if
      * so, whether this is just a return boolean statement.
      *
-     * @param ifNode
-     *            the if statement
-     * @return
+     * @param ifNode the if statement
      */
-    private boolean isJustReturnsBooleanAfter(ASTIfStatement ifNode) {
-        Node blockStatement = ifNode.getParent().getParent();
-        Node block = blockStatement.getParent();
-        if (block.getNumChildren() != blockStatement.getIndexInParent() + 1 + 1) {
-            return false;
-        }
-
-        Node nextBlockStatement = block.getChild(blockStatement.getIndexInParent() + 1);
-        return terminatesInBooleanLiteral(nextBlockStatement);
+    private boolean isFollowedByReturn(ASTIfStatement ifNode) {
+        return ifNode.asStream().followingSiblings()
+                     .take(1)
+                     .filter(it -> it instanceof ASTReturnStatement)
+                     .nonEmpty();
     }
 
-    /**
-     * Checks whether the given ifstatement just returns a boolean in the if
-     * clause.
-     *
-     * @param ifNode
-     *            the if statement
-     * @return
-     */
-    private boolean isIfJustReturnsBoolean(ASTIfStatement ifNode) {
-        Node node = ifNode.getChild(1);
-        return node.getNumChildren() == 1
-                && (hasOneBlockStmt(node) || terminatesInBooleanLiteral(node.getChild(0)));
-    }
-
-    private boolean hasOneBlockStmt(Node node) {
-        return node.getChild(0) instanceof ASTBlock && node.getChild(0).getNumChildren() == 1
-                && terminatesInBooleanLiteral(node.getChild(0).getChild(0));
-    }
-
-    /**
-     * Returns the first child node going down 'level' levels or null if level
-     * is invalid
-     */
-    private Node getDescendant(Node node, int level) {
-        Node n = node;
-        for (int i = 0; i < level; i++) {
-            if (n.getNumChildren() == 0) {
-                return null;
+    // this method must be symmetric
+    private static boolean areComplements(ASTExpression e1, ASTExpression e2) {
+        if (isBooleanNegation(e1)) {
+            return isEqual(unaryOperand(e1), e2);
+        } else if (isBooleanNegation(e2)) {
+            return isEqual(e1, unaryOperand(e2));
+        } else if (e1 instanceof ASTInfixExpression && e2 instanceof ASTInfixExpression) {
+            ASTInfixExpression ifx1 = (ASTInfixExpression) e1;
+            ASTInfixExpression ifx2 = (ASTInfixExpression) e2;
+            if (ifx1.getOperator().getComplement() != ifx2.getOperator()) {
+                return false;
             }
-            n = n.getChild(0);
+            if (ifx1.getOperator().isEquality()) {
+                // NOT(a == b, a != b)
+                // NOT(a == b, b != a)
+                return isEqual(ifx1.getLeftOperand(), ifx2.getLeftOperand())
+                    && isEqual(ifx1.getRightOperand(), ifx2.getRightOperand())
+                    || isEqual(ifx2.getLeftOperand(), ifx1.getLeftOperand())
+                    && isEqual(ifx2.getRightOperand(), ifx1.getRightOperand());
+            }
+            // todo we could continue with de Morgan and stuff, and move this into a library
         }
-        return n;
+        return false;
     }
 
-    private boolean terminatesInBooleanLiteral(Node node) {
-        return eachNodeHasOneChild(node) && getLastChild(node) instanceof ASTBooleanLiteral;
+    private static boolean isEqual(ASTExpression e1, ASTExpression e2) {
+        return tokenEquals(e1, e2);
     }
 
-    private boolean eachNodeHasOneChild(Node node) {
-        if (node.getNumChildren() > 1) {
-            return false;
-        }
-        if (node.getNumChildren() == 0) {
-            return true;
-        }
-        return eachNodeHasOneChild(node.getChild(0));
-    }
 
-    private Node getLastChild(Node node) {
-        if (node.getNumChildren() == 0) {
-            return node;
-        }
-        return getLastChild(node.getChild(0));
-    }
-
-    private boolean isNodesEqualWithUnaryExpression(Node n1, Node n2) {
-        Node node1;
-        Node node2;
-        if (n1 instanceof ASTUnaryExpressionNotPlusMinus) {
-            node1 = n1.getChild(0);
-        } else {
-            node1 = n1;
-        }
-        if (n2 instanceof ASTUnaryExpressionNotPlusMinus) {
-            node2 = n2.getChild(0);
-        } else {
-            node2 = n2;
-        }
-        return isNodesEquals(node1, node2);
-    }
-
-    private boolean isNodesEquals(Node n1, Node n2) {
-        int numberChild1 = n1.getNumChildren();
-        int numberChild2 = n2.getNumChildren();
-        if (numberChild1 != numberChild2) {
-            return false;
-        }
-        if (!n1.getClass().equals(n2.getClass())) {
-            return false;
-        }
-        if (!n1.toString().equals(n2.toString())) {
-            return false;
-        }
-        for (int i = 0; i < numberChild1; i++) {
-            if (!isNodesEquals(n1.getChild(i), n2.getChild(i))) {
+    private static boolean tokenEquals(JavaNode node, JavaNode that) {
+        Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken());
+        Iterator<JavaccToken> thatIt = GenericToken.range(that.getFirstToken(), that.getLastToken());
+        while (thisIt.hasNext()) {
+            if (!thatIt.hasNext()) {
+                return false;
+            }
+            JavaccToken o1 = thisIt.next();
+            JavaccToken o2 = thatIt.next();
+            if (o1.kind != o2.kind
+                || !o2.getImage().equals(o2.getImage())) {
                 return false;
             }
         }
-        return true;
+        return !thatIt.hasNext();
     }
 
-    private boolean isSimpleReturn(Node node) {
-        return node instanceof ASTReturnStatement && node.getNumChildren() == 0;
+
+    private static boolean isBooleanLiteral(ASTExpression e) {
+        return e instanceof ASTBooleanLiteral;
+    }
+
+    private static boolean isBooleanNegation(ASTExpression e) {
+        return e instanceof ASTUnaryExpression && ((ASTUnaryExpression) e).getOperator() == UnaryOp.NEGATION;
+    }
+
+    private static ASTExpression unaryOperand(ASTExpression e) {
+        return ((ASTUnaryExpression) e).getOperand();
     }
 
 }
