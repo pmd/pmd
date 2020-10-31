@@ -53,7 +53,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPackageDeclaration node, Object data) {
-        currentPackage = node.getPackageNameImage();
+        currentPackage = node.getName();
         return data;
     }
 
