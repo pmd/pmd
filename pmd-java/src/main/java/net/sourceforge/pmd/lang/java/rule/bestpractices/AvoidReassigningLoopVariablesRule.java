@@ -184,15 +184,17 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
                 } else if (stmt instanceof ASTSwitchStatement) {
 
-                    checkVorViolations(((ASTSwitchStatement) stmt).getTestedExpression());
+                    ASTSwitchStatement switchStmt = (ASTSwitchStatement) stmt;
+                    checkVorViolations(switchStmt.getTestedExpression());
 
-                    mayExit |= copy(true, true, false).roamStatementsForExit(stmt.children().drop(1));
+                    mayExit |= copy(true, true, false).roamStatementsForExit(switchStmt.getBranches());
 
                 } else if (stmt instanceof ASTIfStatement) {
 
-                    checkVorViolations(((ASTIfStatement) stmt).getCondition());
-                    mayExit |= withGuard(true).roamStatementsForExit(((ASTIfStatement) stmt).getThenBranch());
-                    mayExit |= withGuard(this.guarded).roamStatementsForExit(((ASTIfStatement) stmt).getElseBranch());
+                    ASTIfStatement ifStmt = (ASTIfStatement) stmt;
+                    checkVorViolations(ifStmt.getCondition());
+                    mayExit |= withGuard(true).roamStatementsForExit(ifStmt.getThenBranch());
+                    mayExit |= withGuard(this.guarded).roamStatementsForExit(ifStmt.getElseBranch());
 
                 }
                 // these two catch-all clauses implement other statements & eg switch branches
