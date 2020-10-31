@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
@@ -37,8 +38,19 @@ public class ASTTypeParameter extends AbstractJavaTypeNode {
 
     /**
      * Returns the name of the type variable introduced by this declaration.
+     *
+     * @deprecated Use {@link #getName()}
      */
+    @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
     public String getParameterName() {
+        return getImage();
+    }
+
+    /**
+     * Returns the name of the type variable introduced by this declaration.
+     */
+    public String getName() {
         return getImage();
     }
 
