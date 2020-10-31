@@ -76,6 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
 import net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -91,6 +92,15 @@ import net.sourceforge.pmd.util.OptionalBool;
  * eg a value escapes, or is overwritten on all code paths.
  */
 public final class DataflowPass {
+
+    // todo probably, make that non-optional. It would be useful to implement
+    //  the flow-sensitive scopes of pattern variables
+
+    // todo things missing for full coverage of the JLS:
+    //  - follow `this(...)` constructor calls
+    //  - treat `while(true)` and `do while(true)` specially
+
+    //  see also the todo comments in UnusedAssignmentRule
 
     private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.global");
     private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
@@ -153,22 +163,26 @@ public final class DataflowPass {
         return dataflowResult;
     }
 
+    /**
+     * A set of reaching definitions, ie the assignments that are visible
+     * at some point. One can use {@link #getReachingDefinitions(ASTNamedReferenceExpr)}
+     * to get the data flow that reaches a variable usage (and go backwards with
+     * the {@linkplain DataflowResult#getKillers(AssignmentEntry) kill record}).
+     */
     public static final class ReachingDefinitionSet {
 
         private final Set<AssignmentEntry> reaching;
         private final boolean isNotFullyKnown;
         private final boolean containsInitialFieldValue;
 
-        public ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
+        ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
             this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isFieldAssignmentAtStartOfMethod);
             // not || as we want the side effect
             this.isNotFullyKnown = containsInitialFieldValue | reaching.removeIf(AssignmentEntry::isUnbound);
         }
 
-        /**
-         * Returns the set of assignments that may reach the place.
-         */
+        /** Returns the set of assignments that may reach the place. */
         public Set<AssignmentEntry> getReaching() {
             return Collections.unmodifiableSet(reaching);
         }
@@ -190,22 +204,30 @@ public final class DataflowPass {
         }
     }
 
+    /**
+     * Global result of the dataflow analysis.
+     */
     public static final class DataflowResult {
 
         final Set<AssignmentEntry> unusedAssignments;
         final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
 
 
-        public DataflowResult() {
+        DataflowResult() {
             this.unusedAssignments = new HashSet<>();
             this.killRecord = new HashMap<>();
         }
 
-
+        /**
+         * To be interpreted by {@link  UnusedAssignmentRule}.
+         */
         public Set<AssignmentEntry> getUnusedAssignments() {
             return Collections.unmodifiableSet(unusedAssignments);
         }
 
+        /**
+         * May be useful to check for reassignment.
+         */
         public @NonNull Set<AssignmentEntry> getKillers(AssignmentEntry assignment) {
             return killRecord.getOrDefault(assignment, Collections.emptySet());
         }
