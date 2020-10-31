@@ -214,7 +214,7 @@
             +- ClassOrInterfaceBodyDeclaration[@AnonymousInnerClass = false, @EnumChild = false, @Kind = DeclarationKind.RECORD]
             |  +- RecordDeclaration[@Abstract = false, @BinaryName = "Records$EmptyRec", @Default = false, @Final = true, @Image = "EmptyRec", @Local = false, @Modifiers = 1, @Native = false, @Nested = true, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @SimpleName = "EmptyRec", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.RECORD, @Volatile = false]
             |     +- TypeParameters[]
-            |     |  +- TypeParameter[@Image = "Type", @ParameterName = "Type", @TypeBound = false]
+            |     |  +- TypeParameter[@Image = "Type", @Name = "Type", @ParameterName = "Type", @TypeBound = false]
             |     +- RecordComponentList[@Size = 0]
             |     +- RecordBody[]
             |        +- ClassOrInterfaceBodyDeclaration[@AnonymousInnerClass = false, @EnumChild = false, @Kind = DeclarationKind.METHOD]

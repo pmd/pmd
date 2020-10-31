@@ -73,7 +73,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPackageDeclaration node, Object data) {
-        this.thisPackage = node.getPackageNameImage();
+        this.thisPackage = node.getName();
         return data;
     }
 
