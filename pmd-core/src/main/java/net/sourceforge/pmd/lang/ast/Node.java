@@ -291,6 +291,8 @@ public interface Node {
      * Returns a data map used to store additional information on this node.
      *
      * @return The user data map of this node
+     *
+     * @since 6.22.0
      */
     DataMap<DataKey<?, ?>> getUserMap();
 
@@ -300,6 +302,8 @@ public interface Node {
      * of the tree.
      *
      * @return The parent of this node
+     *
+     * @since 6.21.0
      */
     Node getParent();
 
@@ -308,12 +312,15 @@ public interface Node {
      * Returns the child of this node at the given index.
      *
      * @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getNumChildren()}.
+     * @since 6.21.0
      */
     Node getChild(int index);
 
 
     /**
      * Returns the number of children of this node.
+     *
+     * @since 6.21.0
      */
     int getNumChildren();
 
@@ -322,6 +329,8 @@ public interface Node {
      * node is a {@linkplain RootNode root node}, returns -1.
      *
      * @return The index of this node in its parent's children
+     *
+     * @since 6.21.0
      */
     int getIndexInParent();
 
@@ -346,6 +355,8 @@ public interface Node {
      *     a different override per concrete node class (no shortcuts).
      *
      *     The default implementation calls back {@link AstVisitor#cannotVisit(Node, Object)}.
+     *
+     * @since 7.0.0
      */
     default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.cannotVisit(this, data);
@@ -373,6 +384,8 @@ public interface Node {
 
     /**
      * Returns the first child of this node, or null if it doesn't exist.
+     *
+     * @since 7.0.0
      */
     default @Nullable Node getFirstChild() {
         return getNumChildren() > 0 ? getChild(0) : null;
@@ -381,11 +394,41 @@ public interface Node {
 
     /**
      * Returns the first last of this node, or null if it doesn't exist.
+     *
+     * @since 7.0.0
      */
     default @Nullable Node getLastChild() {
         return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
     }
 
+
+    /**
+     * Returns the previous sibling of this node, or null if it does not exist.
+     *
+     * @since 7.0.0
+     */
+    default @Nullable Node getPreviousSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx > 0) {
+            return parent.getChild(idx - 1);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the next sibling of this node, or null if it does not exist.
+     *
+     * @since 7.0.0
+     */
+    default @Nullable Node getNextSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx < parent.getNumChildren()) {
+            return parent.getChild(idx + 1);
+        }
+        return null;
+    }
 
     /**
      * Returns a node stream containing only this node.
@@ -395,6 +438,7 @@ public interface Node {
      * @return A node stream containing only this node
      *
      * @see NodeStream#of(Node)
+     * @since 7.0.0
      */
     default NodeStream<? extends Node> asStream() {
         return StreamImpl.singleton(this);
@@ -407,6 +451,7 @@ public interface Node {
      * you'll probably want to use {@link #children(Class)}.
      *
      * @see NodeStream#children(Class)
+     * @since 7.0.0
      */
     default NodeStream<? extends Node> children() {
         return StreamImpl.children(this);
@@ -420,6 +465,7 @@ public interface Node {
      * @return A node stream of the descendants of this node
      *
      * @see NodeStream#descendants()
+     * @since 7.0.0
      */
     default DescendantNodeStream<? extends Node> descendants() {
         return StreamImpl.descendants(this);
@@ -433,6 +479,7 @@ public interface Node {
      * @return A node stream of the whole subtree topped by this node
      *
      * @see NodeStream#descendantsOrSelf()
+     * @since 7.0.0
      */
     default DescendantNodeStream<? extends Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(this);
@@ -447,6 +494,7 @@ public interface Node {
      * @return A node stream of the ancestors of this node
      *
      * @see NodeStream#ancestors()
+     * @since 7.0.0
      */
     default NodeStream<? extends Node> ancestors() {
         return StreamImpl.ancestors(this);
@@ -461,6 +509,7 @@ public interface Node {
      * @return A stream of ancestors
      *
      * @see NodeStream#ancestorsOrSelf()
+     * @since 7.0.0
      */
     default NodeStream<? extends Node> ancestorsOrSelf() {
         return StreamImpl.ancestorsOrSelf(this);
@@ -477,6 +526,7 @@ public interface Node {
      * @return A new node stream
      *
      * @see NodeStream#children(Class)
+     * @since 7.0.0
      */
     default <R extends Node> NodeStream<R> children(Class<? extends R> rClass) {
         return StreamImpl.children(this, rClass);
@@ -494,6 +544,8 @@ public interface Node {
      * @param <R>    Type of the child to find
      *
      * @return A child, or null
+     *
+     * @since 7.0.0
      */
     default <R extends Node> @Nullable R firstChild(Class<? extends R> rClass) {
         return children(rClass).first();
@@ -511,6 +563,7 @@ public interface Node {
      * @return A new node stream
      *
      * @see NodeStream#descendants(Class)
+     * @since 7.0.0
      */
     default <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass) {
         return StreamImpl.descendants(this, rClass);
@@ -527,37 +580,16 @@ public interface Node {
      * @return A new node stream
      *
      * @see NodeStream#ancestors(Class)
+     * @since 7.0.0
      */
     default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
         return StreamImpl.ancestors(this, rClass);
     }
 
     /**
-     * Returns the previous sibling of this node, or null if it does not exist.
-     */
-    default @Nullable Node getPreviousSibling() {
-        Node parent = getParent();
-        int idx = getIndexInParent();
-        if (parent != null && idx > 0) {
-            return parent.getChild(idx - 1);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the next sibling of this node, or null if it does not exist.
-     */
-    default @Nullable Node getNextSibling() {
-        Node parent = getParent();
-        int idx = getIndexInParent();
-        if (parent != null && idx < parent.getNumChildren()) {
-            return parent.getChild(idx + 1);
-        }
-        return null;
-    }
-
-    /**
      * Returns the root of the tree this node is declared in.
+     *
+     * @since 7.0.0
      */
     default @NonNull RootNode getRoot() {
         Node r = this;
