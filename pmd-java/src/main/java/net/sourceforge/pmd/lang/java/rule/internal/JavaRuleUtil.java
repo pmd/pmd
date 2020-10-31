@@ -10,6 +10,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,11 +18,14 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -29,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -39,7 +44,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -225,4 +232,69 @@ public final class JavaRuleUtil {
             && hasExceptionList(node, InvalidObjectException.class)
             && hasParameters(node, ObjectInputStream.class);
     }
+
+
+    private static boolean areEqual(ASTExpression e1, ASTExpression e2) {
+        return tokenEquals(e1, e2);
+    }
+
+    /**
+     * Whether one expression is the boolean negation of the other. Many
+     * forms are not yet supported. This method is symmetric so only needs
+     * to be called once.
+     */
+    public static boolean areComplements(ASTExpression e1, ASTExpression e2) {
+        if (isBooleanNegation(e1)) {
+            return areEqual(unaryOperand(e1), e2);
+        } else if (isBooleanNegation(e2)) {
+            return areEqual(e1, unaryOperand(e2));
+        } else if (e1 instanceof ASTInfixExpression && e2 instanceof ASTInfixExpression) {
+            ASTInfixExpression ifx1 = (ASTInfixExpression) e1;
+            ASTInfixExpression ifx2 = (ASTInfixExpression) e2;
+            if (ifx1.getOperator().getComplement() != ifx2.getOperator()) {
+                return false;
+            }
+            if (ifx1.getOperator().isEquality()) {
+                // NOT(a == b, a != b)
+                // NOT(a == b, b != a)
+                return areEqual(ifx1.getLeftOperand(), ifx2.getLeftOperand())
+                    && areEqual(ifx1.getRightOperand(), ifx2.getRightOperand())
+                    || areEqual(ifx2.getLeftOperand(), ifx1.getLeftOperand())
+                    && areEqual(ifx2.getRightOperand(), ifx1.getRightOperand());
+            }
+            // todo we could continue with de Morgan and such
+        }
+        return false;
+    }
+
+    public static boolean tokenEquals(JavaNode node, JavaNode that) {
+        Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken());
+        Iterator<JavaccToken> thatIt = GenericToken.range(that.getFirstToken(), that.getLastToken());
+        while (thisIt.hasNext()) {
+            if (!thatIt.hasNext()) {
+                return false;
+            }
+            JavaccToken o1 = thisIt.next();
+            JavaccToken o2 = thatIt.next();
+            if (o1.kind != o2.kind
+                || !o2.getImage().equals(o2.getImage())) {
+                return false;
+            }
+        }
+        return !thatIt.hasNext();
+    }
+
+    public static boolean isBooleanLiteral(ASTExpression e) {
+        return e instanceof ASTBooleanLiteral;
+    }
+
+    public static boolean isBooleanNegation(ASTExpression e) {
+        return e instanceof ASTUnaryExpression && ((ASTUnaryExpression) e).getOperator() == UnaryOp.NEGATION;
+    }
+
+    private static @Nullable ASTExpression unaryOperand(ASTExpression e) {
+        return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
+                                               : null;
+    }
+
 }
