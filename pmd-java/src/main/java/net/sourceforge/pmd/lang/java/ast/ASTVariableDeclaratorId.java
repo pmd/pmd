@@ -135,12 +135,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
 
-    @Override
-    public Visibility getVisibility() {
-        return isPatternBinding() ? Visibility.V_LOCAL
-                                  : getModifierOwnerParent().getVisibility();
-    }
-
     private AccessNode getModifierOwnerParent() {
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
