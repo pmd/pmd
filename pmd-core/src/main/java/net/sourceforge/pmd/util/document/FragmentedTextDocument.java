@@ -16,11 +16,14 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
     private final Fragment firstFragment;
     private final Chars text;
 
+    private Fragment lastAccessedFragment;
+
     FragmentedTextDocument(TextDocument base, Fragment firstFragment, Fragment lastFragment) {
         super(base);
         assert firstFragment != lastFragment; // NOPMD
         this.firstFragment = firstFragment;
         this.text = toChars(firstFragment, lastFragment);
+        this.lastAccessedFragment = firstFragment;
     }
 
     private static Chars toChars(Fragment firstFragment, Fragment lastFragment) {
@@ -31,13 +34,6 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
             f = f.next;
         }
         return Chars.wrap(sb);
-    }
-
-    @Override
-    protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        // todo this would be pretty slow when we're in the middle of some escapes
-        // we could check save the fragment last accessed to speed it up, and look forwards & backwards
-        return inputOffsetAt(outOffset, firstFragment, inclusive);
     }
 
     @Override
@@ -52,17 +48,40 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
     }
 
 
-    static int inputOffsetAt(int outputOffset, @Nullable Fragment firstFragment, boolean inclusive) {
-        Fragment f = firstFragment;
+    @Override
+    protected int localOffsetTransform(int outOffset, boolean inclusive) {
+        // todo this would be pretty slow when we're in the middle of some escapes
+        // we could check save the fragment last accessed to speed it up, and look forwards & backwards
+        return inputOffsetAt(outOffset, inclusive);
+    }
+
+    private int inputOffsetAt(int outputOffset, boolean inclusive) {
+        Fragment f = this.lastAccessedFragment;
         if (f == null) {
             return outputOffset;
         }
-        while (f.next != null && f.outEnd() < outputOffset) {
-            f = f.next;
+
+        if (!f.contains(outputOffset)) {
+            // Slow path, we must search for the fragment
+            // This optimisation is important, otherwise we have
+            // to search for very long times in some files
+
+            if (f.outEnd() < outputOffset) { // search forward
+                while (f.next != null && f.outEnd() < outputOffset) {
+                    f = f.next;
+                }
+            } else { // search backwards
+                while (f.prev != null && outputOffset <= f.outStart()) {
+                    f = f.prev;
+                }
+            }
+            lastAccessedFragment = f;
         }
+
         if (!inclusive && f.outEnd() == outputOffset) {
             if (f.next != null) {
                 f = f.next;
+                lastAccessedFragment = f;
                 // fallthrough
             } else {
                 return f.outToIn(outputOffset) + 1;

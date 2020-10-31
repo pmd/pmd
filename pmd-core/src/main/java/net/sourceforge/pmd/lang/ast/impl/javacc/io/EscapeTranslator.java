@@ -128,28 +128,7 @@ public abstract class EscapeTranslator implements AutoCloseable {
     }
 
     /**
-     * Returns the offset in the input text of the given translated offset.
-     * This includes the length of any unicode escapes.
-     *
-     * <pre>
-     * input:      "a\u00a0b"
-     * translated: "a b"
-     *
-     * inputOffset(0) = 0
-     * inputOffset(1) = 1
-     * inputOffset(2) = 7 // includes the length of the escape
-     * </pre>
-     */
-    protected int inputOffset(int outputOffset) {
-        return escapes.inputOffsetAt(outputOffset);
-    }
-
-    /**
-     * The parameter is an *input* offset, if you got this offset from
-     * somewhere else than the input buffer you must first translate it
-     * back with {@link #inputOffset(int)}. This implementation is very
-     * inefficient but currently is only used for error messages (which
-     * obviously are exceptional).
+     * The parameter is an *input* offset.
      */
     protected int getLine(int idxInInput) {
         return StringUtil.lineNumberAt(input, idxInInput);
