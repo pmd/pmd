@@ -110,4 +110,30 @@ public class SimplifyBooleanReturns {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Check for negated expr 2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj))
+            return obj.getClass().equals(String.class);
+        return !obj.getClass().equals(String.class);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Check for boolean literal somewhere</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (obj instanceof String)
+            return true;
+        return !obj.getClass().equals(String.class);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

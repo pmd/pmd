@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -297,4 +298,8 @@ public final class JavaRuleUtil {
                                                : null;
     }
 
+    // consider putting this on the node interface
+    public static <T extends GenericNode<T>> T getNextSibling(GenericNode<T> ifNode) {
+        return (T) ifNode.asStream().followingSiblings().first();
+    }
 }

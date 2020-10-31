@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.getNextSibling;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanNegation;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
@@ -32,7 +32,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             || !isThenBranchOfSomeIf(node)) {
             return null;
         }
-        return visit(node.ancestors(ASTIfStatement.class).firstOrThrow(), data);
+        return checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), data, expr);
     }
 
     // Only explore the then branch. If we explore the else, then we'll report twice.
@@ -49,49 +49,35 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private @Nullable ASTReturnStatement asReturnStatement(ASTStatement node) {
-        if (node instanceof ASTReturnStatement) {
-            return (ASTReturnStatement) node;
-        } else if (node instanceof ASTBlock && ((ASTBlock) node).size() == 1) {
-            return asReturnStatement(((ASTBlock) node).get(0));
-        }
-        return null;
-    }
-
-    @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    private Object checkIf(ASTIfStatement node, Object data, ASTExpression thenExpr) {
         // that's the case: if..then..return; return;
-        if (!node.hasElse()) {
-            if (isFollowedByReturn(node)) {
-                addViolation(data, node);
-            }
+        ASTExpression elseExpr = getElseExpr(node);
+        if (elseExpr == null) {
             return data;
         }
 
-        ASTReturnStatement returnStatement1 = asReturnStatement(node.getElseBranch());
-        ASTReturnStatement returnStatement2 = asReturnStatement(node.getThenBranch());
-
-        if (returnStatement1 != null && returnStatement2 != null) {
-            ASTExpression e1 = returnStatement1.getExpr();
-            ASTExpression e2 = returnStatement2.getExpr();
-
-            if (isBooleanLiteral(e1) && isBooleanLiteral(e2)) {
-                addViolation(data, node);
-            } else if (isBooleanNegation(e1) ^ isBooleanNegation(e2)) {
-                // We get the nodes under the '!' operator
-                // If they are the same => error
-                if (areComplements(e1, e2)) {
-                    // if (foo) return !a;
-                    // else return a;
-                    addViolation(data, node);
-                }
-            }
+        if (isBooleanLiteral(thenExpr) || isBooleanLiteral(elseExpr)) {
+            addViolation(data, node);
+        } else if (areComplements(thenExpr, elseExpr)) {
+            // if (foo) return !a;
+            // else return a;
+            addViolation(data, node);
         }
         return data;
     }
 
-    private boolean isFollowedByReturn(ASTIfStatement ifNode) {
-        return ifNode.asStream().followingSiblings().first() instanceof ASTReturnStatement;
+    private @Nullable ASTExpression getReturnExpr(JavaNode node) {
+        if (node instanceof ASTReturnStatement) {
+            return ((ASTReturnStatement) node).getExpr();
+        } else if (node instanceof ASTBlock && ((ASTBlock) node).size() == 1) {
+            return getReturnExpr(((ASTBlock) node).get(0));
+        }
+        return null;
+    }
+
+    private @Nullable ASTExpression getElseExpr(ASTIfStatement node) {
+        return node.hasElse() ? getReturnExpr(node.getElseBranch())
+                              : getReturnExpr(getNextSibling(node)); // may be followed immediately by return
     }
 
 
