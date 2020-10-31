@@ -533,10 +533,33 @@ public interface Node {
     }
 
     /**
+     * Returns the previous sibling of this node, or null if it does not exist.
+     */
+    default @Nullable Node getPreviousSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx > 0) {
+            return parent.getChild(idx - 1);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the next sibling of this node, or null if it does not exist.
+     */
+    default @Nullable Node getNextSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx < parent.getNumChildren()) {
+            return parent.getChild(idx + 1);
+        }
+        return null;
+    }
+
+    /**
      * Returns the root of the tree this node is declared in.
      */
-    @NonNull
-    default RootNode getRoot() {
+    default @NonNull RootNode getRoot() {
         Node r = this;
         while (r.getParent() != null) {
             r = r.getParent();
