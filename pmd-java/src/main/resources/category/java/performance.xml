@@ -684,7 +684,7 @@ ensure that the string is not empty by making an additional check first.
                 <value>
 <![CDATA[
 //MethodCall[@MethodName = 'startsWith' and *[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.String')]]
- [ArgumentList[count(*)=1][StringLiteral[@length = 1]]]
+ [ArgumentList[count(*)=1][StringLiteral[@Length = 1]]]
 ]]>
                 </value>
             </property>
