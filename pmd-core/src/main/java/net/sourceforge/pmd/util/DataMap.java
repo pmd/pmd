@@ -6,6 +6,9 @@ package net.sourceforge.pmd.util;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An opaque, strongly typed heterogeneous data container. Data maps can
@@ -33,7 +36,7 @@ public final class DataMap<K> {
      * @return Previous value associated with the key (nullable)
      */
     @SuppressWarnings("unchecked")
-    public <T> T set(DataKey<? extends K, ? super T> key, T data) {
+    public <T> @Nullable T set(DataKey<? extends K, ? super T> key, T data) {
         return (T) getMap().put(key, data);
     }
 
@@ -46,8 +49,22 @@ public final class DataMap<K> {
      * @return Value associated with the key (nullable)
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(DataKey<? extends K, ? extends T> key) {
+    public <T> @Nullable T get(DataKey<? extends K, ? extends T> key) {
         return map == null ? null : (T) map.get(key);
+    }
+
+    /**
+     * Retrieve the value, or compute it if it is missing.
+     *
+     * @param key      Key
+     * @param supplier Supplier for a value
+     * @param <T>      Type of the data
+     *
+     * @return Value associated with the key (as nullable as the
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T computeIfAbsent(DataKey<? extends K, T> key, Supplier<? extends T> supplier) {
+        return (T) getMap().computeIfAbsent(key, k -> supplier.get());
     }
 
     private Map<DataKey<? extends K, ?>, Object> getMap() {

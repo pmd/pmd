@@ -243,6 +243,18 @@ final class AstClassSym
         // notice this relies on the fact that the extends clause
         // (or the type node of the constructor call, for an anonymous class),
         // was disambiguated early
+
+        // We special case anonymous classes so as not to trigger overload resolution
+        if (isAnonymousClass() && node.getParent() instanceof ASTConstructorCall) {
+
+            @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
+
+            return sym instanceof JClassType && !sym.isInterface()
+                   ? ((JClassType) sym).getSymbol()
+                   : factory.types().OBJECT.getSymbol();
+
+        }
+
         JClassType sup = getSuperclassType(Substitution.EMPTY);
         return sup == null ? null : sup.getSymbol();
     }

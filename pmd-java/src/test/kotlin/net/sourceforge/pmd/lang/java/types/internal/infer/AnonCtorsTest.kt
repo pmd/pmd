@@ -468,4 +468,31 @@ class AnonCtorsTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Anon in anon") {
+        // this used to be a stackoverflow
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+            public class InputMissingOverrideBadAnnotation {
+
+                Runnable r = new Runnable() {
+                    public void run() {
+                        Throwable t = new Throwable() {
+                            public String toString() {
+                                return "junk";
+                            }
+                        };
+                    }
+                };
+            }
+            """)
+
+        val call = acu.firstCtorCall()
+                .firstCtorCall()
+
+        spy.shouldBeOk {
+            call.typeMirror shouldBe java.lang.Throwable::class.decl
+        }
+    }
+
 })

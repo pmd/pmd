@@ -101,6 +101,13 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getModifierOwnerParent().getModifiers();
     }
 
+
+    @Override
+    public Visibility getVisibility() {
+        return isPatternBinding() ? Visibility.V_LOCAL
+                                  : getModifierOwnerParent().getVisibility();
+    }
+
     private AccessNode getModifierOwnerParent() {
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
@@ -113,7 +120,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     /**
      * @deprecated Use {@link #getName()}
-     * @return
      */
     @Override
     @DeprecatedAttribute(replaceWith = "@Name")
