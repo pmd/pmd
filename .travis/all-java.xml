@@ -11,7 +11,7 @@
 
     <!-- <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod"/> -->
     <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/>
-    <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/> -->
+    <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/>
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/> -->
     <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
