@@ -86,7 +86,7 @@
     <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
     <rule ref="category/java/codestyle.xml/GenericsNaming"/>
-    <!-- <rule ref="category/java/codestyle.xml/IdenticalCatchBranches"/> -->
+    <rule ref="category/java/codestyle.xml/IdenticalCatchBranches"/>
     <!-- <rule ref="category/java/codestyle.xml/LinguisticNaming"/> -->
     <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention"/>
     <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention"/>

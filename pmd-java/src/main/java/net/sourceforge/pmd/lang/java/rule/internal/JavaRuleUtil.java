@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -52,6 +53,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -382,18 +384,55 @@ public final class JavaRuleUtil {
      * @param that Other node
      */
     public static boolean tokenEquals(JavaNode node, JavaNode that) {
+        return tokenEquals(node, that, null);
+    }
+
+    /**
+     * Returns true if both nodes have the same tokens, modulo some renaming
+     * function. The renaming function maps unqualified variables and type
+     * identifiers of the first node to the other. This should be used
+     * in nodes living in the same lexical scope, so that unqualified
+     * names mean the same thing.
+     *
+     * @param node       First node
+     * @param other      Other node
+     * @param varRenamer A renaming function. If null, no renaming is applied.
+     *                   Must not return null, if no renaming occurs, returns its argument.
+     */
+    public static boolean tokenEquals(@NonNull JavaNode node,
+                                      @NonNull JavaNode other,
+                                      @Nullable Function<String, @NonNull String> varRenamer) {
+        // Since type and variable names obscure one another,
+        // it's ok to use a single renaming function.
+
         Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken());
-        Iterator<JavaccToken> thatIt = GenericToken.range(that.getFirstToken(), that.getLastToken());
+        Iterator<JavaccToken> thatIt = GenericToken.range(other.getFirstToken(), other.getLastToken());
+        int lastKind = 0;
         while (thisIt.hasNext()) {
             if (!thatIt.hasNext()) {
                 return false;
             }
             JavaccToken o1 = thisIt.next();
             JavaccToken o2 = thatIt.next();
-            if (o1.kind != o2.kind
-                || !o2.getImage().equals(o2.getImage())) {
+            if (o1.kind != o2.kind) {
                 return false;
             }
+
+            String mappedImage = o1.getImage();
+            if (varRenamer != null
+                && o1.kind == JavaTokenKinds.IDENTIFIER
+                && lastKind != JavaTokenKinds.DOT
+                && lastKind != JavaTokenKinds.METHOD_REF
+                //method name
+                && o1.getNext() != null && o1.getNext().kind != JavaTokenKinds.LPAREN) {
+                mappedImage = varRenamer.apply(mappedImage);
+            }
+
+            if (!o2.getImage().equals(mappedImage)) {
+                return false;
+            }
+
+            lastKind = o1.kind;
         }
         return !thatIt.hasNext();
     }
