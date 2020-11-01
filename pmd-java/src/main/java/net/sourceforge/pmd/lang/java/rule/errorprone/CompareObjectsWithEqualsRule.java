@@ -4,22 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
-public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
+public class CompareObjectsWithEqualsRule extends AbstractJavaRulechainRule {
 
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTInfixExpression.class);
+    public CompareObjectsWithEqualsRule() {
+        super(ASTInfixExpression.class);
     }
 
     /** Indicate whether this node is allocating a new object. */
@@ -42,14 +37,17 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
             return data;
         }
 
-        if (left.getTypeMirror().isPrimitive() || right.getTypeMirror().isPrimitive()
-            || TypeHelper.isA(left, Enum.class) || TypeHelper.isA(right, Enum.class)
-            || TypeHelper.isA(left, Class.class) || TypeHelper.isA(right, Class.class)) {
-            return data;
+        if (!isIgnoredType(left) && !isIgnoredType(right)) {
+            addViolation(data, node);
         }
-        addViolation(data, node);
 
         return data;
+    }
+
+    private boolean isIgnoredType(ASTExpression left) {
+        return left.getTypeMirror().isPrimitive()
+            || TypeTestUtil.isA(Enum.class, left)
+            || TypeTestUtil.isA(Class.class, left);
     }
 
 }
