@@ -188,7 +188,7 @@ prefix for these methods.
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ PrimitiveType[@Kind = 'boolean'] and not(pmd-java:hasAnnotation('java.lang.Override')) ]
+    [ PrimitiveType[@Kind = 'boolean'] and @Overridden = false() ]
 ]]>
                 </value>
             </property>
