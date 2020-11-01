@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.getNextSibling;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -77,7 +76,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
     private @Nullable ASTExpression getElseExpr(ASTIfStatement node) {
         return node.hasElse() ? getReturnExpr(node.getElseBranch())
-                              : getReturnExpr(getNextSibling(node)); // may be followed immediately by return
+                              : getReturnExpr(node.getNextSibling()); // may be followed immediately by return
     }
 
 
