@@ -285,16 +285,9 @@ public final class JavaRuleUtil {
         return toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement;
     }
 
-    public static @Nullable ASTIfStatement getIfStmtIfExprInCondition(ASTExpression expr) {
-        ASTExpression toplevel = getTopLevelExpr(expr);
-        if (toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement) {
-            return (ASTIfStatement) toplevel.getParent();
-        }
-        return null;
-    }
-
     /**
-     * Will cut through argument lists, except those of enum constants & explicit invocation nodes.
+     * Will cut through argument lists, except those of enum constants
+     * and explicit invocation nodes.
      */
     private static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         return (ASTExpression) expr.ancestorsOrSelf()
@@ -303,14 +296,14 @@ public final class JavaRuleUtil {
                                    .last();
     }
 
+    /**
+     * Returns the variable IDS corresponding to variables declared in
+     * the init clause of the loop.
+     */
     public static NodeStream<ASTVariableDeclaratorId> getLoopVariables(ASTForStatement loop) {
-        @Nullable ASTStatement init = loop.getInit();
-
-        if (init instanceof ASTLocalVariableDeclaration) {
-            return ((ASTLocalVariableDeclaration) init).getVarIds();
-        }
-
-        return NodeStream.empty();
+        return NodeStream.of(loop.getInit())
+                         .filterIs(ASTLocalVariableDeclaration.class)
+                         .flatMap(ASTLocalVariableDeclaration::getVarIds);
     }
 
     // TODO at least UnusedPrivateMethod has some serialization-related logic.
@@ -349,11 +342,6 @@ public final class JavaRuleUtil {
             && hasParameters(node, ObjectInputStream.class);
     }
 
-
-    private static boolean areEqual(ASTExpression e1, ASTExpression e2) {
-        return tokenEquals(e1, e2);
-    }
-
     /**
      * Whether one expression is the boolean negation of the other. Many
      * forms are not yet supported. This method is symmetric so only needs
@@ -383,6 +371,16 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    private static boolean areEqual(ASTExpression e1, ASTExpression e2) {
+        return tokenEquals(e1, e2);
+    }
+
+    /**
+     * Returns true if both nodes have exactly the same tokens.
+     *
+     * @param node First node
+     * @param that Other node
+     */
     public static boolean tokenEquals(JavaNode node, JavaNode that) {
         Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken());
         Iterator<JavaccToken> thatIt = GenericToken.range(that.getFirstToken(), that.getLastToken());
@@ -408,7 +406,11 @@ public final class JavaRuleUtil {
         return e instanceof ASTUnaryExpression && ((ASTUnaryExpression) e).getOperator() == UnaryOp.NEGATION;
     }
 
-    private static @Nullable ASTExpression unaryOperand(ASTExpression e) {
+    /**
+     * If the argument is a unary expression, returns its operand, otherwise
+     * returns null.
+     */
+    public static @Nullable ASTExpression unaryOperand(ASTExpression e) {
         return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
                                                : null;
     }
