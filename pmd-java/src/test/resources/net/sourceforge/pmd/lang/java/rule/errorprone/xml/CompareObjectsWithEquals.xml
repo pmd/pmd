@@ -41,8 +41,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now</description>
-        <expected-problems>0</expected-problems>
+        <description>Hits it</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     boolean bar(Foo b) {

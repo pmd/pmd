@@ -198,11 +198,11 @@
     <!-- <rule ref="category/java/errorprone.xml/CheckSkipResult"/> -->
     <!-- <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/> -->
+    <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/>
     <!-- <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CloseResource"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/> -->
+    <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase"/> -->
