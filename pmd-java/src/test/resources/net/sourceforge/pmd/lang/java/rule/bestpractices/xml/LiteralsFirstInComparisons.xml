@@ -280,10 +280,11 @@ public class Foo {
         <description>bad, testing false negative at the end of a chain</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.io.File;
 public class Foo {
     public boolean bar() {
         File f;
-        return f.getFileType().equals("testStr");
+        return f.getParent().equals("testStr");
     }
 }
         ]]></code>

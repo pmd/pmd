@@ -67,6 +67,13 @@ The following previously deprecated rules have been finally removed:
 *   VariableNamingConventions (java-codestyle)
 *   WhileLoopsMustUseBraces (java-codestyle)
 
+#### Changed rules
+
+##### Java
+
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+
+
 ### Fixed Issues
 
 * java-bestpractices

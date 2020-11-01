@@ -144,6 +144,8 @@ public class Foo {
         <description>String.trim().isEmpty() is called after a chain call, should have failed</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
+
 public class Foo {
     void bar() {
         String foo = "foo";
@@ -159,6 +161,7 @@ public class Foo {
         <description>String.trim().isEmpty() is called after a chain call, should have failed twice</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
 public class Foo {
     void bar() {
         String foo = "foo";

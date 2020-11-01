@@ -96,8 +96,8 @@ and unintentional empty constructors.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorDeclaration[@Private= false()]
-                        [not(ModifierList/Annotation[pmd-java:typeIs('javax.inject.Inject')])]
+//ConstructorDeclaration[@Visibility != "private"]
+                        [not(pmd-java:hasAnnotation('javax.inject.Inject'))]
                         /Block[
                             @containsComment = false()
                             and (count(*) = 0 or ($ignoreExplicitConstructorInvocation = true() and count(*) = 1 and ExplicitConstructorInvocation))

@@ -13,12 +13,31 @@ langs:
   - name: "Java"
     ns: "pmd-java"
     funs:
+      - name: nodeIs
+        returnType: "xs:boolean"
+        shortDescription: "Tests the runtime type of the node instance"
+        description: "Returns true if the runtime type of the AST node is a subtype of the given class.
+                      Contrary to typeIs, this tests the type of the AST node.
+                      For example, the AST node for a literal (e.g. `5d`) has type ASTNumericLiteral,
+                      and this function will ignore the static type of the expression (double)"
+        parameters:
+          - name: nodeClassName
+            type: "xs:string"
+            description: "Simple name of a class or interface in package {% jdoc_package :jast %}, without the 'AST' prefix"
+        examples:
+          - code: '//*[pmd-java:nodeIs("Expression")]'
+            outcome: "Matches all nodes that implement {% jdoc jast::ASTExpression %}"
+          - code: '//*[pmd-java:nodeIs("AnyTypeDeclaration")]'
+            outcome: "Matches all nodes that implement {% jdoc jast::ASTAnyTypeDeclaration %}"
+          - code: '//*[pmd-java:nodeIs("Foo")]'
+            outcome: "Runtime error, there's no class ASTFoo in the package"
+
       - name: typeIs
         returnType: "xs:boolean"
         shortDescription: "Tests a node's static type"
         description: "Returns true if the context node's static Java type is a subtype of the given type.
                       This tests for the resolved type of the Java construct, not the type of the AST node.
-                      For example, the AST node for a literal (e.g. `5d`) has type ASTLiteral, however this
+                      For example, the AST node for a literal (e.g. `5d`) has type ASTNumericLiteral, however this
                       function will compare the type of the literal (eg here, `double`) against the argument."
         notes: *needs_typenode
         parameters:
@@ -28,7 +47,6 @@ langs:
             outcome: "Matches formal parameters of type `String[]` (including vararg parameters)"
           - code: '//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]'
             outcome: "Matches variable declarators of type `List` or any of its subtypes (including e.g. `ArrayList`)"
-
 
       - name: typeIsExactly
         returnType: "xs:boolean"
@@ -53,3 +71,53 @@ langs:
           - name: "metricKey"
             type: "xs:string"
             description: "The name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}"
+
+      - name: hasAnnotation
+        returnType: "xs:boolean"
+        shortDescription: "Tests whether an annotation is present on the node"
+        description: "Returns true if the node has an annotation with the given qualified name"
+        notes: "The context node must be an {% jdoc jast::Annotatable %}"
+        parameters:
+          - name: annotationClassName
+            type: "xs:string"
+            description: "Canonical name of an annotation type"
+        examples:
+          - code: '//MethodDeclaration[pmd-java:hasAnnotation("java.lang.Override")]'
+            outcome: "Matches all method declarations that are annotated with @Override"
+
+      - name: modifiers
+        returnType: "xs:string*"
+        shortDescription: "Produce the effective modifiers of a node"
+        description: >-
+          Returns a sequence of the effective modifiers of a node as strings.
+          This is documented on {% jdoc jast::ASTModifierList#getEffectiveModifiers() %}.
+
+        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        parameters:
+        examples:
+          - code: '//MethodDeclaration[pmd-java:modifiers() = "native"]'
+            outcome: "Matches native method declarations"
+          - code: '//MethodDeclaration[pmd-java:modifiers() = ("native", "static")]'
+            outcome: >-
+              Matches method declarations that have a 'native' OR a 'static' modifier.
+              This may be counter-intuitive.
+          - code: '//MethodDeclaration[pmd-java:modifiers() = "public"]'
+            outcome: >-
+              Matches method declarations that have a 'public' modifier, explicit or implicit.
+              For example, this would match methods in interfaces, which implicitly have the
+              modifier. Use the `explicitModifiers` function if you don't want the implicit part.
+              Also note that `@Visibility = 'public'` is a better use of the API, in this particular
+              instance.
+
+      - name: explicitModifiers
+        returnType: "xs:string*"
+        shortDescription: "Produce the explicit modifiers of a node"
+        description: >-
+          Returns a sequence of the explicit modifiers of a node as strings.
+          This is documented on {% jdoc jast::ASTModifierList#getExplicitModifiers() %}.
+
+        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        parameters:
+        examples:
+          - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'
+            outcome: "Matches method declarations that have an explicit 'public' modifier."

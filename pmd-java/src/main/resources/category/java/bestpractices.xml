@@ -138,7 +138,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//FieldDeclaration[pmd-java:typeIs('java.security.MessageDigest')]
+//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.security.MessageDigest')]
 ]]>
                 </value>
             </property>
@@ -184,10 +184,10 @@ Avoid printStackTrace(); use a logger call instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-   ( PrimaryPrefix[Name[contains(@Image,'printStackTrace')]]
-   | PrimarySuffix[@Image='printStackTrace']
-   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@Size=0]]
+//MethodCall[
+    @MethodName = 'printStackTrace'
+    and ArgumentList[@Size = 0]
+    and child::*[1][pmd-java:typeIs('java.lang.Throwable')]
 ]
 ]]>
                 </value>
@@ -327,7 +327,7 @@ if held within objects with long lifetimes.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.lang.StringBuffer') or pmd-java:typeIs('java.lang.StringBuilder')]
 ]]>
                 </value>
             </property>
@@ -406,7 +406,7 @@ better placed in classes or enums. See Effective Java, item 19.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface= true()][$ignoreIfHasMethods= false() or not(.//MethodDeclaration)]//FieldDeclaration
+//ClassOrInterfaceDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
  ]]>
                 </value>
             </property>
@@ -451,9 +451,7 @@ By convention, the default label should be the last label in a switch statement.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement
- [not(SwitchLabel[position() = last()][@Default= true()])]
- [SwitchLabel[@Default= true()]]
+//SwitchLabel[@Default = true() and not(.. is ../../*[last()])]
 ]]>
                 </value>
             </property>
@@ -496,7 +494,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/*/Initializer[@Static=false()]
+//ConstructorCall/AnonymousClassDeclaration/ClassOrInterfaceBody[count(*)=1]/Initializer[@Static=false()]
 ]]>
                 </value>
             </property>

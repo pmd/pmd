@@ -1452,13 +1452,13 @@ or reported.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement
- [not(Block/BlockStatement)]
- [$allowCommentedBlocks != true() or Block/@containsComment = false()]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
- ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]]
+//CatchClause[
+  Block[
+      count(*) = 0
+      and ($allowCommentedBlocks = false() or Block/@containsComment = false())
+  ]
+  and CatchParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]
+]
 ]]>
                 </value>
             </property>
@@ -1521,7 +1521,7 @@ Empty finally blocks serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FinallyStatement[not(Block/BlockStatement)]
+//FinallyClause[Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1613,7 +1613,7 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//BlockStatement/Statement/Block[not(*)]</value>
+                <value>//Block/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1650,13 +1650,10 @@ and should be removed.
 <![CDATA[
 //EmptyStatement
  [not(
-       ../../../ForStatement
-       or ../../../WhileStatement
-       or ../../../BlockStatement/ClassOrInterfaceDeclaration
-       or ../../../../../../ForStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
-       or ../../../../../../WhileStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)
+          ../self::WhileStatement
+       or ../self::ForStatement
+       or preceding-sibling::*[1]/self::LocalClassStatement
+  )
  ]
 ]]>
                 </value>
@@ -1714,7 +1711,7 @@ Empty synchronized blocks serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//SynchronizedStatement/Block[1][not(*)]</value>
+                <value>//SynchronizedStatement/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1744,7 +1741,7 @@ Avoid empty try blocks - what's the point?
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
+//TryStatement[not(ResourceList)]/Block[not(*)]
 ]]>
                 </value>
             </property>
@@ -1779,7 +1776,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement/Statement[Block[not(*)] or EmptyStatement]
+//WhileStatement[Block[not(*)] or EmptyStatement]
 ]]>
                 </value>
             </property>
@@ -1809,19 +1806,7 @@ Tests for null should not use the equals() method. The '==' operator should be u
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-  [
-    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-    or
-
-    PrimarySuffix[ends-with(@Image, 'equals')]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-  ]
+//MethodCall[@MethodName = "equals" and ArgumentList[count(*) = 1 and NullLiteral]]
 ]]>
                 </value>
             </property>

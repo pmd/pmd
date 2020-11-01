@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<ruleset name="All Java Rules" 
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+<ruleset name="All Java Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Every java rule in PMD which is used for the regression tests with pmdtester</description>
 
 
@@ -13,19 +13,19 @@
     <!-- <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/> -->
+    <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
+    <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters"/>
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidStringBufferField"/> -->
+    <rule ref="category/java/bestpractices.xml/AvoidStringBufferField"/>
     <!-- <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/CheckResultSet"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/> -->
+    <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
+    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/>
+    <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount"/> -->
+    <rule ref="category/java/bestpractices.xml/ForLoopVariableCount"/>
     <!-- <rule ref="category/java/bestpractices.xml/GuardLogStatement"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation"/> -->
@@ -35,7 +35,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons"/> -->
+    <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons"/>
     <!-- <rule ref="category/java/bestpractices.xml/LooseCoupling"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/> -->
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
@@ -58,55 +58,55 @@
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/> -->
+    <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"/> -->
 
     <!-- codestyle.xml -->
 
-    <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/BooleanGetMethodName"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/CallSuperInConstructor"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ClassNamingConventions"/> -->
+    <rule ref="category/java/codestyle.xml/AtLeastOneConstructor"/>
+    <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
+    <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
+    <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
+    <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/>
+    <rule ref="category/java/codestyle.xml/BooleanGetMethodName"/>
+    <rule ref="category/java/codestyle.xml/CallSuperInConstructor"/>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ConfusingTernary"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ControlStatementBraces"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/DefaultPackage"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/DontImportJavaLang"/> -->
+    <rule ref="category/java/codestyle.xml/ConfusingTernary"/>
+    <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
+    <rule ref="category/java/codestyle.xml/DefaultPackage"/>
+    <rule ref="category/java/codestyle.xml/DontImportJavaLang"/>
     <!-- <rule ref="category/java/codestyle.xml/DuplicateImports"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ExtendsObject"/> -->
+    <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
+    <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <!-- <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/FieldNamingConventions"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/GenericsNaming"/> -->
+    <rule ref="category/java/codestyle.xml/FieldNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
+    <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/GenericsNaming"/>
     <!-- <rule ref="category/java/codestyle.xml/IdenticalCatchBranches"/> -->
     <!-- <rule ref="category/java/codestyle.xml/LinguisticNaming"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention"/> -->
+    <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention"/>
+    <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention"/>
     <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal"/>
-    <!-- <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/LongVariable"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention"/> -->
+    <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/LongVariable"/>
+    <rule ref="category/java/codestyle.xml/MDBAndSessionBeanNamingConvention"/>
     <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal"/>
-    <!-- <rule ref="category/java/codestyle.xml/MethodNamingConventions"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/NoPackage"/> -->
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/NoPackage"/>
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/PackageCase"/> -->
+    <rule ref="category/java/codestyle.xml/PackageCase"/>
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ShortClassName"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ShortMethodName"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/ShortVariable"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/> -->
+    <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/>
+    <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention"/>
+    <rule ref="category/java/codestyle.xml/ShortClassName"/>
+    <rule ref="category/java/codestyle.xml/ShortMethodName"/>
+    <rule ref="category/java/codestyle.xml/ShortVariable"/>
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports"/>
+    <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/> -->
@@ -114,10 +114,10 @@
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryModifier"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryReturn"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UseDiamondOperator"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UseShortArrayInitializer"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals"/> -->
+    <rule ref="category/java/codestyle.xml/UseShortArrayInitializer"/>
+    <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals"/>
     <!-- <rule ref="category/java/codestyle.xml/UselessParentheses"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UselessQualifiedThis"/> -->
+    <rule ref="category/java/codestyle.xml/UselessQualifiedThis"/>
 
     <!-- design.xml -->
 
@@ -152,7 +152,7 @@
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/> -->
     <!-- <rule ref="category/java/design.xml/SimplifiedTernary"/> -->
     <!-- <rule ref="category/java/design.xml/SimplifyBooleanAssertion"/> -->
-    <!-- <rule ref="category/java/design.xml/SimplifyBooleanExpressions"/> -->
+    <rule ref="category/java/design.xml/SimplifyBooleanExpressions"/>
     <rule ref="category/java/design.xml/SimplifyBooleanReturns"/>
     <!-- <rule ref="category/java/design.xml/SimplifyConditional"/> -->
     <!-- <rule ref="category/java/design.xml/SingularField"/> -->
@@ -168,7 +168,7 @@
     <rule ref="category/java/documentation.xml/CommentContent"/>
     <rule ref="category/java/documentation.xml/CommentRequired"/>
     <rule ref="category/java/documentation.xml/CommentSize"/>
-    <!-- <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/> -->
+    <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/>
     <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody"/>
 
     <!-- errorprone.xml -->
@@ -213,18 +213,18 @@
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DontImportSun"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyFinalizer"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyFinallyBlock"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyIfStmt"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyInitializer"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyStatementBlock"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyTryBlock"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/EqualsNull"/> -->
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyFinalizer"/>
+    <rule ref="category/java/errorprone.xml/EmptyFinallyBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyIfStmt"/>
+    <rule ref="category/java/errorprone.xml/EmptyInitializer"/>
+    <rule ref="category/java/errorprone.xml/EmptyStatementBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/>
+    <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/>
+    <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyTryBlock"/>
+    <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
+    <rule ref="category/java/errorprone.xml/EqualsNull"/>
     <!-- <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOverloaded"/> -->
@@ -272,51 +272,51 @@
 
     <!-- multithreading.xml -->
 
-    <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/AvoidUsingVolatile"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/DoNotUseThreads"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/DontCallThreadRun"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/> -->
+    <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel"/>
+    <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/>
+    <rule ref="category/java/multithreading.xml/AvoidUsingVolatile"/>
+    <rule ref="category/java/multithreading.xml/DoNotUseThreads"/>
+    <rule ref="category/java/multithreading.xml/DontCallThreadRun"/>
+    <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
     <!-- <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/> -->
     <!-- <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/UseConcurrentHashMap"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/> -->
+    <rule ref="category/java/multithreading.xml/UseConcurrentHashMap"/>
+    <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/>
 
     <!-- performance.xml -->
 
-    <!-- <rule ref="category/java/performance.xml/AddEmptyString"/> -->
-    <!-- <rule ref="category/java/performance.xml/AppendCharacterWithChar"/> -->
+    <rule ref="category/java/performance.xml/AddEmptyString"/>
+    <rule ref="category/java/performance.xml/AppendCharacterWithChar"/>
     <!-- <rule ref="category/java/performance.xml/AvoidArrayLoops"/> -->
     <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation"/> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidFileStream"/> -->
+    <rule ref="category/java/performance.xml/AvoidFileStream"/>
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
+    <rule ref="category/java/performance.xml/AvoidUsingShortType"/>
     <!-- <rule ref="category/java/performance.xml/BigIntegerInstantiation"/> -->
     <!-- <rule ref="category/java/performance.xml/BooleanInstantiation"/> -->
-    <!-- <rule ref="category/java/performance.xml/ByteInstantiation"/> -->
+    <rule ref="category/java/performance.xml/ByteInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse"/> -->
     <!-- <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends"/> -->
-    <!-- <rule ref="category/java/performance.xml/InefficientEmptyStringCheck"/> -->
+    <rule ref="category/java/performance.xml/InefficientEmptyStringCheck"/>
     <!-- <rule ref="category/java/performance.xml/InefficientStringBuffering"/> -->
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/> -->
-    <!-- <rule ref="category/java/performance.xml/IntegerInstantiation"/> -->
-    <!-- <rule ref="category/java/performance.xml/LongInstantiation"/> -->
+    <rule ref="category/java/performance.xml/IntegerInstantiation"/>
+    <rule ref="category/java/performance.xml/LongInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/OptimizableToArrayCall"/> -->
-    <!-- <rule ref="category/java/performance.xml/RedundantFieldInitializer"/> -->
-    <!-- <rule ref="category/java/performance.xml/ShortInstantiation"/> -->
-    <!-- <rule ref="category/java/performance.xml/SimplifyStartsWith"/> -->
-    <!-- <rule ref="category/java/performance.xml/StringInstantiation"/> -->
+    <rule ref="category/java/performance.xml/RedundantFieldInitializer"/>
+    <rule ref="category/java/performance.xml/ShortInstantiation"/>
+    <rule ref="category/java/performance.xml/SimplifyStartsWith"/>
+    <rule ref="category/java/performance.xml/StringInstantiation"/>
     <rule ref="category/java/performance.xml/StringToString"/>
-    <!-- <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/> -->
+    <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
     <!-- <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation"/> -->
-    <!-- <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/> -->
+    <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/>
     <!-- <rule ref="category/java/performance.xml/UseArraysAsList"/> -->
     <!-- <rule ref="category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem"/> -->
-    <!-- <rule ref="category/java/performance.xml/UseIndexOfChar"/> -->
+    <rule ref="category/java/performance.xml/UseIndexOfChar"/>
     <!-- <rule ref="category/java/performance.xml/UseStringBufferForStringAppends"/> -->
-    <!-- <rule ref="category/java/performance.xml/UseStringBufferLength"/> -->
-    <!-- <rule ref="category/java/performance.xml/UselessStringValueOf"/> -->
+    <rule ref="category/java/performance.xml/UseStringBufferLength"/>
+    <rule ref="category/java/performance.xml/UselessStringValueOf"/>
 
     <!-- security.xml -->
 

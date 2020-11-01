@@ -64,6 +64,10 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
         return CAMEL_CASE;
     }
 
+    @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
+    }
 
     @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {

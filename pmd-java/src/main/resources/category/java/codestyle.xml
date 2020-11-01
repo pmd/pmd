@@ -37,12 +37,27 @@ public class Foo {
           language="java"
           since="1.5"
           message="Avoid using dollar signs in variable/method/class/interface names"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.AvoidDollarSignsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoiddollarsigns">
         <description>
 Avoid using dollar signs in variable/method/class/interface names.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+      //ClassOrInterfaceDeclaration[contains(@SimpleName, '$')]
+    | //EnumDeclaration            [contains(@SimpleName, '$')]
+    | //AnnotationTypeDeclaration  [contains(@SimpleName, '$')]
+    | //RecordDeclaration          [contains(@SimpleName, '$')]
+    | //VariableDeclaratorId       [contains(@Name, '$')]
+    | //MethodDeclaration          [contains(@Name, '$')]
+
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Fo$o {  // not a recommended name
@@ -66,9 +81,9 @@ Clarify your intent by using private or package access modifiers instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final= true()]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected= true()]
+//ClassOrInterfaceDeclaration[@Final = true()]
+/ClassOrInterfaceBody
+/FieldDeclaration[@Visibility = "protected"]
 ]]>
                 </value>
             </property>
@@ -101,8 +116,8 @@ visibility cannot be reduced). Clarify your intent by using private or package a
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected=true() and @Name != 'finalize']
+/ClassOrInterfaceBody
+/MethodDeclaration[@Visibility="protected" and @Name != 'finalize']
  ]]>
                 </value>
             </property>
@@ -130,7 +145,8 @@ and increases the maintenance burden.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//Name[starts-with(@Image,'System.loadLibrary')]</value>
+                <value>//MethodCall[TypeExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.System')]
+                                    and @MethodName = 'loadLibrary']</value>
             </property>
         </properties>
         <example>
@@ -172,10 +188,7 @@ prefix for these methods.
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [
-        ResultType/Type/PrimitiveType[@Image = 'boolean']
-        and not(../Annotation//Name[@Image = 'Override'])
-    ]
+    [ PrimitiveType[@Kind = 'boolean'] and @Overridden = false() ]
 ]]>
                 </value>
             </property>
@@ -206,9 +219,8 @@ another constructor (such as an overloaded constructor) is called, this rule wil
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[ExtendsList/*]
-/ClassOrInterfaceBody
- /ClassOrInterfaceBodyDeclaration
- /ConstructorDeclaration[ not(.//ExplicitConstructorInvocation) ]
+  /ClassOrInterfaceBody
+  /ConstructorDeclaration[ not(Block/ExplicitConstructorInvocation) ]
 ]]>
                 </value>
             </property>
@@ -355,27 +367,27 @@ boolean bar(int x, int y) {
             <property name="allowEmptyLoop" type="Boolean" value="false" description="Allow loops with an empty statement, e.g. 'while(true);'" />
             <property name="xpath">
                 <value><![CDATA[
-                //WhileStatement[$checkWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                //WhileStatement[$checkWhileStmt and not(Block) and not($allowEmptyLoop and EmptyStatement)]
                 |
-                //ForStatement[$checkForStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                //ForStatement[$checkForStmt and not(Block) and not($allowEmptyLoop and EmptyStatement)]
                 |
-                //DoStatement[$checkDoWhileStmt and not(Statement/Block) and not($allowEmptyLoop and Statement/EmptyStatement)]
+                //ForeachStatement[$checkForStmt and not(Block) and not($allowEmptyLoop and EmptyStatement)]
+                |
+                //DoStatement[$checkDoWhileStmt and not(Block) and not($allowEmptyLoop and EmptyStatement)]
                 |
                 (: The violation is reported on the sub statement -- not the if statement :)
-                //Statement[$checkIfElseStmt and parent::IfStatement and not(child::Block or child::IfStatement)
-                            (: Whitelists single if statements :)
-                            and ($checkSingleIfStmt
-                                 (: Inside this not(...) is the definition of a "single if statement" :)
-                                 or not(count(../Statement) = 1 (: No else stmt :)
-                                        (: Not the last branch of an 'if ... else if' chain :)
-                                        and not(parent::IfStatement[parent::Statement[parent::IfStatement]])))]
+                //IfStatement[$checkIfElseStmt]
+                    /*[position() > 1 and not(self::Block or self::IfStatement)]
+                      [ $checkSingleIfStmt
+                            (: Inside this (...) is the definition of a "single if statement" :)
+                            or not(parent::*/@Else = false() (: No else stmt :)
+                                   (: Not the last branch of an 'if ... else if' chain :)
+                                   and not(parent::IfStatement[parent::IfStatement]))]
+
                 |
                 (: Reports case labels if one of their subordinate statements is not braced :)
-                //SwitchLabel[$checkCaseStmt]
-                             [count(following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement) > 1
-                              or (some $stmt (: in only the block statements until the next label :)
-                                  in following-sibling::BlockStatement except following-sibling::SwitchLabel[1]/following-sibling::BlockStatement
-                                  satisfies not($stmt/Statement/Block))]
+                //SwitchFallthroughBranch[$checkCaseStmt]
+                             [count(*) > 1 and (count(*) > 2 or not(child::*[2]/self::Block))]
                 ]]></value>
             </property>
         </properties>
@@ -408,21 +420,19 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Interface= false()]
 /ClassOrInterfaceBody
-/ClassOrInterfaceBodyDeclaration
-[not(Annotation//Name[
-    pmd-java:typeIs('org.junit.jupiter.api.Test')
-    or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:typeIs('org.junit.jupiter.api.ParameterizedTest')
-    or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-    or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-    or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-    or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-    or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
-    or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
-    or ends-with(@Image, 'VisibleForTesting')])]
-[
-FieldDeclaration[@PackagePrivate= true()]
-or MethodDeclaration[@PackagePrivate= true()]
+/*[ self::FieldDeclaration or self::MethodDeclaration ]
+[@Visibility = "package"]
+[ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterAll')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeEach')
+    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterEach')
+    or pmd-java:hasAnnotation('com.google.common.annotations.VisibleForTesting')
+  )
 ]
 ]]>
                 </value>
@@ -434,12 +444,23 @@ or MethodDeclaration[@PackagePrivate= true()]
           language="java"
           since="0.5"
           message="Avoid importing anything from the package 'java.lang'"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontimportjavalang">
         <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
         </description>
         <priority>4</priority>
+        <properties>
+            <property name="version" value="3.1" />
+            <property name="xpath">
+                <value><![CDATA[
+//ImportDeclaration[@Static = false()]
+                   [@ImportedName = "java.lang"
+                    or (let $rest := substring-after(@ImportedName, "java.lang.")
+                       return not($rest = '') and not(contains($rest, '.') or @ImportOnDemand = true()))]
+]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 import java.lang.String;    // this is unnecessary
@@ -489,20 +510,13 @@ usage by developers who should be implementing their own versions in the concret
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Abstract = true()]
+//ClassOrInterfaceDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
     /ClassOrInterfaceBody
-    /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Abstract = false() and @Native = false()]
-    [
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = true() )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = true() )
-        or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = true() )
-        or
-        (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
-        or
-        ( not (./Block/*) )
+    /MethodDeclaration
+    /Block[
+      let $size := count(*[not(self::EmptyStatement)])
+      return $size = 0
+             or $size = 1 and ReturnStatement[ NullLiteral or NumericLiteral[@ValueAsInt = 0] or StringLiteral[@Empty = true()]]
     ]
 ]]>
                 </value>
@@ -535,7 +549,7 @@ public abstract class ShouldBeAbstract {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+//ExtendsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Object')]
 ]]>
                 </value>
             </property>
@@ -628,11 +642,7 @@ Some for loops can be simplified to while loops, this makes them more concise.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement
-  [not(LocalVariableDeclaration)]
-  [not(ForInit)]
-  [not(ForUpdate)]
-  [Expression]
+//ForStatement[not(ForInit | ForUpdate) and count(*) = 2]
 ]]>
                 </value>
             </property>
@@ -702,10 +712,10 @@ Names for references to generic values should be limited to a single uppercase l
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
-  string-length(@Image) > 1
+//TypeParameter[
+  string-length(@Name) > 1
   or
-  upper-case(@Image) != @Image
+  upper-case(@Name) != @Name
 ]
 ]]>
                 </value>
@@ -844,14 +854,8 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'LocalHome')
-    )
+    pmd-java:typeIs('javax.ejb.EJBLocalHome')
+    and not(ends-with(@SimpleName, 'LocalHome'))
 ]
 ]]>
                 </value>
@@ -882,14 +886,8 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Local')
-    )
+    pmd-java:typeIs('javax.ejb.EJBLocalObject')
+    and not(ends-with(@SimpleName, 'Local'))
 ]
 ]]>
                 </value>
@@ -1011,18 +1009,11 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration/ClassOrInterfaceDeclaration
+//ClassOrInterfaceDeclaration
 [
-    (
-        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
-        or
-        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'MessageDrivenBean')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Bean')
-    )
+    (pmd-java:typeIs('javax.ejb.SessionBean')
+     or pmd-java:typeIs('javax.ejb.MessageDrivenBean'))
+    and not(ends-with(@SimpleName, 'Bean'))
 ]
 ]]>
                 </value>
@@ -1097,7 +1088,7 @@ Detects when a class, interface, enum or annotation does not have a package defi
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
+                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("AnyTypeDeclaration")][1]</value>
             </property>
         </properties>
         <example>
@@ -1131,14 +1122,9 @@ public class ClassInDefaultPackage {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//Literal[
-     @IntLiteral = true()
-  or @LongLiteral = true()
-  or @DoubleLiteral = true()
-  or @FloatLiteral = true()
-]
+//NumericLiteral
  (: Filter out literals in base other than 10 :)
- [not(matches(@Image, "^0[^.]"))]
+ [@Base = 10]
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
@@ -1202,7 +1188,7 @@ Detects when a package definition contains uppercase characters.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//PackageDeclaration/Name[lower-case(@Image)!=@Image]</value>
+                <value>//PackageDeclaration[lower-case(@Name) != @Name]</value>
             </property>
         </properties>
         <example>
@@ -1259,17 +1245,8 @@ Remote Interface of a Session EJB should not have a suffix.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
-    )
-    and
-    (
-        ends-with(@SimpleName,'Session')
-        or
-        ends-with(@SimpleName,'EJB')
-        or
-        ends-with(@SimpleName,'Bean')
-    )
+    pmd-java:typeIs('javax.ejb.EJBObject')
+    and matches(@SimpleName, '.*(Session|EJB|Bean)$')
 ]
 ]]>
                 </value>
@@ -1305,14 +1282,8 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 <![CDATA[
 //ClassOrInterfaceDeclaration
 [
-    (
-        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
-    )
-    and
-    not
-    (
-        ends-with(@SimpleName,'Home')
-    )
+    pmd-java:typeIs('javax.ejb.EJBHome')
+    and not(ends-with(@SimpleName, 'Home'))
 ]
 ]]>
                 </value>
@@ -1402,13 +1373,13 @@ Fields, local variables, or parameter names that are very short are not helpful 
 <![CDATA[
 //VariableDeclaratorId[string-length(@Name) < $minimum]
  (: ForStatement :)
- [not(../../..[self::ForInit])]
+ [not(../../parent::ForInit)]
  (: Foreach statement :)
- [not(../../..[self::ForStatement])]
+ [not(../../parent::ForeachStatement)]
  (: Catch statement parameter :)
- [not(../..[self::CatchStatement])]
+ [not(parent::CatchParameter)]
  (: Lambda expression parameter :)
- [not(parent::LambdaExpression or ../../..[self::LambdaExpression])]
+ [not(parent::LambdaParameter)]
 ]]>
                 </value>
             </property>
@@ -1471,12 +1442,22 @@ import static Yoko; // Too much !
           language="java"
           since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryAnnotationValueElementRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">
         <description>
             Avoid the use of value in annotations when it's the only element.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//Annotation/AnnotationMemberList[count(*) = 1 and MemberValuePair[@Shorthand = false() and @Name = 'value']]
+]]>
+                </value>
+            </property>
+            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
+        </properties>
         <example>
             <![CDATA[
 @TestClassAnnotation(value = "TEST")
@@ -1811,12 +1792,8 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments= false() and @ArrayDereference = false()]]
-[not(PrimarySuffix/MemberSelector)]
-[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass= false()]]
-/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
+//ThisExpression/ClassOrInterfaceType
+[ ancestor::*[pmd-java:nodeIs('AnyTypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
 ]]>
                 </value>
             </property>
@@ -1870,8 +1847,8 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [VariableDeclaratorId[@ArrayType = true() and @TypeInferred = false()]]
-    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
+    [VariableDeclaratorId[@TypeInferred = false()]]
+    [ArrayAllocation/ArrayInitializer]
                 ]]></value>
             </property>
         </properties>

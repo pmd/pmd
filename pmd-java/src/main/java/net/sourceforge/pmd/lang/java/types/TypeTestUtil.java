@@ -11,10 +11,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Public utilities to test the type of nodes.
@@ -104,8 +107,10 @@ public final class TypeTestUtil {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
         if (node == null) {
             return false;
-        } else if (isExactlyA(canonicalName, node)) {
-            return true;
+        }
+        OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, node);
+        if (exactMatch != OptionalBool.NO) {
+            return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
         }
 
         JTypeMirror thisType = node.getTypeMirror();
@@ -121,8 +126,10 @@ public final class TypeTestUtil {
         }
 
         TypeSystem ts = thisType.getTypeSystem();
-        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName);
-        if (otherType == null) {
+        UnresolvedClassStore unresolvedStore = InternalApiBridge.getProcessor(node).getUnresolvedStore();
+        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
+        if (otherType == null
+            || otherType.isClassOrInterface() && ((JClassType) otherType).getSymbol().isAnonymousClass()) {
             return false; // we know isExactlyA(canonicalName, node); returned false
         }
 
@@ -166,7 +173,7 @@ public final class TypeTestUtil {
         return isExactlyA(clazz, node.getTypeMirror().getSymbol());
     }
 
-    private static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
+    public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
         AssertionUtil.requireParamNotNull("klass", klass);
         if (!(type instanceof JClassSymbol)) {
             // Class cannot reference a type parameter
@@ -182,6 +189,19 @@ public final class TypeTestUtil {
         // Note: klass.getName returns a type descriptor for arrays,
         // which is why we have to destructure the array above
         return symClass.getBinaryName().equals(klass.getName());
+    }
+
+    /**
+     * Returns true if the signature is that of a method declared in the
+     * given class.
+     *
+     * @param klass Class
+     * @param sig   Method signature to test
+     *
+     * @throws NullPointerException If any argument is null
+     */
+    public static boolean isDeclaredInClass(@NonNull Class<?> klass, @NonNull JMethodSig sig) {
+        return isExactlyA(klass, sig.getDeclaringType().getSymbol());
     }
 
 
@@ -207,23 +227,29 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
+        return isExactlyAOrAnon(canonicalName, node) == OptionalBool.YES;
+    }
+
+    private static OptionalBool isExactlyAOrAnon(@NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", canonicalName);
         if (node == null) {
-            return false;
+            return OptionalBool.NO;
         }
 
         JTypeDeclSymbol sym = node.getTypeMirror().getSymbol();
         if (sym == null || sym instanceof JTypeParameterSymbol) {
-            return false;
+            return OptionalBool.NO;
         }
 
         canonicalName = StringUtils.deleteWhitespace(canonicalName);
 
         JClassSymbol klass = (JClassSymbol) sym;
         String canonical = klass.getCanonicalName();
-        return canonical != null && canonical.equals(canonicalName);
+        if (canonical == null) {
+            return OptionalBool.UNKNOWN; // anonymous
+        }
+        return OptionalBool.definitely(canonical.equals(canonicalName));
     }
-
 
 
     private static boolean hasNoSubtypes(Class<?> clazz) {

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import java.util.function.BiPredicate;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
@@ -18,7 +20,6 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.SequenceType;
 
-
 /**
  * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
  * and {@code typeIsExactly}.
@@ -27,29 +28,31 @@ import net.sf.saxon.value.SequenceType;
  *
  * <p>Returns true if the type of the node matches, false otherwise.
  */
-public final class TypeIsFunction extends BaseJavaXPathFunction {
+public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFunction {
 
-    public static final TypeIsFunction TYPE_IS_EXACTLY = new TypeIsFunction("typeIsExactly", TypeTestUtil::isExactlyA);
-    public static final TypeIsFunction TYPE_IS = new TypeIsFunction("typeIs", TypeTestUtil::isA);
+    static final SequenceType[] SINGLE_STRING_SEQ = {SequenceType.SINGLE_STRING};
+    private final Class<T> klass;
+    private final BiPredicate<String, T> checker;
 
-    private final BiPredicate<String, TypeNode> checker;
+    public static final BaseJavaXPathFunction TYPE_IS_EXACTLY = new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
+    public static final BaseJavaXPathFunction TYPE_IS = new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
+    public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(Annotatable.class, "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
 
-    private TypeIsFunction(String localName, BiPredicate<String, TypeNode> checker) {
+    protected BaseContextNodeTestFun(Class<T> klass, String localName, BiPredicate<String, T> checker) {
         super(localName);
+        this.klass = klass;
         this.checker = checker;
     }
 
     @Override
     public SequenceType[] getArgumentTypes() {
-        return new SequenceType[] {SequenceType.SINGLE_STRING};
+        return SINGLE_STRING_SEQ;
     }
-
 
     @Override
     public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
         return SequenceType.SINGLE_BOOLEAN;
     }
-
 
     @Override
     public boolean dependsOnFocus() {
@@ -64,10 +67,14 @@ public final class TypeIsFunction extends BaseJavaXPathFunction {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String fullTypeName = arguments[0].head().getStringValue();
 
-                if (contextNode instanceof TypeNode) {
-                    return BooleanValue.get(checker.test(fullTypeName, (TypeNode) contextNode));
+
+                if (klass.isInstance(contextNode)) {
+                    return BooleanValue.get(checker.test(fullTypeName, (T) contextNode));
                 } else {
-                    throw new IllegalArgumentException("typeIs function may only be called on a TypeNode.");
+                    throw new XPathException(
+                        getFunctionQName().getLocalPart()
+                            + " function may only be called on an instance of "
+                            + klass.getSimpleName());
                 }
             }
         };
