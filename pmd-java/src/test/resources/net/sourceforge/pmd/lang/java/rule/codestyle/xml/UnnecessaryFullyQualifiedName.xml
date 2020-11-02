@@ -766,7 +766,7 @@ class Assert {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Enum constant obscures type name!</description>
+        <description>#1790 Enum constant obscures type name!</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public enum DataType {
@@ -792,5 +792,16 @@ class Assert {
                 }
             }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2299 Package should not use startsWith</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package a.b.c;
+
+            class A {
+                a.b.car.Car c;
+            }
+            ]]></code>
     </test-code>
 </test-data>
