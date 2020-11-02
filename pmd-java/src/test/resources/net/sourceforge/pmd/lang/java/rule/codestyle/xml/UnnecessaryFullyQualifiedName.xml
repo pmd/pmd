@@ -854,4 +854,25 @@ class Assert {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>If there are type argument before method, it should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import static ohio.Assert.*;
+
+            public class Something{
+                {
+                    Assert.<Class<?>>isNull(null);
+                }
+            }
+
+            class Assert {
+
+                public static <T> void isNull(Object o) {}
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>

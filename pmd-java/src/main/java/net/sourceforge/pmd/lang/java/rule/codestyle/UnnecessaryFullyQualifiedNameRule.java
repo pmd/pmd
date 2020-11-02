@@ -58,7 +58,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (next.getParent() instanceof ASTTypeExpression
             && next.getParent().getParent() instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) next.getParent().getParent();
-            if (methodProbablyMeansSame(next, methodCall)) {
+            if (methodCall.getExplicitTypeArguments() == null
+                && methodProbablyMeansSame(next, methodCall)) {
                 // we don't actually know where the method came from
                 String simpleName = methodCall.getMethodName();
                 String unnecessary = produceQualifier(deepest, next, true);
