@@ -187,7 +187,7 @@ Avoid printStackTrace(); use a logger call instead.
 //MethodCall[
     @MethodName = 'printStackTrace'
     and ArgumentList[@Size = 0]
-    and child::*[1][pmd-java:typeIs('java.lang.Throwable')]
+    and child::*[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.Throwable')]
 ]
 ]]>
                 </value>

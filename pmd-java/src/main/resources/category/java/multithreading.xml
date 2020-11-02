@@ -152,7 +152,7 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
 <![CDATA[
 //ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
 |
-//MethodCall[*[1][pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]]
+//MethodCall[*[1][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
 ]]>
                 </value>
             </property>
@@ -207,7 +207,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCall[ @MethodName = 'run' and *[1][pmd-java:typeIs('java.lang.Thread')] ]
+//MethodCall[@MethodName = 'run' and *[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.Thread')] ]
 ]]>
                 </value>
             </property>
