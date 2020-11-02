@@ -875,4 +875,25 @@ class Assert {
             }
             ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <!-- TODO this causes an error, bc of early disambiguation       -->
+        <!--  solution: import on demands must be made entirely lazy     -->
+        <description>FN with static method inherited into type</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import org.junit.Assert;
+            import static ohio.Assert2.*;
+
+            public class Something {
+                {
+                    // this is actually a reference to org.junit.Assert.isNull
+                    Assert2.isNull(null);
+                }
+            }
+
+            class Assert2 extends Assert {}
+            ]]></code>
+    </test-code>
 </test-data>
