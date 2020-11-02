@@ -46,6 +46,9 @@ public final class TypeTestUtil {
      * <p>If either type is unresolved, the types are tested for equality,
      * thus giving more useful results than {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
      *
+     * <p>Note that primitives are NOT considered subtypes of one another
+     * by this method, even though {@link JTypeMirror#isSubtypeOf(JTypeMirror)} does.
+     *
      * @param clazz a class (non-null)
      * @param node  the type node to check
      *
@@ -84,24 +87,18 @@ public final class TypeTestUtil {
 
     /**
      * Checks whether the static type of the node is a subtype of the
-     * class identified by the given name. This ignores type arguments,
-     * if the type of the node is parameterized. Examples:
-     *
-     * <pre>{@code
-     * isA("java.util.List", <new ArrayList<String>()>)      = true
-     * isA("java.util.ArrayList", <new ArrayList<String>()>) = true
-     * isA("int[]", <new int[0]>)                            = true
-     * isA("java.lang.Object[]", <new String[0]>)            = true
-     * isA(_, null) = false
-     * isA(null, _) = NullPointerException
-     * }</pre>
+     * class identified by the given name. See {@link #isA(Class, TypeNode)}
+     * for examples and more info.
      *
      * @param canonicalName the canonical name of a class or array type (without whitespace)
      * @param node          the type node to check
      *
      * @return true if the type test matches
      *
-     * @throws NullPointerException if the class name parameter is null
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
+     * @see #isA(Class, TypeNode)
      */
     public static boolean isA(final @NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
@@ -139,6 +136,7 @@ public final class TypeTestUtil {
     }
 
     private static boolean isAnnotationSuperType(String clazzName) {
+        AssertionUtil.assertValidJavaBinaryName(clazzName);
         // then, the supertype may only be Object, j.l.Annotation
         // this is used e.g. by the typeIs function in XPath
         return "java.lang.annotation.Annotation".equals(clazzName)
@@ -209,24 +207,18 @@ public final class TypeTestUtil {
 
     /**
      * Checks whether the static type of the node is exactly the type
-     * given by the name. This ignores strict supertypes, and type arguments
-     * if the type of the node is parameterized.
-     *
-     * <pre>{@code
-     * isExactlyA(List.class, <new ArrayList<String>()>)      = false
-     * isExactlyA(ArrayList.class, <new ArrayList<String>()>) = true
-     * isExactlyA(int[].class, <new int[0]>)                  = true
-     * isExactlyA(Object[].class, <new String[0]>)            = false
-     * isExactlyA(_, null) = false
-     * isExactlyA(null, _) = NullPointerException
-     * }</pre>
+     * given by the name. See {@link #isExactlyA(Class, TypeNode)} for
+     * examples and more info.
      *
      * @param canonicalName a canonical name of a class or array type
      * @param node          the type node to check
      *
      * @return true if the node is non-null and has the given type
      *
-     * @throws NullPointerException if the class name parameter is null
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
+     * @see #isExactlyA(Class, TypeNode)
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
         return isExactlyAOrAnon(canonicalName, node) == OptionalBool.YES;

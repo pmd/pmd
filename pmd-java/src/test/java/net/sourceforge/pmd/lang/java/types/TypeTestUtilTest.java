@@ -12,12 +12,12 @@ import java.util.concurrent.Callable;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -160,6 +160,32 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     }
 
     @Test
+    public void testIsAStringWithTypeArguments() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public class FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        expect.expect(IllegalArgumentException.class);
+        TypeTestUtil.isA("java.util.List<java.lang.String>", klass);
+    }
+
+    @Test
+    public void testIsAStringWithTypeArgumentsAnnotation() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public @interface FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        expect.expect(IllegalArgumentException.class);
+        TypeTestUtil.isA("java.util.List<java.lang.String>", klass);
+    }
+
+    @Test
     public void testAnonClassTypeNPE() {
         // #2756
 
@@ -214,30 +240,10 @@ public class TypeTestUtilTest extends BaseNonParserTest {
                                        .getFirstDescendantOfType(ASTAnnotation.class);
         Assert.assertNotNull(node);
 
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((String) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((String) null, node);
-            }
-        });
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((String) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((Class<?>) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((Class<?>) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((String) null, node));
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {
