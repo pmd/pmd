@@ -58,7 +58,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isLengthZeroCheck(ASTMethodCall call) {
-        return call.getMethodName().equals("length")
+        return "length".equals(call.getMethodName())
             && call.getArguments().size() == 0
             && JavaRuleUtil.isZeroChecked(call);
     }
@@ -66,7 +66,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     private static boolean isTrimCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            return call.getMethodName().equals("trim")
+            return "trim".equals(call.getMethodName())
                 && call.getArguments().size() == 0
                 && TypeTestUtil.isA(String.class, call.getQualifier());
         }
@@ -77,7 +77,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     private static boolean isIsEmptyCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            return call.getMethodName().equals("isEmpty")
+            return "isEmpty".equals(call.getMethodName())
                 && call.getArguments().size() == 0;
         }
         return false;

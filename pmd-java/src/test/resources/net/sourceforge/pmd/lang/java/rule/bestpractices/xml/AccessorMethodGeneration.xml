@@ -7,7 +7,10 @@
     <test-code>
         <description>inner class accesses private field from outer class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Consider giving this member package visibility to access it from Foo.InnerClass without a synthetic accessor method</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     private int field;
@@ -27,7 +30,7 @@ public class Foo {
     <test-code>
         <description>inner class accesses private field from outer class unqualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int field;
@@ -47,7 +50,10 @@ public class Foo {
     <test-code>
         <description>outer class accesses private field from inner class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Consider giving this member package visibility to access it from Foo without a synthetic accessor method</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     private int field;
@@ -90,7 +96,7 @@ public class Foo {
     <test-code>
         <description>inner class accesses private method of outer class, unqualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public class InnerClass {
@@ -109,7 +115,7 @@ public class Foo {
     <test-code>
         <description>inner class accesses private method of outer class, qualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public class InnerClass {
@@ -128,7 +134,7 @@ public class Foo {
     <test-code>
         <description>outer class accesses private method of inner class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public class InnerClass {
@@ -138,6 +144,27 @@ public class Foo {
 
     private void outerSecret() {
         new InnerClass().secret(); // violation, accessing a private method
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>check violations are not duplicated</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public class InnerClass {
+        private void secret() {
+        }
+    }
+
+    private void outerSecret() {
+        // two different usages should be reported once
+        new InnerClass().secret();
+        new InnerClass().secret();
     }
 }
         ]]></code>
@@ -200,15 +227,15 @@ public class Foo implements Parcelable {
     <test-code>
         <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants</description>
         <expected-problems>4</expected-problems>
-        <expected-linenumbers>25,26,27,28</expected-linenumbers>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
         <code><![CDATA[
-@SuppressWarnings("unused")
 class Outer {
     private static final String CONST_STRING = "value";
     private static final String CALCULATED_STRING = "value" + 0;
     private static final int LITERAL = 0;
     private static final int CALCULATED = LITERAL * 2;
     private static final int CAST = (int) 0L;
+    // these are violations
     private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
     private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
     private static final int LATE_INIT;

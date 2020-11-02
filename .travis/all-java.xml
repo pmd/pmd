@@ -10,8 +10,8 @@
     <!-- bestpractices.xml -->
 
     <!-- <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/> -->
+    <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/>
+    <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/>
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/> -->
     <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
@@ -108,7 +108,7 @@
     <rule ref="category/java/codestyle.xml/TooManyStaticImports"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/> -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryModifier"/> -->

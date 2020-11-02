@@ -4,18 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
  * 1. Note all private constructors. 2. Note all instantiations from outside of
@@ -32,67 +27,25 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  * @author Romain PELISSE, belaran@gmail.com, patch bug#1807370
  * @author Juan Martin Sotuyo Dodero (juansotuyo@gmail.com), complete rewrite
  */
-public class AccessorClassGenerationRule extends AbstractJavaRule {
+public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
 
-    private Map<String, List<ASTConstructorDeclaration>> privateConstructors = new HashMap<>();
+    private final Set<JavaNode> reportedNodes = new HashSet<>();
 
     public AccessorClassGenerationRule() {
-        super();
-        /*
-         * Order is important. Visit constructors first to find the private
-         * ones, then visit allocations to find violations
-         */
-        addRuleChainVisit(ASTConstructorDeclaration.class);
-        addRuleChainVisit(ASTAllocationExpression.class);
+        super(ASTConstructorCall.class);
     }
 
     @Override
-    public void end(final RuleContext ctx) {
+    public void end(RuleContext ctx) {
         super.end(ctx);
-        // Clean up all references to the AST
-        privateConstructors.clear();
+        reportedNodes.clear();
     }
 
     @Override
-    public Object visit(final ASTConstructorDeclaration node, final Object data) {
-        if (node.isPrivate()) {
-            final String className = node.getParent().getParent().getParent().getImage();
-            if (!privateConstructors.containsKey(className)) {
-                privateConstructors.put(className, new ArrayList<ASTConstructorDeclaration>());
-            }
-            privateConstructors.get(className).add(node);
+    public Object visit(ASTConstructorCall node, Object data) {
+        if (!node.isAnonymousClass()) {
+            AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
-        return data;
-    }
-
-    @Override
-    public Object visit(final ASTAllocationExpression node, final Object data) {
-        if (node.getChild(0) instanceof ASTClassOrInterfaceType) { // Ignore primitives
-            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.getChild(0);
-            final List<ASTConstructorDeclaration> constructors = privateConstructors.get(type.getImage());
-
-            if (constructors != null) {
-                final ASTArguments callArguments = node.getFirstChildOfType(ASTArguments.class);
-                // Is this really a constructor call and not an array?
-                if (callArguments != null) {
-                    final ClassScope enclosingScope = node.getScope().getEnclosingScope(ClassScope.class);
-
-                    for (final ASTConstructorDeclaration cd : constructors) {
-                        // Are we within the same class scope?
-                        if (cd.getScope().getEnclosingScope(ClassScope.class) == enclosingScope) {
-                            break;
-                        }
-
-                        if (cd.getArity() == callArguments.size()) {
-                            // TODO : Check types
-                            addViolation(data, node);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return data;
+        return null;
     }
 }

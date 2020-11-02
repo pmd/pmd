@@ -4,135 +4,97 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.AbstractJavaScope;
-import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
-public class AccessorMethodGenerationRule extends AbstractJavaRule {
+public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
-    private List<String> cache = new ArrayList<>();
+    private final Set<JavaNode> reportedNodes = new HashSet<>();
 
-    @Override
-    public Object visit(final ASTCompilationUnit node, final Object data) {
-        final SourceFileScope file = node.getScope().getEnclosingScope(SourceFileScope.class);
-        analyzeScope(file, data);
-
-        return data; // Stop tree navigation
-    }
-
-    private void analyzeScope(final AbstractJavaScope file, final Object data) {
-        for (final ClassNameDeclaration classDecl : file.getDeclarations(ClassNameDeclaration.class).keySet()) {
-            final ClassScope classScope = (ClassScope) classDecl.getScope();
-
-            // Check fields
-            for (final Map.Entry<VariableNameDeclaration, List<NameOccurrence>> varDecl : classScope.getVariableDeclarations().entrySet()) {
-                final ASTFieldDeclaration field = varDecl.getKey().getNode().getFirstParentOfType(ASTFieldDeclaration.class);
-                analyzeMember(field, varDecl.getValue(), classScope, data);
-            }
-
-            // Check methods
-            for (final Map.Entry<MethodNameDeclaration, List<NameOccurrence>> methodDecl : classScope.getMethodDeclarations().entrySet()) {
-                final ASTMethodDeclaration method = methodDecl.getKey().getNode().getFirstParentOfType(ASTMethodDeclaration.class);
-                analyzeMember(method, methodDecl.getValue(), classScope, data);
-            }
-
-            // Check inner classes
-            analyzeScope(classScope, data);
-        }
-    }
-
-    public void analyzeMember(final AccessNode node, final List<NameOccurrence> occurrences,
-                              final ClassScope classScope, final Object data) {
-        if (!node.isPrivate()) {
-            return;
-        }
-
-        if (node.isFinal()) {
-            for (final ASTVariableDeclarator varDecl: node.findChildrenOfType(ASTVariableDeclarator.class)) {
-                if (varDecl.hasInitializer()) {
-                    ASTExpression varInit = varDecl.getInitializer();
-                    List<ASTExpression> initExpression = varInit.findDescendantsOfType(ASTExpression.class);
-                    boolean isConstantExpression = true;
-                    constantCheck:
-                    for (ASTExpression exp: initExpression) {
-                        List<ASTPrimaryExpression> primaryExpressions = exp.findDescendantsOfType(ASTPrimaryExpression.class);
-                        for (ASTPrimaryExpression expression: primaryExpressions) {
-                            if (!isCompileTimeConstant(expression)) {
-                                isConstantExpression = false;
-                                break constantCheck;
-                            }
-                        }
-                    }
-                    if (isConstantExpression) {
-                        cache.add(varDecl.getName());
-                        return;
-                    }
-                }
-            }
-        }
-
-        for (final NameOccurrence no : occurrences) {
-            ClassScope usedAtScope = no.getLocation().getScope().getEnclosingScope(ClassScope.class);
-
-            // Are we within the same class that defines the field / method?
-            if (!classScope.equals(usedAtScope)) {
-                addViolation(data, no.getLocation());
-            }
-        }
-    }
-
-    public boolean isCompileTimeConstant(ASTPrimaryExpression expressions) {
-        // function call detected
-        List<ASTPrimarySuffix> suffix = expressions.findDescendantsOfType(ASTPrimarySuffix.class);
-        if (!suffix.isEmpty()) {
-            return false;
-        }
-
-        // single node expression
-        List<ASTName> nameNodes = expressions.findDescendantsOfType(ASTName.class);
-        List<ASTLiteral> literalNodes = expressions.findDescendantsOfType(ASTLiteral.class);
-        if (nameNodes.size() + literalNodes.size() < 2) {
-            for (ASTName node: nameNodes) {
-                // TODO : use the symbol table to get the declaration of the referenced var and check it
-                if (!cache.contains(node.getImage())) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        // multiple node expression
-        List<ASTPrimaryExpression> subExpressions = expressions.findDescendantsOfType(ASTPrimaryExpression.class);
-        for (ASTPrimaryExpression exp: subExpressions) {
-            if (!isCompileTimeConstant(exp)) {
-                return false;
-            }
-        }
-        return true;
+    public AccessorMethodGenerationRule() {
+        super(ASTFieldAccess.class, ASTVariableAccess.class, ASTMethodCall.class);
     }
 
     @Override
     public void end(RuleContext ctx) {
-        cache.clear();
+        super.end(ctx);
+        reportedNodes.clear();
+    }
+
+    @Override
+    public Object visit(ASTFieldAccess node, Object data) {
+        JFieldSymbol sym = node.getReferencedSym();
+        if (sym != null && sym.getConstValue() == null) {
+            checkMemberAccess((RuleContext) data, node, sym);
+        }
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTVariableAccess node, Object data) {
+        JVariableSymbol sym = node.getReferencedSym();
+        if (sym instanceof JFieldSymbol) {
+            JFieldSymbol fieldSym = (JFieldSymbol) sym;
+            if (((JFieldSymbol) sym).getConstValue() == null) {
+                checkMemberAccess((RuleContext) data, node, fieldSym);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTMethodCall node, Object data) {
+        JMethodSymbol symbol = (JMethodSymbol) node.getMethodType().getSymbol();
+        checkMemberAccess((RuleContext) data, node, symbol);
+        return null;
+    }
+
+    private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
+        checkMemberAccess(this, data, node, symbol, this.reportedNodes);
+    }
+
+    static void checkMemberAccess(AbstractRule rule, RuleContext data, ASTExpression refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+        if (Modifier.isPrivate(sym.getModifiers())
+            && !Objects.equals(sym.getEnclosingClass(),
+                               refExpr.getEnclosingType().getSymbol())) {
+
+            JavaNode node = sym.tryGetNode();
+            assert node != null : "Node should be in the same compilation unit";
+            if (reportedNodes.add(node)) {
+                rule.addViolation(data, node, new String[] {stripPackageName(refExpr.getEnclosingType().getSymbol())});
+            }
+        }
+    }
+
+    /**
+     * Returns the canonical name without the package name. Eg for a
+     * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
+     */
+    private static String stripPackageName(JClassSymbol symbol) {
+        String p = symbol.getPackageName();
+        String canoName = symbol.getCanonicalName();
+        if (canoName == null) {
+            return symbol.getSimpleName();
+        }
+        if (p.isEmpty()) {
+            return canoName;
+        }
+        return canoName.substring(p.length() + 1); //+1 for the dot
     }
 }
