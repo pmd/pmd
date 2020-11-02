@@ -34,7 +34,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if (call.getMethodName().equals("toString")
+        if ("toString".equals(call.getMethodName())
             && call.getArguments().size() == 0
             && TypeTestUtil.isA(CharSequence.class, call.getQualifier())
             && !TypeTestUtil.isA(String.class, call.getQualifier())
@@ -47,7 +47,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRulechainRule {
     private boolean isLengthCall(JavaNode node) {
         if (node instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) node;
-            return call.getMethodName().equals("length")
+            return "length".equals(call.getMethodName())
                 && call.getArguments().size() == 0;
         }
         return false;

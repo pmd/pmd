@@ -95,6 +95,6 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         if (p.isEmpty()) {
             return canoName;
         }
-        return canoName.substring(p.length() + 1);//+1 for the dot
+        return canoName.substring(p.length() + 1); //+1 for the dot
     }
 }

@@ -41,7 +41,7 @@ public class AppendCharacterWithCharRule extends AbstractJavaRule {
             JavaNode callParent = node.getParent().getParent();
             if (callParent instanceof ASTMethodCall) {
                 ASTMethodCall call = (ASTMethodCall) callParent;
-                if (call.getMethodName().equals("append")
+                if ("append".equals(call.getMethodName())
                     && (TypeTestUtil.isDeclaredInClass(StringBuilder.class, call.getMethodType())
                     || TypeTestUtil.isDeclaredInClass(StringBuffer.class, call.getMethodType()))
                 ) {

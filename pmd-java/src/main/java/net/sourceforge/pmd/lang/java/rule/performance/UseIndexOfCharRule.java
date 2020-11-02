@@ -21,7 +21,7 @@ public class UseIndexOfCharRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (node.getMethodName().equals("indexOf") || node.getMethodName().equals("lastIndexOf")) {
+        if ("indexOf".equals(node.getMethodName()) || "lastIndexOf".equals(node.getMethodName())) {
             if (TypeTestUtil.isA(String.class, node.getQualifier())
                 && node.getArguments().size() >= 1) { // there are two overloads of each
                 ASTExpression arg = node.getArguments().get(0);

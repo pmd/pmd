@@ -30,7 +30,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if (call.getMethodName().equals("equals")
+        if ("equals".equals(call.getMethodName())
             // not an overload
             && call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT))) {
             checkArgs((RuleContext) data, call);

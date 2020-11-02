@@ -35,7 +35,7 @@ public class UseCollectionIsEmptyRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isSizeZeroCheck(ASTMethodCall call) {
-        return call.getMethodName().equals("size")
+        return "size".equals(call.getMethodName())
             && call.getArguments().size() == 0
             && JavaRuleUtil.isZeroChecked(call);
     }
