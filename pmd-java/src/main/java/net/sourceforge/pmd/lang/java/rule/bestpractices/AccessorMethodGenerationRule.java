@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
@@ -64,7 +65,11 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void checkMemberAccess(RuleContext data, ASTExpression refExpr, JAccessibleElementSymbol sym) {
+    private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
+        checkMemberAccess(this, data, node, symbol, this.reportedNodes);
+    }
+
+    static void checkMemberAccess(AbstractRule rule, RuleContext data, ASTExpression refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
             && !Objects.equals(sym.getEnclosingClass(),
                                refExpr.getEnclosingType().getSymbol())) {
@@ -72,7 +77,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
             JavaNode node = sym.tryGetNode();
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
-                addViolation(data, node, new String[] {stripPackageName(refExpr.getEnclosingType().getSymbol())});
+                rule.addViolation(data, node, new String[] {stripPackageName(refExpr.getEnclosingType().getSymbol())});
             }
         }
     }

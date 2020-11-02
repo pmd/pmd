@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.lang.reflect.Modifier;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
@@ -27,22 +29,22 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
  */
 public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
 
+    private final Set<JavaNode> reportedNodes = new HashSet<>();
+
     public AccessorClassGenerationRule() {
         super(ASTConstructorCall.class);
     }
 
     @Override
+    public void end(RuleContext ctx) {
+        super.end(ctx);
+        reportedNodes.clear();
+    }
+
+    @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        if (node.isAnonymousClass()
-            || Objects.equals(node.getTypeNode().getTypeMirror().getSymbol(),
-                              node.getEnclosingType().getSymbol())) {
-            return null;
-        }
-
-        // we're not in the same class
-
-        if (Modifier.isPrivate(node.getMethodType().getModifiers())) {
-            addViolation(data, node);
+        if (!node.isAnonymousClass()) {
+            AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }
