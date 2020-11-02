@@ -268,7 +268,7 @@
     <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/> -->
+    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
 
     <!-- multithreading.xml -->
 
