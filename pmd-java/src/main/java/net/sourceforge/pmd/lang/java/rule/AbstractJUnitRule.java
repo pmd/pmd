@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 @InternalApi
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
-    protected static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
-    protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
-    protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
+    public static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
+    public static final String JUNIT4_CLASS_NAME = "org.junit.Test";
+    public static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
 
     protected boolean isJUnit3Class;
     protected boolean isJUnit4Class;
