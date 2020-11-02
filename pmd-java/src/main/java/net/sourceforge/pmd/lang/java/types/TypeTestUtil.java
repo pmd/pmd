@@ -278,6 +278,20 @@ public final class TypeTestUtil {
 
     /**
      * Matches a method or constructor call against a particular overload.
+     * Use {@link #parse(String, String)} to create one. For example,
+     *
+     * <pre>
+     *     java.lang.String#toString()   // match calls to toString on String instances
+     *     _#toString()                  // match calls to toString on any receiver
+     *     _#_()                         // match all calls to a method with no arguments
+     *     _#toString(_*)                // match calls to a "toString" method with any number of arguments
+     *     _#eq(_, _)                    // match calls to an "eq" method that has 2 parameters of unspecified type
+     *     _#eq(java.lang.String, _)     // like the previous, but the first parameter must be String
+     * </pre>
+     *
+     * <p>The receiver parameter (first half) is matched against the
+     * static type of the receiver of the call (not the declaration site
+     * of the method). The parameters
      */
     public static final class InvocationMatcher {
 
@@ -345,14 +359,16 @@ public final class TypeTestUtil {
 
 
         /**
-         * Parses a {@link InvocationMatcher} from a string.
+         * Parses an {@link InvocationMatcher} from two strings.
          *
-         * @param qualifierMatcher Type matcher for the qualifier (either "_", or a qualified name).
-         *                      This will be matched with {@link #isA(String, TypeNode)}
-         * @param sig           A signature in the form {@code name(arg1, arg2, ...)},
-         *                      where each {@code argi} is either {@code _} or a qualified
-         *                      type name, without type arguments.
-         *                      These will be matched with {@link #isExactlyA(String, TypeNode)}.
+         * <p>The examples on the javadoc of this class are given in a
+         * syntax, where the first parameter of this method is before the #,
+         * and the second is after.
+         *
+         * @param qualifierMatcher Type matcher for the receiver type (either "_", or a qualified name).
+         * @param sig              A signature in the form {@code name(arg1, arg2, ...)},
+         *                         where each {@code argi} is either {@code _} or a qualified
+         *                         type name, without type arguments.
          *
          * @return A sig matcher
          *
