@@ -804,4 +804,54 @@ class Assert {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Just the Map prefix is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'Map' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package a;
+
+            import java.util.Map;
+
+            class A {
+                public Set<java.util.Map.Entry<K, V>> entrySet() {return null;}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inherited method is in scope</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'ClassLoader': 'registerAsParallelCapable' is already in scope</message>
+        </expected-messages>
+        <code><![CDATA[
+            package a;
+            import java.net.URLClassLoader;
+
+            class MyClassLoader extends URLClassLoader {
+                {
+                    ClassLoader.registerAsParallelCapable();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FQCN before field access</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang </message>
+        </expected-messages>
+        <code><![CDATA[
+            class ComplexButNotFlagged {
+
+                public final double SpecialSum = 2 + 1e10,
+                                    SpecialDifference = 4 - java.lang.Math.PI;
+            }
+            ]]></code>
+    </test-code>
 </test-data>
