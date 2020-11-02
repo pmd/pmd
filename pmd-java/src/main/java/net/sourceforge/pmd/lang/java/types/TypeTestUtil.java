@@ -72,7 +72,7 @@ public final class TypeTestUtil {
 
         JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
 
-        if (otherType == null || TypeOps.isUnresolved(type)) {
+        if (otherType == null || TypeOps.isUnresolved(type) || otherType.isPrimitive()) {
             // We'll return true if the types have equal symbols (same binary name),
             // but we ignore subtyping.
             return isExactlyA(clazz, type.getSymbol());
@@ -131,6 +131,8 @@ public final class TypeTestUtil {
         if (otherType == null
             || otherType.isClassOrInterface() && ((JClassType) otherType).getSymbol().isAnonymousClass()) {
             return false; // we know isExactlyA(canonicalName, node); returned false
+        } else if (otherType.isPrimitive()) {
+            return otherType == thisType; // isSubtypeOf considers primitive widening like subtyping
         }
 
         return thisType.isSubtypeOf(otherType);
@@ -256,7 +258,7 @@ public final class TypeTestUtil {
         // Neither final nor an annotation. Enums & records have ACC_FINAL
         // Note: arrays have ACC_FINAL, but have subtypes by covariance
         // Note: annotations may be implemented by classes
-        return Modifier.isFinal(clazz.getModifiers()) && !clazz.isArray();
+        return Modifier.isFinal(clazz.getModifiers()) && !clazz.isArray() || clazz.isPrimitive();
     }
 
 }

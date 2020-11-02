@@ -180,7 +180,7 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingNPE"/> -->
     <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable"/>
-    <!-- <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals"/> -->
     <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName"/> -->

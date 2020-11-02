@@ -127,6 +127,22 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         assertIsStrictSubtype(arrayT, Object.class);
     }
 
+    @Test
+    public void testIsAPrimitiveSubtype() {
+
+        ASTType arrayT =
+            java.parse("import java.io.ObjectStreamField; "
+                           + "class Foo { private static final int serialPersistentFields; }")
+                .getFirstDescendantOfType(ASTType.class);
+
+
+        assertIsExactlyA(arrayT, int.class);
+        assertIsNot(arrayT, long.class);
+        assertIsNot(arrayT, double.class);
+        assertIsNot(arrayT, float.class);
+        assertIsNot(arrayT, Object.class);
+    }
+
 
     @Test
     public void testIsAFallbackAnnotation() {
