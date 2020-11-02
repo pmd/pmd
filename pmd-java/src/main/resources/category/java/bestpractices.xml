@@ -1907,10 +1907,10 @@ a block `{}` is sufficient.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>
-//DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
-//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
-                </value>
+                <value><![CDATA[
+  //DoStatement[BooleanLiteral]
+| //WhileStatement/BooleanLiteral[@True = false()]
+                ]]></value>
             </property>
             <property name="version" value="2.0" />
         </properties>
