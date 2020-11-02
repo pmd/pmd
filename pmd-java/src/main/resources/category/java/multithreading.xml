@@ -207,7 +207,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCall[@MethodName = 'run' and *[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.Thread')] ]
+//MethodCall[ pmd-java:matchesSig("java.lang.Thread#run()") ]
 ]]>
                 </value>
             </property>
