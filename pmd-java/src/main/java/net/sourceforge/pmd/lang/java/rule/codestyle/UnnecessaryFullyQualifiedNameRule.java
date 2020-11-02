@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -40,6 +41,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             bestReason = checkMeansSame(next);
         }
 
+        // try to find the longest prefix that can be removed
         while (bestReason != null && segmentIsIrrelevant(next) && next.getParent() instanceof ASTClassOrInterfaceType) {
             ASTClassOrInterfaceType nextParent = (ASTClassOrInterfaceType) next.getParent();
             ScopeInfo newBestReason = checkMeansSame(nextParent);
@@ -65,7 +67,6 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         if (bestReason != null) {
-
             String simpleName = next.getSimpleName();
             String reasonToString = unnecessaryReasonForType(bestReason);
             String unnecessary = produceQualifier(deepest, next, false);
@@ -81,7 +82,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             sb.append(startIncluded.getTypeMirror().getSymbol().getPackageName());
         }
         ASTClassOrInterfaceType nextSimpleName = startIncluded;
-        while (nextSimpleName != stopExcluded) {
+        while (nextSimpleName != stopExcluded) { // NOPMD we want identity comparison
             sb.append('.').append(nextSimpleName.getSimpleName());
             nextSimpleName = (ASTClassOrInterfaceType) nextSimpleName.getParent();
         }
@@ -98,10 +99,17 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return type.getTypeArguments() == null && type.getDeclaredAnnotations().isEmpty();
     }
 
-
-    private static ScopeInfo checkMeansSame(ASTClassOrInterfaceType typeNode) {
+    /**
+     * Checks that the type name can be referred to by simple name in the
+     * given scope, which means, that the qualification can be dropped.
+     * If the symbol table for types yields the same symbol when referred
+     * to by name, then this is true.
+     *
+     * @return The reason why the type is in scope. Null if it's not in scope.
+     */
+    private static @Nullable ScopeInfo checkMeansSame(@NonNull ASTClassOrInterfaceType typeNode) {
         JTypeDeclSymbol sym = typeNode.getTypeMirror().getSymbol();
-        if (sym == null) {
+        if (sym == null || sym.isUnresolved()) {
             return null;
         }
         ShadowChainIterator<JTypeMirror, ScopeInfo> iter =
@@ -128,7 +136,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             return false;
         }
 
-        // todo filter by potential applicability (ideally, do a complete inference run)
+        // todo at least filter by potential applicability (ideally, do a complete inference run)
         //  this may have false negatives
         List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
         if (accessibleMethods.isEmpty()) {
