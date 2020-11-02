@@ -44,7 +44,7 @@ public class MissingBreakInSwitchRule extends AbstractJavaRulechainRule {
                 if (bool != OptionalBool.NO
                     && fallthrough.getStatements().nonEmpty()
                     && !nextBranchHasComment(branch)) {
-                    addViolation(data, nextBranch(branch).getLabel());
+                    addViolation(data, branch.getNextBranch().getLabel());
                 }
             } else {
                 return null;
@@ -54,7 +54,7 @@ public class MissingBreakInSwitchRule extends AbstractJavaRulechainRule {
     }
 
     boolean nextBranchHasComment(ASTSwitchBranch branch) {
-        JavaNode nextBranch = nextBranch(branch);
+        JavaNode nextBranch = branch.getNextBranch();
         if (nextBranch == null) {
             return false;
         }
@@ -68,7 +68,4 @@ public class MissingBreakInSwitchRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private ASTSwitchBranch nextBranch(ASTSwitchBranch branch) {
-        return (ASTSwitchBranch) branch.asStream().followingSiblings().first();
-    }
 }
