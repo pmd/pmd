@@ -282,10 +282,10 @@ public final class TypeTestUtil {
     public static final class InvocationMatcher {
 
         final String expectedName;
-        final List<TypeMatcher> argMatchers;
+        final @Nullable List<TypeMatcher> argMatchers;
         final TypeMatcher qualifierMatcher;
 
-        InvocationMatcher(TypeMatcher qualifierMatcher, String expectedName, List<TypeMatcher> argMatchers) {
+        InvocationMatcher(TypeMatcher qualifierMatcher, String expectedName, @Nullable List<TypeMatcher> argMatchers) {
             this.expectedName = expectedName;
             this.argMatchers = argMatchers;
             this.qualifierMatcher = qualifierMatcher;
@@ -299,7 +299,7 @@ public final class TypeTestUtil {
          */
         public boolean matchesCall(InvocationNode node) {
             if (!node.getMethodName().equals(expectedName)
-                || ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
+                || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
                 return false;
             }
             OverloadSelectionResult info = node.getOverloadSelectionInfo();
@@ -328,6 +328,9 @@ public final class TypeTestUtil {
         }
 
         private boolean argsMatchOverload(JMethodSig invoc) {
+            if (argMatchers == null) {
+                return true;
+            }
             List<JTypeMirror> formals = invoc.getFormalParameters();
             if (invoc.getArity() != argMatchers.size()) {
                 return false;
@@ -370,8 +373,17 @@ public final class TypeTestUtil {
             if (isChar(sig, i, ')')) {
                 return new InvocationMatcher(newMatcher(qualifierMatcher), methodName, Collections.emptyList());
             }
-            List<TypeMatcher> argMatchers = new ArrayList<>();
-            i = parseArgList(sig, i, argMatchers);
+            // (_*) matches any argument list
+            List<TypeMatcher> argMatchers;
+            if (isChar(sig, i, '_')
+                && isChar(sig, i + 1, '*')
+                && isChar(sig, i + 2, ')')) {
+                argMatchers = null;
+                i = i + 3;
+            } else {
+                argMatchers = new ArrayList<>();
+                i = parseArgList(sig, i, argMatchers);
+            }
             if (i != sig.length()) {
                 throw new IllegalArgumentException("Not a valid signature " + sig);
             }

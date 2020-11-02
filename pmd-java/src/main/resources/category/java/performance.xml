@@ -1095,6 +1095,7 @@ public class Foo {
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -1103,7 +1104,6 @@ or StringBuffer.toString().length() == ...
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
         <example>
 <![CDATA[
 StringBuffer sb = new StringBuffer();

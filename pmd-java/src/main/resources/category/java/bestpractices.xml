@@ -1555,23 +1555,10 @@ This rule detects JUnit assertions in object equality. These assertions should b
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue']
-][
-    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-        [ends-with(@Image, '.equals')]
-]
+// MethodCall[ pmd-java:matchesSig('org.junit.Assert#assertTrue(_*)')
+            or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')
+            or pmd-java:matchesSig('junit.framework.TestCase#assertTrue(_*)') ]
+             [ArgumentList/*[last()][self::MethodCall[pmd-java:matchesSig('_#equals(java.lang.Object)')]]]
 ]]>
                 </value>
             </property>
