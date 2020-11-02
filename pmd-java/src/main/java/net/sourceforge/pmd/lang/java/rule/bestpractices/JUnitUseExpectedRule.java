@@ -56,7 +56,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
                 }
             }
             if (child instanceof ASTMethodDeclaration) {
-                boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
+                boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child);
                 if (inAnnotation || isJUnitMethod) {
                     List<Node> found = new ArrayList<>((List<Node>) visit((ASTMethodDeclaration) child, data));
                     for (Node name : found) {

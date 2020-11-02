@@ -55,42 +55,35 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isTestNgClass(ASTCompilationUnit node) {
-        List<ASTImportDeclaration> imports = node.findDescendantsOfType(ASTImportDeclaration.class);
-        for (ASTImportDeclaration i : imports) {
-            if (i.getImportedName() != null && i.getImportedName().startsWith("org.testng")) {
-                return true;
-            }
-        }
-        return false;
+        return node.children(ASTImportDeclaration.class)
+                   .any(i -> i.getImportedName().startsWith("org.testng"));
     }
 
-    public boolean isJUnitMethod(ASTMethodDeclaration method, Object data) {
-        if (method.isAbstract() || method.isNative() || method.isStatic()) {
+    public boolean isJUnitMethod(ASTMethodDeclaration method) {
+        if (method.isStatic() || method.getBody() == null) {
             return false; // skip various inapplicable method variations
         }
 
-        if (!isJUnit5Class && !method.isPublic()) {
-            // junit5 class doesn't require test methods to be public anymore
-            return false;
-        }
-
         boolean result = false;
-        result |= isJUnit3Method(method);
-        result |= isJUnit4Method(method);
-        result |= isJUnit5Method(method);
+        result = result || isJUnit5Method(method);
+        result = result || isJUnit4Method(method);
+        result = result || isJUnit3Method(method);
         return result;
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return isJUnit4Class && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT4_CLASS_NAME);
+        return method.isAnnotationPresent(JUNIT4_CLASS_NAME) && method.isPublic();
     }
 
     private boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return isJUnit5Class && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT5_CLASS_NAME);
+        return method.isAnnotationPresent(JUNIT5_CLASS_NAME);
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
-        return isJUnit3Class && method.isVoid() && method.getName().startsWith("test");
+        return TypeTestUtil.isA("junit.framework.TestCase", method.getEnclosingType())
+            && method.isVoid()
+            && method.isPublic()
+            && method.getName().startsWith("test");
     }
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {

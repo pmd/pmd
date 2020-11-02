@@ -23,7 +23,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
 
         if (m != null) {
             for (ASTMethodDeclaration md : m) {
-                if (isJUnitMethod(md, data)) {
+                if (isJUnitMethod(md)) {
                     testsFound = true;
                     break;
                 }
