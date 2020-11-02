@@ -135,6 +135,10 @@ public class Foo {
     <test-code>
         <description>13, invalid static method call</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'Arrays' is already in scope because it is imported in this file</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.Arrays;
 public class Foo {
@@ -272,9 +276,9 @@ public class Test {}
     <test-code>
         <description>#1404 Java8 'Unnecessary use of fully qualified name' in Streams Collector</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>17</expected-linenumbers>
+        <expected-linenumbers>18</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'Collectors.toList' due to existing static import 'java.util.stream.Collectors.toList'</message>
+            <message>Unnecessary qualifier 'Collectors': 'toList' is already in scope</message>
         </expected-messages>
         <code><![CDATA[
 // https://github.com/FenixEdu/fenixedu-learning/blob/master/src/main/java/org/fenixedu/learning/domain/executionCourse/components/InitialPageComponent.java#L50
@@ -293,7 +297,8 @@ public class InitialPageComponent extends BaseExecutionCourseComponent {
                         .getProfessorshipsSet()
                         .stream()
                         .sorted(Comparator.comparing(Professorship::isResponsibleFor).reversed()
-                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME)).collect(Collectors.toList()));
+                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME))
+                                .collect(Collectors.toList()));
     }
 }
         ]]></code>
@@ -389,7 +394,7 @@ public class CauseProblem {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary qualifier 'java.lang': 'String' is accessible by simple name because it is declared in java.lang</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is already in scope because it is declared in java.lang</message>
         </expected-messages>
         <code><![CDATA[
 public class JavaLang {
@@ -405,7 +410,7 @@ public class JavaLang {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary qualifier 'java.lang': 'String' is accessible by simple name because it is imported in this file</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is already in scope because it is imported in this file</message>
         </expected-messages>
         <code><![CDATA[
 import java.lang.String;
@@ -493,7 +498,7 @@ public class TestArrayType {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary qualifier 'java.util': 'ArrayList' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'java.util': 'ArrayList' is already in scope because it is declared in the same package</message>
         </expected-messages>
         <code><![CDATA[
 package java.util;
@@ -544,7 +549,7 @@ class length {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary qualifier 'threads': 'length' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'threads': 'length' is already in scope because it is declared in the same package</message>
         </expected-messages>
         <code><![CDATA[
 package threads;
@@ -648,13 +653,13 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
         <expected-problems>7</expected-problems>
         <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
-            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
-            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is accessible by simple name because it is declared in an enclosing type</message>
-            <message>Unnecessary qualifier 'com.example.ClassOne': 'Builder' is accessible by simple name because it is declared in an enclosing type</message>
-            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
-            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is accessible by simple name because it is declared in an enclosing type</message>
-            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'Builder' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
         </expected-messages>
         <code><![CDATA[
 package com.example;

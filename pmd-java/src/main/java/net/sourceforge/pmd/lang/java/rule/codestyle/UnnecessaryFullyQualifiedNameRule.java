@@ -10,10 +10,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -48,16 +51,31 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
-        if (bestReason != null) {
-            String simpleName = next.getSimpleName();
-            String unnecessary = produceQualifier(deepest, next);
-            addViolation(data, next, new Object[] {unnecessary, simpleName, unnecessaryReason(bestReason)});
+        // maybe a method call can still take precedence?
+        if (next.getParent() instanceof ASTTypeExpression
+            && next.getParent().getParent() instanceof ASTMethodCall) {
+            ASTMethodCall methodCall = (ASTMethodCall) next.getParent().getParent();
+            if (methodProbablyMeansSame(next, methodCall)) {
+                // we don't actually know where the method came from
+                String simpleName = methodCall.getMethodName();
+                String unnecessary = produceQualifier(deepest, next, true);
+                addViolation(data, next, new Object[] {unnecessary, simpleName, ""});
+                return null;
+            }
         }
-        return data;
+
+        if (bestReason != null) {
+
+            String simpleName = next.getSimpleName();
+            String reasonToString = unnecessaryReasonForType(bestReason);
+            String unnecessary = produceQualifier(deepest, next, false);
+            addViolation(data, next, new Object[] {unnecessary, simpleName, reasonToString});
+        }
+        return null;
     }
 
 
-    private String produceQualifier(ASTClassOrInterfaceType startIncluded, ASTClassOrInterfaceType stopExcluded) {
+    private String produceQualifier(ASTClassOrInterfaceType startIncluded, ASTClassOrInterfaceType stopExcluded, boolean includeLast) {
         StringBuilder sb = new StringBuilder();
         if (startIncluded.isFullyQualified()) {
             sb.append(startIncluded.getTypeMirror().getSymbol().getPackageName());
@@ -66,6 +84,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         while (nextSimpleName != stopExcluded) {
             sb.append('.').append(nextSimpleName.getSimpleName());
             nextSimpleName = (ASTClassOrInterfaceType) nextSimpleName.getParent();
+        }
+        if (includeLast) {
+            if (sb.length() == 0) {
+                return nextSimpleName.getSimpleName();
+            }
+            sb.append('.').append(nextSimpleName.getSimpleName());
         }
         return sb.toString();
     }
@@ -98,6 +122,29 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return null;
     }
 
+    private static boolean methodProbablyMeansSame(ASTClassOrInterfaceType qualifier, ASTMethodCall call) {
+        JTypeDeclSymbol sym = qualifier.getTypeMirror().getSymbol();
+        if (sym == null) {
+            return false;
+        }
+
+        // todo filter by potential applicability (ideally, do a complete inference run)
+        //  this may have false negatives
+        List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
+        if (accessibleMethods.isEmpty()) {
+            return false;
+        }
+        for (JMethodSig m : accessibleMethods) {
+            if (!m.getSymbol().getEnclosingClass().equals(sym)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String unnecessaryReasonForType(ScopeInfo scopeInfo) {
+        return " because it is " + unnecessaryReason(scopeInfo);
+    }
 
     private static String unnecessaryReason(ScopeInfo scopeInfo) {
         switch (scopeInfo) {
