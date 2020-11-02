@@ -14,9 +14,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -274,53 +276,72 @@ public final class TypeTestUtil {
 
 
     /**
-     * Matches a method signature.
+     * Matches a method or constructor call against a particular overload.
      */
-    public static final class MethodSigMatcher {
+    public static final class InvocationMatcher {
 
         final String expectedName;
         final List<TypeMatcher> argMatchers;
         final TypeMatcher qualifierMatcher;
 
-        MethodSigMatcher(TypeMatcher qualifierMatcher, String expectedName, List<TypeMatcher> argMatchers) {
+        InvocationMatcher(TypeMatcher qualifierMatcher, String expectedName, List<TypeMatcher> argMatchers) {
             this.expectedName = expectedName;
             this.argMatchers = argMatchers;
             this.qualifierMatcher = qualifierMatcher;
         }
 
+        /**
+         * Returns true if the call matches this matcher. This means,
+         * the called overload is the one identified by the argument
+         * matchers, and the actual qualifier type is a subtype of the
+         * one mentioned by the qualifier matcher.
+         */
         public boolean matchesCall(InvocationNode node) {
             if (!node.getMethodName().equals(expectedName)
                 || ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
                 return false;
             }
             OverloadSelectionResult info = node.getOverloadSelectionInfo();
-            if (info.isFailed()) {
+            if (info.isFailed() || !matchQualifier(node)) {
                 return false;
             }
-            return matchesSig(info.getMethodType());
+            return argsMatchOverload(info.getMethodType());
         }
 
-        public boolean matchesSig(JMethodSig invoc) {
-            if (!invoc.getName().equals(expectedName)) {
-                return false;
+        private boolean matchQualifier(InvocationNode node) {
+            if (qualifierMatcher == TypeMatcher.ANY) {
+                return true;
             }
+            if (node instanceof QualifiableExpression) {
+                ASTExpression qualifier = ((QualifiableExpression) node).getQualifier();
+                if (qualifier != null) {
+                    return qualifierMatcher.matches(qualifier.getTypeMirror(), false);
+                }
+                // todo: if qualifier == null, then we should take the type of the
+                // implicit receiver, ie `this` or `SomeOuter.this`
+            }
+
+            return qualifierMatcher.matches(node.getMethodType().getDeclaringType(), false);
+        }
+
+        private boolean argsMatchOverload(JMethodSig invoc) {
             List<JTypeMirror> formals = invoc.getFormalParameters();
             if (invoc.getArity() != argMatchers.size()) {
                 return false;
             }
             for (int i = 0; i < formals.size(); i++) {
-                if (!argMatchers.get(i).matches(formals.get(i))) {
+                if (!argMatchers.get(i).matches(formals.get(i), true)) {
                     return false;
                 }
             }
-            return qualifierMatcher.matches(invoc.getDeclaringType());
+            return true;
         }
 
 
         /**
-         * Parses a {@link MethodSigMatcher} from a string.
+         * Parses a {@link InvocationMatcher} from a string.
          *
-         * @param qualifierName Type matcher for the qualifier (either "_", or a qualified name).
+         * @param qualifierMatcher Type matcher for the qualifier (either "_", or a qualified name).
          *                      This will be matched with {@link #isA(String, TypeNode)}
          * @param sig           A signature in the form {@code name(arg1, arg2, ...)},
          *                      where each {@code argi} is either {@code _} or a qualified
@@ -332,8 +353,8 @@ public final class TypeTestUtil {
          * @throws IllegalArgumentException If the parameters are malformed
          * @throws NullPointerException     If the parameters are null
          */
-        public static MethodSigMatcher parse(String qualifierName, String sig) {
-            AssertionUtil.assertValidJavaBinaryName(qualifierName);
+        public static InvocationMatcher parse(String qualifierMatcher, String sig) {
+            AssertionUtil.assertValidJavaBinaryName(qualifierMatcher);
             int i = 0;
             while (i < sig.length() && Character.isJavaIdentifierPart(sig.charAt(i))) {
                 i++;
@@ -344,19 +365,19 @@ public final class TypeTestUtil {
             }
             i = consumeChar(sig, i, '(');
             if (isChar(sig, i, ')')) {
-                return new MethodSigMatcher(newMatcher(qualifierName, false), methodName, Collections.emptyList());
+                return new InvocationMatcher(newMatcher(qualifierMatcher), methodName, Collections.emptyList());
             }
             List<TypeMatcher> argMatchers = new ArrayList<>();
             i = parseArgList(sig, i, argMatchers);
             if (i != sig.length()) {
                 throw new IllegalArgumentException("Not a valid signature " + sig);
             }
-            return new MethodSigMatcher(newMatcher(qualifierName, false), methodName, argMatchers);
+            return new InvocationMatcher(newMatcher(qualifierMatcher), methodName, argMatchers);
         }
 
         private static int parseArgList(String sig, int i, List<TypeMatcher> argMatchers) {
             while (i < sig.length()) {
-                i = parseType(sig, i, argMatchers, true);
+                i = parseType(sig, i, argMatchers);
                 if (isChar(sig, i, ')')) {
                     return i + 1;
                 }
@@ -376,7 +397,7 @@ public final class TypeTestUtil {
             return i < source.length() && source.charAt(i) == c;
         }
 
-        private static int parseType(String source, int i, List<TypeMatcher> result, boolean exact) {
+        private static int parseType(String source, int i, List<TypeMatcher> result) {
             final int start = i;
             while (i < source.length() && (Character.isJavaIdentifierPart(source.charAt(i))
                 || source.charAt(i) == '.')) {
@@ -384,28 +405,26 @@ public final class TypeTestUtil {
             }
             String name = source.substring(start, i);
             AssertionUtil.assertValidJavaBinaryName(name);
-            result.add(newMatcher(name, exact));
+            result.add(newMatcher(name));
             return i;
         }
 
-        private static TypeMatcher newMatcher(String name, boolean exact) {
-            return "_".equals(name) ? TypeMatcher.ANY : new TypeMatcher(name, exact);
+        private static TypeMatcher newMatcher(String name) {
+            return "_".equals(name) ? TypeMatcher.ANY : new TypeMatcher(name);
         }
 
         private static final class TypeMatcher {
 
             /** Matches any type. */
-            public static final TypeMatcher ANY = new TypeMatcher(null, false);
+            public static final TypeMatcher ANY = new TypeMatcher(null);
 
             final @Nullable String name;
-            private final boolean exact;
 
-            private TypeMatcher(@Nullable String name, boolean exact) {
+            private TypeMatcher(@Nullable String name) {
                 this.name = name;
-                this.exact = exact;
             }
 
-            boolean matches(JTypeMirror type) {
+            boolean matches(JTypeMirror type, boolean exact) {
                 if (name == null) {
                     return true;
                 }
