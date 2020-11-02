@@ -175,7 +175,7 @@
 
     <!-- <rule ref="category/java/errorprone.xml/AssignmentInOperand"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingNPE"/> -->
