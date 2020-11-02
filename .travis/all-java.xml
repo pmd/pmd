@@ -175,14 +175,14 @@
 
     <!-- <rule ref="category/java/errorprone.xml/AssignmentInOperand"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingNPE"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable"/>
+    <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause"/> -->
@@ -268,7 +268,7 @@
     <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/> -->
+    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
 
     <!-- multithreading.xml -->
 

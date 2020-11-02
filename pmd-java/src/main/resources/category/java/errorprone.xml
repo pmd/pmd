@@ -247,13 +247,20 @@ public class Foo {
           language="java"
           since="1.2"
           message="A catch statement should never catch throwable since it includes errors."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
         <description>
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //CatchParameter[ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public void bar() {
@@ -289,15 +296,13 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression[pmd-java:typeIs('java.math.BigDecimal')]
-[Arguments/ArgumentList/Expression/PrimaryExpression
-    [
+//ConstructorCall[pmd-java:typeIs('java.math.BigDecimal')]
+[ArgumentList[count(*) = 1 and *[
         pmd-java:typeIs('float') or
         pmd-java:typeIs('java.lang.Float') or
         pmd-java:typeIs('double') or
         pmd-java:typeIs('java.lang.Double')
-    ]
-]
+]]]
 ]]>
                 </value>
             </property>
