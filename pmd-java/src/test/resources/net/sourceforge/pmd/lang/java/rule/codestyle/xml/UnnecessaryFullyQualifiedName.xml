@@ -743,4 +743,54 @@ class Assert {
 
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Static import on demand from same file</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package ohio;
+
+import static ohio.Assert.*;
+
+public class Something{
+    {
+        Assert.isNull(null);
+    }
+}
+
+class Assert {
+
+    public static void isNull(Object o) {}
+
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Enum constant obscures type name!</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum DataType {
+                Float(Float.class) {
+                    @Override
+                    public String toString(final Object value) {
+                        if (value == null) {
+                            return null;
+                        }
+                        final int bits = java.lang.Float.floatToIntBits((java.lang.Float) value);
+                        return "";
+                    }
+                };
+                private Class<?> dataClass;
+
+                private DataType(Class<?> dataClass) {
+                    this.dataClass = dataClass;
+                }
+
+                @Override
+                public Class<?> getDataClass() {
+                    return dataClass;
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

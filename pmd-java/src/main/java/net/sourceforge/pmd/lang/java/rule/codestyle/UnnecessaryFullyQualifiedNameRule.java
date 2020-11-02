@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -112,8 +113,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (sym == null || sym.isUnresolved()) {
             return null;
         }
+
+        JSymbolTable symTable = typeNode.getSymbolTable();
+        if (symTable.variables().resolveFirst(sym.getSimpleName()) != null) {
+            return null; //name is obscured: https://docs.oracle.com/javase/specs/jls/se15/html/jls-6.html#jls-6.4.2
+        }
         ShadowChainIterator<JTypeMirror, ScopeInfo> iter =
-            typeNode.getSymbolTable().types().iterateResults(sym.getSimpleName());
+            symTable.types().iterateResults(sym.getSimpleName());
 
         if (iter.hasNext()) {
             iter.next();
