@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -312,7 +313,9 @@ public final class TypeTestUtil {
             if (qualifierMatcher == TypeMatcher.ANY) {
                 return true;
             }
-            if (node instanceof QualifiableExpression) {
+            if (node instanceof ASTConstructorCall) {
+                return qualifierMatcher.matches(((ASTConstructorCall) node).getTypeNode().getTypeMirror(), true);
+            } else if (node instanceof QualifiableExpression) {
                 ASTExpression qualifier = ((QualifiableExpression) node).getQualifier();
                 if (qualifier != null) {
                     return qualifierMatcher.matches(qualifier.getTypeMirror(), false);
