@@ -1668,13 +1668,12 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
-[
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-  or
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
-  /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
-]
+// MethodCall[ @MethodName = 'assertEquals'
+       and (pmd-java:matchesSig('org.junit.Assert#_(_*)')
+         or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#_(_*)')
+         or pmd-java:matchesSig('junit.framework.TestCase#_(_*)'))
+      ]
+      [ArgumentList/*[self::BooleanLiteral or self::FieldAccess[@Name=("TRUE", "FALSE") and pmd-java:typeIs('java.lang.Boolean')]]]
 ]]>
                 </value>
             </property>
