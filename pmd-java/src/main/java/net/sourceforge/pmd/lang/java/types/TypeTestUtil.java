@@ -281,12 +281,12 @@ public final class TypeTestUtil {
      */
     public static final class InvocationMatcher {
 
-        final String expectedName;
+        final @Nullable String expectedName;
         final @Nullable List<TypeMatcher> argMatchers;
         final TypeMatcher qualifierMatcher;
 
         InvocationMatcher(TypeMatcher qualifierMatcher, String expectedName, @Nullable List<TypeMatcher> argMatchers) {
-            this.expectedName = expectedName;
+            this.expectedName = expectedName.equals("_") ? null : expectedName;
             this.argMatchers = argMatchers;
             this.qualifierMatcher = qualifierMatcher;
         }
@@ -298,7 +298,7 @@ public final class TypeTestUtil {
          * one mentioned by the qualifier matcher.
          */
         public boolean matchesCall(InvocationNode node) {
-            if (!node.getMethodName().equals(expectedName)
+            if (expectedName != null && !node.getMethodName().equals(expectedName)
                 || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
                 return false;
             }
