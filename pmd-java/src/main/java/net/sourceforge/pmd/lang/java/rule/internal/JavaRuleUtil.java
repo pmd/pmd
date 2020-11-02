@@ -291,7 +291,7 @@ public final class JavaRuleUtil {
      * Will cut through argument lists, except those of enum constants
      * and explicit invocation nodes.
      */
-    private static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
+    public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         return (ASTExpression) expr.ancestorsOrSelf()
                                    .takeWhile(it -> it instanceof ASTExpression
                                        || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression)
