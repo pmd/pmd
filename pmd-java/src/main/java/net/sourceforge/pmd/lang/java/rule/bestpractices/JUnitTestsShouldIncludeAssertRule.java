@@ -4,24 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule.JUNIT4_CLASS_NAME;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
-public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
+public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
 
     private static final Set<String> MOCKITO = setOf("org.mockito.Mockito");
@@ -30,16 +29,15 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                                                        "org.hamcrest.MatcherAssert",
                                                        "junit.framework.TestCase");
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTMethodDeclaration.class);
+    public JUnitTestsShouldIncludeAssertRule() {
+        super(ASTMethodDeclaration.class);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         ASTBlock body = method.getBody();
         if (body != null
-            && isJUnitMethod(method)
+            && AbstractJUnitRule.isJUnitMethod(method)
             && !isExpectAnnotated(method)
             && body.descendants(ASTMethodCall.class).none(this::isAssertCall)) {
             addViolation(data, method);

@@ -59,7 +59,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
                    .any(i -> i.getImportedName().startsWith("org.testng"));
     }
 
-    public boolean isJUnitMethod(ASTMethodDeclaration method) {
+    public static boolean isJUnitMethod(ASTMethodDeclaration method) {
         if (method.isStatic() || method.getBody() == null) {
             return false; // skip various inapplicable method variations
         }
@@ -71,15 +71,15 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return result;
     }
 
-    private boolean isJUnit4Method(ASTMethodDeclaration method) {
+    private static boolean isJUnit4Method(ASTMethodDeclaration method) {
         return method.isAnnotationPresent(JUNIT4_CLASS_NAME) && method.isPublic();
     }
 
-    private boolean isJUnit5Method(ASTMethodDeclaration method) {
+    private static boolean isJUnit5Method(ASTMethodDeclaration method) {
         return method.isAnnotationPresent(JUNIT5_CLASS_NAME);
     }
 
-    private boolean isJUnit3Method(ASTMethodDeclaration method) {
+    private static boolean isJUnit3Method(ASTMethodDeclaration method) {
         return TypeTestUtil.isA("junit.framework.TestCase", method.getEnclosingType())
             && method.isVoid()
             && method.isPublic()
