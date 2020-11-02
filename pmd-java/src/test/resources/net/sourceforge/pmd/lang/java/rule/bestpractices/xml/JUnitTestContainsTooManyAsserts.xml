@@ -8,6 +8,7 @@
         <description>JUnit 3 Test contains no assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
     public void testMyCaseWithNoAssert() {
@@ -22,6 +23,7 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains no assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
     @Test
@@ -37,6 +39,7 @@ public class MyTestCase extends TestCase {
         <description>JUnit 3 Test contains one assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
     public void testMyCaseWithOneAssert() {
@@ -51,7 +54,8 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains one assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //negative on rule
     @Test
     public void myCaseWithOneAssert() {
@@ -81,7 +85,8 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains more than one assert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //positive on rule
     @Test
     public void myCaseWithMoreAsserts() {
@@ -98,6 +103,7 @@ public class MyTestCase extends TestCase {
         <rule-property name="maximumAsserts">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //positive on rule
     public void testMyCaseWithMoreAsserts() {
@@ -114,7 +120,8 @@ public class MyTestCase extends TestCase {
         <rule-property name="maximumAsserts">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //positive on rule
     @Test
     public void myCaseWithMoreAsserts() {

@@ -809,16 +809,17 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name[matches(.,'^test')] or ../Annotation/MarkerAnnotation/Name[
-           pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        or pmd-java:typeIs('org.testng.annotations.Test')
-    ]]
-    [count(.//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
+//MethodDeclaration[
+           @Name[matches(.,'^test')]
+        or pmd-java:hasAnnotation('org.junit.Test')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
+        or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]
+    [Block[count(//MethodCall[@MethodName[matches(.,'^assert')]]) > $maximumAsserts]]
 ]]>
                 </value>
             </property>
