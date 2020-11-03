@@ -245,14 +245,12 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
 
             // preprocess siblings
-            node.getDeclarations()
-                .filterIs(ASTAnyTypeDeclaration.class)
+            node.getDeclarations(ASTAnyTypeDeclaration.class)
                 .forEach(d -> processTypeHeader(d, bodyCtx));
 
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
-            f.disambig(node.getDeclarations()
-                           .filterIs(ASTFieldDeclaration.class)
+            f.disambig(node.getDeclarations(ASTFieldDeclaration.class)
                            .map(ASTFieldDeclaration::getTypeNode),
                        bodyCtx);
             visitChildren(node.getBody(), bodyCtx);

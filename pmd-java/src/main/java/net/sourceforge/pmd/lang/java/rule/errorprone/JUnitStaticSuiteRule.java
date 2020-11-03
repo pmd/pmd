@@ -21,8 +21,7 @@ public class JUnitStaticSuiteRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (isJUnit3Class(node)) {
-            ASTMethodDeclaration suiteMethod = node.getDeclarations()
-                                                   .filterIs(ASTMethodDeclaration.class)
+            ASTMethodDeclaration suiteMethod = node.getDeclarations(ASTMethodDeclaration.class)
                                                    .filter(it -> "suite".equals(it.getName()) && it.getArity() == 0)
                                                    .first();
             if (suiteMethod != null
