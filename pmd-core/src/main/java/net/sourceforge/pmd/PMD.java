@@ -344,8 +344,8 @@ public class PMD {
                                       final List<RuleSet> rulesets,
                                       final Collection<? extends DataSource> files,
                                       final List<Renderer> renderers) {
-        Report report = new Report();
         encourageToUseIncrementalAnalysis(configuration);
+        Report report = new Report();
         report.addListener(configuration.getAnalysisCache());
 
         List<DataSource> sortedFiles = new ArrayList<>(files);

@@ -118,16 +118,8 @@ public abstract class AbstractPMDProcessor {
     @Deprecated
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
                              List<Renderer> renderers) {
-        try {
-            final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
-            processFiles(rs, files, ctx, renderers);
-        } finally {
-            // in case we analyzed files within Zip Files/Jars, we need to close them after
-            // the analysis is finished
-            for (DataSource dataSource : files) {
-                IOUtils.closeQuietly(dataSource);
-            }
-        }
+        RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+        processFiles(rs, files, ctx, renderers);
     }
 
     @SuppressWarnings("PMD.CloseResource")
