@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * This rule finds the following:
@@ -27,16 +24,16 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  *
  * @see <a href="https://sourceforge.net/p/pmd/feature-requests/381/">feature request #381 Single character StringBuffer.append </a>
  */
-public class AppendCharacterWithCharRule extends AbstractJavaRule {
+public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTStringLiteral.class);
+    public AppendCharacterWithCharRule() {
+        super(ASTStringLiteral.class);
     }
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
-        if (node.length() == 1 && node.getParent() instanceof ASTArgumentList
+        if (node.getParent() instanceof ASTArgumentList
+            && node.length() == 1
             && ((ASTArgumentList) node.getParent()).size() == 1) {
             JavaNode callParent = node.getParent().getParent();
             if (callParent instanceof ASTMethodCall) {

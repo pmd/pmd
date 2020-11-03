@@ -27,6 +27,8 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
 
     public LocalVariableNamingConventionsRule() {
+        super(ASTVariableDeclaratorId.class);
+
         definePropertyDescriptor(localVarRegex);
         definePropertyDescriptor(finalVarRegex);
         definePropertyDescriptor(exceptionBlockParameterRegex);

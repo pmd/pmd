@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -15,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -33,6 +30,10 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public ClassNamingConventionsRule() {
+        super(ASTAnyTypeDeclaration.class,
+              ASTEnumDeclaration.class,
+              ASTAnnotationTypeDeclaration.class,
+              ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
         definePropertyDescriptor(interfaceRegex);
@@ -40,15 +41,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
     }
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTClassOrInterfaceDeclaration.class,
-                                           ASTEnumDeclaration.class,
-                                           ASTAnnotationTypeDeclaration.class,
-                                           ASTRecordDeclaration.class);
-    }
-
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -73,6 +65,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
+    @Override
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        checkMatches(node, classRegex, data); // property?
+        return data;
+    }
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {

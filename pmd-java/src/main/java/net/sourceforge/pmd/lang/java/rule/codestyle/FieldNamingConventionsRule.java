@@ -11,12 +11,9 @@ import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -46,6 +43,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public FieldNamingConventionsRule() {
+        super(ASTFieldDeclaration.class, ASTEnumConstant.class);
         definePropertyDescriptor(publicConstantFieldRegex);
         definePropertyDescriptor(constantFieldRegex);
         definePropertyDescriptor(enumConstantRegex);
@@ -53,11 +51,6 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(staticFieldRegex);
         definePropertyDescriptor(defaultFieldRegex);
         definePropertyDescriptor(EXCLUDED_NAMES);
-    }
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTFieldDeclaration.class, ASTEnumConstant.class);
     }
 
     @Override

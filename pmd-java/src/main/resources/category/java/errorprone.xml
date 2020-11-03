@@ -1663,8 +1663,8 @@ and should be removed.
 <![CDATA[
 //EmptyStatement
  [not(
-          ../self::WhileStatement
-       or ../self::ForStatement
+          parent::WhileStatement
+       or parent::ForStatement
        or preceding-sibling::*[1]/self::LocalClassStatement
   )
  ]
