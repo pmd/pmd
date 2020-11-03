@@ -364,8 +364,8 @@ class MyMap<K, V> {
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 class Foo {
 
-    void descendingKeyIterator() {
-		assertThat(caseInsensitiveValueOf(Tropes.values(), "foo"), is(Tropes.FOO));
+    void descendingKeyIterator() { 
+        assertThat(caseInsensitiveValueOf(Tropes.values(), "foo"), is(Tropes.FOO));
     }
 
     public static <T> void assertThat(T actual, Matcher<? super T> matcher) { }
