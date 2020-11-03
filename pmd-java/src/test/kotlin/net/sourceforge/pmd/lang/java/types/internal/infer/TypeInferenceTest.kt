@@ -357,5 +357,31 @@ class MyMap<K, V> {
 
     }
 
+    parserTest("Concurrent modification exception when propagating bounds modifies self var") {
+        // problem is the ivar for E has Enum as upper bound and no Object,
+        // so Object is backpropagated to it during its own propagateAllBounds action
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+class Foo {
+
+    void descendingKeyIterator() {
+		assertThat(caseInsensitiveValueOf(Tropes.values(), "foo"), is(Tropes.FOO));
+    }
+
+    public static <T> void assertThat(T actual, Matcher<? super T> matcher) { }
+    public static <T> Matcher<T> is(Class<T> matcher) {}
+    public static <T> Matcher<T> is(T value) {return null;}
+    public static <E extends Enum<?>> E caseInsensitiveValueOf(E[] enumValues, String constant) {return null;}
+    interface Matcher<T> {}
+    enum Tropes { FOO, BAR, baz }
+}
+
+        """.trimIndent())
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().typeMirror shouldBe void
+        }
+    }
+
 
 })
