@@ -5,12 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import static net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule.JUNIT3_CLASS_NAME;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil;
 
 public class JUnitSpellingRule extends AbstractJavaRulechainRule {
 
@@ -20,9 +18,8 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isRegularClass() && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node)) {
-            node.getDeclarations()
-                .filterIs(ASTMethodDeclaration.class)
+        if (JUnitRuleUtil.isJUnit3Class(node)) {
+            node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(this::isViolation)
                 .forEach(it -> addViolation(data, it));
         }

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule.isJUnitMethod;
+import static net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil.isJUnitMethod;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
