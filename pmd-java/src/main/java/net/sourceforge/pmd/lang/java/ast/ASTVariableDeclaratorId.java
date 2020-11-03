@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
 
     private VariableNameDeclaration nameDeclaration;
 
@@ -101,6 +101,13 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getModifierOwnerParent().getModifiers();
     }
 
+
+    @Override
+    public Visibility getVisibility() {
+        return isPatternBinding() ? Visibility.V_LOCAL
+                                  : getModifierOwnerParent().getVisibility();
+    }
+
     private AccessNode getModifierOwnerParent() {
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
@@ -113,7 +120,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     /**
      * @deprecated Use {@link #getName()}
-     * @return
      */
     @Override
     @DeprecatedAttribute(replaceWith = "@Name")
