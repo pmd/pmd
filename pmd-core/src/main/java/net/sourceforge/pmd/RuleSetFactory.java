@@ -180,7 +180,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      *
-     * @deprecated Use {@link RuleSetLoader#parseFromResource(String)},
+     * @deprecated Use {@link RuleSetLoader#loadFromResource(String)},
      * but note that that method does not split on commas
      */
     @Deprecated
@@ -223,7 +223,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      *
-     * @deprecated Use {@link RuleSetLoader#parseFromResource(String)} and discard the rest of the list.
+     * @deprecated Use {@link RuleSetLoader#loadFromResource(String)} and discard the rest of the list.
      */
     @Deprecated
     public RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
