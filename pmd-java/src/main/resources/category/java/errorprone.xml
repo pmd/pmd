@@ -1568,7 +1568,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[EmptyStatement or Block[not(*)]]
+//IfStatement/*[self::EmptyStatement or self::Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1626,7 +1626,7 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Block/Block[not(*)]</value>
+                <value>//Block[not(*)][parent::Block or parent::SwitchFallthroughBranch or parent::SwitchArrowBranch]</value>
             </property>
         </properties>
         <example>
@@ -1790,7 +1790,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement[Block[not(*)] or EmptyStatement]
+//WhileStatement/*[self::Block[not(*)] or self::EmptyStatement]
 ]]>
                 </value>
             </property>

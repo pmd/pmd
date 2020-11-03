@@ -513,11 +513,11 @@ usage by developers who should be implementing their own versions in the concret
 //ClassOrInterfaceDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
     /ClassOrInterfaceBody
     /MethodDeclaration
-    /Block[
+    [Block[
       let $size := count(*[not(self::EmptyStatement)])
       return $size = 0
              or $size = 1 and ReturnStatement[ NullLiteral or NumericLiteral[@ValueAsInt = 0] or StringLiteral[@Empty = true()]]
-    ]
+    ]]
 ]]>
                 </value>
             </property>

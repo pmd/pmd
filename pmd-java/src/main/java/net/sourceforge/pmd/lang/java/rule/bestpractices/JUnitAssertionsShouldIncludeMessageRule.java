@@ -39,7 +39,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulecha
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (JUnitRuleUtil.isAssertCall(node)) {
+        if (JUnitRuleUtil.isCallOnAssertionContainer(node)) {
             for (InvocationMatcher check : checks) {
                 if (check.matchesCall(node)) {
                     addViolation(data, node);

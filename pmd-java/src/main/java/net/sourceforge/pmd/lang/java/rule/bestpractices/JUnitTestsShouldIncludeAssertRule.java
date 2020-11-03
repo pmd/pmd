@@ -24,10 +24,21 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
         if (body != null
             && JUnitRuleUtil.isJUnitMethod(method)
             && !isExpectAnnotated(method)
-            && body.descendants(ASTMethodCall.class).none(JUnitRuleUtil::isAssertCall)) {
+            && body.descendants(ASTMethodCall.class)
+                   .none(JUnitTestsShouldIncludeAssertRule::isProbableAssertCall)) {
             addViolation(data, method);
         }
         return data;
+    }
+
+    private static boolean isProbableAssertCall(ASTMethodCall call) {
+        String name = call.getMethodName();
+        return name.startsWith("assert")
+            || name.startsWith("check")
+            || name.startsWith("verify")
+            || name.equals("fail")
+            || name.equals("failWith")
+            || JUnitRuleUtil.isExpectExceptionCall(call);
     }
 
     /**

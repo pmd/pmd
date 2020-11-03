@@ -98,10 +98,10 @@ and unintentional empty constructors.
 <![CDATA[
 //ConstructorDeclaration[@Visibility != "private"]
                         [not(pmd-java:hasAnnotation('javax.inject.Inject'))]
-                        /Block[
+                        [Block[
                             @containsComment = false()
                             and (count(*) = 0 or ($ignoreExplicitConstructorInvocation = true() and count(*) = 1 and ExplicitConstructorInvocation))
-                        ]
+                        ]]
 ]]>
                 </value>
             </property>

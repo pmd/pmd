@@ -25,7 +25,6 @@ public final class JUnitRuleUtil {
     private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     private static final String JUNIT4_TEST_ANNOT = "org.junit.Test";
     private static final String JUNIT5_TEST_ANNOT = "org.junit.jupiter.api.Test";
-    private static final Set<String> MOCKITO = setOf("org.mockito.Mockito");
     private static final Set<String> ASSERT_CONTAINERS = setOf("org.junit.Assert",
                                                                "org.junit.jupiter.api.Assertions",
                                                                "org.hamcrest.MatcherAssert",
@@ -86,19 +85,11 @@ public final class JUnitRuleUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
-    /**
-     * True if this is a call to an assert/fail method. Supports a lot
-     * of different patterns.
-     */
-    public static boolean isAssertCall(ASTMethodCall call) {
-        String name = call.getMethodName();
-        return "expect".equals(name) && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier())
-            || "assertAll".equals(name) && TypeTestUtil.isA("org.assertj.core.api.SoftAssertions", call.getQualifier())
-            || "verify".equals(name) && isCallOnType(call, MOCKITO)
-            || (name.startsWith("assert") || "fail".equals(name)) && isCallOnAssertionContainer(call);
+    public static boolean isExpectExceptionCall(ASTMethodCall call) {
+        return "expect".equals(call.getMethodName()) && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier());
     }
 
-    private static boolean isCallOnAssertionContainer(ASTMethodCall call) {
+    public static boolean isCallOnAssertionContainer(ASTMethodCall call) {
         return isCallOnType(call, ASSERT_CONTAINERS);
     }
 
