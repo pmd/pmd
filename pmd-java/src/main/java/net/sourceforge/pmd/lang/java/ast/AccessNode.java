@@ -79,12 +79,11 @@ public interface AccessNode extends Annotatable {
      * somewhere in an anonymous class doesn't get anonymous visibility.
      */
     default Visibility getEffectiveVisibility() {
-        NodeStream<ASTAnyTypeDeclaration> ancestors = ancestors(ASTAnyTypeDeclaration.class);
         Visibility minv = getVisibility();
         if (minv == Visibility.V_LOCAL) {
             return minv;
         }
-        for (ASTAnyTypeDeclaration enclosing : ancestors) {
+        for (ASTAnyTypeDeclaration enclosing : ancestors(ASTAnyTypeDeclaration.class)) {
             minv = Visibility.min(minv, enclosing.getVisibility());
             if (minv == Visibility.V_LOCAL) {
                 return minv;
