@@ -17,9 +17,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * API, see eg {@link #warnDeprecated(boolean)}. To create a list of
  * rulesets, use {@link #parseFromResource(String)}.
  */
-public final class RuleSetParser {
+public final class RuleSetLoader {
 
-    ResourceLoader resourceLoader = new ResourceLoader(RuleSetParser.class.getClassLoader());
+    ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     RulePriority minimumPriority = RulePriority.LOW;
     boolean warnDeprecated = true;
     boolean enableCompatibility = true;
@@ -30,13 +30,13 @@ public final class RuleSetParser {
      * paths to external ruleset references. The default uses PMD's
      * own classpath.
      */
-    public RuleSetParser loadResourcesWith(ClassLoader classLoader) {
+    public RuleSetLoader loadResourcesWith(ClassLoader classLoader) {
         this.resourceLoader = new ResourceLoader(classLoader);
         return this;
     }
 
     // internal
-    RuleSetParser loadResourcesWith(ResourceLoader loader) {
+    RuleSetLoader loadResourcesWith(ResourceLoader loader) {
         this.resourceLoader = loader;
         return this;
     }
@@ -47,7 +47,7 @@ public final class RuleSetParser {
      * ie, no filtering occurs.
      * @return This instance, modified
      */
-    public RuleSetParser filterAbovePriority(RulePriority minimumPriority) {
+    public RuleSetLoader filterAbovePriority(RulePriority minimumPriority) {
         this.minimumPriority = minimumPriority;
         return this;
     }
@@ -57,7 +57,7 @@ public final class RuleSetParser {
      * This is enabled by default.
      * @return This instance, modified
      */
-    public RuleSetParser warnDeprecated(boolean warn) {
+    public RuleSetLoader warnDeprecated(boolean warn) {
         this.warnDeprecated = warn;
         return this;
     }
@@ -69,7 +69,7 @@ public final class RuleSetParser {
      * error.
      * @return This instance, modified
      */
-    public RuleSetParser enableCompatibility(boolean enable) {
+    public RuleSetLoader enableCompatibility(boolean enable) {
         this.enableCompatibility = enable;
         return this;
     }
@@ -81,7 +81,7 @@ public final class RuleSetParser {
      *
      * @return This instance, modified
      */
-    public RuleSetParser includeDeprecatedRuleReferences(boolean enable) {
+    public RuleSetLoader includeDeprecatedRuleReferences(boolean enable) {
         this.includeDeprecatedRuleReferences = enable;
         return this;
     }
@@ -149,8 +149,8 @@ public final class RuleSetParser {
      * Configure a new ruleset factory builder according to the parameters
      * of the given PMD configuration.
      */
-    public static RuleSetParser fromPmdConfig(PMDConfiguration configuration) {
-        return new RuleSetParser().filterAbovePriority(configuration.getMinimumPriority())
+    public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
+        return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
                                   .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
     }
 }

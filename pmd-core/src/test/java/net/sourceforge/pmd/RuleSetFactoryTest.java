@@ -505,7 +505,7 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testReferencePriority() throws RuleSetNotFoundException {
-        RuleSetParser config = new RuleSetParser().warnDeprecated(false).enableCompatibility(true);
+        RuleSetLoader config = new RuleSetLoader().warnDeprecated(false).enableCompatibility(true);
 
         RuleSetFactory rsf = config.filterAbovePriority(RulePriority.LOW).toFactory();
         RuleSet ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
@@ -546,7 +546,7 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testOverridePriorityLoadWithMinimum() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetParser().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(true).enableCompatibility(true).toFactory();
+        RuleSetFactory rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(true).enableCompatibility(true).toFactory();
         RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
@@ -567,13 +567,13 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExcludeWithMinimumPriority() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetParser().filterAbovePriority(RulePriority.HIGH).toFactory();
+        RuleSetFactory rsf = new RuleSetLoader().filterAbovePriority(RulePriority.HIGH).toFactory();
         RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // no rules should be loaded
         assertEquals("Number of Rules", 0, ruleset.getRules().size());
 
         // now, load with default minimum priority
-        rsf = new RuleSetParser().filterAbovePriority(RulePriority.LOW).toFactory();
+        rsf = new RuleSetLoader().filterAbovePriority(RulePriority.LOW).toFactory();
         ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // only one rule, we have excluded one...
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
@@ -602,9 +602,9 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testSetPriority() throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetParser().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false).toFactory();
+        RuleSetFactory rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false).toFactory();
         assertEquals(0, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
-        rsf = new RuleSetParser().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false).toFactory();
+        rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false).toFactory();
         assertEquals(1, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
     }
 
@@ -779,7 +779,7 @@ public class RuleSetFactoryTest {
                 + "    <description>Ruleset which references a empty ruleset</description>\n" + "\n"
                 + "    <rule ref=\"rulesets/dummy/empty-ruleset.xml\" />\n"
                 + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = new RuleSetParser().loadResourcesWith(new ResourceLoader()).filterAbovePriority(RulePriority.LOW).warnDeprecated(true).enableCompatibility(true).toFactory();
+        RuleSetFactory ruleSetFactory = new RuleSetLoader().loadResourcesWith(new ResourceLoader()).filterAbovePriority(RulePriority.LOW).warnDeprecated(true).enableCompatibility(true).toFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         assertEquals(0, ruleset.getRules().size());
 
@@ -1284,7 +1284,7 @@ public class RuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetParser().warnDeprecated(true).enableCompatibility(false).toFactory();
+        RuleSetFactory rsf = new RuleSetLoader().warnDeprecated(true).enableCompatibility(false).toFactory();
         return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
     }
 

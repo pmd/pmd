@@ -13,7 +13,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * This class represents a reference to RuleSet.
  *
- * @deprecated This is part of the internals of the {@link RuleSetParser}.
+ * @deprecated This is part of the internals of the {@link RuleSetLoader}.
  */
 @Deprecated
 @InternalApi
