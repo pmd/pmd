@@ -131,7 +131,6 @@ public class PMDTaskImpl {
 
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
-        Report report = new Report();
         Report errorReport = new Report();
         final AtomicInteger reportSize = new AtomicInteger();
         final String separator = System.getProperty("file.separator");
@@ -190,7 +189,7 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, rulesetList, files, report, renderers);
+                PMD.processFiles(configuration, rulesetList, files, renderers);
             } catch (ContextedRuntimeException e) {
                 if (e.getFirstContextValue("filename") instanceof String) {
                     handleError((String) e.getFirstContextValue("filename"), errorReport, e);

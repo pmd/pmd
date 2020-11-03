@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +43,6 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -240,28 +238,15 @@ public class PMD {
                 renderer.start();
             }
 
-            final AtomicInteger violations = new AtomicInteger(0);
-            Report report = new Report();
-            report.addListener(new ThreadSafeReportListener() {
-                @Override
-                public void ruleViolationAdded(RuleViolation ruleViolation) {
-                    violations.getAndIncrement();
-                }
-
-                @Override
-                public void metricAdded(Metric metric) {
-                    // ignored - not needed for counting violations
-                }
-            });
-
+            Report report;
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, report, renderers);
+                report = processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, renderers);
             }
 
             try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer.end();
                 renderer.flush();
-                return violations.get();
+                return report.getViolations().size();
             }
         } catch (Exception e) {
             String message = e.getMessage();
@@ -320,7 +305,7 @@ public class PMD {
      * @param renderers
      *            List of {@link Renderer}s
      *
-     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, Report, List)}
+     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, List)}
      * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
      * which won't be fixed
      */
@@ -349,16 +334,17 @@ public class PMD {
      *                      as parameters
      * @param rulesets      Parsed rulesets
      * @param files         Files to process
-     * @param report        Report in which violations are accumulated
      * @param renderers     Renderers that render the report
+     *
+     * @return Report in which violations are accumulated
      *
      * @throws RuntimeException If processing fails
      */
-    public static void processFiles(final PMDConfiguration configuration,
-                                    final List<RuleSet> rulesets,
-                                    final Collection<? extends DataSource> files,
-                                    final Report report,
-                                    final List<Renderer> renderers) {
+    public static Report processFiles(final PMDConfiguration configuration,
+                                      final List<RuleSet> rulesets,
+                                      final Collection<? extends DataSource> files,
+                                      final List<Renderer> renderers) {
+        Report report = new Report();
         encourageToUseIncrementalAnalysis(configuration);
         report.addListener(configuration.getAnalysisCache());
 
@@ -369,6 +355,7 @@ public class PMD {
         ctx.setReport(report);
         newFileProcessor(configuration).processFiles(new RuleSets(rulesets), sortedFiles, ctx, renderers);
         configuration.getAnalysisCache().persist();
+        return report;
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
