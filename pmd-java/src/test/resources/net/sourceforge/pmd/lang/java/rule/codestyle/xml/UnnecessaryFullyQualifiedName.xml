@@ -931,4 +931,86 @@ class Assert {
 
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Test field access</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'Math': 'PI' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access FQCN</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang.Math': 'PI' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = java.lang.Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access disabled</description>
+        <rule-property name="reportStaticFields">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access disabled, FQCN is still reported</description>
+        <rule-property name="reportStaticFields">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = java.lang.Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access imported through subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'MockitoInherited': 'PhonyMockito::TWO' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.mock;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited.*;
+
+            import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited;
+
+            public class Something {
+                static int i = MockitoInherited.TWO * 2;
+            }
+            ]]></code>
+    </test-code>
 </test-data>
