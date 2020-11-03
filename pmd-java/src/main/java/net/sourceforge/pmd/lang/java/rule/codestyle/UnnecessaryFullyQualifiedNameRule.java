@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,20 +15,33 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule {
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTClassOrInterfaceType.class);
+    private static final PropertyDescriptor<Boolean> REPORT_METHODS =
+        booleanProperty("reportStaticMethods")
+            .desc("Report unnecessary static method qualifiers like in `Collections.emptyList()`, if the method is imported or inherited.")
+            .defaultValue(true)
+            .build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_FIELDS =
+        booleanProperty("reportStaticFields")
+            .desc("Report unnecessary static field qualifiers like in `Math.PI`, if the field is imported or inherited.")
+            .defaultValue(true)
+            .build();
+
+    public UnnecessaryFullyQualifiedNameRule() {
+        super(ASTClassOrInterfaceType.class);
+        definePropertyDescriptor(REPORT_METHODS);
+        definePropertyDescriptor(REPORT_FIELDS);
     }
 
     @Override
@@ -55,7 +70,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         // maybe a method call can still take precedence?
-        if (next.getParent() instanceof ASTTypeExpression
+        if (getProperty(REPORT_METHODS)
+            && next.getParent() instanceof ASTTypeExpression
             && next.getParent().getParent() instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) next.getParent().getParent();
             if (methodCall.getExplicitTypeArguments() == null
