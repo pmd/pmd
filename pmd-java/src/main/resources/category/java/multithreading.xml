@@ -338,7 +338,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIs('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
+//MethodCall[pmd-java:matchesSig("java.util.Collections#synchronizedMap(_)") and ArgumentList/ConstructorCall]
 ]]>
                 </value>
             </property>
@@ -346,13 +346,9 @@ perform efficient map reads without blocking other threads.
         <example>
 <![CDATA[
 public class ConcurrentApp {
-  public void getMyInstance() {
-    Map map1 = new HashMap();           // fine for single-threaded access
-    Map map2 = new ConcurrentHashMap(); // preferred for use with multiple threads
+    // may be replaced with new ConcurrentHashMap(), which is more efficient
 
-    // the following case will be ignored by this rule
-    Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
-  }
+    Map<K, V> map1 = Collections.synchronizedMap(new HashMap<>());
 }
 ]]>
         </example>

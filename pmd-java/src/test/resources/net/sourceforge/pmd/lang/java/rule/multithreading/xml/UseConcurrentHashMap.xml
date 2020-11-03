@@ -7,17 +7,18 @@
     <test-code>
         <description>Basic use case</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
-    private Map _map = new TreeMap();
+    Map<K, V> map1 = Collections.synchronizedMap(new HashMap<>());
 
     public void m() {
-        Map m = new HashMap();
+        Map<K, V> map1 = Collections.synchronizedMap(new TreeMap<>());
     }
 
     public Map contructMap() {
-        return new HashMap(); //not detected
+        return new HashMap(); //not flagged
     }
 }
         ]]></code>
@@ -47,8 +48,21 @@ import java.util.*;
 import java.util.concurrent.*;
 public class ConcurrentApp {
     public void getMyInstance() {
-        Map map1 = new HashMap();   // fine for single-threaded access --- violation on this line
+        Map map1 = Collections.synchronizedMap(new HashMap<>());   // violation on this line
         Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with Properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.concurrent.*;
+public class ConcurrentApp {
+    public void getMyInstance() {
+        final Properties pr = new Properties();
     }
 }
         ]]></code>
