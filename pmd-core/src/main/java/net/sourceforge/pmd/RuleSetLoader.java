@@ -4,11 +4,17 @@
 
 package net.sourceforge.pmd;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -18,6 +24,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * rulesets, use {@link #loadFromResource(String)}.
  */
 public final class RuleSetLoader {
+
+    private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
 
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
@@ -161,5 +169,39 @@ public final class RuleSetLoader {
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
                                   .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
+    }
+
+
+    /**
+     * Returns an Iterator of RuleSet objects loaded from descriptions from the
+     * "categories.properties" resource for each Language with Rule support. This
+     * uses the classpath of the resource loader ({@link #loadResourcesWith(ClassLoader)}).
+     *
+     * @return A list of all category rulesets
+     *
+     * @throws RuleSetNotFoundException if some ruleset file could not be parsed
+     *                                  TODO shouldn't our API forbid this case?
+     */
+    public List<RuleSet> getStandardRuleSets() throws RuleSetNotFoundException {
+        String rulesetsProperties;
+        List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
+        for (Language language : LanguageRegistry.findWithRuleSupport()) {
+            Properties props = new Properties();
+            rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
+            try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
+                props.load(inputStream);
+                String rulesetFilenames = props.getProperty("rulesets.filenames");
+                if (rulesetFilenames != null) {
+                    ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
+                }
+            } catch (RuleSetNotFoundException e) {
+                LOG.fine("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
+            } catch (IOException ioe) {
+                throw new RuleSetNotFoundException("Couldn't read " + rulesetsProperties
+                                                       + "; please ensure that the directory is on the classpath. The current classpath is: "
+                                                       + System.getProperty("java.class.path"), ioe);
+            }
+        }
+        return toFactory().createRuleSets(ruleSetReferenceIds).getRuleSetsInternal();
     }
 }

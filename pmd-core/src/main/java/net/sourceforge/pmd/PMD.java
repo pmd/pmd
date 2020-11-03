@@ -321,7 +321,7 @@ public class PMD {
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactory = ruleSetFactory.toParser().warnDeprecated(false).toFactory();
+        final RuleSetFactory silentFactory = ruleSetFactory.toLoader().warnDeprecated(false).toFactory();
         newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }
