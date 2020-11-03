@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = "com.example.geometry", @declarationsAreInDefaultPackage = false]
-   +- PackageDeclaration[@PackageNameImage = "com.example.geometry"]
+   +- PackageDeclaration[@Name = "com.example.geometry", @PackageNameImage = "com.example.geometry"]
    |  +- Name[@Image = "com.example.geometry"]
    +- TypeDeclaration[]
       +- ClassOrInterfaceDeclaration[@Abstract = false, @BinaryName = "com.example.geometry.Shape", @Default = false, @Final = false, @Image = "Shape", @Interface = false, @Local = false, @Modifiers = 16385, @Native = false, @Nested = false, @NonSealed = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Sealed = true, @SimpleName = "Shape", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.CLASS, @Volatile = false]

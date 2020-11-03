@@ -152,7 +152,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
             return ListFactory.emptyList();
         }
 
-        final String image = pack.getPackageNameImage();
+        final String image = pack.getName();
         ImmutableList<String> fullExisting = FOUND_PACKAGES.get(image);
 
         if (fullExisting != null) {

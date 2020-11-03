@@ -22,6 +22,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+- {% jdoc java::ast.ASTPackageDeclaration#getPackageNameImage() %}, {% jdoc java::ast.ASTTypeParameter#getParameterName() %} and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`, the attribute is `@Name`
+
 ### External Contributions
 
 {% endtocmaker %}
