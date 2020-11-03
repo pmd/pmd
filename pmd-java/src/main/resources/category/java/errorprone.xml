@@ -1665,6 +1665,7 @@ and should be removed.
  [not(
           parent::WhileStatement
        or parent::ForStatement
+       or parent::ForeachStatement
        or preceding-sibling::*[1]/self::LocalClassStatement
   )
  ]

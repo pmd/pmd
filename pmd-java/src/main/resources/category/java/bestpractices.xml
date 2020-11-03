@@ -819,7 +819,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
         or pmd-java:hasAnnotation('org.testng.annotations.Test')
     ]
-    [Block[count(//MethodCall[@MethodName[matches(.,'^assert')]]) > $maximumAsserts]]
+    [Block[count(.//MethodCall[@MethodName[matches(.,'^assert')]]) > $maximumAsserts]]
 ]]>
                 </value>
             </property>
