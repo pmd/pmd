@@ -19,11 +19,11 @@ import net.sourceforge.pmd.util.ResourceLoader;
  */
 public final class RuleSetLoader {
 
-    ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
-    RulePriority minimumPriority = RulePriority.LOW;
-    boolean warnDeprecated = true;
-    boolean enableCompatibility = true;
-    boolean includeDeprecatedRuleReferences = false;
+    private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
+    private RulePriority minimumPriority = RulePriority.LOW;
+    private boolean warnDeprecated = true;
+    private boolean enableCompatibility = true;
+    private boolean includeDeprecatedRuleReferences = false;
 
     /**
      * Specify that the given classloader should be used to resolve
@@ -89,10 +89,19 @@ public final class RuleSetLoader {
     /**
      * Create a new rule set factory, if you have to (that class is deprecated).
      * That factory will use the configuration that was set using the setters of this.
+     *
+     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages with usages of this class,
+     *     or of static factory methods of {@link RuleSet}
      */
     @Deprecated
     public RuleSetFactory toFactory() {
-        return new RuleSetFactory(this);
+        return new RuleSetFactory(
+            this.resourceLoader,
+            this.minimumPriority,
+            this.warnDeprecated,
+            this.enableCompatibility,
+            this.includeDeprecatedRuleReferences
+        );
     }
 
 
@@ -141,7 +150,7 @@ public final class RuleSetLoader {
 
     // package private
     RuleSet parseFromResource(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
-        return new RuleSetFactory(this).createRuleSet(ruleSetReferenceId);
+        return toFactory().createRuleSet(ruleSetReferenceId);
     }
 
 

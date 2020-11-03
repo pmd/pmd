@@ -123,10 +123,6 @@ public class RuleSetFactory {
     }
 
 
-    RuleSetFactory(RuleSetLoader config) {
-        this(config.resourceLoader, config.minimumPriority, config.warnDeprecated, config.enableCompatibility, config.includeDeprecatedRuleReferences);
-    }
-
     /**
      * Gets the compatibility filter in order to adjust it, e.g. add additional
      * filters.
