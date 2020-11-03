@@ -92,10 +92,10 @@ public final class JUnitRuleUtil {
      */
     public static boolean isAssertCall(ASTMethodCall call) {
         String name = call.getMethodName();
-        return name.equals("expect") && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier())
-            || name.equals("assertAll") && TypeTestUtil.isA("org.assertj.core.api.SoftAssertions", call.getQualifier())
-            || name.equals("verify") && isCallOnType(call, MOCKITO)
-            || (name.startsWith("assert") || name.equals("fail")) && isCallOnAssertionContainer(call);
+        return "expect".equals(name) && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier())
+            || "assertAll".equals(name) && TypeTestUtil.isA("org.assertj.core.api.SoftAssertions", call.getQualifier())
+            || "verify".equals(name) && isCallOnType(call, MOCKITO)
+            || (name.startsWith("assert") || "fail".equals(name)) && isCallOnAssertionContainer(call);
     }
 
     private static boolean isCallOnAssertionContainer(ASTMethodCall call) {

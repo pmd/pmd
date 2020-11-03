@@ -151,7 +151,7 @@ public final class TypeTestUtil {
             || otherType.isClassOrInterface() && ((JClassType) otherType).getSymbol().isAnonymousClass()) {
             return false; // we know isExactlyA(canonicalName, node); returned false
         } else if (otherType.isPrimitive()) {
-            return otherType == thisType; // isSubtypeOf considers primitive widening like subtyping
+            return otherType.equals(thisType); // isSubtypeOf considers primitive widening like subtyping
         }
 
         return thisType.isSubtypeOf(otherType);
@@ -300,7 +300,7 @@ public final class TypeTestUtil {
         final TypeMatcher qualifierMatcher;
 
         InvocationMatcher(TypeMatcher qualifierMatcher, String expectedName, @Nullable List<TypeMatcher> argMatchers) {
-            this.expectedName = expectedName.equals("_") ? null : expectedName;
+            this.expectedName = "_".equals(expectedName) ? null : expectedName;
             this.argMatchers = argMatchers;
             this.qualifierMatcher = qualifierMatcher;
         }

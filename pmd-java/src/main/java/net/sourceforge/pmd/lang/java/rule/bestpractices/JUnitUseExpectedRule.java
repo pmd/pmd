@@ -64,7 +64,7 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
     private boolean isFailStmt(ASTExpressionStatement stmt) {
         if (stmt.getExpr() instanceof ASTMethodCall) {
             ASTMethodCall expr = (ASTMethodCall) stmt.getExpr();
-            return expr.getMethodName().equals("fail");
+            return "fail".equals(expr.getMethodName());
         }
         return false;
     }
