@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -81,7 +82,11 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     private static boolean isJUnit3Method(ASTMethodDeclaration method) {
         return TypeTestUtil.isA("junit.framework.TestCase", method.getEnclosingType())
-            && method.isVoid()
+            && isJunit3MethodSignature(method);
+    }
+
+    public static boolean isJunit3MethodSignature(ASTMethodDeclaration method) {
+        return method.isVoid()
             && method.isPublic()
             && method.getName().startsWith("test");
     }
@@ -89,6 +94,13 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     private boolean isJUnit3Class(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         return TypeTestUtil.isA(JUNIT3_CLASS_NAME, cid);
+    }
+
+    public static boolean isJUnit3Class(ASTAnyTypeDeclaration node) {
+        return node.isRegularClass()
+            && !node.isNested()
+            && !node.isAbstract()
+            && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
     private boolean isJUnit4Class(ASTCompilationUnit node) {

@@ -4,36 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.List;
+import static net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule.isJUnit3Class;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
+public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
+
+    public TestClassWithoutTestCasesRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isAbstract() || node.isInterface() || node.isNested()) {
-            return data;
-        }
+        if (isJUnit3Class(node)) {
+            boolean hasTests =
+                node.getDeclarations(ASTMethodDeclaration.class)
+                    .any(AbstractJUnitRule::isJunit3MethodSignature);
 
-        List<ASTMethodDeclaration> m = node.findDescendantsOfType(ASTMethodDeclaration.class);
-        boolean testsFound = false;
-
-        if (m != null) {
-            for (ASTMethodDeclaration md : m) {
-                if (isJUnitMethod(md)) {
-                    testsFound = true;
-                    break;
-                }
+            if (!hasTests) {
+                addViolation(data, node);
             }
         }
-
-        if (!testsFound) {
-            addViolation(data, node);
-        }
-
-        return data;
+        return null;
     }
 }
