@@ -19,7 +19,7 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChainNode<S, I
 
 
     /**
-     * Returns the next node in th chain that contains a declaration for
+     * Returns the next node in the chain that contains a declaration for
      * the name this iterator searches. If that group exists ({@link #hasNext()})
      * then the symbols yielded by {@link #getResults()} are shadowed
      * in the previous groups that were yielded (unless they are the same

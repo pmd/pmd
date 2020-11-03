@@ -126,6 +126,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 public class Foo {
     List list = Arrays.asList("one");
 }
@@ -135,12 +136,13 @@ public class Foo {
     <test-code>
         <description>13, invalid static method call</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary qualifier 'java.util': 'Arrays' is already in scope because it is imported in this file</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -152,6 +154,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -163,6 +166,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -175,6 +179,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -186,6 +191,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 import static java.util.Arrays.asList;
 public class Foo {
     List list = Arrays.asList("one");
@@ -220,6 +226,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -231,6 +238,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -243,6 +251,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -255,6 +264,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = Arrays.asList("one");
 }
@@ -454,6 +464,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Arrays;
 import java.util.asList.*; // we don't use stream since we're on java 7
+import java.util.List;
 
 public final class Test {
     public static List<String> stream(Container parent) {
@@ -878,7 +889,7 @@ class Assert {
     <test-code regressionTest="false">
         <!-- TODO this causes an error, bc of early disambiguation       -->
         <!--  solution: import on demands must be made entirely lazy     -->
-        <description>FN with static method inherited into type</description>
+        <description>FN with static method imported through subtype (same file)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             package ohio;
@@ -894,6 +905,30 @@ class Assert {
             }
 
             class Assert2 extends Assert {}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with static method imported through subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'MockitoInherited': 'PhonyMockito::mock' is already in scope</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.mock;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited.*;
+
+            import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited;
+
+            public class Something {
+
+                {
+                    // this is actually a reference to PhonyMockito::mock
+                    MockitoInherited.mock(null);
+                }
+            }
+
             ]]></code>
     </test-code>
 </test-data>

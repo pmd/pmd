@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
@@ -75,9 +76,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             && next.getParent().getParent() instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) next.getParent().getParent();
             if (methodCall.getExplicitTypeArguments() == null
-                && methodProbablyMeansSame(next, methodCall)) {
+                && methodProbablyMeansSame(methodCall)) {
                 // we don't actually know where the method came from
-                String simpleName = methodCall.getMethodName();
+                String simpleName = formatMethodName(next, methodCall);
                 String unnecessary = produceQualifier(deepest, next, true);
                 addViolation(data, next, new Object[] {unnecessary, simpleName, ""});
                 return null;
@@ -153,24 +154,32 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         return null;
     }
 
-    private static boolean methodProbablyMeansSame(ASTClassOrInterfaceType qualifier, ASTMethodCall call) {
-        JTypeDeclSymbol sym = qualifier.getTypeMirror().getSymbol();
-        if (sym == null) {
+    private static boolean methodProbablyMeansSame(ASTMethodCall call) {
+
+        // todo at least filter by potential applicability
+        //  (ideally, do a complete inference run)
+        //  this may have false negatives
+        List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
+        if (accessibleMethods.isEmpty() || call.getOverloadSelectionInfo().isFailed()) {
             return false;
         }
 
-        // todo at least filter by potential applicability (ideally, do a complete inference run)
-        //  this may have false negatives
-        List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
-        if (accessibleMethods.isEmpty()) {
-            return false;
-        }
+        JClassSymbol methodOwner = call.getMethodType().getSymbol().getEnclosingClass();
+
         for (JMethodSig m : accessibleMethods) {
-            if (!m.getSymbol().getEnclosingClass().equals(sym)) {
+            if (!m.getSymbol().getEnclosingClass().equals(methodOwner)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private static String formatMethodName(ASTClassOrInterfaceType qualifier, ASTMethodCall call) {
+        JClassSymbol methodOwner = call.getMethodType().getSymbol().getEnclosingClass();
+        if (!methodOwner.equals(qualifier.getTypeMirror().getSymbol())) {
+            return methodOwner.getSimpleName() + "::" + call.getMethodName();
+        }
+        return call.getMethodName();
     }
 
     private static String unnecessaryReasonForType(ScopeInfo scopeInfo) {
