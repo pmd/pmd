@@ -8,8 +8,8 @@
         <description>assertArrayEquals ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
+import static org.junit.Assert.assertArrayEquals;
+public class Foo {
     public void test1() {
         assertArrayEquals("[1] != [1]", new int[] {1}, new int[] {1});
     }
@@ -21,8 +21,8 @@ public class Foo extends TestCase {
         <description>assertArrayEquals bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
+import static org.junit.Assert.assertArrayEquals;
+public class Foo {
     public void test1() {
         assertArrayEquals(new int[] {1}, new int[] {1});
     }
@@ -245,6 +245,7 @@ public class Foo extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
+import static org.hamcrest.CoreMatchers.*;
 public class Foo extends TestCase {
     public void test1() {
         assertThat("Zero is one", 0, is(not(1)));
@@ -257,8 +258,9 @@ public class Foo extends TestCase {
         <description>assertThat bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+public class Foo {
     public void test1() {
         assertThat(0, is(not(1)));
     }
@@ -348,10 +350,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
+import org.junit.Assert;
 public class Foo {
     @Test
     public void foo() {
-        assertEquals(1, 1);
+        Assert.assertEquals(1, 1);
     }
 }
         ]]></code>

@@ -5,28 +5,34 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil;
 
-public class JUnitSpellingRule extends AbstractJUnitRule {
+public class JUnitSpellingRule extends AbstractJavaRulechainRule {
+
+    public JUnitSpellingRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
+    }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        if (isJUnit5Class || isJUnit4Class) {
-            return super.visit(node, data);
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (JUnitRuleUtil.isJUnit3Class(node)) {
+            node.getDeclarations(ASTMethodDeclaration.class)
+                .filter(this::isViolation)
+                .forEach(it -> addViolation(data, it));
         }
+        return null;
+    }
 
-        if (node.getArity() != 0) {
-            return super.visit(node, data);
+    private boolean isViolation(ASTMethodDeclaration method) {
+        if (method.getArity() != 0) {
+            return false;
         }
+        String name = method.getName();
+        return !"setUp".equals(name) && "setup".equalsIgnoreCase(name)
+            || !"tearDown".equals(name) && "teardown".equalsIgnoreCase(name);
 
-        String name = node.getName();
-        if (!"setUp".equals(name) && "setup".equalsIgnoreCase(name)) {
-            addViolation(data, node);
-        }
-        if (!"tearDown".equals(name) && "teardown".equalsIgnoreCase(name)) {
-            addViolation(data, node);
-        }
-        return super.visit(node, data);
     }
 }

@@ -683,8 +683,9 @@ ensure that the string is not empty by making an additional check first.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCall[@MethodName = 'startsWith' and *[1][pmd-java:nodeIs('Expression') and pmd-java:typeIs('java.lang.String')]]
- [ArgumentList[count(*)=1][StringLiteral[@Length = 1]]]
+//MethodCall
+ [ pmd-java:matchesSig('java.lang.String#startsWith(_)') ]
+ [ArgumentList[StringLiteral[@Length = 1]]]
 ]]>
                 </value>
             </property>
@@ -756,12 +757,19 @@ private String bar = new String("bar"); // just do a String bar = "bar";
           language="java"
           since="1.0"
           message="Avoid calling toString() on String objects; this is unnecessary."
-          class="net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#stringtostring">
         <description>
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 private String baz() {
@@ -1080,14 +1088,22 @@ public class Foo {
     <rule name="UseStringBufferLength"
           language="java"
           since="3.4"
-          message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
-          class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule"
+          message="This is an inefficient use of CharSequence.toString; call CharSequence.length instead."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferlength">
         <description>
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig('_#length()')
+                                 and MethodCall[pmd-java:matchesSig('java.lang.CharSequence#toString()')]]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 StringBuffer sb = new StringBuffer();

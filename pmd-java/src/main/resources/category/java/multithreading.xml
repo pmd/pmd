@@ -150,9 +150,16 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+//ClassOrInterfaceType
+[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
+                                               and parent::MethodCall[pmd-java:matchesSig('_#getContextClassLoader()')]
+                                              ]
+                           ]
+)]
 |
-//MethodCall[*[1][pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]]
+//MethodCall[*[1][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
 ]]>
                 </value>
             </property>
@@ -207,7 +214,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCall[ @MethodName = 'run' and *[1][pmd-java:typeIs('java.lang.Thread')] ]
+//MethodCall[ pmd-java:matchesSig("java.lang.Thread#run()") ]
 ]]>
                 </value>
             </property>
@@ -338,7 +345,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIs('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
+//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
 ]]>
                 </value>
             </property>

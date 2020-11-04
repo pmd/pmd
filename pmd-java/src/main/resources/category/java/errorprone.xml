@@ -581,7 +581,7 @@ public void bar() {
     <rule name="AvoidMultipleUnaryOperators"
           language="java"
           since="4.2"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidMultipleUnaryOperatorsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="Using multiple unary operators may be a bug, and/or is confusing."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">
         <description>
@@ -589,6 +589,14 @@ The use of multiple unary operators may be problematic, and/or confusing.
 Ensure that the intended usage is not a bug, or consider simplifying the expression.
         </description>
         <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                    (: Only report on the toplevel one :)
+                    //UnaryExpression[UnaryExpression and not(parent::UnaryExpression)]
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 // These are typo bugs, or at best needlessly complex and confusing:
@@ -1560,7 +1568,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[EmptyStatement or Block[not(*)]]
+//IfStatement/*[self::EmptyStatement or self::Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1618,7 +1626,7 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Block/Block[not(*)]</value>
+                <value>//Block[not(*)][parent::Block or parent::SwitchFallthroughBranch or parent::SwitchArrowBranch]</value>
             </property>
         </properties>
         <example>
@@ -1655,8 +1663,9 @@ and should be removed.
 <![CDATA[
 //EmptyStatement
  [not(
-          ../self::WhileStatement
-       or ../self::ForStatement
+          parent::WhileStatement
+       or parent::ForStatement
+       or parent::ForeachStatement
        or preceding-sibling::*[1]/self::LocalClassStatement
   )
  ]
@@ -1781,7 +1790,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement[Block[not(*)] or EmptyStatement]
+//WhileStatement/*[self::Block[not(*)] or self::EmptyStatement]
 ]]>
                 </value>
             </property>
