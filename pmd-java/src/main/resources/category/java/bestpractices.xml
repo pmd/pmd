@@ -184,11 +184,7 @@ Avoid printStackTrace(); use a logger call instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCall[
-    @MethodName = 'printStackTrace'
-    and ArgumentList[@Size = 0]
-    and child::*[1][pmd-java:typeIs('java.lang.Throwable')]
-]
+//MethodCall[ pmd-java:matchesSig("java.lang.Throwable#printStackTrace()") ]
 ]]>
                 </value>
             </property>
@@ -813,16 +809,17 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name[matches(.,'^test')] or ../Annotation/MarkerAnnotation/Name[
-           pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        or pmd-java:typeIs('org.testng.annotations.Test')
-    ]]
-    [count(.//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
+//MethodDeclaration[
+           @Name[matches(.,'^test')]
+        or pmd-java:hasAnnotation('org.junit.Test')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
+        or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
+        or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]
+    [Block[count(.//MethodCall[@MethodName[matches(.,'^assert')]]) > $maximumAsserts]]
 ]]>
                 </value>
             </property>
@@ -1559,23 +1556,10 @@ This rule detects JUnit assertions in object equality. These assertions should b
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue']
-][
-    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-        [ends-with(@Image, '.equals')]
-]
+// MethodCall[ pmd-java:matchesSig('org.junit.Assert#assertTrue(_*)')
+            or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')
+            or pmd-java:matchesSig('junit.framework.TestCase#assertTrue(_*)') ]
+             [ArgumentList/*[last()][self::MethodCall[pmd-java:matchesSig('_#equals(java.lang.Object)')]]]
 ]]>
                 </value>
             </property>
@@ -1608,24 +1592,12 @@ more specific methods, like assertNull, assertNotNull.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
-][
-    PrimarySuffix/Arguments/ArgumentList[
-        Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
-    ]
-]
+// MethodCall[ @MethodName = ('assertTrue', 'assertFalse')
+       and (pmd-java:matchesSig('org.junit.Assert#_(_*)')
+         or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#_(_*)')
+         or pmd-java:matchesSig('junit.framework.TestCase#_(_*)'))
+      ]
+      [ArgumentList/*[last()][self::InfixExpression[@Operator = ("==", "!=") and NullLiteral]]]
 ]]>
                 </value>
             </property>
@@ -1660,24 +1632,12 @@ by more specific methods, like assertSame, assertNotSame.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
-]
-[
-    PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
-        [not(.//NullLiteral)]
-]
+// MethodCall[ @MethodName = ('assertTrue', 'assertFalse')
+       and (pmd-java:matchesSig('org.junit.Assert#_(_*)')
+         or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#_(_*)')
+         or pmd-java:matchesSig('junit.framework.TestCase#_(_*)'))
+      ]
+      [ArgumentList/*[last()][self::InfixExpression[@Operator = ("==", "!=") and not(NullLiteral)]]]
 ]]>
                 </value>
             </property>
@@ -1709,13 +1669,12 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
-[
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-  or
-  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
-  /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
-]
+// MethodCall[ @MethodName = 'assertEquals'
+       and (pmd-java:matchesSig('org.junit.Assert#_(_*)')
+         or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#_(_*)')
+         or pmd-java:matchesSig('junit.framework.TestCase#_(_*)'))
+      ]
+      [ArgumentList/*[self::BooleanLiteral or self::FieldAccess[@Name=("TRUE", "FALSE") and pmd-java:typeIs('java.lang.Boolean')]]]
 ]]>
                 </value>
             </property>
@@ -1907,10 +1866,10 @@ a block `{}` is sufficient.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>
-//DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
-//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
-                </value>
+                <value><![CDATA[
+  //DoStatement[BooleanLiteral]
+| //WhileStatement/BooleanLiteral[@True = false()]
+                ]]></value>
             </property>
             <property name="version" value="2.0" />
         </properties>

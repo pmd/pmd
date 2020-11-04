@@ -53,4 +53,18 @@ public class ConcurrentApp {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with Properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Properties;
+import java.util.concurrent.*;
+public class ConcurrentApp {
+    public void getMyInstance() {
+        final Properties pr = new Properties();
+    }
+ }
+         ]]></code>
+     </test-code>
+
 </test-data>

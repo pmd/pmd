@@ -109,8 +109,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
             // fields names mapped to their types
             Map<String, String> fieldNames =
                 node.getEnclosingType()
-                    .getDeclarations()
-                    .filterIs(ASTFieldDeclaration.class)
+                    .getDeclarations(ASTFieldDeclaration.class)
                     .flatMap(ASTFieldDeclaration::getVarIds)
                     .collect(Collectors.toMap(
                         f -> {
