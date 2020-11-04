@@ -278,20 +278,41 @@ public final class TypeTestUtil {
 
     /**
      * Matches a method or constructor call against a particular overload.
-     * Use {@link #parse(String, String)} to create one. For example,
+     * Use {@link #parse(String)} to create one. For example,
      *
      * <pre>
      *     java.lang.String#toString()   // match calls to toString on String instances
      *     _#toString()                  // match calls to toString on any receiver
-     *     _#_()                         // match all calls to a method with no arguments
-     *     _#toString(_*)                // match calls to a "toString" method with any number of arguments
+     *     _#_()                         // match all calls to a method with no parameters
+     *     _#toString(_*)                // match calls to a "toString" method with any number of parameters
      *     _#eq(_, _)                    // match calls to an "eq" method that has 2 parameters of unspecified type
      *     _#eq(java.lang.String, _)     // like the previous, but the first parameter must be String
+     *     java.util.ArrayList#new(int)  // match constructor calls of this overload of the ArrayList constructor
      * </pre>
      *
-     * <p>The receiver parameter (first half) is matched against the
-     * static type of the receiver of the call (not the declaration site
-     * of the method). The parameters
+     * <p>The receiver matcher (first half) is matched against the
+     * static type of the <i>receiver</i> of the call, and not the
+     * declaration site of the method, unless the called method is
+     * static, or a constructor.
+     *
+     * <p>The parameters are matched against the declared parameters
+     * types of the called overload, and not the actual argument types.
+     * In particular, for vararg methods, the signature should mention
+     * a single parameter, with an array type.
+     *
+     * <p>For example {@code Integer.valueOf('0')} will be matched by
+     * {@code _#valueOf(int)} but not {@code _#valueOf(char)}, which is
+     * an overload that does not exist (the char is widened to an int,
+     * so the int overload is selected).
+     *
+     * <p>Full EBNF grammar (no whitespace is tolerated anywhere):
+     * <pre>{@code
+     * sig         ::= type '#' method_name param_list
+     * type        ::= qname ( '[]' )* | '_'
+     * method_name ::= '_' | ident | 'new'
+     * param_list  ::= '(_*)' | '(' type (',' type )* ')'
+     * qname       ::= java binary name
+     * }</pre>
      */
     public static final class InvocationMatcher {
 
@@ -328,17 +349,25 @@ public final class TypeTestUtil {
                 return true;
             }
             if (node instanceof ASTConstructorCall) {
-                return qualifierMatcher.matches(((ASTConstructorCall) node).getTypeNode().getTypeMirror(), true);
-            } else if (node instanceof QualifiableExpression) {
+                JTypeMirror newType = ((ASTConstructorCall) node).getTypeNode().getTypeMirror();
+                return qualifierMatcher.matches(newType, true);
+            }
+            JMethodSig m = node.getMethodType();
+            JTypeMirror qualType;
+            if (node instanceof QualifiableExpression) {
                 ASTExpression qualifier = ((QualifiableExpression) node).getQualifier();
                 if (qualifier != null) {
-                    return qualifierMatcher.matches(qualifier.getTypeMirror(), false);
+                    qualType = qualifier.getTypeMirror();
+                } else {
+                    // todo: if qualifier == null, then we should take the type of the
+                    // implicit receiver, ie `this` or `SomeOuter.this`
+                    qualType = m.getDeclaringType();
                 }
-                // todo: if qualifier == null, then we should take the type of the
-                // implicit receiver, ie `this` or `SomeOuter.this`
+            } else {
+                qualType = m.getDeclaringType();
             }
 
-            return qualifierMatcher.matches(node.getMethodType().getDeclaringType(), false);
+            return qualifierMatcher.matches(qualType, m.isStatic());
         }
 
         private boolean argsMatchOverload(JMethodSig invoc) {
@@ -359,35 +388,25 @@ public final class TypeTestUtil {
 
 
         /**
-         * Parses an {@link InvocationMatcher} from two strings.
+         * Parses an {@link InvocationMatcher}.
          *
-         * <p>The examples on the javadoc of this class are given in a
-         * syntax, where the first parameter of this method is before the #,
-         * and the second is after.
-         *
-         * @param qualifierMatcher Type matcher for the receiver type (either "_", or a qualified name).
-         * @param sig              A signature in the form {@code name(arg1, arg2, ...)},
-         *                         where each {@code argi} is either {@code _} or a qualified
-         *                         type name, without type arguments.
+         * @param sig A signature in the format described on this class
          *
          * @return A sig matcher
          *
          * @throws IllegalArgumentException If the parameters are malformed
          * @throws NullPointerException     If the parameters are null
          */
-        public static InvocationMatcher parse(String qualifierMatcher, String sig) {
-            AssertionUtil.assertValidJavaBinaryName(qualifierMatcher);
-            int i = 0;
-            while (i < sig.length() && Character.isJavaIdentifierPart(sig.charAt(i))) {
-                i++;
-            }
-            final String methodName = sig.substring(0, i);
-            if (methodName.isEmpty()) {
-                throw new IllegalArgumentException("Not a valid signature " + sig);
-            }
+        public static InvocationMatcher parse(String sig) {
+            int i = parseType(sig, 0);
+            final TypeMatcher qualifierMatcher = newMatcher(sig.substring(0, i));
+            i = consumeChar(sig, i, '#');
+            final int nameStart = i;
+            i = parseSimpleName(sig, i);
+            final String methodName = sig.substring(nameStart, i);
             i = consumeChar(sig, i, '(');
             if (isChar(sig, i, ')')) {
-                return new InvocationMatcher(newMatcher(qualifierMatcher), methodName, Collections.emptyList());
+                return new InvocationMatcher(qualifierMatcher, methodName, Collections.emptyList());
             }
             // (_*) matches any argument list
             List<TypeMatcher> argMatchers;
@@ -403,7 +422,18 @@ public final class TypeTestUtil {
             if (i != sig.length()) {
                 throw new IllegalArgumentException("Not a valid signature " + sig);
             }
-            return new InvocationMatcher(newMatcher(qualifierMatcher), methodName, argMatchers);
+            return new InvocationMatcher(qualifierMatcher, methodName, argMatchers);
+        }
+
+        private static int parseSimpleName(String sig, final int start) {
+            int i = start;
+            while (i < sig.length() && Character.isJavaIdentifierPart(sig.charAt(i))) {
+                i++;
+            }
+            if (i == start) {
+                throw new IllegalArgumentException("Not a valid signature " + sig);
+            }
+            return i;
         }
 
         private static int parseArgList(String sig, int i, List<TypeMatcher> argMatchers) {
@@ -430,13 +460,22 @@ public final class TypeTestUtil {
 
         private static int parseType(String source, int i, List<TypeMatcher> result) {
             final int start = i;
+            i = parseType(source, i);
+            result.add(newMatcher(source.substring(start, i)));
+            return i;
+        }
+
+        private static int parseType(String source, int i) {
+            final int start = i;
             while (i < source.length() && (Character.isJavaIdentifierPart(source.charAt(i))
                 || source.charAt(i) == '.')) {
                 i++;
             }
-            String name = source.substring(start, i);
-            AssertionUtil.assertValidJavaBinaryName(name);
-            result.add(newMatcher(name));
+            AssertionUtil.assertValidJavaBinaryName(source.substring(start, i));
+            // array dimensions
+            while (isChar(source, i, '[')) {
+                i = consumeChar(source, i + 1, ']');
+            }
             return i;
         }
 

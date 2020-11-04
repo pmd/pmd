@@ -17,20 +17,18 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulecha
 
     private final List<InvocationMatcher> checks =
         listOf(
-            InvocationMatcher.parse("_", "assertEquals(_,_)"),
-
-            InvocationMatcher.parse("_", "assertTrue(_)"),
-            InvocationMatcher.parse("_", "assertFalse(_)"),
-            InvocationMatcher.parse("_", "assertSame(_,_)"),
-            InvocationMatcher.parse("_", "assertNotSame(_,_)"),
-            InvocationMatcher.parse("_", "assertNull(_)"),
-            InvocationMatcher.parse("_", "assertNotNull(_)"),
-
-            InvocationMatcher.parse("_", "assertArrayEquals(_,_)"),
-            InvocationMatcher.parse("_", "assertThat(_,_)"),
-            InvocationMatcher.parse("_", "fail()"),
-            InvocationMatcher.parse("_", "assertEquals(float,float,float)"),
-            InvocationMatcher.parse("_", "assertEquals(double,double,double)")
+            InvocationMatcher.parse("_#assertEquals(_,_)"),
+            InvocationMatcher.parse("_#assertTrue(_)"),
+            InvocationMatcher.parse("_#assertFalse(_)"),
+            InvocationMatcher.parse("_#assertSame(_,_)"),
+            InvocationMatcher.parse("_#assertNotSame(_,_)"),
+            InvocationMatcher.parse("_#assertNull(_)"),
+            InvocationMatcher.parse("_#assertNotNull(_)"),
+            InvocationMatcher.parse("_#assertArrayEquals(_,_)"),
+            InvocationMatcher.parse("_#assertThat(_,_)"),
+            InvocationMatcher.parse("_#fail()"),
+            InvocationMatcher.parse("_#assertEquals(float,float,float)"),
+            InvocationMatcher.parse("_#assertEquals(double,double,double)")
         );
 
     public JUnitAssertionsShouldIncludeMessageRule() {

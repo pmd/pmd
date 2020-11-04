@@ -24,13 +24,8 @@ public final class MatchesSignatureFunction extends BaseRewrittenFunction<Invoca
 
     @Override
     protected InvocationMatcher parseArgument(String constantArg) throws XPathException {
-        String[] split = constantArg.split("#");
-        if (split.length != 2) {
-            throw new XPathException("Invalid signature " + constantArg);
-        }
-
         try {
-            return InvocationMatcher.parse(split[0], split[1]);
+            return InvocationMatcher.parse(constantArg);
         } catch (IllegalArgumentException e) {
             throw new XPathException(e);
         }

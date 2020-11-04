@@ -121,3 +121,28 @@ langs:
         examples:
           - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'
             outcome: "Matches method declarations that have an explicit 'public' modifier."
+
+      - name: matchesSig
+        returnType: "xs:boolean"
+        shortDescription: "Matches the signature called by a method or constructor call"
+        description: >-
+          Uses an {% jdoc java::lang.java.types.TypeTestUtil.InvocationMatcher %} to test
+          the method signature called by the context node. The format of the parameter is
+          described on that class.
+
+        notes: "The context node must be an {% jdoc jast::InvocationNode %}"
+        parameters:
+          - name: "sig"
+            type: "xs:string"
+            description: "A signature, in the format described on {% jdoc java::lang.java.types.TypeTestUtil.InvocationMatcher %}"
+        examples:
+          - code: '//MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]'
+            outcome: "Matches calls to the method `equals` on any receiver type"
+          - code: '//MethodCall[pmd-java:matchesSig("java.lang.Enum#equals(java.lang.Object)")]'
+            outcome: "Matches calls to the method `equals` on receiver that is a subtype of Enum"
+          - code: '//MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]'
+            outcome: "Matches calls to the method `toString` on String receivers"
+          - code: '//MethodCall[pmd-java:matchesSig("_#_(int,int)")]'
+            outcome: "Matches calls to any method with 2 `int` parameters (!= argument)"
+          - code: '//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]'
+            outcome: "Matches constructors calls of ArrayList with a single int parameter"
