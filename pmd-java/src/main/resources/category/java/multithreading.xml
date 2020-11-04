@@ -150,7 +150,14 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+//ClassOrInterfaceType
+[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
+                                               and parent::MethodCall[pmd-java:matchesSig('_#getContextClassLoader()')]
+                                              ]
+                           ]
+)]
 |
 //MethodCall[*[1][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
 ]]>
