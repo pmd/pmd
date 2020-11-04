@@ -210,4 +210,24 @@ public class CompareWithEqualsTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>comparing in equals method should be ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Obj {
+    private int i;
+
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        final Obj that = (Obj) other;
+        return that.i == this.i;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
