@@ -37,8 +37,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
         return name.startsWith("assert") && !isSoftAssert(call)
             || name.startsWith("check")
             || name.startsWith("verify")
-            || name.equals("fail")
-            || name.equals("failWith")
+            || "fail".equals(name)
+            || "failWith".equals(name)
             || JUnitRuleUtil.isExpectExceptionCall(call);
     }
 
