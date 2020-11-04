@@ -229,7 +229,8 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     @Test
     public void testNullNode() {
         Assert.assertFalse(TypeTestUtil.isA(String.class, null));
-        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", null));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", (JTypeMirror) null));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", (TypeNode) null));
         Assert.assertFalse(TypeTestUtil.isExactlyA(String.class, (TypeNode) null));
         Assert.assertFalse(TypeTestUtil.isExactlyA("java.lang.String", null));
     }
