@@ -118,7 +118,7 @@ public final class TypeTestUtil {
         return isA(canonicalName, node.getTypeMirror(), unresolvedStore);
     }
 
-    private static boolean isA(@NonNull String canonicalName, @Nullable JTypeMirror thisType) {
+    public static boolean isA(@NonNull String canonicalName, @Nullable JTypeMirror thisType) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
         if (thisType == null) {
             return false;
