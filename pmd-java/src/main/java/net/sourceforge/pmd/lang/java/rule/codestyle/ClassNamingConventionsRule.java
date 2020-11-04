@@ -30,7 +30,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public ClassNamingConventionsRule() {
-        super(ASTAnyTypeDeclaration.class,
+        super(ASTClassOrInterfaceDeclaration.class,
               ASTEnumDeclaration.class,
               ASTAnnotationTypeDeclaration.class,
               ASTRecordDeclaration.class);
