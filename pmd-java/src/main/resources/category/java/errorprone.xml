@@ -296,13 +296,7 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall[pmd-java:typeIs('java.math.BigDecimal')]
-[ArgumentList[count(*) = 1 and *[
-        pmd-java:typeIs('float') or
-        pmd-java:typeIs('java.lang.Float') or
-        pmd-java:typeIs('double') or
-        pmd-java:typeIs('java.lang.Double')
-]]]
+//ConstructorCall[pmd-java:matchesSig('java.math.BigDecimal#new(double)')]
 ]]>
                 </value>
             </property>

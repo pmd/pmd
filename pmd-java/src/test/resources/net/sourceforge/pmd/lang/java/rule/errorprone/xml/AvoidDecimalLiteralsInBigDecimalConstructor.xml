@@ -99,4 +99,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2532 Expression as argument</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigDecimal;
+
+public class Foo {
+    public void bar(double d) {
+        BigDecimal bd = new BigDecimal(6 * d);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
