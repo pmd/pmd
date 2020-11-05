@@ -436,4 +436,21 @@ class SimpleTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] JUnitAssertionsShouldIncludeMessage false positive with method call #2883</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.assertEquals;
+
+public class AssertionMessageTest {
+    public void bar(int expectedLength) {
+        try {
+            Integer.parseInt("a");
+        } catch (RuntimeException e) {
+            assertEquals(e.toString(), expectedLength, e.getMessage().length()); // no warning expected
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
