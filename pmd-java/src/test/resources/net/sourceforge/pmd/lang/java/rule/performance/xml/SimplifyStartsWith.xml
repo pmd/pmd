@@ -72,4 +72,19 @@ public class SimplifyStartsWith {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2712 SimplifyStartsWith false-positive on receiver != String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TClass {
+
+    void startsWith(String a) {}
+    TClass assertThat(String s) {}
+
+    private static boolean isImmediatelyFollowedByText(String someStringValue) {
+        assertThat(someStringValue).startsWith("a");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
