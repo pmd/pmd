@@ -186,4 +186,14 @@ class CloneableClass implements TestInterface {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] CloneMethodMustImplementCloneable triggers for interfaces #1005</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public interface Foo
+                    extends Serializable, Cloneable {
+                Foo clone() throws CloneNotSupportedException;
+            }
+        ]]></code>
+    </test-code>
 </test-data>
