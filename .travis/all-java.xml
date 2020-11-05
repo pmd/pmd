@@ -46,7 +46,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/> -->
+    <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedAssignment"/>
     <!-- <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/> -->
