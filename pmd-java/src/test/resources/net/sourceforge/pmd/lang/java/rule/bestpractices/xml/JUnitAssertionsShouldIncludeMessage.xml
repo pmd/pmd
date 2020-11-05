@@ -453,4 +453,21 @@ public class AssertionMessageTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>JUnitAssertionsShouldIncludeMessage false positive with AssertJ #1565</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.assertj.core.api.Assertions.assertThat;
+import java.util.HashMap;
+
+public class AssertionMessageTest {
+    public void bar(int expectedLength) {
+        assertThat(new HashMap<>()).as("Should return database entries as map")
+         .hasSize(3)
+         .containsEntry(3, 4);
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
