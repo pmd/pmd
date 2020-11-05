@@ -543,4 +543,82 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2739 [java] False Positive UselessParenthesis for string concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String alpha, final String bravo) {
+        return "Charlie".equals(alpha) || (alpha + bravo).equals(alpha);
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[java] false-positive in UselessParentheses #1673</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String discordClient, final String bravo) {
+        throw new IllegalArgumentException(String.format(
+                "Unsupported client with class '%s' given",
+                (discordClient == null) ? null : discordClient.getClass()));
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[java] false-positive in UselessParentheses #1673 (!ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String discordClient, final String bravo) {
+        throw new IllegalArgumentException(String.format(
+                "Unsupported client with class '%s' given",
+                (discordClient == null) ? null : discordClient.getClass()));
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[Java] UselessParentheses: catch wrong case #1918 (ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest() {
+        boolean a,b,c,d;
+        if(a || b || (c & d) || e) {
+            //do sth
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[Java] UselessParentheses: catch wrong case #1918 (!ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest() {
+        boolean a,b,c,d;
+        if(a || b || (c & d) || e) {
+            //do sth
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
