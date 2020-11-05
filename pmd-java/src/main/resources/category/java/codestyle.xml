@@ -1714,8 +1714,8 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
     <rule name="UselessParentheses"
           language="java"
           since="5.0"
-          message="Unnecessary parentheses."
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule"
+          message="Useless parentheses."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#uselessparentheses">
         <description>
             Parenthesized expressions are used to override the default operator precedence

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.ALWAYS;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.BALANCING;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.CLARIFYING;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.NEVER;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.definitely;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryParenthesesRule.Necessity.necessaryIf;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.ALWAYS;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.BALANCING;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.CLARIFYING;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.NEVER;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.definitely;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.necessaryIf;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -27,8 +27,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 
-public final class UnnecessaryParenthesesRule extends AbstractJavaRulechainRule {
-    // fixme the name of the rule is UselessParentheses
+public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
+    // todo rename to UnnecessaryParentheses
 
     private static final PropertyDescriptor<Boolean> IGNORE_CLARIFYING =
         PropertyFactory.booleanProperty("ignoreClarifying")
@@ -46,7 +46,7 @@ public final class UnnecessaryParenthesesRule extends AbstractJavaRulechainRule 
                                  + "of parentheses are necessary but the expression is clearer that way.")
                        .build();
 
-    public UnnecessaryParenthesesRule() {
+    public UselessParenthesesRule() {
         super(ASTExpression.class);
         definePropertyDescriptor(IGNORE_CLARIFYING);
         definePropertyDescriptor(IGNORE_BALANCING);
