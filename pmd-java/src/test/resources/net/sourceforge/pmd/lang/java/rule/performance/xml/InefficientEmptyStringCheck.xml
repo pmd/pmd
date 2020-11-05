@@ -203,4 +203,36 @@ public class PatternMatchingInstanceof {
         ]]></code>
         <source-type>java 14-preview</source-type>
     </test-code>
+    <test-code>
+        <description>[java] InefficientEmptyStringCheck false negative in anonymous class #1224</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import javax.swing.*;
+            import java.awt.event.KeyEvent;
+            import java.awt.event.KeyListener;
+
+            public class Main {
+                public static void main(String[] args) {
+                    final JPanel jPanel = new JPanel();
+                    jPanel.addKeyListener(new KeyListener() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            final String val = "";
+                            if (val.trim().length() > 0) {
+                                System.out.println("Non-empty string.");
+                            }
+                        }
+
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                        }
+                    });
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
