@@ -101,7 +101,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#2532 Expression as argument</description>
-        <expected-problems>8</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigDecimal;
