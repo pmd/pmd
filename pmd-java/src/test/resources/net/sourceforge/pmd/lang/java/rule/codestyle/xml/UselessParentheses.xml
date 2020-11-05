@@ -46,7 +46,23 @@ public class Foo {
 
     <test-code>
         <description>failure case, condition 2</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
         <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar(int x) {
+        if ((x % 2) == 0) {
+            return x;
+        }
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>failure case, ignore clarifying</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public int bar(int x) {
@@ -116,13 +132,14 @@ public class Foo {
 
     <test-code>
         <description>false negatives</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
         <expected-problems>8</expected-problems>
         <expected-linenumbers>4,6,10,15,16,17,18,19</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private boolean isSimpleReturn(Node node) {
         return
-            ( node instanceof ASTReturnStatement ) // rule triggeres here
+            ( node instanceof ASTReturnStatement ) // rule triggers here
             &&
             ( node.getNumChildren() == 0 );     // and here
     }
@@ -144,8 +161,23 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Parentheses inside concat may be unnecessary</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    {
+        String concat;
+        concat = (1 + 1) + "";          // parentheses are unnecessary but clarifying
+        concat = "" + (1 + 1);          // parentheses are necessary even if ignoring associativity
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Parentheses inside concat may be unnecessary</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     {
@@ -266,6 +298,7 @@ public class Useless {
 
     <test-code>
         <description>#1407 UselessParentheses "&amp;" and "+" operator precedence</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
         <expected-problems>13</expected-problems>
         <expected-linenumbers>5,6,7,8,9,10,11,12,13,14,15,16,17</expected-linenumbers>
         <code><![CDATA[

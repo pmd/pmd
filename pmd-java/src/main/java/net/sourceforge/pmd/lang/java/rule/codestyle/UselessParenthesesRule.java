@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRul
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.definitely;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.necessaryIf;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -43,7 +44,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                        .desc("Ignore unnecessary parentheses that appear balanced around an equality "
                                  + "operator, because the other operand requires parentheses."
                                  + "For example, in `(a == null) == (b == null)`, only the second pair "
-                                 + "of parentheses are necessary but the expression is clearer that way.")
+                                 + "of parentheses is necessary, but the expression is clearer that way.")
                        .build();
 
     public UselessParenthesesRule() {
@@ -208,7 +209,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         }
 
 
-        throw new IllegalStateException("Unhandled case inside " + outer);
+        throw AssertionUtil.shouldNotReachHere("Unhandled case inside " + outer);
     }
 
     private static boolean isUnary(JavaNode expr) {
