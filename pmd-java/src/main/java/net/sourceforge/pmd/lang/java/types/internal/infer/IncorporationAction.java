@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -194,7 +195,7 @@ abstract class IncorporationAction {
         @Override
         void apply(InferenceContext ctx) {
             for (BoundKind kind : BoundKind.values()) {
-                for (JTypeMirror bound : ivar.getBounds(kind)) {
+                for (JTypeMirror bound : new ArrayList<>(ivar.getBounds(kind))) { //copy to avoid comodification
                     new PropagateBounds(ivar, kind, bound).apply(ctx);
                 }
             }

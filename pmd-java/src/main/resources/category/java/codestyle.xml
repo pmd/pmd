@@ -1561,7 +1561,7 @@ public class Foo {
           language="java"
           since="5.0"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameRule"
-          message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
+          message="Unnecessary qualifier ''{0}'': ''{1}'' is already in scope{2}"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">
         <description>
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
