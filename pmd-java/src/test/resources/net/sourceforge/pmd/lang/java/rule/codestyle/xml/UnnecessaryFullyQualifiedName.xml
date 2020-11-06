@@ -787,7 +787,7 @@ class Assert {
                         if (value == null) {
                             return null;
                         }
-                        final int bits = java.lang.Float.floatToIntBits((java.lang.Float) value);
+                        final int bits = java.lang.Float.floatToIntBits((java.lang.Float) value); // false positive
                         return "";
                     }
                 };
