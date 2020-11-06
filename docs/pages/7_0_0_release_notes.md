@@ -46,6 +46,16 @@ Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath
  * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
  * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
+#### Changed Rules
+
+##### Java
+
+*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
+    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+    not necessary are allowed, if they separate expressions of different precedence.
+    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+    reading and understanding the expressions.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:
@@ -72,6 +82,10 @@ The following previously deprecated rules have been finally removed:
 * java-bestpractices
     * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
     * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
+* java-codestyle
+    * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
+    * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
+    * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
 
 ### API Changes
 
