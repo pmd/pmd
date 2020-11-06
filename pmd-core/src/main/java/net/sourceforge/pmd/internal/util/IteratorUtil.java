@@ -43,12 +43,14 @@ public final class IteratorUtil {
         return new AbstractIterator<T>() {
             @Override
             protected void computeNext() {
-                T next = iter.next();
-                if (predicate.test(next)) {
-                    setNext(next);
-                } else {
-                    done();
+                if (iter.hasNext()) {
+                    T next = iter.next();
+                    if (predicate.test(next)) {
+                        setNext(next);
+                        return;
+                    }
                 }
+                done();
             }
         };
     }
