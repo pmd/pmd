@@ -230,4 +230,21 @@ public class Obj {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] CompareObjectsWithEqualsRule: False positive with Enums #2716</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class EnumTest {
+    enum Type {
+        A, B;
+    }
+
+    private final Type type = Type.A;
+
+    public String isTypeA(Type param) {
+        return param == type ? "Yes" : "No";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

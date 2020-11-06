@@ -280,4 +280,28 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertErrored(aC)
         assertErrored(aI)
     }
+
+    parserTest("!TODO Import on demand of class defined in same compilation unit that has an extends clause") {
+        // the extends clause must be disambiguated early to process the on demand import (ODI),
+        // which is itself needed to resolve a supertype of Foo (which is itself part of the ODI)
+
+        // this is a cyclic dependency, we should probably avoid collecting the static imports
+        // before all classes of the CU have been visited
+        enableProcessing()
+
+        val acu = parser.parse("""
+package p;
+import static p.Assert2.*;
+
+class Assert {
+    static class Foo extends Bar { }
+}
+class Assert2 extends Assert {
+    static class Bar {}
+}
+class Foo2 extends Foo { }
+
+        """)
+
+    }
 })

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
@@ -32,7 +33,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     private final Set<JavaNode> reportedNodes = new HashSet<>();
 
     public AccessorClassGenerationRule() {
-        super(ASTConstructorCall.class);
+        super(ASTConstructorCall.class, ASTExplicitConstructorInvocation.class);
     }
 
     @Override
@@ -44,6 +45,14 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         if (!node.isAnonymousClass()) {
+            AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+        }
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+        if (node.isSuper()) {
             AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;

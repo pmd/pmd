@@ -535,4 +535,110 @@ public class FooTest extends TestCase {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods #2147</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import static org.hamcrest.MatcherAssert.*;
+import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class FooTest extends TestCase {
+
+    @Test
+    public void testDemo() {
+        JsonNode jsonNode = assertSuccessResponse();
+        final int totalFieldsCount = jsonNode.get("count").asInt();
+        jsonNode.get("data").forEach(item -> assertTrue(item.size() <= totalFieldsCount));
+    }
+
+    public static JsonNode assertSuccessResponse() {
+        JsonNode jsonNode = doStuffToBuildTheJsonNode();
+        assertTrue(jsonNode.hasNonNull("count"));
+        assertTrue(jsonNode.hasNonNull("data"));
+        assertTrue(jsonNode.get("count").asInt() > 0);
+        assertEquals(jsonNode.get("count").asInt(), jsonNode.get("data").size());
+        return jsonNode;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field #1422</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Rule;
+            import org.junit.Test;
+            import org.junit.rules.ExpectedException;
+
+            abstract class Shape {
+                double size;
+
+                Shape(double size) {
+                    if (size < 0) {
+                        throw new IllegalArgumentException("negative size");
+                    }
+                    this.size = size;
+                }
+
+                public abstract double area();
+            }
+
+            class Square extends Shape {
+                Square(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    return size * size;
+                }
+            }
+
+            class Weird extends Shape {
+                Weird(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    throw new RuntimeException("just 'cause");
+                }
+            }
+
+            public abstract class ShapeTester {
+                protected abstract Shape factory(double size);
+
+                @Rule
+                public ExpectedException e = ExpectedException.none();
+
+                @Test
+                public void notAProblem() {
+                    e.expect(IllegalArgumentException.class);
+                    factory(-5);
+                }
+
+                public static final class SquareTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Square(size);
+                    }
+                }
+
+                public static final class WeirdTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Weird(size);
+                    }
+
+                    @Test
+                    public void thisOneTriggersRule() {
+                        e.expect(RuntimeException.class);
+                        e.expectMessage("just 'cause");
+                        factory(42).area();
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

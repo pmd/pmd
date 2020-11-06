@@ -4,10 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Comparator;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
  * Constants are roughly ordered by precedence, except some of them have the same
- * precedence. TODO add method to compare precedence -> useful for UnnecessaryParenthesesRule
+ * precedence.
+ *
+ * <p>All of those operators are left-associative.
  *
  * @see UnaryOp
  * @see AssignmentOp
@@ -89,82 +95,73 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         return code;
     }
 
-    /**
-     * Returns true if this is an equality operator, ie one of
-     * {@link #EQ}, or {@link #NE}.
-     */
-    public boolean isEquality() {
-        switch (this) {
-        case EQ:
-        case NE:
-            return true;
-        default:
-            return false;
-        }
+
+    @Override
+    public String toString() {
+        return this.code;
     }
 
     /**
-     * Returns true if this is a relational operator, ie one of
-     * {@link #LE}, {@link #GE}, {@link #GT}, {@link #LT}, or {@link #INSTANCEOF}.
+     * Compare the precedence of this operator with that of the other,
+     * as if with a {@link Comparator}. Returns a positive integer if
+     * this operator has a higher precedence as the argument, zero if
+     * they have the same precedence, etc.
+     *
+     * @throws NullPointerException If the argument is null
      */
-    public boolean isRelational() {
+    public int comparePrecedence(@NonNull BinaryOp other) {
+        // arguments are flipped because precedence class decreases
+        return Integer.compare(other.precedenceClass(), this.precedenceClass());
+    }
+
+    /**
+     * Returns true if this operator has the same relative precedence
+     * as the argument. For example, {@link #ADD} and {@link #SUB} have
+     * the same precedence.
+     *
+     * @throws NullPointerException If the argument is null
+     */
+    public boolean hasSamePrecedenceAs(@NonNull BinaryOp other) {
+        return comparePrecedence(other) == 0;
+    }
+
+    private int precedenceClass() {
         switch (this) {
+        case CONDITIONAL_OR:
+            return 9;
+        case CONDITIONAL_AND:
+            return 8;
+        case OR:
+            return 7;
+        case XOR:
+            return 6;
+        case AND:
+            return 5;
+        case EQ:
+        case NE:
+            return 4;
         case LE:
         case GE:
         case GT:
         case LT:
         case INSTANCEOF:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if this is a multiplicative operator, ie one of
-     * {@link #MUL}, {@link #DIV}, {@link #MOD}.
-     */
-    public boolean isMultiplicative() {
-        switch (this) {
-        case MUL:
-        case DIV:
-        case MOD:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-
-    /**
-     * Returns true if this is a shift operator, ie one of
-     * {@link #LEFT_SHIFT}, {@link #RIGHT_SHIFT}, or {@link #UNSIGNED_RIGHT_SHIFT}.
-     */
-    public boolean isShift() {
-        switch (this) {
+            return 3;
         case LEFT_SHIFT:
         case RIGHT_SHIFT:
         case UNSIGNED_RIGHT_SHIFT:
-            return true;
+            return 2;
+        case ADD:
+        case SUB:
+            return 1;
+        case MUL:
+        case DIV:
+        case MOD:
+            return 0;
         default:
-            return false;
+            return -1;
         }
     }
 
-    /**
-     * Returns true if this is a bitwise (or logical) operator, ie one
-     * of {@link #XOR}, {@link #AND}, or {@link #OR}.
-     */
-    public boolean isBitwise() {
-        switch (this) {
-        case XOR:
-        case AND:
-        case OR:
-            return true;
-        default:
-            return false;
-        }
-    }
 
     /**
      * Complement, for boolean operators. Eg for {@code ==}, return {@code !=},
@@ -187,11 +184,4 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         }
         return null;
     }
-
-    @Override
-    public String toString() {
-        return this.code;
-    }
-
-
 }

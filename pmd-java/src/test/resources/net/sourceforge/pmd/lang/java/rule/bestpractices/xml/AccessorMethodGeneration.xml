@@ -264,4 +264,77 @@ class Outer {
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration false positive with overloads #807</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Outer {
+
+                static void outerMethod(int i) {
+                    // package private method, safe to call, and is called from Inner.f()
+                }
+
+                private static void outerMethod(String s) {
+                    // private method, not used anywhere, yet triggers AccessorMethodGeneration
+                }
+
+                static class Inner {
+                    void f() {
+                        outerMethod(0);
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration false positive with overloads #807 (control test)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Outer {
+
+                static void outerMethod(int i) {
+                    // package private method, safe to call, and is called from Inner.f()
+                }
+
+                private static void outerMethod(String s) {
+                    // private method, not used anywhere, yet triggers AccessorMethodGeneration
+                }
+
+                static class Inner {
+                    void f() {
+                        outerMethod("0");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration: Name clash with another public field not properly handled #342</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class ClassA {
+
+                public String field;
+
+            }
+
+            public class ClassB {
+
+                private String field;
+
+                private class ClassC {
+
+                    public void doSomething() {
+                        ClassA a = new ClassA();
+                        a.field = "abcd"; // should not be a violation here but reported as one
+                    }
+
+                }
+
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
 </test-data>
