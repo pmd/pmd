@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.ecmascript;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -18,7 +20,11 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@InternalApi
+@Deprecated
 public class Ecmascript3Handler extends AbstractLanguageVersionHandler {
 
     @Override
