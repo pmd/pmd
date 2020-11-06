@@ -25,9 +25,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * (: In increasing precedence order :)
- * Expression ::= {@link ASTLambdaExpression LambdaExpression}
- *              | {@link ASTAssignmentExpression AssignmentExpression}
+ * Expression ::= {@link ASTAssignmentExpression AssignmentExpression}
  *              | {@link ASTConditionalExpression ConditionalExpression}
+ *              | {@link ASTLambdaExpression LambdaExpression}
  *              | {@link ASTInfixExpression InfixExpression}
  *              | {@link ASTUnaryExpression PrefixExpression} | {@link ASTCastExpression CastExpression}
  *              | {@link ASTUnaryExpression PostfixExpression}

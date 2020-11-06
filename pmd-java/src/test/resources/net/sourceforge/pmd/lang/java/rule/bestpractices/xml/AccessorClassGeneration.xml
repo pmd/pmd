@@ -156,4 +156,19 @@ public class Foo {
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>
+    <test-code>
+        <description>AccessorClassGeneration false-negative: subclass calls private constructor #1998</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                private Foo() { }
+                private Foo(String foo) { } //this one is called
+                public Foo(String foo, String bar) { }
+                private static class Bar extends Foo {
+                    public Bar() { super(null); }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
 </test-data>

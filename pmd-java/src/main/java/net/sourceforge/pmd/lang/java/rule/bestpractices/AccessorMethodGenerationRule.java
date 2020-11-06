@@ -69,7 +69,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         checkMemberAccess(this, data, node, symbol, this.reportedNodes);
     }
 
-    static void checkMemberAccess(AbstractRule rule, RuleContext data, ASTExpression refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(AbstractRule rule, RuleContext data, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
             && !Objects.equals(sym.getEnclosingClass(),
                                refExpr.getEnclosingType().getSymbol())) {

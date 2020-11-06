@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -79,6 +80,16 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     @Override
+    public boolean isFloatingPoint() {
+        return PrimitiveTypeKind.FLOATING_POINT_TYPES.contains(this.kind);
+    }
+
+    @Override
+    public boolean isIntegral() {
+        return kind != PrimitiveTypeKind.BOOLEAN && !isFloatingPoint();
+    }
+
+    @Override
     public boolean isPrimitive() {
         return true;
     }
@@ -125,6 +136,8 @@ public final class JPrimitiveType implements JTypeMirror {
         LONG(long.class),
         FLOAT(float.class),
         DOUBLE(double.class);
+
+        static final EnumSet<PrimitiveTypeKind> FLOATING_POINT_TYPES = EnumSet.of(FLOAT, DOUBLE);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;

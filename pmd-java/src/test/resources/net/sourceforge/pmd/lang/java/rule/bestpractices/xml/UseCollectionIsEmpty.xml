@@ -359,4 +359,27 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2542 UseCollectionIsEmpty can not detect the case foo.bar().size()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+
+    Foo foo() { return this; }
+    Foo bar() { return this; }
+    List<String> list() { return list; }
+
+    public void bar() {
+        if (foo().bar().foo().list().size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
