@@ -23,6 +23,6 @@ public class CLITest extends BaseCLITest {
             "ecmascript", "-debug", };
         String resultFilename = runTest(args, "useEcmaScript");
         assertTrue("Invalid JavaScript version",
-                FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript"));
+                FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript ES6"));
     }
 }

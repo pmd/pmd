@@ -9,9 +9,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 
-/**
- * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
- */
 class EcmascriptHandler extends AbstractPmdLanguageVersionHandler {
 
     private final int rhinoVersion;

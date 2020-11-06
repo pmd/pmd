@@ -46,6 +46,13 @@ Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath
  * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
  * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
+#### JavaScript support
+
+The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
+The language module registers only one version (as before), now correctly with version "ES6" instead of "3".
+Since there is only one version available for JavaScript there is actually no need to selected a specific version.
+The default version is always ES6.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:

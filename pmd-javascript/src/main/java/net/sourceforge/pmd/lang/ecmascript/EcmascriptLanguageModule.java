@@ -18,6 +18,6 @@ public class EcmascriptLanguageModule extends BaseLanguageModule {
 
     public EcmascriptLanguageModule() {
         super(NAME, null, TERSE_NAME, "js");
-        addDefaultVersion("", new EcmascriptHandler(Context.VERSION_ES6));
+        addDefaultVersion("ES6", new EcmascriptHandler(Context.VERSION_ES6));
     }
 }
